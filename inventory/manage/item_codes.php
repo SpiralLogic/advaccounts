@@ -79,9 +79,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
 	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
-	echo "<hr></center>";
+	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$result = Item_Code::get_defaults($_POST['stock_id']);
 	$dec = $result['decimals'];
@@ -90,7 +90,7 @@
 	$dflt_cat = $result['category_id'];
 	$result = Item_Code::get_all($_POST['stock_id']);
 	div_start('code_table');
-	start_table(Config::get('tables_style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  style='width:60%'");
 	$th = array(
 		_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""

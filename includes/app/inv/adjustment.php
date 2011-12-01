@@ -177,7 +177,7 @@
 		public static function option_controls()
 			{
 				echo "<br>";
-				start_table();
+				start_table('class="center"');
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				end_table(1);
 			}

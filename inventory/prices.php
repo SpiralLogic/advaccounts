@@ -38,9 +38,9 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
-		echo "<center>" . _("Item:") . "&nbsp;";
+		echo "<div class='center'>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
-		echo "<hr></center>";
+		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
 

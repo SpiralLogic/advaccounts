@@ -88,7 +88,7 @@
 	}
 	$result = DB::query($sql, "could not get sales persons");
 	start_form();
-	start_table(Config::get('tables_style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  style='width:60%'");
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
 	table_header($th);

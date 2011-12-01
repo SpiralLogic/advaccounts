@@ -118,16 +118,16 @@
 
 	function submit_center($name, $value, $echo = true, $title = false, $async = false, $icon = false) {
 		if ($echo) {
-			echo "<center>";
+			echo "<div class='center'>";
 		}
 		submit($name, $value, $echo, $title, $async, $icon);
 		if ($echo) {
-			echo "</center>";
+			echo "</div>";
 		}
 	}
 
 	function submit_center_first($name, $value, $title = false, $async = false, $icon = false) {
-		echo "<center>";
+		echo "<div class='center'>";
 		submit($name, $value, true, $title, $async, $icon);
 		echo "&nbsp;";
 	}
@@ -135,7 +135,7 @@
 	function submit_center_last($name, $value, $title = false, $async = false, $icon = false) {
 		echo "&nbsp;";
 		submit($name, $value, true, $title, $async, $icon);
-		echo "</center>";
+		echo "</div>";
 	}
 
 	/*
@@ -165,9 +165,9 @@
 	}
 
 	function submit_add_or_update_center($add = true, $title = false, $async = false, $clone = false) {
-		echo "<center>";
+		echo "<div class='center'>";
 		submit_add_or_update($add, $title, $async, $clone);
-		echo "</center>";
+		echo "</div>";
 	}
 
 	function submit_add_or_update_row($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false) {
@@ -208,7 +208,7 @@
 	;
 
 	function set_icon($icon, $title = false) {
-		return "<img src='/themes/" . User::theme() . "/images/$icon' width='12' height='12' border='0'" . ($title ?
+		return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' border='0'" . ($title ?
 		 " title='$title'" : "") . " />\n";
 	}
 

@@ -298,11 +298,11 @@
 
 	display_credit_items();
 	display_credit_options();
-	echo "<br><center>";
+	echo "<br><div class='center'>";
 	submit('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
 	echo "&nbsp";
 	submit('ProcessCredit', _("Process Credit Note"), true, '', 'default');
-	echo "</center>";
+	echo "</div>";
 	end_form();
 	end_page();
 

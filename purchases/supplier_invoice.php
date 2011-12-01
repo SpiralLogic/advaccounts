@@ -19,7 +19,7 @@
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
-		echo "<center>";
+		echo "<div class='center'>";
 		Errors::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));

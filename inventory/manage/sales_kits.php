@@ -26,7 +26,7 @@
 	{
 		$result = Item_Code::get_kit($selected_kit);
 		div_start('bom');
-		start_table(Config::get('tables_style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  style='width:60%'");
 		$th = array(
 			_("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', '');
 		table_header($th);
@@ -144,9 +144,9 @@
 	}
 
 	start_form();
-	echo "<center>" . _("Select a sale kit:") . "&nbsp;";
+	echo "<div class='center'>" . _("Select a sale kit:") . "&nbsp;";
 	echo sales_kits_list('item_code', null, _('New kit'), true);
-	echo "</center><br>";
+	echo "</div><br>";
 	$props = Item_Code::get_kit_props(Input::post('item_code'));
 	if (list_updated('item_code')) {
 		if (get_post('item_code') == '') {

@@ -76,7 +76,7 @@
 		$_SESSION['Items'] = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 		if ($_SESSION['Items']->count_items() == 0) {
 			hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
-			echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</center></b>";
+			echo "<br><div class='center'><b>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></b>";
 			Page::footer_exit();
 		}
 		copy_from_cart();

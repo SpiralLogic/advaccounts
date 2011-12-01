@@ -39,7 +39,7 @@
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
 				$acc = access_string($key);
 				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter' class='menu_option' id='" . JS::default_focus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
-				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
+				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
 				foreach ($value as $report) {
 					$acc = access_string($report->name);
 					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
@@ -80,10 +80,10 @@
 					}
 				</script>
 				";
-			$st .= "<table align='center' width='80%' style='border:1px solid #cccccc;'><tr valign='top'>";
-			$st .= "<td width='30%'>$st_classes</td>";
-			$st .= "<td width='35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
-			$st .= "<td width='35%'>$st_params</td>";
+			$st .= "<table align='center' style='width:80%' style='border:1px solid #cccccc;'><tr valign='top'>";
+			$st .= "<td style='width:30%'>$st_classes</td>";
+			$st .= "<td style='width:35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
+			$st .= "<td style='width:35%'>$st_params</td>";
 			$st .= "</tr></table><br>";
 			return $st;
 		}

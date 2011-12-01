@@ -139,10 +139,10 @@
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	echo _("Select a currency :") . "  ";
 	echo currencies_list('curr_abrev', null, true);
-	echo "</center>";
+	echo "</div>";
 	// if currency sel has changed, clear the form
 	if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
 		clear_data();

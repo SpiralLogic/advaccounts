@@ -12,7 +12,7 @@
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::header(_("Logout"), true, false, '');
-	echo "<table width='100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' width='250' height='50'' /></td>
+	echo "<table style='width:100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' style='width:250' height='50'' /></td>
   </tr>
   <tr>
     <td>&nbsp;</td>

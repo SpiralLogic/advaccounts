@@ -78,8 +78,8 @@
 					$this->has_header = false;
 					echo "<br>";
 				} elseif ($title && !$is_index) {
-					echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td><td align=right>" . (User::hints() ?
-					 "<span id='hints'></span>" : '') . "</td></tr></table></center>";
+					echo "<div class='center'><table id='title'><tr><td style='width:100%' class='titletext'>$title</td><td align=right>" . (User::hints() ?
+					 "<span id='hints'></span>" : '') . "</td></tr></table></div>";
 				}
 			}
 
@@ -122,13 +122,13 @@
 				}
 				foreach ($selected_app->modules as $module) {
 					// image
-					echo "<table width='100%'><tr>";
+					echo "<table style='width:100%'><tr>";
 					echo "<td valign='top' class='menu_group'>";
-					echo "<table border=0 width='100%'>";
+					echo "<table border=0 style='width:100%'>";
 					echo "<tr><td class='menu_group' colspan=2>";
 					echo $module->name;
 					echo "</td></tr><tr>";
-					echo "<td width='50%' class='menu_group_items'>";
+					echo "<td style='width:50%' class='menu_group_items'>";
 					echo "<ul>\n";
 					if ($_SESSION["Language"]->dir == "rtl") {
 						$class = "right";
@@ -146,7 +146,7 @@
 					}
 					echo "</ul></td>\n";
 					if (sizeof($module->rappfunctions) > 0) {
-						echo "<td width='50%' class='menu_group_items'>";
+						echo "<td style='width:50%' class='menu_group_items'>";
 						echo "<ul>\n";
 						foreach ($module->rappfunctions as $appfunction) {
 							if ($appfunction->label == "") {

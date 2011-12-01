@@ -138,7 +138,7 @@
 		echo "</td></tr>";
 		end_table();
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	if ($_SESSION['View']->so_type == 1) {
 		Errors::warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	}

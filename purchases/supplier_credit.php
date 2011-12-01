@@ -19,7 +19,7 @@
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPCREDIT;
-		echo "<center>";
+		echo "<div class='center'>";
 		Errors::notice(_("Supplier credit note has been processed."));
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
 		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);

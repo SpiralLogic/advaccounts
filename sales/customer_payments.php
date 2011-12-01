@@ -171,7 +171,7 @@
 
 
 	start_form();
-	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
 	table_section(1);
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
@@ -212,7 +212,7 @@
 			Gl_Allocation::show_allocatable(false);
 			div_end();
 		}
-		start_table(Config::get('tables_style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  style='width:60%'");
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');
 		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');

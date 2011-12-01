@@ -347,9 +347,9 @@
 	start_form();
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
-<center>
-    <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' width='90%' height='350' frameborder='0'></iframe>
-</center>";
+<div class='center'>
+    <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe>
+</div>";
 	}
 	Purch_Order::header($_SESSION['PO']);
 	echo "<br>";

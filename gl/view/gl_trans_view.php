@@ -40,7 +40,7 @@
 	$result = DB::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
 	if (DB::num_rows($result) == 0) {
-		echo "<p><center>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+		echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
 		end_page(true);
 		exit;
 	}

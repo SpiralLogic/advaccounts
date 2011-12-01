@@ -441,7 +441,7 @@ public static $qoh_stock;
 																	 'autoopen' => false, 'modal' => true, 'width' => 950,'height'=>620, 'resizeable' => true));
 				$stockbox->show();
 				$action = <<<JS
-			$('#stockbox').html("<iframe src='/items/quickitems.php?stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='500' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+			$('#stockbox').html("<iframe src='/items/quickitems.php?stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
 				JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
 				JS::addLiveEvent('label.stock', 'click', $action, "wrapper", true);

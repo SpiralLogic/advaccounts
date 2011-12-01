@@ -233,7 +233,7 @@
 		}
 		// if it's a closed work order can't edit it
 		if ($myrow["closed"] == 1) {
-			echo "<center>";
+			echo "<div class='center'>";
 			Errors::error(_("This work order is closed and cannot be edited."));
 			safe_exit();
 		}

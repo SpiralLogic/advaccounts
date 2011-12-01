@@ -19,11 +19,11 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 	echo customer_list('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
-	echo "</center><br><br>";
+	echo "</div><br><br>";
 	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
 		unset($_POST['customer_id']);

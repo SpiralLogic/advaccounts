@@ -374,11 +374,11 @@
 	}
 	if (get_post('stock_id')) {
 		Session::i()->global_stock_id = get_post('stock_id');
-		echo "<iframe src='/inventory/purchasing_data.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+		echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	if (get_post('stock_id')) {
 		Session::i()->global_stock_id = get_post('stock_id');
-		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' style='width:48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	div_end();
 	hidden('popup', Input::request('popup'));

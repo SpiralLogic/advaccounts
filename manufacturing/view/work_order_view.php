@@ -26,7 +26,7 @@
 	} else {
 		WO_Cost::display_quick($woid, true);
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
@@ -53,7 +53,7 @@
 			echo "</td></tr></table>";
 		}
 	}
-	echo "<br></center>";
+	echo "<br></div>";
 	Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
 	end_page(true);
 

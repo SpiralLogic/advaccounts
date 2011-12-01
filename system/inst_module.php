@@ -327,9 +327,9 @@
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
 	}
-	echo "<center>" . _('Extensions:') . "&nbsp;&nbsp;";
+	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
 	echo extset_list('extset', null, true);
-	echo "</center><br>";
+	echo "</div><br>";
 	$set = get_post('extset', -1);
 	if ($set == -1) {
 		display_extensions();

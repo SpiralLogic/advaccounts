@@ -10,10 +10,10 @@
 	{
 		static function check_page($page_security) {
 			if (!User::get()->can_access_page($page_security)) {
-				echo "<center><br><br><br><b>";
+				echo "<div class='center'><br><br><br><b>";
 				echo _("The security settings on your account do not permit you to access this function");
 				echo "</b>";
-				echo "<br><br><br><br></center>";
+				echo "<br><br><br><br></div>";
 				end_page();
 				exit;
 			}

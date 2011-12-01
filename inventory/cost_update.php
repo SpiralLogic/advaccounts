@@ -57,9 +57,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "</center><hr>";
+	echo "</div><hr>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$sql
 	 = "SELECT description, units, material_cost, labour_cost,

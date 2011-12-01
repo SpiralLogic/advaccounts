@@ -43,7 +43,7 @@
 
 	function start_table($extra = "", $padding = '2', $spacing = '0')
 	{
-		echo "<center><table";
+		echo "<div class='center'><table";
 		if ($extra != "") {
 			echo " $extra";
 		}
@@ -52,7 +52,7 @@
 
 	function end_table($breaks = 0)
 	{
-		echo "</table></center>\n";
+		echo "</table></div>\n";
 		if ($breaks) {
 			br($breaks);
 		}
@@ -92,8 +92,8 @@
 	{
 		$Ajax = Ajax::i();
 		echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
-		echo "<center><br>" . _("You should automatically be forwarded.");
-		echo " " . _("If this does not happen") . " <a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
+		echo "<div class='center'><br>" . _("You should automatically be forwarded.");
+		echo " " . _("If this does not happen") . " <a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></div>\n";
 		if ($params != '') {
 			$params = '?' . $params;
 		}
@@ -124,18 +124,14 @@
 
 	function hyperlink_back($center = true, $no_menu = true)
 	{
+
 		if ($center) {
-			echo "<center>";
+			echo "<div class='center margin20'>";
 		}
-		start_table("width=20%");
-		start_row();
 		echo "<td align=center><a class='button' href='javascript:(window.history.length <= 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ? _("Close") : _("Back")) . "</a></td>\n";
-		end_row();
-		end_table();
 		if ($center) {
-			echo "</center>";
+			echo "</div>";
 		}
-		echo "<br>";
 	}
 
 	function hyperlink_no_params($target, $label, $center = true, $button = false)
@@ -146,14 +142,14 @@
 			$target = $_SERVER['PHP_SELF'];
 		}
 		if ($center) {
-			echo "<br><center>";
+			echo "<br><div class='center'>";
 		}
 		if ($button) {
 			$pars[1] .= " class='button'";
 		}
 		echo "<a href='$target' id='$id' $pars[1] >$pars[0]</a>\n";
 		if ($center) {
-			echo "</center>";
+			echo "</div>";
 		}
 	}
 
@@ -232,11 +228,11 @@
 			$target = $_SERVER['PHP_SELF'];
 		}
 		if ($center) {
-			echo "<br><center>";
+			echo "<br><div class='center'>";
 		}
 		echo "<a id='$id' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
 		if ($center) {
-			echo "</center>";
+			echo "</div>";
 		}
 	}
 
@@ -248,11 +244,11 @@
 			$target = $_SERVER['PHP_SELF'];
 		}
 		if ($center) {
-			echo "<br><center>";
+			echo "<br><div class='center'>";
 		}
 		echo "<a id='$id' class='button' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
 		if ($center) {
-			echo "</center>";
+			echo "</div>";
 		}
 	}
 
@@ -272,11 +268,11 @@
 			echo "<br>";
 		}
 		if ($center) {
-			echo "<center>";
+			echo "<div class='center'>";
 		}
 		echo "<a target='_blank' id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
 		if ($center) {
-			echo "</center>";
+			echo "</div>";
 		}
 	}
 

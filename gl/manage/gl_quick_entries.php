@@ -47,14 +47,14 @@
 
 	function submit_add_or_update_center2($add = true, $title = false, $async = false)
 	{
-		echo "<center>";
+		echo "<div class='center'>";
 		if ($add) {
 			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
 		} else {
 			submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
 			submit('RESET2', _("Cancel"), true, $title, $async);
 		}
-		echo "</center>";
+		echo "</div>";
 	}
 
 

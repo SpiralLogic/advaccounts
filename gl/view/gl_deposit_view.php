@@ -26,7 +26,7 @@
 	if ($to_trans['bank_curr_code'] != $company_currency) {
 		$show_currencies = true;
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");

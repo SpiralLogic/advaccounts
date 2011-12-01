@@ -70,7 +70,7 @@
 	{
 		$result = Manufacturing::get_bom($selected_parent);
 		div_start('bom');
-		start_table(Config::get('tables_style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  style='width:60%'");
 		$th = array(
 			_("Code"), _("Description"), _("Location"),
 			_("Work Centre"), _("Quantity"), _("Units"), '', ''

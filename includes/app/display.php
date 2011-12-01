@@ -10,7 +10,7 @@
 	{
 		public 	static function heading($msg)
 			{
-				echo "<center><span class='headingtext'>$msg</span></center>\n";
+				echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
 			}
 
 		public 	static function note($msg, $br = 0, $br2 = 0, $extra = "")
@@ -47,7 +47,7 @@
 			{
 				if ($cond) {
 					if ($msg) {
-						$str = "<center><span class='headingtext'>$msg</span></center>\n";
+						$str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
 					}
 					else {
 						$str = '';
@@ -103,7 +103,7 @@
 				echo "<tr><td align=center><font color=red>$label</font><br>";
 				echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 				if (strlen($void_entry["memo_"]) > 0) {
-					echo "<center><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></center><br>";
+					echo "<div class='center'><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></div><br>";
 				}
 				echo "</td></tr>";
 				end_table(1);

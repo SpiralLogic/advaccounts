@@ -27,7 +27,7 @@
 		$show_currencies = true;
 		$show_both_amounts = true;
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	Display::heading(_("Payment to Supplier") . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=90%");

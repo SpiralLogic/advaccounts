@@ -143,9 +143,11 @@
 	}
 
 	start_form();
-	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 	echo customer_list('customer_id', null, false, true);
-	echo "</center><br>";
+	echo "</div><br>";
+	$num_branches=-0;
+	if (Input::post('customer_id')>0){
 	$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
 	$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
@@ -174,6 +176,8 @@
 		display_db_pager($table);
 	} else {
 		Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
+	}}else {
+		Errors::warning(_("No Customer selected."));
 	}
 	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);

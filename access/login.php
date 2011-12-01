@@ -80,7 +80,7 @@
 		end_row();
 	}
 	end_table(1);
-	echo "<center><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
+	echo "<div class='center'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></div>\n";
 	foreach (
 		$_SESSION['timeout']['post'] as $p => $val
 	) {

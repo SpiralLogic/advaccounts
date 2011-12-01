@@ -98,15 +98,15 @@
 		copy_from_cart();
 	} elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
-			echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
+			echo"<div class='center'><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
-		and therefore can not be modified.") . "</b></center>";
+		and therefore can not be modified.") . "</b></div>";
 			Page::footer_exit();
 		}
 		Sales_Order::start();
 		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 		if ($_SESSION['Items']->count_items() == 0) {
-			echo "<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
+			echo "<div class='center'><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></div>";
 		}
 		copy_from_cart();
 	} elseif (isset($_GET['ViewInvoice']) && $_GET['ViewInvoice'] > 0) {

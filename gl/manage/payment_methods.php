@@ -64,7 +64,7 @@
 	}
 	/* Always show the list of accounts */
 	start_form();
-	start_table(Config::get('tables_style') . "  width='80%'");
+	start_table(Config::get('tables_style') . "  style='width:80%'");
 	$sql = "SELECT * FROM payment_methods";
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !inactive";

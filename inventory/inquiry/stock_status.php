@@ -26,10 +26,10 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center> ";
+	echo "<div class='center'> ";
 	echo stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<br>";
-	echo "<hr></center>";
+	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;

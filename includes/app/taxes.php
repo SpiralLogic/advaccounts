@@ -258,7 +258,7 @@
 					}
 				}
 				if ($tax_correcting) {
-					label_cell(_("Tax Correction"), "colspan=$columns align=right width='90%'");
+					label_cell(_("Tax Correction"), "colspan=$columns align=right style='width:90%'");
 					small_amount_cells(null, 'ChgTax', Num::price_format(get_post('ChgTax'), 2));
 					end_row();
 					$total += get_post('ChgTax');

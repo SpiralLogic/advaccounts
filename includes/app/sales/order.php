@@ -1394,7 +1394,7 @@ JS;
 				if (get_post('cash', 0)) { // Direct payment sale
 					$Ajax->activate('items_table');
 					Display::heading(_('Cash payment'));
-					start_table(Config::get('tables_style2') . " width=60%");
+					start_table(Config::get('tables_style2') . " style='width:60%'");
 					label_row(_("Deliver from Location:"), $order->location_name);
 					hidden('Location', $order->Location);
 					label_row(_("Cash account:"), $order->account_name);

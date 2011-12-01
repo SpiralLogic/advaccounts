@@ -17,9 +17,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
+	echo "<div class='center'>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "<hr></center>";
+	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 
 	function select_link($row)

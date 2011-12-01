@@ -161,7 +161,7 @@
 	}
 
 	start_form();
-	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
 	table_section(1);
 	supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
@@ -186,7 +186,7 @@
 		Gl_Allocation::show_allocatable(false);
 		div_end();
 	}
-	start_table(Config::get('tables_style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  style='width:60%'");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

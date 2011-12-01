@@ -88,7 +88,7 @@
 	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 	start_form();
-	start_table(Config::get('tables_style') . "  width='80%'");
+	start_table(Config::get('tables_style') . "  style='width:80%'");
 	$th = array(
 		_("Account Name"), _("Type"), _("Currency"), _("GL Account"),
 		_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''

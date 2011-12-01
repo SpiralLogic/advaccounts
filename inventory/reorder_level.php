@@ -27,9 +27,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "<hr></center>";
+	echo "<hr></div>";
 	div_start('show_heading');
 	Display::item_heading($_POST['stock_id']);
 	br();

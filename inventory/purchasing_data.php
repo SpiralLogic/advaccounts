@@ -96,9 +96,9 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
-		echo "<center>" . _("Item:") . "&nbsp;";
+		echo "<div class='center'>" . _("Item:") . "&nbsp;";
 		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
-		echo "<hr></center>";
+		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);

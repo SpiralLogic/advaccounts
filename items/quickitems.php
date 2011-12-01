@@ -62,13 +62,13 @@ JS;
 HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe id='sellFrame' src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' width='95%' height='500' frameborder='0'></iframe> ";
+	echo "<iframe id='sellFrame' src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' width='100%' height='500'  frameborder='0'></iframe> ";
+	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500'  frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' width='100%' height='500'  frameborder='0'></iframe> ";
+	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' style='width:100%' height='500'  frameborder='0'></iframe> ";
 	$menu->endTab();
 	if (isset($_GET['page'])) {
 		$menu->firstPage = $_GET['page'];

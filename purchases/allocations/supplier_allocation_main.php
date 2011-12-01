@@ -19,11 +19,11 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
+	echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
 	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
-	echo "</center><br><br>";
+	echo "</div><br><br>";
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
 		unset($_POST['supplier_id']);
