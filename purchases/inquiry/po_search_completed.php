@@ -198,7 +198,6 @@
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
-	FB::info($sql);
 
 	$table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";

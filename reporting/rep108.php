@@ -69,7 +69,6 @@
 			$incNegatives = $_POST['PARAM_5'];
 			$incAllocations = $_POST['PARAM_6'];
 			$doctype = ST_STATEMENT;
-			FB::info($_POST);
 			$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
 			$dec = User::price_dec();
 			$cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
