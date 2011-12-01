@@ -1089,7 +1089,7 @@
 						} else {
 							alt_table_row_color($k);
 						}
-						label_cell($stock_item->stock_id, "class='stock' data-stock_id='{$stock_item->stock_id}'");
+						label_cell($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
 						//label_cell($stock_item->description, "nowrap" );
 						description_cell($stock_item->description);
 						$dec = Num::qty_dec($stock_item->stock_id);

@@ -58,7 +58,7 @@
 		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','td .openWindow',
 			function(e) {
 				if (e.type=='click') {
-					Adv.openWindow(this.href, this.target,$width,$height);
+					Adv.openWindow(this.href, this.target,{$width},{$height});
 					return false;
 				}
 				if (e.type=='mouseenter') {
@@ -74,7 +74,7 @@ window.clearTimeout(Adv.o.popupCurrent);
 			});
 			Adv.popupWindow = function() {
 					if (Adv.o.order_details) Adv.o.order_details.remove();
-								Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href+"&popup=1", width: _width, height: _height})
+								Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href+"&popup=1", width: {$width}, height: {$height}})
 									.css({position:'fixed', background:'white'})
 									.appendTo(Adv.o.wrapper)
 									.position({my:"left center",at:"right top", of:Adv.o.popupParent}).css({top:20})

@@ -121,8 +121,8 @@
 	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-	Contacts_Postcode::render(array('br_postcode', $currentBranch->postcode), array('br_city', $currentBranch->city),
-		array('br_state', $currentBranch->state));
+	Contacts_Postcode::render(array('br_city', $currentBranch->city),
+		array('br_state', $currentBranch->state),array('br_postcode', $currentBranch->postcode));
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -140,8 +140,8 @@
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-	Contacts_Postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city),
-		array('acc_state', $customer->accounts->state));
+	Contacts_Postcode::render(array('acc_city', $customer->accounts->city),
+		array('acc_state', $customer->accounts->state),array('acc_postcode', $customer->accounts->postcode));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
 	start_outer_table(Config::get('tables_style2'), 5);

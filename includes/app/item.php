@@ -376,7 +376,7 @@ public static $qoh_stock;
 
 		public 	static function searchOrder($term, $id)
 			{
-				$o = Config::get($id);
+				$o = Cache::get($id);
 				$term = explode(' ', trim($term));
 				$stock_id = trim(array_shift($term));
 				$terms = array($stock_id, '%' . $stock_id . '%');
@@ -438,9 +438,11 @@ public static $qoh_stock;
 																	 'Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
 				item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
 				$stockbox->setOptions(array(
-																	 'autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
+																	 'autoopen' => false, 'modal' => true, 'width' => 950,'height'=>620, 'resizeable' => true));
 				$stockbox->show();
-				$action = 'page';
+				$action = <<<JS
+			$('#stockbox').html("<iframe src='/items/quickitems.php?stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='500' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+JS;
 				JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
 				JS::addLiveEvent('label.stock', 'click', $action, "wrapper", true);
 			}

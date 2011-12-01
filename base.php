@@ -73,10 +73,8 @@
 	}
 	function end_page($no_menu = false, $is_index = false, $hide_back_link = false)
 	{
-		if (Input::get('popup')) {
-			return;
-		}
-		if (isset($_REQUEST['frame']) && $_REQUEST['frame']) {
+
+		if (Input::request('frame' || Input::get('popup'))) {
 			$is_index = $hide_back_link = true;
 		}
 		if (!$is_index && !$hide_back_link && function_exists('hyperlink_back')) {

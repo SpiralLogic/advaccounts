@@ -93,7 +93,8 @@
 						if ($_SESSION['current_user']->logged_in()) {
 							echo "<span class='date'> " . Users::show_online() . "</span>\n";
 						}
-						echo "<span> </span>| <span>mem: " . Files::convert_size(memory_get_usage(true)) . "</span><span> | </span><span>peak mem: " . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
+						echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) .'/'. Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) .
+						 "</span>";
 					}
 					echo "</div>";
 				}
