@@ -104,7 +104,7 @@
 					$SubTotal += $Net;
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-					$DisplayQty = Num::format($sign * $myrow2["quantity"], Num::qty_dec($myrow2['stock_id']));
+					$DisplayQty = Num::format($sign * $myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
 					$DisplayNet = Num::format($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";

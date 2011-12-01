@@ -123,7 +123,7 @@
 		}
 		DB_Comments::add(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
 		if ($trans_no == 0) {
-			Refs::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
+			Ref::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 		}
 		DB::commit_transaction();
 		return $delivery_no;

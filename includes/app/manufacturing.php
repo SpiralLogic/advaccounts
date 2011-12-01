@@ -224,7 +224,7 @@
 						label_cell($myrow["description"]);
 						label_cell($myrow["WorkCentreDescription"]);
 						label_cell($myrow["location_name"]);
-						qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["component"]));
+						qty_cell($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
 						amount_cell($myrow["standard_cost"]);
 						amount_cell($myrow["ComponentCost"]);
 						end_row();

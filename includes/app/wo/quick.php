@@ -58,7 +58,7 @@
 				WO_Quick::costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
 				// -------------------------------------------------------------------------
 				DB_Comments::add(ST_WORKORDER, $woid, $date_, $memo_);
-				Refs::save(ST_WORKORDER, $woid, $wo_ref);
+				Ref::save(ST_WORKORDER, $woid, $wo_ref);
 				DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Quick production."));
 				DB::commit_transaction();
 				return $woid;

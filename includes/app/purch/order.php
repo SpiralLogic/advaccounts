@@ -157,7 +157,7 @@
 					DB::query($sql, "One of the purchase order detail records could not be inserted");
 				}
 			}
-			Refs::save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
+			Ref::save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 			DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
 			DB::commit_transaction();
@@ -408,7 +408,7 @@
 				GL_ExchangeRate::display($order->curr_code, Banking::get_company_currency(), $_POST['OrderDate']);
 			}
 			if ($editable) {
-				ref_row(_("Purchase Order #:"), 'ref', '', Refs::get_next(ST_PURCHORDER));
+				ref_row(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
 			} else {
 				hidden('ref', $order->reference);
 				label_row(_("Purchase Order #:"), $order->reference);
@@ -463,8 +463,8 @@
 						alt_table_row_color($k);
 						label_cell($po_line->stock_id, " class='stock'  data-stock_id='{$po_line->stock_id}'");
 						label_cell($po_line->description);
-						qty_cell($po_line->quantity, false, Num::qty_dec($po_line->stock_id));
-						qty_cell($po_line->qty_received, false, Num::qty_dec($po_line->stock_id));
+						qty_cell($po_line->quantity, false, Item::qty_dec($po_line->stock_id));
+						qty_cell($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
 						label_cell($po_line->units);
 						label_cell($po_line->req_del_date);
 						amount_decimal_cell($po_line->price);
@@ -541,8 +541,8 @@
 			if (($id != -1) && $stock_id != null) {
 				hidden('line_no', $id);
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-				$dec = Num::qty_dec($_POST['stock_id']);
-				$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+				$dec = Item::qty_dec($_POST['stock_id']);
+				$_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
 				//$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 				$_POST['price'] = Num::price_decimal($order->line_items[$id]->price, $dec2);
 				$_POST['discount'] = Num::percent_format($order->line_items[$id]->discount * 100);
@@ -568,10 +568,10 @@
 				}
 				$item_info = Item::get_edit_info(Input::post('stock_id'));
 				$_POST['units'] = $item_info["units"];
-				$_POST['description'] = $item_info['description'];
+				$_POST['description'] = '';
 				$dec = $item_info["decimals"];
 				$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
-				//$_POST['price'] = Num::price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+
 				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($order->supplier_id, Input::post('stock_id')), $dec2);
 				$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 				$_POST['discount'] = Num::percent_format(0);

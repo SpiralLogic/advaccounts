@@ -213,7 +213,7 @@
 
 	function submenu_view($title, $type, $number, $id = null)
 	{
-		Display::note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
+		Display::note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
 	}
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0)

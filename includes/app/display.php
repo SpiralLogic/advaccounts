@@ -20,11 +20,11 @@
 					echo "<br>";
 				}
 				if ($extra != "") {
-					echo "<center><span $extra>$msg</span></center>\n";
+					echo "<div class='center'><span $extra>$msg</span></div>\n";
 				}
 				else
 				{
-					echo "<center><span class='note_msg'>$msg</span></center>\n";
+					echo "<div class='center'><span class='note_msg'>$msg</span></div>\n";
 				}
 				for ($i = 0; $i < $br2; $i++)
 				{

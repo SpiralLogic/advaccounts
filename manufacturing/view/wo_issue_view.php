@@ -56,7 +56,7 @@
 				while ($myrow = DB::fetch($result)) {
 					alt_table_row_color($k);
 					label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-					qty_cell($myrow["qty_issued"], false, Num::qty_dec($myrow["stock_id"]));
+					qty_cell($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));
 					label_cell($myrow["units"]);
 					end_row();
 					;

@@ -164,7 +164,7 @@
 			}
 			$rep->TextCol(0, 1, $myrow['stk_code']);
 			$rep->TextCol(1, 2, $myrow['description']);
-			$dec = Num::qty_dec($myrow['stk_code']);
+			$dec = Item::qty_dec($myrow['stk_code']);
 			$rep->AmountCol(2, 3, $myrow['quantity'], $dec);
 			$rep->AmountCol(3, 4, $myrow['qty_sent'], $dec);
 			$rep->AmountCol(4, 5, $myrow['quantity'] - $myrow['qty_sent'], $dec);

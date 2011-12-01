@@ -213,7 +213,7 @@
 		/**
 		 * sends an info log
 		 *
-		 * @param string value
+		 * @param mixed value
 		 */
 		public static function info() {
 			return self::_log(func_get_args() + array('type' => self::INFO));
@@ -240,7 +240,8 @@
 		/**
 		 * internal logging call
 		 *
-		 * @param string $type
+		 * @param array $args
+		 * @internal param mixed $type
 		 * @return void
 		 */
 		protected static function _log(array $args) {

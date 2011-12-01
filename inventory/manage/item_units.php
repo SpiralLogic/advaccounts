@@ -22,7 +22,7 @@
 			Errors::error(_("The unit of measure code cannot be empty."));
 			JS::set_focus('abbr');
 		}
-		if (strlen(DB::escape($_POST['abbr'])) > (20 + 2)) {
+		if (strlen($_POST['abbr']) > (20 + 2)) {
 			$input_error = 1;
 			Errors::error(_("The unit of measure code is too long."));
 			JS::set_focus('abbr');

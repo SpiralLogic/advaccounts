@@ -374,9 +374,9 @@ public static $qoh_stock;
 				return $data;
 			}
 
-		public 	static function searchOrder($term, $id)
+		public 	static function searchOrder($term, $UniqueID)
 			{
-				$o = Cache::get($id);
+				$o = Cache::get($UniqueID);
 				$term = explode(' ', trim($term));
 				$stock_id = trim(array_shift($term));
 				$terms = array($stock_id, '%' . $stock_id . '%');
@@ -527,5 +527,27 @@ JS;
 		 		AND stock_id=" . DB::escape($stock_id);
 				$result = DB::query($sql, "an item could not be retreived");
 				return DB::fetch($result);
+			}
+
+		//	Current ui mode.
+			// 2008-06-15. Added extra parameter $stock_id and reference for $dec
+
+			public static function  qty_format($number, $stock_id = null, &$dec)
+			{
+				$dec = Item::qty_dec($stock_id);
+				return Num::format($number, $dec);
+			}
+
+			// and get_qty_dec
+			public static function  qty_dec($stock_id = null)
+			{
+				if (is_null($stock_id)) {
+					$dec = User::qty_dec();
+				} else  {
+					$dec = Item_Unit::get_decimal($stock_id);
+					if ($dec==-1)
+						$dec = User::qty_dec();
+				}
+				return $dec;
 			}
 	}

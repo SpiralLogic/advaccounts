@@ -52,7 +52,7 @@
 		}
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		label_cell($myrow["location_name"]);
-		$_POST[$myrow["loc_code"]] = Num::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
+		$_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 		qty_cell($qoh, false, $dec);
 		qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
 		end_row();

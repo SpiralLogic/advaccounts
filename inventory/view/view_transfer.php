@@ -46,7 +46,7 @@
 			alt_table_row_color($k);
 			label_cell($item['stock_id']);
 			label_cell($item['description']);
-			qty_cell($item['qty'], false, Num::qty_dec($item['stock_id']));
+			qty_cell($item['qty'], false, Item::qty_dec($item['stock_id']));
 			label_cell($item['units']);
 			end_row();
 			;

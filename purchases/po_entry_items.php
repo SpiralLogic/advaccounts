@@ -125,10 +125,11 @@
 
 	function check_data()
 		{
-			$dec = Num::qty_dec($_POST['stock_id']);
+			$dec = Item::qty_dec($_POST['stock_id']);
 			$min = 1 / pow(10, $dec);
 			if (!Validation::is_num('qty', $min)) {
 				$min = Num::format($min, $dec);
+
 				Errors::error(_("The quantity of the order item must be numeric and not less than ") . $min);
 				JS::set_focus('qty');
 				return false;
@@ -174,21 +175,7 @@
 		{
 			$allow_update = check_data();
 			if ($allow_update == true) {
-				if (count($_SESSION['PO']->line_items) > 0) {
-					/*
-																																											 foreach ($_SESSION['PO']->line_items as $order_item)
-																																											 {
 
-																																													/* do a loop round the items on the order to see that the item
-																																													is not already on this order
-																																														if (($order_item->stock_id == $_POST['stock_id']) &&
-																																															 ($order_item->Deleted == false))
-																																														{
-																																														 $allow_update = false;
-																																														 Errors::error(_("The selected item is already on this order."));
-																																													}
-																																											 } /* end of the foreach loop to look for pre-existing items of the same code */
-				}
 				if ($allow_update == true) {
 					$sql = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
@@ -243,17 +230,17 @@
 				return false;
 			}
 			if (!$_SESSION['PO']->order_no) {
-				if (!Refs::is_valid(get_post('ref'))) {
+				if (!Ref::is_valid(get_post('ref'))) {
 					Errors::error(_("There is no reference entered for this purchase order."));
 					JS::set_focus('ref');
 					return false;
 				}
-				while (!is_new_reference($_POST['ref'], ST_PURCHORDER)) {
-					//            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
+				while (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
+					//            if (!Ref::is_new(get_post('ref'), ST_PURCHORDER)) {
 					//Errors::error(_("The entered reference is already in use."));
 					//JS::set_focus('ref');
 					//return false;
-					$_POST['ref'] = Refs::get_next(ST_PURCHORDER);
+					$_POST['ref'] = Ref::get_next(ST_PURCHORDER);
 				}
 			}
 			return true;

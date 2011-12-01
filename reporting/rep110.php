@@ -92,7 +92,7 @@
 					continue;
 				}
 				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-				$DisplayQty = Num::format($myrow2["quantity"], Num::qty_dec($myrow2['stock_id']));
+				$DisplayQty = Num::format($myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
 				$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);

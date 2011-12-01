@@ -28,7 +28,7 @@
 			$doc->trans_no = 0;
 			$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 			$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
-			$doc->reference = Refs::get_next($doc->trans_type);
+			$doc->reference = Ref::get_next($doc->trans_type);
 			//$doc->Comments='';
 			foreach ($doc->line_items as $line_no => $item) {
 				$line = &$doc->line_items[$line_no];
@@ -37,7 +37,7 @@
 			}
 			$cart = $doc;
 			$cart->trans_type = ST_SALESINVOICE;
-			$cart->reference = Refs::get_next($cart->trans_type);
+			$cart->reference = Ref::get_next($cart->trans_type);
 			$invno = $cart->write(1);
 			set_last_sent($tmpl_no, $cart->document_date);
 			return $invno;

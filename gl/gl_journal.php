@@ -76,10 +76,10 @@
 				}
 				$cart->memo_ = DB_Comments::get_string($type, $trans_no);
 				$cart->tran_date = Dates::sql2date($date);
-				$cart->reference = Refs::get($type, $trans_no);
+				$cart->reference = Ref::get($type, $trans_no);
 				$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 			} else {
-				$cart->reference = Refs::get_next(0);
+				$cart->reference = Ref::get_next(0);
 				$cart->tran_date = Dates::new_doc_date();
 				if (!Dates::is_date_in_fiscalyear($cart->tran_date)) {
 					$cart->tran_date = Dates::end_fiscalyear();
@@ -114,11 +114,11 @@
 			JS::set_focus('date_');
 			$input_error = 1;
 		}
-		if (!Refs::is_valid($_POST['ref'])) {
+		if (!Ref::is_valid($_POST['ref'])) {
 			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
-		} elseif (Refs::exists(ST_JOURNAL, $_POST['ref'])) {
+		} elseif (Ref::exists(ST_JOURNAL, $_POST['ref'])) {
 			// The reference can exist already so long as it's the same as the original (when modifying)
 			if ($_POST['ref'] != $_POST['ref_original']) {
 				Errors::error(_("The entered reference is already in use."));

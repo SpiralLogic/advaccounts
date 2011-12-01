@@ -24,7 +24,7 @@
 						$line_item->quantity, $line_item->standard_cost, $memo_);
 				}
 				DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
-				Refs::save(ST_INVADJUST, $adj_id, $reference);
+				Ref::save(ST_INVADJUST, $adj_id, $reference);
 				DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
 				DB::commit_transaction();
 				return $adj_id;
@@ -74,7 +74,7 @@
 				start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
 				table_section(1);
 				locations_list_row(_("Location:"), 'StockLocation', null);
-				ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_INVADJUST));
+				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
 				table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
 				table_section(3, "33%");
@@ -107,7 +107,7 @@
 						alt_table_row_color($k);
 						ui_view::stock_status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
-						qty_cell($stock_item->quantity, false, Num::qty_dec($stock_item->stock_id));
+						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
 						amount_decimal_cell($stock_item->standard_cost);
 						amount_cell($stock_item->standard_cost * $stock_item->quantity);
@@ -135,7 +135,7 @@
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
 					$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-					$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+					$_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
 					//$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
 					$_POST['std_cost'] = Num::price_decimal($order->line_items[$id]->standard_cost, $dec2);
 					$_POST['units'] = $order->line_items[$id]->units;

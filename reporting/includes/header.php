@@ -280,7 +280,7 @@
 
 		 foreach ($deliveries as $delivery) {
 			 if (Config::get('print_useinvoicenumber') == 0) {
-				 $ref = Refs::get_reference(ST_CUSTDELIVERY, $delivery);
+				 $ref = Ref::get(ST_CUSTDELIVERY, $delivery);
 				 if ($ref) $delivery = $ref;
 			 }
 			 if ($line == "") $line .= "$delivery";
@@ -292,7 +292,7 @@
 	if ($doctype == ST_CUSTDELIVERY) {
 		$ref = $myrow['order_'];
 		if (Config::get('print_useinvoicenumber') == 0) {
-			$ref = Refs::get_reference(ST_SALESORDER, $myrow['order_']);
+			$ref = Ref::get(ST_SALESORDER, $myrow['order_']);
 			if (!$ref) {
 				$ref = $myrow['order_'];
 			}

@@ -42,25 +42,7 @@
 			return ($number == -0 ? 0 : $number);
 		}
 
-		//	Current ui mode.
-		// 2008-06-15. Added extra parameter $stock_id and reference for $dec
 
-		public static function  qty_format($number, $stock_id = null, &$dec)
-		{
-			$dec = Num::qty_dec($stock_id);
-			return Num::format($number, $dec);
-		}
-
-		// and get_qty_dec
-		public static function  qty_dec($stock_id = null)
-		{
-			if (is_null($stock_id)) {
-				$dec = User::prefs()->qty_dec();
-			} else  {
-				$dec = Item_Unit::get_decimal($stock_id);
-			}
-			return $dec;
-		}
 
 
 		public static function  exrate_format($number)

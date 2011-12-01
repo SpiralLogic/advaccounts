@@ -145,7 +145,7 @@
 				}
 				$str .= "<br><br>";
 				if ($msg) {
-					trigger_error($str, E_USER_ERROR);
+			//		trigger_error($str, E_USER_ERROR);
 				} else // $msg can be null here only in debug mode, otherwise the error is ignored
 				{
 					trigger_error($str, E_USER_WARNING);

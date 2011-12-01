@@ -34,7 +34,7 @@
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
 		label_cell($stock_item->req_del_date, "nowrap align=right");
-		$dec = Num::qty_dec($stock_item->stock_id);
+		$dec = Item::qty_dec($stock_item->stock_id);
 		qty_cell($stock_item->qty_received, false, $dec);
 		label_cell($stock_item->units);
 		amount_decimal_cell($stock_item->price);

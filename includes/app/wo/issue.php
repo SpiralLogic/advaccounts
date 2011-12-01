@@ -44,7 +44,7 @@
 				if ($memo_) {
 					DB_Comments::add(ST_MANUISSUE, $number, $date_, $memo_);
 				}
-				Refs::save(ST_MANUISSUE, $number, $ref);
+				Ref::save(ST_MANUISSUE, $number, $ref);
 				DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
 				DB::commit_transaction();
 			}
@@ -167,7 +167,7 @@
 						alt_table_row_color($k);
 						ui_view::stock_status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
-						qty_cell($stock_item->quantity, false, Num::qty_dec($stock_item->stock_id));
+						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
 						amount_cell($stock_item->standard_cost);
 						//			amount_cell($stock_item->standard_cost * $stock_item->quantity);
@@ -194,7 +194,7 @@
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
 					$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-					$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+					$_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
 					$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
 					$_POST['units'] = $order->line_items[$id]->units;
 					hidden('stock_id', $_POST['stock_id']);
@@ -234,7 +234,7 @@
 			{
 				echo "<br>";
 				start_table();
-				ref_row(_("Reference:"), 'ref', '', Refs::get_next(28));
+				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
 				if (!isset($_POST['IssueType'])) {
 					$_POST['IssueType'] = 0;
 				}

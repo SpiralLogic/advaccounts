@@ -65,12 +65,12 @@
 		{
 			global $selected_id;
 			if ($selected_id == -1) {
-				if (!Refs::is_valid($_POST['ref'])) {
+				if (!Ref::is_valid($_POST['ref'])) {
 					Errors::error(_("The dimension reference must be entered."));
 					JS::set_focus('ref');
 					return false;
 				}
-				if (!is_new_reference($_POST['ref'], ST_DIMENSION)) {
+				if (!Ref::is_new($_POST['ref'], ST_DIMENSION)) {
 					Errors::error(_("The entered reference is already in use."));
 					JS::set_focus('ref');
 					return false;
@@ -172,7 +172,7 @@
 		hidden('selected_id', $selected_id);
 	} else {
 		$_POST['dimension_tags'] = array();
-		ref_row(_("Dimension Reference:"), 'ref', '', Refs::get_next(ST_DIMENSION));
+		ref_row(_("Dimension Reference:"), 'ref', '', Ref::get_next(ST_DIMENSION));
 	}
 	text_row_ex(_("Name") . ":", 'name', 50, 75);
 	$dim = DB_Company::get_pref('use_dimension');

@@ -45,7 +45,7 @@
 		alt_table_row_color($k);
 		label_cell($adjustment['stock_id']);
 		label_cell($adjustment['description']);
-		qty_cell($adjustment['qty'], false, Num::qty_dec($adjustment['stock_id']));
+		qty_cell($adjustment['qty'], false, Item::qty_dec($adjustment['stock_id']));
 		label_cell($adjustment['units']);
 		amount_decimal_cell($adjustment['standard_cost']);
 		end_row();

@@ -18,7 +18,7 @@
 		DB::begin_transaction();
 		while ($type = DB::fetch($systypes))
 		{
-			Refs::save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
+			Ref::save($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 		DB::commit_transaction();
 		Errors::notice(_("Forms settings have been updated."));

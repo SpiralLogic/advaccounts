@@ -92,7 +92,7 @@
 		$dn->trans_type = ST_SALESINVOICE;
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
-		$dn->reference = Refs::get_next(ST_SALESINVOICE);
+		$dn->reference = Ref::get_next(ST_SALESINVOICE);
 		$dn->due_date = Sales_Order::get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
@@ -220,12 +220,12 @@
 				return false;
 			}
 			if ($_SESSION['Items']->trans_no == 0) {
-				if (!Refs::is_valid($_POST['ref'])) {
+				if (!Ref::is_valid($_POST['ref'])) {
 					Errors::error(_("You must enter a reference."));
 					JS::set_focus('ref');
 					return false;
 				}
-				if (!is_new_reference($_POST['ref'], 10)) {
+				if (!Ref::is_new($_POST['ref'], ST_SALESINVOICE)) {
 					Errors::error(_("The entered reference is already in use."));
 					JS::set_focus('ref');
 					return false;
@@ -372,7 +372,7 @@
 		} else {
 			label_cell($ln_itm->description);
 		}
-		$dec = Num::qty_dec($ln_itm->stock_id);
+		$dec = Item::qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);
 		qty_cell($ln_itm->qty_done, false, $dec);
@@ -385,7 +385,7 @@
 			hidden('viewing');
 			qty_cell($ln_itm->quantity, false, $dec);
 		} else {
-			small_qty_cells(null, 'Line' . $line, Num::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+			small_qty_cells(null, 'Line' . $line, Item::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 		}
 		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . " %";
 		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));

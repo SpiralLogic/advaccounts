@@ -59,13 +59,13 @@
 				return false;
 			}
 			if ($_SESSION['Items']->trans_no == 0) {
-				if (!Refs::is_valid($_POST['ref'])) {
+				if (!Ref::is_valid($_POST['ref'])) {
 					Errors::error(_("You must enter a reference."));
 					;
 					JS::set_focus('ref');
 					return false;
 				}
-				if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
+				if (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
 					Errors::error(_("The entered reference is already in use."));
 					;
 					JS::set_focus('ref');
@@ -93,7 +93,7 @@
 		$ci->src_date = $ci->document_date;
 		$ci->trans_no = 0;
 		$ci->document_date = Dates::new_doc_date();
-		$ci->reference = Refs::get_next(ST_CUSTCREDIT);
+		$ci->reference = Ref::get_next(ST_CUSTCREDIT);
 		for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
 			$ci->line_items[$line_no]->qty_dispatched = '0';
 		}
@@ -196,7 +196,7 @@
 			end_row();
 			start_row();
 			//	if (!isset($_POST['ref']))
-			//		$_POST['ref'] = Refs::get_next(11);
+			//		$_POST['ref'] = Ref::get_next(11);
 			if ($_SESSION['Items']->trans_no == 0) {
 				ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 			} else {
@@ -236,7 +236,7 @@
 				//	ui_view::stock_status_cell($ln_itm->stock_id); alternative view
 				label_cell($ln_itm->stock_id);
 				text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
-				$dec = Num::qty_dec($ln_itm->stock_id);
+				$dec = Item::qty_dec($ln_itm->stock_id);
 				qty_cell($ln_itm->quantity, false, $dec);
 				label_cell($ln_itm->units);
 				amount_cells(null, 'Line' . $line_no, Num::format($ln_itm->qty_dispatched, $dec), null, null, $dec);

@@ -74,23 +74,33 @@
 		static function searchLine($id, $url = '#', $options = array())
 			{
 				$defaults = array(
-					'description' => false, 'disabled' => false, 'editable' => true, 'selected' => '', 'cells' => false, 'inactive' => false, 'purchase' => false, 'sale' => false, 'js' => '', 'submitonselect' => '', 'sales_type' => 1, 'no_sale' => false, 'select' => false, 'type' => 'local', 'where' => '');
+					'description' => false,
+					'disabled' => false,
+					'editable' => true,
+					'selected' => '',
+					'cells' => false,
+					'inactive' => false,
+					'purchase' => false,
+					'sale' => false,
+					'js' => '',
+					'submitonselect' => '',
+					'sales_type' => 1,
+					'no_sale' => false, 'select' => false, 'type' => 'local', 'where' => '');
 				$o = array_merge($defaults, $options);
-				$uniqueid = uniqid($id);
-				Cache::set($uniqueid,$o,DB_Company::get_pref('login_tout'));
+				$UniqueID = uniqid($id);
+				Cache::set($UniqueID,$o,DB_Company::get_pref('login_tout'));
 				$desc_js = $o['js'];
 				HTML::setReturn(true);
 				if ($o['cells']) {
 					HTML::td(true);
 				}
-				HTML::input($id, array(
-															'value' => $o['selected'], 'name' => $id));
+				HTML::input($id, array('value' => $o['selected'], 'name' => $id));
 				if ($o['editable']) {
 					HTML::label('lineedit', 'edit', array(
 																							 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
 					$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 				}
-				HTML::input(array('type'=>'hidden','name'=>'UniqueID','value'=>$uniqueid));
+
 				if ($o['cells']) {
 					HTML::td()->td(true);
 				}
@@ -123,7 +133,7 @@ JS;
 						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
-								data: {id: '$uniqueid',term: request.term},
+								data: {UniqueID: '{$UniqueID}',term: request.term},
 								success: function( data,status,xhr ) {
 
 								if ( xhr === Adv.lastXhr ) {
