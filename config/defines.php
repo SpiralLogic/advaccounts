@@ -133,10 +133,10 @@
 
 	//	Quick entry types
 	//
-	define('QE_PAYMENT', '1');
-	define('QE_DEPOSIT', '2');
-	define('QE_JOURNAL', '3');
-	define('QE_SUPPINV', '4');
+	define('QE_PAYMENT', 1);
+	define('QE_DEPOSIT', 2);
+	define('QE_JOURNAL', 3);
+	define('QE_SUPPINV', 4);
 
 	//	Special option values for various list selectors.
 	//
@@ -156,7 +156,15 @@
 
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
-	global $systypes_array, $bank_account_types, $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
+
+	define('TYPE_BANK_ACCOUNTS' ,serialize(array(
+			BT_TRANSFER => _("Savings Account"),
+			_("Chequing Account"),
+			_("Credit Account"),
+			_("Cash Account"))
+		));
+
+	global $systypes_array,  $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
 				 $class_types, $quick_actions, $quick_entry_types, $stock_types, $tag_types, $security_areas, $security_sections;
 	$access_levels = Cache::get('access_levels');
 	if (!$access_levels || isset($_GET['reload_config'])) {

@@ -672,7 +672,9 @@ div.banner a + a { border-top: 2px groove #999 }
 	border-left:      12px solid #367cb5;
 	border-collapse:  collapse;
 	background-color: #eeeeee;
+margin:0 auto;
 }
+
 
 .login td {
 	border-collapse: collapse;

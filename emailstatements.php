@@ -1,5 +1,5 @@
 <?php
-	include "bootstrap.php";
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	echo "<pre>";
 	$sql = "SELECT * FROM debtor_balances WHERE Balance>0";
 	$result = DB::query($sql, "The customer details could not be retrieved");

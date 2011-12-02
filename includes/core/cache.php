@@ -33,8 +33,8 @@
 		 *
 		 * @return mixed
 		 */
-		public static function set($key, $value,$expires=86400) {
-			static::_i()->set($key, $value,time() +$expires);
+		public static function set($key, $value, $expires = 86400) {
+			static::_i()->set($key, $value, time() + $expires);
 			return $value;
 		}
 
@@ -44,7 +44,8 @@
 		 * @return mixed
 		 */
 		public static function get($key) {
-			return static::_i()->get($key);
+			$result = static::_i()->get($key);
+			return (static::$instance->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
 		}
 
 		/**

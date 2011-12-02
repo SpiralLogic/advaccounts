@@ -96,6 +96,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
+	$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
 	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
@@ -140,6 +141,8 @@
 	}
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 	if ($is_editing) {
+		$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
+
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 	} else {
 		bank_account_types_list_row(_("Account Type:"), 'account_type', null);

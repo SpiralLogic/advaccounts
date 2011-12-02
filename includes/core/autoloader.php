@@ -85,9 +85,9 @@
 		 */
 		protected static function classpath($class)
 			{
-				$path = explode('_', $class);
-				$classfile = DS . array_pop($path) . '.php';
-				return implode(DS, $path) . $classfile;
+				$path = str_replace('_', DS,$class). '.php';
+
+				return $path ;
 			}
 
 		/**

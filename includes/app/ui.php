@@ -87,7 +87,7 @@
 					'sales_type' => 1,
 					'no_sale' => false, 'select' => false, 'type' => 'local', 'where' => '');
 				$o = array_merge($defaults, $options);
-				$UniqueID = uniqid($id);
+				$UniqueID = $id;
 				Cache::set($UniqueID,$o,DB_Company::get_pref('login_tout'));
 				$desc_js = $o['js'];
 				HTML::setReturn(true);

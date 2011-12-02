@@ -1361,9 +1361,7 @@
 	}
 
 	function bank_account_types_list($name, $selected_id = null) {
-		global $bank_account_types;
-		var_dump($bank_account_types);
-		return array_selector($name, $selected_id, $bank_account_types);
+		return array_selector($name, $selected_id, 	unserialize(TYPE_BANK_ACCOUNTS));
 	}
 
 	function bank_account_types_list_cells($label, $name, $selected_id = null) {

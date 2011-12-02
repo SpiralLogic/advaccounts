@@ -45,7 +45,7 @@
 					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
-						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
+						$st_params = "<table><tr><td>\n<form method='GET' action='$action' target='_blank'>\n";
 						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden(
 							'REP_ID',
 							$report->id,

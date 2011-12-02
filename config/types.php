@@ -10,12 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	$bank_account_types = array(
-		BT_TRANSFER => _("Savings Account"),
-		_("Chequing Account"),
-		_("Credit Account"),
-		_("Cash Account")
-	);
 	$bank_transfer_types = array(
 		BT_TRANSFER => _("Transfer"),
 		_("Cheque"),
@@ -99,7 +93,6 @@
 	);
 
 	return array(
-		'bank_account_types' => $bank_account_types,
 		'bank_transfer_types' => $bank_transfer_types,
 		'class_types' => $class_types,
 		'payment_person_types' => $payment_person_types,
