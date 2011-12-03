@@ -67,7 +67,7 @@
 
 	function view_link($dummy, $order_no)
 		{
-			return get_trans_view_str(ST_WORKORDER, $order_no);
+			return GL_UI::trans_view(ST_WORKORDER, $order_no);
 		}
 
 	function view_stock($row)
@@ -143,7 +143,7 @@
 			if ($row['closed'] == 0) {
 				return '';
 			}
-			return get_gl_view_str(ST_WORKORDER, $row['id']);
+			return GL_UI::view(ST_WORKORDER, $row['id']);
 		}
 
 	function dec_amount($row, $amount)

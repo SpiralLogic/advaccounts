@@ -134,12 +134,12 @@
 					$_POST['LineMemo'] = $item->reference;
 					hidden('Index', $id);
 					$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
-					echo gl_all_accounts_list('code_id', null, $skip_bank, true);
+					echo GL_UI::all('code_id', null, $skip_bank, true);
 					if ($dim >= 1) {
-						dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+						Dimensions::select_cells(null, 'dimension_id', null, true, " ", false, 1);
 					}
 					if ($dim > 1) {
-						dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+						Dimensions::select_cells(null, 'dimension2_id', null, true, " ", false, 2);
 					}
 					$Ajax->activate('items_table');
 				} else {
@@ -155,12 +155,12 @@
 						$Ajax->activate('code_id');
 					}
 					$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
-					echo gl_all_accounts_list('code_id', null, $skip_bank, true);
+					echo GL_UI::all('code_id', null, $skip_bank, true);
 					if ($dim >= 1) {
-						dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+						Dimensions::select_cells(null, 'dimension_id', null, true, " ", false, 1);
 					}
 					if ($dim > 1) {
-						dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+						Dimensions::select_cells(null, 'dimension2_id', null, true, " ", false, 2);
 					}
 				}
 				if ($dim < 1) {

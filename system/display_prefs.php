@@ -83,14 +83,14 @@
 	themes_list_row(_("Theme:"), "theme", User::theme());
 	/* The array $themes is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	pagesizes_list_row(_("Page Size:"), "page_size", User::pagesize());
+	Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::pagesize());
 	tab_list_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
 	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['profile'])) {
 		$_POST['profile'] = User::print_profile();
 	}
-	print_profiles_list_row(
+	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile',
 		null, _('Browser printing support')
 	);

@@ -413,7 +413,7 @@
 				hidden('ref', $order->reference);
 				label_row(_("Purchase Order #:"), $order->reference);
 			}
-			sales_persons_list_row(_("Sales Person:"), 'salesman', $order->salesman);
+			Sales_UI::persons_row(_("Sales Person:"), 'salesman', $order->salesman);
 			Display::table_section(2);
 			date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 			if (isset($_POST['_OrderDate_changed'])) {
@@ -508,7 +508,7 @@
 				label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 			}
 			if (!$is_self) {
-				label_cells(_("Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no), "class='label'");
+				label_cells(_("Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $po->order_no), "class='label'");
 			}
 			Display::end_row();
 			Display::start_row();

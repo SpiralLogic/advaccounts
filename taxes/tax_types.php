@@ -122,8 +122,8 @@
 	}
 	text_row_ex(_("Description:"), 'name', 50);
 	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", User::percent_dec());
-	gl_all_accounts_list_row(_("Sales GL Account:"), 'sales_gl_code', null);
-	gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
+	GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', null);
+	GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
 	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	Display::end_form();

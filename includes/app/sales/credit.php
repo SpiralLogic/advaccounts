@@ -294,14 +294,14 @@
 				if (!isset($_POST['sales_type_id'])) {
 					$_POST['sales_type_id'] = $order->sales_type;
 				}
-				sales_types_list_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
+				Sales_UI::types_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
 				if ($order->sales_type != $_POST['sales_type_id']) {
 					$myrow = Sales_Type::get($_POST['sales_type_id']);
 					$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 					$Ajax->activate('sales_type_id');
 					$change_prices = 1;
 				}
-				shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
+				Sales_UI::shippers_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
 				label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 				Display::table_section(4);
 				if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
@@ -318,12 +318,12 @@
 				// 2008-11-12 Joe Hunt added dimensions
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim > 0) {
-					dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
+					Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
 				} else {
 					hidden('dimension_id', 0);
 				}
 				if ($dim > 1) {
-					dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
+					Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
 				} else {
 					hidden('dimension2_id', 0);
 				}
@@ -464,7 +464,7 @@
 					locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 				} else {
 					/* the goods are to be written off to somewhere */
-					gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
+					GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
 				}
 				textarea_row(_("Memo"), "CreditText", null, 51, 3);
 				echo "</table>";

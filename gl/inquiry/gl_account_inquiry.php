@@ -54,7 +54,7 @@
 		Display::start_form();
 		Display::start_table("class='tablestyle_noborder'");
 		Display::start_row();
-		gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, "All Accounts");
+		GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
 		Display::end_row();
@@ -62,10 +62,10 @@
 		Display::start_table();
 		Display::start_row();
 		if ($dim >= 1) {
-			dimensions_list_cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
+			Dimensions::select_cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
 		}
 		if ($dim > 1) {
-			dimensions_list_cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
+			Dimensions::select_cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
 		}
 		small_amount_cells(_("Amount min:"), 'amount_min', null);
 		small_amount_cells(_("Amount max:"), 'amount_max', null);
@@ -147,7 +147,7 @@
 			$running_total += $myrow["amount"];
 			$trandate = Dates::sql2date($myrow["tran_date"]);
 			label_cell($systypes_array[$myrow["type"]]);
-			label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
+			label_cell(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
 			label_cell($trandate);
 			if ($_POST["account"] == null) {
 				label_cell($myrow["account"] . ' ' . GL_Account::get_name($myrow["account"]));

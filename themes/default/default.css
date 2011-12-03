@@ -796,7 +796,7 @@ table.tablestyle_inner td {
 	font-weight:  bold;
 	font-size:    12px;
 	padding-left: 5px;
-
+background:transparent;
 }
 
 .label {

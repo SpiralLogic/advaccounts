@@ -79,7 +79,6 @@
 		 * @return string
 		 */
 		protected static function tryPath($path) {
-
 			$filepath = realpath(strtolower($path));
 			if (empty($filepath)) {
 				$filepath = realpath($path);
@@ -97,7 +96,6 @@
 		public static function includeClass($class) {
 			static::$time = microtime(true);
 			$filepath = '';
-			$class = str_replace('_', DS, $class) ;
 			if (isset(static::$loaded[$class])) {
 				$path = static::$loaded[$class];
 				$filepath = static::tryPath($path);
@@ -106,16 +104,17 @@
 				$path = static::$classes[$class];
 				$filepath = static::tryPath($path);
 			}
+			$class = str_replace('_', DS, $class);
 			if (!$filepath) {
-				$path = APPPATH . $class.'.php';
+				$path = APPPATH . $class . '.php';
 				$filepath = static::tryPath($path);
 			}
 			if (!$filepath) {
-				$path = APPPATH . $class.DS.$class.'.php';
-				$filepath = static::tryPath($path,$class);
+				$path = APPPATH . $class . DS . $class . '.php';
+				$filepath = static::tryPath($path, $class);
 			}
 			if (!$filepath) {
-				$path = COREPATH . $class.'.php';
+				$path = COREPATH . $class . '.php';
 				$filepath = static::tryPath($path);
 			}
 			try {

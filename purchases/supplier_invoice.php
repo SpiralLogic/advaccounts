@@ -21,11 +21,11 @@
 		$trans_type = ST_SUPPINVOICE;
 		echo "<div class='center'>";
 		Errors::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
-		Display::note(get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Invoice")));
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
-		Display::note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}

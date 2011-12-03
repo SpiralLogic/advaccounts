@@ -44,7 +44,7 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 		Errors::notice(_("Payment $trans_no has been entered"));
-		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 		Page::footer_exit();
@@ -53,7 +53,7 @@
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 		Errors::notice(_("Deposit $trans_no has been entered"));
-		Display::note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
 		Page::footer_exit();

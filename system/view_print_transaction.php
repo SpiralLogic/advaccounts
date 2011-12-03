@@ -16,7 +16,7 @@
 
 	function view_link($trans)
 	{
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
 	function prt_link($row)
@@ -31,7 +31,7 @@
 
 	function gl_view($row)
 	{
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return GL_UI::view($row["type"], $row["trans_no"]);
 	}
 
 	function viewing_controls()
@@ -39,7 +39,7 @@
 		Errors::warning(_("Only documents can be printed."));
 		Display::start_table("class='tablestyle_noborder'");
 		Display::start_row();
-		systypes_list_cells(_("Type:"), 'filterType', null, true);
+		SysTypes::view_cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {
 			$_POST['FromTransNo'] = "1";
 		}

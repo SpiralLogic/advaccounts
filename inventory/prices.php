@@ -124,7 +124,7 @@
 	Display::div_start('price_details');
 	Display::start_table('class="tableinfo"');
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
-	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+	Sales_UI::types_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
 		$_POST['price'] = Num::price_format(Item_Price::get_kit(Display::get_post('stock_id'), Display::get_post('curr_abrev'),
 			Display::get_post('sales_type_id')));

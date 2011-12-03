@@ -1260,7 +1260,7 @@ JS;
 				Display::table_section(3);
 				Debtor_UI::credit_row($_POST['customer_id'], $order->credit);
 				if ($editable) {
-					$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
+					$str = Sales_UI::types_row(_("Price List"), 'sales_type', null, true);
 				} else {
 					label_row(_("Price List:"), $order->sales_type_name);
 				}
@@ -1293,12 +1293,12 @@ JS;
 					if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
 						$dim = DB_Company::get_pref('use_dimension');
 						if ($dim > 0) {
-							dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
+							Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
 						} else {
 							hidden('dimension_id', 0);
 						}
 						if ($dim > 1) {
-							dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
+							Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
 						} else {
 							hidden('dimension2_id', 0);
 						}
@@ -1311,7 +1311,7 @@ JS;
 					label_row(_("Tax Group:"), $order->tax_group_name);
 					hidden('tax_group_id', $order->tax_group_id);
 				}
-				sales_persons_list_row(_("Sales Person:"), 'salesman',
+				Sales_UI::persons_row(_("Sales Person:"), 'salesman',
 					(isset($order->salesman)) ? $order->salesman : $_SESSION['current_user']->salesmanid);
 				Display::end_outer_table(1); // outer table
 				if ($change_prices != 0) {
@@ -1437,7 +1437,7 @@ JS;
 					text_row(_("Customer Purchase Order #:"), 'cust_ref', $order->cust_ref, 25, 25,
 						_('Customer reference number for this order (if any)'));
 					textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-					shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
+					Sales_UI::shippers_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
 					Display::end_outer_table(1);
 				}
 				Display::div_end();

@@ -6,29 +6,30 @@
 	 * Time: 1:51 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	function gl_account_types_list($name, $selected_id = null, $all_option = false, $all_option_numeric = true) {
+class GL_UI {
+	public static function  types($name, $selected_id = null, $all_option = false, $all_option_numeric = true) {
 		$sql = "SELECT id, name FROM chart_types";
 		return combo_input($name, $selected_id, $sql, 'id', 'name', array(
 																																		 'order' => 'id', 'spec_option' => $all_option, 'spec_id' => $all_option_numeric ?
 			 0 : ALL_TEXT));
 	}
 
-	function gl_account_types_list_cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
+	public static function  types_cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
 		echo "<td>";
-		echo gl_account_types_list($name, $selected_id, $all_option, $all_option_numeric);
+		echo GL_UI::types($name, $selected_id, $all_option, $all_option_numeric);
 		echo "</td>\n";
 	}
 
-	function gl_account_types_list_row($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
+	public static function  types_row($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
 		echo "<tr><td class='label'>$label</td>";
-		gl_account_types_list_cells(null, $name, $selected_id, $all_option, $all_option_numeric);
+		GL_UI::types_cells(null, $name, $selected_id, $all_option, $all_option_numeric);
 		echo "</tr>\n";
 	}
 
-	function gl_all_accounts_list($name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
+	public static function  all($name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
 		if ($skip_bank_accounts) {
 			$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 				FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
@@ -46,43 +47,43 @@
 	}
 
 
-	function gl_all_accounts_list_cells($label, $name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
+	public static function  all_cells($label, $name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
 		echo "<td>";
-		echo gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $cells, $all_option, $submit_on_change, $all);
+		echo GL_UI::all($name, $selected_id, $skip_bank_accounts, $cells, $all_option, $submit_on_change, $all);
 		echo "</td>\n";
 	}
 
-	function gl_all_accounts_list_row($label, $name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false) {
+	public static function  all_row($label, $name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false) {
 		echo "<tr><td class='label'>$label</td>";
-		gl_all_accounts_list_cells(null, $name, $selected_id, $skip_bank_accounts, $cells, $all_option);
+		GL_UI::all_cells(null, $name, $selected_id, $skip_bank_accounts, $cells, $all_option);
 		echo "</tr>\n";
 	}
 
-	function class_list($name, $selected_id = null, $submit_on_change = false) {
+	public static function  chart_class($name, $selected_id = null, $submit_on_change = false) {
 		$sql = "SELECT cid, class_name FROM chart_class";
 		return combo_input($name, $selected_id, $sql, 'cid', 'class_name', array(
 																																						'select_submit' => $submit_on_change, 'async' => false));
 	}
 
-	function class_list_cells($label, $name, $selected_id = null, $submit_on_change = false) {
+	public static function  chart_class_cells($label, $name, $selected_id = null, $submit_on_change = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
 		echo "<td>";
-		echo class_list($name, $selected_id, $submit_on_change);
+		echo GL_UI::chart_class($name, $selected_id, $submit_on_change);
 		echo "</td>\n";
 	}
 
-	function class_list_row($label, $name, $selected_id = null, $submit_on_change = false) {
+	public static function  chart_class_row($label, $name, $selected_id = null, $submit_on_change = false) {
 		echo "<tr><td class='label'>$label</td>";
-		class_list_cells(null, $name, $selected_id, $submit_on_change);
+		GL_UI::chart_class_cells(null, $name, $selected_id, $submit_on_change);
 		echo "</tr>\n";
 	}
 
-	function journal_types_list_cells($label, $name, $value = null, $submit_on_change = false) {
+	public static function  journal_cells($label, $name, $value = null, $submit_on_change = false) {
 		global $systypes_array;
 		if ($label != null) {
 			echo "<td>$label</td>\n";
@@ -98,7 +99,7 @@
 		echo "</td>\n";
 	}
 
-	function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class = '', $id = '') {
+	public static function  view($type, $trans_no, $label = "", $force = false, $class = '', $id = '') {
 		if (!$force && !User::show_gl_info()) {
 			return "";
 		}
@@ -110,15 +111,15 @@
 		return Display::viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
 	}
 
-	function get_gl_view_str_cell($type, $trans_no, $label = "") {
-		$str = get_gl_view_str($type, $trans_no, $label);
+	public static function  view_cell($type, $trans_no, $label = "") {
+		$str = GL_UI::view($type, $trans_no, $label);
 		if ($str != "") {
 			return "<td>$str</td>";
 		}
 		return $str;
 	}
 
-	function get_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+	public static function  trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 		$view_str = Debtor_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
 		if ($view_str != null) {
 			return $view_str;
@@ -139,25 +140,25 @@
 		if ($view_str != null) {
 			return $view_str;
 		}
-		$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
+		$view_str = Dimensions::trans_view($type, $trans_no, $label, $icon, $class, $id);
 		if ($view_str != null) {
 			return $view_str;
 		}
-		$view_str = get_journal_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
+		$view_str = GL_UI::journal_trans($type, $trans_no, $label, $icon, $class, $id);
 		if ($view_str != null) {
 			return $view_str;
 		}
 		return null;
 	}
 
-	function class_types_list_row($label, $name, $selected_id = null, $submit_on_change = false) {
+	public static function  class_types_row($label, $name, $selected_id = null, $submit_on_change = false) {
 		global $class_types;
 		echo "<tr><td class='label'>$label</td><td>";
 		echo array_selector($name, $selected_id, $class_types, array('select_submit' => $submit_on_change));
 		echo "</td></tr>\n";
 	}
 
-	function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+	public static function  journal_trans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 		if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
 			$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 		}
@@ -169,3 +170,29 @@
 		}
 		return Display::viewer_link($label, $viewer, $class, $id, $icon);
 	}
+
+			//  FISCALYEARS
+	public static	function fiscalyears($name, $selected_id = null, $submit_on_change = false) {
+				$sql = "SELECT * FROM fiscal_year";
+				// default to the company current fiscal year
+				return combo_input($name, $selected_id, $sql, 'id', '', array(
+																																		 'order' => 'begin', 'default' => DB_Company::get_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
+			}
+
+
+	public static	function fiscalyears_cells($label, $name, $selected_id = null) {
+				if ($label != null) {
+					echo "<td>$label</td>\n";
+				}
+				echo "<td>";
+				echo GL_UI::fiscalyears($name, $selected_id);
+				echo "</td>\n";
+			}
+
+		public static	function fiscalyears_row($label, $name, $selected_id = null) {
+				echo "<tr><td class='label'>$label</td>";
+				GL_UI::fiscalyears_cells(null, $name, $selected_id);
+				echo "</tr>\n";
+			}
+
+}

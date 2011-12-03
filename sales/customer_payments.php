@@ -39,7 +39,7 @@
 		Errors::notice(_("The customer payment has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
-		Display::note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no,
+		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no,
 			_("&View the GL Journal Entries for this Customer Payment")));
 		//	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 		Display::link_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));

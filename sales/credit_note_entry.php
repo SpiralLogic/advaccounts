@@ -47,7 +47,7 @@
 			0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT,
 			false, "printlink", "", 1), 0, 1);
-		Display::note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();

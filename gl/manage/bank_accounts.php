@@ -145,7 +145,7 @@
 
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 	} else {
-		Bank_UI::accounts_type_select_row(_("Account Type:"), 'account_type', null);
+		Bank_UI::accounts_type_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
@@ -156,7 +156,7 @@
 	if ($is_editing) {
 		label_row(_("Bank Account GL Code:"), $_POST['account_code']);
 	} else {
-		gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
+		GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', null);
 	}
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
 	text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);

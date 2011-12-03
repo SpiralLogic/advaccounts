@@ -296,7 +296,7 @@
 		}
 
 		public static function submenu_view($title, $type, $number, $id = null) {
-			Display::note(get_trans_view_str($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
+			Display::note(GL_UI::trans_view($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
 		}
 
 		public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {

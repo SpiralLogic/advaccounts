@@ -232,10 +232,10 @@
 		}
 		$actn = strtolower(substr($_POST['actn'], 0, 1));
 		if ($actn == 't') {
-			//item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
-			tax_types_list_row(_("Tax Type") . ":", 'dest_id', null);
+			//Tax_UI::item_types_row(_("Item Tax Type").":",'dest_id', null);
+			Tax_UI::types_row(_("Tax Type") . ":", 'dest_id', null);
 		} else {
-			gl_all_accounts_list_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
+			GL_UI::all_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
 			if ($actn != '=') {
 				if ($actn == '%') {
 					small_amount_row(_("Part") . ":", 'amount', Num::price_format(0), null, "%", User::exrate_dec());
@@ -245,10 +245,10 @@
 			}
 		}
 		if ($dim >= 1) {
-			dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, " ", false, 1);
+			Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, " ", false, 1);
 		}
 		if ($dim > 1) {
-			dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
+			Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
 		}
 		Display::end_table(1);
 		if ($dim < 2) {

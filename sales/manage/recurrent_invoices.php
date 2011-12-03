@@ -123,12 +123,12 @@
 		hidden("selected_id", $selected_id);
 	}
 	text_row_ex(_("Description:"), 'description', 50);
-	templates_list_row(_("Template:"), 'order_no');
+	Sales_UI::templates_row(_("Template:"), 'order_no');
 	Debtor_UI::select_row(_("Customer:"), 'debtor_no', null, " ", true);
 	if ($_POST['debtor_no'] > 0) {
 		Debtor_UI::branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
 	} else {
-		sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
+		Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, " ");
 	}
 	small_amount_row(_("Days:"), 'days', 0, null, null, 0);
 	small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);

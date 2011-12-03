@@ -200,7 +200,7 @@
 		label_row(_("Customer's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
 	}
-	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+	Sales_UI::types_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 	Display::table_section(2);
 	Display::table_section_title(_("Sales"));
 	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
@@ -210,10 +210,10 @@
 	credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
 	}
 	if ($dim > 1) {
-		dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
+		Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
 	}
 	if ($dim < 1) {
 		hidden('dimension_id', 0);

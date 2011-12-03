@@ -96,30 +96,30 @@
 
 	Display::table_section_title(_("General GL"));
 	// Not used in FA2.0.
-	//gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
+	//GL_UI::all_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
 	// Not used in FA2.0.
-	//gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
+	//GL_UI::all_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
 	text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
-	gl_all_accounts_list_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
-	gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
-	gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
-	gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
+	GL_UI::all_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
+	GL_UI::all_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
+	GL_UI::all_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
+	GL_UI::all_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
 
 	Display::table_section_title(_("Customers and Sales"));
 	text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
 	check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
 	textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
-	gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
+	GL_UI::all_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
 	Display::table_section_title(_("Customers and Sales Defaults"));
 	// default for customer branch
-	gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
-	gl_all_accounts_list_row(
+	GL_UI::all_row(_("Receivable Account:"), 'debtors_act');
+	GL_UI::all_row(
 		_("Sales Account:"), 'default_sales_act', null,
 		false, false, true
 	);
-	gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
-	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
+	GL_UI::all_row(_("Sales Discount Account:"), 'default_sales_discount_act');
+	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
 	text_row(
 		_("Delivery Required By:"), 'default_delivery_required',
 		$_POST['default_delivery_required'], 6, 6, '', "", _("days")
@@ -136,18 +136,18 @@
 	percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 	percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
 	Display::table_section_title(_("Suppliers and Purchasing Defaults"));
-	gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
-	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
+	GL_UI::all_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
+	GL_UI::all_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
 	Display::table_section_title(_("Inventory"));
 	check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
 	label_row(null, _("Warning:  This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
 	Display::table_section_title(_("Items Defaults"));
-	gl_all_accounts_list_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
-	gl_all_accounts_list_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
+	GL_UI::all_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
+	GL_UI::all_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
 	// this one is default for items and suppliers (purchase account)
-	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['default_cogs_act']);
-	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
-	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
+	GL_UI::all_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['default_cogs_act']);
+	GL_UI::all_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
+	GL_UI::all_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
 
 	Display::table_section_title(_("Manufacturing Defaults"));
 	text_row(

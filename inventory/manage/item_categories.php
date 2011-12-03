@@ -152,30 +152,30 @@
 	}
 	text_row(_("Category Name:"), 'description', null, 30, 30);
 	Display::table_section_title(_("Default values for new items"));
-	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
+	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 	stock_units_list_row(_("Units of Measure:"), 'units', null);
 	check_row(_("Exclude from sales:"), 'no_sale');
-	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
+	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
 	} else {
-		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
+		GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 	if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
-		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+		GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	} else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		dimensions_list_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
 		if ($dim > 1) {
-			dimensions_list_row(_("Dimension") . " 2", 'dim2', null, true, " ", false, 2);
+			Dimensions::select_row(_("Dimension") . " 2", 'dim2', null, true, " ", false, 2);
 		}
 	}
 	if ($dim < 1) {

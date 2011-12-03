@@ -186,18 +186,18 @@
 	} else {
 		currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
 	}
-	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', null);
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
 	Display::table_section_title(_("Accounts"));
-	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
-	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
-	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
+	GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
+	GL_UI::all_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
+	GL_UI::all_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		Display::table_section_title(_("Dimension"));
-		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', null, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) {
-			dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
+			Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
 		}
 	}
 	if ($dim < 1) {

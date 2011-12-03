@@ -65,7 +65,7 @@
 	$dim = DB_Company::get_pref('use_dimension');
 	function view_link($row)
 	{
-		return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
+		return Dimensions::trans_view(ST_DIMENSION, $row["id"]);
 	}
 
 	function is_closed($row)

@@ -51,7 +51,7 @@ class Apps_System extends Application
 		$this->add_rapp_function(1, _("&Points of Sale"),
 								 "sales/manage/sales_points.php?", 'SA_POSSETUP');
 		$this->add_rapp_function(1, _("&Printers"),
-								 "system/printers.php?", 'SA_PRINTERS');
+								 "system/ui.php?", 'SA_PRINTERS');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Void a Transaction"),

@@ -94,7 +94,7 @@
 				while ($myrow = DB::fetch($result)) {
 					Display::alt_table_row_color($k);
 					$total_qty += $myrow['quantity'];
-					label_cell(get_trans_view_str(29, $myrow["id"]));
+					label_cell(GL_UI::trans_view(29, $myrow["id"]));
 					label_cell($myrow['reference']);
 					label_cell(Dates::sql2date($myrow["date_"]));
 					qty_cell($myrow['quantity'], false, Item::qty_dec($myrow['reference']));

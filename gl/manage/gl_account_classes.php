@@ -131,7 +131,7 @@
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
 	} else {
-		class_types_list_row(_("Class Type:"), 'ctype', null);
+		GL_UI::class_types_row(_("Class Type:"), 'ctype', null);
 	}
 	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');

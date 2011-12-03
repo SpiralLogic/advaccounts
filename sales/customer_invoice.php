@@ -44,7 +44,7 @@
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
 		Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-		Display::note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
+		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
 		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"),
 			"OutstandingOnly=1");
 		Page::footer_exit();
@@ -54,7 +54,7 @@
 		$emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET['UpdatedID'];
 		Errors::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
-		Display::note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
+		Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
@@ -313,7 +313,7 @@
 	}
 	label_cell(_("Shipping Company"), "class='tableheader2'");
 	if (!$viewing || !isset($_SESSION['Items']->shipper_name)) {
-		shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
+		Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
 	} else {
 		label_cell($_SESSION['Items']->shipper_name);
 	}

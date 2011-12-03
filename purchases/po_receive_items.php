@@ -18,7 +18,7 @@
 		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
 		Errors::notice(_("Purchase Order Delivery has been processed"));
-		Display::note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
+		Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));
 		Display::link_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();

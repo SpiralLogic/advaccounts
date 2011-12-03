@@ -56,13 +56,13 @@
 
 	function trans_view($trans)
 	{
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row)
 	{
 		if ($row['type'] != 15) {
-			return get_gl_view_str($row["type"], $row["trans_no"]);
+			return GL_UI::view($row["type"], $row["trans_no"]);
 		}
 	}
 
@@ -178,8 +178,8 @@
 	Display::start_form();
 	Display::start_table();
 	Display::start_row();
-	Bank_UI::accounts_list_cells(_("Account:"), 'bank_account', null, true);
-	Bank_UI::reconciliation_list_cells(_("Bank Statement:"), Display::get_post('bank_account'), 'bank_date', null, true, _("New"));
+	Bank_UI::accounts_cells(_("Account:"), 'bank_account', null, true);
+	Bank_UI::reconcile_cells(_("Bank Statement:"), Display::get_post('bank_account'), 'bank_date', null, true, _("New"));
 	//button_cell("reset", "reset", "reset");
 	Display::end_row();
 	Display::end_table();

@@ -200,7 +200,7 @@
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 		Display::start_table("class = 'tablestyle_noborder'");
 		Display::start_row();
-		gl_all_accounts_list_cells(
+		GL_UI::all_cells(
 			null, 'AccountList', null, false, false,
 			_('New account'), true, check_value('show_inactive')
 		);
@@ -243,7 +243,7 @@
 	}
 	text_row_ex(_("Account Code 2:"), 'account_code2', 11);
 	text_row_ex(_("Account Name:"), 'account_name', 60);
-	gl_account_types_list_row(_("Account Group:"), 'account_type', null);
+	GL_UI::types_row(_("Account Group:"), 'account_type', null);
 	Tags::combo_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
 	record_status_list_row(_("Account status:"), 'inactive');
 	Display::end_table(1);

@@ -23,7 +23,7 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 		Errors::notice(_("Inventory transfer has been processed"));
-		Display::note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();
 	}

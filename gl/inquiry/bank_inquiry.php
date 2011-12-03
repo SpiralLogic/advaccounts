@@ -24,7 +24,7 @@
 	Display::start_form();
 	Display::start_table("class='tablestyle_noborder'");
 	Display::start_row();
-	Bank_UI::accounts_list_cells(_("Account:"), 'bank_account', null);
+	Bank_UI::accounts_cells(_("Account:"), 'bank_account', null);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate');
 	submit_cells('Show', _("Show"), '', '', 'default');
@@ -74,13 +74,13 @@
 		$running_total += $myrow["amount"];
 		$trandate = Dates::sql2date($myrow["trans_date"]);
 		label_cell($systypes_array[$myrow["type"]]);
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow['ref']));
+		label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
+		label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow['ref']));
 		label_cell($trandate);
 		Display::debit_or_credit_cells($myrow["amount"]);
 		amount_cell($running_total);
 		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-		label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
+		label_cell(GL_UI::view($myrow["type"], $myrow["trans_no"]));
 		Display::end_row();
 		if ($j == 12) {
 			$j = 1;

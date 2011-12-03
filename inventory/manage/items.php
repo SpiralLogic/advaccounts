@@ -302,7 +302,7 @@
 		$_POST['editable'] = 0;
 	}
 	$fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], false);
-	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
+	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 	check_row(_("Editable description:"), 'editable');
@@ -311,9 +311,9 @@
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		Display::table_section_title(_("Dimensions"));
-		dimensions_list_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) {
-			dimensions_list_row(_("Dimension") . " 2", 'dimension2_id', null, true, " ", false, 2);
+			Dimensions::select_row(_("Dimension") . " 2", 'dimension2_id', null, true, " ", false, 2);
 		}
 	}
 	if ($dim < 1) {
@@ -324,18 +324,18 @@
 	}
 	Display::table_section(2);
 	Display::table_section_title(_("GL Accounts"));
-	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
+	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 	if (!$_POST['mb_flag'] == STOCK_SERVICE) {
-		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
+		GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	} else {
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
 	}
 	if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
-		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+		GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	} else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}

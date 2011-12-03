@@ -175,7 +175,7 @@
 		if (!isset($_POST['tax_type_id' . $i])) {
 			$_POST['tax_type_id' . $i] = 0;
 		}
-		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
+		Tax_UI::types_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 			label_cell(Num::percent_format($default_rate), "nowrap class=right");

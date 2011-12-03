@@ -29,7 +29,7 @@
 			Display::start_row();
 			label_cell($myrow["issue_no"]);
 			label_cell($myrow["reference"]);
-			label_cell(get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+			label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
 			label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreName"]);

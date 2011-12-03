@@ -81,7 +81,7 @@
 
 	function trans_view($trans)
 		{
-			return get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -91,7 +91,7 @@
 
 	function gl_view($row)
 		{
-			return get_gl_view_str($row["type"], $row["trans_no"]);
+			return GL_UI::view($row["type"], $row["trans_no"]);
 		}
 
 	function credit_link($row)

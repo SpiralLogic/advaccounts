@@ -118,7 +118,7 @@
 	}
 	Display::start_form();
 	Display::start_table();
-	print_profiles_list_row(
+	Reports_UI::print_profiles_row(
 		_('Select printing profile') . ':', 'profile_id', null,
 		_('New printing profile'), true
 	);
@@ -150,7 +150,7 @@
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
 		echo '<td>';
-		echo printers_list(
+		echo Reports_UI::printers(
 			'Prn' . $rep, null,
 			$rep == '' ? _('Browser support') : _('Default')
 		);

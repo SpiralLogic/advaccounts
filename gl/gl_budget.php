@@ -98,8 +98,8 @@
 
 			$dim = DB_Company::get_pref('use_dimension');
 		Display::start_table(Config::get('tables_style2'));
-		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
-		gl_all_accounts_list_row(_("Account Code:"), 'account', null);
+		GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
+		GL_UI::all_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1'])) {
 			$_POST['dim1'] = 0;
 		}
@@ -107,11 +107,11 @@
 			$_POST['dim2'] = 0;
 		}
 		if ($dim == 2) {
-			dimensions_list_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], true, null, false, 1);
-			dimensions_list_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], true, null, false, 2);
+			Dimensions::select_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], true, null, false, 1);
+			Dimensions::select_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], true, null, false, 2);
 		}
 		else if ($dim == 1) {
-			dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
+			Dimensions::select_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
 			hidden('dim2', 0);
 		} else {
 			hidden('dim1', 0);

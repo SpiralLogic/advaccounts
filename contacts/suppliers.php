@@ -71,12 +71,12 @@
 	text_row(_("Bank Name/Account:"), 'bank_account', $supplier->bank_account, 42, 40);
 	amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit);
 	currencies_list_row(_("Supplier's Currency:"), 'curr_code', $supplier->curr_code);
-	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
+	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $supplier->payment_terms);
 	Display::table_section_title(_("Accounts"), 2, 'tableheader3');
-	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $supplier->payable_account);
-	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $supplier->purchase_account);
-	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
+	GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $supplier->payable_account);
+	GL_UI::all_row(_("Purchase Account:"), 'purchase_account', $supplier->purchase_account);
+	GL_UI::all_row(_("Purchase Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
 	Display::end_outer_table(1);
 	$menu->endTab();
 	$menu->startTab('General', 'General Details');

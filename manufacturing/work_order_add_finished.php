@@ -21,8 +21,8 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The manufacturing process has been entered."));
-		Display::note(get_trans_view_str($stype, $id, _("View this Work Order")));
-		Display::note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
+		Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array(
 			'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 		Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);

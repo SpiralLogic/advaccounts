@@ -29,7 +29,7 @@
 			Display::start_row();
 			label_cell($myrow["id"]);
 			label_cell($myrow["reference"]);
-			label_cell(get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+			label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
 			label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 			qty_cell($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
 			label_cell(Dates::sql2date($myrow["date_"]));

@@ -107,4 +107,25 @@
 				return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
 			}
 		}
-	}
+
+		public static function view($name, $value = null, $spec_opt = false, $submit_on_change = false) {
+			global $systypes_array;
+			return array_selector($name, $value, $systypes_array, array(
+																																 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
+		}
+
+		public static function view_cells($label, $name, $value = null, $submit_on_change = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo SysTypes::view($name, $value, false, $submit_on_change);
+			echo "</td>\n";
+		}
+
+		public static function view_row($label, $name, $value = null, $submit_on_change = false) {
+			echo "<tr><td class='label'>$label</td>";
+			SysTypes::view_cells(null, $name, $value, $submit_on_change);
+			echo "</tr>\n";
+		}
+}

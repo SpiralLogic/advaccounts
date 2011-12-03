@@ -21,8 +21,8 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The additional cost has been entered."));
-		Display::note(get_trans_view_str($stype, $id, _("View this Work Order")));
-		Display::note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
+		Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		Display::link_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 		Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		end_page();
@@ -92,8 +92,8 @@
 	$r = DB::fetch_row($rs);
 	$_POST['cr_acc'] = $r[0];
 	amount_row(_("Additional Costs:"), 'costs');
-	gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);
-	gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);
+	GL_UI::all_row(_("Debit Account"), 'db_acc', null);
+	GL_UI::all_row(_("Credit Account"), 'cr_acc', null);
 	Display::end_table(1);
 	hidden('dim1', $item_accounts["dimension_id"]);
 	hidden('dim2', $item_accounts["dimension2_id"]);

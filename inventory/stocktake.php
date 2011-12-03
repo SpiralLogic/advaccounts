@@ -23,8 +23,8 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 		Errors::notice(_("Items adjustment has been processed"));
-		Display::note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-		Display::note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 		Page::footer_exit();
 	}

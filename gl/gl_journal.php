@@ -33,7 +33,7 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been entered") . " #$trans_no");
-		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
 		JS::reset_focus();
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 		Page::footer_exit();
@@ -41,7 +41,7 @@
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
-		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
 		Display::link_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();
 	}

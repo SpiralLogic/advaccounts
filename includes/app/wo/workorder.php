@@ -324,7 +324,7 @@
 				$k = 0; //row colour counter
 				while ($myrow = DB::fetch($result)) {
 					Display::alt_table_row_color($k);
-					label_cell(get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
+					label_cell(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
 					label_cell($wo_cost_types[$myrow['person_id']]);
 					$date = Dates::sql2date($myrow["tran_date"]);
 					label_cell($date);
@@ -355,7 +355,7 @@
 			if ($suppress_view_link) {
 				label_cell($myrow["id"]);
 			} else {
-				label_cell(get_trans_view_str(ST_WORKORDER, $myrow["id"]));
+				label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
 			}
 			label_cell($myrow["wo_ref"]);
 			label_cell($wo_types_array[$myrow["type"]]);
@@ -392,7 +392,7 @@
 			if ($suppress_view_link) {
 				label_cell($myrow["id"]);
 			} else {
-				label_cell(get_trans_view_str(ST_WORKORDER, $myrow["id"]));
+				label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
 			}
 			label_cell($myrow["wo_ref"]);
 			label_cell($wo_types_array[$myrow["type"]]);

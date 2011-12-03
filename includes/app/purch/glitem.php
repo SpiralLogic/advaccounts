@@ -70,14 +70,14 @@
 				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
 				Display::alt_table_row_color($k);
-				echo gl_all_accounts_list('gl_code', null, true, true);
+				echo GL_UI::all('gl_code', null, true, true);
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim >= 1) {
-					dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+					Dimensions::select_cells(null, 'dimension_id', null, true, " ", false, 1);
 					hidden('dimension_id', 0);
 				}
 				if ($dim > 1) {
-					dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+					Dimensions::select_cells(null, 'dimension2_id', null, true, " ", false, 2);
 					hidden('dimension2_id', 0);
 				}
 				textarea_cells(null, 'memo_', null, 50, 1);

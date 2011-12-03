@@ -36,14 +36,14 @@
 			"", 0, 1));
 		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink",
 			"", 1, 1), 1);
-		Display::note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
+		Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
 		Display::link_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 		Page::footer_exit();
 	} elseif (isset($_GET['UpdatedID'])) {
 		$delivery_no = $_GET['UpdatedID'];
 		Errors::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
-		Display::note(get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
+		Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 		Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
 		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink",
 			"", 1), 1, 1);
@@ -282,7 +282,7 @@
 		$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 	}
 	label_cell(_("Shipping Company"), "class='label'");
-	shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
+	Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
 	// set this up here cuz it's used to calc qoh
 	if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = Dates::new_doc_date();
@@ -374,7 +374,7 @@
 		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
 	Display::start_table(Config::get('tables_style2'));
-	policy_list_row(_("Action For Balance"), "bo_policy", null);
+	Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	Display::end_table(1);
 	Display::div_end();

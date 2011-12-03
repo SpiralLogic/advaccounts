@@ -53,4 +53,22 @@
 				}
 			}
 		}
+
+		/**
+		 * List of sets of active extensions
+		 *
+		 * @param			$name
+		 * @param null $value
+		 * @param bool $submit_on_change
+		 *
+		 * @return string
+		 */
+		public static function view($name, $value = null, $submit_on_change = false) {
+			$items = array();
+			foreach (Config::get_all('db') as $comp) {
+				$items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+			}
+			return array_selector($name, $value, $items, array(
+																												'spec_option' => _("Installed on system"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
+		}
 	}

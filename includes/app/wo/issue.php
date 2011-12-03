@@ -99,7 +99,7 @@
 				$k = 0; //row colour counter
 				while ($myrow = DB::fetch($result)) {
 					Display::alt_table_row_color($k);
-					label_cell(get_trans_view_str(28, $myrow["issue_no"]));
+					label_cell(GL_UI::trans_view(28, $myrow["issue_no"]));
 					label_cell($myrow['reference']);
 					label_cell(Dates::sql2date($myrow["issue_date"]));
 					Display::end_row();

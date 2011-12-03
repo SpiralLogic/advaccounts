@@ -328,7 +328,7 @@
 		$Ajax->activate('_page_body');
 	}
 	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
-	echo extset_list('extset', null, true);
+	echo Extensions::view('extset', null, true);
 	echo "</div><br>";
 	$set = Display::get_post('extset', -1);
 	if ($set == -1) {

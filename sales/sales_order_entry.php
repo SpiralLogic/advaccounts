@@ -139,7 +139,7 @@
 			} elseif ($trans_type == ST_CUSTDELIVERY) {
 				Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
 				Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
-				Display::note(get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0,
+				Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0,
 					1);
 				Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
 				((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
@@ -153,7 +153,7 @@
 					Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'],
 						'prtopt');
 				}
-				Display::note(get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0,
+				Display::note(GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0,
 					1);
 				if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
 					Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");

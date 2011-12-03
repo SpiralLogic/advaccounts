@@ -71,7 +71,7 @@
 		Display::table_header($th);
 		while ($myrow = DB::fetch($grns_result)) {
 			Display::alt_table_row_color($k);
-			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["id"]));
+			label_cell(GL_UI::trans_view(ST_SUPPRECEIVE, $myrow["id"]));
 			label_cell($myrow["reference"]);
 			label_cell(Dates::sql2date($myrow["delivery_date"]));
 			Display::end_row();
@@ -88,7 +88,7 @@
 		Display::table_header($th);
 		while ($myrow = DB::fetch($invoice_result)) {
 			Display::alt_table_row_color($k);
-			label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
+			label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
 			label_cell(Dates::sql2date($myrow["tran_date"]));
 			amount_cell($myrow["Total"]);
 			Display::end_row();

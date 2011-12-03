@@ -51,7 +51,7 @@
 
 	function view_link($trans)
 		{
-			return get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)

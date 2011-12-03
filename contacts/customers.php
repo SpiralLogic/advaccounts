@@ -154,7 +154,7 @@
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
+	Sales_UI::types_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 	if (!$customer->id) {
@@ -167,10 +167,10 @@
 	credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
 	}
 	if ($dim > 1) {
-		dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
+		Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
 	}
 	if ($dim < 1) {
 		hidden('dimension_id', 0);
@@ -222,19 +222,19 @@
 	Display::table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	Display::table_section_title(_("Sales"));
-	sales_persons_list_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
-	sales_areas_list_row(_("Sales Area:"), 'br_area', $currentBranch->area);
-	sales_groups_list_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
+	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
+	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
+	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
 	locations_list_row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
-	shippers_list_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
-	tax_groups_list_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
+	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
+	Tax_UI::groups_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
 	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
 	Display::table_section(2);
 	Display::table_section_title(_("GL Accounts"));
-	gl_all_accounts_list_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
-	gl_all_accounts_list_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
-	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
-	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account',
+	GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
+	GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
+	GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
+	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account',
 		$currentBranch->payment_discount_account);
 	Display::table_section_title(_("Notes"));
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);

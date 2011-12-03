@@ -27,14 +27,14 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The work order been added."));
-		Display::note(get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
 				'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
 			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
-			Errors::warning(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+			Errors::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
 				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 			Errors::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
@@ -303,13 +303,13 @@
 			$_POST['cr_lab_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_LABOUR], 'Labour');
-		gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
+		GL_UI::all_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 		if (!isset($_POST['Costs'])) {
 			$_POST['Costs'] = Num::price_format(0);
 			$_POST['cr_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
-		gl_all_accounts_list_row(_("Credit Overhead Account"), 'cr_acc', null);
+		GL_UI::all_row(_("Credit Overhead Account"), 'cr_acc', null);
 	}
 	if (Display::get_post('released')) {
 		label_row(_("Released On:"), $_POST['released_date']);

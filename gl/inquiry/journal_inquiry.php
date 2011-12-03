@@ -27,7 +27,7 @@
 	Display::start_table("class='tablestyle_noborder'");
 	Display::start_row();
 	ref_cells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
-	journal_types_list_cells(_("Type:"), "filterType");
+	GL_UI::journal_cells(_("Type:"), "filterType");
 	date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 	date_cells(_("To:"), 'ToDate');
 	check_cells(_("Show closed:"), 'AlsoClosed', null);
@@ -50,12 +50,12 @@
 
 	function view_link($row)
 	{
-		return get_trans_view_str($row["type"], $row["type_no"]);
+		return GL_UI::trans_view($row["type"], $row["type_no"]);
 	}
 
 	function gl_link($row)
 	{
-		return get_gl_view_str($row["type"], $row["type_no"]);
+		return GL_UI::view($row["type"], $row["type_no"]);
 	}
 
 	$editors = array(

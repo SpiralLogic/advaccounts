@@ -32,7 +32,7 @@
 		Errors::notice(_("Credit Note has been processed"));
 		Display::note(Debtor_UI::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		Display::note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		Page::footer_exit();
 	} elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
@@ -40,7 +40,7 @@
 		Errors::notice(_("Credit Note has been updated"));
 		Display::note(Debtor_UI::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		Display::note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		Page::footer_exit();
 	} else {
 		Sales_Order::check_edit_conflicts();
@@ -208,11 +208,11 @@
 				$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
 			}
 			label_cell(_("Shipping Company"), "class='tableheader2'");
-			shippers_list_cells(null, 'ShipperID', $_POST['ShipperID']);
+			Sales_UI::shippers_cells(null, 'ShipperID', $_POST['ShipperID']);
 			//	if (!isset($_POST['sales_type_id']))
 			//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 			//	label_cell(_("Sales Type"), "class='tableheader2'");
-			//	sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
+			//	Sales_UI::types_cells(null, 'sales_type_id', $_POST['sales_type_id']);
 			Display::end_row();
 			Display::end_table();
 			echo "</td><td>"; // outer table
@@ -284,7 +284,7 @@
 				locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 			} else {
 				/* the goods are to be written off to somewhere */
-				gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
+				GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
 			}
 			textarea_row(_("Memo"), "CreditText", null, 51, 3);
 			echo "</table>";

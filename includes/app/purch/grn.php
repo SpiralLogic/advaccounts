@@ -338,7 +338,7 @@
 			if (!Banking::is_company_currency($po->curr_code)) {
 				label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 			}
-			label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no), "class='label'");
+			label_cells(_("For Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $po->order_no), "class='label'");
 			label_cells(_("Ordered On"), $po->orig_order_date, "class='label'");
 			label_cells(_("Supplier's Reference"), $po->requisition_no, "class='label'");
 			Display::end_row();
@@ -402,7 +402,7 @@
 					if (!isset($_SESSION['delivery_po']) || $myrow["purch_order_no"] == $_SESSION['delivery_po']) {
 						Display::alt_table_row_color($k);
 						$n = $myrow["id"];
-						label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
+						label_cell(GL_UI::trans_view(25, $myrow["grn_batch_id"]));
 						label_cell($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], false) . hidden('item_code' . $n,
 							$myrow["item_code"], false) . hidden('description' . $n, $myrow["description"],
 							false) . hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) . hidden('order_price' . $n,
@@ -412,7 +412,7 @@
 							false) . hidden('po_detail_item' . $n,
 							$myrow['po_detail_item'],
 							false));
-						label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
+						label_cell(GL_UI::trans_view(ST_PURCHORDER, $myrow["purch_order_no"]));
 						label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 						label_cell($myrow["description"]);
 						label_cell(Dates::sql2date($myrow["delivery_date"]));
@@ -540,7 +540,7 @@
 				foreach ($supp_trans->grn_items as $entered_grn) {
 					Display::alt_table_row_color($k);
 					$grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
-					label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
+					label_cell(GL_UI::trans_view(ST_SUPPRECEIVE, $grn_batch));
 					if ($mode == 1) {
 						label_cell($entered_grn->id);
 						label_cell(""); // PO

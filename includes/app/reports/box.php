@@ -201,7 +201,7 @@
 				case 'SYS_TYPES':
 					return $this->gl_systypes_list($name, null, _("No Type Filter"));
 				case 'SYS_TYPES_ALL':
-					return systypes_list($name, null, _("No Type Filter"));
+					return SysTypes::view($name, null, _("No Type Filter"));
 				case 'TEXT':
 					return "<input type='text' name='$name'>";
 				case 'TEXTBOX':
@@ -209,25 +209,25 @@
 				case 'ACCOUNTS': // not used
 //					$sql = "SELECT id, name FROM ".''."chart_types";
 //					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
-					return gl_account_types_list($name, null, _("No Account Group Filter"), true);
+					return GL_UI::types($name, null, _("No Account Group Filter"), true);
 				case 'ACCOUNTS_NO_FILTER': // not used
-					return gl_account_types_list($name);
+					return GL_UI::types($name);
 				case 'GL_ACCOUNTS':
-					return gl_all_accounts_list($name);
+					return GL_UI::all($name);
 				case 'BANK_ACCOUNTS':
-					return Bank_UI::accounts_select_cells($name);
+					return Bank_UI::accounts($name);
 				case 'DIMENSION':
-					return dimensions_list($name, null, false, ' ', false, true, 0);
+					return Dimensions::select($name, null, false, ' ', false, true, 0);
 				case 'DIMENSIONS':
-					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 0);
+					return Dimensions::select($name, null, true, _("No Dimension Filter"), false, true, 0);
 				case 'DIMENSION1':
-					return dimensions_list($name, null, false, ' ', false, true, 1);
+					return Dimensions::select($name, null, false, ' ', false, true, 1);
 				case 'DIMENSIONS1':
-					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 1);
+					return Dimensions::select($name, null, true, _("No Dimension Filter"), false, true, 1);
 				case 'DIMENSION2':
-					return dimensions_list($name, null, false, ' ', false, true, 2);
+					return Dimensions::select($name, null, false, ' ', false, true, 2);
 				case 'DIMENSIONS2':
-					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 2);
+					return Dimensions::select($name, null, true, _("No Dimension Filter"), false, true, 2);
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM debtors_master";
@@ -345,13 +345,13 @@
 				case 'CATEGORIES':
 					return stock_categories_list($name, null, _("No Category Filter"));
 				case 'SALESTYPES':
-					return sales_types_list($name);
+					return Sales_UI::types($name);
 				case 'AREAS':
-					return sales_areas_list($name);
+					return Sales_UI::areas($name);
 				case 'SALESMEN':
-					return sales_persons_list($name, null, _("No Sales Folk Filter"));
+					return Sales_UI::persons($name, null, _("No Sales Folk Filter"));
 				case 'TRANS_YEARS':
-					return fiscalyears_list($name);
+					return GL_UI::fiscalyears($name);
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM users";
 					return combo_input(

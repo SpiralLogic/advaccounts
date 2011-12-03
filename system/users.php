@@ -174,7 +174,7 @@
 	security_roles_list_row(_("Access Level:"), 'Access', null);
 	languages_list_row(_("Language:"), 'language', null);
 	pos_list_row(_("User's POS") . ':', 'pos', null);
-	print_profiles_list_row(
+	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile', null,
 		_('Browser printing support')
 	);

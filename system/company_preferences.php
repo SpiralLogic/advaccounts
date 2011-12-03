@@ -144,7 +144,7 @@
 	text_row_ex(_("Official Company Number:"), 'coy_no', 25);
 	text_row_ex(_("GSTNo:"), 'gst_no', 25);
 	currencies_list_row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
-	fiscalyears_list_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
+	GL_UI::fiscalyears_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
 	Display::table_section(2);
 	text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
 	text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
@@ -152,7 +152,7 @@
 	file_row(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
 	check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 	number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
-	sales_types_list_row(
+	Sales_UI::types_row(
 		_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
 		_('No base price list')
 	);

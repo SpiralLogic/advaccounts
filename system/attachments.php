@@ -139,7 +139,7 @@
 	{
 		Display::start_form();
 		Display::start_table("class='tablestyle_noborder'");
-		systypes_list_row(_("Type:"), 'filterType', null, true);
+		SysTypes::view_row(_("Type:"), 'filterType', null, true);
 		Display::end_table(1);
 		Display::end_form();
 	}
@@ -171,7 +171,7 @@
 		while ($row = DB::fetch($rows))
 		{
 			Display::alt_table_row_color($k);
-			label_cell(get_trans_view_str($type, $row['trans_no']));
+			label_cell(GL_UI::trans_view($type, $row['trans_no']));
 			label_cell($row['description']);
 			label_cell($row['filename']);
 			label_cell($row['filesize']);

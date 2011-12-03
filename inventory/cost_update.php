@@ -45,7 +45,7 @@
 			);
 			Errors::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
-				Display::note(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}

@@ -108,7 +108,7 @@
 	if ($cash) {
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
 		check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
-		Bank_UI::cash_accounts_list_row(_("Default cash account") . ':', 'account');
+		Bank_UI::cash_accounts_row(_("Default cash account") . ':', 'account');
 	} else {
 		hidden('credit', 1);
 		hidden('account', 0);

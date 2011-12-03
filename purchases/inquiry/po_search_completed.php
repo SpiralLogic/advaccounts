@@ -65,7 +65,7 @@
 
 	function trans_view($trans)
 	{
-		return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
 	}
 
 	function edit_link($row)
