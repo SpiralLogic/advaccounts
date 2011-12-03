@@ -348,7 +348,7 @@
 	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "/$user_comp/images/"
-											 . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' border='0'>";
+											 . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");

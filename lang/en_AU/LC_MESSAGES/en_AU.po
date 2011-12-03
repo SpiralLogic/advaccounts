@@ -1,9 +1,9 @@
-# LAnguage template file for FrontAccounting 2.1.1
-# Copyright (C) 2009 FrontAccounting LLC
+# LAnguage template file for advaccounts 2.1.1
+# Copyright (C) 2011 advaccounts LLC
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FrontAccounting\n"
+"Project-Id-Version: advaccounts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-16 15:47+0100\n"
 "PO-Revision-Date: 2010-03-06 13:48+1000\n"

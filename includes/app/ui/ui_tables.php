@@ -61,7 +61,7 @@
 			$params .= " id='$id'";
 			$Ajax->addUpdate($id, $id, $label);
 		}
-		echo "<td >$label</td>\n";
+		echo "<td $params >$label</td>\n";
 		return $label;
 	}
 

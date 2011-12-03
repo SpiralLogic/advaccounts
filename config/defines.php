@@ -63,7 +63,7 @@
 	define('SS_GL_A', 63 << 8);
 	define('SS_ADV', 71 << 8);
 
-	//	FrontAccounting system transaction types
+	//	ADVAccounts system transaction types
 	//
 	define('ST_JOURNAL', 0);
 	define('ST_BANKPAYMENT', 1);

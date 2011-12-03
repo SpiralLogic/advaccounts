@@ -570,7 +570,7 @@
 	}
 
 	function set_icon($icon, $title = false) {
-		return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' border='0'" . ($title ?
+		return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ?
 		 " title='$title'" : "") . " />\n";
 	}
 
