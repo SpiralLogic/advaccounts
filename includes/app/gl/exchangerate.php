@@ -215,7 +215,7 @@
 					}
 					else {
 						label_cells(_("Exchange Rate:"),
-							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", 'class="label"',
+							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency",
 							'');
 					}
 					$Ajax->addUpdate('_ex_rate', '_ex_rate', $rate);

@@ -56,21 +56,21 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Sales_Point::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(
 		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");
 		label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
 		label_cell($myrow['cash_sale'] ? _('Yes') : _('No'));
@@ -79,16 +79,16 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
 		Errors::warning(_("To have cash POS first define at least one cash bank account."));
 	}
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Point::get($selected_id);
@@ -108,15 +108,15 @@
 	if ($cash) {
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
 		check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
-		cash_accounts_list_row(_("Default cash account") . ':', 'account');
+		Bank_UI::cash_accounts_list_row(_("Default cash account") . ':', 'account');
 	} else {
 		hidden('credit', 1);
 		hidden('account', 0);
 	}
 	locations_list_row(_("POS location") . ':', 'location');
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

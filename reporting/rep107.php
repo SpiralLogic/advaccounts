@@ -63,7 +63,7 @@
 				}
 				$sign = $j == ST_SALESINVOICE ? 1 : -1;
 				$myrow = Sales_Trans::get($i, $j);
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				$branch['disable_branch'] = $paylink; // helper
@@ -178,7 +178,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
-				$words = ui_view::price_in_words($myrow['Total'], $j);
+				$words = Item_Price::to_words($myrow['Total'], $j);
 				$rep->NewLine();
 				$rep->NewLine();
 				$invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);

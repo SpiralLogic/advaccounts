@@ -123,20 +123,20 @@
 	{
 		$company_currency = Banking::get_company_currency();
 		$result = GL_Currency::get_all(check_value('show_inactive'));
-		start_table(Config::get('tables_style'));
+		Display::start_table(Config::get('tables_style'));
 		$th = array(
 			_("Abbreviation"), _("Symbol"), _("Currency Name"),
 			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
 		);
 		inactive_control_column($th);
-		table_header($th);
+		Display::table_header($th);
 		$k = 0; //row colour counter
 		while ($myrow = DB::fetch($result))
 		{
 			if ($myrow[1] == $company_currency) {
-				start_row("class='currencybg'");
+				Display::start_row("class='currencybg'");
 			} else {
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
 			label_cell($myrow["curr_symbol"]);
@@ -147,7 +147,7 @@
 				$myrow[1] == $company_currency
 				 ? '-'
 				 :
-				 ($myrow["auto_update"] ? _('Yes') : _('No')), "align='center'"
+				 ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'"
 			);
 			inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
@@ -156,10 +156,10 @@
 			} else {
 				label_cell('');
 			}
-			end_row();
+			Display::end_row();
 		} //END WHILE LIST LOOP
 		inactive_control_row($th);
-		end_table();
+		Display::end_table();
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -167,7 +167,7 @@
 	function display_currency_edit($selected_id)
 	{
 		global $Mode;
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency
@@ -190,8 +190,8 @@
 		text_row_ex(_("Currency Name:"), 'CurrencyName', 20);
 		text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);
 		text_row_ex(_("Country:"), 'country', 40);
-		check_row(_("Automatic exchange rate update:"), 'auto_update', get_post('auto_update'));
-		end_table(1);
+		check_row(_("Automatic exchange rate update:"), 'auto_update', Display::get_post('auto_update'));
+		Display::end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
 
@@ -210,10 +210,10 @@
 		$_POST['CurrencyName'] = $_POST['country'] = '';
 		$_POST['hundreds_name'] = '';
 	}
-	start_form();
+	Display::start_form();
 	display_currencies();
 	display_currency_edit($selected_id);
-	end_form();
+	Display::end_form();
 
 	end_page();
 

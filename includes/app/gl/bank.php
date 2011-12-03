@@ -70,8 +70,8 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		$trans_type = ST_BANKTRANSFER;
 		$currency = Banking::get_bank_account_currency($from_account);
 		$trans_no = SysTypes::get_next_trans_no($trans_type);
-		$from_gl_account = GL_BankAccount::get_gl($from_account);
-		$to_gl_account = GL_BankAccount::get_gl($to_account);
+		$from_gl_account = Bank_Account::get_gl($from_account);
+		$to_gl_account = Bank_Account::get_gl($to_account);
 		$total = 0;
 		// do the source account postings
 		$total += GL_Trans::add($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
@@ -128,7 +128,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 			DB::begin_transaction();
 		}
 		$currency = Banking::get_bank_account_currency($from_account);
-		$bank_gl_account = GL_BankAccount::get_gl($from_account);
+		$bank_gl_account = Bank_Account::get_gl($from_account);
 		// the gl items are already inversed/negated for type 2 (deposit)
 		$total_amount = $items->gl_items_total();
 		if ($person_type_id == PT_CUSTOMER) {

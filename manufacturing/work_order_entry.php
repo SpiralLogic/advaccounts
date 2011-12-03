@@ -27,14 +27,14 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The work order been added."));
-		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(get_trans_view_str($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
 				'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
 			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
-			Errors::warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+			Errors::warning(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
 				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 			Errors::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
@@ -62,8 +62,8 @@
 
 	function safe_exit()
 		{
-			hyperlink_no_params("", _("Enter a new work order"));
-			hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
+			Display::link_no_params("", _("Enter a new work order"));
+			Display::link_no_params("search_work_orders.php", _("Select an existing work order"));
 			Page::footer_exit();
 		}
 
@@ -132,7 +132,7 @@
 						$result = Manufacturing::get_bom(Input::post('stock_id'));
 						while ($bom_item = DB::fetch($result)) {
 							if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
-								$quantity = $bom_item["quantity"] * input_num('quantity');
+								$quantity = $bom_item["quantity"] * Validation::input_num('quantity');
 								$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
 								if (-$quantity + $qoh < 0) {
 									Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
@@ -144,7 +144,7 @@
 					} elseif ($_POST['type'] == WO_UNASSEMBLY) {
 						// if unassembling, check item to unassemble
 						$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
-						if (-input_num('quantity') + $qoh < 0) {
+						if (-Validation::input_num('quantity') + $qoh < 0) {
 							Errors::error(_("The selected item cannot be unassembled because there is insufficient stock."));
 							return false;
 						}
@@ -163,7 +163,7 @@
 				//}
 				if (isset($selected_id)) {
 					$myrow = WO_WorkOrder::get($selected_id, true);
-					if ($_POST['units_issued'] > input_num('quantity')) {
+					if ($_POST['units_issued'] > Validation::input_num('quantity')) {
 						JS::set_focus('quantity');
 						Errors::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
 						return false;
@@ -181,18 +181,18 @@
 		if (!isset($_POST['cr_lab_acc'])) {
 			$_POST['cr_lab_acc'] = "";
 		}
-		$id = WO_WorkOrder::add($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'),
-			$_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'],
-			input_num('Labour'), $_POST['cr_lab_acc']);
+		$id = WO_WorkOrder::add($_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'),
+			$_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'],
+			Validation::input_num('Labour'), $_POST['cr_lab_acc']);
 		Dates::new_doc_date($_POST['date_']);
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
 
 	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
-		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
+		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
 			$_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
+		Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
 
 	if (isset($_POST['delete'])) {
@@ -207,22 +207,22 @@
 		if ($cancel_delete == false) { //ie not cancelled the delete as a result of above tests
 			// delete the actual work order
 			WO_WorkOrder::delete($selected_id);
-			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
+			Display::meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
 
 	if (isset($_POST['close'])) {
 		// update the closed flag in the work order
 		WO_WorkOrder::close($selected_id);
-		meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
+		Display::meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
 
-	if (get_post('_type_update')) {
+	if (Display::get_post('_type_update')) {
 		$Ajax->activate('_page_body');
 	}
 
-	start_form();
-	start_table(Config::get('tables_style2'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style2'));
 	$existing_comments = "";
 	$dec = 0;
 	if (isset($selected_id)) {
@@ -266,7 +266,7 @@
 		ref_row(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
 		wo_types_list_row(_("Type:"), 'type', null);
 	}
-	if (get_post('released')) {
+	if (Display::get_post('released')) {
 		hidden('stock_id', Input::post('stock_id'));
 		hidden('StockLocation', $_POST['StockLocation']);
 		hidden('type', $_POST['type']);
@@ -284,7 +284,7 @@
 	} else {
 		$_POST['quantity'] = Item::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
-	if (get_post('type') == WO_ADVANCED) {
+	if (Display::get_post('type') == WO_ADVANCED) {
 		qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
 		if ($_POST['released']) {
 			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::post('stock_id'))));
@@ -311,15 +311,15 @@
 		amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
 		gl_all_accounts_list_row(_("Credit Overhead Account"), 'cr_acc', null);
 	}
-	if (get_post('released')) {
+	if (Display::get_post('released')) {
 		label_row(_("Released On:"), $_POST['released_date']);
 	}
 	textarea_row(_("Memo:"), 'memo_', null, 40, 5);
-	end_table(1);
+	Display::end_table(1);
 	if (isset($selected_id)) {
-		echo "<table align=center><tr>";
+		echo "<table class=center><tr>";
 		submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
-		if (get_post('released')) {
+		if (Display::get_post('released')) {
 			submit_cells('close', _("Close This Work Order"), '', '', true);
 		}
 		submit_cells('delete', _("Delete This Work Order"), '', '', true);
@@ -327,7 +327,7 @@
 	} else {
 		submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
 	}
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

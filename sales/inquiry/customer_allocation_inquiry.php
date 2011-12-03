@@ -20,18 +20,18 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+	Display::start_form();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
+	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 	date_cells(_("from:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
-	cust_allocations_list_cells(_("Type:"), 'filterType', null);
+	Debtor_UI::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->global_customer = $_POST['customer_id'];
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 
 	function check_overdue($row)
 		{
@@ -40,7 +40,7 @@
 
 	function order_link($row)
 		{
-			return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
+			return $row['order_'] > 0 ? Debtor_UI::trans_view(ST_SALESORDER, $row['order_']) : "";
 		}
 
 	function systype_name($dummy, $type)
@@ -51,7 +51,7 @@
 
 	function view_link($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return get_trans_view_str($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -66,7 +66,7 @@
 
 	function alloc_link($row)
 		{
-			$link = pager_link(_("Allocation"),
+			$link = DB_Pager::link(_("Allocation"),
 			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 			if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
 				/*its a credit note which could have an allocation */
@@ -158,7 +158,7 @@
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 ?>

@@ -22,7 +22,7 @@
 			JS::set_focus('date_');
 			return false;
 		}
-		if (input_num('BuyRate') <= 0) {
+		if (Validation::input_num('BuyRate') <= 0) {
 			Errors::error(_("The exchange rate cannot be zero or a negative number."));
 			JS::set_focus('BuyRate');
 			return false;
@@ -45,12 +45,12 @@
 		if ($selected_id != "") {
 			GL_ExchangeRate::update(
 				$_POST['curr_abrev'], $_POST['date_'],
-				input_num('BuyRate'), input_num('BuyRate')
+				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
 			);
 		} else {
 			GL_ExchangeRate::add(
 				$_POST['curr_abrev'], $_POST['date_'],
-				input_num('BuyRate'), input_num('BuyRate')
+				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
 			);
 		}
 		$selected_id = '';
@@ -89,7 +89,7 @@
 	{
 		global $selected_id;
 		$Ajax = Ajax::i();
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		if ($selected_id != "") {
 			//editing an existing exchange rate
 			$myrow = GL_ExchangeRate::get($selected_id);
@@ -113,7 +113,7 @@
 			submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
 			User::exrate_dec()
 		);
-		end_table(1);
+		Display::end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
@@ -135,7 +135,7 @@
 		handle_delete();
 	}
 
-	start_form();
+	Display::start_form();
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
@@ -169,16 +169,16 @@
 		Errors::warning(_("The selected currency is the company currency."), 2);
 		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	} else {
-		br(1);
+		Display::br(1);
 		$table->width = "40%";
 		if ($table->rec_count == 0) {
 			$table->ready = false;
 		}
-		display_db_pager($table);
-		br(1);
+		DB_Pager::display($table);
+		Display::br(1);
 		display_rate_edit();
 	}
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

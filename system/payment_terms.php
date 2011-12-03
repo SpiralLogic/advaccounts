@@ -104,7 +104,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -114,11 +114,11 @@
 		$sql .= " WHERE !inactive";
 	}
 	$result = DB::query($sql, "could not get payment terms");
-	start_form();
-	start_table(Config::get('tables_style'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
@@ -132,19 +132,19 @@
 		} else {
 			$after_text = $myrow["days_before_due"] . " " . _("days");
 		}
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["terms"]);
 		label_cell($full_text);
 		label_cell($after_text);
 		inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
 		edit_button_cell("Edit" . $myrow["terms_indicator"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["terms_indicator"], _("Delete"));
-		end_row();
+		Display::end_row();
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -171,9 +171,9 @@
 		}
 	}
 	text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

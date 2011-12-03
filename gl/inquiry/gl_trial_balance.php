@@ -16,27 +16,27 @@
 
 	// Ajax updates
 	//
-	if (get_post('Show')) {
+	if (Display::get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
 	function gl_inquiry_controls()
 	{
-		start_form();
-		start_table("class='tablestyle_noborder'");
+		Display::start_form();
+		Display::start_table("class='tablestyle_noborder'");
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		check_cells(_("No zero values"), 'NoZero', null);
 		check_cells(_("Only balances"), 'Balance', null);
 		submit_cells('Show', _("Show"), '', '', 'default');
-		end_table();
-		end_form();
+		Display::end_table();
+		Display::end_form();
 	}
 
 
 	function display_trial_balance()
 	{
-		div_start('balance_tbl');
-		start_table(Config::get('tables_style'));
+		Display::div_start('balance_tbl');
+		Display::start_table(Config::get('tables_style'));
 		$tableheader
 		 = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
@@ -69,7 +69,7 @@
 			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" .
 			 $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" .
 			 $account["account_code"] . "'>" . $account["account_code"] . "</a>";
@@ -96,13 +96,13 @@
 			$pbal += $prev['balance'];
 			$cbal += $curr['balance'];
 			$tbal += $tot['balance'];
-			end_row();
+			Display::end_row();
 		}
 		//$prev = GL_Trans::get_balance(null, $begin, $_POST['TransFromDate'], false, false);
 		//$curr = GL_Trans::get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		//$tot = GL_Trans::get_balance(null, $begin, $_POST['TransToDate'], false, true);
 		if (!check_value('Balance')) {
-			start_row("class='inquirybg' style='font-weight:bold'");
+			Display::start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_("Total") . " - " . $_POST['TransToDate'], "colspan=2");
 			amount_cell($pdeb);
 			amount_cell($pcre);
@@ -110,16 +110,16 @@
 			amount_cell($ccre);
 			amount_cell($tdeb);
 			amount_cell($tcre);
-			end_row();
+			Display::end_row();
 		}
-		start_row("class='inquirybg' style='font-weight:bold'");
+		Display::start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
 		Display::debit_or_credit_cells($pbal);
 		Display::debit_or_credit_cells($cbal);
 		Display::debit_or_credit_cells($tbal);
-		end_row();
-		end_table(1);
-		div_end();
+		Display::end_row();
+		Display::end_table(1);
+		Display::div_end();
 	}
 
 

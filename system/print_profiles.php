@@ -12,7 +12,7 @@
 	$page_security = 'SA_PRINTPROFILE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Printing Profiles"));
-	$selected_id = get_post('profile_id', '');
+	$selected_id = Display::get_post('profile_id', '');
 
 	// Returns array of defined reports
 	//
@@ -79,7 +79,7 @@
 	}
 
 
-	if (get_post('submit')) {
+	if (Display::get_post('submit')) {
 		$error = 0;
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
 			$error = 1;
@@ -87,15 +87,15 @@
 			JS::set_focus('name');
 		}
 		if (!$error) {
-			$prof = array('' => get_post('Prn')); // store default value/profile name
+			$prof = array('' => Display::get_post('Prn')); // store default value/profile name
 			foreach (
 				get_reports() as $rep => $descr
 			) {
-				$val        = get_post('Prn' . $rep);
+				$val        = Display::get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
 			if ($_POST['profile_id'] == '') {
-				$_POST['profile_id'] = get_post('name');
+				$_POST['profile_id'] = Display::get_post('name');
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
@@ -106,47 +106,47 @@
 			}
 		}
 	}
-	if (get_post('delete')) {
-		if (!check_delete(get_post('name'))) {
+	if (Display::get_post('delete')) {
+		if (!check_delete(Display::get_post('name'))) {
 			Printer::delete_profile($selected_id);
 			Errors::notice(_('Selected printing profile has been deleted'));
 			clear_form();
 		}
 	}
-	if (get_post('_profile_id_update')) {
+	if (Display::get_post('_profile_id_update')) {
 		$Ajax->activate('_page_body');
 	}
-	start_form();
-	start_table();
+	Display::start_form();
+	Display::start_table();
 	print_profiles_list_row(
 		_('Select printing profile') . ':', 'profile_id', null,
 		_('New printing profile'), true
 	);
-	end_table();
+	Display::end_table();
 	echo '<hr>';
-	start_table();
-	if (get_post('profile_id') == '') {
+	Display::start_table();
+	if (Display::get_post('profile_id') == '') {
 		text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
 } else {
-		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
+		label_cells(_("Printing Profile Name") . ':', Display::get_post('profile_id'));
 	}
-	end_table(1);
-	$result = Printer::get_profile(get_post('profile_id'));
+	Display::end_table(1);
+	$result = Printer::get_profile(Display::get_post('profile_id'));
 	$prints = array();
 	while ($myrow = DB::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
-	start_table(Config::get('tables_style'));
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
-	table_header($th);
+	Display::table_header($th);
 	$k    = 0;
 	$unkn = 0;
 	foreach (
 		get_reports() as $rep => $descr
 	)
 	{
-		alt_table_row_color($k);
-		label_cell($rep == '' ? '-' : $rep, 'align=center');
+		Display::alt_table_row_color($k);
+		label_cell($rep == '' ? '-' : $rep, 'class=center');
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
 		echo '<td>';
@@ -158,16 +158,16 @@
 		if ($descr == '') {
 			$unkn = 1;
 		}
-		end_row();
+		Display::end_row();
 	}
-	end_table();
+	Display::end_table();
 	if ($unkn) {
 		Errors::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
 } else {
 		echo '<br>';
 	}
-	div_start('controls');
-	if (get_post('profile_id') == '') {
+	Display::div_start('controls');
+	if (Display::get_post('profile_id') == '') {
 		submit_center('submit', _("Add New Profile"), true, '', 'default');
 	} else {
 		submit_center_first(
@@ -179,8 +179,8 @@
 			_('Delete printer profile (only if not used by any user)'), true
 		);
 	}
-	div_end();
-	end_form();
+	Display::div_end();
+	Display::end_form();
 	end_page();
 
 ?>

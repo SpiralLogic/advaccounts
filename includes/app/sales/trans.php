@@ -388,11 +388,11 @@
 					$tax = Num::format($tax_item['amount'], User::price_dec());
 					if ($tax_item['included_in_price']) {
 						label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax",
-							"", "colspan=$columns align=right", "align=right");
+							"", "colspan=$columns class=right", "class=right");
 					}
 					else {
-						label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns align=right",
-							"align=right");
+						label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns class=right",
+							"class=right");
 					}
 				}
 			}

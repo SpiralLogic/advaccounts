@@ -40,16 +40,16 @@
 	}
 	Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style') . "  width=90%");
-	start_row();
+	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_row();
 	label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 	if ($show_currencies) {
 		label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
 	if ($show_currencies) {
-		end_row();
-		start_row();
+		Display::end_row();
+		Display::start_row();
 	}
 	label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tableheader2'");
 	if ($show_currencies) {
@@ -59,20 +59,20 @@
 		label_cells(
 			_("Amount"), Num::format(
 				$to_trans['amount'], User::price_dec()
-			), "class='tableheader2'", "align=right"
+			), "class='tableheader2'", "class=right"
 		);
 	}
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	label_cells(
 		_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
 		"class='tableheader2'"
 	);
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
-	end_row();
+	Display::end_row();
 	DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);
-	end_table(1);
+	Display::end_table(1);
 	Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 	end_page(true);
 ?>

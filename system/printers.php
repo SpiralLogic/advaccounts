@@ -33,9 +33,9 @@
 		}
 		if ($error != 1) {
 			Printer::write_def(
-				$selected_id, get_post('name'), get_post('descr'),
-				get_post('queue'), get_post('host'), input_num('port', 0),
-				input_num('tout', 0)
+				$selected_id, Display::get_post('name'), Display::get_post('descr'),
+				Display::get_post('queue'), Display::get_post('host'), Validation::input_num('port', 0),
+				Validation::input_num('tout', 0)
 			);
 			Errors::notice(
 				$selected_id == -1 ?
@@ -65,28 +65,28 @@
 	}
 
 	$result = Printer::get_all();
-	start_form();
-	start_table(Config::get('tables_style'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow['name']);
 		label_cell($myrow['description']);
 		label_cell($myrow['host']);
 		label_cell($myrow['queue']);
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 	} //END WHILE LIST LOOP
-	end_table();
-	end_form();
+	Display::end_table();
+	Display::end_form();
 	echo '<br>';
 
-	start_form();
-	start_table(Config::get('tables_style2'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_printer($selected_id);
@@ -112,9 +112,9 @@
 	text_row(_("Port") . ':', 'port', null, 5, 5);
 	text_row(_("Printer Queue") . ':', 'queue', null, 20, 20);
 	text_row(_("Timeout") . ':', 'tout', null, 5, 5);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

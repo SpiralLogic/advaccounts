@@ -11,14 +11,12 @@
 	 ***********************************************************************/
 	class Tax_Groups
 	{
-		static function clear_shipping_tax_group()
-		{
+		static function clear_shipping_tax_group() {
 			$sql = "UPDATE tax_groups SET tax_shipping=0 WHERE 1";
 			DB::query($sql, "could not update tax_shipping fields");
 		}
 
-		static function add_tax_group($name, $tax_shipping, $taxes, $rates)
-		{
+		static function add_tax_group($name, $tax_shipping, $taxes, $rates) {
 			DB::begin_transaction();
 			if ($tax_shipping) // only one tax group for shipping
 			{
@@ -31,8 +29,7 @@
 			DB::commit_transaction();
 		}
 
-		static function update_tax_group($id, $name, $tax_shipping, $taxes, $rates)
-		{
+		static function update_tax_group($id, $name, $tax_shipping, $taxes, $rates) {
 			DB::begin_transaction();
 			if ($tax_shipping) // only one tax group for shipping
 			{
@@ -45,8 +42,7 @@
 			DB::commit_transaction();
 		}
 
-		static function get_all_tax_groups($all = false)
-		{
+		static function get_all_tax_groups($all = false) {
 			$sql = "SELECT * FROM tax_groups";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -54,15 +50,13 @@
 			return DB::query($sql, "could not get all tax group");
 		}
 
-		static function get_tax_group($type_id)
-		{
+		static function get_tax_group($type_id) {
 			$sql = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
 			$result = DB::query($sql, "could not get tax group");
 			return DB::fetch($result);
 		}
 
-		static function delete_tax_group($id)
-		{
+		static function delete_tax_group($id) {
 			DB::begin_transaction();
 			$sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete tax group");
@@ -70,8 +64,7 @@
 			DB::commit_transaction();
 		}
 
-		static function add_tax_group_items($id, $items, $rates)
-		{
+		static function add_tax_group_items($id, $items, $rates) {
 			for (
 				$i = 0; $i < count($items); $i++
 			)
@@ -83,14 +76,12 @@
 			}
 		}
 
-		static function delete_tax_group_items($id)
-		{
+		static function delete_tax_group_items($id) {
 			$sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DB::escape($id);
 			DB::query($sql, "could not delete item tax group items");
 		}
 
-		static function get_for_item($id)
-		{
+		static function get_for_item($id) {
 			$sql
 			 = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
@@ -98,25 +89,23 @@
 			return DB::query($sql, "could not get item tax type group items");
 		}
 
-		static function get_tax_group_items_as_array($id)
-		{
+		static function get_tax_group_items_as_array($id) {
 			$ret_tax_array = array();
 			$tax_group_items = static::get_for_item($id);
 			while ($tax_group_item = DB::fetch($tax_group_items))
 			{
-				$index                                       = $tax_group_item['tax_type_id'];
-				$ret_tax_array[$index]['tax_type_id']        = $tax_group_item['tax_type_id'];
-				$ret_tax_array[$index]['tax_type_name']      = $tax_group_item['tax_type_name'];
-				$ret_tax_array[$index]['sales_gl_code']      = $tax_group_item['sales_gl_code'];
+				$index = $tax_group_item['tax_type_id'];
+				$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
+				$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
+				$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
 				$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-				$ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
-				$ret_tax_array[$index]['Value']              = 0;
+				$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
+				$ret_tax_array[$index]['Value'] = 0;
 			}
 			return $ret_tax_array;
 		}
 
-		static function get_shipping_tax_group_items()
-		{
+		static function get_shipping_tax_group_items() {
 			$sql
 			 = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
@@ -127,19 +116,18 @@
 			return DB::query($sql, "could not get shipping tax group items");
 		}
 
-		static function get_shipping_tax_as_array()
-		{
+		static function get_shipping_tax_as_array() {
 			$ret_tax_array = array();
 			$tax_group_items = static::get_shipping_tax_group_items();
 			while ($tax_group_item = DB::fetch($tax_group_items))
 			{
-				$index                                       = $tax_group_item['tax_type_id'];
-				$ret_tax_array[$index]['tax_type_id']        = $tax_group_item['tax_type_id'];
-				$ret_tax_array[$index]['tax_type_name']      = $tax_group_item['tax_type_name'];
-				$ret_tax_array[$index]['sales_gl_code']      = $tax_group_item['sales_gl_code'];
+				$index = $tax_group_item['tax_type_id'];
+				$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
+				$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
+				$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
 				$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-				$ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
-				$ret_tax_array[$index]['Value']              = 0;
+				$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
+				$ret_tax_array[$index]['Value'] = 0;
 			}
 			return $ret_tax_array;
 		}

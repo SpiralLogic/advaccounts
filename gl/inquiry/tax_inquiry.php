@@ -17,10 +17,10 @@
 
 	// Ajax updates
 	//
-	if (get_post('Show')) {
+	if (Display::get_post('Show')) {
 		$Ajax->activate('trans_tbl');
 	}
-	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
+	if (Display::get_post('TransFromDate') == "" && Display::get_post('TransToDate') == "") {
 		$date = Dates::Today();
 		$row = DB_Company::get_prefs();
 		$edate = Dates::add_months($date, -$row['tax_last']);
@@ -33,26 +33,26 @@
 
 	function tax_inquiry_controls()
 	{
-		start_form();
-		//start_table(Config::get('tables_style2'));
-		start_table("class='tablestyle_noborder'");
-		start_row();
+		Display::start_form();
+		//Display::start_table(Config::get('tables_style2'));
+		Display::start_table("class='tablestyle_noborder'");
+		Display::start_row();
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
 		submit_cells('Show', _("Show"), '', '', 'default');
-		end_row();
-		end_table();
-		end_form();
+		Display::end_row();
+		Display::end_table();
+		Display::end_form();
 	}
 
 
 	function show_results()
 	{
 		/*Now get the transactions  */
-		div_start('trans_tbl');
-		start_table(Config::get('tables_style'));
+		Display::div_start('trans_tbl');
+		Display::start_table(Config::get('tables_style'));
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
-		table_header($th);
+		Display::table_header($th);
 		$k = 0;
 		$total = 0;
 		$bdate = Dates::date2sql($_POST['TransFromDate']);
@@ -64,33 +64,33 @@
 			$collectible = $tx['collectible'];
 			$net = $collectible + $payable;
 			$total += $net;
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			label_cell($tx['name'] . " " . $tx['rate'] . "%");
 			label_cell(_("Charged on sales") . " (" . _("Output Tax") . "):");
 			amount_cell($payable);
 			amount_cell($tx['net_output']);
-			end_row();
-			alt_table_row_color($k);
+			Display::end_row();
+			Display::alt_table_row_color($k);
 			label_cell($tx['name'] . " " . $tx['rate'] . "%");
 			label_cell(_("Paid on purchases") . " (" . _("Input Tax") . "):");
 			amount_cell($collectible);
 			amount_cell($tx['net_input']);
-			end_row();
-			alt_table_row_color($k);
+			Display::end_row();
+			Display::alt_table_row_color($k);
 			label_cell("<b>" . $tx['name'] . " " . $tx['rate'] . "%</b>");
 			label_cell("<b>" . _("Net payable or collectible") . ":</b>");
 			amount_cell($net, true);
 			label_cell("");
-			end_row();
+			Display::end_row();
 		}
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell("");
 		label_cell("<b>" . _("Total payable or refund") . ":</b>");
 		amount_cell($total, true);
 		label_cell("");
-		end_row();
-		end_table(2);
-		div_end();
+		Display::end_row();
+		Display::end_table(2);
+		Display::div_end();
 	}
 
 

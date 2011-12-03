@@ -22,7 +22,7 @@
 	}
 
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	start_form();
+	Display::start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -33,14 +33,14 @@
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
-	div_start('status_tbl');
+	Display::div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."),
 			0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
-	start_table(Config::get('tables_style'));
+	Display::start_table(Config::get('tables_style'));
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
 	} else {
@@ -49,13 +49,13 @@
 			_("Demand"), _("Available"), _("On Order")
 		);
 	}
-	table_header($th);
+	Display::table_header($th);
 	$dec = Item::qty_dec($_POST['stock_id']);
 	$j = 1;
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($loc_details))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
@@ -68,22 +68,22 @@
 			qty_cell($demand_qty, false, $dec);
 			qty_cell($qoh - $demand_qty, false, $dec);
 			qty_cell($qoo, false, $dec);
-			end_row();
+			Display::end_row();
 		} else {
 			/* It must be a service or kitset part */
 			label_cell($myrow["location_name"]);
 			qty_cell($demand_qty, false, $dec);
-			end_row();
+			Display::end_row();
 		}
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			table_header($th);
+			Display::table_header($th);
 		}
 	}
-	end_table();
-	div_end();
-	end_form();
+	Display::end_table();
+	Display::div_end();
+	Display::end_form();
 	end_page();
 
 ?>

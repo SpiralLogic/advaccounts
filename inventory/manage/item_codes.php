@@ -22,7 +22,7 @@
 			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
-		elseif (!input_num('quantity'))
+		elseif (!Validation::input_num('quantity'))
 		{
 			$input_error = 1;
 			Errors::error(_("The price entered was not positive number."));
@@ -75,7 +75,7 @@
 		$Ajax->activate('_page_body');
 	}
 
-	start_form();
+	Display::start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -89,17 +89,17 @@
 	$dflt_desc = $result['description'];
 	$dflt_cat = $result['category_id'];
 	$result = Item_Code::get_all($_POST['stock_id']);
-	div_start('code_table');
-	start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::div_start('code_table');
+	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 	$th = array(
 		_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""
 	);
-	table_header($th);
+	Display::table_header($th);
 	$k = $j = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["item_code"]);
 		qty_cell($myrow["quantity"], $dec);
 		label_cell($units);
@@ -107,15 +107,15 @@
 		label_cell($myrow["cat_name"]);
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		edit_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			table_header($th);
+			Display::table_header($th);
 		} //end of page full new headings
 	} //end of while loop
-	end_table();
-	div_end();
+	Display::end_table();
+	Display::div_end();
 
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
@@ -132,15 +132,15 @@
 		$_POST['category_id'] = $dflt_cat;
 	}
 	echo "<br>";
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	hidden('code_id', $selected_id);
 	text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
 	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
 	text_row(_("Description:"), 'description', null, 50, 200);
 	stock_categories_list_row(_("Category:"), 'category_id', null);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

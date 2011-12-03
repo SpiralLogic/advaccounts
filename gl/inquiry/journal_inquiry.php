@@ -16,27 +16,27 @@
 
 	// Ajax updates
 	//
-	if (get_post('Search')) {
+	if (Display::get_post('Search')) {
 		$Ajax->activate('journal_tbl');
 	}
 
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = -1;
 	}
-	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	ref_cells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
 	journal_types_list_cells(_("Type:"), "filterType");
 	date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 	date_cells(_("To:"), 'ToDate');
 	check_cells(_("Show closed:"), 'AlsoClosed', null);
 	submit_cells('Search', _("Search"), '', '', 'default');
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	ref_cells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 	function journal_pos($row)
 	{
 		return $row['gl_seq'] ? $row['gl_seq'] : '-';
@@ -50,12 +50,12 @@
 
 	function view_link($row)
 	{
-		return ui_view::get_trans_view_str($row["type"], $row["type_no"]);
+		return get_trans_view_str($row["type"], $row["type_no"]);
 	}
 
 	function gl_link($row)
 	{
-		return ui_view::get_gl_view_str($row["type"], $row["type_no"]);
+		return get_gl_view_str($row["type"], $row["type_no"]);
 	}
 
 	$editors = array(
@@ -85,7 +85,7 @@
 	{
 		global $editors;
 		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
-		 pager_link(
+		 DB_Pager::link(
 			 _("Edit"),
 			 sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			 ICON_EDIT
@@ -125,8 +125,8 @@
 	 if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 		 $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
 	 }
-	 if (get_post('filterType') != -1) {
-		 $sql .= " AND gl.type=".get_post('filterType');
+	 if (Display::get_post('filterType') != -1) {
+		 $sql .= " AND gl.type=".Display::get_post('filterType');
 	 }
 	 if (!check_value('AlsoClosed')) {
 		 $sql .= " AND gl_seq=0";
@@ -160,8 +160,8 @@
 	if (isset($_POST['Memo']) && $_POST['Memo'] != "") {
 		$sql .= " AND com.memo_ LIKE '%" . $_POST['Memo'] . "%'";
 	}
-	if (get_post('filterType') != -1) {
-		$sql .= " AND gl.type=" . get_post('filterType');
+	if (Display::get_post('filterType') != -1) {
+		$sql .= " AND gl.type=" . Display::get_post('filterType');
 	}
 	if (!check_value('AlsoClosed')) {
 		$sql .= " AND gl_seq=0";
@@ -197,8 +197,8 @@
 	}
 	$table =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 
 ?>

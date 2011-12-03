@@ -264,15 +264,15 @@
 	}
 
 
-	start_table(Config::get('tables_style') . " width=90%");
+	Display::start_table(Config::get('tables_style') . " width=90%");
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	foreach (
 		$system_tests as $test
 	)
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		$result = call_user_func($test);
 		if (!$result) {
 			continue;
@@ -295,9 +295,9 @@
 			"<span style='color:$color'>" .
 			 ($result['result'] ? _('Ok') : '<b>' . $comm . '</b>') . '</span>'
 		);
-		end_row();
+		Display::end_row();
 	}
-	end_table();
+	Display::end_table();
 	end_page();
 
 ?>

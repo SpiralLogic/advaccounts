@@ -9,14 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//	Returns next transaction number.
 	//	Used only for transactions stored in tables without autoincremented key.
 	//
 	class SysTypes
 	{
-		public static function get_next_trans_no($trans_type)
-		{
+		public static function get_next_trans_no($trans_type) {
 			$st = SysTypes::get_systype_db_info($trans_type);
 			if (!($st && $st[0] && $st[2])) {
 				// this is in fact internal error condition.
@@ -40,9 +38,7 @@
 			return $ref;
 		}
 
-
-		public static function get_systype_db_info($type)
-		{
+		public static function get_systype_db_info($type) {
 			switch ($type) {
 				case	 ST_JOURNAL		:
 					return array("gl_trans", "type", "type_no", null, "tran_date");
@@ -98,15 +94,13 @@
 			Errors::show_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
 		}
 
-		public static function get_systypes()
-		{
+		public static function get_systypes() {
 			$sql = "SELECT * FROM sys_types";
 			$result = DB::query($sql, "could not query systypes table");
 			return $result;
 		}
 
-		public static function get_class_type_convert($ctype)
-		{
+		public static function get_class_type_convert($ctype) {
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 				return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
 			} else {

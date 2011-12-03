@@ -10,41 +10,41 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class GL_JournalUI
+	class GL_Journal
 	{
 		public static function header($order)
 			{
 				$Ajax = Ajax::i();
 				$qes = GL_QuickEntry::has(QE_JOURNAL);
 				$new = $order->order_id == 0;
-				start_outer_table(Config::get('tables_style2') . " width=90%");
-				table_section(1);
-				start_row();
+				Display::start_outer_table(Config::get('tables_style2') . " width=90%");
+				Display::table_section(1);
+				Display::start_row();
 				date_cells(_("Date:"), 'date_', '', $new);
-				table_section(2, $qes ? "20%" : "50%");
+				Display::table_section(2, $qes ? "20%" : "50%");
 				ref_cells(_("Reference:"), 'ref', '');
 				hidden('ref_original');
-				end_row();
+				Display::end_row();
 				if ($new) {
-					table_section(3, "20%");
-					start_row();
+					Display::table_section(3, "20%");
+					Display::start_row();
 					check_cells(_("Reverse Transaction:"), 'Reverse', null);
-					end_row();
+					Display::end_row();
 				}
 				if ($qes !== false) {
-					table_section(3, "50%");
-					start_row();
+					Display::table_section(3, "50%");
+					Display::start_row();
 					quick_entries_list_cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
-					$qid = GL_QuickEntry::get(get_post('person_id'));
+					$qid = GL_QuickEntry::get(Display::get_post('person_id'));
 					if (list_updated('person_id')) {
 						unset($_POST['totamount']); // enable default
 						$Ajax->activate('totamount');
 					}
 					amount_cells($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']), null,
 					 "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
-					end_row();
+					Display::end_row();
 				}
-				end_outer_table(1);
+				Display::end_outer_table(1);
 			}
 
 
@@ -52,8 +52,8 @@
 			{
 				Display::heading($title);
 				$dim = DB_Company::get_pref('use_dimension');
-				div_start('items_table');
-				start_table(Config::get('tables_style') . " colspan=7 width=95%");
+				Display::div_start('items_table');
+				Display::start_table(Config::get('tables_style') . " colspan=7 width=95%");
 				if ($dim == 2) {
 					$th = array(
 						_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), "");
@@ -67,12 +67,12 @@
 				if (count($order->gl_items)) {
 					$th[] = '';
 				}
-				table_header($th);
+				Display::table_header($th);
 				$k = 0;
 				$id = find_submit('Edit');
 				foreach ($order->gl_items as $line => $item) {
 					if ($id != $line) {
-						alt_table_row_color($k);
+						Display::alt_table_row_color($k);
 						label_cells($item->code_id, $item->description);
 						if ($dim >= 1) {
 							label_cell(Dimensions::get_string($item->dimension_id, true));
@@ -90,32 +90,32 @@
 						label_cell($item->reference);
 						edit_button_cell("Edit$line", _("Edit"), _('Edit journal line'));
 						delete_button_cell("Delete$line", _("Delete"), _('Remove line from journal'));
-						end_row();
+						Display::end_row();
 					} else {
-						GL_JournalUI::item_controls($order, $dim, $line);
+						GL_Journal::item_controls($order, $dim, $line);
 					}
 				}
 				if ($id == -1) {
-					GL_JournalUI::item_controls($order, $dim);
+					GL_Journal::item_controls($order, $dim);
 				}
 				if ($order->count_gl_items()) {
 					$colspan = ($dim == 2 ? "4" : ($dim == 1 ? "3" : "2"));
-					start_row();
-					label_cell(_("Total"), "align=right colspan=" . $colspan);
+					Display::start_row();
+					label_cell(_("Total"), "class=right colspan=" . $colspan);
 					amount_cell($order->gl_items_total_debit());
 					amount_cell(abs($order->gl_items_total_credit()));
 					label_cell('', "colspan=3");
-					end_row();
+					Display::end_row();
 				}
-				end_table();
-				div_end();
+				Display::end_table();
+				Display::div_end();
 			}
 
 
 		public static function item_controls($order, $dim, $Index = null)
 			{
 				$Ajax = Ajax::i();
-				start_row();
+				Display::start_row();
 				$id = find_submit('Edit');
 				if ($Index != -1 && $Index == $id) {
 					// Modifying an existing row
@@ -179,13 +179,13 @@
 				} else {
 					submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
 				}
-				end_row();
+				Display::end_row();
 			}
 
 
 		public static function option_controls()
 			{
-				echo "<br><table align='center'>";
+				echo "<br><table class='center'>";
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				echo "</table>";
 			}

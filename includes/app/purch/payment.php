@@ -17,7 +17,7 @@
 				DB::begin_transaction();
 				$supplier_currency = Banking::get_supplier_currency($supplier_id);
 				$bank_account_currency = Banking::get_bank_account_currency($bank_account);
-				$bank_gl_account = GL_BankAccount::get_gl($bank_account);
+				$bank_gl_account = Bank_Account::get_gl($bank_account);
 				if ($rate == 0) {
 					$supp_amount = Banking::exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 					$supp_discount = Banking::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);

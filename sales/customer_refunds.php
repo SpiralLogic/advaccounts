@@ -20,7 +20,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	if (!isset($_POST['customer_id'])) {
-		$customer = new Contacts_Customer(Session::i()->global_customer);
+		$customer = new Debtor(Session::i()->global_customer);
 	}
 	if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = Dates::new_doc_date();
@@ -31,21 +31,21 @@
 	if (isset($_GET['AddedID'])) {
 		$refund_id = $_GET['AddedID'];
 		Errors::notice(_("The customer refund has been successfully entered."));
-		submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
-		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
-		Display::note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id,
+		Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
+		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
+		Display::note(get_gl_view_str(ST_CUSTREFUND, $refund_id,
 			_("&View the GL Journal Entries for this Customer Refund")));
 		Page::footer_exit();
 	}
 
 	function can_process()
 		{
-			if (!get_post('customer_id')) {
+			if (!Display::get_post('customer_id')) {
 				Errors::error(_("There is no customer selected."));
 				JS::setfocus('[name="customer_id"]');
 				return false;
 			}
-			if (!get_post('BranchID')) {
+			if (!Display::get_post('BranchID')) {
 				Errors::error(_("This customer has no branch defined."));
 				JS::setfocus('[name="BranchID"]');
 				return false;
@@ -79,7 +79,7 @@
 				JS::setfocus('[name="charge"]');
 				return false;
 			}
-			if (isset($_POST['charge']) && input_num('charge') > 0) {
+			if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 				$charge_acct = DB_Company::get_pref('bank_charge_act');
 				if (GL_Account::get($charge_acct) == false) {
 					Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
@@ -95,13 +95,13 @@
 			if ($_POST['discount'] == "") {
 				$_POST['discount'] = 0;
 			}
-			//if ((input_num('amount') - input_num('discount') <= 0)) {
-			if (input_num('amount') >= 0) {
+			//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
+			if (Validation::input_num('amount') >= 0) {
 				Errors::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
 				JS::setfocus('[name="amount"]');
 				return false;
 			}
-			$_SESSION['alloc']->amount = -1 * input_num('amount');
+			$_SESSION['alloc']->amount = -1 * Validation::input_num('amount');
 			if (isset($_POST["TotalNumberOfAllocs"])) {
 				return Gl_Allocation::check();
 			}
@@ -130,15 +130,15 @@
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
 		} else {
-			$rate = input_num('_ex_rate');
+			$rate = Validation::input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
 		$refund_id = Sales_Debtor_Refund::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
-			$_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate,
-			input_num('charge'));
+			$_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate,
+			Validation::input_num('charge'));
 		$_SESSION['alloc']->trans_no = $refund_id;
 		$_SESSION['alloc']->write();
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
 	}
 
 	function read_customer_data()
@@ -157,9 +157,9 @@
 		}
 
 
-	start_form();
-	start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
-	table_section(1);
+	Display::start_form();
+	Display::start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
+	Display::table_section(1);
 	UI::search('customer', array(
 															'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
 	if (!isset($_POST['bank_account'])) // first page call
@@ -167,21 +167,21 @@
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
 	}
 	if (count($customer->branches) == 0) {
-		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+		Debtor_UI::branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
 	Session::i()->global_customer = $customer->id;
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
-		end_outer_table();
+		Display::end_outer_table();
 		Errors::error(_("This customer account is on hold."));
 	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
-		table_section(2);
-		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+		Display::table_section(2);
+		Bank_UI::accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
-		table_section(3);
+		Display::table_section(3);
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 		$comp_currency = Banking::get_company_currency();
 		$cust_currency = Banking::get_customer_currency($customer->id);
@@ -190,24 +190,24 @@
 			GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 		amount_row(_("Bank Charge:"), 'charge');
-		end_outer_table(1);
+		Display::end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
-			div_start('alloc_tbl');
+			Display::div_start('alloc_tbl');
 			Gl_Allocation::show_allocatable(true);
-			div_end();
+			Display::div_end();
 		}
-		start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-		end_table(1);
+		Display::end_table(1);
 		if ($cust_currency != $bank_currency) {
 			Errors::warning(_("Amount and discount are in customer's currency."));
 		}
-		br();
+		Display::br();
 		submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
 	}
-	br();
-	end_form();
+	Display::br();
+	Display::end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

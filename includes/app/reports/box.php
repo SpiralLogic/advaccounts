@@ -37,16 +37,16 @@
 			$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
 			foreach ($this->ar_classes as $key => $value) {
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
-				$acc = access_string($key);
+				$acc = Display::access_string($key);
 				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter' class='menu_option' id='" . JS::default_focus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
 				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
 				foreach ($value as $report) {
-					$acc = access_string($report->name);
+					$acc = Display::access_string($report->name);
 					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
-						$st_params = "<table><tr><td>\n<form method='GET' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden(
+						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden(
 							'REP_ID',
 							$report->id,
 							false
@@ -80,7 +80,7 @@
 					}
 				</script>
 				";
-			$st .= "<table align='center' style='width:80%' style='border:1px solid #cccccc;'><tr valign='top'>";
+			$st .= "<table class='center' style='width:80%' style='border:1px solid #cccccc;'><tr class='top'>";
 			$st .= "<td style='width:30%'>$st_classes</td>";
 			$st .= "<td style='width:35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
 			$st .= "<td style='width:35%'>$st_params</td>";
@@ -215,7 +215,7 @@
 				case 'GL_ACCOUNTS':
 					return gl_all_accounts_list($name);
 				case 'BANK_ACCOUNTS':
-					return bank_accounts_list($name);
+					return Bank_UI::accounts_select_cells($name);
 				case 'DIMENSION':
 					return dimensions_list($name, null, false, ' ', false, true, 0);
 				case 'DIMENSIONS':
@@ -239,11 +239,11 @@
 							)
 						);
 					} // FIX allitems numeric!
-						//						return customer_list($name, null, _("No Customer Filter"));
+						//						return Debtor_UI::select($name, null, _("No Customer Filter"));
 					else {
 						return combo_input($name, '', $sql, 'debtor_no', 'name', null);
 					}
-				//						return customer_list($name);
+				//						return Debtor_UI::select($name);
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
@@ -367,7 +367,7 @@
 					} else {
 						$tag_type = TAG_DIMENSION;
 					}
-					return tag_list($name, 5, $tag_type, true, _("No tags"));
+					return Tags::combo($name, 5, $tag_type, true, _("No tags"));
 			}
 			return '';
 		}

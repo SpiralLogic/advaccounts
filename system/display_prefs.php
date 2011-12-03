@@ -42,7 +42,7 @@
 				User::prefs()->theme = $_POST['theme'];
 			}
 			if ($chg_theme || $chg_lang) {
-				meta_forward($_SERVER['PHP_SELF']);
+				Display::meta_forward($_SERVER['PHP_SELF']);
 			}
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
@@ -51,15 +51,15 @@
 			}
 		}
 	}
-	start_form();
-	start_outer_table(Config::get('tables_style2'));
-	table_section(1);
-	table_section_title(_("Decimal Places"));
+	Display::start_form();
+	Display::start_outer_table(Config::get('tables_style2'));
+	Display::table_section(1);
+	Display::table_section_title(_("Decimal Places"));
 	text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
 	text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', User::qty_dec());
 	text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', User::exrate_dec());
 	text_row_ex(_("Percentages:"), 'Percent', 5, 5, '', User::percent_dec());
-	table_section_title(_("Dateformat and Separators"));
+	Display::table_section_title(_("Dateformat and Separators"));
 	dateformats_list_row(_("Dateformat:"), "date_format", User::date_format());
 	dateseps_list_row(_("Date Separator:"), "date_sep", User::date_sep());
 	/* The array $dateseps is set up in config.php for modifications
@@ -73,10 +73,10 @@
 	if (!isset($_POST['language'])) {
 		$_POST['language'] = $_SESSION['Language']->code;
 	}
-	table_section_title(_("Language"));
+	Display::table_section_title(_("Language"));
 	languages_list_row(_("Language:"), 'language', $_POST['language']);
-	table_section(2);
-	table_section_title(_("Miscellaneous"));
+	Display::table_section(2);
+	Display::table_section_title(_("Miscellaneous"));
 	check_row(_("Show hints for new users:"), 'show_hints', User::hints());
 	check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
 	check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
@@ -107,9 +107,9 @@
 		_("Remember last document date:"), 'sticky_doc_date', User::sticky_date(),
 		false, _('If set document date is remembered on subsequent documents, otherwise default is current date')
 	);
-	end_outer_table(1);
+	Display::end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
-	end_form(2);
+	Display::end_form(2);
 
 	end_page();
 

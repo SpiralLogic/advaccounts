@@ -1,5 +1,5 @@
 <?php
-	class GL_AccountClass
+	class GL_Class
 	{
 		function add($id, $name, $ctype)
 			{

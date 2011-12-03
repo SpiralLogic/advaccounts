@@ -559,42 +559,13 @@
 				if (!isset($_POST['tran_date'])) {
 					Purch_Invoice::copy_from_trans($supp_trans);
 				}
-				start_outer_table("width=40% " . Config::get('tables_style2'));
-				div_start('summary');
-				start_table();
-				table_header(_("Supplier:"));
-				start_row();
-				if (isset($_POST['invoice_no'])) {
-					$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
-					$_POST['supplier_id'] = $trans['supplier_id'];
-					$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-					label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], false));
-				} else {
-					if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
-						$_POST['supplier_id'] = Session::i()->supplier_id;
-					}
-					echo "<td >";
-					supplier_list_cells(null, 'supplier_id', $_POST['supplier_id'], false, true);
-				}
-				if ($supp_trans->supplier_id != $_POST['supplier_id']) {
-					// supplier has changed
-					// delete all the order items - drastic but necessary because of
-					// change of currency, etc
-					$supp_trans->clear_items();
-					Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
-					Purch_Invoice::copy_from_trans($supp_trans);
-				}
-				end_row();
-				start_row();
-				table_header("PO#: ");
-				if ($supp_trans->is_invoice) {
-					ref_cells(null, 'reference', '', Ref::get_next(ST_SUPPINVOICE));
-				} else {
-					ref_cells(null, 'reference', '', Ref::get_next(ST_SUPPCREDIT));
-				}
-				end_row();
-				start_row();
-				table_header(_("Invoie #:"));
+				Display::start_outer_table("width=60% " . Config::get('tables_style2'));
+				Display::div_start('summary');
+				Display::start_table();
+
+
+				Display::start_row();
+				Display::table_header(_("Invoie #:"));
 				if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
 					label_cells(null,
 					 $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden(
@@ -605,42 +576,69 @@
 				} else {
 					text_cells(null, 'supp_reference', $_POST['supp_reference'], 20, 20);
 				}
-				end_row();
-				start_row();
-				table_header(_("Date") . ":");
+				Display::end_row();
+				Display::start_row();
+				Display::table_header(_("Date") . ":");
 				date_cells(null, 'tran_date', '', true, 0, 0, 0, "", true);
 				if (isset($_POST['_tran_date_changed'])) {
 					$Ajax->activate('_ex_rate');
 					$supp_trans->tran_date = $_POST['tran_date'];
-					end_row();
-					start_row();
+					Display::end_row();
+					Display::start_row();
 					Purch_Trans::get_duedate_from_terms($supp_trans);
 					$_POST['due_date'] = $supp_trans->due_date;
 					$Ajax->activate('due_date');
 				}
-				end_row();
-				start_row();
-				table_header(_("Due Date") . ":");
+				Display::end_row();
+				Display::start_row();
+				Display::table_header(_("Due Date") . ":");
 				date_cells(null, 'due_date');
-				end_row();
-				end_table();
-				div_end();
-				start_table();
-				start_row();
-				label_cells(_("Terms:"), $supp_trans->terms_description, 'class="label"');
+				Display::end_row();
+				Display::end_table();
+				Display::div_end();
+				Display::start_table();
+				Display::start_row();
+
+				if (isset($_POST['invoice_no'])) {
+									$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
+									$_POST['supplier_id'] = $trans['supplier_id'];
+									$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+									label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], false));
+								} else {
+									if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
+										$_POST['supplier_id'] = Session::i()->supplier_id;
+									}
+									supplier_list_cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+				JS::set_focus('supplier_id');
+				}
+								if ($supp_trans->supplier_id != $_POST['supplier_id']) {
+									// supplier has changed
+									// delete all the order items - drastic but necessary because of
+									// change of currency, etc
+									$supp_trans->clear_items();
+									Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
+									Purch_Invoice::copy_from_trans($supp_trans);
+								}
+				if (!empty($supp_trans->terms_description)) label_cells(_("Terms:"), $supp_trans->terms_description);
 				$supplier_currency = Banking::get_supplier_currency($supp_trans->supplier_id);
 				$company_currency = Banking::get_company_currency();
 				GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
 				Session::i()->supplier_id = $_POST['supplier_id'];
-				start_row();
-				label_cells(_("Tax Group:"), $supp_trans->tax_description, 'class="label"');
+				Display::start_row();
+								if ($supp_trans->is_invoice) {
+									ref_cells("PO#: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE));
+								} else {
+									ref_cells("CREDIT#: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT));
+								}
+
+				if (!empty($supp_trans->tax_description)) label_cells(_("Tax Group:"), $supp_trans->tax_description);
 				if ($supplier_currency != $company_currency) {
-					label_cells(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>", 'class="label"');
-					end_row();
-					end_row();
+					label_cells(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
+					Display::end_row();
+					Display::end_row();
 				}
-				end_table();
-				end_outer_table(1);
+				Display::end_table();
+				Display::end_outer_table(1);
 			}
 
 
@@ -649,29 +647,29 @@
 				Purch_Invoice::copy_to_trans($supp_trans);
 				$dim = DB_Company::get_pref('use_dimension');
 				$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-				start_table(Config::get('tables_style2') . " width=90%");
-				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
+				Display::start_table(Config::get('tables_style2') . " width=90%");
+				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan class=right", "class=right");
 				$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 				$tax_total = Taxes::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
-				label_cell(_("Total Correction"), "colspan=$colspan align=right style='width:90%'");
-				small_amount_cells(null, 'ChgTotal', Num::price_format(get_post('ChgTotal'), 2));
-				$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
+				label_cell(_("Total Correction"), "colspan=$colspan class=right style='width:90%'");
+				small_amount_cells(null, 'ChgTotal', Num::price_format(Display::get_post('ChgTotal'), 2));
+				$total = $supp_trans->ov_amount + $tax_total + Display::get_post('ChgTotal');
 				if ($supp_trans->is_invoice) {
 					label_row(
-						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;'",
-					 "align=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
+						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan class=right style='font-weight:bold;'",
+					 "class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
 					);
 				} else {
 					label_row(
 						_("Credit Note Total"), Num::price_format($total),
-						"colspan=$colspan align=right style='font-weight:bold;color:red;'",
-					 "nowrap align=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'"
+						"colspan=$colspan class=right style='font-weight:bold;color:red;'",
+					 "nowrap class=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'"
 					);
 				}
-				end_table(1);
-				start_table(Config::get('tables_style2'));
+				Display::end_table(1);
+				Display::start_table(Config::get('tables_style2'));
 				textarea_row(_("Memo:"), "Comments", null, 50, 3);
-				end_table(1);
+				Display::end_table(1);
 			}
 
 	}

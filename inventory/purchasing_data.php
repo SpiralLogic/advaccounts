@@ -46,16 +46,16 @@
 				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
 				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", "
-				 . input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
-				 . input_num('conversion_factor') . ", "
+				 . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
+				 . Validation::input_num('conversion_factor') . ", "
 				 . DB::escape($_POST['supplier_description']) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
 				Errors::notice(_("This supplier purchasing data has been added."));
 			} else
 			{
-				$sql = "UPDATE purch_data SET price=" . input_num('price', 0) . ",
+				$sql = "UPDATE purch_data SET price=" . Validation::input_num('price', 0) . ",
 				suppliers_uom=" . DB::escape($_POST['suppliers_uom']) . ",
-				conversion_factor=" . input_num('conversion_factor') . ",
+				conversion_factor=" . Validation::input_num('conversion_factor') . ",
 				supplier_description=" . DB::escape($_POST['supplier_description']) . "
 				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
 				supplier_id=" . DB::escape($selected_id);
@@ -88,9 +88,9 @@
 	}
 
 	if (Input::request('frame')) {
-		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
+		Display::start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
-		start_form();
+		Display::start_form();
 	}
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -112,24 +112,24 @@
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($_POST['stock_id']);
 		$result = DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
-		div_start('price_table');
+		Display::div_start('price_table');
 		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("There is no supplier prices set up for the product selected"));
 		} else {
 			if (Input::request('frame')) {
-				start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table(Config::get('tables_style') . "  width=90%");
 			} else {
-				start_table(Config::get('tables_style') . "  width=65%");
+				Display::start_table(Config::get('tables_style') . "  width=65%");
 			}
 			$th = array(
 				_("Updated"), _("Supplier"), _("Price"), _("Currency"),
 				_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
 			);
-			table_header($th);
+			Display::table_header($th);
 			$k = $j = 0; //row colour counter
 			while ($myrow = DB::fetch($result))
 			{
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 				label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
 				label_cell($myrow["supp_name"]);
 				amount_decimal_cell($myrow["price"]);
@@ -139,16 +139,16 @@
 				label_cell($myrow["supplier_description"]);
 				edit_button_cell("Edit" . $myrow['supplier_id'], _("Edit"));
 				delete_button_cell("Delete" . $myrow['supplier_id'], _("Delete"));
-				end_row();
+				Display::end_row();
 				$j++;
 				If ($j == 12) {
 					$j = 1;
-					table_header($th);
+					Display::table_header($th);
 				} //end of page full new headings
 			} //end of while loop
-			end_table();
+			Display::end_table();
 		}
-		div_end();
+		Display::div_end();
 	}
 
 	$dec2 = 6;
@@ -166,9 +166,9 @@
 		$_POST['supplier_description'] = $myrow["supplier_description"];
 		$_POST['conversion_factor'] = Num::exrate_format($myrow["conversion_factor"]);
 	}
-	br();
+	Display::br();
 	hidden('selected_id', $selected_id);
-	start_table('class="tableinfo"');
+	Display::start_table('class="tableinfo"');
 	if ($Mode == 'Edit') {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
@@ -186,9 +186,9 @@
 		Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec()
 	);
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

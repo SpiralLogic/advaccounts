@@ -36,11 +36,11 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if (GL_AccountClass::update($selected_id, $_POST['name'], $_POST['ctype'])) {
+				if (GL_Class::update($selected_id, $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('Selected account class settings has been updated'));
 				}
 			} else {
-				if (GL_AccountClass::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
+				if (GL_Class::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('New account class has been added'));
 					$Mode = 'RESET';
 				}
@@ -68,7 +68,7 @@
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			GL_AccountClass::delete($selected_id);
+			GL_Class::delete($selected_id);
 			Errors::notice(_('Selected account class has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -79,19 +79,19 @@
 		$_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
 	}
 
-	$result = GL_AccountClass::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style'));
+	$result = GL_Class::get_all(check_value('show_inactive'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		$th[2] = _("Balance Sheet");
 	}
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["cid"]);
 		label_cell($myrow['class_name']);
 		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
@@ -103,16 +103,16 @@
 		inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 		edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = GL_AccountClass::get($selected_id);
+			$myrow = GL_Class::get($selected_id);
 			$_POST['id'] = $myrow["cid"];
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
@@ -133,9 +133,9 @@
 	} else {
 		class_types_list_row(_("Class Type:"), 'ctype', null);
 	}
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

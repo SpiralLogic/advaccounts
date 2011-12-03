@@ -89,13 +89,13 @@
 
 	function voiding_controls()
 	{
-		start_form();
-		start_table(Config::get('tables_style2'));
+		Display::start_form();
+		Display::start_table(Config::get('tables_style2'));
 		systypes_list_row(_("Transaction Type:"), "filterType", null, true);
 		text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
 		date_row(_("Voiding Date:"), 'date_');
 		textarea_row(_("Memo:"), 'memo_', null, 30, 4);
-		end_table(1);
+		Display::end_table(1);
 		if (!isset($_POST['ProcessVoiding'])) {
 			submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 		} else {
@@ -109,17 +109,17 @@
 				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
-					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
+					$view_str = get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				} else {
-					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
+					$view_str = get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
 				Errors::warning($view_str);
-				br();
+				Display::br();
 				submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
 			}
 		}
-		end_form();
+		Display::end_form();
 	}
 
 

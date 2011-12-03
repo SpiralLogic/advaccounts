@@ -12,6 +12,7 @@
 	/**
 	 * @global
 	 */
+
 	class Ajax extends JsHttpRequest
 	{
 		public $aCommands = array();
@@ -37,7 +38,7 @@
 		 */
 		function __construct()
 			{
-				$this->JsHttpRequest($_SESSION['Language']->encoding);
+				parent::__construct($_SESSION['Language']->encoding);
 			}
 
 		//

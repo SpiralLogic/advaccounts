@@ -29,7 +29,7 @@
 	echo "<div class='center'>";
 	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table(Config::get('tables_style') . "  width=90%");
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
@@ -37,24 +37,24 @@
 		$colspan1 = 3;
 		$colspan2 = 6;
 	}
-	start_row();
+	Display::start_row();
 	label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tableheader2'");
 	if ($show_currencies) {
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	label_cells(_("From"), Banking::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']),
 		"class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
-	end_row();
+	Display::end_row();
 	DB_Comments::display_row(ST_BANKDEPOSIT, $trans_no);
-	end_table(1);
+	Display::end_table(1);
 	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = GL_Trans::get_many(ST_BANKDEPOSIT, $trans_no);
 	if (DB::num_rows($items) == 0) {
@@ -64,7 +64,7 @@
 		if ($show_currencies) {
 			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
-		start_table(Config::get('tables_style') . "  width=90%");
+		Display::start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(
@@ -76,12 +76,12 @@
 			$th = array(
 				_("Account Code"), _("Account Description"), _("Amount"), _("Memo"));
 		}
-		table_header($th);
+		Display::table_header($th);
 		$k = 0; //row colour counter
 		$total_amount = 0;
 		while ($item = DB::fetch($items)) {
 			if ($item["account"] != $to_trans["account_code"]) {
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 				label_cell($item["account"]);
 				label_cell($item["account_name"]);
 				if ($dim >= 1) {
@@ -92,12 +92,12 @@
 				}
 				amount_cell($item["amount"]);
 				label_cell($item["memo_"]);
-				end_row();
+				Display::end_row();
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
-		end_table(1);
+		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class=right", "class=right");
+		Display::end_table(1);
 		GL_Allocation::display($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
 	end_page(true);

@@ -101,7 +101,7 @@
 				if ($CustomerRecord["Balance"] < 0 && !$incNegatives) {
 					continue;
 				}
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$TransResult = getTransactions($myrow['debtor_no'], $date, !$incAllocations);
 				if ((DB::num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)

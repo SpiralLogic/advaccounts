@@ -16,7 +16,7 @@
 
 	function view_link($trans)
 	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function prt_link($row)
@@ -31,14 +31,14 @@
 
 	function gl_view($row)
 	{
-		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+		return get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function viewing_controls()
 	{
 		Errors::warning(_("Only documents can be printed."));
-		start_table("class='tablestyle_noborder'");
-		start_row();
+		Display::start_table("class='tablestyle_noborder'");
+		Display::start_row();
 		systypes_list_cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {
 			$_POST['FromTransNo'] = "1";
@@ -49,8 +49,8 @@
 		ref_cells(_("from #:"), 'FromTransNo');
 		ref_cells(_("to #:"), 'ToTransNo');
 		submit_cells('ProcessSearch', _("Search"), '', '', 'default');
-		end_row();
-		end_table(1);
+		Display::end_row();
+		Display::end_table(1);
 	}
 
 
@@ -119,7 +119,7 @@
 			}
 			$table =& db_pager::new_db_pager('transactions', $sql, $cols);
 			$table->width = "40%";
-			display_db_pager($table);
+			DB_Pager::display($table);
 		}
 	}
 
@@ -131,10 +131,10 @@
 		$Ajax->activate('transactions');
 	}
 
-	start_form(false);
+	Display::start_form(false);
 	viewing_controls();
 	handle_search();
-	end_form(2);
+	Display::end_form(2);
 	end_page();
 
 ?>

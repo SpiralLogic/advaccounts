@@ -20,18 +20,18 @@
 		{
 			global $systypes_array;
 			$trans_name = $systypes_array[$_GET['type_id']];
-			start_table(Config::get('tables_style') . "  width=95%");
+			Display::start_table(Config::get('tables_style') . "  width=95%");
 			$th = array(
 				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
-			table_header($th);
-			start_row();
+			Display::table_header($th);
+			Display::start_row();
 			label_cell("$trans_name #" . $_GET['trans_no']);
 			label_cell($myrow["reference"]);
 			label_cell(Dates::sql2date($myrow["tran_date"]));
 			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			end_row();
+			Display::end_row();
 			DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
-			end_table(1);
+			Display::end_table(1);
 		}
 
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
@@ -64,11 +64,11 @@
 		}
 		if (!$heading_shown) {
 			display_gl_heading($myrow);
-			start_table(Config::get('tables_style') . "  width=95%");
-			table_header($th);
+			Display::start_table(Config::get('tables_style') . "  width=95%");
+			Display::table_header($th);
 			$heading_shown = true;
 		}
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow['account']);
 		label_cell($myrow['account_name']);
 		if ($dim >= 1) {
@@ -79,11 +79,11 @@
 		}
 		Display::debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
-		end_row();
+		Display::end_row();
 	}
 	//end of while loop
 	if ($heading_shown) {
-		end_table(1);
+		Display::end_table(1);
 	}
 	Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 	end_page(true);

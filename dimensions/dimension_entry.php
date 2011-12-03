@@ -54,9 +54,9 @@
 
 	function safe_exit()
 		{
-			hyperlink_no_params("", _("Enter a &new dimension"));
+			Display::link_no_params("", _("Enter a &new dimension"));
 			echo "<br>";
-			hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
+			Display::link_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
 			Page::footer_exit();
 		}
 
@@ -104,11 +104,11 @@
 				$id = Dimensions::add($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
 					$_POST['memo_']);
 				Tags::add_associations($id, $_POST['dimension_tags']);
-				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
+				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 			} else {
 				Dimensions::update($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
 				Tags::update_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
-				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
+				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 			}
 		}
 	}
@@ -125,23 +125,23 @@
 			// delete
 			Dimensions::delete($selected_id);
 			Tags::delete_associations(TAG_DIMENSION, $selected_id, true);
-			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
+			Display::meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
 
 	if (isset($_POST['close'])) {
 		// update the closed flag
 		Dimensions::close($selected_id);
-		meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
+		Display::meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
 	if (isset($_POST['reopen'])) {
 		// update the closed flag
 		Dimensions::reopen($selected_id);
-		meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
+		Display::meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
 	}
 
-	start_form();
-	start_table(Config::get('tables_style2'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		$myrow = Dimensions::get($selected_id);
 		if (strlen($myrow[0]) == 0) {
@@ -179,9 +179,9 @@
 	number_list_row(_("Type"), 'type_', null, 1, $dim);
 	date_row(_("Start Date") . ":", 'date_');
 	date_row(_("Date Required By") . ":", 'due_date', '', null, DB_Company::get_pref('default_dim_required'));
-	tag_list_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
+	Tags::combo_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 	textarea_row(_("Memo:"), 'memo_', null, 40, 5);
-	end_table(1);
+	Display::end_table(1);
 	if (isset($_POST['closed']) && $_POST['closed'] == 1) {
 		Errors::warning(_("This Dimension is closed."), 0, 0, "class='currentfg'");
 	}
@@ -197,7 +197,7 @@
 	} else {
 		submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 	}
-	end_form();
+	Display::end_form();
 
 	end_page();
 

@@ -40,15 +40,15 @@
     			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
     			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
     			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
-    			provision=" . input_num('provision') . ",
-    			break_pt=" . input_num('break_pt') . ",
-    			provision2=" . input_num('provision2') . "
+    			provision=" . Validation::input_num('provision') . ",
+    			break_pt=" . Validation::input_num('break_pt') . ",
+    			provision2=" . Validation::input_num('provision2') . "
     			WHERE salesman_code = " . DB::escape($selected_id);
 			} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
-    			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . input_num('provision') . ", " . input_num('break_pt') . ", " . input_num('provision2') . ")";
+    			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -77,7 +77,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -87,28 +87,28 @@
 		$sql .= " WHERE !inactive";
 	}
 	$result = DB::query($sql, "could not get sales persons");
-	start_form();
-	start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["salesman_name"]);
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);
 		email_cell($myrow["salesman_email"]);
-		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap class=right");
 		amount_cell($myrow["break_pt"]);
-		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap class=right");
 		inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
 		edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
-		end_row();
+		Display::end_row();
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
-	end_table();
+	Display::end_table();
 	echo '<br>';
 
 	$_POST['salesman_email'] = "";
@@ -132,7 +132,7 @@
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
 	}
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);
@@ -140,9 +140,9 @@
 	percent_row(_("Provision") . ':', 'provision');
 	amount_row(_("Break Pt.:"), 'break_pt');
 	percent_row(_("Provision") . " 2:", 'provision2');
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

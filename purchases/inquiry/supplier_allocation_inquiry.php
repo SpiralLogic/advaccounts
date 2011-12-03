@@ -24,12 +24,12 @@
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
 
-	start_form();
+	Display::start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
@@ -37,8 +37,8 @@
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 
 	function check_overdue($row)
 		{
@@ -53,7 +53,7 @@
 
 	function view_link($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return get_trans_view_str($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -70,7 +70,7 @@
 
 	function alloc_link($row)
 		{
-			$link = pager_link(_("Allocations"),
+			$link = DB_Pager::link(_("Allocations"),
 			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 			return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
 			 $link : '';
@@ -145,8 +145,8 @@
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

@@ -22,30 +22,30 @@
 	echo "<br>";
 	Purch_GRN::display($purchase_order);
 	Display::heading(_("Line Details"));
-	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
+	Display::start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
-	table_header($th);
+	Display::table_header($th);
 	$total = 0;
 	$k = 0; //row colour counter
 	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->qty_received * $stock_item->price;
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
-		label_cell($stock_item->req_del_date, "nowrap align=right");
+		label_cell($stock_item->req_del_date, "nowrap class=right");
 		$dec = Item::qty_dec($stock_item->stock_id);
 		qty_cell($stock_item->qty_received, false, $dec);
 		label_cell($stock_item->units);
 		amount_decimal_cell($stock_item->price);
 		amount_cell($line_total);
 		qty_cell($stock_item->qty_inv, false, $dec);
-		end_row();
+		Display::end_row();
 		$total += $line_total;
 	}
 	$display_total = Num::format($total, User::price_dec());
-	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap align=right");
-	end_table(1);
+	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap class=right");
+	Display::end_table(1);
 	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 	end_page(true);
 

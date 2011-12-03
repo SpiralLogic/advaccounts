@@ -57,17 +57,17 @@
 	} elseif (Input::session('change_password')) {
 		Errors::warning('You are required to change your password!');
 	}
-	start_form();
-	start_table(Config::get('tables_style'));
-	table_section_title(_("Enter your new password in the fields."));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
+	Display::table_section_title(_("Enter your new password in the fields."));
 	$myrow = Users::get(User::get()->user);
 	label_row(_("User login:"), $myrow['user_id']);
 	$_POST['password'] = "";
 	$_POST['passwordConfirm'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);
 	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
-	end_table(1);
+	Display::end_table(1);
 	submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

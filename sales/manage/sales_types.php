@@ -31,13 +31,13 @@
 
 
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
+		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
 
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
+		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
@@ -66,24 +66,24 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Sales_Type::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style') . "  width=30%");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	$base_sales = DB_Company::get_base_sales_type();
 	while ($myrow = DB::fetch($result)) {
 		if ($myrow["id"] == $base_sales) {
-			start_row("class='overduebg'");
+			Display::start_row("class='overduebg'");
 		} else {
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 		}
 		label_cell($myrow["sales_type"]);
 		$f = Num::format($myrow["factor"], 4);
@@ -91,14 +91,14 @@
 			$f = "<I>" . _('Base') . "</I>";
 		}
 		label_cell($f);
-		label_cell($myrow["tax_included"] ? _('Yes') : _('No'), 'align=center');
+		label_cell($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table();
+	Display::end_table();
 	Errors::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 
 	if (!isset($_POST['tax_included'])) {
@@ -107,7 +107,7 @@
 	if (!isset($_POST['base'])) {
 		$_POST['base'] = 0;
 	}
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Type::get($selected_id);
@@ -122,9 +122,9 @@
 	text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
 	amount_row(_("Calculation factor") . ':', 'factor', null, null, null, 4);
 	check_row(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

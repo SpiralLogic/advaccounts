@@ -6,7 +6,7 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Branch extends DB_abstract {
+	class Debtor_Branch extends DB_abstract {
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";

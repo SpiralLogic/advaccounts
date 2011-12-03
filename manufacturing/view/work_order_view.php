@@ -19,7 +19,7 @@
 		$woid = $_GET['trans_no'];
 	}
 	Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
-	br(1);
+	Display::br(1);
 	$myrow = WO_WorkOrder::get($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		WO_Cost::display($woid, true);
@@ -28,7 +28,7 @@
 	}
 	echo "<div class='center'>";
 	// display the WO requirements
-	br(1);
+	Display::br(1);
 	if ($myrow["released"] == false) {
 		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		Manufacturing::display_bom($myrow["stock_id"]);
@@ -36,7 +36,7 @@
 		Display::heading(_("Work Order Requirements"));
 		WO_Requirements::display($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
-			echo "<br><table cellspacing=7><tr valign=top><td>";
+			echo "<br><table cellspacing=7><tr class='top'><td>";
 			Display::heading(_("Issues"));
 			WO_Issue::display($woid);
 			echo "</td><td>";
@@ -47,7 +47,7 @@
 			WO_Cost::display_payments($woid);
 			echo "</td></tr></table>";
 		} else {
-			echo "<br><table cellspacing=7><tr valign=top><td>";
+			echo "<br><table cellspacing=7><tr class='top'><td>";
 			Display::heading(_("Additional Costs"));
 			WO_Cost::display_payments($woid);
 			echo "</td></tr></table>";

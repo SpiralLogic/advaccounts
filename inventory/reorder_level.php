@@ -23,31 +23,31 @@
 		$Ajax->activate('reorders');
 	}
 
-	start_form();
+	Display::start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<div class='center'>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></div>";
-	div_start('show_heading');
+	Display::div_start('show_heading');
 	Display::item_heading($_POST['stock_id']);
-	br();
-	div_end();
+	Display::br();
+	Display::div_end();
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	div_start('reorders');
-	start_table(Config::get('tables_style') . "  width=30%");
+	Display::div_start('reorders');
+	Display::start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
-	table_header($th);
+	Display::table_header($th);
 	$j = 1;
 	$k = 0; //row colour counter
 	$result = Inv_Location::get_details($_POST['stock_id']);
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
-			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
-			Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
+			$myrow["reorder_level"] = Validation::input_num($myrow["loc_code"]);
+			Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], Validation::input_num($myrow["loc_code"]));
 			Errors::notice(_("Reorder levels has been updated."));
 		}
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
@@ -55,17 +55,17 @@
 		$_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 		qty_cell($qoh, false, $dec);
 		qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
-		end_row();
+		Display::end_row();
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			table_header($th);
+			Display::table_header($th);
 		}
 	}
-	end_table(1);
-	div_end();
+	Display::end_table(1);
+	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

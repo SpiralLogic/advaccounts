@@ -23,8 +23,8 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 		Errors::notice(_("Inventory transfer has been processed"));
-		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
-		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
+		Display::note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();
 	}
 
@@ -101,7 +101,7 @@
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['transfer_items']->clear_items();
 		unset($_SESSION['transfer_items']);
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
 
 	function check_item_data()
@@ -122,7 +122,7 @@
 				if (!isset($_POST['std_cost'])) {
 					$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
 				}
-				$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
+				$_SESSION['transfer_items']->update_cart_item($id, Validation::input_num('qty'), $_POST['std_cost']);
 			}
 			line_start_focus();
 		}
@@ -143,7 +143,7 @@
 			if (!isset($_POST['std_cost'])) {
 				$_POST['std_cost'] = 0;
 			}
-			Item_Cart::add_line($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
+			Item_Cart::add_line($_SESSION['transfer_items'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['std_cost']);
 			line_start_focus();
 		}
 
@@ -166,19 +166,19 @@
 		handle_new_order();
 	}
 
-	start_form();
+	Display::start_form();
 	Inv_Transfer::header($_SESSION['transfer_items']);
-	start_table(Config::get('tables_style') . "  width=70%", 10);
-	start_row();
+	Display::start_table(Config::get('tables_style') . "  width=70%", 10);
+	Display::start_row();
 	echo "<td>";
 	Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
 	Inv_Transfer::option_controls();
 	echo "</td>";
-	end_row();
-	end_table(1);
+	Display::end_row();
+	Display::end_table(1);
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last('Process', _("Process Transfer"), '', 'default');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

@@ -57,7 +57,7 @@
 		'use_fiscalyear'=>false,
 		/* Default border and spacing for tables
 							 *  Should be moved to CSS */
-		'tables_style'										 => "class='tablestyle'",
+		'tables_style'										 => "class='tablestyle center'",
 		'tables_style2'										=> "class='tablestyle2'",
 /* Accounts Payable
 		 System check to see if quantity charged on purchase invoices exceeds the quantity received.

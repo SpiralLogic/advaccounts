@@ -14,13 +14,13 @@
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 
-	start_form();
+	Display::start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo customer_list('customer_id', $_POST['customer_id'], true, true);
+	echo Debtor_UI::select('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</div><br><br>";
@@ -50,12 +50,12 @@
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return get_trans_view_str($trans["type"], $trans["trans_no"]);
 		}
 
 	function alloc_link($row)
 		{
-			return pager_link(_("Allocate"),
+			return DB_Pager::link(_("Allocate"),
 			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		}
 
@@ -82,7 +82,7 @@
 	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 	$table->width = "75%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 ?>

@@ -18,7 +18,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	function check_date()
 	{
-		if (!Dates::is_date(get_post('reconcile_date'))) {
+		if (!Dates::is_date(Display::get_post('reconcile_date'))) {
 			Errors::error(_("Invalid reconcile date format"));
 			JS::set_focus('reconcile_date');
 			return false;
@@ -56,13 +56,13 @@
 
 	function trans_view($trans)
 	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row)
 	{
 		if ($row['type'] != 15) {
-			return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+			return get_gl_view_str($row["type"], $row["trans_no"]);
 		}
 	}
 
@@ -105,20 +105,20 @@
 		{
 			return false;
 		}
-		if (get_post('bank_date') == '') // new reconciliation
+		if (Display::get_post('bank_date') == '') // new reconciliation
 		{
 			$Ajax->activate('bank_date');
 		}
-		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
+		$_POST['bank_date'] = Dates::date2sql(Display::get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
-		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
+		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
 		$Ajax->activate('difference');
 		return true;
 	}
 
 	if (Input::post('reset')) {
-		GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+		GL_Account::reset_sql_for_reconcile($_POST['bank_account'], Display::get_post('reconcile_date'));
 		update_data();
 	}
 	$groupid = find_submit("_ungroup_");
@@ -151,11 +151,11 @@
 		update_data();
 	}
 	if (list_updated('bank_date')) {
-		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::Today() : Dates::sql2date($_POST['bank_date']);
+		$_POST['reconcile_date'] = Display::get_post('bank_date') == '' ? Dates::Today() : Dates::sql2date($_POST['bank_date']);
 		update_data();
 	}
-	if (get_post('_reconcile_date_changed')) {
-		$_POST['bank_date'] = check_date() ? Dates::date2sql(get_post('reconcile_date')) : '';
+	if (Display::get_post('_reconcile_date_changed')) {
+		$_POST['bank_date'] = check_date() ? Dates::date2sql(Display::get_post('reconcile_date')) : '';
 		$Ajax->activate('bank_date');
 		update_data();
 	}
@@ -175,16 +175,16 @@
 		$Ajax->activate('_page_body');
 	}
 
-	start_form();
-	start_table();
-	start_row();
-	bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
-	bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'), 'bank_date', null, true, _("New"));
+	Display::start_form();
+	Display::start_table();
+	Display::start_row();
+	Bank_UI::accounts_list_cells(_("Account:"), 'bank_account', null, true);
+	Bank_UI::reconciliation_list_cells(_("Bank Statement:"), Display::get_post('bank_account'), 'bank_date', null, true, _("New"));
 	//button_cell("reset", "reset", "reset");
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
-	$result = GL_Account::get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
+	$result = GL_Account::get_max_reconciled(Display::get_post('reconcile_date'), $_POST['bank_account']);
 	if ($row = DB::fetch($result)) {
 		$_POST["reconciled"] = Num::price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
@@ -192,7 +192,7 @@
 			$_POST["last_date"] = Dates::sql2date($row["last_date"]);
 			$_POST["beg_balance"] = Num::price_format($row["beg_balance"]);
 			$_POST["end_balance"] = Num::price_format($row["end_balance"]);
-			if (get_post('bank_date')) {
+			if (Display::get_post('bank_date')) {
 				// if it is the last updated bank statement retrieve ending balance
 				$row = GL_Account::get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 				if ($row) {
@@ -202,43 +202,43 @@
 		}
 	}
 	echo "<hr>";
-	div_start('summary');
-	start_table();
-	table_header(_("Reconcile Date"));
-	start_row();
-	date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), get_post('bank_date') == '', 0, 0, 0, null, true);
-	end_row();
-	table_header(_("Beginning Balance"));
-	start_row();
+	Display::div_start('summary');
+	Display::start_table();
+	Display::table_header(_("Reconcile Date"));
+	Display::start_row();
+	date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), Display::get_post('bank_date') == '', 0, 0, 0, null, true);
+	Display::end_row();
+	Display::table_header(_("Beginning Balance"));
+	Display::start_row();
 	amount_cells_ex("", "beg_balance", 15);
-	end_row();
-	table_header(_("Ending Balance"));
-	start_row();
+	Display::end_row();
+	Display::table_header(_("Ending Balance"));
+	Display::start_row();
 	amount_cells_ex("", "end_balance", 15);
-	$reconciled = input_num('reconciled');
-	$difference = input_num("end_balance") - input_num("beg_balance") - $reconciled;
-	end_row();
-	table_header(_("Account Total"));
-	start_row();
+	$reconciled = Validation::input_num('reconciled');
+	$difference = Validation::input_num("end_balance") - Validation::input_num("beg_balance") - $reconciled;
+	Display::end_row();
+	Display::table_header(_("Account Total"));
+	Display::start_row();
 	amount_cell($total);
-	end_row();
-	table_header(_("Reconciled Amount"));
-	start_row();
+	Display::end_row();
+	Display::table_header(_("Reconciled Amount"));
+	Display::start_row();
 	amount_cell($reconciled, false, '', "reconciled");
-	end_row();
-	table_header(_("Difference"));
-	start_row();
+	Display::end_row();
+	Display::table_header(_("Difference"));
+	Display::start_row();
 	amount_cell($difference, false, '', "difference");
-	end_row();
-	end_table();
-	div_end();
+	Display::end_row();
+	Display::end_table();
+	Display::div_end();
 	echo "<hr>";
 
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
-	$sql = GL_Account::get_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
-	$act = GL_BankAccount::get($_POST["bank_account"]);
+	$sql = GL_Account::get_sql_for_reconcile($_POST['bank_account'], Display::get_post('reconcile_date'));
+	$act = Bank_Account::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(
 		_("Type") => array(
@@ -251,10 +251,10 @@
 			'insert' => true, 'fun' => 'ungroup'));
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
-	br(1);
+	DB_Pager::display($table);
+	Display::br(1);
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
-	end_form();
+	Display::end_form();
 
 	$js = <<<JS
 	$(function() {

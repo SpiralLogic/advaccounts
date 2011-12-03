@@ -272,17 +272,17 @@
 				$tax = Num::format(abs($tax_item['amount']), User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax",
-						"colspan=$columns align=right", "align=right");
+						"colspan=$columns class=right", "class=right");
 				}
 				else {
-					label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns align=right",
-						"align=right");
+					label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns class=right",
+						"class=right");
 				}
 				$tax_total += $tax;
 			}
 			if ($tax_recorded != 0) {
 				$tax_correction = Num::format($tax_recorded - $tax_total, User::price_dec());
-				label_row("Tax Correction ", $tax_correction, "colspan=$columns align=right", "align=right");
+				label_row("Tax Correction ", $tax_correction, "colspan=$columns class=right", "class=right");
 			}
 		}
 

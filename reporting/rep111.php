@@ -52,7 +52,7 @@
 			)
 			{
 				$myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				if ($email == 1) {
@@ -137,7 +137,7 @@
 				#		else
 				$rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
-				$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+				$words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 				if ($words != "") {
 					$rep->NewLine(1);
 					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

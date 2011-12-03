@@ -12,7 +12,7 @@
 	$page_security = 'SA_SECROLES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Access setup"));
-	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
+	$new_role = Display::get_post('role') == '' || Display::get_post('cancel') || Display::get_post('clone');
 
 	// Following compare function is used for sorting areas
 	// in such a way that security areas defined by module/plugin
@@ -47,7 +47,7 @@
 		unset($_POST);
 	}
 
-	if (get_post('addupdate')) {
+	if (Display::get_post('addupdate')) {
 		$input_error = 0;
 		if ($_POST['description'] == '') {
 			$input_error = 1;
@@ -61,7 +61,7 @@
 			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
-		if (get_post('role') == $_SESSION['current_user']->access) {
+		if (Display::get_post('role') == $_SESSION['current_user']->access) {
 			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]])
 			 || !isset($_POST['Section' . SS_SETUP])
 			) {
@@ -102,7 +102,7 @@
 					$sections, $areas
 				);
 				DB::update_record_status(
-					$_POST['role'], get_post('inactive'),
+					$_POST['role'], Display::get_post('inactive'),
 					'security_roles', 'id'
 				);
 				Errors::notice(_("Security role has been updated."));
@@ -113,23 +113,23 @@
 		}
 	}
 
-	if (get_post('delete')) {
-		if (check_role_used(get_post('role'))) {
+	if (Display::get_post('delete')) {
+		if (check_role_used(Display::get_post('role'))) {
 			Errors::error(_("This role is currently assigned to some users and cannot be deleted"));
 		} else {
-			Security::get_profile(get_post('role'));
+			Security::get_profile(Display::get_post('role'));
 			Errors::notice(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
 		}
 		$Ajax->activate('_page_body');
 	}
-	if (get_post('cancel')) {
+	if (Display::get_post('cancel')) {
 		unset($_POST['role']);
 		$Ajax->activate('_page_body');
 	}
-	if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
-		$id = get_post('role');
-		$clone = get_post('clone');
+	if (!isset($_POST['role']) || Display::get_post('clone') || list_updated('role')) {
+		$id = Display::get_post('role');
+		$clone = Display::get_post('clone');
 		unset($_POST);
 		if ($id) {
 			$row = Security::get_role($id);
@@ -165,16 +165,16 @@
 		}
 	}
 
-	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	security_roles_list_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
-	$new_role = get_post('role') == '';
+	$new_role = Display::get_post('role') == '';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 	echo "<hr>";
-	if (get_post('_show_inactive_update')) {
+	if (Display::get_post('_show_inactive_update')) {
 		$Ajax->activate('role');
 		JS::set_focus('role');
 	}
@@ -182,13 +182,13 @@
 		$Ajax->activate('details');
 	}
 
-	div_start('details');
-	start_table(Config::get('tables_style2'));
+	Display::div_start('details');
+	Display::start_table(Config::get('tables_style2'));
 	text_row(_("Role name:"), 'name', null, 20, 22);
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
-	end_table(1);
-	start_table(Config::get('tables_style') . " width=40%");
+	Display::end_table(1);
+	Display::start_table(Config::get('tables_style') . " width=40%");
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
 	foreach (
@@ -217,19 +217,19 @@
 			);
 		}
 		if (check_value('Section' . $m)) {
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			check_cells(
 				$parms[1], 'Area' . $parms[0], null,
-				false, '', "align='center'"
+				false, '', "class='center'"
 			);
-			end_row();
+			Display::end_row();
 		} else {
 			hidden('Area' . $parms[0]);
 		}
 	}
-	end_table(1);
-	div_end();
-	div_start('controls');
+	Display::end_table(1);
+	Display::div_end();
+	Display::div_start('controls');
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
@@ -240,8 +240,8 @@
 		submit('delete', _("Delete This Role"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
-	div_end();
-	end_form();
+	Display::div_end();
+	Display::end_form();
 	end_page();
 
 ?>

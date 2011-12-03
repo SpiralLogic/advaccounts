@@ -6,46 +6,66 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache {
+	class Cache
+	{
 		/**
 		 * @var Memcached
 		 */
-		protected static $instance = null;
+		protected static $i = null;
+		protected static $connected = false;
 
 		/**
 		 * @static
 		 * @return Memcached
 		 */
 		protected static function _i() {
-			if (static::$instance === null) {
-				static::$instance = new Memcached('ADV');
-				static::$instance->addServer('127.0.0.1', 11211);
-				if (isset($_GET['reload_config'])) static::$instance->flush(0);
+			if (static::$i === null) {
+				static::$i = new Memcached('ADV');
+				static::$connected = static::$i->addServer('127.0.0.1', 11211);
+				static::$i->setOption(Memcached::OPT_PREFIX_KEY, DOCROOT);
+
+				if (static::$connected && isset($_GET['reload_config'])) {
+					static::$i->flush(0);
+				}
 			}
-			return static::$instance;
+			return (static::$connected) ? static::$i:false;
 		}
 
 		/**
 		 * @static
 		 *
-		 * @param $key
-		 * @param $value
+		 * @param		 $key
+		 * @param		 $value
+		 * @param int $expires
 		 *
 		 * @return mixed
 		 */
 		public static function set($key, $value, $expires = 86400) {
-			static::_i()->set($key, $value, time() + $expires);
+			if (static::_i()!==false) {
+				static::_i()->set($key, $value, time() + $expires);
+			}
+			elseif (class_exists('Session',false)) {
+				Session::i()->Cache[$key] = $value;
+			}
 			return $value;
 		}
 
 		/**
 		 * @static
+		 *
 		 * @param $key
+		 *
 		 * @return mixed
 		 */
 		public static function get($key) {
-			$result = static::_i()->get($key);
-			return (static::$instance->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
+			if (static::_i()!==false) {
+				$result = static::_i()->get($key);
+				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
+			}
+			elseif (class_exists('Session',false)) {
+				$result = Session::i()->Cache[$key];
+			}
+			return $result;
 		}
 
 		/**
@@ -53,20 +73,14 @@
 		 * @return mixed
 		 */
 		public static function getStats() {
-			return static::_i()->getStats();
+			return (static::$connected) ? static::_i()->getStats() : false;
 		}
-
-		/**
-		 * @static
-		 * @param $key
-		 * @param $value
-		 */
-		public static function renew($key, $value) {
-			static::_i()->set($key, $value);
-		}
-
 
 		public static function flush($time = 0) {
-			static::_i()->flush($time);
+			if (static::i())	{
+				static::_i()->flush($time);
+			} else {
+				Session::i()->Cache = array();
+			}
 		}
 	}

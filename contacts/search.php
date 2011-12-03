@@ -12,14 +12,14 @@
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_code'])) {
 			if ($_POST['branch_code'] > 0) {
-				$data = new Contacts_Branch(array('branch_code' => $_POST['branch_code']));
+				$data = new Debtor_Branch(array('branch_code' => $_POST['branch_code']));
 			} elseif ($_POST['id'] > 0) {
-				$data = new Contacts_Branch(array('debtor_no' => $_POST['id']));
+				$data = new Debtor_Branch(array('debtor_no' => $_POST['id']));
 			}
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
 	Page::start(_($help_context = "Items"), Input::request('popup'));
-	Contacts_Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
+	Debtor::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	end_page();

@@ -23,11 +23,11 @@
 
 	// Ajax updates
 	//
-	if (get_post('SearchOrders')) {
+	if (Display::get_post('SearchOrders')) {
 		$Ajax->activate('orders_tbl');
-	} elseif (get_post('_OrderNumber_changed'))
+	} elseif (Display::get_post('_OrderNumber_changed'))
 	{
-		$disable = get_post('OrderNumber') !== '';
+		$disable = Display::get_post('OrderNumber') !== '';
 		$Ajax->addDisable(true, 'StockLocation', $disable);
 		$Ajax->addDisable(true, 'OverdueOnly', $disable);
 		$Ajax->addDisable(true, 'OpenOnly', $disable);
@@ -45,9 +45,9 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	locations_list_cells(_("at Location:"), 'StockLocation', null, true);
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
@@ -56,8 +56,8 @@
 	}
 	stock_manufactured_items_list_cells(_("for item:"), 'SelectedStockItem', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 
 	function check_overdue($row)
 		{
@@ -67,12 +67,12 @@
 
 	function view_link($dummy, $order_no)
 		{
-			return ui_view::get_trans_view_str(ST_WORKORDER, $order_no);
+			return get_trans_view_str(ST_WORKORDER, $order_no);
 		}
 
 	function view_stock($row)
 		{
-			return ui_view::stock_status($row["stock_id"], $row["description"], false);
+			return stock_status($row["stock_id"], $row["description"], false);
 		}
 
 	function wo_type_name($dummy, $type)
@@ -86,7 +86,7 @@
 			return $row['closed']
 			 ? '<i>' . _('Closed') . '</i>'
 			 :
-			 pager_link(
+			 DB_Pager::link(
 				 _("Edit"),
 				"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
 			 );
@@ -99,12 +99,12 @@
 			 :
 			 ($row["released"] == 0
 				?
-				pager_link(
+				DB_Pager::link(
 					_('Release'),
 				 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
 				)
 				:
-				pager_link(
+				DB_Pager::link(
 					_('Issue'),
 				 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
 				));
@@ -115,7 +115,7 @@
 			return $row["closed"] || !$row["released"]
 			 ? ''
 			 :
-			 pager_link(
+			 DB_Pager::link(
 				 _('Produce'),
 				"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
 			 );
@@ -125,14 +125,14 @@
 		{
 			/*
 									 return $row["closed"] || !$row["released"] ? '' :
-										 pager_link(_('Costs'),
+										 DB_Pager::link(_('Costs'),
 											 "/gl/gl_bank.php?NewPayment=1&PayType="
 											 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
 								 */
 			return $row["closed"] || !$row["released"]
 			 ? ''
 			 :
-			 pager_link(
+			 DB_Pager::link(
 				 _('Costs'),
 				"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
 			 );
@@ -143,7 +143,7 @@
 			if ($row['closed'] == 0) {
 				return '';
 			}
-			return ui_view::get_gl_view_str(ST_WORKORDER, $row['id']);
+			return get_gl_view_str(ST_WORKORDER, $row['id']);
 		}
 
 	function dec_amount($row, $amount)
@@ -233,7 +233,7 @@
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked orders are overdue."));
 	$table->width = "90%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 ?>

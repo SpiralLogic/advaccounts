@@ -17,7 +17,7 @@
 	function can_process()
 	{
 		global $selected_id;
-		if (!input_num('id')) {
+		if (!Validation::input_num('id')) {
 			Errors::error(_("The account id must be an integer and cannot be empty."));
 			JS::set_focus('id');
 			return false;
@@ -38,11 +38,11 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if (GL_AccountType::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
+				if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('Selected account type has been updated'));
 				}
 			} else {
-				if (GL_AccountType::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
+				if (GL_Type::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('New account type has been added'));
 					$Mode = 'RESET';
 				}
@@ -80,7 +80,7 @@
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			GL_AccountType::delete($selected_id);
+			GL_Type::delete($selected_id);
 			Errors::notice(_('Selected account group has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -92,21 +92,21 @@
 		unset($_POST['class_id']);
 	}
 
-	$result = GL_AccountType::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style'));
+	$result = GL_Type::get_all(check_value('show_inactive'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
-		$bs_text = GL_AccountClass::get_name($myrow["class_id"]);
+		Display::alt_table_row_color($k);
+		$bs_text = GL_Class::get_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";
 		} else {
-			$parent_text = GL_AccountType::get_name($myrow["parent"]);
+			$parent_text = GL_Type::get_name($myrow["parent"]);
 		}
 		label_cell($myrow["id"]);
 		label_cell($myrow["name"]);
@@ -115,16 +115,16 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = GL_AccountType::get($selected_id);
+			$myrow = GL_Type::get($selected_id);
 			$_POST['id'] = $myrow["id"];
 			$_POST['name'] = $myrow["name"];
 			$_POST['parent'] = $myrow["parent"];
@@ -139,9 +139,9 @@
 	text_row_ex(_("Name:"), 'name', 50);
 	gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 	class_list_row(_("Class Type:"), 'class_id', null);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

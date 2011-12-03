@@ -63,31 +63,31 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = WO_WorkCentre::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style') . "  width=50%");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  width=50%");
 	$th = array(_("Name"), _("description"), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		label_cell($myrow["description"]);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -99,9 +99,9 @@
 	}
 	text_row_ex(_("Name:"), 'name', 40);
 	text_row_ex(_("Description:"), 'description', 50);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

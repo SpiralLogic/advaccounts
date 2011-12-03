@@ -94,7 +94,7 @@
 					if (!$myrow) {
 						continue;
 					}
-					$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+					$baccount = Bank_Account::get_default($myrow['curr_code']);
 					$params['bankaccount'] = $baccount['id'];
 					$rep->title = _('RECEIPT');
 					$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
@@ -134,7 +134,7 @@
 					$rep->Font('bold');
 					$rep->TextCol(3, 6, $doc_Total_Payment, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
-					$words = ui_view::price_in_words($myrow['Total'], ST_CUSTPAYMENT);
+					$words = Item_Price::to_words($myrow['Total'], ST_CUSTPAYMENT);
 					if ($words != "") {
 						$rep->NewLine(1);
 						$rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, -2);

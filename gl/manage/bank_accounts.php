@@ -25,7 +25,7 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				GL_BankAccount::update(
+				Bank_Account::update(
 					$selected_id, $_POST['account_code'],
 					$_POST['account_type'], $_POST['bank_account_name'],
 					$_POST['bank_name'], $_POST['bank_account_number'],
@@ -34,7 +34,7 @@
 				);
 				Errors::notice(_('Bank account has been updated'));
 			} else {
-				GL_BankAccount::add(
+				Bank_Account::add(
 					$_POST['account_code'], $_POST['account_type'],
 					$_POST['bank_account_name'], $_POST['bank_name'],
 					$_POST['bank_account_number'], $_POST['bank_address'],
@@ -66,7 +66,7 @@
 			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
-			GL_BankAccount::delete($selected_id);
+			Bank_Account::delete($selected_id);
 			Errors::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = 'RESET';
@@ -87,19 +87,19 @@
 	$sql .= " ORDER BY account_code, bank_curr_code";
 	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
-	start_form();
-	start_table(Config::get('tables_style') . "  style='width:80%'");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  style='width:80%'");
 	$th = array(
 		_("Account Name"), _("Type"), _("Currency"), _("GL Account"),
 		_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
 	);
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["bank_account_name"], "nowrap");
 		label_cell($bank_account_types[$myrow["account_type"]], "nowrap");
 		label_cell($myrow["bank_curr_code"], "nowrap");
@@ -115,15 +115,15 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 	$is_editing = $selected_id != -1;
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
-			$myrow = GL_BankAccount::get($selected_id);
+			$myrow = Bank_Account::get($selected_id);
 			$_POST['account_code'] = $myrow["account_code"];
 			$_POST['account_type'] = $myrow["account_type"];
 			$_POST['bank_name'] = $myrow["bank_name"];
@@ -145,7 +145,7 @@
 
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 	} else {
-		bank_account_types_list_row(_("Account Type:"), 'account_type', null);
+		Bank_UI::accounts_type_select_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
@@ -161,8 +161,8 @@
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
 	text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
 	textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

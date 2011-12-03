@@ -196,24 +196,24 @@
 		}
 	}
 
-	start_form();
+	Display::start_form();
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
-		start_table("class = 'tablestyle_noborder'");
-		start_row();
+		Display::start_table("class = 'tablestyle_noborder'");
+		Display::start_row();
 		gl_all_accounts_list_cells(
 			null, 'AccountList', null, false, false,
 			_('New account'), true, check_value('show_inactive')
 		);
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
-		end_row();
-		end_table();
-		if (get_post('_show_inactive_update')) {
+		Display::end_row();
+		Display::end_table();
+		if (Display::get_post('_show_inactive_update')) {
 			$Ajax->activate('AccountList');
 			JS::set_focus('AccountList');
 		}
 	}
-	br(1);
-	start_table(Config::get('tables_style2'));
+	Display::br(1);
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_account != "") {
 		//editing an existing account
 		$myrow = GL_Account::get($selected_account);
@@ -244,16 +244,16 @@
 	text_row_ex(_("Account Code 2:"), 'account_code2', 11);
 	text_row_ex(_("Account Name:"), 'account_name', 60);
 	gl_account_types_list_row(_("Account Group:"), 'account_type', null);
-	tag_list_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
+	Tags::combo_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
 	record_status_list_row(_("Account status:"), 'inactive');
-	end_table(1);
+	Display::end_table(1);
 	if ($selected_account == "") {
 		submit_center('add', _("Add Account"), true, '', 'default');
 	} else {
 		submit_center_first('update', _("Update Account"), '', 'default');
 		submit_center_last('delete', _("Delete account"), '', true);
 	}
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

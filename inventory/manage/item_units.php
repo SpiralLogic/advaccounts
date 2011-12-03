@@ -55,33 +55,33 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = '';
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Item_Unit::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style') . "  width=40%");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["abbr"]);
 		label_cell($myrow["name"]);
 		label_cell(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
 		inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
 		edit_button_cell("Edit" . $myrow["abbr"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["abbr"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
@@ -101,9 +101,9 @@
 	}
 	text_row(_("Descriptive Name:"), 'description', null, 40, 40);
 	number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == '', '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

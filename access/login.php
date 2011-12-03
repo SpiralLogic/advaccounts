@@ -24,37 +24,37 @@
 	$title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
 	$encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
 	$rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
-
-	echo "<!DOCTYPE HTML>\n";
-	echo "<html dir='$rtl' >\n";
-	echo "<head><title>$title</title>\n";
-	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
-	echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
-	echo "<link href='/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 	$js = "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
 	if (!$login_timeout) {
 		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . User::get()->company . "].selected = true;})()";
 	}
 	JS::onLoad($js);
+	echo "<!DOCTYPE HTML>\n";
+	echo "<html dir='$rtl' >\n";
+	echo "<head><title>$title</title>\n";
+	echo "<meta charset=$encoding>\n";
+	echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
+	echo "<link href='/themes/{$def_theme}/default.css' rel='stylesheet'> \n";
+
 	echo "</head>\n";
 	echo "<body id='loginscreen' >\n";
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
-	div_start('_page_body');
-	br(2);
-	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table("class='login'");
-	start_row();
-	echo "<td align='center' colspan=2>";
+	Display::div_start('_page_body');
+	Display::br(2);
+	Display::start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
+	Display::start_table("class='login'");
+	Display::start_row();
+	echo "<td class='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' border='0' /></a>";
 	} else {
 		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}
 	echo "</td>\n";
-	end_row();
+	Display::end_row();
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . User::get()->ui_mode . "' />\n";
 	if (!$login_timeout) {
-		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
+		Display::table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
 	}
 	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
 	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
@@ -75,11 +75,11 @@
 			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
 		}
 		echo "</select>\n";
-		start_row();
-		label_cell($demo_text, "colspan=2 align='center'");
-		end_row();
+		Display::start_row();
+		label_cell($demo_text, "colspan=2 class='center'");
+		Display::end_row();
 	}
-	end_table(1);
+	Display::end_table(1);
 	echo "<div class='center'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></div>\n";
 	foreach (
 		$_SESSION['timeout']['post'] as $p => $val
@@ -89,8 +89,8 @@
 			echo "<input type='hidden' name='$p' value='$val'>";
 		}
 	}
-	end_form(1);
-	div_end();
+	Display::end_form(1);
+	Display::div_end();
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['current_user'])) {

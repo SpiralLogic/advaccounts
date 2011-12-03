@@ -12,9 +12,8 @@
 	 * Licensed under the MIT license:
 	 * http://creativecommons.org/licenses/MIT/
 	 */
-
-	class UploadHandler {
-
+	class UploadHandler
+	{
 		private $options;
 		private $order_no;
 		private static $inserted;
@@ -24,7 +23,6 @@
 			error_reporting(E_ALL | E_STRICT);
 			ini_set('post_max_size', '3M');
 			ini_set('upload_max_filesize', '3M');
-
 			$this->options = array(
 				'script_url' => $_SERVER['PHP_SELF'],
 				'upload_dir' => DOCROOT . '/upload/upload/',
@@ -94,9 +92,9 @@
 
 		private function get_file_objects() {
 			return array_values(array_filter(array_map(
-						array($this, 'get_file_object'),
-						scandir($this->options['upload_dir'])
-					)));
+				array($this, 'get_file_object'),
+				scandir($this->options['upload_dir'])
+			)));
 		}
 
 		private function create_scaled_image($file_name, $options) {
@@ -247,7 +245,6 @@
 		public function get() {
 			$info = array();
 			$upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
-
 			if ($upload_id) {
 				$sql = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
 				$result = DB::query($sql, 'Could not retrieve file');
@@ -321,7 +318,6 @@
 		}
 
 		public static function insert($id) {
-
 			if (!self::$inserted) {
 				JS::footerFile(array('/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'));
 				self::$inserted = true;
@@ -391,7 +387,7 @@
 
 	if (!function_exists('getallheaders')) {
 		function getallheaders() {
-			$headers=array();
+			$headers = array();
 			foreach ($_SERVER as $name => $value) {
 				if (substr($name, 0, 5) == 'HTTP_') {
 					$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;

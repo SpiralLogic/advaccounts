@@ -22,7 +22,7 @@
 		$company_record = DB_Company::get_prefs();
 		$refund_no = Sales_Trans::write(ST_CUSTREFUND, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
-		$bank_gl_account = GL_BankAccount::get_gl($bank_account);
+		$bank_gl_account = Bank_Account::get_gl($bank_account);
 		if ($trans_no != 0) {
 			DB_Comments::delete(ST_CUSTREFUND, $trans_no);
 			Bank_Trans::void(ST_CUSTREFUND, $trans_no, true);

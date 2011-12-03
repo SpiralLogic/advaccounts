@@ -72,7 +72,7 @@
 			if (isset($_POST['add'])) {
 				add_update_gl_budget_trans(
 					$da, $_POST['account'], $_POST['dim1'],
-					$_POST['dim2'], input_num('amount' . $i)
+					$_POST['dim2'], Validation::input_num('amount' . $i)
 				);
 			} else {
 				delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
@@ -85,19 +85,19 @@
 		} else {
 			Errors::notice(_("The Budget has been deleted."));
 		}
-		//meta_forward($_SERVER['PHP_SELF']);
+		//Display::meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');
 	}
 	if (isset($_POST['submit']) || isset($_POST['update'])) {
 		$Ajax->activate('budget_tbl');
 	}
 
-	start_form();
+	Display::start_form();
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 
 			$dim = DB_Company::get_pref('use_dimension');
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 		gl_all_accounts_list_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1'])) {
@@ -118,9 +118,9 @@
 			hidden('dim2', 0);
 		}
 		submit_row('submit', _("Get"), true, '', '', true);
-		end_table(1);
-		div_start('budget_tbl');
-		start_table(Config::get('tables_style2'));
+		Display::end_table(1);
+		Display::div_start('budget_tbl');
+		Display::start_table(Config::get('tables_style2'));
 		$showdims = (($dim == 1 && $_POST['dim1'] == 0)
 		 || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 		if ($showdims) {
@@ -128,9 +128,9 @@
 		} else {
 			$th = array(_("Period"), _("Amount"), _("Last Year"));
 		}
-		table_header($th);
+		Display::table_header($th);
 		$year = $_POST['fyear'];
-		if (get_post('update') == '') {
+		if (Display::get_post('update') == '') {
 			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
 			$result = DB::query($sql, "could not get current fiscal year");
 			$fyear = DB::fetch($result);
@@ -144,8 +144,8 @@
 			$i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++
 		)
 		{
-			start_row();
-			if (get_post('update') == '') {
+			Display::start_row();
+			if (Display::get_post('update') == '') {
 				$_POST['amount' . $i] = Num::format(
 					get_only_budget_trans_from_to(
 						$date_, $date_, $_POST['account'], $_POST['dim1'],
@@ -157,34 +157,34 @@
 			amount_cells(null, 'amount' . $i, null, 15, null, 0);
 			if ($showdims) {
 				$d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-				label_cell(Num::format($d, 0), "nowrap align=right");
+				label_cell(Num::format($d, 0), "nowrap class=right");
 				$btotal += $d;
 			}
 			$lamount = GL_Trans::get_from_to(
 				Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'],
 				$_POST['dim1'], $_POST['dim2']
 			);
-			$total += input_num('amount' . $i);
+			$total += Validation::input_num('amount' . $i);
 			$ltotal += $lamount;
-			label_cell(Num::format($lamount, 0), "nowrap align=right");
+			label_cell(Num::format($lamount, 0), "nowrap class=right");
 			$date_ = Dates::add_months($date_, 1);
-			end_row();
+			Display::end_row();
 		}
-		start_row();
+		Display::start_row();
 		label_cell("<b>" . _("Total") . "</b>");
-		label_cell(Num::format($total, 0), 'align=right style="font-weight:bold"', 'Total');
+		label_cell(Num::format($total, 0), 'class=right style="font-weight:bold"', 'Total');
 		if ($showdims) {
-			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap align=right");
+			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap class=right");
 		}
-		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap align=right");
-		end_row();
-		end_table(1);
-		div_end();
+		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap class=right");
+		Display::end_row();
+		Display::end_table(1);
+		Display::div_end();
 		submit_center_first('update', _("Update"), '', null);
 		submit('add', _("Save"), true, '', 'default');
 		submit_center_last('delete', _("Delete"), '', true);
 	}
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

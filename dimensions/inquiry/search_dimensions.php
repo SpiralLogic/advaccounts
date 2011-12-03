@@ -22,11 +22,11 @@
 
 	// Ajax updates
 	//
-	if (get_post('SearchOrders')) {
+	if (Display::get_post('SearchOrders')) {
 		$Ajax->activate('dim_table');
-	} elseif (get_post('_OrderNumber_changed'))
+	} elseif (Display::get_post('_OrderNumber_changed'))
 	{
-		$disable = get_post('OrderNumber') !== '';
+		$disable = Display::get_post('OrderNumber') !== '';
 		$Ajax->addDisable(true, 'FromDate', $disable);
 		$Ajax->addDisable(true, 'ToDate', $disable);
 		$Ajax->addDisable(true, 'type_', $disable);
@@ -46,9 +46,9 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 	date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
@@ -60,12 +60,12 @@
 		$_POST['OpenOnly'] = 1;
 	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 	$dim = DB_Company::get_pref('use_dimension');
 	function view_link($row)
 	{
-		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
+		return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 	}
 
 	function is_closed($row)
@@ -92,9 +92,9 @@
 	function edit_link($row)
 	{
 		//return $row["closed"] ?  '' :
-		//	pager_link(_("Edit"),
+		//	DB_Pager::link(_("Edit"),
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
-		return pager_link(
+		return DB_Pager::link(
 			_("Edit"),
 		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
 		);
@@ -156,8 +156,8 @@
 	$table =& db_pager::new_db_pager('dim_tbl', $sql, $cols);
 	$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 
 ?>

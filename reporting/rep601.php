@@ -65,7 +65,7 @@
 				_('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'),
 				_('Debit'), _('Credit'), _('Balance')
 			);
-			$account = GL_BankAccount::get($acc);
+			$account = Bank_Account::get($acc);
 			$act = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
 			$params = array(
 				0 => $comments,

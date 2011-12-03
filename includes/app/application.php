@@ -16,12 +16,11 @@
 		public $link;
 		public $access;
 
-		function app_function($label, $link, $access = 'SA_OPEN')
-			{
-				$this->label = $label;
-				$this->link = $link;
-				$this->access = $access;
-			}
+		function app_function($label, $link, $access = 'SA_OPEN') {
+			$this->label = $label;
+			$this->link = $link;
+			$this->access = $access;
+		}
 	}
 
 	class module
@@ -31,29 +30,26 @@
 		public $lappfunctions;
 		public $rappfunctions;
 
-		public 	function module($name, $icon = null)
-			{
-				$this->name = $name;
-				$this->icon = $icon;
-				$this->lappfunctions = array();
-				$this->rappfunctions = array();
-			}
+		public function module($name, $icon = null) {
+			$this->name = $name;
+			$this->icon = $icon;
+			$this->lappfunctions = array();
+			$this->rappfunctions = array();
+		}
 
-		public 	function add_lapp_function($label, $link = "", $access = 'SA_OPEN')
-			{
-				$appfunction = new app_function($label, $link, $access);
-				//array_push($this->lappfunctions,$appfunction);
-				$this->lappfunctions[] = $appfunction;
-				return $appfunction;
-			}
+		public function add_lapp_function($label, $link = "", $access = 'SA_OPEN') {
+			$appfunction = new app_function($label, $link, $access);
+			//array_push($this->lappfunctions,$appfunction);
+			$this->lappfunctions[] = $appfunction;
+			return $appfunction;
+		}
 
-		public 	function add_rapp_function($label, $link = "", $access = 'SA_OPEN')
-			{
-				$appfunction = new app_function($label, $link, $access);
-				//array_push($this->rappfunctions,$appfunction);
-				$this->rappfunctions[] = $appfunction;
-				return $appfunction;
-			}
+		public function add_rapp_function($label, $link = "", $access = 'SA_OPEN') {
+			$appfunction = new app_function($label, $link, $access);
+			//array_push($this->rappfunctions,$appfunction);
+			$this->rappfunctions[] = $appfunction;
+			return $appfunction;
+		}
 	}
 
 	abstract class Application
@@ -65,31 +61,27 @@
 		public $modules;
 		public $enabled;
 
-		public function __construct($id, $name, $enabled = true)
-			{
-				$this->id = $id;
-				$this->name = $name;
-				$this->enabled = $enabled;
-				$this->modules = array();
-			}
+		public function __construct($id, $name, $enabled = true) {
+			$this->id = $id;
+			$this->name = $name;
+			$this->enabled = $enabled;
+			$this->modules = array();
+		}
 
-		public 	function add_module($name, $icon = null)
-			{
-				$module = new module($name, $icon);
-				//array_push($this->modules,$module);
-				$this->modules[] = $module;
-				return $module;
-			}
+		public function add_module($name, $icon = null) {
+			$module = new module($name, $icon);
+			//array_push($this->modules,$module);
+			$this->modules[] = $module;
+			return $module;
+		}
 
-		public 	function add_lapp_function($level, $label, $link = "", $access = 'SA_OPEN')
-			{
-				$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
-			}
+		public function add_lapp_function($level, $label, $link = "", $access = 'SA_OPEN') {
+			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
+		}
 
-		public 	function add_rapp_function($level, $label, $link = "", $access = 'SA_OPEN')
-			{
-				$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
-			}
+		public function add_rapp_function($level, $label, $link = "", $access = 'SA_OPEN') {
+			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
+		}
 	}
 
 ?>

@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Validation::check(Validation::SALES_TYPES,
-		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES,		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
 	Page::simple_mode(true);
 
 	$input_error = 0;
@@ -30,9 +29,9 @@
 	}
 
 	if (Input::request('frame')) {
-		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
+		Display::start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
-		start_form();
+		Display::start_form();
 	}
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -53,10 +52,10 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				//editing an existing price
-				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
+				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("This price has been updated.");
 			} else {
-				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
+				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
 			Errors::notice($msg);
@@ -86,33 +85,33 @@
 	}
 
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
-	div_start('price_table');
+	Display::div_start('price_table');
 	if (Input::request('frame')) {
-		start_table(Config::get('tables_style') . "  width=90%");
+		Display::start_table(Config::get('tables_style') . "  width=90%");
 	} else {
-		start_table(Config::get('tables_style') . "  width=30%");
+		Display::start_table(Config::get('tables_style') . "  width=30%");
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
 	while ($myrow = DB::fetch($prices_list)) {
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["curr_abrev"]);
 		label_cell($myrow["sales_type"]);
 		amount_cell($myrow["price"]);
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
-	end_table();
+	Display::end_table();
 	if (DB::num_rows($prices_list) == 0) {
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
 		}
 		Errors::warning(_("There are no prices set up for this part."), 1);
 	}
-	div_end();
+	Display::div_end();
 
 	echo "<br>";
 	if ($Mode == 'Edit') {
@@ -122,23 +121,23 @@
 		$_POST['price'] = Num::price_format($myrow["price"]);
 	}
 	hidden('selected_id', $selected_id);
-	div_start('price_details');
-	start_table('class="tableinfo"');
+	Display::div_start('price_details');
+	Display::start_table('class="tableinfo"');
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
-			get_post('sales_type_id')));
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(Display::get_post('stock_id'), Display::get_post('curr_abrev'),
+			Display::get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
-	end_table(1);
+	Display::end_table(1);
 	if ($calculated) {
 		Errors::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	div_end();
-	end_form();
+	Display::div_end();
+	Display::end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

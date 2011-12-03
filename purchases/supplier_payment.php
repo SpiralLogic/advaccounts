@@ -41,17 +41,17 @@
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
 		Errors::notice(_("Payment has been sucessfully entered"));
-		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
-		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
-		Display::note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
-		//    hyperlink_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
+		Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
+		Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
+		Display::note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
+		//    Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 		Page::footer_exit();
 	}
 
 	function check_inputs()
 		{
-			if (!get_post('supplier_id')) {
+			if (!Display::get_post('supplier_id')) {
 				Errors::error(_("There is no supplier selected."));
 				JS::set_focus('supplier_id');
 				return false;
@@ -69,7 +69,7 @@
 				JS::set_focus('charge');
 				return false;
 			}
-			if (isset($_POST['charge']) && input_num('charge') > 0) {
+			if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 				$charge_acct = DB_Company::get_pref('bank_charge_act');
 				if (GL_Account::get($charge_acct) == false) {
 					Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
@@ -90,8 +90,8 @@
 				JS::set_focus('amount');
 				return false;
 			}
-			//if (input_num('amount') - input_num('discount') <= 0)
-			if (input_num('amount') <= 0) {
+			//if (Validation::input_num('amount') - Validation::input_num('discount') <= 0)
+			if (Validation::input_num('amount') <= 0) {
 				Errors::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 				JS::set_focus('amount');
 				return false;
@@ -115,7 +115,7 @@
 				JS::set_focus('ref');
 				return false;
 			}
-			$_SESSION['alloc']->amount = -input_num('amount');
+			$_SESSION['alloc']->amount = -Validation::input_num('amount');
 			if (isset($_POST["TotalNumberOfAllocs"])) {
 				return Gl_Allocation::check();
 			} else {
@@ -132,10 +132,10 @@
 			if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
 				$rate = 0;
 			} else {
-				$rate = input_num('_ex_rate');
+				$rate = Validation::input_num('_ex_rate');
 			}
-			$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], input_num('amount'),
-				input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
+			$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'),
+				Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
 			Dates::new_doc_date($_POST['DatePaid']);
 			$_SESSION['alloc']->trans_no = $payment_id;
 			$_SESSION['alloc']->write();
@@ -147,7 +147,7 @@
 			unset($_POST['amount']);
 			unset($_POST['discount']);
 			unset($_POST['ProcessSuppPayment']);
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
 		}
 
 
@@ -160,41 +160,41 @@
 		}
 	}
 
-	start_form();
-	start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
-	table_section(1);
+	Display::start_form();
+	Display::start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
+	Display::table_section(1);
 	supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
-	table_section(2);
+	Bank_UI::accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
+	Display::table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
-	table_section(3);
+	Display::table_section(3);
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
 	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
 		GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 	amount_row(_("Bank Charge:"), 'charge');
-	end_outer_table(1); // outer table
+	Display::end_outer_table(1); // outer table
 	if ($bank_currency == $supplier_currency) {
-		div_start('alloc_tbl');
+		Display::div_start('alloc_tbl');
 		Gl_Allocation::show_allocatable(false);
-		div_end();
+		Display::div_end();
 	}
-	start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-	end_table(1);
+	Display::end_table(1);
 	if ($bank_currency != $supplier_currency) {
 		Errors::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

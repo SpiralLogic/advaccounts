@@ -28,13 +28,13 @@
 	function edit_allocations_for_transaction($type, $trans_no)
 	{
 		global $systypes_array;
-		start_form();
+		Display::start_form();
 		Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
 		Display::heading($_SESSION['alloc']->person_name);
 		Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
 		Display::heading(_("Total:") . " <b>" . Num::price_format(-$_SESSION['alloc']->amount) . "</b>");
 		echo "<br>";
-		div_start('alloc_tbl');
+		Display::div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {
 			Gl_Allocation::show_allocatable(true);
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
@@ -44,8 +44,8 @@
 			Errors::warning(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}
-		div_end();
-		end_form();
+		Display::div_end();
+		Display::end_form();
 	}
 
 
@@ -59,13 +59,13 @@
 
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		meta_forward("/purchases/allocations/supplier_allocation_main.php");
+		Display::meta_forward("/purchases/allocations/supplier_allocation_main.php");
 	}
 
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
 		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
 	}
-	if (get_post('UpdateDisplay')) {
+	if (Display::get_post('UpdateDisplay')) {
 		$_SESSION['alloc']->read();
 		$Ajax->activate('alloc_tbl');
 	}

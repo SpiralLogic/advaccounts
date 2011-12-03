@@ -125,20 +125,20 @@
 				Errors::warning(_("There are no transactions for this dimension for the selected period."));
 			} else {
 				Display::heading(_("Balance for this Dimension"));
-				br();
-				start_table(Config::get('tables_style'));
+				Display::br();
+				Display::start_table(Config::get('tables_style'));
 				$th = array(_("Account"), _("Debit"), _("Credit"));
-				table_header($th);
+				Display::table_header($th);
 				$total = $k = 0;
 				while ($myrow = DB::fetch($result))
 				{
-					alt_table_row_color($k);
+					Display::alt_table_row_color($k);
 					label_cell($myrow["account"] . " " . $myrow['account_name']);
 					Display::debit_or_credit_cells($myrow["amt"]);
 					$total += $myrow["amt"];
-					end_row();
+					Display::end_row();
 				}
-				start_row();
+				Display::start_row();
 				label_cell("<b>" . _("Balance") . "</b>");
 				if ($total >= 0) {
 					amount_cell($total, true);
@@ -147,8 +147,8 @@
 					label_cell("");
 					amount_cell(abs($total), true);
 				}
-				end_row();
-				end_table();
+				Display::end_row();
+				Display::end_table();
 			}
 		}
 

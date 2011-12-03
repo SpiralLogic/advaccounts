@@ -17,7 +17,7 @@
 
 	// Ajax updates
 	//
-	if (get_post('Show')) {
+	if (Display::get_post('Show')) {
 		$Ajax->activate('trans_tbl');
 	}
 	if (isset($_GET["account"])) {
@@ -51,16 +51,16 @@
 	function gl_inquiry_controls()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
-		start_form();
-		start_table("class='tablestyle_noborder'");
-		start_row();
+		Display::start_form();
+		Display::start_table("class='tablestyle_noborder'");
+		Display::start_row();
 		gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, "All Accounts");
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
-		end_row();
-		end_table();
-		start_table();
-		start_row();
+		Display::end_row();
+		Display::end_table();
+		Display::start_table();
+		Display::start_row();
 		if ($dim >= 1) {
 			dimensions_list_cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
 		}
@@ -70,10 +70,10 @@
 		small_amount_cells(_("Amount min:"), 'amount_min', null);
 		small_amount_cells(_("Amount max:"), 'amount_max', null);
 		submit_cells('Show', _("Show"), '', '', 'default');
-		end_row();
-		end_table();
+		Display::end_row();
+		Display::end_table();
 		echo '<hr>';
-		end_form();
+		Display::end_form();
 	}
 
 
@@ -92,14 +92,14 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, input_num('amount_min'), input_num('amount_max'));
+		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 		if ($_POST["account"] != null) {
 			Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
 		}
 		// Only show balances if an account is specified AND we're not filtering by amounts
-		$show_balances = $_POST["account"] != null && input_num("amount_min") == 0 && input_num("amount_max") == 0;
-		start_table(Config::get('tables_style'));
+		$show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
+		Display::start_table(Config::get('tables_style'));
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
 			$account_col = array(_("Account"));
@@ -119,7 +119,7 @@
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
 		}
 		$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
-		table_header($th);
+		Display::table_header($th);
 		if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
 			$begin = "";
 		} else {
@@ -132,22 +132,22 @@
 		$bfw = 0;
 		if ($show_balances) {
 			$bfw = GL_Trans::get_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
-			start_row("class='inquirybg'");
+			Display::start_row("class='inquirybg'");
 			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
 			Display::debit_or_credit_cells($bfw);
 			label_cell("");
 			label_cell("");
-			end_row();
+			Display::end_row();
 		}
 		$running_total = $bfw;
 		$j = 1;
 		$k = 0; //row colour counter
 		while ($myrow = DB::fetch($result)) {
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			$running_total += $myrow["amount"];
 			$trandate = Dates::sql2date($myrow["tran_date"]);
 			label_cell($systypes_array[$myrow["type"]]);
-			label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
+			label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
 			label_cell($trandate);
 			if ($_POST["account"] == null) {
 				label_cell($myrow["account"] . ' ' . GL_Account::get_name($myrow["account"]));
@@ -164,23 +164,23 @@
 				amount_cell($running_total);
 			}
 			label_cell($myrow['memo_']);
-			end_row();
+			Display::end_row();
 			$j++;
 			if ($j == 12) {
 				$j = 1;
-				table_header($th);
+				Display::table_header($th);
 			}
 		}
 		//end of while loop
 		if ($show_balances) {
-			start_row("class='inquirybg'");
+			Display::start_row("class='inquirybg'");
 			label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=$colspan");
 			Display::debit_or_credit_cells($running_total);
 			label_cell("");
 			label_cell("");
-			end_row();
+			Display::end_row();
 		}
-		end_table(2);
+		Display::end_table(2);
 		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 		}
@@ -188,11 +188,11 @@
 
 
 	gl_inquiry_controls();
-	div_start('trans_tbl');
-	if (get_post('Show') || get_post('account')) {
+	Display::div_start('trans_tbl');
+	if (Display::get_post('Show') || Display::get_post('account')) {
 		show_results();
 	}
-	div_end();
+	Display::div_end();
 
 	end_page();
 

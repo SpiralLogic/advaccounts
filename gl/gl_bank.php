@@ -27,7 +27,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	if (list_updated('PersonDetailID')) {
-		$br = Sales_Branch::get(get_post('PersonDetailID'));
+		$br = Sales_Branch::get(Display::get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
@@ -44,18 +44,18 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 		Errors::notice(_("Payment $trans_no has been entered"));
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 		Page::footer_exit();
 	}
 	if (isset($_GET['AddedDep'])) {
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 		Errors::notice(_("Deposit $trans_no has been entered"));
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
+		Display::note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
 		Page::footer_exit();
 	}
 	if (isset($_POST['_date__changed'])) {
@@ -119,7 +119,7 @@
 		$trans = GL_Bank::add_bank_transaction(
 			$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 			$_SESSION['pay_items'], $_POST['date_'],
-			$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
+			$_POST['PayType'], $_POST['person_id'], Display::get_post('PersonDetailID'),
 			$_POST['ref'], $_POST['memo_']
 		);
 		$trans_type = $trans[0];
@@ -127,7 +127,7 @@
 		Dates::new_doc_date($_POST['date_']);
 		$_SESSION['pay_items']->clear_items();
 		unset($_SESSION['pay_items']);
-		meta_forward(
+		Display::meta_forward(
 			$_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ?
 			 "AddedID=$trans_no" : "AddedDep=$trans_no"
 		);
@@ -161,7 +161,7 @@
 
 	function handle_update_item()
 		{
-			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * input_num('amount');
+			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
 				$_SESSION['pay_items']->update_gl_item(
 					$_POST['Index'], $_POST['code_id'],
@@ -185,7 +185,7 @@
 			if (!check_item_data()) {
 				return;
 			}
-			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * input_num('amount');
+			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
 			$_SESSION['pay_items']->add_gl_item(
 				$_POST['code_id'], $_POST['dimension_id'],
 				$_POST['dimension2_id'], $amount, $_POST['LineMemo']
@@ -209,7 +209,7 @@
 	}
 	if (isset($_POST['go'])) {
 		GL_QuickEntry::show_menu(
-			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
+			$_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
 		$_POST['totamount'] = Num::price_format(0);
@@ -217,25 +217,25 @@
 		line_start_focus();
 	}
 
-	start_form();
-	GL_BankUI::header($_SESSION['pay_items']);
-	start_table(Config::get('tables_style2') . " width=90%", 10);
-	start_row();
+	Display::start_form();
+	Bank_UI::header($_SESSION['pay_items']);
+	Display::start_table(Config::get('tables_style2') . " width=90%", 10);
+	Display::start_row();
 	echo "<td>";
-	GL_BankUI::items(
+	Bank_UI::items(
 		$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
 		 _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']
 	);
-	GL_BankUI::option_controls();
+	Bank_UI::option_controls();
 	echo "</td>";
-	end_row();
-	end_table(1);
+	Display::end_row();
+	Display::end_table(1);
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last(
 		'Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
 		 _("Process Payment") : _("Process Deposit"), '', 'default'
 	);
-	end_form();
+	Display::end_form();
 
 	end_page();
 

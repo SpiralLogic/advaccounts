@@ -25,24 +25,24 @@
 	function display_kit_items($selected_kit)
 	{
 		$result = Item_Code::get_kit($selected_kit);
-		div_start('bom');
-		start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::div_start('bom');
+		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 		$th = array(
 			_("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', '');
-		table_header($th);
+		Display::table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result)) {
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			label_cell($myrow["stock_id"]);
 			label_cell($myrow["comp_name"]);
 			qty_cell($myrow["quantity"], false, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));
 			label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-			end_row();
+			Display::end_row();
 		} //END WHILE LIST LOOP
-		end_table();
-		div_end();
+		Display::end_table();
+		Display::div_end();
 	}
 
 
@@ -60,7 +60,7 @@
 			return;
 		} elseif ($selected_item == -1) // adding new item or new alias/kit
 		{
-			if (get_post('item_code') == '') { // New kit/alias definition
+			if (Display::get_post('item_code') == '') { // New kit/alias definition
 				$kit = Item_Code::get_kit($_POST['kit_code']);
 				if (DB::num_rows($kit)) {
 					$input_error = 1;
@@ -68,7 +68,7 @@
 					JS::set_focus('kit_code');
 					return;
 				}
-				if (get_post('kit_code') == '') {
+				if (Display::get_post('kit_code') == '') {
 					Errors::error(_("Kit/alias code cannot be empty."));
 					JS::set_focus('kit_code');
 					return;
@@ -94,11 +94,11 @@
 			} else {
 				$msg = _("New component has been added to selected kit.");
 			}
-			Item_Code::add($kit_code, get_post('component'), get_post('description'), get_post('category'), input_num('quantity'), 0);
+			Item_Code::add($kit_code, Display::get_post('component'), Display::get_post('description'), Display::get_post('category'), Validation::input_num('quantity'), 0);
 			Errors::notice($msg);
 		} else {
 			$props = Item_Code::get_kit_props($_POST['item_code']);
-			Item_Code::update($selected_item, $kit_code, get_post('component'), $props['description'], $props['category_id'], input_num('quantity'), 0);
+			Item_Code::update($selected_item, $kit_code, Display::get_post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
 			Errors::notice(_("Component of selected kit has been updated."));
 		}
 		$Mode = 'RESET';
@@ -106,8 +106,8 @@
 	}
 
 
-	if (get_post('update_name')) {
-		Item_Code::update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
+	if (Display::get_post('update_name')) {
+		Item_Code::update_kit_props(Display::get_post('item_code'), Display::get_post('description'), Display::get_post('category'));
 		Errors::notice(_('Kit common properties has been updated'));
 		$Ajax->activate('_page_body');
 	}
@@ -143,36 +143,36 @@
 		unset($_POST['component']);
 	}
 
-	start_form();
+	Display::start_form();
 	echo "<div class='center'>" . _("Select a sale kit:") . "&nbsp;";
 	echo sales_kits_list('item_code', null, _('New kit'), true);
 	echo "</div><br>";
 	$props = Item_Code::get_kit_props(Input::post('item_code'));
 	if (list_updated('item_code')) {
-		if (get_post('item_code') == '') {
+		if (Display::get_post('item_code') == '') {
 			$_POST['description'] = '';
 		}
 		$Ajax->activate('_page_body');
 	}
 	$selected_kit = $_POST['item_code'];
 
-	if (get_post('item_code') == '') {
+	if (Display::get_post('item_code') == '') {
 		// New sales kit entry
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 	} else {
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
 		$_POST['category'] = $props['category_id'];
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
-		submit_row('update_name', _("Update"), false, 'align=center colspan=2', _('Update kit/alias name'), true);
-		end_row();
-		end_table(1);
+		submit_row('update_name', _("Update"), false, 'class=center colspan=2', _('Update kit/alias name'), true);
+		Display::end_row();
+		Display::end_table(1);
 		display_kit_items($selected_kit);
 		echo '<br>';
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 	}
 	if ($Mode == 'Edit') {
 		$myrow = Item_Code::get($selected_id);
@@ -181,9 +181,9 @@
 	}
 	hidden("selected_id", $selected_id);
 	sales_local_items_list_row(_("Component:"), 'component', null, false, true);
-	//	if (get_post('description') == '')
+	//	if (Display::get_post('description') == '')
 	//		$_POST['description'] = get_kit_name($_POST['component']);
-	if (get_post('item_code') == '') { // new kit/alias
+	if (Display::get_post('item_code') == '') { // new kit/alias
 		if ($Mode != 'ADD_ITEM' && $Mode != 'UPDATE_ITEM') {
 			$_POST['description'] = $props['description'];
 			$_POST['category'] = $props['category_id'];
@@ -191,7 +191,7 @@
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
-	$res = Item::get_edit_info(get_post('component'));
+	$res = Item::get_edit_info(Display::get_post('component'));
 	$dec = $res["decimals"] == '' ? 0 : $res["decimals"];
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) {
@@ -200,9 +200,9 @@
 		$Ajax->activate('category');
 	}
 	qty_row(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

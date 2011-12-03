@@ -30,20 +30,20 @@
 	echo "<div class='center'>";
 	Display::heading(_("Payment to Supplier") . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style2') . " width=90%");
-	start_row();
+	Display::start_table(Config::get('tables_style2') . " width=90%");
+	Display::start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
 	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
 	label_cells(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	if ($show_currencies) {
 		label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 	}
 	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tableheader2'");
 	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
-	end_row();
-	start_row();
+	Display::end_row();
+	Display::start_row();
 	if ($show_currencies) {
 		label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tableheader2'");
 	}
@@ -51,9 +51,9 @@
 		label_cells(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tableheader2'");
 	}
 	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
-	end_row();
+	Display::end_row();
 	DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
-	end_table(1);
+	Display::end_table(1);
 	$voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 	// now display the allocations for this payment
 	if (!$voided) {

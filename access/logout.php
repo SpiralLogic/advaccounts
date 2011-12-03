@@ -12,13 +12,13 @@
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::header(_("Logout"), true, false, '');
-	echo "<table style='width:100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' style='width:250' height='50'' /></td>
+	echo "<table style='width:100%' border='0'> <tr><td class='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' style='width:250' height='50'' /></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td><div align='center'><font size=2>";
+    <td><div class='center'><font size=2>";
 	echo _("Thank you for using") . " ";
 	echo "<strong>" . APP_TITLE . ' ' . VERSION . "</strong>";
 	echo "</font></div></td>
@@ -27,7 +27,7 @@
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td><div align='center'>";
+    <td><div class='center'>";
 	echo "<a href='/index.php'><b>" . _("Click here to Login Again.") . "</b></a>";
 	echo "</div></td>
   </tr>

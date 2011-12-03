@@ -28,7 +28,7 @@
 			JS::set_focus('rate');
 			return false;
 		}
-		if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
+		if (!Tax_Types::is_tax_gl_unique(Display::get_post('sales_gl_code'), Display::get_post('purchasing_gl_code'), $selected_id)) {
 			Errors::error(_("Selected GL Accounts cannot be used by another tax type."));
 			JS::set_focus('sales_gl_code');
 			return false;
@@ -40,7 +40,7 @@
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Tax_Types::add(
 			$_POST['name'], $_POST['sales_gl_code'],
-			$_POST['purchasing_gl_code'], input_num('rate', 0)
+			$_POST['purchasing_gl_code'], Validation::input_num('rate', 0)
 		);
 		Errors::notice(_('New tax type has been added'));
 		$Mode = 'RESET';
@@ -49,7 +49,7 @@
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Tax_Types::update(
 			$selected_id, $_POST['name'],
-			$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], input_num('rate')
+			$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate')
 		);
 		Errors::notice(_('Selected tax type has been updated'));
 		$Mode = 'RESET';
@@ -77,38 +77,38 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Tax_Types::get_all(check_value('show_inactive'));
-	start_form();
+	Display::start_form();
 	Errors::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
-	start_table(Config::get('tables_style'));
+	Display::start_table(Config::get('tables_style'));
 	$th = array(
 		_("Description"), _("Default Rate (%)"),
 		_("Sales GL Account"), _("Purchasing GL Account"), "", ""
 	);
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["name"]);
-		label_cell(Num::percent_format($myrow["rate"]), "align=right");
+		label_cell(Num::percent_format($myrow["rate"]), "class=right");
 		label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 		label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -124,9 +124,9 @@
 	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", User::percent_dec());
 	gl_all_accounts_list_row(_("Sales GL Account:"), 'sales_gl_code', null);
 	gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

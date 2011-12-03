@@ -16,7 +16,7 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
-	br(1);
+	Display::br(1);
 	$adjustment_items = Inv_Adjustment::get($trans_no);
 	$k = 0;
 	$header_shown = false;
@@ -24,33 +24,33 @@
 	{
 		if (!$header_shown) {
 			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
-			start_table(Config::get('tables_style2') . " width=90%");
-			start_row();
+			Display::start_table(Config::get('tables_style2') . " width=90%");
+			Display::start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
 			label_cells(_("Reference"), $adjustment['reference'], "class='tableheader2'", "colspan=6");
 			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
-			end_row();
+			Display::end_row();
 			DB_Comments::display_row(ST_INVADJUST, $trans_no);
-			end_table();
+			Display::end_table();
 			$header_shown = true;
 			echo "<br>";
-			start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table(Config::get('tables_style') . "  width=90%");
 			$th = array(
 				_("Item"), _("Description"), _("Quantity"),
 				_("Units"), _("Unit Cost")
 			);
-			table_header($th);
+			Display::table_header($th);
 		}
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($adjustment['stock_id']);
 		label_cell($adjustment['description']);
 		qty_cell($adjustment['qty'], false, Item::qty_dec($adjustment['stock_id']));
 		label_cell($adjustment['units']);
 		amount_decimal_cell($adjustment['standard_cost']);
-		end_row();
+		Display::end_row();
 	}
-	end_table(1);
+	Display::end_table(1);
 	Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
 	end_page(true);
 ?>

@@ -16,6 +16,22 @@
 		_("Credit"),
 		_("Cash")
 	);
+	$payment_person_types = array(
+		PT_MISC => _("Miscellaneous"),
+		_("Work Order"),
+		_("Customer"),
+		_("Supplier"),
+		_("Quick Entry")
+	);
+	$wo_types_array = array(
+		WO_ASSEMBLY => _("Assemble"),
+		WO_UNASSEMBLY => _("Unassemble"),
+		WO_ADVANCED => _("Advanced Manufacture")
+	);
+	$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
+	);
 	$class_types = array(
 		CL_ASSETS => _("Assets"),
 		CL_LIABILITIES => _("Liabilities"),

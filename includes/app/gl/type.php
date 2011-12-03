@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class GL_AccountType
+	class GL_Type
 	{
 		function add($id, $name, $class_id, $parent)
 			{

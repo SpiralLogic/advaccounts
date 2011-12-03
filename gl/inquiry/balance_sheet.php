@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Balance Sheet Drilldown"));
 
 	// Ajax updates
-	if (get_post('Show')) {
+	if (Display::get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
 	if (isset($_GET["TransFromDate"])) {
@@ -48,16 +48,16 @@
 				 . $from . "&TransToDate=" . $to
 				 . "&account=" . $account['account_code'] . "'>" . $account['account_code']
 				 . " " . $account['account_name'] . "</a>";
-				start_row("class='stockmankobg'");
+				Display::start_row("class='stockmankobg'");
 				label_cell($url);
 				amount_cell(($curr_balance + $prev_balance) * $convert);
-				end_row();
+				Display::end_row();
 			}
 			$acctstotal += $curr_balance + $prev_balance;
 		}
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
-		$result = GL_AccountType::get_all(false, false, $type);
+		$result = GL_Type::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			$typestotal += display_type(
@@ -68,13 +68,13 @@
 		//Display Type Summary if total is != 0
 		if (($acctstotal + $typestotal) != 0) {
 			if ($drilldown && $type == $_POST["AccGrp"]) {
-				start_row("class='inquirybg' style='font-weight:bold'");
+				Display::start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_('Total') . " " . $typename);
 				amount_cell(($acctstotal + $typestotal) * $convert);
-				end_row();
+				Display::end_row();
 			}
 			//START Patch#1 : Display  only direct child types
-			$acctype1 = GL_AccountType::get($type);
+			$acctype1 = GL_Type::get($type);
 			$parent1  = $acctype1["parent"];
 			if ($drilldown && $parent1 == $_POST["AccGrp"]
 			) //END Patch#2
@@ -83,10 +83,10 @@
 				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
 				 . $from . "&TransToDate=" . $to
 				 . "&AccGrp=" . $type . "'>" . $typename . "</a>";
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($acctstotal + $typestotal) * $convert);
-				end_row();
+				Display::end_row();
 			}
 		}
 		return ($acctstotal + $typestotal);
@@ -94,10 +94,10 @@
 
 	function inquiry_controls()
 	{
-		start_table("class='tablestyle_noborder'");
+		Display::start_table("class='tablestyle_noborder'");
 		date_cells(_("As at:"), 'TransToDate');
 		submit_cells('Show', _("Show"), '', '', 'default');
-		end_table();
+		Display::end_table();
 		hidden('TransFromDate');
 		hidden('AccGrp');
 	}
@@ -116,14 +116,14 @@
 		{
 			$drilldown = 0;
 		} // Root level
-		div_start('balance_tbl');
-		start_table("width=30%  " . Config::get('tables_style'));
+		Display::div_start('balance_tbl');
+		Display::start_table("width=30%  " . Config::get('tables_style'));
 		if (!$drilldown) //Root Level
 		{
 			$equityclose = $lclose = $calculateclose = 0.0;
 			$parent      = -1;
 			//Get classes for BS
-			$classresult = GL_AccountClass::get_all(false, 1);
+			$classresult = GL_Class::get_all(false, 1);
 			while ($class = DB::fetch($classresult))
 			{
 				$classclose = 0.0;
@@ -131,9 +131,9 @@
 				$ctype      = $class["ctype"];
 				$classname  = $class["class_name"];
 				//Print Class Name
-				table_section_title($class["class_name"]);
+				Display::table_section_title($class["class_name"]);
 				//Get Account groups/types under this group/type
-				$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
+				$typeresult = GL_Type::get_all(false, $class['cid'], -1);
 				while ($accounttype = DB::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
@@ -144,18 +144,18 @@
 						$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
 						 . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" .
 						 $accounttype['name'] . "</a>";
-						alt_table_row_color($k);
+						Display::alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal * $convert);
-						end_row();
+						Display::end_row();
 					}
 					$classclose += $TypeTotal;
 				}
 				//Print Class Summary
-				start_row("class='inquirybg' style='font-weight:bold'");
+				Display::start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_('Total') . " " . $class["class_name"]);
 				amount_cell($classclose * $convert);
-				end_row();
+				Display::end_row();
 				if ($ctype == CL_EQUITY) {
 					$equityclose += $classclose;
 					$econvert = $convert;
@@ -173,37 +173,37 @@
 			$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate="
 			 . $from . "&TransToDate=" . $to
 			 . "&Compare=0'>" . _('Calculated Return') . "</a>";
-			start_row("class='inquirybg' style='font-weight:bold'");
+			Display::start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell($url);
 			amount_cell($calculateclose);
-			end_row();
-			start_row("class='inquirybg' style='font-weight:bold'");
+			Display::end_row();
+			Display::start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
 			amount_cell($lclose * $lconvert + $equityclose * $econvert + $calculateclose);
-			end_row();
+			Display::end_row();
 		}
 		else //Drill Down
 		{
 			//Level Pointer : Global variable defined in order to control display of root
 			global $levelptr;
 			$levelptr    = 0;
-			$accounttype = GL_AccountType::get($_POST["AccGrp"]);
+			$accounttype = GL_Type::get($_POST["AccGrp"]);
 			$classid     = $accounttype["class_id"];
-			$class       = GL_AccountClass::get($classid);
+			$class       = GL_Class::get($classid);
 			$convert     = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
-			table_section_title(GL_AccountType::get_name($_POST["AccGrp"]));
+			Display::table_section_title(GL_Type::get_name($_POST["AccGrp"]));
 			$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, PATH_TO_ROOT);
 		}
-		end_table(1); // outer table
-		div_end();
+		Display::end_table(1); // outer table
+		Display::div_end();
 	}
 
 
-	start_form();
+	Display::start_form();
 	inquiry_controls();
 	display_balance_sheet();
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

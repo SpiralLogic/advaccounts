@@ -77,7 +77,7 @@
 			for ($i = $from; $i <= $to; $i++)
 			{
 				$myrow = get_po($i);
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				if ($email == 1) {
 					$rep = new FrontReport("", "", User::pagesize());
@@ -158,7 +158,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, $doc_TOTAL_PO, -2);
 				$rep->TextCol(6, 7, $DisplayTotal, -2);
-				$words = ui_view::price_in_words($SubTotal, ST_PURCHORDER);
+				$words = Item_Price::to_words($SubTotal, ST_PURCHORDER);
 				if ($words != "") {
 					$rep->NewLine(1);
 					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

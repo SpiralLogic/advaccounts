@@ -113,10 +113,10 @@
 		} //end ifs to test if the branch can be deleted
 		$Mode = 'RESET';
 	}
-	if ($Mode == 'RESET' || get_post('_customer_id_update')) {
+	if ($Mode == 'RESET' || Display::get_post('_customer_id_update')) {
 		$selected_id = -1;
 		$cust_id = $_POST['customer_id'];
-		$inact = get_post('show_inactive');
+		$inact = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $inact;
 		$_POST['customer_id'] = $cust_id;
@@ -142,9 +142,9 @@
 		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
 	}
 
-	start_form();
+	Display::start_form();
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo customer_list('customer_id', null, false, true);
+	echo Debtor_UI::select('customer_id', null, false, true);
 	echo "</div><br>";
 	$num_branches=-0;
 	if (Input::post('customer_id')>0){
@@ -156,7 +156,7 @@
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code
 		AND b.debtor_no = " . DB::escape($_POST['customer_id']);
-	if (!get_post('show_inactive')) {
+	if (!Display::get_post('show_inactive')) {
 		$sql .= " AND !b.inactive";
 	}
 
@@ -173,14 +173,14 @@
 		$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
 		$table->set_inactive_ctrl('cust_branch', 'branch_code');
 		//$table->width = "85%";
-		display_db_pager($table);
+		DB_Pager::display($table);
 	} else {
 		Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
 	}}else {
 		Errors::warning(_("No Customer selected."));
 	}
-	start_outer_table(Config::get('tables_style2'), 5);
-	table_section(1);
+	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::table_section(1);
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -240,7 +240,7 @@
 	hidden('selected_id', $selected_id);
 	hidden('branch_code');
 	hidden('popup', Input::request('popup'));
-	table_section_title(_("Name and Contact"));
+	Display::table_section_title(_("Name and Contact"));
 	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
 	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
 	text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
@@ -248,7 +248,7 @@
 	text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
 	text_row(_("Fax Number:"), 'fax', null, 32, 30);
 	email_row(_("E-mail:"), 'email', null, 35, 55);
-	table_section_title(_("Sales"));
+	Display::table_section_title(_("Sales"));
 	sales_persons_list_row(_("Sales Person:"), 'salesman', null);
 	sales_areas_list_row(_("Sales Area:"), 'area', null);
 	sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
@@ -256,19 +256,19 @@
 	shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
 	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 	yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
-	table_section(2);
-	table_section_title(_("GL Accounts"));
+	Display::table_section(2);
+	Display::table_section_title(_("GL Accounts"));
 	// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
 	gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
 	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account');
 	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
-	table_section_title(_("Addresses"));
+	Display::table_section_title(_("Addresses"));
 	textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
 	textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);
 	textarea_row(_("General Notes:"), 'notes', null, 35, 4);
-	end_outer_table(1);
+	Display::end_outer_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

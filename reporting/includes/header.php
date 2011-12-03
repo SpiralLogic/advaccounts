@@ -78,7 +78,7 @@
 	#  __ADVANCEDEDIT__ END #
 	$this->Font('italic');
 	if (!isset($customer) && isset($myrow['debtor_no'])) {
-		$customer = new Contacts_Customer($myrow['debtor_no']);
+		$customer = new Debtor($myrow['debtor_no']);
 	}
 	if (isset($branch['branch_code'])) {
 		$currentBranch = $customer->branches[$branch['branch_code']];

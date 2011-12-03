@@ -20,7 +20,7 @@
 		$company_record = DB_Company::get_prefs();
 		$payment_no = Sales_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
-		$bank_gl_account = GL_BankAccount::get_gl($bank_account);
+		$bank_gl_account = Bank_Account::get_gl($bank_account);
 		if ($trans_no != 0) {
 			DB_Comments::delete(ST_CUSTPAYMENT, $trans_no);
 			Bank_Trans::void(ST_CUSTPAYMENT, $trans_no, true);

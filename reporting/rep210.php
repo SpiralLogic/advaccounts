@@ -96,7 +96,7 @@
 					if (!$myrow) {
 						continue;
 					}
-					$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+					$baccount = Bank_Account::get_default($myrow['curr_code']);
 					$params['bankaccount'] = $baccount['id'];
 					if ($email == 1) {
 						$rep = new FrontReport("", "", User::pagesize());
@@ -148,7 +148,7 @@
 					$rep->Font('bold');
 					$rep->TextCol(3, 6, $doc_Total_Payment, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
-					$words = ui_view::price_in_words($myrow['Total'], ST_SUPPAYMENT);
+					$words = Item_Price::to_words($myrow['Total'], ST_SUPPAYMENT);
 					if ($words != "") {
 						$rep->NewLine(2);
 						$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

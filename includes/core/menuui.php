@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class MenuUI extends Menu {
-
-
+	class MenuUI extends Menu
+	{
 		protected $options = array();
 		public $firstPage = false;
 		static $menuCount = 0;
@@ -29,7 +28,9 @@
 		function startTab($title, $tooltip, $link = '#', $style = '') {
 			$this->addTab($title, $tooltip, $link);
 			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->items) . '" ';
-			if (!empty($style)) echo ' style="' . $style . '" ';
+			if (!empty($style)) {
+				echo ' style="' . $style . '" ';
+			}
 			echo '>';
 			return $this;
 		}
@@ -55,8 +56,8 @@
 		}
 	}
 
-
-	class MenuUi_item extends menu_item {
+	class MenuUi_item extends menu_item
+	{
 		public $tooltip = '';
 
 		function __construct($label, $tooltip = '', $link = '') {

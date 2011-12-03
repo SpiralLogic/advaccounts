@@ -63,7 +63,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -76,39 +76,39 @@
 		$sql .= " AND !c.inactive";
 	}
 	$result = DB::query($sql, "could not get stock categories");
-	start_form();
-	start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(
 		_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 		_("Assembly Account"), "", ""
 	);
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["description"]);
 		label_cell($myrow["tax_name"]);
-		label_cell($myrow["dflt_units"], "align=center");
+		label_cell($myrow["dflt_units"], "class=center");
 		label_cell($stock_types[$myrow["dflt_mb_flag"]]);
-		label_cell($myrow["dflt_sales_act"], "align=center");
-		label_cell($myrow["dflt_inventory_act"], "align=center");
-		label_cell($myrow["dflt_cogs_act"], "align=center");
-		label_cell($myrow["dflt_adjustment_act"], "align=center");
-		label_cell($myrow["dflt_assembly_act"], "align=center");
+		label_cell($myrow["dflt_sales_act"], "class=center");
+		label_cell($myrow["dflt_inventory_act"], "class=center");
+		label_cell($myrow["dflt_cogs_act"], "class=center");
+		label_cell($myrow["dflt_adjustment_act"], "class=center");
+		label_cell($myrow["dflt_assembly_act"], "class=center");
 		inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
 		edit_button_cell("Edit" . $myrow["category_id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["category_id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table();
+	Display::end_table();
 	echo '<br>';
 
-	div_start('details');
-	start_table(Config::get('tables_style2'));
+	Display::div_start('details');
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
@@ -134,24 +134,24 @@
 		$_POST['description'] = '';
 		$_POST['no_sale'] = 0;
 		$company_record = DB_Company::get_prefs();
-		if (get_post('inventory_account') == "") {
+		if (Display::get_post('inventory_account') == "") {
 			$_POST['inventory_account'] = $company_record["default_inventory_act"];
 		}
-		if (get_post('cogs_account') == "") {
+		if (Display::get_post('cogs_account') == "") {
 			$_POST['cogs_account'] = $company_record["default_cogs_act"];
 		}
-		if (get_post('sales_account') == "") {
+		if (Display::get_post('sales_account') == "") {
 			$_POST['sales_account'] = $company_record["default_inv_sales_act"];
 		}
-		if (get_post('adjustment_account') == "") {
+		if (Display::get_post('adjustment_account') == "") {
 			$_POST['adjustment_account'] = $company_record["default_adj_act"];
 		}
-		if (get_post('assembly_account') == "") {
+		if (Display::get_post('assembly_account') == "") {
 			$_POST['assembly_account'] = $company_record["default_assembly_act"];
 		}
 	}
 	text_row(_("Category Name:"), 'description', null, 30, 30);
-	table_section_title(_("Default values for new items"));
+	Display::table_section_title(_("Default values for new items"));
 	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 	stock_units_list_row(_("Units of Measure:"), 'units', null);
@@ -184,10 +184,10 @@
 	if ($dim < 2) {
 		hidden('dim2', 0);
 	}
-	end_table(1);
-	div_end();
+	Display::end_table(1);
+	Display::div_end();
 	submit_add_or_update_center($selected_id == -1, '', 'both', true);
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

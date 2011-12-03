@@ -66,7 +66,7 @@
 					$this->startup_tab = $user['startup_tab'];
 				} else {
 					$this->sticky_date = 0;
-					$this->startup_tab = "orders";
+					$this->startup_tab = Config::get('apps.default');
 				}
 			}
 		}

@@ -19,30 +19,24 @@
 		// Right-To-Left (rtl)
 		public $is_locale_file;
 
-		function __construct($name, $code, $encoding, $dir = 'ltr')
-		{
-			$this->name     = $name;
-			$this->code     = $code ? $code : 'en_GB';
+		function __construct($name, $code, $encoding, $dir = 'ltr') {
+			$this->name = $name;
+			$this->code = $code ? $code : 'en_GB';
 			$this->encoding = $encoding;
-			$this->dir      = $dir;
+			$this->dir = $dir;
 		}
 
-
-
-
-
-		function set_language($code)
-		{
+		function set_language($code) {
 			$changed = $this->code != $code;
-			$lang    = Arr::search_value($code, Config::get('languages.installed'), 'code');
+			$lang = Arr::search_value($code, Config::get('languages.installed'), 'code');
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
 				Files::flush_dir(COMPANY_PATH . '/js_cache');
-				$this->name           = $lang['name'];
-				$this->code           = $lang['code'];
-				$this->encoding       = $lang['encoding'];
-				$this->dir            = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale               = DOCROOT . "lang/" . $this->code . "/locale.php";
+				$this->name = $lang['name'];
+				$this->code = $lang['code'];
+				$this->encoding = $lang['encoding'];
+				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
+				$locale = DOCROOT . "lang/" . $this->code . "/locale.php";
 				$this->is_locale_file = file_exists($locale);
 			}
 			$_SESSION['get_text']->set_language($this->code, $this->encoding);
@@ -54,12 +48,10 @@
 				Session::i()->App->init();
 			} // refresh menu
 		}
-
 	}
 
 	if (!function_exists("_")) {
-		function _($text)
-		{
+		function _($text) {
 			$retVal = $_SESSION['get_text']->gettext($text);
 			if ($retVal == "") {
 				return $text;

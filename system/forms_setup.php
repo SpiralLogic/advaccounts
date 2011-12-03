@@ -23,24 +23,24 @@
 		DB::commit_transaction();
 		Errors::notice(_("Forms settings have been updated."));
 	}
-	start_form();
-	start_outer_table(Config::get('tables_style2'));
+	Display::start_form();
+	Display::start_outer_table(Config::get('tables_style2'));
 	$systypes = SysTypes::get_systypes();
-	table_section(1);
+	Display::table_section(1);
 	$th = array(_("Form"), _("Next Reference"));
-	table_header($th);
+	Display::table_header($th);
 	$i = 0;
 	while ($type = DB::fetch($systypes))
 	{
 		if ($i++ == ST_CUSTCREDIT) {
-			table_section(2);
-			table_header($th);
+			Display::table_section(2);
+			Display::table_header($th);
 		}
 		ref_row($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
 	}
-	end_outer_table(1);
+	Display::end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
-	end_form(2);
+	Display::end_form(2);
 
 	end_page();
 

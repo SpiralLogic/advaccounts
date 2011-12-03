@@ -42,7 +42,7 @@
 	 }
 	 else
 	 {
-		 $selected_component = get_post("selected_component", -1);
+		 $selected_component = Display::get_post("selected_component", -1);
 	 }
 	 */
 
@@ -69,17 +69,17 @@
 	function display_bom_items($selected_parent)
 	{
 		$result = Manufacturing::get_bom($selected_parent);
-		div_start('bom');
-		start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::div_start('bom');
+		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
 		$th = array(
 			_("Code"), _("Description"), _("Location"),
 			_("Work Centre"), _("Quantity"), _("Units"), '', ''
 		);
-		table_header($th);
+		Display::table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result))
 		{
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			label_cell($myrow["component"]);
 			label_cell($myrow["description"]);
 			label_cell($myrow["location_name"]);
@@ -88,10 +88,10 @@
 			label_cell($myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-			end_row();
+			Display::end_row();
 		} //END WHILE LIST LOOP
-		end_table();
-		div_end();
+		Display::end_table();
+		Display::div_end();
 	}
 
 
@@ -105,7 +105,7 @@
 		if ($selected_component != -1) {
 			$sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added'])
 			 . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
-			quantity= " . input_num('quantity') . "
+			quantity= " . Validation::input_num('quantity') . "
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			Errors::check_db_error("Could not update this bom component", $sql);
@@ -131,7 +131,7 @@
 					 = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . ","
 					 . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", "
-					 . input_num('quantity') . ")";
+					 . Validation::input_num('quantity') . ")";
 					DB::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
@@ -159,28 +159,28 @@
 		unset($_POST['quantity']);
 	}
 
-	start_form();
-	start_form(false, true);
-	start_table("class='tablestyle_noborder'");
+	Display::start_form();
+	Display::start_form(false, true);
+	Display::start_table("class='tablestyle_noborder'");
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	end_table();
-	br();
-	end_form();
+	Display::end_table();
+	Display::br();
+	Display::end_form();
 
-	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
+	if (Display::get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
 		$selected_parent = $_POST['stock_id'];
 		if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 			on_submit($selected_parent, $selected_id);
 		}
 
-		start_form();
+		Display::start_form();
 		display_bom_items($selected_parent);
 
 		echo '<br>';
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				//editing a selected component from the link to the line item
@@ -198,25 +198,25 @@
 			}
 			hidden('selected_id', $selected_id);
 		} else {
-			start_row();
+			Display::start_row();
 			label_cell(_("Component:"));
 			echo "<td>";
 			echo stock_component_items_list('component', $selected_parent, null, false, true);
-			if (get_post('_component_update')) {
+			if (Display::get_post('_component_update')) {
 				$Ajax->activate('quantity');
 			}
 			echo "</td>";
-			end_row();
+			Display::end_row();
 		}
 		hidden('stock_id', $selected_parent);
 		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-		$dec = Item::qty_dec(get_post('component'));
-		$_POST['quantity'] = Num::format(input_num('quantity', 1), $dec);
+		$dec = Item::qty_dec(Display::get_post('component'));
+		$_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-		end_table(1);
+		Display::end_table(1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
-		end_form();
+		Display::end_form();
 	}
 	// ----------------------------------------------------------------------------------
 	end_page();

@@ -12,9 +12,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	// For tag constants
 	// Set up page security based on what type of tags we're working with
-	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
+	if (@$_GET['type'] == "account" || Display::get_post('type') == TAG_ACCOUNT) {
 		$page_security = 'SA_GLACCOUNTTAGS';
-	} else if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
+	} else if (@$_GET['type'] == "dimension" || Display::get_post('type') == TAG_DIMENSION) {
 		$page_security = 'SA_DIMTAGS';
 	}
 	// We use Input::post('type') throughout this script, so convert $_GET vars
@@ -99,26 +99,26 @@
 	}
 
 	$result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Tag Name"), _("Tag Description"), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow['name']);
 		label_cell($myrow['description']);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) // We've selected a tag
 	{
 		if ($Mode == 'Edit') {
@@ -133,9 +133,9 @@
 	text_row_ex(_("Tag Name:"), 'name', 15, 30);
 	text_row_ex(_("Tag Description:"), 'description', 40, 60);
 	hidden('type');
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

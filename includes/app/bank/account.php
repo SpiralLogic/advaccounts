@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class GL_BankAccount
+	class Bank_Account
 	{
 		protected static function clear_default_currency($curr_code)
 			{
@@ -106,4 +106,5 @@
 				$ba = static::get_default($row[0]);
 				return $ba['id'];
 			}
+
 	}

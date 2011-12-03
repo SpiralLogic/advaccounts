@@ -137,11 +137,11 @@
 	}
 	function viewing_controls()
 	{
-		start_form();
-		start_table("class='tablestyle_noborder'");
+		Display::start_form();
+		Display::start_table("class='tablestyle_noborder'");
 		systypes_list_row(_("Type:"), 'filterType', null, true);
-		end_table(1);
-		end_form();
+		Display::end_table(1);
+		Display::end_form();
 	}
 
 
@@ -163,15 +163,15 @@
 	{
 		$rows = get_attached_documents($type);
 		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
-		div_start('transactions');
-		start_form();
-		start_table(Config::get('tables_style'));
-		table_header($th);
+		Display::div_start('transactions');
+		Display::start_form();
+		Display::start_table(Config::get('tables_style'));
+		Display::table_header($th);
 		$k = 0;
 		while ($row = DB::fetch($rows))
 		{
-			alt_table_row_color($k);
-			label_cell(ui_view::get_trans_view_str($type, $row['trans_no']));
+			Display::alt_table_row_color($k);
+			label_cell(get_trans_view_str($type, $row['trans_no']));
 			label_cell($row['description']);
 			label_cell($row['filename']);
 			label_cell($row['filesize']);
@@ -181,12 +181,12 @@
 			button_cell("view" . $row['id'], _("View"), false, ICON_VIEW);
 			button_cell("download" . $row['id'], _("Download"), false, ICON_DOWN);
 			delete_button_cell("Delete" . $row['id'], _("Delete"));
-			end_row();
+			Display::end_row();
 		}
-		end_table(1);
+		Display::end_table(1);
 		hidden('filterType', $type);
-		end_form();
-		div_end();
+		Display::end_form();
+		Display::div_end();
 	}
 
 
@@ -194,8 +194,8 @@
 	if (isset($_POST['filterType'])) {
 		display_rows($_POST['filterType']);
 	}
-	start_form(true);
-	start_table(Config::get('tables_style2'));
+	Display::start_form(true);
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$row = get_attachment($selected_id);
@@ -211,12 +211,12 @@
 	}
 	text_row_ex(_("Description") . ':', 'description', 40);
 	file_row(_("Attached File") . ":", 'filename', 'filename');
-	end_table(1);
+	Display::end_table(1);
 	if (isset($_POST['filterType'])) {
 		hidden('filterType', $_POST['filterType']);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

@@ -17,23 +17,23 @@
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
 
-	start_form();
+	Display::start_form();
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	ref_cells(_("Ref"), 'reference', '', null, '', true);
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = 0;
 	}
-	cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
+	Debtor_UI::allocations_select(null, 'filterType', $_POST['filterType'], true);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 	Session::i()->global_customer = $_POST['customer_id'];
 
 	function display_customer_summary($customer_record)
@@ -46,10 +46,10 @@
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			start_table("width=90%  " . Config::get('tables_style'));
+			Display::start_table("width=90%  " . Config::get('tables_style'));
 			$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
-			table_header($th);
-			start_row();
+			Display::table_header($th);
+			Display::start_row();
 			label_cell($customer_record["curr_code"]);
 			label_cell($customer_record["terms"]);
 			amount_cell($customer_record["Balance"] - $customer_record["Due"]);
@@ -57,19 +57,19 @@
 			amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
 			amount_cell($customer_record["Overdue2"]);
 			amount_cell($customer_record["Balance"]);
-			end_row();
-			end_table();
+			Display::end_row();
+			Display::end_table();
 		}
 
 
-	div_start('totals_tbl');
+	Display::div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
 		$customer_record = Sales_Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
 		display_customer_summary($customer_record);
 		echo "<br>";
 	}
-	div_end();
-	if (get_post('RefreshInquiry')) {
+	Display::div_end();
+	if (Display::get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
 
@@ -82,12 +82,12 @@
 
 	function order_view($row)
 		{
-			return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
+			return $row['order_'] > 0 ? Debtor_UI::trans_view(ST_SALESORDER, $row['order_']) : "";
 		}
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return get_trans_view_str($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -97,7 +97,7 @@
 
 	function gl_view($row)
 		{
-			return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+			return get_gl_view_str($row["type"], $row["trans_no"]);
 		}
 
 	function fmt_debit($row)
@@ -117,7 +117,7 @@
 	function credit_link($row)
 		{
 			return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-			 pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
+			 DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
 		}
 
 	function edit_link($row)
@@ -149,7 +149,7 @@
 					break;
 			}
 			if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
-				return pager_link(_('Edit'), $str, ICON_EDIT);
+				return DB_Pager::link(_('Edit'), $str, ICON_EDIT);
 			}
 			return '';
 		}
@@ -307,9 +307,9 @@
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	UI::emailDialogue('c');
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

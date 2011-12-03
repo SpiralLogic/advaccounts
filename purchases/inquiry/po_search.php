@@ -19,10 +19,10 @@
 
 	// Ajax updates
 	//
-	if (get_post('SearchOrders')) {
+	if (Display::get_post('SearchOrders')) {
 		$Ajax->activate('orders_tbl');
-	} elseif (get_post('_order_number_changed')) {
-		$disable = get_post('order_number') !== '';
+	} elseif (Display::get_post('_order_number_changed')) {
+		$disable = Display::get_post('order_number') !== '';
 		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 		$Ajax->addDisable(true, 'OrdersToDate', $disable);
 		$Ajax->addDisable(true, 'StockLocation', $disable);
@@ -36,9 +36,9 @@
 		$Ajax->activate('orders_tbl');
 	}
 
-	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
@@ -46,17 +46,17 @@
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
 	//stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+			return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 		}
 
 	function edit_link($row)
 		{
-			return pager_link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+			return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 		}
 
 	function prt_link($row)
@@ -66,7 +66,7 @@
 
 	function receive_link($row)
 		{
-			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
 
 	function check_overdue($row)
@@ -130,14 +130,14 @@
 			'insert' => true, 'fun' => 'edit_link'), array(
 			'insert' => true, 'fun' => 'prt_link'), array(
 			'insert' => true, 'fun' => 'receive_link'));
-	if (get_post('StockLocation') != ALL_TEXT) {
+	if (Display::get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked orders have overdue items."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

@@ -51,7 +51,7 @@
 			$rep->NewLine();
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_AccountType::get_all(false, false, $type);
+		$result = GL_Type::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
@@ -92,7 +92,7 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$classresult = GL_AccountClass::get_all(false);
+		$classresult = GL_Class::get_all(false);
 		while ($class = DB::fetch($classresult))
 		{
 			$rep->Font('bold');
@@ -101,7 +101,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult))
 			{
 				display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);

@@ -21,10 +21,10 @@
 		$trans_type = ST_SUPPCREDIT;
 		echo "<div class='center'>";
 		Errors::notice(_("Supplier credit note has been processed."));
-		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
-		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
-		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+		Display::note(get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+		Display::note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
+		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
 
@@ -72,7 +72,7 @@
 				$input_error = true;
 			}
 		}
-		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(Display::get_post('gl_code'))) {
 			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
@@ -80,7 +80,7 @@
 		if ($input_error == false) {
 			Purch_Trans::i()
 			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'],
-				input_num('amount'), $_POST['memo_']);
+				Validation::input_num('amount'), $_POST['memo_']);
 			JS::set_focus('gl_code');
 		}
 	}
@@ -143,7 +143,7 @@
 			}
 			Purch_Trans::i()->clear_items();
 			Purch_Trans::killInstance();
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
 
@@ -171,8 +171,8 @@
 				$complete = False;
 				Purch_Trans::i()
 				 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
-					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n),
-					$_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
+					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n),
+					$_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete,
 					$_POST['std_cost_unit' . $n], "");
 			}
 		}
@@ -211,33 +211,33 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], Validation::input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
 
-	start_form();
+	Display::start_form();
 	Purch_Invoice::header(Purch_Trans::i());
 	if ($_POST['supplier_id'] == '') {
 		Errors::error('No supplier found for entered search text');
 	} else {
 		$total_grn_value = Purch_GRN::display_items(Purch_Trans::i(), 1);
 		$total_gl_value = Purch_GLItem::display_items(Purch_Trans::i(), 1);
-		div_start('inv_tot');
+		Display::div_start('inv_tot');
 		Purch_Invoice::totals(Purch_Trans::i());
-		div_end();
+		Display::div_end();
 	}
 	if ($id != -1) {
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
-	if (get_post('AddGLCodeToTrans')) {
+	if (Display::get_post('AddGLCodeToTrans')) {
 		$Ajax->activate('inv_tot');
 	}
-	br();
+	Display::br();
 	submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
-	br();
-	end_form();
+	Display::br();
+	Display::end_form();
 	end_page();
 ?>

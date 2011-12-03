@@ -71,41 +71,41 @@
 
 		public static function header($order)
 			{
-				start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
-				table_section(1);
+				Display::start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
+				Display::table_section(1);
 				locations_list_row(_("Location:"), 'StockLocation', null);
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
-				table_section(2, "33%");
+				Display::table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
-				table_section(3, "33%");
+				Display::table_section(3, "33%");
 				movement_types_list_row(_("Detail:"), 'type', null);
 				if (!isset($_POST['Increase'])) {
 					$_POST['Increase'] = 1;
 				}
 				yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
-				end_outer_table(1); // outer table
+				Display::end_outer_table(1); // outer table
 			}
 
 
 		public static function display_items($title, $order)
 			{
 				Display::heading($title);
-				div_start('items_table');
-				start_table(Config::get('tables_style') . "  width=90%");
+				Display::div_start('items_table');
+				Display::start_table(Config::get('tables_style') . "  width=90%");
 				$th = array(
 					_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), _("Total"), "");
 				if (count($order->line_items)) {
 					$th[] = '';
 				}
-				table_header($th);
+				Display::table_header($th);
 				$total = 0;
 				$k = 0; //row colour counter
 				$id = find_submit('Edit');
 				foreach ($order->line_items as $line_no => $stock_item) {
 					$total += ($stock_item->standard_cost * $stock_item->quantity);
 					if ($id != $line_no) {
-						alt_table_row_color($k);
-						ui_view::stock_status_cell($stock_item->stock_id);
+						Display::alt_table_row_color($k);
+						stock_status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
@@ -113,7 +113,7 @@
 						amount_cell($stock_item->standard_cost * $stock_item->quantity);
 						edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
 						delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
-						end_row();
+						Display::end_row();
 					} else {
 						Inv_Adjustment::item_controls($order, $line_no);
 					}
@@ -121,16 +121,16 @@
 				if ($id == -1) {
 					Inv_Adjustment::item_controls($order);
 				}
-				label_row(_("Total"), Num::format($total, User::price_dec()), "align=right colspan=5", "align=right", 2);
-				end_table();
-				div_end();
+				label_row(_("Total"), Num::format($total, User::price_dec()), "class=right colspan=5", "class=right", 2);
+				Display::end_table();
+				Display::div_end();
 			}
 
 
 		public static function item_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
-				start_row();
+				Display::start_row();
 				$dec2 = 0;
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
@@ -170,16 +170,16 @@
 				} else {
 					submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 				}
-				end_row();
+				Display::end_row();
 			}
 
 
 		public static function option_controls()
 			{
 				echo "<br>";
-				start_table('class="center"');
+				Display::start_table('class="center"');
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
-				end_table(1);
+				Display::end_table(1);
 			}
 
 	}

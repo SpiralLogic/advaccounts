@@ -21,12 +21,12 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The manufacturing process has been entered."));
-		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
-		Display::note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		Display::note(get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array(
 			'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 		Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
-		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+		Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		end_page();
 		exit;
 	}
@@ -73,7 +73,7 @@
 			if (($_POST['ProductionType'] == 0) && !DB_Company::get_pref('allow_negative_stock')) {
 				$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 				$qoh = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
-				if (-input_num('quantity') + $qoh < 0) {
+				if (-Validation::input_num('quantity') + $qoh < 0) {
 					Errors::error(_("The unassembling cannot be processed because there is insufficient stock."));
 					JS::set_focus('quantity');
 					return false;
@@ -89,7 +89,7 @@
 						continue;
 					}
 					$qoh = Item::get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
-					if ($qoh - $row['units_req'] * input_num('quantity') < 0) {
+					if ($qoh - $row['units_req'] * Validation::input_num('quantity') < 0) {
 						Errors::error(_("The production cannot be processed because a required item would cause a negative inventory balance :") . " " . $row['stock_id'] . " - " . $row['description']);
 						$err = true;
 					}
@@ -112,14 +112,14 @@
 		if ($_POST['ProductionType'] == 0) {
 			$_POST['quantity'] = -$_POST['quantity'];
 		}
-		$id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], input_num('quantity'), $_POST['date_'], $_POST['memo_'],
+		$id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], Validation::input_num('quantity'), $_POST['date_'], $_POST['memo_'],
 			$close_wo);
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
 
 	WO_Cost::display($_POST['selected_id']);
 
-	start_form();
+	Display::start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 	$dec = Item::qty_dec($wo_details["stock_id"]);
@@ -127,8 +127,8 @@
 		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
 			$dec);
 	}
-	start_table(Config::get('tables_style2'));
-	br();
+	Display::start_table(Config::get('tables_style2'));
+	Display::br();
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
 	if (!isset($_POST['ProductionType'])) {
 		$_POST['ProductionType'] = 1;
@@ -138,10 +138,10 @@
 	small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 	date_row(_("Date:"), 'date_');
 	textarea_row(_("Memo:"), 'memo_', null, 40, 3);
-	end_table(1);
+	Display::end_table(1);
 	submit_center_first('Process', _("Process"), '', 'default');
 	submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

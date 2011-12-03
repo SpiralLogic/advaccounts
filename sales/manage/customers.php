@@ -67,9 +67,9 @@
 			dimension2_id=" . DB::escape($_POST['dimension2_id']) . ",
             credit_status=" . DB::escape($_POST['credit_status']) . ",
             payment_terms=" . DB::escape($_POST['payment_terms']) . ",
-            discount=" . input_num('discount') / 100 . ", 
-            pymt_discount=" . input_num('pymt_discount') / 100 . ", 
-            credit_limit=" . input_num('credit_limit') . ", 
+            discount=" . Validation::input_num('discount') / 100 . ",
+            pymt_discount=" . Validation::input_num('pymt_discount') / 100 . ",
+            credit_limit=" . Validation::input_num('credit_limit') . ",
             sales_type = " . DB::escape($_POST['sales_type']) . ",
             notes=" . DB::escape($_POST['notes']) . "
             WHERE debtor_no = " . DB::escape($_POST['customer_id']);
@@ -82,8 +82,8 @@
 				$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
 			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
-			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . input_num('discount') / 100 . ",
-			" . input_num('pymt_discount') / 100 . ", " . input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
+			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
+			" . Validation::input_num('pymt_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
 				DB::query($sql, "The customer could not be added");
 				$_POST['customer_id'] = DB::insert_id();
 				$new_customer = false;
@@ -138,15 +138,15 @@
 	}
 	Validation::check(Validation::SALES_TYPES,
 		_("There are no sales types defined. Please define at least one sales type before adding a customer."));
-	start_form();
+	Display::start_form();
 	if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
-		start_table("class = 'tablestyle_noborder'");
-		start_row();
-		customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+		Display::start_table("class = 'tablestyle_noborder'");
+		Display::start_row();
+		Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
-		end_row();
-		end_table();
-		if (get_post('_show_inactive_update')) {
+		Display::end_row();
+		Display::end_table();
+		if (Display::get_post('_show_inactive_update')) {
 			$Ajax->activate('customer_id');
 			JS::set_focus('customer_id');
 		}
@@ -186,9 +186,9 @@
 		$_POST['notes'] = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
 	}
-	start_outer_table(Config::get('tables_style2'), 5);
-	table_section(1);
-	table_section_title(_("Name and Address"));
+	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::table_section(1);
+	Display::table_section_title(_("Name and Address"));
 	text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
 	text_row(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
 	textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
@@ -201,8 +201,8 @@
 		hidden('curr_code', $_POST['curr_code']);
 	}
 	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
-	table_section(2);
-	table_section_title(_("Sales"));
+	Display::table_section(2);
+	Display::table_section_title(_("Sales"));
 	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
@@ -222,26 +222,26 @@
 		hidden('dimension2_id', 0);
 	}
 	if (!$new_customer) {
-		start_row();
+		Display::start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
-		hyperlink_params_td("/sales/manage/customer_branches.php",
+		Display::link_params_td("/sales/manage/customer_branches.php",
 		 '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
 		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
-		end_row();
+		Display::end_row();
 	}
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	record_status_list_row(_("Customer status:"), 'inactive');
-	end_outer_table(1);
-	div_start('controls');
+	Display::end_outer_table(1);
+	Display::div_start('controls');
 	if ($new_customer) {
 		submit_center('submit', _("Add New Customer"), true, '', 'default');
 	} else {
 		submit_center_first('submit', _("Update Customer"), _('Update customer data'), Input::request('popup') ? true : 'default');
-		submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
+		submit_return('select', Display::get_post('customer_id'), _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
 	}
-	div_end();
+	Display::div_end();
 	hidden('popup', Input::request('popup'));
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

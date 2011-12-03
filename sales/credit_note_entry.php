@@ -34,7 +34,7 @@
 
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = Sales_Branch::get(get_post('branch_id'));
+		$br = Sales_Branch::get(Display::get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -42,14 +42,14 @@
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
-		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+		Display::note(Debtor_UI::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),
 			0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT,
 			false, "printlink", "", 1), 0, 1);
-		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
-		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+		Display::note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
+		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	} else {
 		Sales_Order::check_edit_conflicts();
@@ -68,7 +68,7 @@
 			$cart = &$_SESSION['Items'];
 			$cart->Comments = $_POST['CreditText'];
 			$cart->document_date = $_POST['OrderDate'];
-			$cart->freight_cost = input_num('ChargeFreightCost');
+			$cart->freight_cost = Validation::input_num('ChargeFreightCost');
 			$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
 			$cart->sales_type = $_POST['sales_type_id'];
 			if ($cart->trans_no == 0) {
@@ -152,7 +152,7 @@
 		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 		Dates::new_doc_date($_SESSION['Items']->document_date);
 		Sales_Order::finish();
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
 
 	function check_item_data()
@@ -179,7 +179,7 @@
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
-				$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
+				$_SESSION['Items']->update_cart_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 			}
 			line_start_focus();
 		}
@@ -197,8 +197,8 @@
 			if (!check_item_data()) {
 				return;
 			}
-			Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'),
-			 input_num('Disc') / 100);
+			Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'),
+			 Validation::input_num('Disc') / 100);
 			line_start_focus();
 		}
 
@@ -221,16 +221,16 @@
 		handle_new_credit(0);
 	}
 
-	start_form();
+	Display::start_form();
 	hidden('cart_id');
 	$customer_error = Sales_Credit::header($_SESSION['Items']);
 	if ($customer_error == "") {
-		start_table(Config::get('tables_style2'), "width=90%", 10);
+		Display::start_table(Config::get('tables_style2'), "width=90%", 10);
 		echo "<tr><td>";
 		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
 		Sales_Credit::option_controls($_SESSION['Items']);
 		echo "</td></tr>";
-		end_table();
+		Display::end_table();
 	} else {
 		Errors::error($customer_error);
 	}
@@ -238,7 +238,7 @@
 	submit_cells('Update', _("Update"));
 	submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 	echo "</tr></table></div>";
-	end_form();
+	Display::end_form();
 	end_page();
 
 ?>

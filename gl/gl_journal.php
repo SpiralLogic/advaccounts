@@ -33,16 +33,16 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been entered") . " #$trans_no");
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		JS::reset_focus();
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 		Page::footer_exit();
 	} elseif (isset($_GET['UpdatedID'])) {
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
-		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+		Display::note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		Display::link_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();
 	}
 
@@ -51,7 +51,7 @@
 	} elseif (isset($_GET['ModifyGL'])) {
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
-			hyperlink_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
+			Display::link_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 			Page::footer_exit();
 		}
 		create_cart($_GET['trans_type'], $_GET['trans_no']);
@@ -141,9 +141,9 @@
 		Dates::new_doc_date($_POST['date_']);
 		unset($_SESSION['journal_items']);
 		if ($new) {
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 		} else {
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 		}
 	}
 
@@ -160,7 +160,7 @@
 				JS::set_focus('dimension2_id');
 				return false;
 			}
-			if (!(input_num('AmountDebit') != 0 ^ input_num('AmountCredit') != 0)) {
+			if (!(Validation::input_num('AmountDebit') != 0 ^ Validation::input_num('AmountCredit') != 0)) {
 				Errors::error(_("You must enter either a debit amount or a credit amount."));
 				JS::set_focus('AmountDebit');
 				return false;
@@ -174,7 +174,7 @@
 				JS::set_focus('AmountCredit');
 				return false;
 			}
-			if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
+			if (!Tax_Types::is_tax_gl_unique(Display::get_post('code_id'))) {
 				Errors::error(_("Cannot post to GL account used by more than one tax type."));
 				JS::set_focus('code_id');
 				return false;
@@ -191,10 +191,10 @@
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
-				if (input_num('AmountDebit') > 0) {
-					$amount = input_num('AmountDebit');
+				if (Validation::input_num('AmountDebit') > 0) {
+					$amount = Validation::input_num('AmountDebit');
 				} else {
-					$amount = -input_num('AmountCredit');
+					$amount = -Validation::input_num('AmountCredit');
 				}
 				$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'],
 					$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -215,10 +215,10 @@
 			if (!check_item_data()) {
 				return;
 			}
-			if (input_num('AmountDebit') > 0) {
-				$amount = input_num('AmountDebit');
+			if (Validation::input_num('AmountDebit') > 0) {
+				$amount = Validation::input_num('AmountDebit');
 			} else {
-				$amount = -input_num('AmountCredit');
+				$amount = -Validation::input_num('AmountCredit');
 			}
 			$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount,
 				$_POST['LineMemo']);
@@ -240,25 +240,25 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
+		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('totamount'), QE_JOURNAL);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}
 
-	start_form();
-	GL_JournalUI::header($_SESSION['journal_items']);
-	start_table(Config::get('tables_style2') . " width=90%", 10);
-	start_row();
+	Display::start_form();
+	GL_Journal::header($_SESSION['journal_items']);
+	Display::start_table(Config::get('tables_style2') . " width=90%", 10);
+	Display::start_row();
 	echo "<td>";
-	GL_JournalUI::items(_("Rows"), $_SESSION['journal_items']);
-	GL_JournalUI::option_controls();
+	GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
+	GL_Journal::option_controls();
 	echo "</td>";
-	end_row();
-	end_table(1);
+	Display::end_row();
+	Display::end_table(1);
 	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'),
 		'default');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

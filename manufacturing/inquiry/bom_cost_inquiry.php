@@ -19,13 +19,13 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	start_form(false, true);
-	start_table("class='tablestyle_noborder'");
+	Display::start_form(false, true);
+	Display::start_table("class='tablestyle_noborder'");
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
-	end_table();
-	br();
+	Display::end_table();
+	Display::br();
 	Display::heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
 	Manufacturing::display_bom(Input::post('stock_id'));
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

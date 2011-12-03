@@ -38,7 +38,7 @@
 		const LOCATIONS = "locations";
 		const BANK_ACCOUNTS = "bank_accounts";
 		const CASH_ACCOUNTS = "bank_accounts";
-		const	GL_ACCOUNTS = "accounts";
+		const	GL_ACCOUNTS = "chart_master";
 		const GL_ACCOUNT_GROUPS = "chart_types";
 		const QUICK_ENTRIES = "quick_entries";
 		const TAGS = "FROM tags WHERE type=";
@@ -80,7 +80,7 @@
 				if (!isset($_POST[$postname])) {
 					return 0;
 				}
-				$num = input_num($postname);
+				$num = Validation::input_num($postname);
 				if (!is_int($num)) {
 					return 0;
 				}
@@ -103,7 +103,7 @@
 				if (!isset($_POST[$postname])) {
 					return 0;
 				}
-				$num = input_num($postname, $dflt);
+				$num = Validation::input_num($postname, $dflt);
 
 				if ($num === false || $num === null) {
 					return 0;
@@ -116,4 +116,19 @@
 				}
 				return 1;
 			}
+		/**
+		 *
+		 *	 Read numeric value from user formatted input
+		 *
+		 * @param null $postname
+		 * @param int	$dflt
+		 *
+		 * @return bool|float|int|mixed|string
+		 */
+		public static 	function input_num($postname = null, $dflt = 0) {
+			if (!isset($_POST[$postname]) || $_POST[$postname] == "") {
+				return $dflt;
+			}
+			return User::numeric($_POST[$postname]);
+		}
 	}

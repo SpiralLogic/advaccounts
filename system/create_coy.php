@@ -179,12 +179,12 @@
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables_style'));
+		Display::start_table(Config::get('tables_style'));
 		$th = array(
 			_("Company"), _("Database Host"), _("Database User"),
 			_("Database Name"), _("Table Pref"), _("Default"), "", ""
 		);
-		table_header($th);
+		Display::table_header($th);
 		$k = 0;
 		$conn = Config::get_all('db');
 		$n = count($conn);
@@ -198,9 +198,9 @@
 				$what = _("No");
 			}
 			if ($i == $coyno) {
-				start_row("class='stockmankobg'");
+				Display::start_row("class='stockmankobg'");
 			} else {
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['name']);
 			label_cell($conn[$i]['host']);
@@ -220,9 +220,9 @@
 				 :
 				 "<a href=''>$delete</a>"
 			);
-			end_row();
+			Display::end_row();
 		}
-		end_table();
+		Display::end_table();
 		Errors::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -234,7 +234,7 @@
 		} else {
 			$n = count(Config::get_all('db'));
 		}
-		start_form(true);
+		Display::start_form(true);
 		echo "
 		<script language='javascript'>
 		function updateCompany() {
@@ -247,7 +247,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {
 			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];
@@ -274,10 +274,10 @@
 		yesno_list_row(_("Default"), 'def', null, "", "", false);
 		file_row(_("Database Script"), "uploadfile");
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
-		end_table();
+		Display::end_table();
 		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<div class='center'><input  type='button' style='width:150px' value='" . _("Save") . "'></div>";
-		end_form();
+		Display::end_form();
 	}
 
 
@@ -292,7 +292,7 @@
 	}
 
 	display_companies();
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
+	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
 
 	end_page();

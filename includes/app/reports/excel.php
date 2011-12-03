@@ -678,7 +678,7 @@
 					}
 					closedir($d);
 				}
-				meta_forward($_SERVER['PHP_SELF'], "xls=1&filename=$this->filename&unique=$this->unique_name");
+				Display::meta_forward($_SERVER['PHP_SELF'], "xls=1&filename=$this->filename&unique=$this->unique_name");
 				exit();
 			}
 	}

@@ -18,8 +18,7 @@
 		public $selected_application;
 		public $menu;
 
-		public 	function __construct()
-		{
+		public function __construct() {
 			Session::hasLogin();
 			$installed_extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main  Menu"));
@@ -45,24 +44,21 @@
 			$this->add_application(new Apps_System());
 		}
 
-		public 	function add_application(&$app)
-		{
+		public function add_application(&$app) {
 			if ($app->enabled) // skip inactive modules
 			{
 				$this->applications[$app->id] = &$app;
 			}
 		}
 
-		public 	function get_application($id)
-		{
+		public function get_application($id) {
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
 			}
 			return null;
 		}
 
-		public 	function get_selected_application()
-		{
+		public function get_selected_application() {
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
 			}
@@ -72,8 +68,7 @@
 			return null;
 		}
 
-		public 	function display()
-		{
+		public function display() {
 			$rend = Renderer::get();
 			$rend->header();
 			//$rend->menu_header($this->menu);
@@ -82,16 +77,13 @@
 			$rend->footer();
 		}
 
-		public static function init()
-		{
+		public static function init() {
 			if (!isset($_SESSION["App"])) {
 				Session::i()->App = new advaccounting();
 			}
 		}
 
-
-		public static function write_extensions($extensions = null, $company = -1)
-		{
+		public static function write_extensions($extensions = null, $company = -1) {
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
 				$extensions = $installed_extensions;

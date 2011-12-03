@@ -55,7 +55,7 @@
 					$taxes[] = $_POST['tax_type_id' . $i];
 					$rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 					//Editable rate has been removed 090920 Joe Hunt
-					//$rates[] = input_num('rate' . $i);
+					//$rates[] = Validation::input_num('rate' . $i);
 				}
 			}
 			if ($selected_id != -1) {
@@ -104,21 +104,21 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style'));
+	Display::start_form();
+	Display::start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Shipping Tax"), "", "");
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		if ($myrow["tax_shipping"]) {
 			label_cell(_("Yes"));
@@ -131,13 +131,13 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 		;
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		//editing an existing status code
 		if ($Mode == 'Edit') {
@@ -160,36 +160,36 @@
 	}
 	text_row_ex(_("Description:"), 'name', 40);
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
-	end_table();
+	Display::end_table();
 	Errors::warning(_("Select the taxes that are included in this group."), 1);
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt
 	$th = array(_("Tax"), _("Rate (%)"));
-	table_header($th);
+	Display::table_header($th);
 	for (
 		$i = 0; $i < 5; $i++
 	)
 	{
-		start_row();
+		Display::start_row();
 		if (!isset($_POST['tax_type_id' . $i])) {
 			$_POST['tax_type_id' . $i] = 0;
 		}
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-			label_cell(Num::percent_format($default_rate), "nowrap align=right");
+			label_cell(Num::percent_format($default_rate), "nowrap class=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			//	$_POST['rate' . $i] = Num::percent_format($default_rate);
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
 			//  User::percent_dec());
 		}
-		end_row();
+		Display::end_row();
 	}
-	end_table(1);
+	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

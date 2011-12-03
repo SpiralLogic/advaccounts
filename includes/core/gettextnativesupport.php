@@ -26,7 +26,8 @@
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 * @access private
 	 */
-	class gettextNativeSupport {
+	class gettextNativeSupport
+	{
 		public $_interpolation_vars = array();
 		const GETTEXT_NATIVE = 1;
 		const GETTEXT_PHP = 2;
@@ -42,7 +43,9 @@
 
 		/***
 		 * @static
+		 *
 		 * @param int $managerType
+		 *
 		 * @return gettext_php_support|gettextNativeSupport
 		 */
 		public static function init($managerType = self::GETTEXT_NATIVE) {
@@ -54,7 +57,6 @@
 			// fail back to php support
 			return new gettext_php_support();
 		}
-
 
 		function set_language($lang_code, $encoding) {
 			putenv("LANG=$lang_code");
@@ -84,7 +86,6 @@
 			textdomain($domain);
 		}
 
-
 		function _get_translation($key) {
 			return gettext($key);
 		}
@@ -96,10 +97,9 @@
 			$this->_interpolation_vars = array();
 		}
 
-				function set_var($key, $value) {
+		function set_var($key, $value) {
 			$this->_interpolation_vars[$key] = $value;
 		}
-
 
 		function set_vars($hash) {
 			$this->_interpolation_vars = array_merge($this->_interpolation_vars,
@@ -147,7 +147,8 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support extends gettextNativeSupport {
+	class gettext_php_support extends gettextNativeSupport
+	{
 		public $_path = 'locale/';
 		public $_lang_code = false;
 		public $_domains = array();
@@ -156,8 +157,10 @@
 
 		/**
 		 * Set the translation domain.
+		 *
 		 * @param	string $lang_code -- language code
-		 * @param         $encoding
+		 * @param				 $encoding
+		 *
 		 * @return int
 		 * @throws GetText_Error
 		 */
@@ -288,7 +291,8 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_domain {
+	class gettext_domain
+	{
 		public $name;
 		public $path;
 		public $_keys = array();
@@ -308,14 +312,16 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support_parser {
+	class gettext_php_support_parser
+	{
 		public $_hash = array();
 		public $_current_key;
 		public $_current_value;
+
 		public function raise_error($str) {
-				Errors::error($str);
-				return 1;
-			}
+			Errors::error($str);
+			return 1;
+		}
 
 		/**
 		 * Parse specified .po file.
@@ -398,7 +404,8 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support_compiler {
+	class gettext_php_support_compiler
+	{
 		/**
 		 * Write hash in an includable php file.
 		 *
@@ -407,9 +414,9 @@
 		 * @return int
 		 */
 		public function raise_error($str) {
-		 			Errors::error($str);
-		 			return 1;
-		 		}
+			Errors::error($str);
+			return 1;
+		}
 
 		function compile(&$hash, $source_path) {
 			$dest_path = preg_replace('/\.po$/', '.php', $source_path);
@@ -431,9 +438,8 @@
 			fwrite($fp, ');' . "\n");
 			fwrite($fp, '?>');
 			fclose($fp);
-		return 0;
-	}
-
+			return 0;
+		}
 	}
 
 ?>

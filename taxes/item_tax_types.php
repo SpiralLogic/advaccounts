@@ -66,21 +66,21 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav = Display::get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result2 = $result = Tax_ItemType::get_all(check_value('show_inactive'));
-	start_form();
-	start_table(Config::get('tables_style') . "  width=30%");
+	Display::start_form();
+	Display::start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Name"), _("Tax exempt"), '', '');
 	inactive_control_column($th);
-	table_header($th);
+	Display::table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result2))
 	{
-		alt_table_row_color($k);
+		Display::alt_table_row_color($k);
 		if ($myrow["exempt"] == 0) {
 			$disallow_text = _("No");
 		} else {
@@ -91,12 +91,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		end_row();
+		Display::end_row();
 	}
 	inactive_control_row($th);
-	end_table(1);
+	Display::end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get($selected_id);
@@ -116,25 +116,25 @@
 	}
 	text_row_ex(_("Description:"), 'name', 50);
 	yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
-	end_table(1);
+	Display::end_table(1);
 	if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
 		Errors::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
-		table_header($th);
+		Display::table_header($th);
 		$tax_types = Tax_Types::get_all_simple();
 		while ($myrow = DB::fetch($tax_types))
 		{
-			alt_table_row_color($k);
+			Display::alt_table_row_color($k);
 			label_cell($myrow["name"]);
-			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap align=right");
+			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap class=right");
 			check_cells("", 'ExemptTax' . $myrow["id"], null);
-			end_row();
+			Display::end_row();
 		}
-		end_table(1);
+		Display::end_table(1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	end_form();
+	Display::end_form();
 
 	end_page();
 

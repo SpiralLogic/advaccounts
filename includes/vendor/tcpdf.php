@@ -176,7 +176,6 @@
 	 */
 	require(dirname(__FILE__) . "/html_entity_decode_php4.php");
 
-	if (!class_exists('TCPDF',false)) {
 		/**
 		 * define default PDF document producer
 		 */
@@ -10980,7 +10979,7 @@
 				}
 			}
 		} // END OF TCPDF CLASS
-	}
+
 	//============================================================+
 	// END OF FILE
 	//============================================================+

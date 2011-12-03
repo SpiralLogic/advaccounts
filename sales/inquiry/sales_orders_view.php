@@ -26,7 +26,7 @@
 		$trans_type = ST_SALESQUOTE;
 	} elseif (isset($searchArray)) {
 		$trans_type = ST_SALESORDER;
-	} elseif (get_post('type')) {
+	} elseif (Display::get_post('type')) {
 		$trans_type = $_POST['type'];
 	} elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
 		$trans_type = ST_SALESQUOTE;
@@ -82,7 +82,7 @@
 
 	function view_link($row, $order_no)
 		{
-			return ui_view::get_customer_trans_view_str($row['trans_type'], $order_no);
+			return Debtor_UI::trans_view($row['trans_type'], $order_no);
 		}
 
 	function prt_link($row)
@@ -98,7 +98,7 @@
 	function edit_link($row)
 		{
 			$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
-			return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+			return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 		}
 
 	function email_link($row)
@@ -109,16 +109,16 @@
 	function dispatch_link($row)
 		{
 			if ($row['trans_type'] == ST_SALESORDER) {
-				return pager_link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+				return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 			} else {
-				return pager_link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+				return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 			}
 		}
 
 	function invoice_link($row)
 		{
 			if ($row['trans_type'] == ST_SALESORDER) {
-				return pager_link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
+				return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
 			} else {
 				return '';
 			}
@@ -126,12 +126,12 @@
 
 	function delivery_link($row)
 		{
-			return pager_link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
+			return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
 		}
 
 	function order_link($row)
 		{
-			return pager_link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
+			return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
 		}
 
 	function tmpl_checkbox($row)
@@ -173,8 +173,8 @@
 
 	//	Order range form
 	//
-	if (get_post('_OrderNumber_changed')) { // enable/disable selection controls
-		$disable = get_post('OrderNumber') !== '';
+	if (Display::get_post('_OrderNumber_changed')) { // enable/disable selection controls
+		$disable = Display::get_post('OrderNumber') !== '';
 		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 			$Ajax->addDisable(true, 'OrdersToDate', $disable);
@@ -189,10 +189,10 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
-	customer_list_cells(_("Customer: "), 'customer_id', null, true);
+	Display::start_form();
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
+	Debtor_UI::select_cells(_("Customer: "), 'customer_id', null, true);
 	ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
 	if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 		ref_cells(_("Ref"), 'OrderReference', '', null, '', true);
@@ -207,8 +207,8 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('order_view_mode', $_POST['order_view_mode']);
 	hidden('type', $trans_type);
-	end_row();
-	end_table(1);
+	Display::end_row();
+	Display::end_table(1);
 
 	//	Orders inquiry table
 	//
@@ -358,8 +358,8 @@
 	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	submit_center('Update', _("Update"), true, '', null);
-	end_form();
+	Display::end_form();
 	end_page();
 ?>

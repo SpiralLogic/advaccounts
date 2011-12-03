@@ -21,12 +21,12 @@
 		$trans_type = ST_SUPPINVOICE;
 		echo "<div class='center'>";
 		Errors::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
-		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
-		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
-		hyperlink_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
-		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
-		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+		Display::note(get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+		Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
+		Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+		Display::note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
 
@@ -76,24 +76,24 @@
 				$input_error = true;
 			}
 		}
-		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(Display::get_post('gl_code'))) {
 			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
 		if ($input_error == false) {
 			Purch_Trans::i()
-			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
+			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
 			$taxexists = false;
 			foreach (Purch_Trans::i()->gl_codes as &$gl_item) {
 				if ($gl_item->gl_code == 2430) {
 					$taxexists = true;
-					$gl_item->amount += input_num('amount') * .1;
+					$gl_item->amount += Validation::input_num('amount') * .1;
 					break;
 				}
 			}
 			if (!$taxexists) {
-				Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
+				Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Validation::input_num('amount') * .1, 'GST TAX Paid');
 			}
 			JS::set_focus('gl_code');
 		}
@@ -152,29 +152,29 @@
 			if (!check_data()) {
 				return;
 			}
-			if (get_post('ChgTax', 0) != 0) {
+			if (Display::get_post('ChgTax', 0) != 0) {
 				$taxexists = false;
 				foreach (Purch_Trans::i()->gl_codes as &$gl_item) {
 					if ($gl_item->gl_code == 2430) {
 						$taxexists = true;
-						$gl_item->amount += get_post('ChgTax');
+						$gl_item->amount += Display::get_post('ChgTax');
 						break;
 					}
 				}
 				if (!$taxexists) {
-					Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
+					Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Display::get_post('ChgTax'), 'GST Correction');
 				}
 			}
-			if (get_post('ChgTotal', 0) != 0) {
+			if (Display::get_post('ChgTotal', 0) != 0) {
 				Purch_Trans::i()
-				 ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'),
+				 ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Display::get_post('ChgTotal'),
 					'Rounding Correction');
 			}
 			$invoice_no = Purch_Invoice::add(Purch_Trans::i());
 			$_SESSION['history'][ST_SUPPINVOICE] = $_POST['Reference'];
 			Purch_Trans::i()->clear_items();
 			Purch_Trans::killInstance();
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
 
@@ -183,7 +183,7 @@
 	}
 	function check_item_data($n)
 		{
-			if (!Validation::is_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
+			if (!Validation::is_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
 				Errors::error(_("The quantity to invoice must be numeric and greater than zero."));
 				JS::set_focus('this_quantity_inv' . $n);
 				return false;
@@ -200,8 +200,8 @@
 			}
 			$margin = DB_Company::get_pref('po_over_charge');
 			if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
-				if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
-					if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
+				if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
+					if ($_POST['order_price' . $n] == 0 || Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 						if (Session::i()->err_over_charge != true) {
 							Errors::error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 							JS::set_focus('ChgPrice' . $n);
@@ -214,7 +214,7 @@
 				}
 			}
 			if (Config::get('valid_charged_to_delivered_qty') == True) {
-				if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
+				if (Validation::input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 					Errors::error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 					JS::set_focus('this_quantity_inv' . $n);
 					return false;
@@ -226,7 +226,7 @@
 	function commit_item_data($n)
 		{
 			if (check_item_data($n)) {
-				if (input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
+				if (Validation::input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 					$complete = true;
 				} else {
 					$complete = false;
@@ -234,9 +234,9 @@
 				$_SESSION['err_over_charge'] = false;
 				Purch_Trans::i()
 				 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
-					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n),
-					$_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
-					$_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
+					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n),
+					$_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete,
+					$_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
 			}
 		}
 
@@ -305,12 +305,12 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], Validation::input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
-	start_form();
+	Display::start_form();
 	Purch_Invoice::header(Purch_Trans::i());
 	if ($_SESSION['supplier_id']) {
 		$_POST['supplier_id'] = $_SESSION['supplier_id'];
@@ -320,26 +320,26 @@
 		}
 	}
 	if ($_POST['supplier_id'] == '') {
-		Errors::error(_("There is no supplier selected."));
+		Errors::warning(_("There is no supplier selected."));
 	} else {
 		Purch_GRN::display_items(Purch_Trans::i(), 1);
 		Purch_GLItem::display_items(Purch_Trans::i(), 1);
-		div_start('inv_tot');
+		Display::div_start('inv_tot');
 		Purch_Invoice::totals(Purch_Trans::i());
-		div_end();
+		Display::div_end();
 	}
 
 	if ($id != -1 || $id2 != -1) {
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
-	if (get_post('AddGLCodeToTrans')) {
+	if (Display::get_post('AddGLCodeToTrans')) {
 		$Ajax->activate('inv_tot');
 	}
-	br();
+	Display::br();
 	submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
-	br();
-	end_form();
+	Display::br();
+	Display::end_form();
 
 	Item::addEditDialog();
 	$js = <<<JS

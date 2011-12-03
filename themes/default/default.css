@@ -40,6 +40,7 @@ canvas {
 tr, td, th {
 	font-size:   11px;
 	line-height: 22px;
+	padding:2px;
 }
 
 table {
@@ -143,9 +144,6 @@ div#content {
 	z-index:  3;
 }
 
-#search input {
-}
-
 #loader {
 	position:   fixed;
 	text-align: center;
@@ -165,6 +163,7 @@ div#content {
 	right:       -10em;
 	z-index:     10;
 	opacity:     .75;
+	display: none;
 }
 
 #sidemenu p {
@@ -803,6 +802,7 @@ table.tablestyle_inner td {
 .label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
+padding: 4px;	font-size:    12px;
 
 }
 
@@ -1241,7 +1241,10 @@ td.tableheader3 {
 .marginauto {
 	margin: 0 auto;
 }
-
+.top {
+	vertical-align: top;
+}
+.vmiddle {vertical-align: middle; }
 .top20 {
 	margin-top: 20px;
 }

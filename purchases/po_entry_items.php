@@ -33,14 +33,14 @@
 			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated") . " #$order_no");
 		}
 		unset($_SESSION['PO']);
-		Display::note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
+		Display::note(get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
-		submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
+		Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
 		Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(),
 			1);
-		hyperlink_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
-		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
-		hyperlink_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
+		Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
+		Display::link_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
+		Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
 		Page::footer_exit();
 	}
 
@@ -111,12 +111,12 @@
 				Purch_Order::delete($_SESSION['PO']->order_no);
 			} else {
 				unset($_SESSION['PO']);
-				meta_forward('/index.php', 'application=Purchases');
+				Display::meta_forward('/index.php', 'application=Purchases');
 			}
 			$_SESSION['PO']->clear_items();
 			$_SESSION['PO'] = new Purch_Order();
 			Errors::notice(_("This purchase order has been cancelled."));
-			hyperlink_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
+			Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 			echo "<br>";
 			end_page();
 			exit;
@@ -157,12 +157,12 @@
 		{
 			$allow_update = check_data();
 			if ($allow_update) {
-				if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')) {
+				if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
 					Errors::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 					JS::set_focus('qty');
 					return;
 				}
-				$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'), $_POST['req_del_date'],
+				$_SESSION['PO']->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'],
 					$_POST['description'], $_POST['discount'] / 100);
 				unset_form_variables();
 			}
@@ -185,8 +185,8 @@
 					}
 					if ($allow_update) {
 						$myrow = DB::fetch($result);
-						$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'],
-							input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+						$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'],
+							Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 						unset_form_variables();
 						$_POST['stock_id'] = "";
 					} else {
@@ -200,7 +200,7 @@
 
 	function can_commit()
 		{
-			if (!get_post('supplier_id')) {
+			if (!Display::get_post('supplier_id')) {
 				Errors::error(_("There is no supplier selected."));
 				JS::set_focus('supplier_id');
 				return false;
@@ -210,7 +210,7 @@
 				JS::set_focus('OrderDate');
 				return false;
 			}
-			if (get_post('delivery_address') == '') {
+			if (Display::get_post('delivery_address') == '') {
 				Errors::error(_("There is no delivery address specified."));
 				JS::set_focus('delivery_address');
 				return false;
@@ -220,7 +220,7 @@
 				JS::set_focus('freight');
 				return false;
 			}
-			if (get_post('StkLocation') == '') {
+			if (Display::get_post('StkLocation') == '') {
 				Errors::error(_("There is no location specified to move any items into."));
 				JS::set_focus('StkLocation');
 				return false;
@@ -230,13 +230,13 @@
 				return false;
 			}
 			if (!$_SESSION['PO']->order_no) {
-				if (!Ref::is_valid(get_post('ref'))) {
+				if (!Ref::is_valid(Display::get_post('ref'))) {
 					Errors::error(_("There is no reference entered for this purchase order."));
 					JS::set_focus('ref');
 					return false;
 				}
 				while (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
-					//            if (!Ref::is_new(get_post('ref'), ST_PURCHORDER)) {
+					//            if (!Ref::is_new(Display::get_post('ref'), ST_PURCHORDER)) {
 					//Errors::error(_("The entered reference is already in use."));
 					//JS::set_focus('ref');
 					//return false;
@@ -257,12 +257,12 @@
 					Dates::new_doc_date($_SESSION['PO']->orig_order_date);
 					$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 					unset($_SESSION['PO']);
-					meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
+					Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
 				} else {
 					/*its an existing order need to update the old order info */
 					$order_no = Purch_Order::update($_SESSION['PO']);
 					$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
-					meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
+					Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 				}
 			}
 		}
@@ -344,7 +344,7 @@
 		}
 	}
 
-	start_form();
+	Display::start_form();
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
 <div class='center'>
@@ -354,10 +354,10 @@
 	Purch_Order::header($_SESSION['PO']);
 	echo "<br>";
 	Purch_Order::display_items($_SESSION['PO']);
-	start_table(Config::get('tables_style2'));
+	Display::start_table(Config::get('tables_style2'));
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
-	end_table(1);
-	div_start('controls', 'items_table');
+	Display::end_table(1);
+	Display::div_start('controls', 'items_table');
 	if ($_SESSION['PO']->order_has_items()) {
 		submit_center_first('CancelOrder', _("Delete This Order"));
 		if ($_SESSION['PO']->order_no) {
@@ -369,9 +369,9 @@
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
 	}
-	div_end();
+	Display::div_end();
 
-	end_form();
+	Display::end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();
 	if (isset($_SESSION['PO']->supplier_id)) {

@@ -95,7 +95,7 @@
 		$filename = PATH_TO_ROOT . "/lang/$lang";
 		Files::flush_dir($filename);
 		rmdir($filename);
-		meta_forward($_SERVER['PHP_SELF']);
+		Display::meta_forward($_SERVER['PHP_SELF']);
 	}
 
 
@@ -110,9 +110,9 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables_style'));
+		Display::start_table(Config::get('tables_style'));
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
-		table_header($th);
+		Display::table_header($th);
 		$k = 0;
 		$conn = Config::get('languages.installed');
 		$n = count($conn);
@@ -121,9 +121,9 @@
 		)
 		{
 			if ($conn[$i]['code'] == $lang) {
-				start_row("class='stockmankobg'");
+				Display::start_row("class='stockmankobg'");
 			} else {
-				alt_table_row_color($k);
+				Display::alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['code']);
 			label_cell($conn[$i]['name']);
@@ -148,9 +148,9 @@
 				 :
 				 "<a href=''>$delete</a>"
 			);
-			end_row();
+			Display::end_row();
 		}
-		end_table();
+		Display::end_table();
 		Errors::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -162,7 +162,7 @@
 		} else {
 			$n = count(Config::get('languages.installed'));
 		}
-		start_form(true);
+		Display::start_form(true);
 		echo "
 		<script language='javascript'>
 		function updateLanguage() {
@@ -170,7 +170,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables_style2'));
+		Display::start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {
 			$conn = Config::get('languages.installed', $selected_id);
 			$_POST['code'] = $conn['code'];
@@ -191,10 +191,10 @@
 		yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
 		file_row(_("Language File") . " (PO)", 'uploadfile');
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
-		end_table(0);
+		Display::end_table(0);
 		Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<div class='center'><input  type='button' style='width:150px' value='" . _("Save") . "'></div>";
-		end_form();
+		Display::end_form();
 	}
 
 
@@ -204,13 +204,13 @@
 		}
 		if ($_GET['c'] == 'u') {
 			if (handle_submit()) {
-				//meta_forward($_SERVER['PHP_SELF']);
+				//Display::meta_forward($_SERVER['PHP_SELF']);
 			}
 		}
 	}
 
 	display_languages();
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
+	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
 	display_language_edit($selected_id);
 
 	end_page();

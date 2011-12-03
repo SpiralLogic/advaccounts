@@ -48,12 +48,12 @@
 			Errors::error(_('For batch invoicing you should select at least one delivery. All items must be dispatched to the same customer branch.'));
 		} else {
 			$_SESSION['DeliveryBatch'] = $selected;
-			meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
+			Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
 
-	if (get_post('_DeliveryNumber_changed')) {
-		$disable = get_post('DeliveryNumber') !== '';
+	if (Display::get_post('_DeliveryNumber_changed')) {
+		$disable = Display::get_post('DeliveryNumber') !== '';
 		$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
 		$Ajax->addDisable(true, 'DeliveryToDate', $disable);
 		$Ajax->addDisable(true, 'StockLocation', $disable);
@@ -68,9 +68,9 @@
 		$Ajax->activate('deliveries_tbl');
 	}
 
-	start_form(false, false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-	start_table("class='tablestyle_noborder'");
-	start_row();
+	Display::start_form(false, false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+	Display::start_table("class='tablestyle_noborder'");
+	Display::start_row();
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
@@ -78,8 +78,8 @@
 	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
-	end_row();
-	end_table();
+	Display::end_row();
+	Display::end_table();
 
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
@@ -90,7 +90,7 @@
 
 	function trans_view($trans, $trans_no)
 		{
-			return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
+			return Debtor_UI::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
 		}
 
 	function batch_checkbox($row)
@@ -104,7 +104,7 @@
 	function edit_link($row)
 		{
 			return $row["Outstanding"] == 0 ? '' :
-			 pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+			 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
 		}
 
 	function prt_link($row)
@@ -115,7 +115,7 @@
 	function invoice_link($row)
 		{
 			return $row["Outstanding"] == 0 ? '' :
-			 pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+			 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
 		}
 
 	function check_overdue($row)
@@ -188,8 +188,8 @@
 	$table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	//$table->width = "92%";
-	display_db_pager($table);
-	end_form();
+	DB_Pager::display($table);
+	Display::end_form();
 	end_page();
 
 ?>
