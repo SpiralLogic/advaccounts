@@ -75,7 +75,7 @@
 			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
-		$rep = new FrontReport(_('Tax Report'), "TaxReport", User::pagesize());
+		$rep = new ADVReport(_('Tax Report'), "TaxReport", User::pagesize());
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
 		}

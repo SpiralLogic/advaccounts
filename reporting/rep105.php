@@ -134,7 +134,7 @@
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-		$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
+		$rep = new ADVReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();

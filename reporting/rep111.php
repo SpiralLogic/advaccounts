@@ -42,7 +42,7 @@
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", User::pagesize());
+				$rep = new ADVReport(_("SALES QUOTATION"), "SalesQuotationBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
@@ -56,7 +56,7 @@
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->filename = "SalesQuotation" . $i . ".pdf";

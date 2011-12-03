@@ -99,7 +99,7 @@
 	} elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 			echo"<div class='center'><br><b>" . _("There are no delivery notes for this invoice.<br>
-		Most likely this invoice was created in Front Accounting version prior to 2.0
+		Most likely this invoice was created in ADV Accounts version prior to 2.0
 		and therefore can not be modified.") . "</b></div>";
 			Page::footer_exit();
 		}

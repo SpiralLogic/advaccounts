@@ -188,7 +188,7 @@
 			$end = Dates::add_months($to, -12);
 			$headers[3] = _('Period Y-1');
 		}
-		$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", User::pagesize());
+		$rep = new ADVReport(_('Profit and Loss Statement'), "ProfitAndLoss", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

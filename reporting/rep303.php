@@ -130,7 +130,7 @@
 					'to' => ''
 				)
 			);
-			$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
+			$rep = new ADVReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();

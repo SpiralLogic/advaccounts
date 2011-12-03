@@ -28,15 +28,34 @@
 	 */
 	class gettextNativeSupport
 	{
+		/**
+		 * @var array
+		 */
 		public $_interpolation_vars = array();
+		/**
+		 *
+		 */
 		const GETTEXT_NATIVE = 1;
+		/**
+		 *
+		 */
 		const GETTEXT_PHP = 2;
 
+		/**
+		 * @param $str
+		 *
+		 * @return int
+		 */
 		public function raise_error($str) {
 			Errors::error($str);
 			return 1;
 		}
 
+		/**
+		 * @param $err
+		 *
+		 * @return bool
+		 */
 		public function is_error($err) {
 			return $err > 0;
 		}
@@ -58,6 +77,12 @@
 			return new gettext_php_support();
 		}
 
+		/**
+		 * @param $lang_code
+		 * @param $encoding
+		 *
+		 * @return int
+		 */
 		function set_language($lang_code, $encoding) {
 			putenv("LANG=$lang_code");
 			putenv("LC_ALL=$lang_code");
@@ -76,6 +101,10 @@
 			return 0;
 		}
 
+		/**
+		 * @param			$domain
+		 * @param bool $path
+		 */
 		function add_domain($domain, $path = false) {
 			if ($path === false) {
 				bindtextdomain($domain, "./locale/");
@@ -86,6 +115,11 @@
 			textdomain($domain);
 		}
 
+		/**
+		 * @param $key
+		 *
+		 * @return string
+		 */
 		function _get_translation($key) {
 			return gettext($key);
 		}
@@ -97,15 +131,27 @@
 			$this->_interpolation_vars = array();
 		}
 
+		/**
+		 * @param $key
+		 * @param $value
+		 */
 		function set_var($key, $value) {
 			$this->_interpolation_vars[$key] = $value;
 		}
 
+		/**
+		 * @param $hash
+		 */
 		function set_vars($hash) {
 			$this->_interpolation_vars = array_merge($this->_interpolation_vars,
 				$hash);
 		}
 
+		/**
+		 * @param $key
+		 *
+		 * @return int|mixed|string
+		 */
 		function gettext($key) {
 			$value = $this->_get_translation($key);
 			if ($value === false) {
@@ -130,6 +176,11 @@
 			return $value;
 		}
 
+		/**
+		 * @param $name
+		 *
+		 * @return bool
+		 */
 		function _get_var($name) {
 			if (!array_key_exists($name, $this->_interpolation_vars)) {
 				return false;
@@ -149,10 +200,25 @@
 	 */
 	class gettext_php_support extends gettextNativeSupport
 	{
+		/**
+		 * @var string
+		 */
 		public $_path = 'locale/';
+		/**
+		 * @var bool
+		 */
 		public $_lang_code = false;
+		/**
+		 * @var array
+		 */
 		public $_domains = array();
+		/**
+		 * @var int
+		 */
 		public $_end = -1;
+		/**
+		 * @var array
+		 */
 		public $_jobs = array();
 
 		/**
@@ -293,14 +359,33 @@
 	 */
 	class gettext_domain
 	{
+		/**
+		 * @var
+		 */
 		public $name;
+		/**
+		 * @var
+		 */
 		public $path;
+		/**
+		 * @var array
+		 */
 		public $_keys = array();
 
+		/**
+		 * @param $key
+		 *
+		 * @return bool
+		 */
 		function has_key($key) {
 			return array_key_exists($key, $this->_keys);
 		}
 
+		/**
+		 * @param $key
+		 *
+		 * @return mixed
+		 */
 		function get($key) {
 			return $this->_keys[$key];
 		}
@@ -314,10 +399,24 @@
 	 */
 	class gettext_php_support_parser
 	{
+		/**
+		 * @var array
+		 */
 		public $_hash = array();
+		/**
+		 * @var
+		 */
 		public $_current_key;
+		/**
+		 * @var
+		 */
 		public $_current_value;
 
+		/**
+		 * @param $str
+		 *
+		 * @return int
+		 */
 		public function raise_error($str) {
 			Errors::error($str);
 			return 1;
@@ -418,6 +517,12 @@
 			return 1;
 		}
 
+		/**
+		 * @param $hash
+		 * @param $source_path
+		 *
+		 * @return int
+		 */
 		function compile(&$hash, $source_path) {
 			$dest_path = preg_replace('/\.po$/', '.php', $source_path);
 			$fp = @fopen($dest_path, "w");

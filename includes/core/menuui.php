@@ -11,21 +11,45 @@
 	 ***********************************************************************/
 	class MenuUI extends Menu
 	{
+		/**
+		 * @var array
+		 */
 		protected $options = array();
+		/**
+		 * @var bool
+		 */
 		public $firstPage = false;
+		/**
+		 * @var int
+		 */
 		static $menuCount = 0;
 
+		/**
+		 * @param array $options
+		 */
 		function __construct($options = array()) {
 			$this->options = $options;
 			ob_start();
 		}
 
-		function addTab($title, $tooltip = '', $link = '#') {
+		/**
+		 * @param        $title
+		 * @param string $tooltip
+		 * @param string $link
+		 *
+		 * @return MenuUI
+		 */function addTab($title, $tooltip = '', $link = '#') {
 			$this->items[] = new MenuUi_item($title, $tooltip, $link);
 			return $this;
-		}
+	}
 
-		function startTab($title, $tooltip, $link = '#', $style = '') {
+		/**
+		 * @param        $title
+		 * @param        $tooltip
+		 * @param string $link
+		 * @param string $style
+		 * @return MenuUI
+		 */function startTab($title, $tooltip, $link = '#', $style = '') {
 			$this->addTab($title, $tooltip, $link);
 			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->items) . '" ';
 			if (!empty($style)) {
@@ -33,14 +57,18 @@
 			}
 			echo '>';
 			return $this;
-		}
+	}
 
-		function endTab() {
+		/**
+		 * @return MenuUI
+		 */function endTab() {
 			echo '</div>';
 			return $this;
-		}
+	}
 
-		function render() {
+		/**
+		 *
+		 */function render() {
 			$menu = "<div class='tabs' id='tabs" . MenuUI::$menuCount . "'><ul>";
 			foreach ($this->items as $key => $item) {
 				$num = $key + 1;
@@ -56,11 +84,19 @@
 		}
 	}
 
-	class MenuUi_item extends menu_item
-	{
-		public $tooltip = '';
+	/**
+	 *
+	 */class MenuUi_item extends menu_item
+{
+	/**
+	 * @var string
+	 */public $tooltip = '';
 
-		function __construct($label, $tooltip = '', $link = '') {
+	/**
+	 * @param        $label
+	 * @param string $tooltip
+	 * @param string $link
+	 */function __construct($label, $tooltip = '', $link = '') {
 			$this->label = $label;
 			$this->link = $link;
 			$this->tooltip = $tooltip;

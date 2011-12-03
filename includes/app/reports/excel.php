@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// xls version
-	class FrontReport extends Spreadsheet_Excel_Writer_Workbook
+	class ADVReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		public $size;
 		public $company;

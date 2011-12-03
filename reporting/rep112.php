@@ -75,7 +75,7 @@
 			$aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
-			$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", User::pagesize());
+			$rep = new ADVReport(_('RECEIPT'), "ReceiptBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);

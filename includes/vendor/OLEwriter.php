@@ -4498,7 +4498,7 @@ FIXME: change prefixes
 			$this->_input_encoding = $encoding_string = $encoding;
 		}
 
-		/** added 2009-03-05 by Joe Hunt, FA for arabic languages */
+		/** added 2009-03-05 by Joe Hunt, ADV for arabic languages */
 		function setRTL()
 		{
 			$this->_rtl = 1;

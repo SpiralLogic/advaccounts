@@ -85,7 +85,7 @@
 				'to' => ''
 			)
 		);
-		$rep = new FrontReport(_('Audit Trail'), "AuditTrail", User::pagesize());
+		$rep = new ADVReport(_('Audit Trail'), "AuditTrail", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

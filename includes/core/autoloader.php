@@ -10,11 +10,26 @@
 	{
 	}
 
+	/**
+	 *
+	 */
 	class Autoloader
 	{
+		/**
+		 * @var array
+		 */
 		protected static $loaded = array();
+		/**
+		 * @var array
+		 */
 		protected static $loadperf = array();
+		/**
+		 * @var int
+		 */
 		protected static $time = 0;
+		/**
+		 * @var array
+		 */
 		protected static $classes = array();
 
 		/**

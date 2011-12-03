@@ -101,7 +101,7 @@
 
 			'name' - name for identification purposes;
 			'type' - type of extension: 'module' or 'plugin'
-			'path' - FA root based installation path
+			'path' - ADV root based installation path
 			'filename' - name of module menu file, or plugin filename; related to path.
 			'tab' - index of the module tab (new for module, or one of standard module names for plugin);
 			'title' - is the menu text (for plugin) or new tab name

@@ -244,7 +244,7 @@
 		}
 
 
-		public static function get_items($order_no, &$order, $open_items_only = false) {
+		public static function get_items($order_no, Purch_Order $order, $open_items_only = false) {
 			/*now populate the line po array with the purchase order details records */
 			$sql = "SELECT purch_order_details.*, units
 			FROM purch_order_details

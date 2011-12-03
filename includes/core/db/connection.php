@@ -182,7 +182,7 @@
 		 *
 		 */
 		protected function _connect() {
-			$time = microtime(true);
+
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

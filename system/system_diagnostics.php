@@ -123,7 +123,7 @@
 	}
 
 	//
-	//	Installed FA database structure version
+	//	Installed ADV database structure version
 	//
 	function tst_dbversion()
 	{
@@ -209,7 +209,7 @@
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') {
 				continue;
-			} // native FA language
+			} // native ADV language
 			$file = PATH_TO_ROOT . '/lang/' . $lang['code'] . '/LC_MESSAGES/' . $lang['code'];
 			$file .= function_exists('gettext') ? '.mo' : '.po';
 			if (!is_file($file)) {

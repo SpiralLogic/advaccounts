@@ -135,7 +135,7 @@
 				'from' => $fromc,
 				'to'   => '')
 		);
-		$rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
+		$rep = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

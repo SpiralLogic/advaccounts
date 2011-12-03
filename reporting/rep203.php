@@ -92,7 +92,7 @@
 			3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
 			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
 		);
-		$rep = new FrontReport(_('Payment Report'), "PaymentReport", User::pagesize());
+		$rep = new ADVReport(_('Payment Report'), "PaymentReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

@@ -76,7 +76,7 @@
 		$params = array(0 => $comments,
 			1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
 		);
-		$rep = new FrontReport(_('Dimension Summary'), "DimensionSummary", User::pagesize());
+		$rep = new ADVReport(_('Dimension Summary'), "DimensionSummary", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

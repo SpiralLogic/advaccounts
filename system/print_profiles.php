@@ -40,10 +40,10 @@
 						$repno = $match[1];
 						$title = '';
 						$line = file_get_contents($path . $fname);
-						if (preg_match('/.*(FrontReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
+						if (preg_match('/.*(ADVReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
 							$title = trim($match[2]);
 						}
-						else // for any 3rd party printouts without FrontReport() class use
+						else // for any 3rd party printouts without ADVReport() class use
 							if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
 								$title = trim($match[2]);
 							}

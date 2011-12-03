@@ -42,7 +42,7 @@
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
 					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
-			$rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
+			$rep = new ADVReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();

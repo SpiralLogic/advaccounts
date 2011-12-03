@@ -99,7 +99,7 @@
 			}
 
 
-		public static function add($supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
+		public static function add(Purch_Trans $supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
 			{
 				//$company_currency = Banking::get_company_currency();
 				/*Start an sql transaction */

@@ -42,7 +42,7 @@
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesQuotationBulk", User::pagesize());
+				$rep = new ADVReport(_("PROFORMA INVOICE"), "SalesQuotationBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
@@ -56,7 +56,7 @@
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				if ($email == 1) {
-					$rep = new FrontReport("PROFORMA INVOICE", "", User::pagesize());
+					$rep = new ADVReport("PROFORMA INVOICE", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->filename = "ProformaInvoice" . $i . ".pdf";

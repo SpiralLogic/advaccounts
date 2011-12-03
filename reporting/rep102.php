@@ -136,7 +136,7 @@
 		if ($convert) {
 			$headers[2] = _('Currency');
 		}
-		$rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", User::pagesize());
+		$rep = new ADVReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

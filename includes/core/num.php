@@ -8,10 +8,25 @@
 	 */
 	class Num
 	{
+		/**
+		 * @static
+		 *
+		 * @param $number
+		 *
+		 * @return int|string
+		 */
 		public static function	price_format($number) {
 			return Num::format($number, User::prefs()->price_dec());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $number
+		 * @param $dec
+		 *
+		 * @return int|string
+		 */
 		public static function	price_decimal($number, &$dec) {
 			$dec = User::price_dec();
 			$str = strval($number);
@@ -25,10 +40,26 @@
 			return Num::format($number, $dec);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param		 $number
+		 * @param int $decimals
+		 *
+		 * @return float
+		 */
 		public static function	round($number, $decimals = 0) {
 			return round($number, $decimals, PHP_ROUND_HALF_EVEN);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param		 $number
+		 * @param int $decimals
+		 *
+		 * @return int|string
+		 */
 		public static function	format($number, $decimals = 0) {
 			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
 			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
@@ -38,14 +69,36 @@
 			return ($number == -0 ? 0 : $number);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $number
+		 *
+		 * @return int|string
+		 */
 		public static function	exrate_format($number) {
 			return Num::format($number, User::prefs()->exrate_dec());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $number
+		 *
+		 * @return int|string
+		 */
 		public static function	percent_format($number) {
 			return Num::format($number, User::prefs()->percent_dec());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $price
+		 * @param $round_to
+		 *
+		 * @return float|int
+		 */
 		public static function round_to_nearest($price, $round_to) {
 			if ($price == 0) {
 				return 0;
@@ -67,6 +120,13 @@
 		//
 		//	Simple English version of number to words conversion.
 		//
+		/**
+		 * @static
+		 *
+		 * @param $number
+		 *
+		 * @return string
+		 */
 		public static function to_words($number) {
 			$Bn = floor($number / 1000000000); /* Billions (giga) */
 			$number -= $Bn * 1000000000;
@@ -76,7 +136,7 @@
 			$number -= $kn * 1000;
 			$Hn = floor($number / 100); /* Hundreds (hecto) */
 			$number -= $Hn * 100;
-			$Dn = floor($number / 10); /* Tens (deca) */
+			$Dn = (int)floor($number / 10); /* Tens (deca) */
 			$n = $number % 10; /* Ones */
 			$res = "";
 			if ($Bn) {

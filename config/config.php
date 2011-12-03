@@ -31,7 +31,7 @@
 		'print_default_excel'							=> false,
 		// Wiki context help configuration
 		// If your help wiki use translated page titles uncomment next line
-		// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
+		// $old_style_help = 1; // this setting is depreciated and subject to removal in next ADV versions
 		// 	locally installed wiki module
 		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 		// 	context help feed from advaccounting.net

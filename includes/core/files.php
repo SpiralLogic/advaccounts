@@ -10,9 +10,19 @@
 	{
 		// saves the string in $fileData to the file $backupfile as gz file or not ($zip)
 		// returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
+		/**
+		 * @static
+		 *
+		 * @param			$backupfile
+		 * @param			$fileData
+		 * @param bool $zip
+		 *
+		 * @return bool
+		 */
 		public static function save_to_file($backupfile, $fileData, $zip = false) {
 			if ($zip == "gzip") {
-				if ($zp = gzopen(BACKUP_PATH . $backupfile, "a9")) {
+				$zp = gzopen(BACKUP_PATH . $backupfile, "a9");
+				if ($zp) {
 					gzwrite($zp, $fileData);
 					gzclose($zp);
 					return true;
@@ -91,12 +101,25 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $size
+		 *
+		 * @return string
+		 */
 		public static function convert_size($size) {
 			$unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 			$i = (int)floor(log($size, 1024));
 			return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$path
+		 * @param bool $wipe
+		 */
 		public static function flush_dir($path, $wipe = false) {
 			$dir = opendir($path);
 			while (false !== ($fname = readdir($dir))) {

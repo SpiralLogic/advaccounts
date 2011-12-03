@@ -46,7 +46,7 @@
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
+			$rep = new ADVReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -74,7 +74,7 @@
 					$sales_order = null;
 				}
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($j == ST_SALESINVOICE) {

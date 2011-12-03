@@ -67,7 +67,7 @@
 				'from' => $from,
 				'to'   => $to)
 		);
-		$rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
+		$rep = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

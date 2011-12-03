@@ -12,23 +12,25 @@
 		 * @var Memcached
 		 */
 		protected static $i = null;
+		/**
+		 * @var bool
+		 */
 		protected static $connected = false;
 
 		/**
 		 * @static
 		 * @return Memcached
 		 */
-		protected static function _i() {
+		protected static function i() {
 			if (static::$i === null) {
 				static::$i = new Memcached('ADV');
 				static::$connected = static::$i->addServer('127.0.0.1', 11211);
 				static::$i->setOption(Memcached::OPT_PREFIX_KEY, DOCROOT);
-
 				if (static::$connected && isset($_GET['reload_config'])) {
 					static::$i->flush(0);
 				}
 			}
-			return (static::$connected) ? static::$i:false;
+			return (static::$connected) ? static::$i : false;
 		}
 
 		/**
@@ -41,10 +43,10 @@
 		 * @return mixed
 		 */
 		public static function set($key, $value, $expires = 86400) {
-			if (static::_i()!==false) {
-				static::_i()->set($key, $value, time() + $expires);
+			if (static::i() !== false) {
+				static::i()->set($key, $value, time() + $expires);
 			}
-			elseif (class_exists('Session',false)) {
+			elseif (class_exists('Session', false)) {
 				Session::i()->Cache[$key] = $value;
 			}
 			return $value;
@@ -58,12 +60,14 @@
 		 * @return mixed
 		 */
 		public static function get($key) {
-			if (static::_i()!==false) {
-				$result = static::_i()->get($key);
+			if (static::i() !== false) {
+				$result = static::i()->get($key);
 				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
 			}
-			elseif (class_exists('Session',false)) {
+			elseif (class_exists('Session', false)) {
 				$result = Session::i()->Cache[$key];
+			} else {
+				$result = false;
 			}
 			return $result;
 		}
@@ -73,12 +77,17 @@
 		 * @return mixed
 		 */
 		public static function getStats() {
-			return (static::$connected) ? static::_i()->getStats() : false;
+			return (static::$connected) ? static::i()->getStats() : false;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param int $time
+		 */
 		public static function flush($time = 0) {
-			if (static::i())	{
-				static::_i()->flush($time);
+			if (static::i()) {
+				static::i()->flush($time);
 			} else {
 				Session::i()->Cache = array();
 			}

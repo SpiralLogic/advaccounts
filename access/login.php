@@ -45,8 +45,8 @@
 	Display::start_table("class='login'");
 	Display::start_row();
 	echo "<td class='center' colspan=2>";
-	if (!$login_timeout) { // FA logo
-		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='FrontAccounting' height='50' border='0' /></a>";
+	if (!$login_timeout) { // ADV logo
+		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts' height='50' border='0' /></a>";
 	} else {
 		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}

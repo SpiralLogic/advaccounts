@@ -79,7 +79,7 @@
 			$PastDueDays1 = DB_Company::get_pref('past_due_days');
 			$PastDueDays2 = 2 * $PastDueDays1;
 			if ($email == 0) {
-				$rep = new FrontReport(_('STATEMENT'), "StatementBulk", User::pagesize());
+				$rep = new ADVReport(_('STATEMENT'), "StatementBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
@@ -112,7 +112,7 @@
 					$transactions[] = $transaction;
 				}
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->title = _('STATEMENT');

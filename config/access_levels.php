@@ -13,9 +13,9 @@
 	 Security sections groups various areas on both functionality and privilege levels.
 	 Often analytic inquires are available only for management, and configuration
 	 for administration or management staff. This is why we have those three
-	 section type inside near every FA module.
+	 section type inside near every ADV module.
 
-	 Section codes 0-99 are reserved for core FA functionalities.
+	 Section codes 0-99 are reserved for core ADV functionalities.
 	 Every security section can contain up to 256 different areas.
 	 External modules can extend security roles system by adding rows to
 	 $security_sections and $security_areas using section codes >=100.
@@ -49,7 +49,7 @@
 		SS_ADV => _("Advanced")
 	);
 	/*
-		 This table stores security areas available in FA.
+		 This table stores security areas available in ADV.
 		 Key is area identifier used to check user rights, values are
 		 codes stored for each role in security_roles table and description used
 		 in roles editor.

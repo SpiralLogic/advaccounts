@@ -768,7 +768,7 @@
 
 	/**
 	 *
-	 *	 Since FA 2.2	$init parameter is superseded by $check.
+	 *	 Since ADV 2.2	$init parameter is superseded by $check.
 	 *	 When $check!=null current date is displayed in red when set to other
 	 *	 than current date.
 	 *

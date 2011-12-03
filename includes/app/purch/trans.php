@@ -231,7 +231,7 @@
 				Purch_Invoice::void($type, $type_no);
 				return true;
 			}
-			if ($type == SUPPRECEIVE) {
+			if ($type == ST_SUPPRECEIVE) {
 				return Purch_GRN::void($type_no);
 			}
 			return false;

@@ -151,7 +151,7 @@
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to));
 		}
-		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
+		$rep = new ADVReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

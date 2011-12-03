@@ -148,7 +148,7 @@
 			3 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 'to' => ''),
 			4 => array('text' => _('Activity'), 'from' => $morestr, 'to' => $lessstr)
 		);
-		$rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", User::pagesize());
+		$rep = new ADVReport(_('Customer Details Listing'), "CustomerDetailsListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

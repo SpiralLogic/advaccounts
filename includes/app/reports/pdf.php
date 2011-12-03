@@ -12,7 +12,7 @@
 		* ********************************************************************* */
 
 
-	class FrontReport extends Cpdf
+	class ADVReport extends Cpdf
 	{
 		public $size;
 		public $company;

@@ -11,15 +11,37 @@
 	 ***********************************************************************/
 	class Errors
 	{
+		/**
+		 *
+		 */
 		const DB_DUPLICATE_ERROR_CODE = 1062;
+		/**
+		 * @var array
+		 */
 		public static $messages = array(); // container for system messages
+		/**
+		 * @var bool
+		 */
 		public static $fatal = false; // container for system messages
+		/**
+		 * @var string
+		 */
 		public static $before_box = ''; // temporary container for output html data before error box
+		/**
+		 * @var array
+		 */
 		public static $fatal_levels = array(E_PARSE, E_ERROR, E_USER_ERROR, E_COMPILE_ERROR);
+		/**
+		 * @var array
+		 */
 		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 
 		//    Error handler - collects all php/user messages for
 		//    display in message box.
+		/**
+		 * @static
+		 *
+		 */
 		static function init() {
 			set_error_handler('adv_error_handler');
 			set_exception_handler('adv_exception_handler');
@@ -39,18 +61,43 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $msg
+		 */
 		static function error($msg) {
 			trigger_error($msg, E_USER_ERROR);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $msg
+		 */
 		static function notice($msg) {
 			trigger_error($msg, E_USER_NOTICE);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $msg
+		 */
 		static function warning($msg) {
 			trigger_error($msg, E_USER_WARNING);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $type
+		 * @param $message
+		 * @param $file
+		 * @param $line
+		 *
+		 * @return bool
+		 */
 		static function handler($type, $message, $file, $line) {
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
@@ -74,6 +121,11 @@
 			return true;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param Exception $e
+		 */
 		static function exception_handler(Exception $e) {
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
@@ -84,6 +136,10 @@
 
 		//	Formats system messages before insert them into message <div>
 		// FIX center is unused now
+		/**
+		 * @static
+		 * @return string
+		 */
 		static function format() {
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'),
@@ -105,7 +161,9 @@
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
-				if (class_exists('FB',false)) FB::log($msg, $class[0]);
+				if (class_exists('FB', false)) {
+					FB::log($msg, $class[0]);
+				}
 				$content .= "<div class='$class[1]'>$str</div>";
 			}
 			return $content;
@@ -113,6 +171,10 @@
 
 		// Error box <div> element.
 		//
+		/**
+		 * @static
+		 *
+		 */
 		static function error_box() {
 			echo "<div id='msgbox'>";
 			static::$before_box = ob_get_clean(); // save html content before error box
@@ -120,6 +182,15 @@
 			echo "</div>";
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$msg
+		 * @param null $sql_statement
+		 * @param bool $exit
+		 *
+		 * @throws DB_Exception
+		 */
 		static function show_db_error($msg, $sql_statement = null, $exit = true) {
 			$warning = $msg == null;
 			$db_error = DB::error_no();
@@ -147,6 +218,13 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $db_error
+		 *
+		 * @return bool
+		 */
 		static function nice_db_error($db_error) {
 			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
 				Errors::error(_("The entered information is a duplicate. Please go back and enter different values."));
@@ -155,6 +233,17 @@
 			return false;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$msg
+		 * @param			$sql_statement
+		 * @param bool $exit_if_error
+		 * @param bool $rollback_if_error
+		 *
+		 * @return mixed
+		 * @throws DB_Exception
+		 */
 		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true) {
 			$db_error = DB::error_no();
 			if ($db_error != 0) {
@@ -171,7 +260,12 @@
 			return $db_error;
 		}
 
-		protected static function prepare_exception(\Exception $e, $fatal = true) {
+		/**
+		 * @static
+		 *
+		 * @param Exception $e
+		 */
+		protected static function prepare_exception(\Exception $e) {
 			$data = array(
 				'type' => $e->getCode(),
 				'message' => get_class($e) . ' ' . $e->getMessage(),

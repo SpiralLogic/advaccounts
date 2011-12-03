@@ -7589,7 +7589,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account226/sales/customer_invoice.php:132
 msgid ""
 "There are no delivery notes for this invoice.<br>\n"
-"\t\tMost likely this invoice was created in Front Accounting version prior to 2.0\n"
+"\t\tMost likely this invoice was created in ADV Accounting version prior to 2.0\n"
 "\t\tand therefore can not be modified."
 msgstr ""
 

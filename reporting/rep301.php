@@ -108,7 +108,7 @@
 				'from' => $loc,
 				'to'   => '')
 		);
-		$rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", User::pagesize());
+		$rep = new ADVReport(_('Inventory Valuation Report'), "InventoryValReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

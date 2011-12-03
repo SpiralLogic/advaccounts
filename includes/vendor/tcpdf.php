@@ -141,7 +141,7 @@
 	 *	and
 	 *	if (!defined("K_RE_PATTERN_ARABIC"))
 	 * 4. Parameter $unicode in constructor renamed to $uni.
-	 * 5. Header function renamed to Header1 (due to conflict with FrontReport Header)
+	 * 5. Header function renamed to Header1 (due to conflict with ADVReport Header)
 	 * 6. Line 6190, SetLineWidth (cast of values to avoid problem in PHP 5.2.6
 	 * 7. Line 6261. ereg replaced by preg_match (with start and end delimiter)
 	 * 8. Lines 8642,9256 and 9348. split replaced by preg_split.

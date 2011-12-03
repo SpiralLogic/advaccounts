@@ -48,11 +48,11 @@
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
 			if ($packing_slip == 0) {
-				$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk", User::pagesize());
+				$rep = new ADVReport(_('DELIVERY'), "DeliveryNoteBulk", User::pagesize());
 			}
 			else
 			{
-				$rep = new FrontReport(_('PACKING SLIP'), "PackingSlipBulk", User::pagesize());
+				$rep = new ADVReport(_('PACKING SLIP'), "PackingSlipBulk", User::pagesize());
 			}
 			$rep->currency = $cur;
 			$rep->Font();
@@ -67,7 +67,7 @@
 			$branch = Sales_Branch::get($myrow["branch_code"]);
 			$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
-				$rep = new FrontReport("", "", User::pagesize());
+				$rep = new ADVReport("", "", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				if ($packing_slip == 0) {

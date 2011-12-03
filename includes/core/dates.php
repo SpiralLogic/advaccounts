@@ -21,8 +21,20 @@
 	if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
 		date_default_timezone_set(date_default_timezone_get());
 	}
+	/**
+	 *
+	 */
 	class Dates
 	{
+		/**
+		 * @static
+		 *
+		 * @param $year
+		 * @param $month
+		 * @param $day
+		 *
+		 * @return string
+		 */
 		static function __date($year, $month, $day) {
 			$how = User::date_format();
 			$sep = Config::get('separators_date', 0);
@@ -44,6 +56,13 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date_
+		 *
+		 * @return int
+		 */
 		static function is_date($date_) {
 			if ($date_ == null || $date_ == "") {
 				return 0;
@@ -108,7 +127,12 @@
 				return 0;
 			}
 		}
+
 		//end of is_date function
+		/**
+		 * @static
+		 * @return string
+		 */
 		static function Today() {
 			$year = date("Y");
 			$month = date("n");
@@ -122,6 +146,10 @@
 			return Dates::__date($year, $month, $day);
 		}
 
+		/**
+		 * @static
+		 * @return string
+		 */
 		static function Now() {
 			if (User::date_format() == 0) {
 				return date("h:i a");
@@ -147,6 +175,14 @@
 			return $_SESSION['_default_date'];
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$date
+		 * @param bool $convert
+		 *
+		 * @return int
+		 */
 		static function is_date_in_fiscalyear($date, $convert = false) {
 			if (!Config::get('use_fiscalyear')) {
 				return 1;
@@ -168,16 +204,31 @@
 			return 1;
 		}
 
+		/**
+		 * @static
+		 * @return string
+		 */
 		static function begin_fiscalyear() {
 			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['begin']);
 		}
 
+		/**
+		 * @static
+		 * @return string
+		 */
 		static function end_fiscalyear() {
 			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['end']);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date
+		 *
+		 * @return string
+		 */
 		static function begin_month($date) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			if (Config::get('accounts_datesystem') == 1) {
@@ -191,6 +242,13 @@
 			return Dates::__date($year, $month, 1);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date
+		 *
+		 * @return string
+		 */
 		static function end_month($date) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			if (Config::get('accounts_datesystem') == 1) {
@@ -219,6 +277,14 @@
 			return Dates::__date($year, $month, $days_in_month[$month - 1]);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date
+		 * @param $days
+		 *
+		 * @return string
+		 */
 		static function add_days($date, $days) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month, $day + $days, $year);
@@ -234,6 +300,14 @@
 			return date(User::date_display(), $timet);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date
+		 * @param $months
+		 *
+		 * @return string
+		 */
 		static function add_months($date, $months) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month + $months, $day, $year);
@@ -249,6 +323,14 @@
 			return date(User::date_display(), $timet);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date
+		 * @param $years
+		 *
+		 * @return string
+		 */
 		static function add_years($date, $years) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month, $day, $year + $years);
@@ -265,6 +347,13 @@
 		}
 
 		//_______________________________________________________________
+		/**
+		 * @static
+		 *
+		 * @param $date_
+		 *
+		 * @return string
+		 */
 		static function sql2date($date_) {
 			//for MySQL dates are in the format YYYY-mm-dd
 			if ($date_ == null || strlen($date_) == 0) {
@@ -288,6 +377,14 @@
 			}
 			return Dates::__date($year, $month, $day);
 		} // end static function sql2date
+		/**
+		 * @static
+		 *
+		 * @param			$date_
+		 * @param bool $pad
+		 *
+		 * @return int|string
+		 */
 		static function date2sql($date_, $pad = true) {
 			/* takes a date in a the format specified in $DefaultDateFormat
 																	and converts to a yyyy/mm/dd format */
@@ -347,6 +444,14 @@
 		}
 
 		// end of function
+		/**
+		 * @static
+		 *
+		 * @param $date1
+		 * @param $date2
+		 *
+		 * @return int
+		 */
 		static function date1_greater_date2($date1, $date2) {
 			/* returns 1 true if date1 is greater than date_ 2 */
 			$date1 = Dates::date2sql($date1);
@@ -369,6 +474,15 @@
 			return 0;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date1
+		 * @param $date2
+		 * @param $period
+		 *
+		 * @return int
+		 */
 		static function date_diff2($date1, $date2, $period) {
 			/* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
 																	months are assumed to be 30 days and years 365.25 days This only works
@@ -397,6 +511,14 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $date_
+		 *
+		 * @return array
+		 * @throws Adv_Exception
+		 */
 		static function explode_date_to_dmy($date_) {
 			$date = Dates::date2sql($date_);
 			if ($date == "") {
@@ -407,6 +529,14 @@
 			return array($day, $month, $year);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $a
+		 * @param $b
+		 *
+		 * @return int
+		 */
 		static function div($a, $b) {
 			return (int)($a / $b);
 		}
@@ -414,6 +544,15 @@
 		/* Based on convertor to and from Gregorian and Jalali calendars.
 						Copyright (C) 2000  Roozbeh Pournader and Mohammad Toossi
 						Released under GNU General Public License */
+		/**
+		 * @static
+		 *
+		 * @param $g_y
+		 * @param $g_m
+		 * @param $g_d
+		 *
+		 * @return array
+		 */
 		static function gregorian_to_jalali($g_y, $g_m, $g_d) {
 			$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 			$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
@@ -452,6 +591,15 @@
 			return array($jy, $jm, $jd);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $j_y
+		 * @param $j_m
+		 * @param $j_d
+		 *
+		 * @return array
+		 */
 		static function jalali_to_gregorian($j_y, $j_m, $j_d) {
 			$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 			$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
@@ -501,6 +649,15 @@
 
 		/* Based on Hidri Date Script
 						Released under GNU General Public License */
+		/**
+		 * @static
+		 *
+		 * @param $g_y
+		 * @param $g_m
+		 * @param $g_d
+		 *
+		 * @return array
+		 */
 		static function gregorian_to_islamic($g_y, $g_m, $g_d) {
 			$y = $g_y;
 			$m = $g_m;
@@ -522,6 +679,15 @@
 			return array($y, $m, $d);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $i_y
+		 * @param $i_m
+		 * @param $i_d
+		 *
+		 * @return array
+		 */
 		static function islamic_to_gregorian($i_y, $i_m, $i_d) {
 			$y = $i_y;
 			$m = $i_m;
@@ -554,6 +720,13 @@
 			return array($y, $m, $d);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $time
+		 *
+		 * @return float|string
+		 */
 		public static function getReadableTime($time) {
 			$ret = $time;
 			$formatter = 0;
