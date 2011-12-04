@@ -88,7 +88,7 @@
 	}
 
 	if (Input::request('frame')) {
-		Display::start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
+		Display::start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		Display::start_form();
 	}
@@ -117,9 +117,9 @@
 			Errors::warning(_("There is no supplier prices set up for the product selected"));
 		} else {
 			if (Input::request('frame')) {
-				Display::start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table('tablestyle width90');
 			} else {
-				Display::start_table(Config::get('tables_style') . "  width=65%");
+				Display::start_table('tablestyle width65');
 			}
 			$th = array(
 				_("Updated"), _("Supplier"), _("Price"), _("Currency"),
@@ -168,12 +168,12 @@
 	}
 	Display::br();
 	hidden('selected_id', $selected_id);
-	Display::start_table('class="tableinfo"');
+	Display::start_table('tableinfo');
 	if ($Mode == 'Edit') {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
 	} else {
-		supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
+		Purch_UI::suppliers_row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
 	amount_row(_("Price:"), 'price', null, '', Banking::get_supplier_currency($selected_id), $dec2);

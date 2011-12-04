@@ -225,7 +225,7 @@
 	hidden('cart_id');
 	$customer_error = Sales_Credit::header($_SESSION['Items']);
 	if ($customer_error == "") {
-		Display::start_table(Config::get('tables_style2'), "width=90%", 10);
+		Display::start_table('tables_style2 width90 pad10');
 		echo "<tr><td>";
 		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
 		Sales_Credit::option_controls($_SESSION['Items']);

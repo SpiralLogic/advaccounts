@@ -40,7 +40,7 @@
 	}
 	Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 	echo "<br>";
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	Display::start_row();
 	label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 	if ($show_currencies) {

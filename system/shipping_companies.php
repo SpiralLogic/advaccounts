@@ -88,7 +88,7 @@
 	$sql .= " ORDER BY shipper_id";
 	$result = DB::query($sql, "could not get shippers");
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -109,7 +109,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing Shipper

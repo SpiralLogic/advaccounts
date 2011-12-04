@@ -27,12 +27,12 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
-	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
+	Purch_UI::suppliers_cells(_("Select a supplier:"), 'supplier_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate');
-	supp_allocations_list_cell("filterType", null);
+	Purch_UI::allocation_row("filterType", null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Display::end_row();
 	Display::end_table();
@@ -45,7 +45,7 @@
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			Display::start_table("width=90%  " . Config::get('tables_style'));
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
 			Display::table_header($th);

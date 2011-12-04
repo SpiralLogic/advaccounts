@@ -136,7 +136,7 @@
 	while ($myrow = DB::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	Display::table_header($th);
 	$k    = 0;

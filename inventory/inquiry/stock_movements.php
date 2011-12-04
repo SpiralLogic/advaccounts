@@ -25,8 +25,8 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	Display::start_table("class='tablestyle_noborder'");
-	stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
+	Display::start_table('tablestyle_noborder');
+	Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
 	locations_list_cells(_("From Location:"), 'StockLocation', null);
 	date_cells(_("From:"), 'AfterDate', '', null, -30);
 	date_cells(_("To:"), 'BeforeDate');
@@ -46,7 +46,7 @@
 	$result = DB::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	Display::div_start('doc_tbl');
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(
 		_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")

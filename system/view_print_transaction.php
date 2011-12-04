@@ -37,7 +37,7 @@
 	function viewing_controls()
 	{
 		Errors::warning(_("Only documents can be printed."));
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		SysTypes::view_cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {

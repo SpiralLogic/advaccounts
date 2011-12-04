@@ -111,7 +111,7 @@
 
 	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Description"), _("Shipping Tax"), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -137,7 +137,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//editing an existing status code
 		if ($Mode == 'Edit') {
@@ -162,7 +162,7 @@
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 	Display::end_table();
 	Errors::warning(_("Select the taxes that are included in this group."), 1);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt
 	$th = array(_("Tax"), _("Rate (%)"));

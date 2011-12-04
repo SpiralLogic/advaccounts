@@ -133,7 +133,7 @@
 	}
 	$_POST['round_to'] = $myrow['round_to'];
 	$_POST['del_coy_logo'] = 0;
-	Display::start_outer_table(Config::get('tables_style2'));
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
 	textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 6);

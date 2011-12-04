@@ -54,7 +54,7 @@
 	$_POST['released'] = $myrow["released"];
 	$_POST['memo_'] = "";
 	if (can_process($myrow)) {
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		label_row(_("Work Order #:"), $selected_id);
 		label_row(_("Work Order Reference:"), $myrow["wo_ref"]);
 		date_row(_("Released Date") . ":", 'released_date');

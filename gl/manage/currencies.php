@@ -123,7 +123,7 @@
 	{
 		$company_currency = Banking::get_company_currency();
 		$result = GL_Currency::get_all(check_value('show_inactive'));
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(
 			_("Abbreviation"), _("Symbol"), _("Currency Name"),
 			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
@@ -167,7 +167,7 @@
 	function display_currency_edit($selected_id)
 	{
 		global $Mode;
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency

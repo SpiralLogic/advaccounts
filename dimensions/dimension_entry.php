@@ -141,7 +141,7 @@
 	}
 
 	Display::start_form();
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		$myrow = Dimensions::get($selected_id);
 		if (strlen($myrow[0]) == 0) {

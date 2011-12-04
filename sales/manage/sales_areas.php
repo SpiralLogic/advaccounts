@@ -63,7 +63,7 @@
 	}
 	$result = DB::query($sql, "could not get areas");
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  width=30%");
+	Display::start_table('tablestyle width30');
 	$th = array(_("Area Name"), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -80,7 +80,7 @@
 	Display::end_table();
 	echo '<br>';
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area

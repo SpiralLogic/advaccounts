@@ -52,7 +52,7 @@
 		}
 	}
 	Display::start_form();
-	Display::start_outer_table(Config::get('tables_style2'));
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	Display::table_section_title(_("Decimal Places"));
 	text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
@@ -74,7 +74,7 @@
 		$_POST['language'] = $_SESSION['Language']->code;
 	}
 	Display::table_section_title(_("Language"));
-	languages_list_row(_("Language:"), 'language', $_POST['language']);
+	UI_Languages::row(_("Language:"), 'language', $_POST['language']);
 	Display::table_section(2);
 	Display::table_section_title(_("Miscellaneous"));
 	check_row(_("Show hints for new users:"), 'show_hints', User::hints());

@@ -511,4 +511,34 @@ JS;
 			}
 			return $dec;
 		}
+		public static  function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(),
+																	 $editkey = false, $legacy = false) {
+			if (!$legacy) {
+				return Item::addSearchBox($name, array_merge(array(
+																													'submitonselect' => $submit_on_change, 'selected' => $selected_id, 'purchase' => true, 'cells' => true),
+					$opts));
+			}
+			$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
+					FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
+			if ($editkey) {
+				Display::set_editor('item', $name, $editkey);
+			}
+			return combo_input($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
+																																																	'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
+					 _("All Items") :
+					 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => false, 'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 10, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50),
+				$opts));
+		}
+
+
+		public static  function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false,
+																	$all = false, $editkey = false, $legacy = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
+																																											'submitonselect' => $submit_on_change, 'cells' => true, 'purchase' => false, 'show_inactive' => $all, 'editable' => $editkey),
+				$editkey, $legacy);
+		}
+
 	}

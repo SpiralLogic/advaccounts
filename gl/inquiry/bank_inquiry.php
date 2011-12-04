@@ -22,7 +22,7 @@
 	}
 
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	Bank_UI::accounts_cells(_("Account:"), 'bank_account', null);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -30);
@@ -47,7 +47,7 @@
 	Display::div_start('trans_tbl');
 	$act = Bank_Account::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(
 		_("Type"), _("#"), _("Reference"), _("Date"),
 		_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""

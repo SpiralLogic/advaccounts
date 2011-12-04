@@ -376,13 +376,13 @@
 		public static function header($order) {
 			$Ajax = Ajax::i();
 			$editable = ($order->order_no == 0);
-			Display::start_outer_table("width=90% " . Config::get('tables_style2'));
+			Display::start_outer_table('tablestyle2 width90');
 			Display::table_section(1);
 			if ($editable) {
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
 				}
-				supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+				Purch_UI::suppliers_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 			} else {
 				if (isset($_POST['supplier_id'])) {
 					Purch_Order::supplier_to_order($order, $_POST['supplier_id']);
@@ -445,7 +445,7 @@
 			$Ajax = Ajax::i();
 			Display::heading(_("Order Items"));
 			Display::div_start('items_table');
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), "");
 			if (count($order->line_items)) {
@@ -497,7 +497,7 @@
 
 
 		public static function summary(&$po, $is_self = false, $editable = false) {
-			Display::start_table(Config::get('tables_style2') . "  width=90%");
+			Display::start_table('tablestyle2 width90');
 			echo "<tr  class='tableheader2 top'><th colspan=4>";
 			Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 			echo "</td></tr>";

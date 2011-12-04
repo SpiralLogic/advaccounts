@@ -87,7 +87,7 @@
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
-	Display::start_table(Config::get('tables_style') . "  width=70%");
+	Display::start_table('tablestyle width70');
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
 	Display::table_header($th);

@@ -94,7 +94,7 @@
 
 	function inquiry_controls()
 	{
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		date_cells(_("As at:"), 'TransToDate');
 		submit_cells('Show', _("Show"), '', '', 'default');
 		Display::end_table();
@@ -117,7 +117,7 @@
 			$drilldown = 0;
 		} // Root level
 		Display::div_start('balance_tbl');
-		Display::start_table("width=30%  " . Config::get('tables_style'));
+		Display::start_table('tablestyle width30');
 		if (!$drilldown) //Root Level
 		{
 			$equityclose = $lclose = $calculateclose = 0.0;

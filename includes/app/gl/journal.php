@@ -17,7 +17,7 @@
 				$Ajax = Ajax::i();
 				$qes = GL_QuickEntry::has(QE_JOURNAL);
 				$new = $order->order_id == 0;
-				Display::start_outer_table(Config::get('tables_style2') . " width=90%");
+				Display::start_outer_table('tablestyle2 width90');
 				Display::table_section(1);
 				Display::start_row();
 				date_cells(_("Date:"), 'date_', '', $new);
@@ -34,7 +34,7 @@
 				if ($qes !== false) {
 					Display::table_section(3, "50%");
 					Display::start_row();
-					quick_entries_list_cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
+					GL_QuickEntry::select_cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
 					$qid = GL_QuickEntry::get(Display::get_post('person_id'));
 					if (list_updated('person_id')) {
 						unset($_POST['totamount']); // enable default
@@ -53,7 +53,7 @@
 				Display::heading($title);
 				$dim = DB_Company::get_pref('use_dimension');
 				Display::div_start('items_table');
-				Display::start_table(Config::get('tables_style') . " colspan=7 width=95%");
+				Display::start_table('tablestyle width95');
 				if ($dim == 2) {
 					$th = array(
 						_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), "");

@@ -134,7 +134,7 @@
 
 	function inquiry_controls()
 	{
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		//Compare Combo
@@ -181,7 +181,7 @@
 			$end = Dates::add_months($to, -12);
 		}
 		Display::div_start('pl_tbl');
-		Display::start_table("width=50%  " . Config::get('tables_style'));
+		Display::start_table('tablestyle width50');
 		$tableheader
 		 = "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>

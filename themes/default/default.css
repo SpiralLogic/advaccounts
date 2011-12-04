@@ -1226,10 +1226,40 @@ td.tableheader3 {
 	margin:     0 auto;
 }
 
+.width30 {
+	width: 30%
+}
+.width40 {
+	width: 40%
+}
+
 .width50 {
 	width: 50%
 }
 
+.width60 {
+	width: 60%
+}
+.width65 {
+	width: 65%
+}
+.width70 {
+	width: 70%
+}
+
+.width80 {
+	width: 80%
+}
+
+.width90 {
+	width: 90%
+}
+.width95 {
+	width:95%
+}
+.width100 {
+	width:100%
+}
 .alignright {
 	text-align: right;
 }
@@ -1240,6 +1270,9 @@ td.tableheader3 {
 
 .marginauto {
 	margin: 0 auto;
+}
+.red {
+	color:red
 }
 .top {
 	vertical-align: top;
@@ -1267,7 +1300,21 @@ td.tableheader3 {
 .hidden {
 	display: none;
 }
-
+.nopad {
+	padding:0;
+}
+.pad10 {
+	padding:10px;
+}
+.pad3 {
+	padding:3px;
+}
+.pad5 {
+	padding:5px;
+}
+.pad6 {
+	padding:6px;
+}
 .floatright {
 	float: right;
 }

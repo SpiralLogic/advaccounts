@@ -89,7 +89,7 @@
 	{
 		global $selected_id;
 		$Ajax = Ajax::i();
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate
 			$myrow = GL_ExchangeRate::get($selected_id);

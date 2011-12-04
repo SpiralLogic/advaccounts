@@ -161,7 +161,7 @@
 
 	Display::start_form();
 	Inv_Adjustment::header($_SESSION['adj_items']);
-	Display::start_outer_table(Config::get('tables_style') . "  width=80%", 10);
+	Display::start_outer_table('tablestyle width80 pad10');
 	Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
 	Inv_Adjustment::option_controls();
 	Display::end_outer_table(1, false);

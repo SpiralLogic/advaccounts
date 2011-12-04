@@ -21,7 +21,7 @@
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 	date_cells(_("from:"), 'TransAfterDate', '', null, -30);

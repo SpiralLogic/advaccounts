@@ -22,12 +22,12 @@
 	$myrow = Sales_Trans::get($trans_id, ST_SALESINVOICE);
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
-	Display::start_table(Config::get('tables_style2') . "  width=90%");
+	Display::start_table('tablestyle2 width90');
 	echo "<tr class='tableheader2 top'><th colspan=6>";
 	Display::heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 	echo "</td></tr>";
 	echo "<tr class='top'><td colspan=3>";
-	Display::start_table(Config::get('tables_style') . "  width=100% ");
+	Display::start_table('tablestyle width100');
 	label_row(_("Charge To"), $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "class='label' nowrap", "colspan=5");
 	Display::start_row();
 	label_cells(_("Charge Branch"), $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "class='label' nowrap",
@@ -57,7 +57,7 @@
 	echo "</td></tr>";
 	Display::end_table(1); // outer table
 	$result = Sales_Debtor_Trans::get(ST_SALESINVOICE, $trans_id);
-	Display::start_table(Config::get('tables_style') . "  width=95%");
+	Display::start_table('tablestyle width95');
 	if (DB::num_rows() > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));

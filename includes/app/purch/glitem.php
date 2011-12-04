@@ -103,13 +103,13 @@
 				} else {
 					$heading = _("GL Items for this Credit Note");
 				}
-				Display::start_outer_table(Config::get('tables_style2') . "  width=90%");
+				Display::start_outer_table('tablestyle2 width90');
 				if ($mode == 1) {
 					$qes = GL_QuickEntry::has(QE_SUPPINV);
 					if ($qes !== false) {
 						echo "<div style='float:right;'>";
 						echo _("Quick Entry:") . "&nbsp;";
-						echo quick_entries_list('qid', null, QE_SUPPINV, true);
+						echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
 						$qid = GL_QuickEntry::get(Display::get_post('qid'));
 						if (list_updated('qid')) {
 							unset($_POST['totamount']); // enable default
@@ -126,7 +126,7 @@
 				Display::heading($heading);
 				Display::end_outer_table(0, false);
 				Display::div_start('gl_items');
-				Display::start_table(Config::get('tables_style') . "  width=80%");
+				Display::start_table('tablestyle width80');
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim == 2) {
 					$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));

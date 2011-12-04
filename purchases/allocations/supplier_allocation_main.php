@@ -20,7 +20,7 @@
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
+	echo Purch_UI::suppliers('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</div><br><br>";

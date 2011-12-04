@@ -21,7 +21,7 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	ref_cells(_("Ref"), 'reference', '', null, '', true);
 	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, true);
@@ -46,7 +46,7 @@
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			Display::start_table("width=90%  " . Config::get('tables_style'));
+			Display::start_table('tablestyle width90');
 			$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 			Display::table_header($th);
 			Display::start_row();

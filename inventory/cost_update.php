@@ -74,7 +74,7 @@
 	hidden("OldMaterialCost", $myrow["material_cost"]);
 	hidden("OldLabourCost", $myrow["labour_cost"]);
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	$dec1 = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
 	$_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);

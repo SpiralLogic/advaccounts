@@ -90,7 +90,7 @@
 	$dflt_cat = $result['category_id'];
 	$result = Item_Code::get_all($_POST['stock_id']);
 	Display::div_start('code_table');
-	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::start_table('tablestyle width60');
 	$th = array(
 		_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""
@@ -132,7 +132,7 @@
 		$_POST['category_id'] = $dflt_cat;
 	}
 	echo "<br>";
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	hidden('code_id', $selected_id);
 	text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
 	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);

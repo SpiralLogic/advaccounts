@@ -186,9 +186,9 @@
 		{
 			Display::start_form();
 			hidden('cart_id');
-			Display::start_table(Config::get('tables_style2') . " width=90%", 5);
+			Display::start_table('tablestyle2 width90 pad5');
 			echo "<tr><td>"; // outer table
-			Display::start_table(Config::get('tables_style') . "  width=100%");
+			Display::start_table('tablestyle width100');
 			Display::start_row();
 			label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 			label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -216,14 +216,14 @@
 			Display::end_row();
 			Display::end_table();
 			echo "</td><td>"; // outer table
-			Display::start_table(Config::get('tables_style') . "  width=100%");
+			Display::start_table('tablestyle width100');
 			label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 			date_row(_("Credit Note Date"), 'CreditDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'");
 			Display::end_table();
 			echo "</td></tr>";
 			Display::end_table(1); // outer table
 			Display::div_start('credit_items');
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
 			Display::table_header($th);
@@ -251,16 +251,16 @@
 			}
 			$colspan = 7;
 			Display::start_row();
-			label_cell(_("Credit Shipping Cost"), "colspan=$colspan class=right");
+			label_cell(_("Credit Shipping Cost"), "colspan=$colspan style='text-align:right;'");
 			small_amount_cells(null, "ChargeFreightCost", Num::price_format(Display::get_post('ChargeFreightCost', 0)));
 			Display::end_row();
 			$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 			$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class=right", "class=right");
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
 			$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 			$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 			$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class=right", "class=right");
+			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
 			Display::end_table();
 			Display::div_end();
 		}
@@ -274,7 +274,7 @@
 				$Ajax->activate('options');
 			}
 			Display::div_start('options');
-			Display::start_table(Config::get('tables_style2'));
+			Display::start_table('tablestyle2');
 			credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 			if ($_POST['CreditType'] == "Return") {
 				/*if the credit note is a return of goods then need to know which location to receive them into */

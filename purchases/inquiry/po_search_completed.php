@@ -39,16 +39,16 @@
 
 	Display::start_form();
 	if (Input::request('frame')) {
-		Display::start_table("class='tablestyle_noborder' style='display:none;'");
+		Display::start_table('tablestyle_noborder hidden');
 	} else {
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 	}
 	Display::start_row();
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
 	locations_list_cells(_("into location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
+	Item::cells(_("for item:"), 'SelectStockFromList', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	Display::end_row();
 	Display::end_table();

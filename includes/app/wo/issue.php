@@ -93,7 +93,7 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Issues for this Order."), 0, 1);
 			} else {
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(_("#"), _("Reference"), _("Date"));
 				Display::table_header($th);
 				$k = 0; //row colour counter
@@ -131,7 +131,7 @@
 		public static function display_items($title, &$order) {
 			Display::heading($title);
 			Display::div_start('items_table');
-			Display::start_table(Config::get('tables_style') . "  width=90% colspan=7");
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), '');
 			if (count($order->line_items)) {

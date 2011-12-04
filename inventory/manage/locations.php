@@ -132,7 +132,7 @@
 	$result = DB::query($sql, "could not query locations");
 	;
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -154,7 +154,7 @@
 	inactive_control_row($th);
 	Display::end_table();
 	echo '<br>';
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		//editing an existing Location

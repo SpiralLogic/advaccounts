@@ -41,8 +41,8 @@
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	Display::div_start('_page_body');
 	Display::br(2);
-	Display::start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	Display::start_table("class='login'");
+	Display::start_form(false, $_SESSION['timeout']['uri'], "loginform");
+	Display::start_table('login');
 	Display::start_row();
 	echo "<td class='center' colspan=2>";
 	if (!$login_timeout) { // ADV logo

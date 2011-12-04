@@ -20,7 +20,7 @@
 		{
 			global $systypes_array;
 			$trans_name = $systypes_array[$_GET['type_id']];
-			Display::start_table(Config::get('tables_style') . "  width=95%");
+			Display::start_table('tablestyle width95');
 			$th = array(
 				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
 			Display::table_header($th);
@@ -64,7 +64,7 @@
 		}
 		if (!$heading_shown) {
 			display_gl_heading($myrow);
-			Display::start_table(Config::get('tables_style') . "  width=95%");
+			Display::start_table('tablestyle width95');
 			Display::table_header($th);
 			$heading_shown = true;
 		}

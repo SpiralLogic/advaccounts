@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Purch_Payment
+	class Purch_Payment  implements IVoidable
 	{
 		public static function add($supplier_id, $date_, $bank_account,
 			$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0)
@@ -66,7 +66,7 @@
 			}
 
 
-		public static function void($type, $type_no)
+		public static function  void($type, $type_no)
 			{
 				DB::begin_transaction();
 				Bank_Trans::void($type, $type_no, true);

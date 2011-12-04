@@ -37,14 +37,14 @@
 	}
 
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
+	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	//stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
+	//Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	Display::end_row();
 	Display::end_table();

@@ -29,7 +29,7 @@
 	echo "<div class='center'>";
 	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
@@ -64,7 +64,7 @@
 		if ($show_currencies) {
 			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
-		Display::start_table(Config::get('tables_style') . "  width=90%");
+		Display::start_table('tablestyle width90');
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(

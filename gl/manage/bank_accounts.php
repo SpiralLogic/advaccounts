@@ -88,7 +88,7 @@
 	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  style='width:80%'");
+	Display::start_table('tablestyle width80');
 	$th = array(
 		_("Account Name"), _("Type"), _("Currency"), _("GL Account"),
 		_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
@@ -120,7 +120,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 	$is_editing = $selected_id != -1;
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
 			$myrow = Bank_Account::get($selected_id);

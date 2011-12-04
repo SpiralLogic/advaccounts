@@ -161,9 +161,9 @@
 	}
 
 	Display::start_form();
-	Display::start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
+	Display::start_outer_table('tablestyle2 width60 pad5');
 	Display::table_section(1);
-	supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
+	Purch_UI::suppliers_row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
@@ -186,7 +186,7 @@
 		Gl_Allocation::show_allocatable(false);
 		Display::div_end();
 	}
-	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::start_table('tablestyle width60');
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

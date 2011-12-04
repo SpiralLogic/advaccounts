@@ -64,7 +64,7 @@
 	}
 	/* Always show the list of accounts */
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  style='width:80%'");
+	Display::start_table('tablestyle width80');
 	$sql = "SELECT * FROM payment_methods";
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !inactive";
@@ -87,7 +87,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 	$is_editing = $selected_id != -1;
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
 			$myrow = GL_PaymentMethod::get($selected_id);

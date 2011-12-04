@@ -85,7 +85,7 @@
 	$result = Tax_Types::get_all(check_value('show_inactive'));
 	Display::start_form();
 	Errors::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(
 		_("Description"), _("Default Rate (%)"),
 		_("Sales GL Account"), _("Purchasing GL Account"), "", ""
@@ -108,7 +108,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code

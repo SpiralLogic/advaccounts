@@ -114,7 +114,7 @@
 				}
 			}
 			/* show a table of records returned by the sql */
-			Display::start_table(Config::get('tables_style') . "  width=$pager->width");
+			Display::start_table('tablestyle width'.$pager->width);
 			Display::table_header($headers);
 			if ($pager->header_fun) { // if set header handler
 				Display::start_row("class='{$pager->header_class}'");

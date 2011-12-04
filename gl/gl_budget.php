@@ -97,7 +97,7 @@
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 
 			$dim = DB_Company::get_pref('use_dimension');
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
 		GL_UI::all_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1'])) {
@@ -120,7 +120,7 @@
 		submit_row('submit', _("Get"), true, '', '', true);
 		Display::end_table(1);
 		Display::div_start('budget_tbl');
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		$showdims = (($dim == 1 && $_POST['dim1'] == 0)
 		 || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 		if ($showdims) {

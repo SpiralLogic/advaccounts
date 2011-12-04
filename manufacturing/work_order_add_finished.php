@@ -127,7 +127,7 @@
 		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
 			$dec);
 	}
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	Display::br();
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
 	if (!isset($_POST['ProductionType'])) {

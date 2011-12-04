@@ -224,7 +224,7 @@
 		public static function header($order)
 			{
 				$Ajax = Ajax::i();
-				Display::start_outer_table("width=90%  " . Config::get('tables_style'));
+				Display::start_outer_table('tablestyle width90');
 				Display::table_section(1);
 				$customer_error = "";
 				$change_prices = 0;
@@ -345,7 +345,7 @@
 			{
 				Display::heading($title);
 				Display::div_start('items_table');
-				Display::start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table('tablestyle width90');
 				$th = array(
 					_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"), '');
 				if (count($order->line_items)) {
@@ -379,19 +379,19 @@
 				}
 				$colspan = 6;
 				$display_sub_total = Num::price_format($subtotal);
-				label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class=right", "class=right", 2);
+				label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", 2);
 				if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
 					$_POST['ChargeFreightCost'] = 0;
 				}
 				Display::start_row();
-				label_cell(_("Shipping"), "colspan=$colspan class=right");
+				label_cell(_("Shipping"), "colspan=$colspan style='text-align:right;'");
 				small_amount_cells(null, 'ChargeFreightCost', Num::price_format(Display::get_post('ChargeFreightCost', 0)));
 				label_cell('', 'colspan=2');
 				Display::end_row();
 				$taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 				$tax_total = Taxes::edit_items($taxes, $colspan, $order->tax_included, 2);
 				$display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
-				label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class=right", "class='amount'", 2);
+				label_row(_("Credit Note Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class='amount'", 2);
 				Display::end_table();
 				Display::div_end();
 			}
@@ -413,7 +413,7 @@
 					label_cell($order->line_items[$id]->description, "nowrap");
 					$Ajax->activate('items_table');
 				} else {
-					sales_items_list_cells(null, 'stock_id', null, false, false, array('description' => ''));
+					Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
 					if (list_updated('stock_id')) {
 						$Ajax->activate('price');
 						$Ajax->activate('qty');
@@ -454,7 +454,7 @@
 					$Ajax->activate('options');
 				}
 				Display::div_start('options');
-				Display::start_table(Config::get('tables_style2'));
+				Display::start_table('tablestyle2');
 				credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 				if ($_POST['CreditType'] == "Return") {
 					/*if the credit note is a return of goods then need to know which location to receive them into */

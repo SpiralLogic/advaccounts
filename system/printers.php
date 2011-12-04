@@ -66,7 +66,7 @@
 
 	$result = Printer::get_all();
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	Display::table_header($th);
 	$k = 0; //row colour counter
@@ -86,7 +86,7 @@
 	echo '<br>';
 
 	Display::start_form();
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_printer($selected_id);

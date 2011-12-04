@@ -166,7 +166,7 @@
 	}
 
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	security_roles_list_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
 	$new_role = Display::get_post('role') == '';
@@ -183,12 +183,12 @@
 	}
 
 	Display::div_start('details');
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	text_row(_("Role name:"), 'name', null, 20, 22);
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
 	Display::end_table(1);
-	Display::start_table(Config::get('tables_style') . " width=40%");
+	Display::start_table('tablestyle width40');
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
 	foreach (

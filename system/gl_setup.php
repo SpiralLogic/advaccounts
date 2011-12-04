@@ -64,7 +64,7 @@
 
 	Display::start_form();
 	//Display::start_outer_table("class='tablestyle'");
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	$myrow = DB_Company::get_prefs();
 	$_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];

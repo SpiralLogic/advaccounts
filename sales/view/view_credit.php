@@ -22,23 +22,23 @@
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
-	Display::start_table(Config::get('tables_style2') . " width=95%");
+	Display::start_table('tablestyle2 width95');
 	echo "<tr class='top'><td>"; // outer table
 	/*Now the customer charged to details in a sub table*/
-	Display::start_table(Config::get('tables_style') . "  width=100%");
+	Display::start_table('tablestyle width100');
 	$th = array(_("Customer"));
 	Display::table_header($th);
 	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
 	Display::end_table();
 	/*end of the small table showing charge to account details */
 	echo "</td><td>"; // outer table
-	Display::start_table(Config::get('tables_style') . "  width=100%");
+	Display::start_table('tablestyle width100');
 	$th = array(_("Branch"));
 	Display::table_header($th);
 	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
 	Display::end_table();
 	echo "</td><td>"; // outer table
-	Display::start_table(Config::get('tables_style') . "  width=100%");
+	Display::start_table('tablestyle width100');
 	Display::start_row();
 	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
@@ -54,7 +54,7 @@
 	Display::end_table(1); // outer table
 	$sub_total = 0;
 	$result = Sales_Debtor_Trans::get(ST_CUSTCREDIT, $trans_id);
-	Display::start_table(Config::get('tables_style') . "  width=95%");
+	Display::start_table('tablestyle width95');
 	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));

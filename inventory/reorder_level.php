@@ -36,7 +36,7 @@
 	Display::div_end();
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	Display::div_start('reorders');
-	Display::start_table(Config::get('tables_style') . "  width=30%");
+	Display::start_table('tablestyle width30');
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
 	Display::table_header($th);
 	$j = 1;

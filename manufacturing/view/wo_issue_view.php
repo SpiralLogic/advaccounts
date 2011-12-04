@@ -22,7 +22,7 @@
 		{
 			$myrow = WO_Issue::get($issue_no);
 			Display::br(1);
-			Display::start_table(Config::get('tables_style'));
+			Display::start_table('tablestyle');
 			$th = array(
 				_("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
 			Display::table_header($th);
@@ -47,7 +47,7 @@
 			if (DB::num_rows($result) == 0) {
 				Errors::warning(_("There are no items for this issue."));
 			} else {
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(_("Component"), _("Quantity"), _("Units"));
 				Display::table_header($th);
 				$j = 1;

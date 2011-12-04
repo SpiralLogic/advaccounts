@@ -354,7 +354,7 @@
 	Purch_Order::header($_SESSION['PO']);
 	echo "<br>";
 	Purch_Order::display_items($_SESSION['PO']);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 	Display::end_table(1);
 	Display::div_start('controls', 'items_table');

@@ -68,14 +68,14 @@
 		$Ajax->activate('deliveries_tbl');
 	}
 
-	Display::start_form(false, false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
+	Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 	Display::end_row();

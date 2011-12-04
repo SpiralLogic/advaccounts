@@ -70,7 +70,7 @@
 	{
 		$result = Manufacturing::get_bom($selected_parent);
 		Display::div_start('bom');
-		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::start_table('tablestyle width60');
 		$th = array(
 			_("Code"), _("Description"), _("Location"),
 			_("Work Centre"), _("Quantity"), _("Units"), '', ''
@@ -160,8 +160,8 @@
 	}
 
 	Display::start_form();
-	Display::start_form(false, true);
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_form(false);
+	Display::start_table('tablestyle_noborder');
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
@@ -180,7 +180,7 @@
 		display_bom_items($selected_parent);
 
 		echo '<br>';
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				//editing a selected component from the link to the line item

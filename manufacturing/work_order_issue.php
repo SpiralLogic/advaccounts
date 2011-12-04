@@ -145,7 +145,7 @@
 	WO_Cost::display($_SESSION['issue_items']->order_id);
 	echo "<br>";
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  width=90%", 10);
+	Display::start_table('tablesstyle width90 pad10');
 	echo "<tr><td>";
 	WO_Issue::display_items(_("Items to Issue"), $_SESSION['issue_items']);
 	WO_Issue::option_controls();

@@ -88,7 +88,7 @@
 	}
 	$result = DB::query($sql, "could not get sales persons");
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+	Display::start_table('tablestyle width60');
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -132,7 +132,7 @@
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
 	}
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);

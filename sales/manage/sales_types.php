@@ -73,7 +73,7 @@
 
 	$result = Sales_Type::get_all(check_value('show_inactive'));
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  width=30%");
+	Display::start_table('tablestyle width30');
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -107,7 +107,7 @@
 	if (!isset($_POST['base'])) {
 		$_POST['base'] = 0;
 	}
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Type::get($selected_id);

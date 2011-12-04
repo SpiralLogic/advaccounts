@@ -27,7 +27,7 @@
 		echo _("The dimension number sent is not valid.");
 		exit;
 	}
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 	Display::table_header($th);
 	Display::start_row();
@@ -44,7 +44,7 @@
 		Errors::warning(_("This dimension is closed."));
 	}
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	if (!isset($_POST['TransFromDate'])) {
 		$_POST['TransFromDate'] = Dates::begin_fiscalyear();

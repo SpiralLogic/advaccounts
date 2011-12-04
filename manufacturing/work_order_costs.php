@@ -81,7 +81,7 @@
 	Display::start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	Display::br();
 	yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
 	date_row(_("Date:"), 'date_');

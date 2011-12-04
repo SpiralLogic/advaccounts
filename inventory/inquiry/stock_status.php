@@ -27,7 +27,7 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<div class='center'> ";
-	echo stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
+	echo Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<br>";
 	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
@@ -40,7 +40,7 @@
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
 	} else {

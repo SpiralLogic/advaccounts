@@ -52,7 +52,7 @@
 	{
 		$dim = DB_Company::get_pref('use_dimension');
 		Display::start_form();
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
@@ -99,7 +99,7 @@
 		}
 		// Only show balances if an account is specified AND we're not filtering by amounts
 		$show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
 			$account_col = array(_("Account"));

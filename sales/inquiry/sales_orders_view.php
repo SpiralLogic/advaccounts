@@ -190,7 +190,7 @@
 		$Ajax->activate('orders_tbl');
 	}
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	Debtor_UI::select_cells(_("Customer: "), 'customer_id', null, true);
 	ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
@@ -200,7 +200,7 @@
 		date_cells(_("To:"), 'OrdersToDate', '', null, 1);
 	}
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+	Item::cells(_("Item:"), 'SelectStockFromList', null, true);
 	if ($trans_type == ST_SALESQUOTE) {
 		check_cells(_("Show All:"), 'show_all');
 	}

@@ -179,7 +179,7 @@
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(
 			_("Company"), _("Database Host"), _("Database User"),
 			_("Database Name"), _("Table Pref"), _("Default"), "", ""
@@ -247,7 +247,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != -1) {
 			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];

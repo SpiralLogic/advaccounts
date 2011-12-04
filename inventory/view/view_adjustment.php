@@ -24,7 +24,7 @@
 	{
 		if (!$header_shown) {
 			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
-			Display::start_table(Config::get('tables_style2') . " width=90%");
+			Display::start_table('tablestyle2 width90');
 			Display::start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
 			label_cells(_("Reference"), $adjustment['reference'], "class='tableheader2'", "colspan=6");
@@ -35,7 +35,7 @@
 			Display::end_table();
 			$header_shown = true;
 			echo "<br>";
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("Item"), _("Description"), _("Quantity"),
 				_("Units"), _("Unit Cost")

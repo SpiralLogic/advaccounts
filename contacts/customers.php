@@ -89,7 +89,7 @@
 					)
 	);
 	HTML::td()->tr->table->div;
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	Display::table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -144,7 +144,7 @@
 		array('acc_state', $customer->accounts->state),array('acc_postcode', $customer->accounts->postcode));
 	Display::end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	Display::table_section_title(_("Accounts Details:"), 2);
@@ -218,7 +218,7 @@
 	text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 	HTML::td()->tr->table->script->div->div;
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	Display::table_section_title(_("Sales"));

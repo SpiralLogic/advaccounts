@@ -248,7 +248,7 @@
 
 	Display::start_form();
 	GL_Journal::header($_SESSION['journal_items']);
-	Display::start_table(Config::get('tables_style2') . " width=90%", 10);
+	Display::start_table('tables_style2 width90 pad10');
 	Display::start_row();
 	echo "<td>";
 	GL_Journal::items(_("Rows"), $_SESSION['journal_items']);

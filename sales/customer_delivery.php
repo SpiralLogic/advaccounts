@@ -252,9 +252,9 @@
 
 	Display::start_form();
 	hidden('cart_id');
-	Display::start_table(Config::get('tables_style2') . " width=90%", 5);
+	Display::start_table('tablestyle2 width90 pad5');
 	echo "<tr><td>"; // outer table
-	Display::start_table(Config::get('tables_style') . "  width=100%");
+	Display::start_table('tablestyle width100');
 	Display::start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='label'");
 	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='label'");
@@ -294,7 +294,7 @@
 	Display::end_row();
 	Display::end_table();
 	echo "</td><td>"; // outer table
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 	}
@@ -313,7 +313,7 @@
 	}
 	Display::heading(_("Delivery Items"));
 	Display::div_start('Items');
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	$new = $_SESSION['Items']->trans_no == 0;
 	$th = array(
 		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") :
@@ -359,21 +359,21 @@
 	$_POST['ChargeFreightCost'] = Display::get_post('ChargeFreightCost', Num::price_format($_SESSION['Items']->freight_cost));
 	$colspan = 9;
 	Display::start_row();
-	label_cell(_("Shipping Cost"), "colspan=$colspan class=right");
+	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
 	small_amount_cells(null, 'ChargeFreightCost', $_SESSION['Items']->freight_cost);
 	Display::end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class=right", "class=right");
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Amount Total"), $display_total, "colspan=$colspan class=right", "class=right");
+	label_row(_("Amount Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
 	Display::end_table(1);
 	if ($has_marked) {
 		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	Display::end_table(1);

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Purch_Invoice
+	class Purch_Invoice implements IVoidable
 	{
 
 		public static function get_supplier_to_trans($supp_trans, $supplier_id)
@@ -559,7 +559,7 @@
 				if (!isset($_POST['tran_date'])) {
 					Purch_Invoice::copy_from_trans($supp_trans);
 				}
-				Display::start_outer_table("width=60% " . Config::get('tables_style2'));
+				Display::start_outer_table('tablestyle2 width60');
 				Display::div_start('summary');
 				Display::start_table();
 
@@ -608,7 +608,7 @@
 									if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 										$_POST['supplier_id'] = Session::i()->supplier_id;
 									}
-									supplier_list_cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+									Purch_UI::suppliers_cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 				JS::set_focus('supplier_id');
 				}
 								if ($supp_trans->supplier_id != $_POST['supplier_id']) {
@@ -647,27 +647,27 @@
 				Purch_Invoice::copy_to_trans($supp_trans);
 				$dim = DB_Company::get_pref('use_dimension');
 				$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-				Display::start_table(Config::get('tables_style2') . " width=90%");
-				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan class=right", "class=right");
+				Display::start_table('tablestyle2 width90');
+				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan style='text-align:right;'", "class=right");
 				$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 				$tax_total = Taxes::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
-				label_cell(_("Total Correction"), "colspan=$colspan class=right style='width:90%'");
+				label_cell(_("Total Correction"), "colspan=$colspan style='text-align:right;' style='width:90%'");
 				small_amount_cells(null, 'ChgTotal', Num::price_format(Display::get_post('ChgTotal'), 2));
 				$total = $supp_trans->ov_amount + $tax_total + Display::get_post('ChgTotal');
 				if ($supp_trans->is_invoice) {
 					label_row(
-						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan class=right style='font-weight:bold;'",
+						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan style='text-align:right;' style='font-weight:bold;'",
 					 "class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
 					);
 				} else {
 					label_row(
 						_("Credit Note Total"), Num::price_format($total),
-						"colspan=$colspan class=right style='font-weight:bold;color:red;'",
+						"colspan=$colspan style='text-align:right;' style='font-weight:bold;color:red;'",
 					 "nowrap class=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'"
 					);
 				}
 				Display::end_table(1);
-				Display::start_table(Config::get('tables_style2'));
+				Display::start_table('tablestyle2');
 				textarea_row(_("Memo:"), "Comments", null, 50, 3);
 				Display::end_table(1);
 			}

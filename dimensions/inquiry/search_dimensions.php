@@ -46,8 +46,8 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	Display::start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));

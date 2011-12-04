@@ -264,7 +264,7 @@
 	}
 
 
-	Display::start_table(Config::get('tables_style') . " width=90%");
+	Display::start_table('tablestyle width90');
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 	Display::table_header($th);
 	$k = 0; //row colour counter

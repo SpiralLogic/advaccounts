@@ -6,9 +6,7 @@
 	 * Time: 1:37 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-
-	$GLOBALS['ajax_divs']= array();
-
+	$GLOBALS['ajax_divs'] = array();
 	class Display
 	{
 		public static function heading($msg) {
@@ -16,19 +14,15 @@
 		}
 
 		public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
-			for ($i = 0; $i < $br; $i++)
-			{
+			for ($i = 0; $i < $br; $i++) {
 				echo "<br>";
 			}
 			if ($extra != "") {
 				echo "<div class='center'><span $extra>$msg</span></div>\n";
-			}
-			else
-			{
+			} else {
 				echo "<div class='center'><span class='note_msg'>$msg</span></div>\n";
 			}
-			for ($i = 0; $i < $br2; $i++)
-			{
+			for ($i = 0; $i < $br2; $i++) {
 				echo "<br>";
 			}
 		}
@@ -47,15 +41,12 @@
 			if ($cond) {
 				if ($msg) {
 					$str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
-				}
-				else {
+				} else {
 					$str = '';
 				}
 				$str .= '<table  >';
 				$trace = debug_backtrace();
-				foreach (
-					$trace as $trn => $tr
-				) {
+				foreach ($trace as $trn => $tr) {
 					if (!$trn) {
 						continue;
 					}
@@ -65,8 +56,7 @@
 					if (isset($tr['type'])) {
 						if ($tr['type'] == '::') {
 							$str .= $tr['class'] . '::';
-						}
-						else {
+						} else {
 							if ($tr['type'] == '->') {
 								$str .= '(' . $tr['class'] . ' Object)' . '->';
 							}
@@ -78,8 +68,7 @@
 						}
 						if (is_array($tr['args'][$n])) {
 							$tr['args'][$n] = "(Array[" . count($tr['args'][$n]) . "])";
-						}
-						else {
+						} else {
 							$tr['args'][$n] = "'" . $tr['args'][$n] . "'";
 						}
 					}
@@ -96,7 +85,7 @@
 			if ($void_entry == null) {
 				return false;
 			}
-			Display::start_table("width=50%  " . Config::get('tables_style'));
+			Display::start_table('tablestyle width50');
 			echo "<tr><td class=center><font color=red>$label</font><br>";
 			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
@@ -112,8 +101,7 @@
 			if ($value >= 0) {
 				amount_cell($value);
 				label_cell("");
-			}
-			elseif ($value < 0) {
+			} elseif ($value < 0) {
 				label_cell("");
 				amount_cell(abs($value));
 			}
@@ -123,8 +111,7 @@
 			return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 		}
 
-		public static function start_form($multi = false, $dummy = false, $action = "", $name = "") {
-			// $dummy - leaved for compatibility with 2.0 API
+		public static function start_form($multi = false, $action = "", $name = "") {
 			if ($name != "") {
 				$name = "name='$name'";
 			}
@@ -146,10 +133,10 @@
 			echo "</form>\n";
 		}
 
-		public static function start_table($extra = "", $padding = '2', $spacing = '0') {
+		public static function start_table($class = "") {
 			echo "<div class='center'><table";
-			if ($extra != "") {
-				echo " $extra";
+			if ($class != "") {
+				echo " class='$class'";
 			}
 			echo " >\n";
 		}
@@ -165,7 +152,7 @@
 			if ($br) {
 				Display::br();
 			}
-			Display::start_table($extra, $padding, $spacing);
+			Display::start_table($extra .' pad'. $padding. ' margin'.$spacing);
 			echo "<tr class='top'><td>\n"; // outer table
 		}
 
@@ -208,10 +195,7 @@
 			$access = '';
 			$slices = array();
 			if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-				$label = $clean
-				 ? $slices[1] . $slices[2] . $slices[3]
-				 :
-				 $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
+				$label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
 				$access = " accesskey='" . strtoupper($slices[2]) . "'";
 			}
 			$label = str_replace('&&', '&', $label);
@@ -300,8 +284,7 @@
 		}
 
 		public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0,
-				1);
+			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
 		}
 
 		public static function link_params($target, $label, $link_params = '', $center = true, $params = '') {
@@ -378,8 +361,7 @@
 		public static function table_header($labels, $params = '') {
 			echo '<thead>';
 			$labels = (array)$labels;
-			foreach ($labels as $label)
-			{
+			foreach ($labels as $label) {
 				labelheader_cell($label, $params);
 			}
 			echo '</thead>';
@@ -398,8 +380,7 @@
 		}
 
 		public static function br($num = 1) {
-			for ($i = 0; $i < $num; $i++)
-			{
+			for ($i = 0; $i < $num; $i++) {
 				echo "<br>";
 			}
 		}
@@ -448,22 +429,10 @@
 			}
 			$popup_editors = array(
 				'customer' => array(
-					'/sales/manage/customers.php?debtor_no=',
-					113, _("Customers")
-				),
-				'branch' => array(
-					'/sales/manage/customer_branches.php?SelectedBranch=',
-					114, _("Branches")
-				),
-				'supplier' => array(
-					'/purchases/manage/suppliers.php?supplier_id=',
-					113, _("Suppliers")
-				),
-				'item' => array(
-					'/inventory/manage/items.php?stock_id=',
-					115, _("Items")
-				)
-			);
+					'/sales/manage/customers.php?debtor_no=', 113, _("Customers")), 'branch' => array(
+					'/sales/manage/customer_branches.php?SelectedBranch=', 114, _("Branches")), 'supplier' => array(
+					'/purchases/manage/suppliers.php?supplier_id=', 113, _("Suppliers")), 'item' => array(
+					'/inventory/manage/items.php?stock_id=', 115, _("Items")));
 			$key = $caller === true ? $popup_editors[$type][1] : $caller;
 			$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
 			/*	$help = 'F' . ($key - 111) . ' - ';

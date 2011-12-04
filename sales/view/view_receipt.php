@@ -23,7 +23,7 @@
 	}
 	$receipt = Sales_Trans::get($trans_id, $trans_type);
 	echo "<br>";
-	Display::start_table(Config::get('tables_style2') . "  width=90%");
+	Display::start_table('tablestyle2 width90');
 	echo "<tr class='tableheader2 top'><th colspan=6>";
 	if ($trans_type == ST_CUSTPAYMENT) {
 		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));

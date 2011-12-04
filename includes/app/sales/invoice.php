@@ -12,7 +12,7 @@
 
 	//	Add or update Sales Invoice
 	//
-	class Sales_Invoice {
+	class Sales_Invoice  implements IVoidable {
 		public static function add(&$invoice) {
 		$trans_no = $invoice->trans_no;
 		if (is_array($trans_no)) {

@@ -174,7 +174,7 @@
 
 
 	Display::start_form();
-	Display::start_outer_table(Config::get('tables_style2') . " style='width:60%'", 5);
+	Display::start_outer_table('tablestyle2 width60 pad5');
 	Display::table_section(1);
 	Debtor_UI::select_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
@@ -211,7 +211,7 @@
 			Gl_Allocation::show_allocatable(false);
 			Display::div_end();
 		}
-		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::start_table('tablestyle width60');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');
 		amount_row(_("Amount:"), 'amount');

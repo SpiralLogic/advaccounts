@@ -22,7 +22,7 @@
 		{
 			$myrow = WO_Produce::get($prod_id);
 			Display::br(1);
-			Display::start_table(Config::get('tables_style'));
+			Display::start_table('tablestyle');
 			$th = array(
 				_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
 			Display::table_header($th);

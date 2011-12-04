@@ -255,11 +255,11 @@
 							)
 						);
 					} // FIX allitems numeric!
-						//						return supplier_list($name, null, _("No Supplier Filter"));
+						//						return Purch_UI::suppliers($name, null, _("No Supplier Filter"));
 					else {
 						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', null);
 					}
-				//						return supplier_list($name);
+				//						return Purch_UI::suppliers($name);
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");

@@ -20,9 +20,9 @@
 	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	Purch_Order::summary($purchase_order, true);
-	Display::start_table(Config::get('tables_style') . "  width=90%", 6);
+	Display::start_table('tablestyle width90 pad6');
 	Display::heading(_("Line Details"));
-	Display::start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
+	Display::start_table('tablestyle width100');
 	$th = array(
 		_("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"),
 		_("Received"), _("Invoiced"));
@@ -66,7 +66,7 @@
 	if (DB::num_rows($grns_result) > 0) {
 		echo "</td><td class='top'>"; // outer table
 		Display::heading(_("Deliveries"));
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		Display::table_header($th);
 		while ($myrow = DB::fetch($grns_result)) {
@@ -83,7 +83,7 @@
 	if (DB::num_rows($invoice_result) > 0) {
 		echo "</td><td class='top'>"; // outer table
 		Display::heading(_("Invoices/Credits"));
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("#"), _("Date"), _("Total"));
 		Display::table_header($th);
 		while ($myrow = DB::fetch($invoice_result)) {

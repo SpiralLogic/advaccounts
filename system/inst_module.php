@@ -176,7 +176,7 @@
 
 	function display_extensions()
 	{
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(
 			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
 			_("Access extensions"), "", ""
@@ -215,7 +215,7 @@
 
 	function company_extensions($id)
 	{
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 		// get all available extensions and display
 		// with current status stored in company directory.
@@ -264,7 +264,7 @@
 	{
 		global $Mode;
 		$extensions = DB_Company::get_company_extensions();
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
 				$mod = $extensions[$selected_id];

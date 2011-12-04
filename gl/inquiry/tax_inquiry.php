@@ -34,8 +34,8 @@
 	function tax_inquiry_controls()
 	{
 		Display::start_form();
-		//Display::start_table(Config::get('tables_style2'));
-		Display::start_table("class='tablestyle_noborder'");
+		//Display::start_table('tablestyle2');
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
@@ -50,7 +50,7 @@
 	{
 		/*Now get the transactions  */
 		Display::div_start('trans_tbl');
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 		Display::table_header($th);
 		$k = 0;

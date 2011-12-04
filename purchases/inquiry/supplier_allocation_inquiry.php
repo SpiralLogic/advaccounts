@@ -28,12 +28,12 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
+	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
-	supp_allocations_list_cell("filterType", null);
+	Purch_UI::allocation_row("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->supplier_id = $_POST['supplier_id'];

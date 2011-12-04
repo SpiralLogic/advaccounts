@@ -30,7 +30,7 @@
 	echo "<div class='center'>";
 	Display::heading(_("Payment to Supplier") . " #$trans_no");
 	echo "<br>";
-	Display::start_table(Config::get('tables_style2') . " width=90%");
+	Display::start_table('tablestyle2 width90');
 	Display::start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
 	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");

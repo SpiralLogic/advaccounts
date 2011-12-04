@@ -104,10 +104,10 @@
 	}
 	Display::start_form();
 	if (Validation::check(Validation::SUPPLIERS)) {
-		Display::start_table("class = 'tablestyle_noborder'", 3);
-		//	Display::start_table("class = 'tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder pad3');
+		//	Display::start_table('tablestyle_noborder');
 		Display::start_row();
-		supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
+		Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		Display::end_row();
 		Display::end_table();
@@ -118,7 +118,7 @@
 	} else {
 		hidden('supplier_id', Display::get_post('supplier_id'));
 	}
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	if (!$new_supplier) {
 		//SupplierID exists - either passed when calling the form or from the form itself

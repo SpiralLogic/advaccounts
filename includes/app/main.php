@@ -11,10 +11,7 @@
 	 ***********************************************************************/
 	include_once(APPPATH . "ui/ui_forms.php");
 	include_once(APPPATH . "ui/ui_tables.php");
-	include_once(APPPATH . "ui/languages.php");
 	include_once(APPPATH . "ui/payment.php");
-	include_once(APPPATH . "ui/quickentries.php");
-	include_once(APPPATH . "ui/salesitems.php");
 	include_once(APPPATH . "ui/stock.php");
 	include_once(APPPATH . "ui/supplier.php");
 	include_once(APPPATH . "ui/users.php");

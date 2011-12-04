@@ -291,7 +291,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	Display::start_form();
 	hidden('cart_id');
-	Display::start_table(Config::get('tables_style2') . " width=90%", 5);
+	Display::start_table('tablestyle2 width90 pad5');
 	Display::start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -347,7 +347,7 @@
 	}
 	Display::heading(_("Invoice Items"));
 	Display::div_start('Items');
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
@@ -425,7 +425,7 @@
 	}
 	$colspan = 9;
 	Display::start_row();
-	label_cell(_("Shipping Cost"), "colspan=$colspan class=right");
+	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
 	if (!$viewing) {
 		small_amount_cells(null, 'ChargeFreightCost', null);
 	} else {
@@ -437,22 +437,22 @@
 	Display::end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class=right", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Invoice Total"), $display_total, "colspan=$colspan class=right", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Invoice Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
 	Display::end_table(1);
 	Display::div_end();
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	Display::end_table(1);
-	Display::start_table('style="color:red; font-weight:bold;"');
+	Display::start_table('red bold');
 	label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO EDIT ANYTHING IN THE FUTURE ON THIS INVOICE"));
 	Display::end_table();
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
-	Display::start_table('style="color:red; font-weight:bold;"');
+	Display::start_table('red bold');
 	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"),
 		'center');
 	Display::end_table();

@@ -179,7 +179,7 @@
 	}}else {
 		Errors::warning(_("No Customer selected."));
 	}
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	$_POST['email'] = "";
 	if ($selected_id != -1) {

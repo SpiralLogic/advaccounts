@@ -332,7 +332,7 @@
 
 
 		public function display(&$po, $editable = false) {
-			Display::start_table(Config::get('tables_style2') . " width=90%");
+			Display::start_table('tablestyle2 width90');
 			Display::start_row();
 			label_cells(_("Supplier"), $po->supplier_name, "class='label'");
 			if (!Banking::is_company_currency($po->curr_code)) {
@@ -510,7 +510,7 @@
 				echo "</td><td width=10% class='right'>";
 				submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
 				Display::end_outer_table(0, false);
-				Display::start_outer_table("class='center'");
+				Display::start_outer_table('center');
 				Display::start_row();
 				date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
 				date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
@@ -519,7 +519,7 @@
 			}
 			Display::end_outer_table(0, false);
 			Display::div_start('grn_items');
-			Display::start_table(Config::get('tables_style2') . "  width=90%");
+			Display::start_table('tablestyle2 width90');
 			if ($mode == 1) {
 				$th = array(
 					_("Delivery"), _("Seq #"), _("P.O."), _("Item"), _("Description"), _("Date"), _("Received"), _("Invoiced"), _("Qty"), _("Price"), _("ExpPrice"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");

@@ -318,7 +318,7 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no additional costs for this Order."), 0, 1);
 			} else {
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 				Display::table_header($th);
 				$k = 0; //row colour counter
@@ -342,7 +342,7 @@
 				Display::note(_("The work order number sent is not valid."));
 				exit;
 			}
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			if ($myrow["released"] == true) {
 				$th = array(
 					_("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Required By"), _("Quantity Required"), _("Released Date"), _("Manufactured"));
@@ -384,7 +384,7 @@
 				Display::note(_("The work order number sent is not valid."));
 				exit;
 			}
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			$th = array(
 				_("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Quantity"));
 			Display::table_header($th);

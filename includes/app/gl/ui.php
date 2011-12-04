@@ -119,12 +119,12 @@ class GL_UI {
 		return $str;
 	}
 
-	public static function  trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+	public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 		$view_str = Debtor_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
 		if ($view_str != null) {
 			return $view_str;
 		}
-		$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
+		$view_str = Purch_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
 		if ($view_str != null) {
 			return $view_str;
 		}

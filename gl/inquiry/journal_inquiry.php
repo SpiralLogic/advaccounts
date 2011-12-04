@@ -24,7 +24,7 @@
 		$_POST['filterType'] = -1;
 	}
 	Display::start_form();
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	ref_cells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
 	GL_UI::journal_cells(_("Type:"), "filterType");

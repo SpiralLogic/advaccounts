@@ -221,7 +221,7 @@
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
-				Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+				Display::start_table('tablestyle width60');
 				$th = array(
 					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
 					_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
@@ -349,7 +349,7 @@
 				return;
 			}
 			Display::heading(_("Allocations"));
-			Display::start_table(Config::get('tables_style') . "  width=90%");
+			Display::start_table('tablestyle width90');
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 			Display::table_header($th);
 			$k = $total_allocated = 0;

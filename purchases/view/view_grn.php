@@ -22,7 +22,7 @@
 	echo "<br>";
 	Purch_GRN::display($purchase_order);
 	Display::heading(_("Line Details"));
-	Display::start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
+	Display::start_table('tablestyle width90');
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
 	Display::table_header($th);

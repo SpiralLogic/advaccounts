@@ -7,37 +7,10 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	//  STOCK ITEMS
-	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false) {
-		if (!$legacy) {
-			return Item::addSearchBox($name, array_merge(array(
-																												'submitonselect' => $submit_on_change, 'selected' => $selected_id, 'purchase' => true, 'cells' => true),
-				$opts));
-		}
-		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
-				FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
-		if ($editkey) {
-			Display::set_editor('item', $name, $editkey);
-		}
-		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
-																																																'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
-				 _("All Items") :
-				 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => false, 'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 10, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50),
-			$opts));
-	}
-
-
-	function stock_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
-		if ($label != null) {
-			echo "<td>$label</td>\n";
-		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array(
-																																										'submitonselect' => $submit_on_change, 'cells' => true, 'purchase' => false, 'show_inactive' => $all, 'editable' => $editkey),
-			$editkey, $legacy);
-	}
 
 	// MANUFACTURED ITEMS
 	function stock_manufactured_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= '" . STOCK_MANUFACTURE . "'")));
+		return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= '" . STOCK_MANUFACTURE . "'")));
 	}
 
 	function stock_manufactured_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
@@ -55,32 +28,32 @@
 	}
 
 	function stock_component_items_list($name, $parent_stock_id, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => " stock_id != '$parent_stock_id' "));
+		return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => " stock_id != '$parent_stock_id' "));
 	}
 
 	function stock_component_items_list_cells($label, $name, $parent_stock_id, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array(
+		echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
 																																										'where' => "stock_id != '$parent_stock_id'", 'cells' => true));
 	}
 
 	function stock_costable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='" . STOCK_SERVICE . "'"));
+		return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='" . STOCK_SERVICE . "'"));
 	}
 
 	function stock_costable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array(
+		echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
 																																										'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => true, 'description' => ''));
 	}
 
 	// STOCK PURCHASEABLE
 	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array(
+		return Item::select($name, $selected_id, $all_option, $submit_on_change, array(
 																																											'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'", 'show_inactive' => $all, 'editable' => false),
 			false, $legacy);
 	}
@@ -89,7 +62,7 @@
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array(
+		echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
 																																										'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'", 'editable' => 30, 'cells' => true, 'description' => ''));
 	}
 

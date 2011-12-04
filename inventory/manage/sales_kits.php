@@ -26,7 +26,7 @@
 	{
 		$result = Item_Code::get_kit($selected_kit);
 		Display::div_start('bom');
-		Display::start_table(Config::get('tables_style') . "  style='width:60%'");
+		Display::start_table('tablestyle width60');
 		$th = array(
 			_("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', '');
 		Display::table_header($th);
@@ -145,7 +145,7 @@
 
 	Display::start_form();
 	echo "<div class='center'>" . _("Select a sale kit:") . "&nbsp;";
-	echo sales_kits_list('item_code', null, _('New kit'), true);
+	echo Sales_UI::kits('item_code', null, _('New kit'), true);
 	echo "</div><br>";
 	$props = Item_Code::get_kit_props(Input::post('item_code'));
 	if (list_updated('item_code')) {
@@ -158,13 +158,13 @@
 
 	if (Display::get_post('item_code') == '') {
 		// New sales kit entry
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 	} else {
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
 		$_POST['category'] = $props['category_id'];
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 		submit_row('update_name', _("Update"), false, 'class=center colspan=2', _('Update kit/alias name'), true);
@@ -172,7 +172,7 @@
 		Display::end_table(1);
 		display_kit_items($selected_kit);
 		echo '<br>';
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 	}
 	if ($Mode == 'Edit') {
 		$myrow = Item_Code::get($selected_id);
@@ -180,7 +180,7 @@
 		$_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
 	}
 	hidden("selected_id", $selected_id);
-	sales_local_items_list_row(_("Component:"), 'component', null, false, true);
+	Sales_UI::local_items_row(_("Component:"), 'component', null, false, true);
 	//	if (Display::get_post('description') == '')
 	//		$_POST['description'] = get_kit_name($_POST['component']);
 	if (Display::get_post('item_code') == '') { // new kit/alias

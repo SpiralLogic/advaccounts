@@ -24,7 +24,7 @@
 	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);
 	Display::heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 	echo "<br>";
-	Display::start_table(Config::get('tables_style') . "  width=95%");
+	Display::start_table('tablestyle width95');
 	Display::start_row();
 	label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 	label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -42,7 +42,7 @@
 	$total_gl = Purch_GLItem::display_items($supp_trans, 2);
 	$total_grn = Purch_GRN::display_items($supp_trans, 2);
 	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
-	Display::start_table("width=95%  " . Config::get('tables_style'));
+	Display::start_table('tablestyle width95');
 	label_row(_("Sub Total"), $display_sub_tot, "class=right", "nowrap class=right width=15%");
 	$tax_items = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
 	$tax_total = Purch_Trans::trans_tax_details($tax_items, 1, $supp_trans->ov_gst);

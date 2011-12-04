@@ -118,7 +118,7 @@
 			} else {
 				Display::heading(_("Balance for this Dimension"));
 				Display::br();
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(_("Account"), _("Debit"), _("Credit"));
 				Display::table_header($th);
 				$total = $k = 0;

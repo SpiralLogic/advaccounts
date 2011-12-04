@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class Sales_Debtor_Trans
+	class Sales_Debtor_Trans  implements IVoidable
 	{
 		public static function get($debtor_trans_type, $debtor_trans_no)
 			{

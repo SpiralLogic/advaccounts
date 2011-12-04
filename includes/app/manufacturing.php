@@ -198,7 +198,7 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("The bill of material for this item is empty."), 0, 1);
 			} else {
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(
 					_("Component"), _("Description"), _("Work Centre"), _("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost"));
 				Display::table_header($th);

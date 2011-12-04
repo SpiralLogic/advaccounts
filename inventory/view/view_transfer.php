@@ -20,7 +20,7 @@
 	$to_trans = $transfer_items[1];
 	Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 	echo "<br>";
-	Display::start_table(Config::get('tables_style2') . " width=90%");
+	Display::start_table('tablestyle2 width90');
 	Display::start_row();
 	label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
 	label_cells(_("From Location"), $from_trans['location_name'], "class='tableheader2'");
@@ -35,7 +35,7 @@
 	DB_Comments::display_row(ST_LOCTRANSFER, $trans_no);
 	Display::end_table(1);
 	echo "<br>";
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 	Display::table_header($th);
 	$transfer_items = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);

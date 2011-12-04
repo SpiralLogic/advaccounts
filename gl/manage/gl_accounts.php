@@ -198,7 +198,7 @@
 
 	Display::start_form();
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
-		Display::start_table("class = 'tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		GL_UI::all_cells(
 			null, 'AccountList', null, false, false,
@@ -213,7 +213,7 @@
 		}
 	}
 	Display::br(1);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_account != "") {
 		//editing an existing account
 		$myrow = GL_Account::get($selected_account);

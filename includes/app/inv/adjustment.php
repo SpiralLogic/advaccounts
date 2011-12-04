@@ -71,7 +71,7 @@
 
 		public static function header($order)
 			{
-				Display::start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
+				Display::start_outer_table('tablestyle2 width70'); // outer table
 				Display::table_section(1);
 				locations_list_row(_("Location:"), 'StockLocation', null);
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
@@ -91,7 +91,7 @@
 			{
 				Display::heading($title);
 				Display::div_start('items_table');
-				Display::start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table('tablestyle width90');
 				$th = array(
 					_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), _("Total"), "");
 				if (count($order->line_items)) {
@@ -177,7 +177,7 @@
 		public static function option_controls()
 			{
 				echo "<br>";
-				Display::start_table('class="center"');
+				Display::start_table('center');
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				Display::end_table(1);
 			}

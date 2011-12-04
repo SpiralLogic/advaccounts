@@ -19,8 +19,8 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	Display::start_form(false, true);
-	Display::start_table("class='tablestyle_noborder'");
+	Display::start_form(false);
+	Display::start_table('tablestyle_noborder');
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	Display::end_table();
 	Display::br();

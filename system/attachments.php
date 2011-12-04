@@ -138,7 +138,7 @@
 	function viewing_controls()
 	{
 		Display::start_form();
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		SysTypes::view_row(_("Type:"), 'filterType', null, true);
 		Display::end_table(1);
 		Display::end_form();
@@ -165,7 +165,7 @@
 		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 		Display::div_start('transactions');
 		Display::start_form();
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		Display::table_header($th);
 		$k = 0;
 		while ($row = DB::fetch($rows))
@@ -195,7 +195,7 @@
 		display_rows($_POST['filterType']);
 	}
 	Display::start_form(true);
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$row = get_attachment($selected_id);

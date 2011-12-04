@@ -86,7 +86,7 @@
 
 		function header($order)
 			{
-				Display::start_outer_table("width=70%  " . Config::get('tables_style'));
+				Display::start_outer_table('tablestyle width70');
 				Display::table_section(1);
 				locations_list_row(_("From Location:"), 'FromStockLocation', null);
 				locations_list_row(_("To Location:"), 'ToStockLocation', null);
@@ -103,7 +103,7 @@
 			{
 				Display::heading($title);
 				Display::div_start('items_table');
-				Display::start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table('tablestyle width90');
 				$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
 				if (count($order->line_items)) {
 					$th[] = '';

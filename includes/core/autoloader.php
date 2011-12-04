@@ -120,6 +120,10 @@
 				$filepath = static::tryPath($path);
 			}
 			$class = str_replace('_', DS, $class);
+			if (!$filepath && (substr($class, 0, 1) == 'I')) {
+				$path = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
+				$filepath = static::tryPath($path);
+			}
 			if (!$filepath) {
 				$path = APPPATH . $class . '.php';
 				$filepath = static::tryPath($path);
@@ -152,13 +156,11 @@
 		 * @return array
 		 */
 		public static function getPerf() {
-			array_walk(
-				static::$loadperf, function(&$v) {
+			array_walk(static::$loadperf, function(&$v) {
 					$v[1] = Files::convert_size($v[1]);
 					$v[2] = Dates::getReadableTime($v[2]);
 					$v[3] = Dates::getReadableTime($v[3]);
-				}
-			);
+				});
 			return static::$loadperf;
 		}
 

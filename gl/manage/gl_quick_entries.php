@@ -126,7 +126,7 @@
 
 	$result = GL_QuickEntry::get_all();
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Description"), _("Type"), "", "");
 	Display::table_header($th);
 	$k = 0;
@@ -143,7 +143,7 @@
 	Display::end_form();
 
 	Display::start_form();
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//if ($Mode == 'Edit')
 		//{
@@ -158,7 +158,7 @@
 		//}
 	}
 	text_row_ex(_("Description") . ':', 'description', 50, 60);
-	quick_entry_types_list_row(_("Entry Type") . ':', 'type');
+	GL_QuickEntry::types(_("Entry Type") . ':', 'type');
 	text_row_ex(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
 	amount_row(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
 	Display::end_table(1);
@@ -168,7 +168,7 @@
 		Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 		$result = GL_QuickEntry::get_lines($selected_id);
 		Display::start_form();
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension") . " 2", "", "");
@@ -213,7 +213,7 @@
 		Display::end_form();
 		Display::start_form();
 		Display::div_start('edit_line');
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id2 != -1) {
 			if ($Mode2 == 'BEd') {
 				//editing an existing status code
@@ -226,7 +226,7 @@
 				$_POST['dimension2_id'] = $myrow["dimension2_id"];
 			}
 		}
-		quick_actions_list_row(_("Posted") . ":", 'actn', null, true);
+		GL_QuickEntry::actions(_("Posted") . ":", 'actn', null, true);
 		if (list_updated('actn')) {
 			$Ajax->activate('edit_line');
 		}

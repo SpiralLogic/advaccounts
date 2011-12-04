@@ -1047,7 +1047,7 @@
 				Display::heading($title);
 				Display::div_start('items_table');
 				if (count($_SESSION['Items']->line_items) > 0) {
-					Display::start_outer_table(" width=90%");
+					Display::start_outer_table('width90');
 					Display::table_section(1);
 					Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"),
 						"NewOrder=Yes&UseOrder=1' class='button'", true, true);
@@ -1056,7 +1056,7 @@
 						"NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 					Display::end_outer_table(1);
 				}
-				Display::start_table(Config::get('tables_style') . "  colspan=7 width=90%");
+				Display::start_table('tablestyle width90');
 				$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 				if ($order->trans_no == 0) {
 					unset($th[3]);
@@ -1120,13 +1120,13 @@
 					++$colspan;
 				}
 				Display::start_row();
-				label_cell(_("Shipping Charge"), "colspan=$colspan class=right");
+				label_cell(_("Shipping Charge"), "colspan=$colspan style='text-align:right;'");
 				small_amount_cells(null, 'freight_cost', Num::price_format(Display::get_post('freight_cost', 0)));
 				label_cell('', 'colspan=2');
 				Display::end_row();
 				$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 				Display::start_row();
-				label_cells(_("Total Discount"), $total_discount, "colspan=$colspan class=right", "class=right");
+				label_cells(_("Total Discount"), $total_discount, "colspan=$colspan style='text-align:right;'", "class=right");
 				HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 				hidden('_discountall', '0', true);
 				HTML::td();
@@ -1137,12 +1137,12 @@
 JS;
 				JS::addLiveEvent('#discountall', 'click', $action);
 				Display::end_row();
-				label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class=right", "class=right", 2);
+				label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", 2);
 				$taxes = $order->get_taxes(Validation::input_num('freight_cost'));
 				$tax_total = Taxes::edit_items($taxes, $colspan, $order->tax_included, 2);
 				$display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
 				Display::start_row();
-				label_cells(_("Amount Total"), $display_total, "colspan=$colspan class=right", "class=right");
+				label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
 				submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
 				Display::end_row();
 				Display::end_table();
@@ -1160,7 +1160,7 @@ JS;
 		public static function header($order, $editable, $date_text, $display_tax_group = false)
 			{
 				$Ajax = Ajax::i();
-				Display::start_outer_table("width=90% " . Config::get('tables_style2'));
+				Display::start_outer_table('tablestyle2 width90');
 				Display::table_section(1);
 				$customer_error = "";
 				$change_prices = 0;
@@ -1348,7 +1348,7 @@ JS;
 					$Ajax->activate('items_table');
 				} else // prepare new line
 				{
-					sales_items_list_cells(null, 'stock_id', null, false, false, array('description' => ''));
+					Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
 					if (list_updated('stock_id')) {
 						$Ajax->activate('price');
 						$Ajax->activate('description');
@@ -1394,7 +1394,7 @@ JS;
 				if (Display::get_post('cash', 0)) { // Direct payment sale
 					$Ajax->activate('items_table');
 					Display::heading(_('Cash payment'));
-					Display::start_table(Config::get('tables_style2') . " style='width:60%'");
+					Display::start_table('tablestyle2 width60');
 					label_row(_("Deliver from Location:"), $order->location_name);
 					hidden('Location', $order->Location);
 					label_row(_("Cash account:"), $order->account_name);
@@ -1415,7 +1415,7 @@ JS;
 						$delname = _("Required Delivery Date") . ':';
 					}
 					Display::heading($title);
-					Display::start_outer_table(Config::get('tables_style2') . " width=90%");
+					Display::start_outer_table('tablestyle2 width90');
 					Display::table_section(1);
 					locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
 					if (list_updated('Location')) {

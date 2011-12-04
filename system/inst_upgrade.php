@@ -164,7 +164,7 @@
 		$Ajax->activate('_page_body');
 	}
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(
 		_("Version"), _("Description"), _("Sql file"), _("Install"),
 		_("Force upgrade")

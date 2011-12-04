@@ -62,7 +62,7 @@
 
 	$result = Item_Unit::get_all(check_value('show_inactive'));
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  width=40%");
+	Display::start_table('tablestyle width40');
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -81,7 +81,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			//editing an existing item category

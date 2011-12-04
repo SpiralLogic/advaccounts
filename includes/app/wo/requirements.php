@@ -55,7 +55,7 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Requirements for this Order."), 1, 0);
 			} else {
-				Display::start_table(Config::get('tables_style') . "  width=90%");
+				Display::start_table('tablestyle width90');
 				$th = array(
 					_("Component"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand"));
 				Display::table_header($th);

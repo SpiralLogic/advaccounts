@@ -110,7 +110,7 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		Display::table_header($th);
 		$k = 0;
@@ -170,7 +170,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != -1) {
 			$conn = Config::get('languages.installed', $selected_id);
 			$_POST['code'] = $conn['code'];

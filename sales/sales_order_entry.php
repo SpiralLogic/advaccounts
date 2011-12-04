@@ -581,7 +581,7 @@
 	$customer_error = (!Input::session('Items')) ? _("There is no order currently being edited") :
 	 Sales_Order::header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		Display::start_table(Config::get('tables_style'), 10);
+		Display::start_table('tablesstyle pad10');
 		echo "<tr><td>";
 	 Sales_Order::summary($orderitems, $_SESSION['Items'], true);
 		echo "</td></tr>";

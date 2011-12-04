@@ -21,7 +21,7 @@
 		unset ($_SESSION['View']);
 	}
 	$_SESSION['View'] = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
-	Display::start_table(Config::get('tables_style2') . " width=95%", 0);
+	Display::start_table('tablesstyle2 nopad width95');
 	echo "<tr  class='tableheader2 top'><th colspan=3>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
@@ -30,7 +30,7 @@
 	}
 	echo "</td></tr>";
 	echo "<tr class='top'><td colspan=3>";
-	Display::start_table(Config::get('tables_style') . "  width=100% ");
+	Display::start_table('tablestyle width100');
 	Display::start_row();
 	label_cells(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'",'class="pointer customer_id_label"');
 	hidden("customer_id", $_SESSION['View']->customer_id);
@@ -61,7 +61,7 @@
 	Display::end_table();
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		echo "</td></tr><tr><td class='top'>";
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		Display::heading(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		Display::table_header($th);
@@ -84,7 +84,7 @@
 		label_row(null, Num::price_format($delivery_total), " ", "colspan=4 class=right");
 		Display::end_table();
 		echo "</td><td class='top'>";
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		Display::heading(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		Display::table_header($th);
@@ -110,7 +110,7 @@
 		label_row(null, Num::price_format($invoices_total), " ", "colspan=4 class=right");
 		Display::end_table();
 		echo "</td><td class='top'>";
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		Display::heading(_("Credit Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		Display::table_header($th);
@@ -143,7 +143,7 @@
 		Errors::warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	}
 	Display::heading(_("Line Details"));
-	Display::start_table("colspan=9 width=95%  " . Config::get('tables_style'));
+	Display::start_table('tablestyle width95');
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 	Display::table_header($th);
 	$k = 0; //row colour counter

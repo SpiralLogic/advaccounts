@@ -86,7 +86,7 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Productions for this Order."), 1, 1);
 			} else {
-				Display::start_table(Config::get('tables_style'));
+				Display::start_table('tablestyle');
 				$th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
 				Display::table_header($th);
 				$k = 0; //row colour counter

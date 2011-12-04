@@ -77,7 +77,7 @@
 	}
 	$result = DB::query($sql, "could not get stock categories");
 	Display::start_form();
-	Display::start_table(Config::get('tables_style') . "  width=90%");
+	Display::start_table('tablestyle width90');
 	$th = array(
 		_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
@@ -108,7 +108,7 @@
 	echo '<br>';
 
 	Display::div_start('details');
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing item category

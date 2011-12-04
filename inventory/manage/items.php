@@ -233,10 +233,10 @@
 
 	Display::start_form(true);
 	if (Validation::check(Validation::STOCK_ITEMS)) {
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		if ($new_item) {
-			stock_items_list_cells(_("Select an item:"), 'stock_id', null, _('New item'), true, check_value('show_inactive'), false);
+			Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, check_value('show_inactive'), false);
 			check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		} else {
 			hidden('stock_id', $_POST['stock_id']);
@@ -250,7 +250,7 @@
 		}
 	}
 	Display::div_start('details');
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	Display::table_section_title(_("Item"));
 

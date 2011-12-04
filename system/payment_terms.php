@@ -115,7 +115,7 @@
 	}
 	$result = DB::query($sql, "could not get payment terms");
 	Display::start_form();
-	Display::start_table(Config::get('tables_style'));
+	Display::start_table('tablestyle');
 	$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 	inactive_control_column($th);
 	Display::table_header($th);
@@ -144,7 +144,7 @@
 	inactive_control_row($th);
 	Display::end_table(1);
 
-	Display::start_table(Config::get('tables_style2'));
+	Display::start_table('tablestyle2');
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

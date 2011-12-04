@@ -22,7 +22,7 @@
 	function gl_inquiry_controls()
 	{
 		Display::start_form();
-		Display::start_table("class='tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		check_cells(_("No zero values"), 'NoZero', null);
@@ -36,7 +36,7 @@
 	function display_trial_balance()
 	{
 		Display::div_start('balance_tbl');
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$tableheader
 		 = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>

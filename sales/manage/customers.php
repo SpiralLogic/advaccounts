@@ -140,7 +140,7 @@
 		_("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	Display::start_form();
 	if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
-		Display::start_table("class = 'tablestyle_noborder'");
+		Display::start_table('tablestyle_noborder');
 		Display::start_row();
 		Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
@@ -186,7 +186,7 @@
 		$_POST['notes'] = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
 	}
-	Display::start_outer_table(Config::get('tables_style2'), 5);
+	Display::start_outer_table('tablestyle2');
 	Display::table_section(1);
 	Display::table_section_title(_("Name and Address"));
 	text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);

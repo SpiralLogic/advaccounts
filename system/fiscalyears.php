@@ -397,7 +397,7 @@
 			),
 			0, 0, "class='currentfg'"
 		);
-		Display::start_table(Config::get('tables_style'));
+		Display::start_table('tablestyle');
 		$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
 		Display::table_header($th);
 		$k = 0;
@@ -441,7 +441,7 @@
 	{
 		global $Mode;
 		Display::start_form();
-		Display::start_table(Config::get('tables_style2'));
+		Display::start_table('tablestyle2');
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				$myrow = DB_Company::get_fiscalyear($selected_id);

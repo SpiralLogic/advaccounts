@@ -15,7 +15,7 @@
 			$Ajax = Ajax::i();
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			Display::div_start('pmt_header');
-			Display::start_outer_table("width=90% " . Config::get('tables_style2')); // outer table
+			Display::start_outer_table('tablestyle2 width90'); // outer table
 			Display::table_section(1);
 			Bank_UI::accounts_list_row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
 			date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
@@ -50,7 +50,7 @@
 				//	workorders_list_row(_("Work Order:"), 'person_id', null);
 				//	break;
 				case PT_SUPPLIER :
-					supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
+					Purch_UI::suppliers_row(_("Supplier:"), 'person_id', null, false, true, false, true);
 					break;
 				case PT_CUSTOMER :
 					Debtor_UI::select_row(_("Customer:"), 'person_id', null, false, true, false, true);
@@ -64,7 +64,7 @@
 					}
 					break;
 				case PT_QUICKENTRY :
-					quick_entries_list_row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
+					GL_QuickEntry::select_row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
 					$qid = GL_QuickEntry::get(Display::get_post('person_id'));
 					if (list_updated('person_id')) {
 						unset($_POST['totamount']); // enable default
@@ -95,7 +95,7 @@
 			$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 			Display::heading($title);
 			Display::div_start('items_table');
-			Display::start_table(Config::get('tables_style') . " colspan=7 width=95%");
+			Display::start_table('tables_style width95');
 			if ($dim == 2) {
 				$th = array(
 					_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"), "");

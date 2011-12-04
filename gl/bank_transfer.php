@@ -31,7 +31,7 @@
 		{
 			$home_currency = Banking::get_company_currency();
 			Display::start_form();
-			Display::start_outer_table(Config::get('tables_style2'), 5);
+			Display::start_outer_table('tablestyle2');
 			Display::table_section(1);
 			Bank_UI::accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 			Bank_UI::accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);

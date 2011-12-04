@@ -53,7 +53,7 @@
 	$menu = new MenuUI();
 	$menu->startTab('Details', 'Supplier Details');
 	text_row(_("Supplier Name:"), 'name', $supplier->name, 35, 80);
-	Display::start_outer_table('', 5);
+	Display::start_outer_table('pad5');
 	Display::table_section(1);
 	Display::table_section_title(_("Contact Information"), 2, 'tableheader3');
 	text_row(_("Contact Person:"), 'contact_name', $supplier->contact_name, 42, 40);

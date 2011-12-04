@@ -55,21 +55,21 @@
 		}
 	}
 
-			/**
-			 *
-			 * Universal sql combo generator
-			 * $sql must return selector values and selector texts in columns 0 & 1
-			 * Options are merged with defaults.
-			 *
-			 * @param					$name
-			 * @param					$selected_id
-			 * @param					$sql
-			 * @param					$valfield
-			 * @param					$namefield
-			 * @param null		 $options
-			 *
-			 * @return string
-			 */
+	/**
+	 *
+	 * Universal sql combo generator
+	 * $sql must return selector values and selector texts in columns 0 & 1
+	 * Options are merged with defaults.
+	 *
+	 * @param					$name
+	 * @param					$selected_id
+	 * @param					$sql
+	 * @param					$valfield
+	 * @param					$namefield
+	 * @param null		 $options
+	 *
+	 * @return string
+	 */
 	function combo_input($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
 		$Ajax = Ajax::i();
 		$opts = array( // default options
@@ -297,19 +297,18 @@
 		// if selectable or editable list is used - add select button
 		if ($select_submit != false || $search_button) {
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
-			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'),
-			 '_' . $name . '_update') . "\n";
+			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
+				 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		// ------ make combo ----------
 		$edit_entry = '';
 		if ($search_box != false) {
 			$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $opts['size'] . "' maxlength='" . $opts['max'] . "' value='$txt' class='$class' rel='$name' autocomplete='off' title='" . $opts['box_hint'] . "'" . (!User::fallback() && !$by_id ?
-			 " style=display:none;" :
-			 '') . ">\n";
+			 " style=display:none;" : '') . ">\n";
 			if ($search_submit != false || $opts['editable']) {
 				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
-				$edit_entry .= sprintf($_search_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'),
-					$search_submit ? $search_submit : "_{$name}_button") . "\n";
+				$edit_entry .= sprintf($_search_button, $disabled, User::theme(), (User::fallback() ? '' :
+					 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
 		JS::default_focus(($search_box && $by_id) ? $search_box : $name);
@@ -402,8 +401,8 @@
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		if ($select_submit != false) { // if submit on change is used - add select button
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
-			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'),
-			 '_' . $name . '_update') . "\n";
+			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
+				 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		JS::default_focus($name);
 		return $selector;
@@ -466,8 +465,8 @@
 		}
 		$submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
 		 $atype) . "\" type=\"submit\"" . $aspect . " name=\"$name\"  id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" :
-		 '') . ">" . ($icon
-		 ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" . "</button>\n";
+		 '') . ">" . ($icon ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
+		 '') . "<span>$value</span>" . "</button>\n";
 		if ($echo) {
 			echo $submit_str;
 		} else {
@@ -570,8 +569,8 @@
 	}
 
 	function set_icon($icon, $title = false) {
-		return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ?
-		 " title='$title'" : "") . " />\n";
+		return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" :
+		 "") . " />\n";
 	}
 
 	function button($name, $value, $title = false, $icon = false, $aspect = '') {
@@ -588,18 +587,12 @@
 				$icon = ICON_DELETE;
 			}
 			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																																'.' => '=2E',
-																																																' ' => '=20',
-																																																'=' => '=3D',
-																																																'[' => '=5B'))) . "' value='1'" . ($title ?
+																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='1'" . ($title ?
 			 " title='$title'" : " title='$value'") . ($aspect ? " aspect='$aspect'" :
 			 '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		} else {
 			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																															 '.' => '=2E',
-																																															 ' ' => '=20',
-																																															 '=' => '=3D',
-																																															 '[' => '=5B'))) . "' value='$value'" . ($title ?
+																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='$value'" . ($title ?
 			 " title='$title'" : '') . ($aspect ? " aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
@@ -669,8 +662,7 @@
 		echo "</tr>\n";
 	}
 
-	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "",
-		$inparams = "") {
+	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
 		$Ajax = Ajax::i();
 		JS::default_focus($name);
 		if ($label != null) {
@@ -689,8 +681,7 @@
 		$Ajax->addUpdate($name, $name, $value);
 	}
 
-	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null,
-		$submit_on_change = false) {
+	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null, $submit_on_change = false) {
 		$Ajax = Ajax::i();
 		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -723,8 +714,7 @@
 		echo "</tr>\n";
 	}
 
-	function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null,
-		$params2 = '', $submit_on_change = false) {
+	function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null, $params2 = '', $submit_on_change = false) {
 		echo "<tr {$params}><td class='label' {$params2}>$label</td>";
 		text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label, $submit_on_change);
 		echo "</tr>\n";
@@ -783,8 +773,7 @@
 	 * @param bool	$submit_on_change
 	 * @param array $options
 	 */
-	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null,
-		$submit_on_change = false, $options = array()) {
+	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
 		$Ajax = Ajax::i();
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001) {
@@ -817,15 +806,11 @@
 		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
 		DatePicker::add($name, array(
-																'numberOfMonths' => 3,
-																'showButtonPanel' => true,
-																'showCurrentAtPos' => 2,
-																'dateFormat' => 'dd/mm/yy'), $options);
+																'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
-	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null,
-		$submit_on_change = false) {
+	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
 		echo "<tr><td class='label'>$label</td>";
 		date_cells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
 		echo "</tr>\n";
@@ -867,8 +852,7 @@
 		small_amount_row($label, $name . '" ' . $params, $_POST[$name], null, "%", User::percent_dec());
 	}
 
-	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null,
-		$id = null) {
+	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
 		$Ajax = Ajax::i();
 		if (!isset($dec)) {
 			$dec = User::price_dec();
@@ -991,8 +975,7 @@
 		if ($value === null) {
 			$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 		}
-		echo "<td><textarea name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" :
-		 '') . ">$value</textarea></td>\n";
+		echo "<td><textarea name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
 		$Ajax->addUpdate($name, $name, $value);
 	}
 
@@ -1022,8 +1005,7 @@
 			) {
 				DB::update_record_status($id, !$value, $table, $key);
 			}
-			echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value,
-				false) . '</td>';
+			echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value, false) . '</td>';
 		}
 	}
 
@@ -1034,9 +1016,7 @@
 	 * @param $th
 	 */
 	function inactive_control_row($th) {
-		echo	"<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null,
-			true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '',
-			null) . "</div></td></tr>";
+		echo	"<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
 	}
 
 	/**
@@ -1130,29 +1110,33 @@
 		echo "</td></tr>\n";
 	}
 
-		function _format_date($row) {
-			return Dates::sql2date($row['reconciled']);
-		}
+	function _format_date($row) {
+		return Dates::sql2date($row['reconciled']);
+	}
 
-		function _format_add_curr($row) {
-			static $company_currency;
-			if ($company_currency == null) {
-				$company_currency = Banking::get_company_currency();
-			}
-			return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
+	function _format_add_curr($row) {
+		static $company_currency;
+		if ($company_currency == null) {
+			$company_currency = Banking::get_company_currency();
 		}
+		return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
+	}
+
 	function _format_stock_items($row) {
 		return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
 	}
-	function _format_template_items($row) {
-			return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
-		}
-				function _format_fiscalyears($row) {
-					return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
-					 _('Active')) . "</option>\n";
-				}
 
-		function _format_account($row) {
-			return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
-		}
+	function _format_template_items($row) {
+		return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
+	}
+
+	function _format_fiscalyears($row) {
+		return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
+		 _('Active')) . "</option>\n";
+	}
+
+	function _format_account($row) {
+		return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
+	}
+
 ?>

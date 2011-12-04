@@ -29,7 +29,7 @@
 	}
 
 	if (Input::request('frame')) {
-		Display::start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
+		Display::start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		Display::start_form();
 	}
@@ -38,7 +38,7 @@
 	}
 	if (!Input::request('frame')) {
 		echo "<div class='center'>" . _("Item:") . "&nbsp;";
-		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
+		echo Sales_UI::items('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
@@ -87,9 +87,9 @@
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
 	Display::div_start('price_table');
 	if (Input::request('frame')) {
-		Display::start_table(Config::get('tables_style') . "  width=90%");
+		Display::start_table('tablestyle width90');
 	} else {
-		Display::start_table(Config::get('tables_style') . "  width=30%");
+		Display::start_table('tablestyle width30');
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 	Display::table_header($th);
@@ -122,7 +122,7 @@
 	}
 	hidden('selected_id', $selected_id);
 	Display::div_start('price_details');
-	Display::start_table('class="tableinfo"');
+	Display::start_table('tableinfo');
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	Sales_UI::types_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
