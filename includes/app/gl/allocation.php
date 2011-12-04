@@ -161,7 +161,7 @@
 			if ($this->person_type) {
 				Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			} else {
-				Sales_Allocation::clear($this->type, $this->trans_no, $this->date_);
+				Sales_Allocation::void($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
 			$total_allocated = 0;

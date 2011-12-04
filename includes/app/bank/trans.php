@@ -83,11 +83,9 @@
 		}
 
 
-		public static function void($type, $type_no, $nested = false)
+		public static function void($type, $type_no)
 		{
-			if (!$nested) {
 				DB::begin_transaction();
-			}
 			$sql
 			 = "UPDATE bank_trans SET amount=0
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
@@ -100,9 +98,7 @@
 			Purch_Allocation::void($type, $type_no);
 			Purch_Trans::void($type, $type_no);
 			GL_Trans::void_tax_details($type, $type_no);
-			if (!$nested) {
 				DB::commit_transaction();
-			}
 		}
 
 	}

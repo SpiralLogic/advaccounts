@@ -48,11 +48,7 @@
 
 
 	public static function void($type, $type_no, $date = "") {
-		return Sales_Allocation::clear($type, $type_no, $date);
-	}
 
-
-	public static function clear($type, $type_no, $date = "") {
 		// clear any allocations for this transaction
 		$sql
 		 = "SELECT * FROM cust_allocations
