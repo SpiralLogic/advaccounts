@@ -1260,7 +1260,7 @@ JS;
 				Display::table_section(3);
 				Debtor_UI::credit_row($_POST['customer_id'], $order->credit);
 				if ($editable) {
-					$str = Sales_UI::types_row(_("Price List"), 'sales_type', null, true);
+					$str = Sales_Type::row(_("Price List"), 'sales_type', null, true);
 				} else {
 					label_row(_("Price List:"), $order->sales_type_name);
 				}
@@ -1417,7 +1417,7 @@ JS;
 					Display::heading($title);
 					Display::start_outer_table('tablestyle2 width90');
 					Display::table_section(1);
-					locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
+					Inv_Location::row(_("Deliver from Location:"), 'Location', null, false, true);
 					if (list_updated('Location')) {
 						$Ajax->activate('items_table');
 					}

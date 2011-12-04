@@ -162,7 +162,7 @@
 	Display::start_form();
 	Display::start_form(false);
 	Display::start_table('tablestyle_noborder');
-	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+	Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
@@ -201,7 +201,7 @@
 			Display::start_row();
 			label_cell(_("Component:"));
 			echo "<td>";
-			echo stock_component_items_list('component', $selected_parent, null, false, true);
+			echo Item_UI::component('component', $selected_parent, null, false, true);
 			if (Display::get_post('_component_update')) {
 				$Ajax->activate('quantity');
 			}
@@ -209,7 +209,7 @@
 			Display::end_row();
 		}
 		hidden('stock_id', $selected_parent);
-		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
+		Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
 		$dec = Item::qty_dec(Display::get_post('component'));
 		$_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);

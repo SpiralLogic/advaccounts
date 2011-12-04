@@ -277,7 +277,7 @@
 		$_POST['Location'] = $_SESSION['Items']->Location;
 	}
 	label_cell(_("Delivery From"), "class='label'");
-	locations_list_cells(null, 'Location', null, false, true);
+	Inv_Location::cells(null, 'Location', null, false, true);
 	if (!isset($_POST['ship_via'])) {
 		$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 	}
@@ -341,7 +341,7 @@
 		} else {
 			Display::alt_table_row_color($k);
 		}
-		stock_status_cell($ln_itm->stock_id);
+		Item_UI::status_cell($ln_itm->stock_id);
 		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
 		$dec = Item::qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);

@@ -113,7 +113,7 @@
 		hidden('credit', 1);
 		hidden('account', 0);
 	}
-	locations_list_row(_("POS location") . ':', 'location');
+	Inv_Location::row(_("POS location") . ':', 'location');
 	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	Display::end_form();

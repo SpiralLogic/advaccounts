@@ -153,8 +153,8 @@
 	text_row(_("Category Name:"), 'description', null, 30, 30);
 	Display::table_section_title(_("Default values for new items"));
 	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
-	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
-	stock_units_list_row(_("Units of Measure:"), 'units', null);
+	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, true);
+	Item_Unit::row(_("Units of Measure:"), 'units', null);
 	check_row(_("Exclude from sales:"), 'no_sale');
 	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 	if (Input::post('mb_flag') == STOCK_SERVICE) {

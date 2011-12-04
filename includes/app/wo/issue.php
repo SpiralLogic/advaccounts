@@ -88,7 +88,7 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-		function display($woid) {
+		public static 	function display($woid) {
 			$result = WO_Issue::get_all($woid);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Issues for this Order."), 0, 1);
@@ -145,7 +145,7 @@
 				//		$total += ($stock_item->standard_cost * $stock_item->quantity);
 				if ($id != $line_no) {
 					Display::alt_table_row_color($k);
-					stock_status_cell($stock_item->stock_id);
+					Item_UI::status_cell($stock_item->stock_id);
 					label_cell($stock_item->description);
 					qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 					label_cell($stock_item->units);
@@ -181,7 +181,7 @@
 				$Ajax->activate('items_table');
 			} else {
 				$wo_details = WO_WorkOrder::get($_SESSION['issue_items']->order_id);
-				stock_component_items_list_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
+				Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
 				if (list_updated('stock_id')) {
 					$Ajax->activate('units');
 					$Ajax->activate('qty');
@@ -216,7 +216,7 @@
 			}
 			yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"),
 				_("Issue Items to Work order"));
-			locations_list_row(_("From Location:"), 'Location');
+			Inv_Location::row(_("From Location:"), 'Location');
 			workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 			date_row(_("Issue Date:"), 'date_');
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);

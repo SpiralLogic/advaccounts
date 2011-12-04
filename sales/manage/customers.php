@@ -195,18 +195,18 @@
 	email_row(_("E-mail:"), 'email', null, 40, 40);
 	text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 	if ($new_customer) {
-		currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
+		GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
 	} else {
 		label_row(_("Customer's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
 	}
-	Sales_UI::types_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 	Display::table_section(2);
 	Display::table_section_title(_("Sales"));
 	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
-	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
+	GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {

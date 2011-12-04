@@ -285,7 +285,7 @@
 	}
 	text_row(_("Name:"), 'description', null, 52, 200);
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
-	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
+	Item_Category::row(_("Category:"), 'category_id', null, false, $new_item);
 	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 		$category_record = Item_Category::get($_POST['category_id']);
 		$_POST['tax_type_id'] = $category_record["dflt_tax_type"];
@@ -303,8 +303,8 @@
 	}
 	$fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], false);
 	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
-	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
-	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
+	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+	Item_Unit::row(_('Units of Measure:'), 'units', null, $fresh_item);
 	check_row(_("Editable description:"), 'editable');
 	check_row(_("Exclude from sales:"), 'no_sale');
 	Display::table_section(2);

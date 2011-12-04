@@ -87,4 +87,20 @@ public static		function write($selected, $abbr, $description, $decimals)
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
+
+			// STOCK UNITS
+		public static		function row($label, $name, $value = null, $enabled = true) {
+				$result = Item_Unit::get_all();
+				echo "<tr>";
+				if ($label != null) {
+					echo "<td class='label'>$label</td>\n";
+				}
+				echo "<td>";
+				while ($unit = DB::fetch($result)) {
+					$units[$unit['abbr']] = $unit['name'];
+				}
+				echo array_selector($name, $value, $units, array('disabled' => !$enabled));
+				echo "</td></tr>\n";
+			}
+
 	}

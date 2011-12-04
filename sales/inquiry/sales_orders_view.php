@@ -199,7 +199,7 @@
 		date_cells(_("From:"), 'OrdersAfterDate', '', null, -30);
 		date_cells(_("To:"), 'OrdersToDate', '', null, 1);
 	}
-	locations_list_cells(_("Location:"), 'StockLocation', null, true);
+	Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
 	Item::cells(_("Item:"), 'SelectStockFromList', null, true);
 	if ($trans_type == ST_SALESQUOTE) {
 		check_cells(_("Show All:"), 'show_all');

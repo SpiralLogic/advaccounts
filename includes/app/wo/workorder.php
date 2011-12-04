@@ -359,7 +359,7 @@
 			}
 			label_cell($myrow["wo_ref"]);
 			label_cell($wo_types_array[$myrow["type"]]);
-			stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+			Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 			label_cell($myrow["location_name"]);
 			label_cell(Dates::sql2date($myrow["date_"]));
 			label_cell(Dates::sql2date($myrow["required_by"]));
@@ -396,7 +396,7 @@
 			}
 			label_cell($myrow["wo_ref"]);
 			label_cell($wo_types_array[$myrow["type"]]);
-			stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+			Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 			label_cell($myrow["location_name"]);
 			label_cell(Dates::sql2date($myrow["date_"]));
 			qty_cell($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));

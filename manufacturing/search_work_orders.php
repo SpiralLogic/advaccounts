@@ -49,12 +49,12 @@
 	Display::start_table('tablestyle_noborder');
 	Display::start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
-	locations_list_cells(_("at Location:"), 'StockLocation', null, true);
+	Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
 	if ($outstanding_only == 0) {
 		check_cells(_("Only Open:"), 'OpenOnly', null);
 	}
-	stock_manufactured_items_list_cells(_("for item:"), 'SelectedStockItem', null, true);
+	Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	Display::end_row();
 	Display::end_table();
@@ -72,7 +72,7 @@
 
 	function view_stock($row)
 		{
-			return stock_status($row["stock_id"], $row["description"], false);
+			return Item_UI::status($row["stock_id"], $row["description"], false);
 		}
 
 	function wo_type_name($dummy, $type)

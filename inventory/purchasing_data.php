@@ -97,7 +97,7 @@
 	}
 	if (!Input::request('frame')) {
 		echo "<div class='center'>" . _("Item:") . "&nbsp;";
-		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
+		echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];

@@ -80,7 +80,7 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<div class='center'>" . _("Item:") . "&nbsp;";
-	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
+	echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$result = Item_Code::get_defaults($_POST['stock_id']);
@@ -137,7 +137,7 @@
 	text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
 	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
 	text_row(_("Description:"), 'description', null, 50, 200);
-	stock_categories_list_row(_("Category:"), 'category_id', null);
+	Item_Category::row(_("Category:"), 'category_id', null);
 	Display::end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	Display::end_form();

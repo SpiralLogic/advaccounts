@@ -66,5 +66,28 @@ class GL_Currency {
 	}
 
 
+		//  CURRENCIES
+	public static function select($name, $selected_id = null, $submit_on_change = false) {
+			$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
+			// default to the company currency
+			return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
+																																									 'select_submit' => $submit_on_change, 'default' => Banking::get_company_currency(), 'async' => false));
+		}
+
+	public static function cells($label, $name, $selected_id = null, $submit_on_change = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo GL_Currency::select($name, $selected_id, $submit_on_change);
+			echo "</td>\n";
+		}
+
+	public static function row($label, $name, $selected_id = null, $submit_on_change = false) {
+			echo "<tr><td class='label'>$label</td>";
+			GL_Currency::cells(null, $name, $selected_id, $submit_on_change);
+			echo "</tr>\n";
+		}
+
 
 }

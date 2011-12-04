@@ -41,7 +41,7 @@
 				$Ajax->activate('pagehelp');
 				$Ajax->activate('editors');
 			}
-			payment_person_types_list_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
+			GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
 			switch ($_POST['PayType']) {
 				case PT_MISC :
 					text_row_ex($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);

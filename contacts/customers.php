@@ -154,16 +154,16 @@
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	Sales_UI::types_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
+	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 	if (!$customer->id) {
-		currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
+		GL_Currency::row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
 	} else {
 		label_row(_("Customer's Currency:"), $customer->curr_code);
 		hidden('curr_code', $customer->curr_code);
 	}
-	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
 	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
@@ -225,7 +225,7 @@
 	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
 	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
 	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
-	locations_list_row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
+	Inv_Location::row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
 	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
 	Tax_UI::groups_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
 	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);

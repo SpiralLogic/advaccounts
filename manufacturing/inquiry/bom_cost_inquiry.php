@@ -21,7 +21,7 @@
 	}
 	Display::start_form(false);
 	Display::start_table('tablestyle_noborder');
-	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+	Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	Display::end_table();
 	Display::br();
 	Display::heading(_("All Costs Are In:") . " " . Banking::get_company_currency());

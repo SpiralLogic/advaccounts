@@ -173,7 +173,7 @@
 	email_row_ex(_("Email Address:"), 'email', 50);
 	Security::roles_row(_("Access Level:"), 'Access', null);
 	Languages::row(_("Language:"), 'language', null);
-	pos_list_row(_("User's POS") . ':', 'pos', null);
+	Sales_Point::row(_("User's POS") . ':', 'pos', null);
 	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile', null,
 		_('Browser printing support')

@@ -73,7 +73,7 @@
 			{
 				Display::start_outer_table('tablestyle2 width70'); // outer table
 				Display::table_section(1);
-				locations_list_row(_("Location:"), 'StockLocation', null);
+				Inv_Location::row(_("Location:"), 'StockLocation', null);
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
 				Display::table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
@@ -105,7 +105,7 @@
 					$total += ($stock_item->standard_cost * $stock_item->quantity);
 					if ($id != $line_no) {
 						Display::alt_table_row_color($k);
-						stock_status_cell($stock_item->stock_id);
+						Item_UI::status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
@@ -144,7 +144,7 @@
 					label_cell($order->line_items[$id]->description, 'nowrap');
 					$Ajax->activate('items_table');
 				} else {
-					stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+					Item_UI::costable_cells(null, 'stock_id', null, false, true);
 					if (list_updated('stock_id')) {
 						$Ajax->activate('units');
 						$Ajax->activate('qty');

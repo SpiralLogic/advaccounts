@@ -88,8 +88,8 @@
 			{
 				Display::start_outer_table('tablestyle width70');
 				Display::table_section(1);
-				locations_list_row(_("From Location:"), 'FromStockLocation', null);
-				locations_list_row(_("To Location:"), 'ToStockLocation', null);
+				Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
+				Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
 				Display::table_section(2, "33%");
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
 				date_row(_("Date:"), 'AdjDate', '', true);
@@ -115,7 +115,7 @@
 				foreach ($order->line_items as $line_no => $stock_item) {
 					if ($id != $line_no) {
 						Display::alt_table_row_color($k);
-						stock_status_cell($stock_item->stock_id);
+						Item_UI::status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
@@ -148,7 +148,7 @@
 					label_cell($order->line_items[$id]->description);
 					$Ajax->activate('items_table');
 				} else {
-					stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+					Item_UI::costable_cells(null, 'stock_id', null, false, true);
 					if (list_updated('stock_id')) {
 						$Ajax->activate('units');
 						$Ajax->activate('qty');

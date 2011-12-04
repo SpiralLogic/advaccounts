@@ -420,7 +420,7 @@
 				$Ajax->activate('_ex_rate');
 			}
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
-			locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true);
+			Inv_Location::row(_("Receive Into:"), 'StkLocation', null, false, true);
 			Display::table_section(3);
 			if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" || isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == ""
 			) {
@@ -518,7 +518,7 @@
 					$_POST['Location'] = $po->Location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				locations_list_cells(null, 'Location', $_POST['Location']);
+				Inv_Location::cells(null, 'Location', $_POST['Location']);
 			} else {
 				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
 			}
@@ -556,7 +556,7 @@
 				$qty_rcvd = $order->line_items[$id]->qty_received;
 			} else {
 				hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
-				stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
+				Item_Purchase::cells(null, 'stock_id', null, false, true, true);
 				if (list_updated('stock_id')) {
 					$Ajax->activate('price');
 					$Ajax->activate('units');

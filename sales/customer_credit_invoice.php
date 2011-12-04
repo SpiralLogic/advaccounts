@@ -212,7 +212,7 @@
 			//	if (!isset($_POST['sales_type_id']))
 			//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 			//	label_cell(_("Sales Type"), "class='tableheader2'");
-			//	Sales_UI::types_cells(null, 'sales_type_id', $_POST['sales_type_id']);
+			//	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
 			Display::end_row();
 			Display::end_table();
 			echo "</td><td>"; // outer table
@@ -233,7 +233,7 @@
 					continue; // this line was fully credited/removed
 				}
 				Display::alt_table_row_color($k);
-				//	stock_status_cell($ln_itm->stock_id); alternative view
+				//	Item_UI::status_cell($ln_itm->stock_id); alternative view
 				label_cell($ln_itm->stock_id);
 				text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
 				$dec = Item::qty_dec($ln_itm->stock_id);
@@ -281,7 +281,7 @@
 				if (!isset($_POST['Location'])) {
 					$_POST['Location'] = $_SESSION['Items']->Location;
 				}
-				locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
+				Inv_Location::row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 			} else {
 				/* the goods are to be written off to somewhere */
 				GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);

@@ -252,7 +252,7 @@
 	Sales_UI::persons_row(_("Sales Person:"), 'salesman', null);
 	Sales_UI::areas_row(_("Sales Area:"), 'area', null);
 	Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, true);
-	locations_list_row(_("Default Inventory Location:"), 'default_location', null);
+	Inv_Location::row(_("Default Inventory Location:"), 'default_location', null);
 	Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', null);
 	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', null);
 	yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);

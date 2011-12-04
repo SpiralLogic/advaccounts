@@ -150,7 +150,7 @@
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
 	} else {
-		currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
+		GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 	}
 	yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 	if ($is_editing) {

@@ -62,5 +62,27 @@
 		$result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 		return DB::fetch($result);
 	}
+
+			// STOCK PURCHASEABLE
+		public static		function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
+				return Item::select($name, $selected_id, $all_option, $submit_on_change, array(
+																																													'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'", 'show_inactive' => $all, 'editable' => false),
+					false, $legacy);
+			}
+
+		public static		function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
+				if ($label != null) {
+					echo "<td>$label</td>\n";
+				}
+				echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
+																																												'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'", 'editable' => 30, 'cells' => true, 'description' => ''));
+			}
+
+		public static		function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
+				echo "<tr><td class='label'>$label</td>";
+				Item_Purchase::cells(null, $name, $selected_id, $all_option, $submit_on_change, $editkey);
+				echo "</tr>\n";
+			}
+
 	}
 ?>

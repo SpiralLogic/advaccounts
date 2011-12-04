@@ -166,7 +166,7 @@
 		$_POST['category'] = $props['category_id'];
 		Display::start_table('tablestyle2');
 		text_row(_("Description:"), 'description', null, 50, 200);
-		stock_categories_list_row(_("Category:"), 'category', null);
+		Item_Category::row(_("Category:"), 'category', null);
 		submit_row('update_name', _("Update"), false, 'class=center colspan=2', _('Update kit/alias name'), true);
 		Display::end_row();
 		Display::end_table(1);
@@ -189,7 +189,7 @@
 			$_POST['category'] = $props['category_id'];
 		}
 		text_row(_("Description:"), 'description', null, 50, 200);
-		stock_categories_list_row(_("Category:"), 'category', null);
+		Item_Category::row(_("Category:"), 'category', null);
 	}
 	$res = Item::get_edit_info(Display::get_post('component'));
 	$dec = $res["decimals"] == '' ? 0 : $res["decimals"];

@@ -184,10 +184,10 @@
 		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
 	} else {
-		currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
+		GL_Currency::row(_("Supplier's Currency:"), 'curr_code', null);
 	}
 	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', null);
-	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
+	GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', null);
 	Display::table_section_title(_("Accounts"));
 	GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
 	GL_UI::all_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);

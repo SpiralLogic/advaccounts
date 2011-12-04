@@ -366,7 +366,7 @@
 			continue; // this line was fully invoiced
 		}
 		Display::alt_table_row_color($k);
-		stock_status_cell($ln_itm->stock_id);
+		Item_UI::status_cell($ln_itm->stock_id);
 		if (!$viewing) {
 			textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3);
 		} else {

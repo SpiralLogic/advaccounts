@@ -333,7 +333,7 @@
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ITEMS':
-					return stock_manufactured_items_list($name);
+					return Item_UI::manufactured($name);
 				case 'WORKORDER':
 					$sql
 					 = "SELECT workorders.id, concat(workorders.id, '-',
@@ -341,11 +341,11 @@
 						FROM stock_master, workorders WHERE stock_master.stock_id=workorders.stock_id ORDER BY workorders.id DESC";
 					return combo_input($name, '', $sql, 'id', 'IName', array('order' => false));
 				case 'LOCATIONS':
-					return locations_list($name, null, _("No Location Filter"));
+					return Inv_Location::select($name, null, _("No Location Filter"));
 				case 'CATEGORIES':
-					return stock_categories_list($name, null, _("No Category Filter"));
+					return Item_Category::select($name, null, _("No Category Filter"));
 				case 'SALESTYPES':
-					return Sales_UI::types($name);
+					return Sales_Type::select($name);
 				case 'AREAS':
 					return Sales_UI::areas($name);
 				case 'SALESMEN':

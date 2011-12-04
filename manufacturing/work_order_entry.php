@@ -273,11 +273,11 @@
 		label_row(_("Item:"), $myrow["StockItemName"]);
 		label_row(_("Destination Location:"), $myrow["location_name"]);
 	} else {
-		stock_manufactured_items_list_row(_("Item:"), 'stock_id', null, false, true);
+		Item_UI::manufactured_row(_("Item:"), 'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
 			$Ajax->activate('quantity');
 		}
-		locations_list_row(_("Destination Location:"), 'StockLocation', null);
+		Inv_Location::row(_("Destination Location:"), 'StockLocation', null);
 	}
 	if (!isset($_POST['quantity'])) {
 		$_POST['quantity'] = Item::qty_format(1, Input::post('stock_id'), $dec);

@@ -294,7 +294,7 @@
 				if (!isset($_POST['sales_type_id'])) {
 					$_POST['sales_type_id'] = $order->sales_type;
 				}
-				Sales_UI::types_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
+				Sales_Type::row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
 				if ($order->sales_type != $_POST['sales_type_id']) {
 					$myrow = Sales_Type::get($_POST['sales_type_id']);
 					$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
@@ -461,7 +461,7 @@
 					if (!isset($_POST['Location'])) {
 						$_POST['Location'] = $credit->Location;
 					}
-					locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
+					Inv_Location::row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 				} else {
 					/* the goods are to be written off to somewhere */
 					GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);

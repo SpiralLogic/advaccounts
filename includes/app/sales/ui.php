@@ -73,29 +73,6 @@
 			echo "</tr>\n";
 		}
 
-		// SALES TYPES
-		public static function	types($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
-			$sql = "SELECT id, sales_type, inactive FROM sales_types";
-			return combo_input($name, $selected_id, $sql, 'id', 'sales_type', array(
-																																						 'spec_option' => $special_option === true ? _("All Sales Types") :
-																																							$special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	  'async' => false,
-																																				));
-		}
-
-		public static function	types_cells($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
-			if ($label != null) {
-				echo "<td>$label</td>\n";
-			}
-			echo "<td>";
-			echo Sales_UI::types($name, $selected_id, $submit_on_change, $special_option);
-			echo "</td>\n";
-		}
-
-		public static function	types_row($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
-			echo "<tr><td class='label'>$label</td>";
-			Sales_UI::types_cells(null, $name, $selected_id, $submit_on_change, $special_option);
-			echo "</tr>\n";
-		}
 
 		public static function	shippers($name, $selected_id = null) {
 			$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
@@ -214,4 +191,12 @@
 			echo "</td></tr>";
 		}
 
+		public static 	function payment_cells($label, $name, $selected_id = null, $submit_on_change = false) {
+					if ($label != null) {
+						echo "<td class='label'>$label</td>\n";
+					}
+					echo "<td>";
+					echo yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+					echo "</td>\n";
+				}
 	}

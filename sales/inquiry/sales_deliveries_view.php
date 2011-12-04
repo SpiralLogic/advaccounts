@@ -74,7 +74,7 @@
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
-	locations_list_cells(_("Location:"), 'StockLocation', null, true);
+	Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
 	Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);

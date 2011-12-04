@@ -25,7 +25,7 @@
 	}
 	JS::footerFile("js/quickitems.js");
 	Page::start(_($help_context = "Items"), true);
-	$stock_cats = stock_categories_list('category_id');
+	$stock_cats = Item_Category::select('category_id');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
 		UI::search('item', array(
