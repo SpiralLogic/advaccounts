@@ -8,12 +8,31 @@
 	 */
 	Class DB_Query_Insert extends DB_Query
 	{
+		/**
+		 * @var
+		 */
 		protected $table;
+		/**
+		 * @var array
+		 */
 		protected $values = array();
+		/**
+		 * @var array
+		 */
 		protected $feilds = array();
+		/**
+		 * @var array
+		 */
 		protected $hasFeilds = array();
+		/**
+		 * @var array
+		 */
 		public $data = array();
 
+		/**
+		 * @param bool $table
+		 * @param      $db
+		 */
 		public function __construct($table = false, $db)
 			{
 				parent::__construct($db);
@@ -28,7 +47,11 @@
 				return $this;
 			}
 
-		public function into($table)
+		/**
+		 * @param $table
+		 *
+		 * @return DB_Query_Insert
+		 */public function into($table)
 			{
 				$this->table = $table;
 				return $this;
@@ -45,7 +68,12 @@
 				return $this;
 			}
 
-		public function value($feild, $value)
+		/**
+		 * @param $feild
+		 * @param $value
+		 * @return DB_Query_Insert
+		 * @throws Adv_Exception
+		 */public function value($feild, $value)
 			{
 				if (is_array($feild) && is_array($value)) {
 					if (count($feild) != count($value)) {
@@ -62,7 +90,10 @@
 				return $this;
 			}
 
-		public function execute($data = null)
+		/**
+		 * @param null $data
+		 * @return string
+		 */public function execute($data = null)
 			{
 				if ($this->data !== null) {
 					$this->values((array)$data);
@@ -72,7 +103,9 @@
 				return $this->_buildQuery();
 			}
 
-		protected function _buildQuery()
+		/**
+		 * @return string
+		 */protected function _buildQuery()
 			{
 				$sql = "INSERT INTO " . $this->table . " (";
 				$sql .= implode(', ', $this->feilds) . ") VALUES (";

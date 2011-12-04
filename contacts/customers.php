@@ -164,7 +164,7 @@
 		hidden('curr_code', $customer->curr_code);
 	}
 	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
-	credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);

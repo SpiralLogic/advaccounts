@@ -74,17 +74,17 @@
 		$_POST['language'] = $_SESSION['Language']->code;
 	}
 	Display::table_section_title(_("Language"));
-	UI_Languages::row(_("Language:"), 'language', $_POST['language']);
+	Languages::row(_("Language:"), 'language', $_POST['language']);
 	Display::table_section(2);
 	Display::table_section_title(_("Miscellaneous"));
 	check_row(_("Show hints for new users:"), 'show_hints', User::hints());
 	check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
 	check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
-	themes_list_row(_("Theme:"), "theme", User::theme());
+	Users::themes_row(_("Theme:"), "theme", User::theme());
 	/* The array $themes is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::pagesize());
-	tab_list_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
+	Users::tabs_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
 	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['profile'])) {

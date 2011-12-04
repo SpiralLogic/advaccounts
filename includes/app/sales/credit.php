@@ -455,7 +455,7 @@
 				}
 				Display::div_start('options');
 				Display::start_table('tablestyle2');
-				credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
+				Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
 				if ($_POST['CreditType'] == "Return") {
 					/*if the credit note is a return of goods then need to know which location to receive them into */
 					if (!isset($_POST['Location'])) {
@@ -469,6 +469,23 @@
 				textarea_row(_("Memo"), "CreditText", null, 51, 3);
 				echo "</table>";
 				Display::div_end();
+			}
+
+			public static function cells($label, $name, $selected = null, $submit_on_change = false) {
+				if ($label != null) {
+					label_cell($label);
+				}
+				echo "<td>\n";
+				echo array_selector($name, $selected, array(
+																									 'Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")),
+					array('select_submit' => $submit_on_change));
+				echo "</td>\n";
+			}
+
+			public static function row($label, $name, $selected = null, $submit_on_change = false) {
+				echo "<tr><td class='label'>$label</td>";
+				Sales_Credit::cells(null, $name, $selected, $submit_on_change);
+				echo "</tr>\n";
 			}
 
 	}

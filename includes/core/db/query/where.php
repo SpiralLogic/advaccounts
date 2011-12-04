@@ -8,9 +8,21 @@
 	 */
 	abstract class DB_Query_Where
 	{
+		/**
+		 * @var array
+		 */
 		public $data = array();
+		/**
+		 * @var array
+		 */
 		protected $where = array();
+		/**
+		 * @var array
+		 */
 		private $wheredata = array();
+		/**
+		 * @var int
+		 */
 		protected $count = 0;
 
 		/***
@@ -42,42 +54,75 @@
 				return $this;
 			}
 
-		public function where($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 *
+		 * @return DB_Query_Select
+		 */public function where($condition, $uservar = null)
 			{
 				return $this->_where($condition, 'AND', $uservar);
 			}
 
-		public function or_where($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function or_where($condition, $uservar = null)
 			{
 				return $this->_where($condition, 'OR', $uservar);
 			}
 
-		public function and_where($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function and_where($condition, $uservar = null)
 			{
 				return $this->_where($condition, 'AND', $uservar);
 			}
 
-		public function or_open($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function or_open($condition, $uservar = null)
 			{
 				return $this->_where($condition, 'OR (', $uservar);
 			}
 
-		public function and_open($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function and_open($condition, $uservar = null)
 			{
 				return $this->_where($condition, 'AND (', $uservar);
 			}
 
-		public function close_and($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function close_and($condition, $uservar = null)
 			{
 				return $this->_where($condition, ') AND', $uservar);
 			}
 
-		public function close_or($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function close_or($condition, $uservar = null)
 			{
 				return $this->_where($condition, ') OR', $uservar);
 			}
 
-		public function open($condition, $uservar = null)
+		/**
+		 * @param      $condition
+		 * @param null $uservar
+		 * @return DB_Query_Select
+		 */public function open($condition, $uservar = null)
 			{
 				if (empty($this->where)) {
 					$condition = '(' . $condition;
@@ -85,13 +130,17 @@
 				return $this->_where($condition, ' AND ', $uservar);
 			}
 
-		public function close()
+		/**
+		 * @return DB_Query_Where
+		 */public function close()
 			{
 				array_push($this->where, array_pop($this->where) . ') ');
 				return $this;
 			}
 
-		protected function _buildWhere()
+		/**
+		 * @return string
+		 */protected function _buildWhere()
 			{
 				$sql = '';
 				if (!empty($this->where)) {

@@ -194,7 +194,7 @@
 	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		Display::table_section(2);
-		Bank_UI::accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+		Bank_UI::accounts_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 		Display::table_section(3);
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);

@@ -25,8 +25,15 @@
 		 * @var array|null
 		 */
 		static $_vars = null;
+		/**
+		 * @var bool
+		 */
 		protected static $_initialised = false;
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function init() {
 			if (static::$_initialised === true) {
 				return;
@@ -42,7 +49,14 @@
 			static::js();
 		}
 
-		protected static function load($group = 'config') {
+		/**
+		 * @static
+		 *
+		 * @param string $group
+		 *
+		 * @return mixed
+		 * @throws Config_Exception
+		 */protected static function load($group = 'config') {
 			$file = DOCROOT . "config" . DS . $group . '.php';
 			$group_name = $group;
 			if (is_array($group)) {
@@ -59,9 +73,15 @@
 			}
 			/** @noinspection PhpIncludeInspection */
 			static::$_vars[$group_name] = include($file);
-		}
+	}
 
-		public static function set($var, $value, $group = 'config') {
+		/**
+		 * @static
+		 * @param        $var
+		 * @param        $value
+		 * @param string $group
+		 * @return mixed
+		 */public static function set($var, $value, $group = 'config') {
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
@@ -99,25 +119,39 @@
 			 static::$_vars[$group][$var];
 		}
 
-		public static function remove($var, $group = 'config') {
+		/**
+		 * @static
+		 * @param        $var
+		 * @param string $group
+		 */public static function remove($var, $group = 'config') {
 			if (array_key_exists($var, static::$_vars[$group])) {
 				unset(static::$_vars[$group][$var]);
 			}
-		}
+	}
 
-		public static function store() {
+		/**
+		 * @static
+		 *
+		 */public static function store() {
 			$_SESSION['config'] = static::$_vars;
-		}
+	}
 
-		public static function get_all($group = 'config') {
+		/**
+		 * @static
+		 * @param string $group
+		 * @return mixed
+		 */public static function get_all($group = 'config') {
 			static::init();
 			if (!isset(static::$_vars[$group])) {
 				static::load($group);
 			}
 			return static::$_vars[$group];
-		}
+	}
 
-		protected static function js() {
+		/**
+		 * @static
+		 *
+		 */protected static function js() {
 			JS::headerFile(static::get('assets.header'));
 			JS::footerFile(static::get('assets.footer'));
 		}

@@ -33,8 +33,8 @@
 			Display::start_form();
 			Display::start_outer_table('tablestyle2');
 			Display::table_section(1);
-			Bank_UI::accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
-			Bank_UI::accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
+			Bank_UI::accounts_row(_("From Account:"), 'FromBankAccount', null, true);
+			Bank_UI::accounts_row(_("To Account:"), 'ToBankAccount', null, true);
 			date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 			$from_currency = Banking::get_bank_account_currency($_POST['FromBankAccount']);
 			$to_currency = Banking::get_bank_account_currency($_POST['ToBankAccount']);

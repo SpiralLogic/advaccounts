@@ -281,7 +281,7 @@
 		}
 		text_row_ex(_("Name"), 'name', 30);
 		text_row_ex(_("Folder"), 'path', 20);
-		tab_list_row(_("Menu Tab"), 'tab', null, true);
+		Users::tabs_row(_("Menu Tab"), 'tab', null, true);
 		text_row_ex(_("Menu Link Text"), 'title', 30);
 		record_status_list_row(_("Default status"), 'active');
 		file_row(_("Module File"), 'uploadfile');

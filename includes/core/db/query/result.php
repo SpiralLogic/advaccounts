@@ -15,12 +15,31 @@
 		 * @var PDOStatement thing
 		 */
 		public $prepared;
+		/**
+		 * @var
+		 */
 		protected $current;
+		/**
+		 * @var
+		 */
 		protected $count;
+		/**
+		 * @var int
+		 */
 		protected $cursor = -1;
+		/**
+		 * @var null
+		 */
 		protected $data;
+		/**
+		 * @var
+		 */
 		protected $valid;
 
+		/**
+		 * @param      $prepared
+		 * @param null $data
+		 */
 		public function __construct($prepared, $data = null)
 			{
 				$this->data = $data;
@@ -29,6 +48,9 @@
 				$this->execute();
 			}
 
+		/**
+		 *
+		 */
 		protected function execute()
 			{
 				try {
@@ -40,6 +62,9 @@
 				}
 			}
 
+		/**
+		 * @return array
+		 */
 		public function all()
 			{
 				$result = $this->prepared->fetchAll();
@@ -47,49 +72,71 @@
 				return $result;
 			}
 
-		public function one($column = null)
+		/**
+		 * @param null $column
+		 *
+		 * @return mixed
+		 */public function one($column = null)
 			{
 				$result = $this->prepared->fetch();
 				return ($column !== null && isset($result[$column])) ? $result[$column] : $result;
 			}
 
-		public function assoc()
+		/**
+		 * @return DB_Query_Result
+		 */public function assoc()
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 				return $this;
 			}
 
-		public function num()
+		/**
+		 * @return DB_Query_Result
+		 */public function num()
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_NUM);
 				return $this;
 			}
 
-		public function asClassLate($class, $contruct = array())
+		/**
+		 * @param       $class
+		 * @param array $contruct
+		 * @return DB_Query_Result
+		 */public function asClassLate($class, $contruct = array())
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class, $contruct);
 				return $this;
 			}
 
-		public function asClass($class, $contruct = array())
+		/**
+		 * @param       $class
+		 * @param array $contruct
+		 * @return DB_Query_Result
+		 */public function asClass($class, $contruct = array())
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_CLASS, $class, $contruct);
 				return $this;
 			}
 
-		public function intoClass($object)
+		/**
+		 * @param $object
+		 */public function intoClass($object)
 			{
 				return $this->intoObject($object);
 			}
 
-		public function intoObject($object)
+		/**
+		 * @param $object
+		 */public function intoObject($object)
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
 				$this->prepared->fetch();
 				$this->prepared = null;
 			}
 
-		public function asObject()
+		/**
+		 * @return DB_Query_Result
+		 */public function asObject()
 			{
 				$this->prepared->setFetchMode(PDO::FETCH_OBJ);
 				return $this;
@@ -133,7 +180,9 @@
 				return $this->cursor;
 			}
 
-		public function valid()
+		/**
+		 * @return mixed
+		 */public function valid()
 			{
 				if (!$this->current) {
 					$this->valid = false;
@@ -172,7 +221,9 @@
 				return $this->count;
 			}
 
-		public function __toString()
+		/**
+		 * @return mixed
+		 */public function __toString()
 			{
 				if ($this->cursor === 0) {
 					$this->next();

@@ -8,14 +8,41 @@
 	 */
 	class Dialog
 	{
+		/**
+		 * @var array
+		 */
 		protected $buttons = array();
+		/**
+		 * @var bool
+		 */
 		protected $name;
+		/**
+		 * @var string
+		 */
 		protected $contents = '';
+		/**
+		 * @var array
+		 */
 		protected $events = array();
+		/**
+		 * @var bool
+		 */
 		protected $data = false;
+		/**
+		 * @var array
+		 */
 		protected $options = array();
+		/**
+		 * @var bool
+		 */
 		protected $_template = false;
 
+		/**
+		 * @param       $title
+		 * @param bool  $name
+		 * @param bool  $contents
+		 * @param array $options
+		 */
 		function __construct($title, $name = false, $contents = false, $options = array()) {
 			$this->name = $name;
 			$this->title = ($title) ? $title : "Message Box";
@@ -32,7 +59,11 @@
 			$this->setOptions($options);
 		}
 
-		function setContents($contents) {
+		/**
+		 * @param $contents
+		 *
+		 * @return mixed
+		 */function setContents($contents) {
 			if (empty($contents)) {
 				return;
 			}
@@ -44,38 +75,54 @@
 			} else {
 				$this->contents = $contents;
 			}
-		}
+	}
 
-		public function setTemplateData($data = '') {
+		/**
+		 * @param string $data
+		 */public function setTemplateData($data = '') {
 			$this->data = $data;
 			$this->_template = true;
-		}
+	}
 
-		function addOpenEvent($selector, $type = 'click') {
+		/**
+		 * @param        $selector
+		 * @param string $type
+		 */function addOpenEvent($selector, $type = 'click') {
 			$this->events[] = array($selector, $type, "\$({$this->name}).dialog('open');");
-		}
+	}
 
-		function addBeforeClose($js) {
+		/**
+		 * @param $js
+		 */function addBeforeClose($js) {
 			$this->options['beforeClose'] = "function(event,ui){$js}";
-		}
+	}
 
-		function addButtons($buttons = array()) {
+		/**
+		 * @param array $buttons
+		 */function addButtons($buttons = array()) {
 			foreach ($buttons as $button => $action) {
 				$this->addButton($button, $action);
 			}
-		}
+	}
 
-		function addButton($button, $action) {
+		/**
+		 * @param $button
+		 * @param $action
+		 */function addButton($button, $action) {
 			$this->buttons[$button] = $action;
-		}
+	}
 
-		function setOptions($options = array()) {
+		/**
+		 * @param array $options
+		 */function setOptions($options = array()) {
 			if (is_array($options) && count($options) > 0) {
 				$this->options = array_merge($this->options, $options);
 			}
-		}
+	}
 
-		function show() {
+		/**
+		 *
+		 */function show() {
 			$buttons = '';
 			if (count($this->buttons > 0)) {
 				$buttons = '.dialog("option","buttons", [';

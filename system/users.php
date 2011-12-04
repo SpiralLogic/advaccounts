@@ -171,8 +171,8 @@
 	text_row_ex(_("Full Name") . ":", 'real_name', 50);
 	text_row_ex(_("Telephone No.:"), 'phone', 30);
 	email_row_ex(_("Email Address:"), 'email', 50);
-	security_roles_list_row(_("Access Level:"), 'Access', null);
-	UI_Languages::row(_("Language:"), 'language', null);
+	Security::roles_row(_("Access Level:"), 'Access', null);
+	Languages::row(_("Language:"), 'language', null);
 	pos_list_row(_("User's POS") . ':', 'pos', null);
 	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile', null,

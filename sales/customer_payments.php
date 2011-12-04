@@ -171,7 +171,7 @@
 
 
 	Display::start_form();
-	Display::start_outer_table('tablestyle2 width60 pad5');
+	Display::start_outer_table('tablestyle2 width90 pad2');
 	Display::table_section(1);
 	Debtor_UI::select_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
@@ -194,7 +194,7 @@
 		if (!list_updated('bank_account')) {
 			$_POST['bank_account'] = Bank_Account::get_customer_default($_POST['customer_id']);
 		}
-		Bank_UI::accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+		Bank_UI::accounts_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 		Display::table_section(3);
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
@@ -212,7 +212,7 @@
 			Gl_Allocation::show_allocatable(false);
 			Display::div_end();
 		}
-		Display::start_table('tablestyle width60');
+		Display::start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');
 		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');

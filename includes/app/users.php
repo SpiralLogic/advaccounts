@@ -207,4 +207,59 @@
 			Cache::set('users_online', $users, time() + 300);
 			return $users;
 		}
+
+				public static function  themes_row($label, $name, $value = null) {
+					$themes = array();
+					$themedir = opendir(THEME_PATH);
+					while (false !== ($fname = readdir($themedir))) {
+						if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
+							$themes[$fname] = $fname;
+						}
+					}
+					ksort($themes);
+					echo "<tr><td class='label'>$label</td>\n<td>";
+					echo array_selector($name, $value, $themes);
+					echo "</td></tr>\n";
+				}
+
+				public static function  tabs_row($label, $name, $selected_id = null, $all = false) {
+					global $installed_extensions;
+					$tabs = array();
+					foreach (Session::i()->App->applications as $app) {
+						$tabs[$app->id] = Display::access_string($app->name, true);
+					}
+					if ($all) { // add also not active ext. modules
+						foreach ($installed_extensions as $ext) {
+							if ($ext['type'] == 'module' && !$ext['active']) {
+								$tabs[$ext['tab']] = Display::access_string($ext['title'], true);
+							}
+						}
+					}
+					echo "<tr>\n";
+					echo "<td class='label'>$label</td><td>\n";
+					echo array_selector($name, $selected_id, $tabs);
+					echo "</td></tr>\n";
+				}
+
+				public static function  select($name, $selected_id = null, $spec_opt = false) {
+					$sql = "SELECT id, real_name, inactive FROM users";
+					return combo_input($name, $selected_id, $sql, 'id', 'real_name', array(
+																																								'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+				}
+
+				public static function  cells($label, $name, $selected_id = null, $spec_opt = false) {
+					if ($label != null) {
+						echo "<td>$label</td>\n";
+					}
+					echo "<td>\n";
+					echo Users::select($name, $selected_id, $spec_opt);
+					echo "</td>\n";
+				}
+
+				public static function  row($label, $name, $selected_id = null, $spec_opt = false) {
+					echo "<tr><td class='label'>$label</td>";
+					Users::cells(null, $name, $selected_id, $spec_opt);
+					echo "</tr>\n";
+				}
+
 	}

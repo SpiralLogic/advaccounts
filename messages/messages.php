@@ -14,7 +14,7 @@
 	JS::footerFile("js/messages.js");
 	Page::start(_($help_context = "Messages"), Input::request('popup'));
 	HTML::div(array('style' => 'margin:0 auto;text-align:center'));
-	user_list_row(_("User:"), 'user_id');
+	Users::row(_("User:"), 'user_id');
 	HTML::br(false)->label(array(
 															'content' => "Subject: ", 'for' => 'subject'))->br->input('subject', array('size' => 50))->label;
 	HTML::br(false)->label(array(

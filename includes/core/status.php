@@ -8,6 +8,9 @@
 	 */
 	class status
 	{
+		/**
+		 * @var array
+		 */
 		protected $_status = Array('status' => true, 'process' => 'construct', 'message' => 'Initialised', 'var');
 
 		/**
@@ -34,6 +37,9 @@
 			return $this->_status['status'];
 		}
 
+		/**
+		 * @return array
+		 */
 		public function get() {
 			return $this->_status;
 		}

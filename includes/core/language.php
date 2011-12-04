@@ -10,15 +10,39 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// Prevent register_globals vulnerability
+	/**
+	 *
+	 */
 	class Language
 	{
+		/**
+		 * @var
+		 */
 		public $name;
+		/**
+		 * @var string
+		 */
 		public $code; // eg. ar_EG, en_GB
+		/**
+		 * @var
+		 */
 		public $encoding; // eg. UTF-8, CP1256, ISO8859-1
+		/**
+		 * @var string
+		 */
 		public $dir; // Currently support for Left-to-Right (ltr) and
 		// Right-To-Left (rtl)
+		/**
+		 * @var
+		 */
 		public $is_locale_file;
 
+		/**
+		 * @param        $name
+		 * @param        $code
+		 * @param        $encoding
+		 * @param string $dir
+		 */
 		function __construct($name, $code, $encoding, $dir = 'ltr') {
 			$this->name = $name;
 			$this->code = $code ? $code : 'en_GB';
@@ -26,6 +50,9 @@
 			$this->dir = $dir;
 		}
 
+		/**
+		 * @param $code
+		 */
 		function set_language($code) {
 			$changed = $this->code != $code;
 			$lang = Arr::search_value($code, Config::get('languages.installed'), 'code');
@@ -51,7 +78,11 @@
 	}
 
 	if (!function_exists("_")) {
-		function _($text) {
+		/**
+		 * @param $text
+		 *
+		 * @return mixed
+		 */function _($text) {
 			$retVal = $_SESSION['get_text']->gettext($text);
 			if ($retVal == "") {
 				return $text;

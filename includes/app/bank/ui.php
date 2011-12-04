@@ -17,7 +17,7 @@
 			Display::div_start('pmt_header');
 			Display::start_outer_table('tablestyle2 width90'); // outer table
 			Display::table_section(1);
-			Bank_UI::accounts_list_row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
+			Bank_UI::accounts_row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
 			date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
 			Display::table_section(2, "33%");
 			if (!isset($_POST['PayType'])) {
@@ -237,7 +237,7 @@
 			echo "</td>\n";
 		}
 
-		public static function	accounts_select_row($label, $name, $selected_id = null, $submit_on_change = false) {
+		public static function	accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Bank_UI::accounts_cells(null, $name, $selected_id, $submit_on_change);
 			echo "</tr>\n";

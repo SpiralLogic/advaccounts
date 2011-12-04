@@ -8,12 +8,33 @@
 	 */
 	class DB_Query_Select extends DB_Query
 	{
+		/**
+		 * @var array
+		 */
 		protected $select = array();
+		/**
+		 * @var array
+		 */
 		protected $from = array();
+		/**
+		 * @var array
+		 */
 		protected $limit = array();
+		/**
+		 * @var array
+		 */
 		protected $orderby = array();
+		/**
+		 * @var array
+		 */
 		protected $groupby = array();
+		/**
+		 * @var array
+		 */
 		protected $union = array();
+		/**
+		 * @var array
+		 */
 		protected $union_or = array();
 
 		/***
@@ -52,7 +73,11 @@
 				return $this;
 			}
 
-		function orderby($by = null)
+		/**
+		 * @param null $by
+		 *
+		 * @return DB_Query_Select
+		 */function orderby($by = null)
 			{				if (is_null($by)) return $this;
 
 				$by = func_get_args();
@@ -60,20 +85,29 @@
 				return $this;
 			}
 
-		function groupby($by = null)
+		/**
+		 * @param null $by
+		 * @return DB_Query_Select
+		 */function groupby($by = null)
 			{	if (is_null($by)) return $this;
 				$by = func_get_args();
 				$this->groupby = array_merge($this->groupby, $by);
 				return $this;
 			}
 
-		public function limit($start, $quantity = null)
+		/**
+		 * @param      $start
+		 * @param null $quantity
+		 * @return DB_Query_Select
+		 */public function limit($start, $quantity = null)
 			{
 				$this->limit = ($quantity == null) ? $start : "$start, $quantity";
 				return $this;
 			}
 
-		public function union()
+		/**
+		 * @return DB_Query_Select
+		 */public function union()
 			{
 				$this->union[] = '(' . $this->_buildQuery() . ')';
 				$this->select = $this->from = $this->orderby = $this->groupby = array();
@@ -81,12 +115,17 @@
 				return $this;
 			}
 
-		public function union_or($condition, $var)
+		/**
+		 * @param $condition
+		 * @param $var
+		 */public function union_or($condition, $var)
 			{
 				$this->union_or[$condition] = $var;
 			}
 
-		public function execute()
+		/**
+		 * @return string
+		 */public function execute()
 			{
 				if ($this->union) {
 					return implode(' UNION ', $this->union);
@@ -94,7 +133,9 @@
 				return $this->_buildQuery();
 			}
 
-		protected function _buildQuery()
+		/**
+		 * @return string
+		 */protected function _buildQuery()
 			{
 				$sql = "SELECT ";
 				$sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);

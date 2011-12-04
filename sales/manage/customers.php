@@ -207,7 +207,7 @@
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
-	credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
+	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);

@@ -169,7 +169,7 @@
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	Bank_UI::accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
+	Bank_UI::accounts_row(_("From Bank Account:"), 'bank_account', null, true);
 	Display::table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);

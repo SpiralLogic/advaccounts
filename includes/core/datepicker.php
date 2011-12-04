@@ -8,11 +8,25 @@
 	 */
 	class DatePicker
 	{
+		/**
+		 * @var array
+		 */
 		protected static $options = array('rebind' => true);
+		/**
+		 * @var
+		 */
 		protected $name;
+		/**
+		 * @var int
+		 */
 		protected static $_count = 0;
 
-		static function add($name, $options = array()) {
+		/**
+		 * @static
+		 *
+		 * @param       $name
+		 * @param array $options
+		 */static function add($name, $options = array()) {
 			$options = array_merge(static::$options, $options);
 			$js = '$("#' . $name . '").one("focus",function() { $(this).datepicker(' . JS::arrayToOptions($options) . ').focus() }); ';
 			if ($options['rebind']) {

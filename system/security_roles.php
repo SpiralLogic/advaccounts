@@ -168,7 +168,7 @@
 	Display::start_form();
 	Display::start_table('tablestyle_noborder');
 	Display::start_row();
-	security_roles_list_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
+	Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
 	$new_role = Display::get_post('role') == '';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	Display::end_row();

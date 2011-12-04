@@ -148,11 +148,9 @@
 			}
 		}
 
-		public static function start_outer_table($extra = "", $padding = '2', $spacing = '0', $br = false) {
-			if ($br) {
-				Display::br();
-			}
-			Display::start_table($extra .' pad'. $padding. ' margin'.$spacing);
+		public static function start_outer_table($class= "") {
+
+			Display::start_table($class);
 			echo "<tr class='top'><td>\n"; // outer table
 		}
 

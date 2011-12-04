@@ -13,6 +13,4 @@
 	include_once(APPPATH . "ui/ui_tables.php");
 	include_once(APPPATH . "ui/payment.php");
 	include_once(APPPATH . "ui/stock.php");
-	include_once(APPPATH . "ui/supplier.php");
-	include_once(APPPATH . "ui/users.php");
 

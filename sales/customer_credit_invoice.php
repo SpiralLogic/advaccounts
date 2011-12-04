@@ -275,7 +275,7 @@
 			}
 			Display::div_start('options');
 			Display::start_table('tablestyle2');
-			credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
+			Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
 			if ($_POST['CreditType'] == "Return") {
 				/*if the credit note is a return of goods then need to know which location to receive them into */
 				if (!isset($_POST['Location'])) {
