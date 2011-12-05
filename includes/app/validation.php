@@ -44,91 +44,77 @@
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
 
-		public static function check($validate, $msg = '', $extra = null)
-			{
-				//if (!property_exists(__CLASS__, $validate)) return Errors::error("TABLE $validate doesn't exist", true);
-				if ($extra === false) {
-					return 0;
-				}
-				if ($extra !== null) {
-					if (empty($extra)) {
-						throw new Adv_Exception("Extra information not provided for " . $validate);
-					}
-					if (is_string($extra)) {
-						$extra = DB::escape($extra);
-					}
-				} else {
-					$extra = '';
-				}
-				$result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
-				$myrow = DB::fetch_row($result);
-				if (!($myrow[0] > 0)) {
-					throw new Adv_Exception($msg);
-					end_page();
-					exit;
-				} else {
-					return $myrow[0];
-				}
+		public static function check($validate, $msg = '', $extra = null) {
+			if ($extra === false) {
+				return 0;
 			}
+			if ($extra !== null) {
+				if (empty($extra)) {
+					throw new Adv_Exception("Extra information not provided for " . $validate);
+				}
+				if (is_string($extra)) {
+					$extra = DB::escape($extra);
+				}
+			} else {
+				$extra = '';
+			}
+			$result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
+			$myrow = DB::fetch_row($result);
+			if (!($myrow[0] > 0)) {
+				throw new Adv_Exception($msg);
+				end_page();
+				exit;
+			} else {
+				return $myrow[0];
+			}
+		}
 
 		//
 		//	Integer input check
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
-		public static function is_int($postname, $min = null, $max = null)
-			{
-				if (!isset($_POST[$postname])) {
-					return 0;
-				}
-				$num = Validation::input_num($postname);
-				if (!is_int($num)) {
-					return 0;
-				}
-				if (isset($min) && ($num < $min)) {
-					return 0;
-				}
-				if (isset($max) && ($num > $max)) {
-					return 0;
-				}
-				return 1;
+		public static function is_int($postname, $min = null, $max = null) {
+			$options = array();
+			if ($min !== null) {
+				$options['min_range'] = $min;
 			}
+			if ($max !== null) {
+				$options['max_range'] = $max;
+			}
+			$result = filter_var($_POST[$postname], FILTER_VALIDATE_INT, $options);
+			return ($result === false || $result === null) ? false : 1;
+		}
 
 		//
 		//	Numeric input check.
 		//	Return 1 if number has proper form and is within <min, max> range
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
-		public static function is_num($postname, $min = null, $max = null, $dflt = 0)
-			{
-				if (!isset($_POST[$postname])) {
-					return 0;
-				}
-				$num = Validation::input_num($postname, $dflt);
-
-				if ($num === false || $num === null) {
-					return 0;
-				}
-				if (isset($min) && ($num < $min)) {
-					return 0;
-				}
-				if (isset($max) && ($num > $max)) {
-					return 0;
-				}
-				return 1;
+		public static function is_num($postname, $min = null, $max = null, $default = 0) {
+			$result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT);
+			if ($min !== null && $result < $min) {
+				$result = false;
 			}
+			if ($max !== null && $result > $max) {
+				$result = false;
+			}
+			return ($result === false || $result === null) ? $default : 1;
+		}
+
 		/**
 		 *
 		 *	 Read numeric value from user formatted input
 		 *
 		 * @param null $postname
-		 * @param int	$dflt
+		 * @param int  $default
+		 *
+		 * @internal param int $dflt
 		 *
 		 * @return bool|float|int|mixed|string
 		 */
-		public static 	function input_num($postname = null, $dflt = 0) {
-			if (!isset($_POST[$postname]) || $_POST[$postname] == "") {
-				return $dflt;
-			}
-			return User::numeric($_POST[$postname]);
+		public static function input_num($postname = null, $default = 0) {
+			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
+
+			return ($result === false || $result === null) ? $default : User::numeric($result);
 		}
 	}

@@ -1,12 +1,13 @@
 <?php
-	/**
+/*	/**
 	 * Created by JetBrains PhpStorm.
 	 * User: advanced
 	 * Date: 21/11/11
 	 * Time: 6:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	require_once('bootstrap.php');
+phpinfo();
+/*	require_once('bootstrap.php');
 	$filecsv = fopen(DOCROOT . '/upload/test.csv', 'r');
 
 	echo '<pre>';
@@ -23,6 +24,6 @@
 		$items[] = $item;
 	}
 
-	var_dump($items);
+	var_dump($items);*/
 
-	//$item->save($item);
+	//$item->save($item);*/

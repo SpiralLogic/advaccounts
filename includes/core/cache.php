@@ -23,11 +23,13 @@
 		 */
 		protected static function i() {
 			if (static::$i === null) {
-				static::$i = new Memcached('ADV');
-				static::$connected = static::$i->addServer('127.0.0.1', 11211);
-				static::$i->setOption(Memcached::OPT_PREFIX_KEY, DOCROOT);
-				if (static::$connected && isset($_GET['reload_config'])) {
-					static::$i->flush(0);
+				if (class_exists('Memcached', false)) {
+					static::$i = new Memcached('ADV');
+					static::$connected = static::$i->addServer('127.0.0.1', 11211);
+					static::$i->setOption(Memcached::OPT_PREFIX_KEY, DOCROOT);
+					if (static::$connected && isset($_GET['reload_config'])) {
+						static::$i->flush(0);
+					}
 				}
 			}
 			return (static::$connected) ? static::$i : false;
@@ -47,7 +49,7 @@
 				static::i()->set($key, $value, time() + $expires);
 			}
 			elseif (class_exists('Session', false)) {
-				Session::i()->Cache[$key] = $value;
+				$_SESSION['cache'][$key] = $value;
 			}
 			return $value;
 		}
@@ -65,7 +67,8 @@
 				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
 			}
 			elseif (class_exists('Session', false)) {
-				$result = Session::i()->Cache[$key];
+				if (!isset($_SESSION['cache'])) $_SESSION['cache']=array();
+				$result = $_SESSION['cache'][$key] ;
 			} else {
 				$result = false;
 			}
@@ -89,7 +92,7 @@
 			if (static::i()) {
 				static::i()->flush($time);
 			} else {
-				Session::i()->Cache = array();
+				$_SESSION['cache'] = array();
 			}
 		}
 	}

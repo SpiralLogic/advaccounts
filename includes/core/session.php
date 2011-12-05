@@ -70,11 +70,11 @@
 
 		/**
 		 *
-		 */
+ */
 		final protected function __construct() {
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			if (!session_start()) {
+			if (!class_exists('Memcached',false) || !session_start()) {
 				ini_set('session.save_handler','files');
 				session_start();
 			};
