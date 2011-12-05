@@ -127,7 +127,6 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(Exception $e) {
-			var_dump($e->getCode());
 				static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
 			if (static::$fatal) {
@@ -157,7 +156,7 @@
 				}
 				$str = $msg['message'];
 				$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-				if ($msg['type'] < E_USER_ERROR && $msg['type'] != null) {
+				if ($msg['type'] <= E_USER_ERROR && $msg['type'] != null) {
 
 					$type = E_USER_ERROR;
 				} elseif ($msg['type']>E_USER_ERROR && $msg['type']<E_USER_NOTICE) {
@@ -210,10 +209,6 @@
 				$str .= "sql that failed was : " . $sql_statement . "<br>";
 			}
 			$str .= "<br><br>";
-
-			if ($exit) {
-				throw new DB_Exception($str,E_USER_ERROR);
-			}
 		}
 
 		/**
@@ -275,7 +270,7 @@
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
 				}
-				elseif ($trace['file'] == COREPATH . 'error.php')
+				elseif ($trace['file'] == COREPATH . 'errors.php')
 				{
 					unset($data['backtrace'][$key]);
 				}

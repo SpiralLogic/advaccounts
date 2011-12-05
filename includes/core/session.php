@@ -194,7 +194,7 @@
 		 * @return null
 		 */
 		public function __get($var) {
-			return static::_isset($this->_session, $var) ? : null;
+			return isset($this->_session[$var]) ? $this->_session[$var]: null;
 		}
 
 		/**
