@@ -85,7 +85,7 @@
 					category_id=" . DB::escape($this->category_id) . ",
 					stock_id=" . DB::escape($this->stock_id) . ",
 					units=" . DB::escape($this->units) . "
-		            WHERE id = " . DB::escape($this->id);
+		 WHERE id = " . DB::escape($this->id);
 			DB::query($sql, "The item could not be updated");
 			$sql = "UPDATE item_codes SET stock_id=" . DB::escape($this->stock_id) . ",
 							category_id=" . DB::escape($this->category_id) . ",
@@ -166,10 +166,10 @@
 		}
 
 		/**
-		 * @param      $stock_id
+		 * @param $stock_id
 		 * @param null $location
 		 * @param null $date_
-		 * @param int  $exclude
+		 * @param int $exclude
 		 *
 		 * @return mixed
 		 */
@@ -275,7 +275,7 @@
 		}
 
 		public static function get_gl_code($stock_id) {
-			/*Gets the GL Codes relevant to the item account  */
+			/*Gets the GL Codes relevant to the item account */
 			$sql = "SELECT inventory_account, cogs_account,
 	 		adjustment_account, sales_account, assembly_account, dimension_id, dimension2_id FROM
 	 		stock_master WHERE stock_id = " . DB::escape($stock_id);
@@ -374,9 +374,9 @@
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';
-				$prices = " LEFT OUTER JOIN purch_data p ON  s.id = p.stockid ";
+				$prices = " LEFT OUTER JOIN purch_data p ON s.id = p.stockid ";
 			} elseif ($o['sale']) {
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
+				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
 				$prices = ", prices p";
 				$where .= " AND s.id = p.stockid ";
@@ -385,12 +385,12 @@
 				}
 			} else {
 				$stock_id = " s.stock_id";
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
+				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + IF(s.stock_id LIKE ?,0,5) as weight';
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
-			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
-							$weight FROM stock_category c, item_codes i, stock_master s  $prices
-							WHERE (s.stock_id LIKE ? $termswhere)  $where
+			$sql = "SELECT $select $stock_id ,s.description, c.description as category, s.long_description , editable,
+							$weight FROM stock_category c, item_codes i, stock_master s $prices
+							WHERE (s.stock_id LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 							ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
 			DB::prepare($sql);
@@ -511,7 +511,7 @@ JS;
 			}
 			return $dec;
 		}
-		public static  function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(),
+		public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(),
 																	 $editkey = false, $legacy = false) {
 			if (!$legacy) {
 				return Item::addSearchBox($name, array_merge(array(
@@ -531,7 +531,7 @@ JS;
 		}
 
 
-		public static  function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false,
+		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false,
 																	$all = false, $editkey = false, $legacy = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";

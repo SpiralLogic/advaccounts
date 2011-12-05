@@ -102,21 +102,21 @@ JS;
 				$url = $_SERVER['PHP_SELF'];
 			}
 			self::$_onload[] = <<<JS
-      var \${$id};
-      Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
-         autoFocus:true,
-	      source: function(request, response) {
-		      var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
-			   	if (xhr === lastXhr) {
-				   	response(data);
-				   	{$afterSource}
-				   }
-			   });
-		   },
-		   select: function(event, ui) {
-	   	 if ({$callback}(ui.item,event,this)===false) return false;
-   	   }
-      }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
+ var \${$id};
+ Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
+ autoFocus:true,
+	 source: function(request, response) {
+		 var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
+			 	if (xhr === lastXhr) {
+				 	response(data);
+				 	{$afterSource}
+				 }
+			 });
+		 },
+		 select: function(event, ui) {
+	 	 if ({$callback}(ui.item,event,this)===false) return false;
+ 	 }
+ }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
 JS;
 			if (isset($options['focus'])) {
 				self::setFocus("autocomplete{$id}", true);
@@ -144,11 +144,11 @@ var map = $("<div/>").gMap({
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
 	zoom: 10}).appendTo('body').dialog({title: "{$title}", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
 	$("{$selector}").click(function() {
-    map.dialog("open");
-    return false; });
-    $(".ui-widget-overlay").click(function() {
-    map.dialog("close");
-    return false; });
+ map.dialog("open");
+ return false; });
+ $(".ui-widget-overlay").click(function() {
+ map.dialog("close");
+ return false; });
 JS;
 			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
@@ -159,7 +159,7 @@ JS;
 		 *
 		 */
 		static function png_fix() {
-			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n  var imgTitle = (myImage.title) ?\n" . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n    + \" style=\\\"\" + \"width:\" + myImage.width\n" . "    + \"px; height:\" + myImage.height\n    + \"px;\" + imgStyle + \";\"\n    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n  myImage.outerHTML = strNewHTML\n }\n" . "}\n";
+			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
 
@@ -405,7 +405,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $js
-		 * @param            $var
+		 * @param $var
 		 */
 		protected static function register($js = false, &$var) {
 			if (is_array($js)) {
@@ -421,7 +421,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $file
-		 * @param            $var
+		 * @param $var
 		 */
 		protected static function registerFile($file, &$var) {
 			if (is_array($file)) {
@@ -447,9 +447,9 @@ JS;
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		} /*
-					   Setting focus on element $name in $form.
-					   If $form<0 $name is element id.
-				   */
+					 Setting focus on element $name in $form.
+					 If $form<0 $name is element id.
+				 */
 		/**
 		 * @static
 		 *

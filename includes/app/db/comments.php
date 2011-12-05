@@ -12,7 +12,7 @@
 			if ($memo_ != null && $memo_ != "") {
 				$date = Dates::date2sql($date_);
 				$sql = "INSERT INTO comments (type, id, date_, memo_)
-		    		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
+		 		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
 				 . ", '$date', " . DB::escape($memo_) . ")";
 				DB::query($sql, "could not add comments transaction entry");
 			}

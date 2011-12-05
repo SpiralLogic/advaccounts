@@ -158,7 +158,7 @@
 			$allow_update = check_data();
 			if ($allow_update) {
 				if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
-					Errors::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+					Errors::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 					JS::set_focus('qty');
 					return;
 				}
@@ -236,7 +236,7 @@
 					return false;
 				}
 				while (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
-					//            if (!Ref::is_new(get_post('ref'), ST_PURCHORDER)) {
+					// if (!Ref::is_new(get_post('ref'), ST_PURCHORDER)) {
 					//Errors::error(_("The entered reference is already in use."));
 					//JS::set_focus('ref');
 					//return false;
@@ -290,7 +290,7 @@
 	if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
 		Purch_Order::create();
 		$_SESSION['PO']->order_no = $_GET['ModifyOrderNumber'];
-		/*read in all the selected order into the Items cart  */
+		/*read in all the selected order into the Items cart */
 		Purch_Order::get($_SESSION['PO']->order_no, $_SESSION['PO']);
 		copy_from_cart();
 	}
@@ -348,7 +348,7 @@
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
 <div class='center'>
-    <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe>
+ <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe>
 </div>";
 	}
 	Purch_Order::header($_SESSION['PO']);

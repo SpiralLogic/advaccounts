@@ -135,7 +135,7 @@
 								$quantity = $bom_item["quantity"] * Validation::input_num('quantity');
 								$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
 								if (-$quantity + $qoh < 0) {
-									Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
+									Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]);
 									JS::set_focus('quantity');
 									return false;
 								}

@@ -276,7 +276,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 		end_table();
 		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
-		echo "<div class='center'><input  type='button' style='width:150px' value='" . _("Save") . "'></div>";
+		echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
 		end_form();
 	}
 

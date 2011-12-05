@@ -12,7 +12,7 @@
 
 	// insert/update sales delivery
 	//
-	class Sales_Delivery  implements IVoidable {
+	class Sales_Delivery implements IVoidable {
 		function add(&$delivery, $bo_policy)
 
 	{

@@ -24,19 +24,19 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				$sql = "UPDATE recurrent_invoices SET
-    			description=" . DB::escape($_POST['description']) . ",
-    			order_no=" . DB::escape($_POST['order_no']) . ",
-    			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
-    			group_no=" . DB::escape($_POST['group_no']) . ",
-    			days=" . Validation::input_num('days', 0) . ",
-    			monthly=" . Validation::input_num('monthly', 0) . ",
-    			begin='" . Dates::date2sql($_POST['begin']) . "',
-    			end='" . Dates::date2sql($_POST['end']) . "'
-    			WHERE id = " . DB::escape($selected_id);
+ 			description=" . DB::escape($_POST['description']) . ",
+ 			order_no=" . DB::escape($_POST['order_no']) . ",
+ 			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
+ 			group_no=" . DB::escape($_POST['group_no']) . ",
+ 			days=" . Validation::input_num('days', 0) . ",
+ 			monthly=" . Validation::input_num('monthly', 0) . ",
+ 			begin='" . Dates::date2sql($_POST['begin']) . "',
+ 			end='" . Dates::date2sql($_POST['end']) . "'
+ 			WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
 			} else {
 				$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
-    			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly',
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly',
 																																																																																																																																									0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'],
 																																																																																																																																																																																																							 -5)) . "')";
 				$note = _('New recurrent invoice has been added');

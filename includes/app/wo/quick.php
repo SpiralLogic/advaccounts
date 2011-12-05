@@ -30,7 +30,7 @@
 			WO_Cost::add_labour($stock_id, $units_reqd, $date_, $labour);
 			$sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
-    	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
+ 	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 		" . DB::escape($type) . ", " . DB::escape($costs) . ", '$date', '$date', '$date', 1, 1)";
 			DB::query($sql, "could not add work order");
 			$woid = DB::insert_id();

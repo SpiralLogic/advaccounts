@@ -38,9 +38,9 @@
 		protected $_template = false;
 
 		/**
-		 * @param       $title
-		 * @param bool  $name
-		 * @param bool  $contents
+		 * @param $title
+		 * @param bool $name
+		 * @param bool $contents
 		 * @param array $options
 		 */
 		function __construct($title, $name = false, $contents = false, $options = array()) {
@@ -85,7 +85,7 @@
 	}
 
 		/**
-		 * @param        $selector
+		 * @param $selector
 		 * @param string $type
 		 */function addOpenEvent($selector, $type = 'click') {
 			$this->events[] = array($selector, $type, "\$({$this->name}).dialog('open');");

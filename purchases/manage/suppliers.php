@@ -37,26 +37,26 @@
 			if (!$new_supplier) {
 				$sql = "UPDATE suppliers SET supp_name=" . DB::escape($_POST['supp_name']) . ",
 				supp_ref=" . DB::escape($_POST['supp_ref']) . ",
-                address=" . DB::escape($_POST['address']) . ",
-                supp_address=" . DB::escape($_POST['supp_address']) . ",
-                phone=" . DB::escape($_POST['phone']) . ",
-                phone2=" . DB::escape($_POST['phone2']) . ",
-                fax=" . DB::escape($_POST['fax']) . ",
-                gst_no=" . DB::escape($_POST['gst_no']) . ",
-                email=" . DB::escape($_POST['email']) . ",
-                website=" . DB::escape($_POST['website']) . ",
-                contact=" . DB::escape($_POST['contact']) . ",
-                supp_account_no=" . DB::escape($_POST['supp_account_no']) . ",
-                bank_account=" . DB::escape($_POST['bank_account']) . ",
-                credit_limit=" . Validation::input_num('credit_limit', 0) . ",
-                dimension_id=" . DB::escape($_POST['dimension_id']) . ",
-                dimension2_id=" . DB::escape($_POST['dimension2_id']) . ",
-                curr_code=" . DB::escape($_POST['curr_code']) . ",
-                payment_terms=" . DB::escape($_POST['payment_terms']) . ",
+ address=" . DB::escape($_POST['address']) . ",
+ supp_address=" . DB::escape($_POST['supp_address']) . ",
+ phone=" . DB::escape($_POST['phone']) . ",
+ phone2=" . DB::escape($_POST['phone2']) . ",
+ fax=" . DB::escape($_POST['fax']) . ",
+ gst_no=" . DB::escape($_POST['gst_no']) . ",
+ email=" . DB::escape($_POST['email']) . ",
+ website=" . DB::escape($_POST['website']) . ",
+ contact=" . DB::escape($_POST['contact']) . ",
+ supp_account_no=" . DB::escape($_POST['supp_account_no']) . ",
+ bank_account=" . DB::escape($_POST['bank_account']) . ",
+ credit_limit=" . Validation::input_num('credit_limit', 0) . ",
+ dimension_id=" . DB::escape($_POST['dimension_id']) . ",
+ dimension2_id=" . DB::escape($_POST['dimension2_id']) . ",
+ curr_code=" . DB::escape($_POST['curr_code']) . ",
+ payment_terms=" . DB::escape($_POST['payment_terms']) . ",
 				payable_account=" . DB::escape($_POST['payable_account']) . ",
 				purchase_account=" . DB::escape($_POST['purchase_account']) . ",
 				payment_discount_account=" . DB::escape($_POST['payment_discount_account']) . ",
-                notes=" . DB::escape($_POST['notes']) . ",
+ notes=" . DB::escape($_POST['notes']) . ",
 				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DB::escape($_POST['supplier_id']);
 				DB::query($sql, "The supplier could not be updated");
 				DB::update_record_status($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
@@ -186,7 +186,7 @@
 	} else {
 		GL_Currency::row(_("Supplier's Currency:"), 'curr_code', null);
 	}
-	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', null);
+	Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
 	GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', null);
 	table_section_title(_("Accounts"));
 	GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);

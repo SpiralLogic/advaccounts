@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 				 Copyright (C) Advanced Group PTY LTD
 				 Released under the terms of the GNU General Public License, GPL,
 				 as published by the Free Software Foundation, either version 3
@@ -65,14 +65,14 @@
 			email=" . DB::escape($_POST['email']) . ",
 			dimension_id=" . DB::escape($_POST['dimension_id']) . ",
 			dimension2_id=" . DB::escape($_POST['dimension2_id']) . ",
-            credit_status=" . DB::escape($_POST['credit_status']) . ",
-            payment_terms=" . DB::escape($_POST['payment_terms']) . ",
-            discount=" . Validation::input_num('discount') / 100 . ",
-            pymt_discount=" . Validation::input_num('pymt_discount') / 100 . ",
-            credit_limit=" . Validation::input_num('credit_limit') . ",
-            sales_type = " . DB::escape($_POST['sales_type']) . ",
-            notes=" . DB::escape($_POST['notes']) . "
-            WHERE debtor_no = " . DB::escape($_POST['customer_id']);
+ credit_status=" . DB::escape($_POST['credit_status']) . ",
+ payment_terms=" . DB::escape($_POST['payment_terms']) . ",
+ discount=" . Validation::input_num('discount') / 100 . ",
+ pymt_discount=" . Validation::input_num('pymt_discount') / 100 . ",
+ credit_limit=" . Validation::input_num('credit_limit') . ",
+ sales_type = " . DB::escape($_POST['sales_type']) . ",
+ notes=" . DB::escape($_POST['notes']) . "
+ WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 				DB::query($sql, "The customer could not be updated");
 				DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors_master', 'debtor_no');
 				$Ajax->activate('customer_id'); // in case of status change
@@ -80,7 +80,7 @@
 			} else { //it is a new customer
 				DB::begin_transaction();
 				$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
-			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
+			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
 			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
 			" . Validation::input_num('pymt_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";

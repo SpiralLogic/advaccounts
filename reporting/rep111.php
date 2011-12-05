@@ -71,10 +71,10 @@
 				{
 					$Net = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
 					$SubTotal += $Net;
-					#  __ADVANCEDEDIT__ BEGIN #
+					# __ADVANCEDEDIT__ BEGIN #
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
 					$TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
-					#  __ADVANCEDEDIT__ END #
+					# __ADVANCEDEDIT__ END #
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
 					$DisplayQty = Num::format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
 					$DisplayNet = Num::format($Net, $dec);
@@ -125,11 +125,11 @@
 				$rep->TextCol(4, 7, $doc_Shipping . ' (ex.GST)', -2);
 				$rep->TextCol(7, 8, $DisplayFreight, -2);
 				$rep->NewLine();
-				#  __ADVANCEDEDIT__ BEGIN # added tax to invoice
+				# __ADVANCEDEDIT__ BEGIN # added tax to invoice
 				$rep->TextCol(4, 7, 'Total GST (10%)', -2);
 				$rep->TextCol(7, 8, $DisplayTaxTot, -2);
 				$rep->NewLine();
-				#  __ADVANCEDEDIT__ END #
+				# __ADVANCEDEDIT__ END #
 				$DisplayTotal = Num::format($myrow["freight_cost"] + $SubTotal + $TaxTotal, $dec);
 				$rep->Font('bold');
 				#		if ($myrow['tax_included'] == 0)

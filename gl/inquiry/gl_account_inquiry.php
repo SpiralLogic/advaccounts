@@ -85,7 +85,7 @@
 		}
 		$act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
 		$dim = DB_Company::get_pref('use_dimension');
-		/*Now get the transactions  */
+		/*Now get the transactions */
 		if (!isset($_POST['Dimension'])) {
 			$_POST['Dimension'] = 0;
 		}

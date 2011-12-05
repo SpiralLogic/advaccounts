@@ -4,43 +4,43 @@ div.hasCalculator, span.hasCalculator {
 }
 
 button.calculator-trigger {
-	width:   25px;
+	width: 25px;
 	padding: 0px;
 }
 
 img.calculator-trigger {
-	margin:         2px;
+	margin: 2px;
 	vertical-align: middle;
 }
 
 .calculator-popup {
-	display:               none;
-	z-index:               10;
-	margin:                0;
-	padding:               0;
-	border:                1px solid #888;
-	border-radius:         4px;
-	-moz-border-radius:    4px;
+	display: none;
+	z-index: 10;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #888;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	color:                 #000;
-	background-color:      #f4f4f4;
-	font-family:           Arial, Helvetica, sans-serif;
+	color: #000;
+	background-color: #f4f4f4;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .calculator-keyentry {
 	position: absolute;
-	top:      3px;
-	right:    3px;
-	width:    0px;
+	top: 3px;
+	right: 3px;
+	width: 0px;
 }
 
 .calculator-inline {
-	position:              relative;
-	border:                1px solid #888;
-	border-radius:         4px;
-	-moz-border-radius:    4px;
+	position: relative;
+	border: 1px solid #888;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	background-color:      #f4f4f4;
+	background-color: #f4f4f4;
 }
 
 .calculator-inline .calculator-close {
@@ -48,11 +48,11 @@ img.calculator-trigger {
 }
 
 .calculator-disabled {
-	position:         absolute;
-	z-index:          100;
+	position: absolute;
+	z-index: 100;
 	background-color: white;
-	opacity:          0.5;
-	filter:           alpha(opacity = 50);
+	opacity: 0.5;
+	filter: alpha(opacity = 50);
 }
 
 .calculator-rtl {
@@ -60,7 +60,7 @@ img.calculator-trigger {
 }
 
 .calculator-prompt {
-	clear:      both;
+	clear: both;
 	text-align: center;
 }
 
@@ -69,16 +69,16 @@ img.calculator-trigger {
 }
 
 .calculator-result {
-	clear:                 both;
-	margin:                2px;
-	padding:               0px 2px;
-	text-align:            right;
-	background-color:      #fff;
-	border:                1px inset #000;
-	border-radius:         4px;
-	-moz-border-radius:    4px;
+	clear: both;
+	margin: 2px;
+	padding: 0px 2px;
+	text-align: right;
+	background-color: #fff;
+	border: 1px inset #000;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	font-size:             110%;
+	font-size: 110%;
 }
 
 .calculator-focussed {
@@ -91,25 +91,25 @@ img.calculator-trigger {
 }
 
 .calculator-space {
-	float:  left;
+	float: left;
 	margin: 2px;
-	width:  28px;
+	width: 28px;
 }
 
 .calculator-half-space {
-	float:  left;
+	float: left;
 	margin: 1px;
-	width:  14px;
+	width: 14px;
 }
 
 .calculator-row button {
-	position:   relative;
-	float:      left;
-	margin:     2px;
-	padding:    0px;
-	height:     22px;
+	position: relative;
+	float: left;
+	margin: 2px;
+	padding: 0px;
+	height: 22px;
 	text-align: center;
-	cursor:     pointer;
+	cursor: pointer;
 }
 
 .calculator-row .calculator-ctrl {
@@ -121,7 +121,7 @@ img.calculator-trigger {
 }
 
 .calculator-row .calculator-base, .calculator-row .calculator-angle {
-	width:     28px;
+	width: 28px;
 	font-size: 70%;
 }
 
@@ -150,36 +150,36 @@ img.calculator-trigger {
 }
 
 .calculator-keystroke {
-	display:          none;
-	width:            16px;
-	height:           14px;
-	position:         absolute;
-	left:             -8px;
-	top:              -8px;
-	color:            #000;
+	display: none;
+	width: 16px;
+	height: 14px;
+	position: absolute;
+	left: -8px;
+	top: -8px;
+	color: #000;
 	background-color: #fff;
-	border:           1px solid #888;
-	font-size:        80%;
+	border: 1px solid #888;
+	font-size: 80%;
 }
 
 .calculator-angle .calculator-keystroke, .calculator-base .calculator-keystroke, .calculator-trig .calculator-keystroke {
-	top:       -10px;
+	top: -10px;
 	font-size: 95%;
 }
 
 .calculator-keyname {
-	width:     22px;
+	width: 22px;
 	font-size: 70%;
 }
 
 .calculator-cover {
-	display:      none;
+	display: none;
 	display /**/: block;
-	position:     absolute;
-	z-index:      -1;
-	filter:       mask();
-	top:          -4px;
-	left:         -4px;
-	width:        125px;
-	height:       200px;
+	position: absolute;
+	z-index: -1;
+	filter: mask();
+	top: -4px;
+	left: -4px;
+	width: 125px;
+	height: 200px;
 }

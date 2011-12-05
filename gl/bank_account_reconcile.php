@@ -45,7 +45,7 @@
 			return;
 		}
 		return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
-    class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
+ class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
 	}
 
 	function systype_name($dummy, $type)
@@ -131,7 +131,7 @@
 			DB::query($sql, 'Couldn\'t update undesposited status');
 		}
 		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
-    undeposited=" . $groupid . " WHERE id=" . $groupid;
+ undeposited=" . $groupid . " WHERE id=" . $groupid;
 		DB::query($sql, "Couldn't update removed group data");
 		update_data();
 	}

@@ -229,8 +229,8 @@
 	end_form();
 	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
-  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
-  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
+ alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
+ if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
 	(Input::request('frame')) ? end_page() : end_page(true, true, true);

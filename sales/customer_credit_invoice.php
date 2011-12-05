@@ -210,7 +210,7 @@
 			label_cell(_("Shipping Company"), "class='tableheader2'");
 			Sales_UI::shippers_cells(null, 'ShipperID', $_POST['ShipperID']);
 			//	if (!isset($_POST['sales_type_id']))
-			//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
+			//	 $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 			//	label_cell(_("Sales Type"), "class='tableheader2'");
 			//	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
 			end_row();

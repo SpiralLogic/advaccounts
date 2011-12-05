@@ -91,7 +91,7 @@
 
 	function edit_link($row)
 	{
-		//return $row["closed"] ?  '' :
+		//return $row["closed"] ? '' :
 		//	DB_Pager::link(_("Edit"),
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 		return DB_Pager::link(

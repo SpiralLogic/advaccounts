@@ -139,17 +139,17 @@
 		supplier.supp_name,
 		supplier.supplier_id as id,
 		trans.supp_reference,
-    	trans.tran_date, 
+ 	trans.tran_date,
 		trans.due_date,
 		supplier.curr_code,
 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue,
-    	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
-    	FROM supp_trans as trans, suppliers as supplier
-    	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.ov_amount != 0"; // exclude voided transactions
+ 	(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
+ 	FROM supp_trans as trans, suppliers as supplier
+ 	WHERE supplier.supplier_id = trans.supplier_id
+ 	AND trans.ov_amount != 0"; // exclude voided transactions
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		foreach ($searchArray as $ajaxsearch) {
 			if (empty($ajaxsearch)) {
@@ -171,7 +171,7 @@
 		}
 	} else {
 		$sql .= " AND trans . tran_date >= '$date_after'
-	            AND trans . tran_date <= '$date_to'";
+	 AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id') != ALL_TEXT) {
 		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id']);
@@ -186,7 +186,7 @@
 		} elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_SUPPAYMENT . " OR trans.type = " . ST_BANKPAYMENT . ") ";
 		} elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
-			$sql .= " AND trans.type = " . ST_SUPPCREDIT . "  ";
+			$sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
 		}
 		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
 			$today = Dates::date2sql(Dates::Today());

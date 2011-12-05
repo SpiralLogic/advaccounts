@@ -123,7 +123,7 @@ JS;
 				autoFocus: true,
 				minLength: 0,
 				source: function( request, response ) {
-						if (Adv.lastXhr)  Adv.lastXhr.abort();
+						if (Adv.lastXhr) Adv.lastXhr.abort();
 						Adv.loader.off();
 						Adv.lastXhr = $.ajax({
 								url: "$url",
@@ -150,9 +150,9 @@ JS;
 										Adv.loader.on();
 								}}})
 						},
-            select: function( event, ui ) {
-            var value = ui.item.value;
-            $selectjs
+ select: function( event, ui ) {
+ var value = ui.item.value;
+ $selectjs
 											 value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
 								$.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
@@ -180,12 +180,12 @@ JS;
 																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false));
 			$emailBox->show();
 			$action = <<<JS
-	      var emailID= $(this).data('emailid');
-	      $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
-	         \$emailBox.html(data).dialog('open');
+	 var emailID= $(this).data('emailid');
+	 $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
+	 \$emailBox.html(data).dialog('open');
 
-	   },'html');
-	   return false;
+	 },'html');
+	 return false;
 JS;
 			JS::addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
 			$loaded = true;

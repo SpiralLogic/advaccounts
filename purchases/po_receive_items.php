@@ -190,7 +190,7 @@
 
 	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
 		Purch_Order::create();
-		/*read in all the selected order into the Items cart  */
+		/*read in all the selected order into the Items cart */
 		Purch_Order::get($_GET['PONumber'], $_SESSION['PO']);
 	}
 

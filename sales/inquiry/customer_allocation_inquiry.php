@@ -73,7 +73,7 @@
 				return $link;
 			} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
 			) {
-				/*its a receipt  which could have an allocation*/
+				/*its a receipt which could have an allocation*/
 				return $link;
 			} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
 				/*its a negative receipt */
@@ -99,7 +99,7 @@
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql = "SELECT
-  		trans.type,
+ 		trans.type,
 		trans.trans_no,
 		trans.reference,
 		trans.order_,
@@ -107,17 +107,17 @@
 		trans.due_date,
 		debtor.name,
 		debtor.curr_code,
-    	(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_freight
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-    	FROM debtor_trans as trans, debtors_master as debtor
-    	WHERE debtor.debtor_no = trans.debtor_no
+ 	FROM debtor_trans as trans, debtors_master as debtor
+ 	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
 				+ trans.ov_freight_tax + trans.ov_discount != 0)
-    		AND trans.tran_date >= '$data_after'
-    		AND trans.tran_date <= '$date_to'";
+ 		AND trans.tran_date >= '$data_after'
+ 		AND trans.tran_date <= '$date_to'";
 	if ($_POST['customer_id'] != ALL_TEXT) {
 		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
 	}

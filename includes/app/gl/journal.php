@@ -215,7 +215,7 @@
 
 		// Write/update journal entries.
 				//
-				public static function  write($cart, $reverse, $use_transaction = true)
+				public static function write($cart, $reverse, $use_transaction = true)
 				{
 					$date_ = $cart->tran_date;
 					$ref = $cart->reference;
@@ -274,7 +274,7 @@
 					return $trans_id;
 				}
 
-				public static function  void($type, $type_no, $use_transaction = true)
+				public static function void($type, $type_no, $use_transaction = true)
 				{
 					if ($use_transaction) {
 						DB::begin_transaction();

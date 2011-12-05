@@ -144,9 +144,9 @@
 			}
 		}
 
-		//  DIMENSIONS
+		// DIMENSIONS
 		public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
-			$sql = "SELECT id, CONCAT(reference,'  ',name) as ref FROM dimensions";
+			$sql = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
 			$options = array(
 				'order' => 'reference', 'spec_option' => $no_option ? $showname :
 				 false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false);

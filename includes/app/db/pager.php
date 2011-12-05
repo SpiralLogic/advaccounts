@@ -20,12 +20,12 @@
 		/**
 		 * @static
 		 *
-		 * @param      $name
-		 * @param      $sql
-		 * @param      $coldef
+		 * @param $name
+		 * @param $sql
+		 * @param $coldef
 		 * @param null $table
 		 * @param null $key
-		 * @param int  $page_len
+		 * @param int $page_len
 		 * @param null $sort
 		 *
 		 * @return DB_Pager
@@ -77,7 +77,7 @@
 		static function navi($name, $value, $enabled = true, $icon = false) {
 			return "<button " . ($enabled ? '' : 'disabled')
 			 . " class=\"navibutton\" type=\"submit\""
-			 . " name=\"$name\"  id=\"$name\" value=\"$value\">"
+			 . " name=\"$name\" id=\"$name\" value=\"$value\">"
 			 . ($icon ? "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '')
 			 . "<span>$value</span></button>\n";
 		}
@@ -87,7 +87,7 @@
 		}
 
 		//
-		//    Sql paged table view. Call this function inside form.
+		// Sql paged table view. Call this function inside form.
 		//
 		static function display(&$pager) {
 			$pager->select_records();
@@ -210,7 +210,7 @@
 							}
 							break;
 						default:
-							//		    case 'text':
+							//		 case 'text':
 							if (isset($col['align'])) {
 								label_cell($cell, "class='" . $col['align'] . "'");
 							} else {
@@ -418,10 +418,10 @@
 		public $key;
 
 		/**
-		 * @param      $sql
-		 * @param      $name
+		 * @param $sql
+		 * @param $name
 		 * @param null $table
-		 * @param int  $page_len
+		 * @param int $page_len
 		 */
 		public function __construct($sql, $name, $table = null, $page_len = 0) {
 			$this->width = "80%";
@@ -532,8 +532,8 @@
 		/**
 		 * @param $name - base name for pager controls and $_SESSION object name
 		 * -----------------------------------------------------------------------------
-		 *              Creates new db_pager $_SESSION object on first page call.
-		 *              Retrieves from $_SESSION var on subsequent $_POST calls
+		 * Creates new db_pager $_SESSION object on first page call.
+		 * Retrieves from $_SESSION var on subsequent $_POST calls
 		 *
 		 * $sql	- base sql for data inquiry. Order of fields implies
 		 * pager columns order.
@@ -609,7 +609,7 @@
 				if (is_string($colnum)) { // 'colname'=>params
 					$h = $colnum;
 					$c = $coldef;
-				} else { //  n=>params
+				} else { // n=>params
 					if (is_array($coldef)) {
 						$h = '';
 						$c = $coldef;
@@ -641,7 +641,7 @@
 		}
 
 		/**
-		 * @param        $func
+		 * @param $func
 		 * @param string $footercl
 		 * Set handler to
 		 * lay additional row between pager body and navibar.
@@ -768,7 +768,7 @@
 		}
 
 		/**
-		 * @param        $func
+		 * @param $func
 		 * @param string $headercl
 		 *
 		 * Set handler to display additional row between titles and pager body.
@@ -794,7 +794,7 @@
 		}
 
 		/***
-		 * @param        $func
+		 * @param $func
 		 * @param string $notice
 		 * @param string $markercl
 		 * @param string $msgclass

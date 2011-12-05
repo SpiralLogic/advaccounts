@@ -99,16 +99,16 @@
 		supplier.supp_name,
 		supplier.supplier_id as id,
 		trans.supp_reference,
-    	trans.tran_date, 
+ 	trans.tran_date,
 		trans.due_date,
 		supplier.curr_code, 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-    	FROM supp_trans as trans, suppliers as supplier
-    	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'";
+ 	FROM supp_trans as trans, suppliers as supplier
+ 	WHERE supplier.supplier_id = trans.supplier_id
+ 	AND trans.tran_date >= '$date_after'
+ 	AND trans.tran_date <= '$date_to'";
 	if ($_POST['supplier_id'] != ALL_TEXT) {
 		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'], false, false);
 	}

@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 					 Copyright (C) Advanced Group PTY LTD
 					 Released under the terms of the GNU General Public License, GPL,
 					 as published by the Free Software Foundation, either version 3
@@ -54,9 +54,9 @@
 			{
 				$sql
 				 = "SELECT *
-            FROM cust_branch
-            WHERE debtor_no={$customer_no}
-            ORDER BY branch_code ";
+ FROM cust_branch
+ WHERE debtor_no={$customer_no}
+ ORDER BY branch_code ";
 				$result = DB::query($sql, "Could not retrieve any branches");
 				$myrow = DB::fetch_assoc($result);
 				return $myrow;

@@ -44,7 +44,7 @@
 			if ($Mode == 'ADD_ITEM') {
 				$sql
 				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
-    			conversion_factor, supplier_description) VALUES (";
+ 			conversion_factor, supplier_description) VALUES (";
 				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", "
 				 . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
 				 . Validation::input_num('conversion_factor') . ", "

@@ -26,14 +26,14 @@ public static		function write($selected, $abbr, $description, $decimals)
 	 	abbr = " . DB::escape($abbr) . ",
 	 	name = " . DB::escape($description) . ",
 	 	decimals = " . DB::escape($decimals) . "
-        	WHERE abbr = " . DB::escape($selected);
+ 	WHERE abbr = " . DB::escape($selected);
 			}
 			else
 			{
 				$sql
 				 = "INSERT INTO item_units
 			(abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
-	  		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
+	 		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
 			}
 			DB::query($sql, "an item unit could not be updated");
 		}

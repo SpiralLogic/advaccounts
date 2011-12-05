@@ -144,13 +144,13 @@ JS;
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
-						FROM debtor_trans LEFT OUTER JOIN sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
-		    			WHERE  debtor_trans.debtor_no = " . DB::escape($this->id) . "
-		    			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
-		    				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
-		    				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+						FROM debtor_trans LEFT OUTER JOIN sales_orders ON debtor_trans.order_ = sales_orders.order_no
+		 			WHERE debtor_trans.debtor_no = " . DB::escape($this->id) . "
+		 			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
+		 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+		 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-		    				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
+		 				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
 			$result = DB::query($sql);
 			$results = array();
 			while ($row = DB::fetch_assoc($result)) {
@@ -397,28 +397,28 @@ JS;
 				 AND debtor_trans.type <> 13
 				 AND debtors_master.debtor_no = debtor_trans.debtor_no
 			GROUP BY
-				  debtors_master.name,
-				  payment_terms.terms,
-				  payment_terms.days_before_due,
-				  payment_terms.day_in_following_month,
-				  debtors_master.credit_limit,
-				  credit_status.dissallow_invoices,
-				  credit_status.reason_description";
+				 debtors_master.name,
+				 payment_terms.terms,
+				 payment_terms.days_before_due,
+				 payment_terms.day_in_following_month,
+				 debtors_master.credit_limit,
+				 credit_status.dissallow_invoices,
+				 credit_status.reason_description";
 			$result = DB::query($sql, "The customer details could not be retrieved");
 			if (DB::num_rows($result) == 0) {
 				/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 				$nil_balance = true;
 				$sql
-				 = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no,  payment_terms.terms,
-	    		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
-	    		FROM debtors_master,
-	    		     payment_terms,
-	    		     credit_status
+				 = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
+	 		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
+	 		FROM debtors_master,
+	 		 payment_terms,
+	 		 credit_status
 
-	    		WHERE
-	    		     debtors_master.payment_terms = payment_terms.terms_indicator
-	    		     AND debtors_master.credit_status = credit_status.id
-	    		     AND debtors_master.debtor_no = " . DB::escape($customer_id);
+	 		WHERE
+	 		 debtors_master.payment_terms = payment_terms.terms_indicator
+	 		 AND debtors_master.credit_status = credit_status.id
+	 		 AND debtors_master.debtor_no = " . DB::escape($customer_id);
 				$result = DB::query($sql, "The customer details could not be retrieved");
 			}
 			else {
@@ -426,8 +426,8 @@ JS;
 			}
 			$customer_record = DB::fetch($result);
 			if ($nil_balance == true) {
-				$customer_record["Balance"]  = 0;
-				$customer_record["Due"]      = 0;
+				$customer_record["Balance"] = 0;
+				$customer_record["Due"] = 0;
 				$customer_record["Overdue1"] = 0;
 				$customer_record["Overdue2"] = 0;
 			}
@@ -452,11 +452,11 @@ JS;
 		public static function get_habit($customer_id)
 		{
 			$sql
-			 = "SELECT  debtors_master.pymt_discount,
+			 = "SELECT debtors_master.pymt_discount,
 				 credit_status.dissallow_invoices
-				FROM  debtors_master,  credit_status
-				WHERE  debtors_master.credit_status =  credit_status.id
-					AND  debtors_master.debtor_no = " . DB::escape($customer_id);
+				FROM debtors_master, credit_status
+				WHERE debtors_master.credit_status = credit_status.id
+					AND debtors_master.debtor_no = " . DB::escape($customer_id);
 			$result = DB::query($sql, "could not query customers");
 			return DB::fetch($result);
 		}

@@ -37,7 +37,7 @@
 		protected $valid;
 
 		/**
-		 * @param      $prepared
+		 * @param $prepared
 		 * @param null $data
 		 */
 		public function __construct($prepared, $data = null)
@@ -99,7 +99,7 @@
 			}
 
 		/**
-		 * @param       $class
+		 * @param $class
 		 * @param array $contruct
 		 * @return DB_Query_Result
 		 */public function asClassLate($class, $contruct = array())
@@ -109,7 +109,7 @@
 			}
 
 		/**
-		 * @param       $class
+		 * @param $class
 		 * @param array $contruct
 		 * @return DB_Query_Result
 		 */public function asClass($class, $contruct = array())

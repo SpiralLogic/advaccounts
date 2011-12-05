@@ -85,7 +85,7 @@
 			}
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
 			WHERE $trans_no_name >= " . DB::escape($_POST['FromTransNo'],false,false) . "
-			AND  $trans_no_name <= " . DB::escape($_POST['ToTransNo'],false,false);
+			AND $trans_no_name <= " . DB::escape($_POST['ToTransNo'],false,false);
 			if ($type_name != null) {
 				$sql .= " AND `$type_name` = " . DB::escape($_POST['filterType'],false,false);
 			}

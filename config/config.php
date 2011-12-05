@@ -35,7 +35,7 @@
 		// 	locally installed wiki module
 		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 		// 	context help feed from advaccounting.net
-		// Config::get('help_baseurl')  = 'http://advaccounting.com/fawiki/index.php?n=Help.';
+		// Config::get('help_baseurl') = 'http://advaccounting.com/fawiki/index.php?n=Help.';
 		// 	not used
 		'help_baseurl'										 => null,
 		/* per user data/cache directory */
@@ -56,7 +56,7 @@
 		'ui_date_seperator'								=> '/',
 		'use_fiscalyear'=>false,
 		/* Default border and spacing for tables
-							 *  Should be moved to CSS */
+							 * Should be moved to CSS */
 		'tables_style'										 => "class='tablestyle center'",
 		'tables_style2'										=> "class='tablestyle2'",
 /* Accounts Payable

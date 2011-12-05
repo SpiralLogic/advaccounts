@@ -48,7 +48,7 @@
 
 	function show_results()
 	{
-		/*Now get the transactions  */
+		/*Now get the transactions */
 		Display::div_start('trans_tbl');
 		start_table('tablestyle');
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));

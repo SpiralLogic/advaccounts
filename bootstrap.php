@@ -38,7 +38,7 @@
 			'Adv_Exception', 'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB',
 			'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert', 'DB_Query_Result', 'DB_Query_Select',
 			'DB_Query_Update', 'DB_Query_Where', 'Dialog', 'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS',
-			'Language', 'Menu', 'MenuUi', 'Num',  'Session', 'Status', 'UploadHandler'
+			'Language', 'Menu', 'MenuUi', 'Num', 'Session', 'Status', 'UploadHandler'
 		)
 	);
 	Autoloader::add_vendor_classes(

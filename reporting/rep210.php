@@ -25,10 +25,10 @@
 		{
 			$sql
 			 = "SELECT supp_trans.*,
-   		(supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
-   		suppliers.supp_name,  suppliers.supp_account_no,
-   		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
-   		suppliers.email, suppliers.address, suppliers.contact
+ 		(supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
+ 		suppliers.supp_name, suppliers.supp_account_no,
+ 		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
+ 		suppliers.email, suppliers.address, suppliers.contact
 		FROM supp_trans, suppliers
 		WHERE supp_trans.supplier_id = suppliers.supplier_id
 		AND supp_trans.type = " . DB::escape($type) . "

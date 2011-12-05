@@ -83,12 +83,12 @@
 							inactive=" . DB::escape($this->inactive) . ",
 							dimension_id=" . DB::escape($this->dimension_id) . ",
 							dimension2_id=" . DB::escape($this->dimension2_id) . ",
-				            credit_status=" . DB::escape($this->credit_status) . ",
-				            payment_terms=" . DB::escape($this->payment_terms) . ",
-				            pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
-				            credit_limit=" . User::numeric($this->credit_limit) . ",
-				            notes=" . DB::escape($this->notes) . "
-				            WHERE debtor_no = " . DB::escape($this->id);
+				 credit_status=" . DB::escape($this->credit_status) . ",
+				 payment_terms=" . DB::escape($this->payment_terms) . ",
+				 pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
+				 credit_limit=" . User::numeric($this->credit_limit) . ",
+				 notes=" . DB::escape($this->notes) . "
+				 WHERE debtor_no = " . DB::escape($this->id);
 			DB::query($sql, "The supplier could not be updated");
 			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Supplier has been updated.");

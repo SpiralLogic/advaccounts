@@ -149,7 +149,7 @@
 		 *
 		 * @return string|void
 		 */
-		public static function  items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false) {
+		public static function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false) {
 			// all sales codes
 			if (!$legacy) {
 				return Item::addSearchBox($name, array_merge(array(
@@ -170,7 +170,7 @@
 				$opts));
 		}
 
-		public static function  items_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts) {
+		public static function items_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -178,11 +178,11 @@
 																																																			'cells' => true, 'description' => ''), $opts));
 		}
 
-		public static function  kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
+		public static function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
 			return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false), $legacy);
 		}
 
-		public static function  local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
+		public static function local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
 			echo "<tr>";
 			if ($label != null) {
 				echo "<td class='label'>$label</td>\n<td>";

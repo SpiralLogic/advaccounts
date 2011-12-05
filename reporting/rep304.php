@@ -121,19 +121,19 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to),
+				'to' => $to),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'   => ''),
+				'to' => ''),
 			3 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to'   => ''),
+				'to' => ''),
 			4 => array(
 				'text' => _('Customer'),
 				'from' => $fromc,
-				'to'   => '')
+				'to' => '')
 		);
 		$rep = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
 		$rep->Font();

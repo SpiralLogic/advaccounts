@@ -175,9 +175,9 @@
 		/**
 		 * @static
 		 *
-		 * @param      $first
-		 * @param      $second
-		 * @param      $var
+		 * @param $first
+		 * @param $second
+		 * @param $var
 		 * @param null $type
 		 * @param null $default
 		 *
@@ -190,7 +190,7 @@
 		/**
 		 * @static
 		 * @param array $array
-		 * @param       $vars
+		 * @param $vars
 		 * @return bool
 		 */protected static function _has(array $array, $vars) {
 			if (is_null($vars)) {
@@ -209,9 +209,9 @@
 		/**
 		 * @static
 		 * @param array $array
-		 * @param       $var
-		 * @param null  $type
-		 * @param null  $default
+		 * @param $var
+		 * @param null $type
+		 * @param null $default
 		 * @return bool|int|null|string
 		 */protected static function _isset(array $array, $var, $type = null, $default = null) {
 			$value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen

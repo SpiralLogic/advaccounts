@@ -106,22 +106,22 @@
 			1 => array(
 				'text' => _('Currency'),
 				'from' => $curr_sel,
-				'to'   => ''
+				'to' => ''
 			),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'   => ''
+				'to' => ''
 			),
 			3 => array(
 				'text' => _('Sales Type'),
 				'from' => $stype,
-				'to'   => ''
+				'to' => ''
 			),
 			4 => array(
 				'text' => _('Show GP %'),
 				'from' => $GP,
-				'to'   => ''
+				'to' => ''
 			)
 		);
 		$rep = new ADVReport(_('Price Listing'), "PriceListing", User::pagesize());

@@ -31,7 +31,7 @@
 
 		/**
 		 * @param bool $table
-		 * @param      $db
+		 * @param $db
 		 */
 		public function __construct($table = false, $db)
 			{

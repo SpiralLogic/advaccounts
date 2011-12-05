@@ -8,8 +8,8 @@
 	 */
 	class Purch_UI
 	{
-		//  SUPPLIERS
-		public static function  suppliers($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		// SUPPLIERS
+		public static function suppliers($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
 			$mode = DB_Company::get_pref('no_supplier_list');
 			if ($editkey) {
@@ -21,7 +21,7 @@
 				 _('Press Space tab to filter by name fragment') : _('Select supplier'), 'show_inactive' => $all));
 		}
 
-		public static function  suppliers_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		public static function suppliers_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			if ($label != null) {
 				echo "<td class='label'>$label</td><td>\n";
 			}
@@ -29,18 +29,18 @@
 			echo "</td>\n";
 		}
 
-		public static function  suppliers_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		public static function suppliers_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			echo "<tr><td class='label' name='supplier_name'>$label</td><td>";
 			echo Purch_UI::suppliers($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
 			echo "</td></tr>\n";
 		}
 
-		public static function  credit_row($supplier, $credit, $parms = '') {
+		public static function credit_row($supplier, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>", $parms);
 		}
 
-		public static function  allocation_row($name, $selected = null) {
+		public static function allocation_row($name, $selected = null) {
 			echo "<td>\n";
 			$allocs = array(
 				ALL_TEXT => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes"));
@@ -48,7 +48,7 @@
 			echo "</td>\n";
 		}
 
-		public static function  trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "purchases/view/";
 			switch ($type) {
 				case ST_PURCHORDER:

@@ -142,7 +142,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS NULL";
 		$query = DB::query($sql);
 		$undeposited = array();
 		while ($row = DB::fetch($query)) {
@@ -177,7 +177,7 @@
 			}
 		} else {
 			$row = reset($togroup);
-			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DB::escape($row['id']);
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
 			DB::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);

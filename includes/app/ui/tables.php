@@ -52,7 +52,7 @@
 	}
 
 	function labelheader_cell($label, $params = "") {
-		echo "<th  $params>$label</th>\n";
+		echo "<th $params>$label</th>\n";
 	}
 
 	function label_cell($label, $params = "", $id = null) {

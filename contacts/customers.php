@@ -227,7 +227,7 @@
 	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
 	Inv_Location::row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
 	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
-	Tax_UI::groups_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
+	Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
 	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
 	table_section(2);
 	table_section_title(_("GL Accounts"));

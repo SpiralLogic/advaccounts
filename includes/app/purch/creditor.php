@@ -44,15 +44,15 @@
 			 AND suppliers.supplier_id = supp_trans.supplier_id
 
 		GROUP BY
-			  suppliers.supp_name,
-			  payment_terms.terms,
-			  payment_terms.days_before_due,
-			  payment_terms.day_in_following_month";
+			 suppliers.supp_name,
+			 payment_terms.terms,
+			 payment_terms.days_before_due,
+			 payment_terms.day_in_following_month";
 				$result = DB::query($sql, "The customer details could not be retrieved");
 				if (DB::num_rows($result) == 0) {
 					/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 					$nil_balance = true;
-					$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id,  payment_terms.terms
+					$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
 			FROM suppliers,
 				 payment_terms
 			WHERE
@@ -87,11 +87,11 @@
 				$sql = "SELECT
 
 
-    	SUM((trans.ov_amount + trans.ov_gst  + trans.ov_discount)) AS Total
+ 	SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
 
 
-    	FROM supp_trans as trans
-     	WHERE trans.ov_amount != 0
+ 	FROM supp_trans as trans
+ 	WHERE trans.ov_amount != 0
 		AND trans . tran_date >= '$date_from'
 		AND trans . tran_date <= '$date_to'
 		AND trans.supplier_id = " . DB::escape($supplier_id) . "

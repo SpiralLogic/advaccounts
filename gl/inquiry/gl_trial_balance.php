@@ -39,24 +39,24 @@
 		start_table('tablestyle');
 		$tableheader
 		 = "<tr>
-        <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
-        <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
+ <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
+ <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
 		<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
 		</tr><tr>
 		<td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
+ <td class='tableheader'>" . _("Credit") . "</td>
 		<td class='tableheader'>" . _("Debit") . "</td>
 		<td class='tableheader'>" . _("Credit") . "</td>
-        <td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
-        </tr>";
+ <td class='tableheader'>" . _("Debit") . "</td>
+ <td class='tableheader'>" . _("Credit") . "</td>
+ </tr>";
 		echo $tableheader;
 		$k = 0;
 		$accounts = GL_Account::get_all();
-		$pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-		$begin    = Dates::begin_fiscalyear();
+		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+		$begin = Dates::begin_fiscalyear();
 		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
 			$begin = $_POST['TransFromDate'];
 		}
@@ -65,7 +65,7 @@
 		{
 			$prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-			$tot  = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
+			$tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
 			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}

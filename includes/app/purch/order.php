@@ -217,7 +217,7 @@
 
 		public static function get_header($order_no, &$order) {
 			$sql = "SELECT purch_orders.*, suppliers.supp_name,
-	   		suppliers.curr_code, locations.location_name
+	 		suppliers.curr_code, locations.location_name
 			FROM purch_orders, suppliers, locations
 			WHERE purch_orders.supplier_id = suppliers.supplier_id
 			AND locations.loc_code = into_stock_location
@@ -461,7 +461,7 @@
 						PHP_ROUND_HALF_EVEN);
 					if (!$editable || ($id != $line_no)) {
 						Display::alt_table_row_color($k);
-						label_cell($po_line->stock_id, " class='stock'  data-stock_id='{$po_line->stock_id}'");
+						label_cell($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
 						label_cell($po_line->description);
 						qty_cell($po_line->quantity, false, Item::qty_dec($po_line->stock_id));
 						qty_cell($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
@@ -498,7 +498,7 @@
 
 		public static function summary(&$po, $is_self = false, $editable = false) {
 			start_table('tablestyle2 width90');
-			echo "<tr  class='tableheader2 top'><th colspan=4>";
+			echo "<tr class='tableheader2 top'><th colspan=4>";
 			Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 			echo "</td></tr>";
 			start_row();
@@ -550,7 +550,7 @@
 				$_POST['description'] = $order->line_items[$id]->description;
 				$_POST['units'] = $order->line_items[$id]->units;
 				hidden('stock_id', $_POST['stock_id']);
-				label_cell($_POST['stock_id'], " class='stock'   data-stock_id='{$_POST['stock_id']}'");
+				label_cell($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
 				textarea_cells(null, 'description', null, 50, 5);
 				$Ajax->activate('items_table');
 				$qty_rcvd = $order->line_items[$id]->qty_received;

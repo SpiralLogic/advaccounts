@@ -1,6 +1,6 @@
 <?php
 
-	/*     * *******************************************************************
+	/* * *******************************************************************
 				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
@@ -21,8 +21,8 @@
 		public function __construct() {
 			Session::hasLogin();
 			$installed_extensions = Config::get('extensions.installed');
-			$this->menu = new Menu(_("Main  Menu"));
-			$this->menu->add_item(_("Main  Menu"), "index.php");
+			$this->menu = new Menu(_("Main Menu"));
+			$this->menu->add_item(_("Main Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
 			$apps = Config::get('apps.active');

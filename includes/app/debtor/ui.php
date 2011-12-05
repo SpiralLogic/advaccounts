@@ -8,7 +8,7 @@
 	 */
 	class Debtor_UI
 	{
-		//  BRANCHES
+		// BRANCHES
 		function branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			$sql = "SELECT branch_code, branch_ref FROM cust_branch
 			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
@@ -36,7 +36,7 @@
 			echo "</tr>";
 		}
 
-		//  CUSTOMERS
+		// CUSTOMERS
 		function credit_row($customer, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " >" . Num::price_format($credit) . "</a>", $parms);

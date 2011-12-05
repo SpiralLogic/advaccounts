@@ -77,8 +77,8 @@
 
 		/**
 		 * @static
-		 * @param        $var
-		 * @param        $value
+		 * @param $var
+		 * @param $value
 		 * @param string $group
 		 * @return mixed
 		 */public static function set($var, $value, $group = 'config') {
@@ -89,7 +89,7 @@
 		/***
 		 * @static
 		 *
-		 * @param      $var
+		 * @param $var
 		 * @param null $array_key
 		 * @param null $group
 		 *
@@ -121,7 +121,7 @@
 
 		/**
 		 * @static
-		 * @param        $var
+		 * @param $var
 		 * @param string $group
 		 */public static function remove($var, $group = 'config') {
 			if (array_key_exists($var, static::$_vars[$group])) {

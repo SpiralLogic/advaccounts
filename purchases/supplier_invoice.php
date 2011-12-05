@@ -53,7 +53,7 @@
 
 
 	//	GL postings are often entered in the same form to two accounts
-	//  so fileds are cleared only on user demand.
+	// so fileds are cleared only on user demand.
 	//
 	if (isset($_POST['ClearFields'])) {
 		clear_fields();
@@ -102,7 +102,7 @@
 	function check_data()
 		{
 			if (!Purch_Trans::i()->is_valid_trans_to_post()) {
-				Errors::error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
+				Errors::error(_("The invoice cannot be processed because the there are no items or values on the invoice. Invoices are expected to have a charge."));
 				return false;
 			}
 			if (!Ref::is_valid(Purch_Trans::i()->reference)) {
@@ -292,7 +292,7 @@
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 			$sql = "UPDATE grn_items
-	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
+	 	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
 			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"],
 				Dates::Today());
@@ -343,36 +343,36 @@
 
 	Item::addEditDialog();
 	$js = <<<JS
-		    $("#wrapper").delegate('.amount','change',function() {
-	      var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), feilds = $(this).parent().parent(), fv = {}, nodes = {
-	         qty: $('[name^="this_quantity"]',feilds),
-	         price: $('[name^="ChgPrice"]',feilds),
-	         discount: $('[name^="ChgDiscount"]',feilds),
-	         total: $('[id^="ChgTotal"]',feilds),
+		 $("#wrapper").delegate('.amount','change',function() {
+	 var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), feilds = $(this).parent().parent(), fv = {}, nodes = {
+	 qty: $('[name^="this_quantity"]',feilds),
+	 price: $('[name^="ChgPrice"]',feilds),
+	 discount: $('[name^="ChgDiscount"]',feilds),
+	 total: $('[id^="ChgTotal"]',feilds),
 						eachprice: $('[id^="Ea"]',feilds)
-	      };
-	      if (feilds.hasClass('grid')) {
-	      $.each(nodes,function(k,v) {
-	         if (v && v.val()) fv[k] = Number(v.val().replace(',',''));
-	      });
-	      if (feild.attr('id') == nodes.total.attr('id')) {
-	         if (fv.price == 0 && fv.discount==0) {
-	            fv.price = fv.total / fv.qty;
-	         } else {
-	            fv.discount = 100*(1-(fv.total)/(fv.price*fv.qty));
-	         		fv.discount = Math.round(fv.discount*1)/1;
-	         }
-	         nodes.price.val(fv.price);
-	         nodes.discount.val(fv.discount);
-	      } else if (fv.qty > 0 && fv.price > 0) {
-	         fv.total = fv.qty*fv.price*((100-fv.discount)/100);
-	         nodes.total.val(Math.round(fv.total*100)/100 );
-	       };
-	       price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
-	       } else {
+	 };
+	 if (feilds.hasClass('grid')) {
+	 $.each(nodes,function(k,v) {
+	 if (v && v.val()) fv[k] = Number(v.val().replace(',',''));
+	 });
+	 if (feild.attr('id') == nodes.total.attr('id')) {
+	 if (fv.price == 0 && fv.discount==0) {
+	 fv.price = fv.total / fv.qty;
+	 } else {
+	 fv.discount = 100*(1-(fv.total)/(fv.price*fv.qty));
+	 		fv.discount = Math.round(fv.discount*1)/1;
+	 }
+	 nodes.price.val(fv.price);
+	 nodes.discount.val(fv.discount);
+	 } else if (fv.qty > 0 && fv.price > 0) {
+	 fv.total = fv.qty*fv.price*((100-fv.discount)/100);
+	 nodes.total.val(Math.round(fv.total*100)/100 );
+	 };
+	 price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
+	 } else {
 		if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
 		var total = Number(invTotal.data('total'));
-		var ChgTax =  Number(ChgTax.val().replace(',',''));
+		var ChgTax = Number(ChgTax.val().replace(',',''));
 		var ChgTotal = Number(ChgTotal.val().replace(',',''));
 		price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 	}});

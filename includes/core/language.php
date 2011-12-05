@@ -38,9 +38,9 @@
 		public $is_locale_file;
 
 		/**
-		 * @param        $name
-		 * @param        $code
-		 * @param        $encoding
+		 * @param $name
+		 * @param $code
+		 * @param $encoding
 		 * @param string $dir
 		 */
 		function __construct($name, $code, $encoding, $dir = 'ltr') {

@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 		Copyright (C) Advanced Group PTY LTD
 		Released under the terms of the GNU General Public License, GPL,
 		as published by the Free Software Foundation, either version 3
@@ -43,12 +43,12 @@
 				echo "<p>" . Config::get('db.' . User::get()->company,
 					'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
 				echo "<ul>\n";
-				echo "  <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
-				echo "  <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+				echo " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
+				echo " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 				if (Config::get('help_baseurl') != null) {
-					echo "  <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+					echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
 				}
-				echo "  <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
+				echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
 				echo "</ul>\n";
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
@@ -116,8 +116,8 @@
 			foreach ($selected_app->modules as $module) {
 				// image
 				echo "<table style='width:100%'><tr>";
-				echo "<td  class='menu_group top'>";
-				echo "<table   style='width:100%'>";
+				echo "<td class='menu_group top'>";
+				echo "<table style='width:100%'>";
 				echo "<tr><td class='menu_group' colspan=2>";
 				echo $module->name;
 				echo "</td></tr><tr>";

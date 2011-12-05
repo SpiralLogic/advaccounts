@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
-	class Purch_Trans  implements IVoidable {
+	class Purch_Trans implements IVoidable {
 		protected static $_instance = null;
 
 		public static function i($reset_session = false) {
@@ -91,7 +91,7 @@
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
-			$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+			$tax_group = Tax_Groups::get_items_as_array($tax_group_id);
 			foreach ($this->grn_items as $ln_itm) {
 				$items[] = $ln_itm->item_code;
 				$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
@@ -118,7 +118,7 @@
 			$total = 0;
 			// preload the taxgroup !
 			if ($tax_group_id != null) {
-				$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+				$tax_group = Tax_Groups::get_items_as_array($tax_group_id);
 			} else {
 				$tax_group = null;
 			}

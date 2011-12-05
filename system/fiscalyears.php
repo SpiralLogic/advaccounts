@@ -86,7 +86,7 @@
 		// retrieve total balances from balance sheet accounts
 		$sql
 		 = "SELECT SUM(amount) FROM gl_trans INNER JOIN chart_master ON account=account_code
-    	INNER JOIN chart_types ON account_type=id INNER JOIN chart_class ON class_id=cid
+ 	INNER JOIN chart_types ON account_type=id INNER JOIN chart_class ON class_id=cid
 		WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
 		$result = DB::query($sql, "The total balance could not be calculated");
 		$row = DB::fetch_row($result);
@@ -174,12 +174,12 @@
 			if (file_exists($dir . "/" . $row['unique_name'])) {
 				unlink($dir . "/" . $row['unique_name']);
 			}
-			$sql = "DELETE FROM attachments WHERE  type_no = $type_no AND trans_no = $trans_no";
+			$sql = "DELETE FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 			DB::query($sql, "Could not delete attachment");
 		}
-		$sql = "DELETE FROM comments WHERE  type = $type_no AND id = $trans_no";
+		$sql = "DELETE FROM comments WHERE type = $type_no AND id = $trans_no";
 		DB::query($sql, "Could not delete comments");
-		$sql = "DELETE FROM refs WHERE  type = $type_no AND id = $trans_no";
+		$sql = "DELETE FROM refs WHERE type = $type_no AND id = $trans_no";
 		DB::query($sql, "Could not delete refs");
 	}
 

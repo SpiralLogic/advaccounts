@@ -79,8 +79,8 @@
 				DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 				$sql
 				 = "UPDATE grn_items
-        SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
-        WHERE id = " . DB::escape($id);
+ SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
+ WHERE id = " . DB::escape($id);
 				DB::query($sql, "The quantity invoiced off the items received record could not be updated");
 				return array($ret, $date, $unit_price);
 			}
@@ -160,7 +160,7 @@
 				)
 				{
 					/*GL Items are straight forward - just do the debit postings to the GL accounts specified -
-																									 the credit is to creditors control act  done later for the total invoice value + tax*/
+																									 the credit is to creditors control act done later for the total invoice value + tax*/
 					if (!$supp_trans->is_invoice) {
 						$entered_gl_code->amount = -$entered_gl_code->amount;
 					}
@@ -462,12 +462,12 @@
 								}
 								$sql
 								 = "UPDATE purch_order_details
-        				SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
+ 				SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
 								if ($match !== false) {
 									$sql .= "act_price=" . $match['unit_price'] . ", ";
 								}
 								$sql .= "quantity_received = quantity_received + " . -$details_row["quantity"] . "
-    				    WHERE po_detail_item = " . $details_row["po_detail_item_id"];
+ 				 WHERE po_detail_item = " . $details_row["po_detail_item_id"];
 								DB::query(
 									$sql,
 									"a purchase order details record could not be updated. This receipt of goods has not been processed "
@@ -663,7 +663,7 @@
 					label_row(
 						_("Credit Note Total"), Num::price_format($total),
 						"colspan=$colspan style='text-align:right;' style='font-weight:bold;color:red;'",
-					 "nowrap class=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'"
+					 "nowrap class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;color:red;'"
 					);
 				}
 				end_table(1);

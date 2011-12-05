@@ -108,12 +108,12 @@
 					payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
 					default_ship_via=" . DB::escape($this->default_ship_via) . ",
 					disable_trans=" . DB::escape($this->disable_trans) . ",
-		            group_no=" . DB::escape($this->group_no) . ",
-		            notes=" . DB::escape($this->notes) . ",
-		            inactive=" . DB::escape($this->inactive) . ",
-		            branch_ref=" . DB::escape($this->branch_ref) . "
-		              WHERE branch_code =" . DB::escape($this->branch_code) . "
-		    	        AND debtor_no=" . DB::escape($this->debtor_no);
+		 group_no=" . DB::escape($this->group_no) . ",
+		 notes=" . DB::escape($this->notes) . ",
+		 inactive=" . DB::escape($this->inactive) . ",
+		 branch_ref=" . DB::escape($this->branch_ref) . "
+		 WHERE branch_code =" . DB::escape($this->branch_code) . "
+		 	 AND debtor_no=" . DB::escape($this->debtor_no);
 			DB::query($sql, "The customer could not be updated");
 			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Branch has been updated.");

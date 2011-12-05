@@ -117,25 +117,25 @@
 		 * @desc Naturally sorts an array using by the column $strSortBy
 		 */
 		static function natsort($aryData, $strIndex, $strSortBy, $strSortType = false) {
-			//    if the parameters are invalid
+			// if the parameters are invalid
 			if (!is_array($aryData) || !$strSortBy
-			) //    return the array
+			) // return the array
 			{
 				return $aryData;
 			}
-			//    create our temporary arrays
+			// create our temporary arrays
 			$arySort = $aryResult = array();
-			//    loop through the array
+			// loop through the array
 			foreach ($aryData as $key => $aryRow) {
 				$arySort[$strIndex ? $aryRow[$strIndex] : $key] = $aryRow[$strSortBy];
 			}
-			//    apply the natural sort
+			// apply the natural sort
 			natsort($arySort);
-			//    if the sort type is descending
+			// if the sort type is descending
 			if ($strSortType == "desc") {
 				arsort($arySort);
 			}
-			//    loop through the sorted and original data
+			// loop through the sorted and original data
 			/** @noinspection PhpUnusedLocalVariableInspection */
 			foreach ($arySort as $arySortKey => $arySorted) {
 				if ($strIndex) {

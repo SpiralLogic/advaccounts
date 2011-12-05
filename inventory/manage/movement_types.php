@@ -63,7 +63,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 
-	$result = Inv_Movement::get_all_types(  check_value('show_inactive'));
+	$result = Inv_Movement::get_all_types( check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle width30');
 	$th = array(_("Description"), "", "");

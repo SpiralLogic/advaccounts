@@ -28,7 +28,7 @@
 				$ret_tax_array = $tax_group_array;
 			} else
 			{
-				$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group);
+				$ret_tax_array = Tax_Groups::get_items_as_array($tax_group);
 			}
 			//print_r($ret_tax_array);
 			$tax_array = Tax::get_all_for_item($stock_id, $ret_tax_array);
@@ -59,7 +59,7 @@
 				$tax_group = Tax_Groups::get_for_item($stock_id);
 			}
 			// if array already read, then make a copy and use that
-			$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group[0]);
+			$ret_tax_array = Tax_Groups::get_items_as_array($tax_group[0]);
 			$tax_array = Tax::get_all_for_item($stock_id, $ret_tax_array);
 			// if no exemptions or taxgroup is empty, then no included/excluded taxes
 			if ($tax_array == null) {
@@ -75,7 +75,7 @@
 			return round($price * (($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		#  __ADVANCEDEDIT__ BEGIN #
+		# __ADVANCEDEDIT__ BEGIN #
 		public static function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
 			// if price is zero, then can't be taxed !
 			if ($price == 0) {
@@ -89,7 +89,7 @@
 				$ret_tax_array = $tax_group_array;
 			} else
 			{
-				$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group);
+				$ret_tax_array = Tax_Groups::get_items_as_array($tax_group);
 			}
 			//print_r($ret_tax_array);
 			$tax_array = Tax::get_all_for_item($stock_id, $ret_tax_array);
@@ -107,7 +107,7 @@
 			return round($price * (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		#  __ADVANCEDEDIT__ END #
+		# __ADVANCEDEDIT__ END #
 		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
 		public static function get_all_for_item($stock_id, $tax_group_items_array) {
 			$item_tax_type = Tax_ItemType::get_for_item($stock_id);
@@ -153,7 +153,7 @@
 				$ret_tax_array = $tax_items_array;
 			} else
 			{
-				$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group);
+				$ret_tax_array = Tax_Groups::get_items_as_array($tax_group);
 			}
 			foreach (
 				$ret_tax_array as $k => $t
@@ -183,7 +183,7 @@
 			}
 			// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
 			if ($shipping_cost != 0) {
-				$item_taxes = Tax_Groups::get_shipping_tax_as_array();
+				$item_taxes = Tax_Groups::for_shipping_as_array();
 				if ($item_taxes != null) {
 					if ($tax_included == 1) {
 						$tax_rate = 0;

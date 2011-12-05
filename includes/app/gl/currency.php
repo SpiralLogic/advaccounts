@@ -66,7 +66,7 @@ class GL_Currency {
 	}
 
 
-		//  CURRENCIES
+		// CURRENCIES
 	public static function select($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
 			// default to the company currency

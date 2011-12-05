@@ -6,8 +6,7 @@
 	 * Time: 5:48 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Tags
-	{
+	class Tags {
 		public static function add($type, $name, $description) {
 			$sql = "INSERT INTO tags (type, name, description)
  		VALUES (" . DB::escape($type) . ", " . DB::escape($name) . ", " . DB::escape($description) . ")";
@@ -15,8 +14,7 @@
 		}
 
 		public static function update($id, $name, $description, $type = null) {
-			$sql = "UPDATE tags SET name=" . DB::escape($name) . ",
-                                        description=" . DB::escape($description);
+			$sql = "UPDATE tags SET name=" . DB::escape($name) . ", description=" . DB::escape($description);
 			if ($type != null) {
 				$sql .= ", type=" . DB::escape($type);
 			}
@@ -124,7 +122,7 @@
 			$sql = "SELECT $table.* FROM $table
  		INNER JOIN tag_associations AS ta ON ta.record_id = $table.$key
  		INNER JOIN tags AS tags ON ta.tag_id = tags.id
- 	        WHERE tags.id = " . DB::escape($id);
+ 	 WHERE tags.id = " . DB::escape($id);
 			return DB::query($sql, "could not get tag associations for tag");
 		}
 
@@ -146,7 +144,7 @@
 				$spec_opt = false;
 			}
 			return array_selector($name, null, $tags, array(
-																										 'multi' => $multi, 'height' => $height, 'spec_option' => $spec_opt, 'spec_id' => -1,));
+				'multi' => $multi, 'height' => $height, 'spec_option' => $spec_opt, 'spec_id' => -1,));
 		}
 
 		public static function combo_cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {

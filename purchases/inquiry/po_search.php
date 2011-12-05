@@ -110,8 +110,8 @@
 	} else {
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 		$data_before = Dates::date2sql($_POST['OrdersToDate']);
-		$sql .= "  AND porder.ord_date >= '$data_after'";
-		$sql .= "  AND porder.ord_date <= '$data_before'";
+		$sql .= " AND porder.ord_date >= '$data_after'";
+		$sql .= " AND porder.ord_date <= '$data_before'";
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
 			$sql .= " AND porder.into_stock_location = " . DB::escape($_POST['StockLocation'], false, false);
 		}

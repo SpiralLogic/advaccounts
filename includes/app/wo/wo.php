@@ -86,20 +86,20 @@
 		public static function get_demand_asm_qty($stock_id, $location) {
 			$demand_qty = 0.0;
 			$sql = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
-				   AS Demmand
-				   FROM sales_order_details,
+				 AS Demmand
+				 FROM sales_order_details,
 						sales_orders,
 						stock_master
-				   WHERE sales_orders.order_no = sales_order_details.order_no AND
-				   	sales_orders.trans_type=" . ST_SALESORDER . " AND
+				 WHERE sales_orders.order_no = sales_order_details.order_no AND
+				 	sales_orders.trans_type=" . ST_SALESORDER . " AND
 					sales_orders.trans_type=sales_order_details.trans_type AND ";
 			if ($location != "") {
 				$sql .= "sales_orders.from_stk_loc =" . DB::escape($location) . " AND ";
 			}
 			$sql .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
-				   stock_master.stock_id=sales_order_details.stk_code AND
-				   (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
-				   GROUP BY sales_order_details.stk_code";
+				 stock_master.stock_id=sales_order_details.stk_code AND
+				 (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
+				 GROUP BY sales_order_details.stk_code";
 			$result = DB::query($sql, "No transactions were returned");
 			while ($row = DB::fetch_row($result)) {
 				$demand_qty += static::stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
@@ -177,11 +177,11 @@
 
 		public static function get_bom($item) {
 			$sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
-    	stock_master.description, stock_master.mb_flag AS ResourceType,
-    	stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
-    	bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
-    	FROM (workcentres, locations, bom) INNER JOIN stock_master ON bom.component = stock_master.stock_id
-    	WHERE bom.parent = " . DB::escape($item) . "
+ 	stock_master.description, stock_master.mb_flag AS ResourceType,
+ 	stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
+ 	bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
+ 	FROM (workcentres, locations, bom) INNER JOIN stock_master ON bom.component = stock_master.stock_id
+ 	WHERE bom.parent = " . DB::escape($item) . "
 		AND workcentres.id=bom.workcentre_added
 		AND bom.loc_code = locations.loc_code ORDER BY bom.id";
 			return DB::query($sql, "The bill of material could not be retrieved");
@@ -267,7 +267,7 @@
 					$required = Dates::date2sql($required_by);
 					$sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
 				type, date_, required_by)
-		    	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
+		 	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 				" . DB::escape($type) . ", '$date', " . DB::escape($required) . ")";
 					DB::query($sql, "could not add work order");
 					$woid = DB::insert_id();

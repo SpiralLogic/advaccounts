@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 				 Copyright (C) Advanced Group PTY LTD
 				 Released under the terms of the GNU General Public License, GPL,
 				 as published by the Free Software Foundation, either version 3
@@ -53,26 +53,26 @@
 				$sql = "UPDATE cust_branch SET br_name = " . DB::escape($_POST['br_name']) . ",
 				branch_ref = " . DB::escape($_POST['br_ref']) . ",
 				br_address = " . DB::escape($_POST['br_address']) . ",
-    	        phone=" . DB::escape($_POST['phone']) . ",
-    	        phone2=" . DB::escape($_POST['phone2']) . ",
-    	        fax=" . DB::escape($_POST['fax']) . ",
-    	        contact_name=" . DB::escape($_POST['contact_name']) . ",
-    	        salesman= " . DB::escape($_POST['salesman']) . ",
-    	        area=" . DB::escape($_POST['area']) . ",
-    	        email=" . DB::escape($_POST['email']) . ",
-    	        tax_group_id=" . DB::escape($_POST['tax_group_id']) . ",
+ 	 phone=" . DB::escape($_POST['phone']) . ",
+ 	 phone2=" . DB::escape($_POST['phone2']) . ",
+ 	 fax=" . DB::escape($_POST['fax']) . ",
+ 	 contact_name=" . DB::escape($_POST['contact_name']) . ",
+ 	 salesman= " . DB::escape($_POST['salesman']) . ",
+ 	 area=" . DB::escape($_POST['area']) . ",
+ 	 email=" . DB::escape($_POST['email']) . ",
+ 	 tax_group_id=" . DB::escape($_POST['tax_group_id']) . ",
 				sales_account=" . DB::escape($_POST['sales_account']) . ",
 				sales_discount_account=" . DB::escape($_POST['sales_discount_account']) . ",
 				receivables_account=" . DB::escape($_POST['receivables_account']) . ",
 				payment_discount_account=" . DB::escape($_POST['payment_discount_account']) . ",
-    	        default_location=" . DB::escape($_POST['default_location']) . ",
-    	        br_post_address =" . DB::escape($_POST['br_post_address']) . ",
-    	        disable_trans=" . DB::escape($_POST['disable_trans']) . ",
+ 	 default_location=" . DB::escape($_POST['default_location']) . ",
+ 	 br_post_address =" . DB::escape($_POST['br_post_address']) . ",
+ 	 disable_trans=" . DB::escape($_POST['disable_trans']) . ",
 				group_no=" . DB::escape($_POST['group_no']) . ",
-    	        default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
-                notes=" . DB::escape($_POST['notes']) . "
-    	        WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
-    	        AND debtor_no=" . DB::escape($_POST['customer_id']);
+ 	 default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
+ notes=" . DB::escape($_POST['notes']) . "
+ 	 WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
+ 	 AND debtor_no=" . DB::escape($_POST['customer_id']);
 				$note = _('Selected customer branch has been updated');
 			} else {
 				/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
@@ -254,7 +254,7 @@
 	Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, true);
 	Inv_Location::row(_("Default Inventory Location:"), 'default_location', null);
 	Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', null);
-	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', null);
+	Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
 	yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 	table_section(2);
 	table_section_title(_("GL Accounts"));

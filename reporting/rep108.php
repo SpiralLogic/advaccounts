@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 		 Copyright (C) Advanced Group PTY LTD
 		 Released under the terms of the GNU General Public License, GPL,
 		 as published by the Free Software Foundation, either version 3
@@ -30,11 +30,11 @@
 				AS TotalAmount, debtor_trans.alloc AS Allocated,
 				((debtor_trans.type = " . ST_SALESINVOICE . ")
 					AND debtor_trans.due_date < '$date') AS OverDue
-    			FROM debtor_trans
-    			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
-    				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+ 			FROM debtor_trans
+ 			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
+ 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
 
-    				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+ 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0	";
 			if ($incAllocations) {
 				$sql .= " AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
@@ -48,8 +48,8 @@
 	function getTransactionPO($no)
 		{
 			$sql = "SELECT customer_ref
-        FROM sales_orders
-        WHERE order_no=$no";
+ FROM sales_orders
+ WHERE order_no=$no";
 			$result = DB::query($sql, "Could not retrieve any branches");
 			$myrow = DB::fetch_assoc($result);
 			return $myrow['customer_ref'];
@@ -84,7 +84,7 @@
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
 			}
-			$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
+			$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 			if ($customer != ALL_NUMERIC) {
 				$sql .= " WHERE debtor_no = " . DB::escape($customer);
 			} else {

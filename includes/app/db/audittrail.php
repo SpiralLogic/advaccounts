@@ -74,7 +74,7 @@
 		}
 
 		public static function is_closed_trans($type, $trans_no) {
-			$sql = "SELECT	gl_seq  FROM audit_trail"
+			$sql = "SELECT	gl_seq FROM audit_trail"
 			 . " WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($trans_no)
 			 . " AND gl_seq>0";

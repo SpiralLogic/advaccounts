@@ -93,7 +93,7 @@
 				amount_cell(Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)));
 				end_row();
 			}
-			//START Patch#1 : Display  only direct child types
+			//START Patch#1 : Display only direct child types
 			$acctype1 = GL_Type::get($type);
 			$parent1 = $acctype1["parent"];
 			if ($drilldown && $parent1 == $_POST["AccGrp"]
@@ -184,11 +184,11 @@
 		start_table('tablestyle width50');
 		$tableheader
 		 = "<tr>
-        <td class='tableheader'>" . _("Group/Account Name") . "</td>
-        <td class='tableheader'>" . _("Period") . "</td>
+ <td class='tableheader'>" . _("Group/Account Name") . "</td>
+ <td class='tableheader'>" . _("Period") . "</td>
 		<td class='tableheader'>" . $sel[$compare] . "</td>
 		<td class='tableheader'>" . _("Achieved %") . "</td>
-        </tr>";
+ </tr>";
 		if (!$drilldown) //Root Level
 		{
 			$parent = -1;

@@ -22,7 +22,7 @@
 	}
 	$_SESSION['View'] = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
 	start_table('tablesstyle2 nopad width95');
-	echo "<tr  class='tableheader2 top'><th colspan=3>";
+	echo "<tr class='tableheader2 top'><th colspan=3>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	} else {
@@ -116,7 +116,7 @@
 		table_header($th);
 		$credits_total = 0;
 		if (count($inv_numbers)) {
-			// FIXME -  credit notes retrieved here should be those linked to invoices containing
+			// FIXME - credit notes retrieved here should be those linked to invoices containing
 			// at least one line from this order
 			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',',
 				array_values($inv_numbers)) . ")";
@@ -175,19 +175,19 @@
 	}
 	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
 	if (ST_SALESORDER) {
-		Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}'  target='_top' ");
+		Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
 	}
 	Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
 	Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 	Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
 	if ($qty_remaining > 0) {
 		Display::submenu_option(_("Make &Delivery Against This Order"),
-			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
+			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
 	} else {
 		Display::submenu_option(_("Invoice Items On This Order"),
-			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
+			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
 	}
-	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
+	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
 	end_page(true);

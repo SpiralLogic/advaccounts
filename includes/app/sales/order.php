@@ -12,10 +12,10 @@
 	/* Definition of the cart class
 		this class can hold all the information for:
 
-		i)   a sales order
-		ii)  an invoice
+		i) a sales order
+		ii) an invoice
 		iii) a credit note
-		iv)  a delivery note
+		iv) a delivery note
 		*/
 	class Sales_Order
 	{
@@ -67,9 +67,9 @@
 
 
 		//
-		//  $trans_no==0 => open new/direct document
-		//  $trans_no!=0 && $view==false => read for view
-		//  $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
+		// $trans_no==0 => open new/direct document
+		// $trans_no!=0 && $view==false => read for view
+		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
 		function __construct($type, $trans_no = 0, $view = false)
 			{
@@ -129,7 +129,7 @@
 							}
 							// calculate & save: qtys on other docs and free qtys on src doc
 							for ($line_no = 0; $srcline = DB::fetch($srcdetails); $line_no++) {
-								$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
+								$sign = 1; // $type==13 ? 1 : -1; // this is strange debtor_trans atavism
 								$line = &$this->line_items[$line_no];
 								$line->src_id = $srcline['id']; // save src line ids for update
 								$line->qty_old = $line->qty_dispatched = $line->quantity;
@@ -205,7 +205,7 @@
 
 		// Writing new/modified sales document to database.
 		// Makes parent documents for direct delivery/invoice by recurent call.
-		// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
+		// $policy - 0 or 1: writeoff/return for IV, back order/cancel for DN
 		function write($policy = 0)
 			{
 				if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
@@ -284,7 +284,7 @@
 				$this->phone = $phone;
 				$this->email = $email;
 				$this->tax_group_id = $tax_group_id;
-				$this->tax_group_array = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+				$this->tax_group_array = Tax_Groups::get_items_as_array($tax_group_id);
 			}
 
 		function set_salesman($salesman_code = null)
@@ -494,7 +494,7 @@
 
 		function get_shipping_tax()
 			{
-				$tax_items = Tax_Groups::get_shipping_tax_as_array();
+				$tax_items = Tax_Groups::for_shipping_as_array();
 				$tax_rate = 0;
 				if ($tax_items != null) {
 					foreach ($tax_items as $item_tax) {
@@ -522,7 +522,7 @@
 
 		static function restore()
 			{
-				$sql = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
+				$sql = "SELECT `data` FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
 				$result = DB::query($sql);
 				$serial = DB::fetch_assoc($result);
 				$serial = $serial['data'];
@@ -684,8 +684,8 @@
 						}
 					}
 					$sql = "INSERT INTO sales_order_details
-			 (id, order_no, trans_type, stk_code,  description, unit_price, quantity,
-			  discount_percent, qty_sent)
+			 (id, order_no, trans_type, stk_code, description, unit_price, quantity,
+			 discount_percent, qty_sent)
 			 VALUES (";
 					$sql .= DB::escape($line->id ? $line->id :
 					 0) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
@@ -719,11 +719,11 @@
 		public static function get_header($order_no, $trans_type)
 			{
 				$sql = "SELECT DISTINCT sales_orders.*,
-		  debtors_master.name,
-		  debtors_master.curr_code,
-		  debtors_master.email AS master_email,
-		  locations.location_name,
-		  debtors_master.payment_terms,
+		 debtors_master.name,
+		 debtors_master.curr_code,
+		 debtors_master.email AS master_email,
+		 locations.location_name,
+		 debtors_master.payment_terms,
 		 debtors_master.discount,
 		 sales_types.sales_type,
 		 sales_types.id AS sales_type_id,
@@ -761,8 +761,8 @@
 		public static function get_details($order_no, $trans_type)
 			{
 				$sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
-			  discount_percent,
-			  qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
+			 discount_percent,
+			 qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
 		FROM sales_order_details, stock_master
 		WHERE sales_order_details.stk_code = stock_master.stock_id
 		AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
@@ -877,9 +877,9 @@
 			{
 				// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
 				$sql = "SELECT cust_branch.br_name,
-	      cust_branch.br_address,
-	      cust_branch.city, cust_branch.state, cust_branch.postcode, cust_branch.contact_name, cust_branch.br_post_address, cust_branch.phone, cust_branch.email,
-				  default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
+	 cust_branch.br_address,
+	 cust_branch.city, cust_branch.state, cust_branch.postcode, cust_branch.contact_name, cust_branch.br_post_address, cust_branch.phone, cust_branch.email,
+				 default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
 				FROM cust_branch, tax_groups, locations
 				WHERE cust_branch.tax_group_id = tax_groups.id
 					AND locations.loc_code=default_location
@@ -1132,8 +1132,8 @@
 				HTML::td();
 				$action = <<<JS
 				var discount = prompt("Discount Percent?",''); if (!discount) return false; $("[name='_discountall']").val(Number(discount)); e=$(this);save_focus(e);
-		                        JsHttpRequest.request(this);
-		                    return false;
+		 JsHttpRequest.request(this);
+		 return false;
 JS;
 				JS::addLiveEvent('#discountall', 'click', $action);
 				end_row();
@@ -1173,7 +1173,7 @@ JS;
 						hidden('customer_id', $order->customer_id);
 						hidden('branch_id', $order->Branch);
 						hidden('sales_type', $order->sales_type);
-						//		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
+						//		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) {
 						hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
 						hidden('dimension2_id', $order->dimension2_id);
 						//		}
@@ -1226,7 +1226,7 @@ JS;
 								$change_prices = 1;
 							}
 							if ($old_order->sales_type != $order->sales_type) {
-								//  || $old_order->default_discount!=$order->default_discount
+								// || $old_order->default_discount!=$order->default_discount
 								$_POST['sales_type'] = $order->sales_type;
 								$Ajax->activate('sales_type');
 								$change_prices = 1;

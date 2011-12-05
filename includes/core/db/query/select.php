@@ -39,7 +39,7 @@
 
 		/***
 		 * @param string $columns,... Database columns to select
-		 * @param        DB_C
+		 * @param DB_C
 		 *
 		 * @return DB_Query_Select
 		 */
@@ -96,7 +96,7 @@
 			}
 
 		/**
-		 * @param      $start
+		 * @param $start
 		 * @param null $quantity
 		 * @return DB_Query_Select
 		 */public function limit($start, $quantity = null)

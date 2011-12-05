@@ -24,14 +24,14 @@
 		{
 			$to = Dates::date2sql($to);
 			$sql = "SELECT SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
-    	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
+ 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ", 0)) AS charges,
-    	SUM(IF(" . '' . "debtor_trans.type <> " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
-    	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
+ 	SUM(IF(" . '' . "debtor_trans.type <> " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
+ 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
@@ -44,21 +44,21 @@
 			$sql
 			 .= ") AS Allocated,
 		SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
-    	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount - " . '' . "debtor_trans.alloc)";
+ 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount - " . '' . "debtor_trans.alloc)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ",
-    	((" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
-    	" . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount) * -1 + " . '' . "debtor_trans.alloc)";
+ 	((" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
+ 	" . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount) * -1 + " . '' . "debtor_trans.alloc)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ")) AS OutStanding
 		FROM " . '' . "debtor_trans
-    	WHERE " . '' . "debtor_trans.tran_date < '$to'
+ 	WHERE " . '' . "debtor_trans.tran_date < '$to'
 		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_no";
 			$result = DB::query($sql, "No transactions were returned");
@@ -75,12 +75,12 @@
 		AS TotalAmount, " . '' . "debtor_trans.alloc AS Allocated,
 		((" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ")
 		AND " . '' . "debtor_trans.due_date < '$to') AS OverDue
-    	FROM " . '' . "debtor_trans
-    	WHERE " . '' . "debtor_trans.tran_date >= '$from'
+ 	FROM " . '' . "debtor_trans
+ 	WHERE " . '' . "debtor_trans.tran_date >= '$from'
 		AND " . '' . "debtor_trans.tran_date <= '$to'
 		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
-    	ORDER BY " . '' . "debtor_trans.tran_date";
+ 	ORDER BY " . '' . "debtor_trans.tran_date";
 			return DB::query($sql, "No transactions were returned");
 		}
 
@@ -246,7 +246,7 @@
 				//$rep->TextCol(0, 3, _('Total'));
 				//		for ($i = 0; $i < 4; $i++)
 				//			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
-				//  		$rep->Line($rep->row  - 4);
+				// 		$rep->Line($rep->row - 4);
 				//		$rep->NewLine(2);
 			}
 			$rep->fontSize += 2;

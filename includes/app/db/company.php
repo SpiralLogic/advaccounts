@@ -31,12 +31,12 @@
 
 		public static function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
 			if ($daysOrFoll) {
-				$sql = "INSERT INTO  payment_terms (terms,
+				$sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" .
 				 DB::escape($terms) . ", " . DB::escape($dayNumber) . ", 0)";
 			} else {
-				$sql = "INSERT INTO  payment_terms (terms,
+				$sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::escape($terms) . ",
 					0, " . DB::escape($dayNumber) . ")";
@@ -109,7 +109,7 @@
 
 		public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
 			if ($daysOrFoll) {
-				$sql = "UPDATE  payment_terms SET terms=" . DB::escape($terms) . ",
+				$sql = "UPDATE payment_terms SET terms=" . DB::escape($terms) . ",
 			day_in_following_month=0,
 			days_before_due=" . DB::escape($dayNumber) . "
 			WHERE terms_indicator = " . DB::escape($selected_id);

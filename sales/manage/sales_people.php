@@ -35,20 +35,20 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
+				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the delete code below*/
 				$sql = "UPDATE salesman SET salesman_name=" . DB::escape($_POST['salesman_name']) . ",
-    			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
-    			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
-    			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
-    			provision=" . Validation::input_num('provision') . ",
-    			break_pt=" . Validation::input_num('break_pt') . ",
-    			provision2=" . Validation::input_num('provision2') . "
-    			WHERE salesman_code = " . DB::escape($selected_id);
+ 			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
+ 			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
+ 			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
+ 			provision=" . Validation::input_num('provision') . ",
+ 			break_pt=" . Validation::input_num('break_pt') . ",
+ 			provision2=" . Validation::input_num('provision2') . "
+ 			WHERE salesman_code = " . DB::escape($selected_id);
 			} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
-    			provision, break_pt, provision2)
-    			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
+ 			provision, break_pt, provision2)
+ 			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -115,7 +115,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing Sales-person
-			$sql = "SELECT *  FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
+			$sql = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get sales person");
 			$myrow = DB::fetch($result);
 			$_POST['salesman_name'] = $myrow["salesman_name"];

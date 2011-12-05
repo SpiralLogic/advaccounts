@@ -303,7 +303,7 @@
 			if (isset($_POST[$search_box]) && $opts['editable'] && $edit) {
 				$selector = "<input type='hidden' name='$name' value='" . $_POST[$name] . "'>";
 				if (isset($contact_row['long_description'])) {
-					$selector .= "<textarea name='{$name}_text' cols='{$opts['max']}'  id='{$name}_text' $rel rows='2'>{$contact_row['long_description']}</textarea></td>\n";
+					$selector .= "<textarea name='{$name}_text' cols='{$opts['max']}' id='{$name}_text' $rel rows='2'>{$contact_row['long_description']}</textarea></td>\n";
 				} else {
 					$selector .= "<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='" . $opts['editable'] . "' maxlength='" . $opts['max'] . "' $rel value='$edit'>\n";
 				}
@@ -491,7 +491,7 @@
 			}
 		}
 		$submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-		 $atype) . "\" type=\"submit\"" . $aspect . " name=\"$name\"  id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" :
+		 $atype) . "\" type=\"submit\"" . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" :
 		 '') . ">" . ($icon ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
 		 '') . "<span>$value</span>" . "</button>\n";
 		if ($echo) {
@@ -653,7 +653,7 @@
 		$Ajax = Ajax::i();
 		$str = '';
 		if ($label) {
-			$str .= $label . "  ";
+			$str .= $label . " ";
 		}
 		if ($submit_on_change !== false) {
 			if ($submit_on_change === true) {
@@ -914,7 +914,7 @@
 		} else {
 			echo "class='amount' ";
 		}
-		echo "type=\"text\" name=\"$name\"  maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
+		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			$Ajax->addUpdate($name, '_' . $name . '_label', $post_label);

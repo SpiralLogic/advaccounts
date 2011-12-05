@@ -15,8 +15,8 @@
 	//
 	//	Checks $field existence in $table with given field $properties
 	//	$table - table name without prefix
-	//  $field -  optional field name
-	//  $properties - optional properties of field defined by MySQL:
+	// $field - optional field name
+	// $properties - optional properties of field defined by MySQL:
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
 	function check_table($pref, $table, $field = null, $properties = null)

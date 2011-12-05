@@ -37,7 +37,7 @@ class GL_Account {
 		// save last reconcilation status (date, end balance)
 		$sql2 = "UPDATE bank_accounts SET last_reconciled_date='"
 		 . Dates::date2sql($reconcile_date) . "',
-    	    ending_reconcile_balance=$end_balance
+ 	 ending_reconcile_balance=$end_balance
 			WHERE id=" . DB::escape($bank_account);
 
 		DB::query($sql2, "Error updating reconciliation information");

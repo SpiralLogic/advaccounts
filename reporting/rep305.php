@@ -25,17 +25,17 @@
 		$to = Dates::date2sql($to);
 		$sql
 		 = "SELECT DISTINCT grn_batch.supplier_id,
-            purch_order_details.*,
-            stock_master.description, stock_master.inactive
-        FROM stock_master,
-            purch_order_details,
-            grn_batch
-        WHERE stock_master.stock_id=purch_order_details.item_code
-        AND grn_batch.purch_order_no=purch_order_details.order_no
-        AND purch_order_details.quantity_received>0
-        AND grn_batch.delivery_date>='$from'
-        AND grn_batch.delivery_date<='$to'
-        ORDER BY stock_master.stock_id, grn_batch.delivery_date";
+ purch_order_details.*,
+ stock_master.description, stock_master.inactive
+ FROM stock_master,
+ purch_order_details,
+ grn_batch
+ WHERE stock_master.stock_id=purch_order_details.item_code
+ AND grn_batch.purch_order_no=purch_order_details.order_no
+ AND purch_order_details.quantity_received>0
+ AND grn_batch.delivery_date>='$from'
+ AND grn_batch.delivery_date<='$to'
+ ORDER BY stock_master.stock_id, grn_batch.delivery_date";
 		return DB::query($sql, "No transactions were returned");
 	}
 
@@ -65,7 +65,7 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to)
+				'to' => $to)
 		);
 		$rep = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
 		$rep->Font();

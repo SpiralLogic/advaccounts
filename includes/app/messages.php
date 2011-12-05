@@ -32,7 +32,7 @@
 				}
 				$unread = $row['unread'] - 1;
 				$id = $row['id'];
-				$sql2 = "UPDATE user_messages SET unread={$unread} WHERE  id={$id} AND user=" . $userid;
+				$sql2 = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
 				DB::query($sql2, 'Could not mark messages as unread');
 			}
 			return static::$count;

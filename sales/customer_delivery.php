@@ -58,7 +58,7 @@
 
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
-		/*read in all the selected order into the Items cart  */
+		/*read in all the selected order into the Items cart */
 		if ($ord->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"),
 				"OutstandingOnly=1");
@@ -204,7 +204,7 @@
 			}
 			// ...
 			//	else
-			//	  $_SESSION['Items']->freight_cost = Validation::input_num('ChargeFreightCost');
+			//	 $_SESSION['Items']->freight_cost = Validation::input_num('ChargeFreightCost');
 			return $ok;
 		}
 

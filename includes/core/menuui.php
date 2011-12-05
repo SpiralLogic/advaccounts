@@ -33,7 +33,7 @@
 		}
 
 		/**
-		 * @param        $title
+		 * @param $title
 		 * @param string $tooltip
 		 * @param string $link
 		 *
@@ -44,8 +44,8 @@
 	}
 
 		/**
-		 * @param        $title
-		 * @param        $tooltip
+		 * @param $title
+		 * @param $tooltip
 		 * @param string $link
 		 * @param string $style
 		 * @return MenuUI
@@ -93,7 +93,7 @@
 	 */public $tooltip = '';
 
 	/**
-	 * @param        $label
+	 * @param $label
 	 * @param string $tooltip
 	 * @param string $link
 	 */function __construct($label, $tooltip = '', $link = '') {

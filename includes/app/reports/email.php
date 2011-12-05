@@ -1,12 +1,12 @@
 <?php
 	/*
-			 Name:           eMail
-			 Description:    Simple sending eMail in text and HTML with CC, BCC and attachment
-			 Version:        1.0
-			 last modified:  2004-05-14
+			 Name: eMail
+			 Description: Simple sending eMail in text and HTML with CC, BCC and attachment
+			 Version: 1.0
+			 last modified: 2004-05-14
 
-			 Autor:          Daniel K�fer
-			 Homepage:       http://www.danielkaefer.de
+			 Autor: Daniel K�fer
+			 Homepage: http://www.danielkaefer.de
 
 			 Leave this header in this file!
 	 */
@@ -44,42 +44,42 @@
 			}
 		}
 
-		public function  to($mail)
+		public function to($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddAddress($mail);
 		}
 
-		public function  cc($mail)
+		public function cc($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddCC($mail);
 		}
 
-		public function  bcc($mail)
+		public function bcc($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddBCC($mail);
 		}
 
-		public function  attachment($file)
+		public function attachment($file)
 		{
 			$this->mail->AddAttachment($file);
 		}
 
-		public function  subject($subject)
+		public function subject($subject)
 		{
 			$this->mail->Subject = $subject;
 		}
 
-		public function  text($text)
+		public function text($text)
 		{
 			//$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
 			//$this->mail->Encoding = "8bit";
 			$this->mail->Body = $text . "\n";
 		}
 
-		public function  html($html)
+		public function html($html)
 		{
 			//$this->mail->ContentType = "text/html; charset=ISO-8859-1";
 			//$this->mail->Encoding = "quoted-printable";
@@ -88,7 +88,7 @@
 			$this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
 		}
 
-		public function  mime_type($filename)
+		public function mime_type($filename)
 		{
 			$file = basename($filename, '.zip');
 			if ($filename == $file . '.zip') {
@@ -121,7 +121,7 @@
 			return 'application/unknown';
 		}
 
-		public function  send()
+		public function send()
 		{
 			if ($this->toerror) {
 				return false;

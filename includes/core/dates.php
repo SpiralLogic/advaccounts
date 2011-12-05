@@ -542,7 +542,7 @@
 		}
 
 		/* Based on convertor to and from Gregorian and Jalali calendars.
-						Copyright (C) 2000  Roozbeh Pournader and Mohammad Toossi
+						Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
 						Released under GNU General Public License */
 		/**
 		 * @static

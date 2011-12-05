@@ -82,7 +82,7 @@
 		} else {
 			$src = array($_GET['DeliveryNumber']);
 		}
-		/* read in all the selected deliveries into the Items cart  */
+		/* read in all the selected deliveries into the Items cart */
 		$dn = new Sales_Order(ST_CUSTDELIVERY, $src, true);
 		if ($dn->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"),

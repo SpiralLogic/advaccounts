@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Sales_Point
-	{
+	class Sales_Point {
 		public static function		 add($name, $location, $account, $cash, $credit) {
 			$sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::escape($name) . "," . DB::escape($location) . "," . DB::escape($account) . ",$cash,$credit)";
 			DB::query($sql, "could not add point of sale");
@@ -51,7 +50,8 @@
 			$sql = "DELETE FROM sales_pos WHERE id=" . DB::escape($id);
 			DB::query($sql, "The point of sale record could not be deleted");
 		}
-		public static 	function row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false) {
+
+		public static function row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false) {
 			$sql = "SELECT id, pos_name, inactive FROM sales_pos";
 			JS::default_focus($name);
 			echo '<tr>';
@@ -60,8 +60,7 @@
 			}
 			echo "<td>";
 			echo select_box($name, $selected_id, $sql, 'id', 'pos_name', array(
-																																				 'select_submit' => $submit_on_change, 'async' => true, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')));
+				'select_submit' => $submit_on_change, 'async' => true, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')));
 			echo "</td></tr>\n";
 		}
-
 	}

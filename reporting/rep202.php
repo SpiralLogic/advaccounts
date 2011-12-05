@@ -41,7 +41,7 @@
 			payment_terms,
 			supp_trans
 
-	   	WHERE suppliers.payment_terms = payment_terms.terms_indicator
+	 	WHERE suppliers.payment_terms = payment_terms.terms_indicator
 			AND suppliers.supplier_id = supp_trans.supplier_id
 			AND supp_trans.supplier_id = $supplier_id
 			AND supp_trans.tran_date <= '$todate'

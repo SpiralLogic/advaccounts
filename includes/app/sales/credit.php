@@ -49,7 +49,7 @@
 				$alloc = 0;
 			}
 			//	$sales_order=$invoice->order_no;	//?
-			//    if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
+			// if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
 			if (!isset($credit_note->order_no)) {
 				$credit_note->order_no = 0;
 			}
@@ -256,7 +256,7 @@
 					$change_prices = 1;
 				}
 				if ($old_order->sales_type != $order->sales_type) {
-					//  || $old_order->default_discount!=$order->default_discount
+					// || $old_order->default_discount!=$order->default_discount
 					$_POST['sales_type_id'] = $order->sales_type;
 					$Ajax->activate('sales_type_id');
 					$change_prices = 1;

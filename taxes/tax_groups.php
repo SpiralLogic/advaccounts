@@ -59,13 +59,13 @@
 				}
 			}
 			if ($selected_id != -1) {
-				Tax_Groups::update_tax_group(
+				Tax_Groups::update(
 					$selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates
 				);
 				Errors::notice(_('Selected tax group has been updated'));
 			} else {
-				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
+				Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				Errors::notice(_('New tax group has been added'));
 			}
 			$Mode = 'RESET';
@@ -97,7 +97,7 @@
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			Tax_Groups::delete_tax_group($selected_id);
+			Tax_Groups::delete($selected_id);
 			Errors::notice(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -109,7 +109,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 
-	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
+	$result = Tax_Groups::get_all(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle');
 	$th = array(_("Description"), _("Shipping Tax"), "", "");
@@ -141,7 +141,7 @@
 	if ($selected_id != -1) {
 		//editing an existing status code
 		if ($Mode == 'Edit') {
-			$group = Tax_Groups::get_tax_group($selected_id);
+			$group = Tax_Groups::get($selected_id);
 			$_POST['name'] = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 			$items = Tax_Groups::get_for_item($selected_id);
@@ -175,7 +175,7 @@
 		if (!isset($_POST['tax_type_id' . $i])) {
 			$_POST['tax_type_id' . $i] = 0;
 		}
-		Tax_UI::types_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
+		Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 			label_cell(Num::percent_format($default_rate), "nowrap class=right");
@@ -183,7 +183,7 @@
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			//	$_POST['rate' . $i] = Num::percent_format($default_rate);
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
-			//  User::percent_dec());
+			// User::percent_dec());
 		}
 		end_row();
 	}

@@ -49,7 +49,7 @@
 
 
 	//	GL postings are often entered in the same form to two accounts
-	//  so fileds are cleared only on user demand.
+	// so fileds are cleared only on user demand.
 	//
 	if (isset($_POST['ClearFields'])) {
 		clear_fields();
@@ -89,7 +89,7 @@
 		{
 			global $total_grn_value, $total_gl_value;
 			if (!Purch_Trans::i()->is_valid_trans_to_post()) {
-				Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+				Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
 				JS::set_focus('');
 				return false;
 			}

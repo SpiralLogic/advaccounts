@@ -23,14 +23,14 @@
 		{
 			$to = Dates::date2sql($to);
 			$sql = "SELECT SUM(IF(supp_trans.type = " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
-    	supp_trans.ov_discount)";
+ 	supp_trans.ov_discount)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ", 0)) AS charges,
-    	SUM(IF(supp_trans.type <> " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
-    	supp_trans.ov_discount)";
+ 	SUM(IF(supp_trans.type <> " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
+ 	supp_trans.ov_discount)";
 			if ($convert) {
 				$sql .= "* rate";
 			}
@@ -43,14 +43,14 @@
 			$sql
 			 .= ") AS Allocated,
 		SUM((supp_trans.ov_amount + supp_trans.ov_gst +
-    	supp_trans.ov_discount - supp_trans.alloc)";
+ 	supp_trans.ov_discount - supp_trans.alloc)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ") AS OutStanding
 		FROM supp_trans
-    	WHERE supp_trans.tran_date < '$to'
+ 	WHERE supp_trans.tran_date < '$to'
 		AND supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
 			$result = DB::query($sql, "No transactions were returned");
 			return DB::fetch($result);
@@ -66,10 +66,10 @@
 				AS TotalAmount, supp_trans.alloc AS Allocated,
 				((supp_trans.type = " . ST_SUPPINVOICE . ")
 					AND supp_trans.due_date < '$to') AS OverDue
-    			FROM supp_trans
-    			WHERE supp_trans.tran_date >= '$from' AND supp_trans.tran_date <= '$to'
-    			AND supp_trans.supplier_id = '$supplier_id'
-    				ORDER BY supp_trans.tran_date";
+ 			FROM supp_trans
+ 			WHERE supp_trans.tran_date >= '$from' AND supp_trans.tran_date <= '$to'
+ 			AND supp_trans.supplier_id = '$supplier_id'
+ 				ORDER BY supp_trans.tran_date";
 			$TransResult = DB::query($sql, "No transactions were returned");
 			return $TransResult;
 		}

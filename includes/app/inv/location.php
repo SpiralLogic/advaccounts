@@ -23,10 +23,10 @@
 
 		public static function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
 			$sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ",
-    	delivery_address=" . DB::escape($delivery_address) . ",
-    	phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ",
-    	email=" . DB::escape($email) . ", contact=" . DB::escape($contact) . "
-    	WHERE loc_code = " . DB::escape($loc_code);
+ 	delivery_address=" . DB::escape($delivery_address) . ",
+ 	phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ",
+ 	email=" . DB::escape($email) . ", contact=" . DB::escape($contact) . "
+ 	WHERE loc_code = " . DB::escape($loc_code);
 			DB::query($sql, "a location could not be updated");
 		}
 

@@ -66,7 +66,7 @@
 		}
 		/**
 		*
-		*  Popup window (target=_blank)
+		* Popup window (target=_blank)
 		*
 
 		 * @param $url
@@ -76,7 +76,7 @@
 		}
 		/**
 		*
-		*  Adds an executable Javascript code.
+		* Adds an executable Javascript code.
 		*
 
 		 * @param $trigger
@@ -90,7 +90,7 @@
 		}
 		/**
 		*
-		*  Assign target attribute with data.
+		* Assign target attribute with data.
 		*
 
 		 * @param $trigger
@@ -107,7 +107,7 @@
 		}
 		/**
 		*
-		*  Updates input element or label with data.
+		* Updates input element or label with data.
 		*
 
 		 * @param $trigger
@@ -123,7 +123,7 @@
 		}
 		/**
 		*
-		*  Set disable state of element.
+		* Set disable state of element.
 		*
 
 		 * @param			$trigger
@@ -139,7 +139,7 @@
 		}
 		/**
 		*
-		*  Set state of element to enabled.
+		* Set state of element to enabled.
 		*
 
 		 * @param			$trigger
@@ -155,7 +155,7 @@
 		}
 		/**
 		*
-		*  Set current focus.
+		* Set current focus.
 		*
 
 		 * @param $trigger
@@ -169,7 +169,7 @@
 		}
 		/**
 		*
-		*  Internal procedure adding command to response.
+		* Internal procedure adding command to response.
 		*
 
 		 * @param $trigger
@@ -216,7 +216,7 @@
 			//		Errors::error('Activate:'.htmlentities(print_r($this->triggers, true)));
 			//		Errors::error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 			$GLOBALS['_RESULT'] = $this->aCommands;
-			//	    exit();
+			//	 exit();
 		}
 
 		/**
@@ -227,8 +227,8 @@
 			return static::i()->isActive();
 		}
 		/**
-		*  Returns absolute path of relative $url. To be used in ajax calls
-		*  for proper redirection from any referer page.
+		* Returns absolute path of relative $url. To be used in ajax calls
+		* for proper redirection from any referer page.
 		*
 
 		 * @param $url

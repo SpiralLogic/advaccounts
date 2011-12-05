@@ -44,7 +44,7 @@
 				} else {
 					$str = '';
 				}
-				$str .= '<table  >';
+				$str .= '<table >';
 				$trace = debug_backtrace();
 				foreach ($trace as $trn => $tr) {
 					if (!$trn) {

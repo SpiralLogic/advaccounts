@@ -12,7 +12,7 @@
 			if ($skip_bank_accounts) {
 				$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 				FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
-					WHERE acc.account_code  IS NULL
+					WHERE acc.account_code IS NULL
 				AND chart.account_type=type.id";
 			} else {
 				$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
@@ -94,7 +94,7 @@
 		}
 
 
-		//  FISCALYEARS
+		// FISCALYEARS
 		public static function fiscalyears($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT * FROM fiscal_year";
 			// default to the company current fiscal year

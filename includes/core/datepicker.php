@@ -24,7 +24,7 @@
 		/**
 		 * @static
 		 *
-		 * @param       $name
+		 * @param $name
 		 * @param array $options
 		 */static function add($name, $options = array()) {
 			$options = array_merge(static::$options, $options);

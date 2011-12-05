@@ -193,7 +193,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 		end_table(0);
 		Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
-		echo "<div class='center'><input  type='button' style='width:150px' value='" . _("Save") . "'></div>";
+		echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
 		end_form();
 	}
 

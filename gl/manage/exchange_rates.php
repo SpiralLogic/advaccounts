@@ -140,7 +140,7 @@
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
 	echo "<div class='center'>";
-	echo _("Select a currency :") . "  ";
+	echo _("Select a currency :") . " ";
 	echo GL_Currency::select('curr_abrev', null, true);
 	echo "</div>";
 	// if currency sel has changed, clear the form

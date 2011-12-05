@@ -54,7 +54,7 @@
 	end_row();
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . User::get()->ui_mode . "' />\n";
 	if (!$login_timeout) {
-		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
+		table_section_title(_("Version") . VERSION . " Build " . BUILD_VERSION . " - " . _("Login"));
 	}
 	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
 	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
@@ -109,8 +109,8 @@
 	echo "</tr>\n";
 	echo "</table><br><br>\n";
 	echo "<script>//<![CDATA[<!--
-	            document.forms[0].user_name_entry_field.select();
-	            document.forms[0].user_name_entry_field.focus();
-	            //--> //]]></script>";
+	 document.forms[0].user_name_entry_field.select();
+	 document.forms[0].user_name_entry_field.focus();
+	 //--> //]]></script>";
 	echo "</body></html>\n";
 ?>

@@ -90,8 +90,8 @@
 		}
 
 		/***
-		 * @param      $sql
-		 * @param      $type
+		 * @param $sql
+		 * @param $type
 		 * @param null $data
 		 *
 		 * @return DB_Query_Result|int

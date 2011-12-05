@@ -163,7 +163,7 @@
 			_("Credit Account"),
 			_("Cash Account"))
 		));
-	global  $systypes_array,  $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
+	global $systypes_array, $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
 				 $class_types, $quick_actions, $quick_entry_types, $stock_types, $tag_types, $security_areas, $security_sections;
 	$access_levels = Cache::get('access_levels');
 	if (!$access_levels || isset($_GET['reload_config'])) {

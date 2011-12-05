@@ -13,24 +13,24 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::header(_("Logout"), true, false, '');
 	echo "<table style='width:100%' > <tr><td class='center'><img src='/themes/default/images/logo_advaccounts.png' alt='ADVAccounts' style='width:250' height='50'' /></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><div class='center'><font size=2>";
+ </tr>
+ <tr>
+ <td>&nbsp;</td>
+ </tr>
+ <tr>
+ <td><div class='center'><font size=2>";
 	echo _("Thank you for using") . " ";
 	echo "<strong>" . APP_TITLE . ' ' . VERSION . "</strong>";
 	echo "</font></div></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><div class='center'>";
+ </tr>
+ <tr>
+ <td>&nbsp;</td>
+ </tr>
+ <tr>
+ <td><div class='center'>";
 	echo "<a href='/index.php'><b>" . _("Click here to Login Again.") . "</b></a>";
 	echo "</div></td>
-  </tr>
+ </tr>
 </table>
 <br>\n";
 	session_unset();

@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
@@ -162,7 +162,7 @@
 				}
 				Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
 				if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
-					echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
+					echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 				}
 			}
 			JS::set_focus('prtopt');

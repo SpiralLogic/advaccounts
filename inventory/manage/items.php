@@ -72,7 +72,7 @@
 			$result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 		}
 		$Ajax->activate('details');
-		/* EOF Add Image upload for New Item  - by Ori */
+		/* EOF Add Image upload for New Item - by Ori */
 	}
 	Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
 	Validation::check(Validation::ITEM_TAX_TYPES, _("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
@@ -110,7 +110,7 @@
 							|| strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
-			Errors::error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
+			Errors::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
 			JS::set_focus('NewStockID');
 		} elseif ($new_item && DB::num_rows(Item_Code::get_kit($_POST['NewStockID']))) {
 			$input_error = 1;
@@ -174,17 +174,17 @@
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
-			"SELECT COUNT(*) FROM stock_moves WHERE stock_id="          => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" => _('Cannot delete this item because there are stock movements that refer to this item.'),
 			"SELECT COUNT(*) FROM bom WHERE component=" => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code="  => _('Cannot delete this item because there are existing purchase order items for it.'),
-			"SELECT COUNT(*) FROM purch_order_details WHERE item_code="  => _('Cannot delete this item because there are existing purchase order items for it.')
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg = '';
 		foreach (
 			$sqls as $sql => $err
 		) {
 
-			$result = DB::query($sql .  DB::escape($stock_id), "could not query stock usage");
+			$result = DB::query($sql . DB::escape($stock_id), "could not query stock usage");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$msg = $err;
@@ -302,7 +302,7 @@
 		$_POST['editable'] = 0;
 	}
 	$fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], false);
-	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
+	Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
 	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 	Item_Unit::row(_('Units of Measure:'), 'units', null, $fresh_item);
 	check_row(_("Editable description:"), 'editable');
@@ -340,9 +340,9 @@
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
 	table_section_title(_("Other"));
-	// Add image    for New Item  - by Joe
+	// Add image for New Item - by Joe
 	file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
-	// Add Image upload for New Item  - by Joe
+	// Add Image upload for New Item - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
 	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {

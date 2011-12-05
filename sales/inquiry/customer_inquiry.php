@@ -200,7 +200,7 @@
 		}
 	}
 	$sql = "SELECT
-  		trans.type,
+ 		trans.type,
 		trans.trans_no,
 		trans.order_,
 		trans.reference,

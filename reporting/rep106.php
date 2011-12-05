@@ -32,12 +32,12 @@
 		FROM debtor_trans, debtors_master, sales_orders, cust_branch,
 			salesman
 		WHERE sales_orders.order_no=debtor_trans.order_
-		    AND sales_orders.branch_code=cust_branch.branch_code
-		    AND cust_branch.salesman=salesman.salesman_code
-		    AND debtor_trans.debtor_no=debtors_master.debtor_no
-		    AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
-		    AND debtor_trans.tran_date>='$fromdate'
-		    AND debtor_trans.tran_date<='$todate'
+		 AND sales_orders.branch_code=cust_branch.branch_code
+		 AND cust_branch.salesman=salesman.salesman_code
+		 AND debtor_trans.debtor_no=debtors_master.debtor_no
+		 AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
+		 AND debtor_trans.tran_date>='$fromdate'
+		 AND debtor_trans.tran_date<='$todate'
 		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
 		return DB::query($sql, "Error getting order details");
 	}
@@ -80,11 +80,11 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to),
+				'to' => $to),
 			2 => array(
 				'text' => _('Summary Only'),
 				'from' => $sum,
-				'to'   => '')
+				'to' => '')
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;

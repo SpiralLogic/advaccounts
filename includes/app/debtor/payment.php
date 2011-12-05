@@ -12,8 +12,8 @@
 	/*
 			 Write/update customer payment.
 		 */
-	class Debtor_Payment  implements IVoidable {
-		public function  add($trans_no, $customer_id, $branch_id, $bank_account,
+	class Debtor_Payment implements IVoidable {
+		public function add($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
 	{
 		DB::begin_transaction();
@@ -36,7 +36,7 @@
 			$branch_data = Sales_Branch::get_accounts($branch_id);
 			$debtors_account = $branch_data["receivables_account"];
 			$discount_account = $branch_data["payment_discount_account"];
-			$tax_group = Tax_Groups::get_tax_group($branch_data["payment_discount_account"]);
+			$tax_group = Tax_Groups::get($branch_data["payment_discount_account"]);
 		}
 		else {
 			$debtors_account = $company_record["debtors_act"];
@@ -77,7 +77,7 @@
 	}
 
 
-	public function  void($type, $type_no)
+	public function void($type, $type_no)
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);

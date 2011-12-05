@@ -90,7 +90,7 @@
 					$grn_item = static::add_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description,
 						$order_line->standard_cost, $order_line->receive_qty, $order_line->price,
 						$order_line->discount);
-					/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
+					/* Update location stock records - NB a po cannot be entered for a service/kit parts */
 					Inv_Movement::add(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty,
 						$order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
 				} /*quantity received is != 0 */
@@ -117,11 +117,11 @@
 																		$quantity_received, $price, $discount) {
 			$sql
 			 = "UPDATE purch_order_details
-        SET quantity_received = quantity_received + " . DB::escape($quantity_received) . ",
-        std_cost_unit=" . DB::escape($standard_unit_cost) . ",
-        discount=" . DB::escape($discount) . ",
-        act_price=" . DB::escape($price) . "
-        WHERE po_detail_item = " . DB::escape($po_detail_item);
+ SET quantity_received = quantity_received + " . DB::escape($quantity_received) . ",
+ std_cost_unit=" . DB::escape($standard_unit_cost) . ",
+ discount=" . DB::escape($discount) . ",
+ act_price=" . DB::escape($price) . "
+ WHERE po_detail_item = " . DB::escape($po_detail_item);
 			DB::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 			$sql
 			 = "INSERT INTO grn_items (grn_batch_id, po_detail_item, item_code, description, qty_recd, discount)
@@ -149,20 +149,20 @@
 				$entered_grn->this_quantity_inv, $date);
 			$sql
 			 = "SELECT grn_batch.*, grn_items.*
-    	FROM grn_batch, grn_items
-    	WHERE grn_items.grn_batch_id=grn_batch.id
+ 	FROM grn_batch, grn_items
+ 	WHERE grn_items.grn_batch_id=grn_batch.id
 		AND grn_items.id=" . DB::escape($entered_grn->id) . "
-    	AND grn_items.item_code=" . DB::escape($entered_grn->item_code);
+ 	AND grn_items.item_code=" . DB::escape($entered_grn->item_code);
 			$result = DB::query($sql, "Could not retreive GRNS");
 			$myrow = DB::fetch($result);
 			$sql
 			 = "UPDATE purch_order_details
-        SET quantity_received = quantity_received + " . DB::escape($entered_grn->this_quantity_inv) . ",
-        quantity_ordered = quantity_ordered + " . DB::escape($entered_grn->this_quantity_inv) . ",
-        qty_invoiced = qty_invoiced + " . DB::escape($entered_grn->this_quantity_inv) . ",
-        std_cost_unit=" . DB::escape($mcost) . ",
-        act_price=" . DB::escape($entered_grn->chg_price) . "
-        WHERE po_detail_item = " . $myrow["po_detail_item"];
+ SET quantity_received = quantity_received + " . DB::escape($entered_grn->this_quantity_inv) . ",
+ quantity_ordered = quantity_ordered + " . DB::escape($entered_grn->this_quantity_inv) . ",
+ qty_invoiced = qty_invoiced + " . DB::escape($entered_grn->this_quantity_inv) . ",
+ std_cost_unit=" . DB::escape($mcost) . ",
+ act_price=" . DB::escape($entered_grn->chg_price) . "
+ WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DB::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 			//$sql = "UPDATE ".''."grn_items SET qty_recd=0, quantity_inv=0 WHERE id=$entered_grn->id";
 			$sql = "UPDATE grn_items SET qty_recd=qty_recd+" . DB::escape($entered_grn->this_quantity_inv) . ",quantity_inv=quantity_inv+" . DB::escape($entered_grn->this_quantity_inv) . " WHERE id=" . DB::escape($entered_grn->id);
@@ -178,7 +178,7 @@
 			 . "grn_items.*, "
 			 . "purch_order_details.unit_price, "
 			 . "purch_order_details.std_cost_unit, units
-    	    FROM "
+ 	 FROM "
 			 . "grn_batch, "
 			 . "grn_items, "
 			 . "purch_order_details, "
@@ -229,8 +229,8 @@
 		public static function get_item($grn_item_no) {
 			$sql
 			 = "SELECT grn_items.*, purch_order_details.unit_price,
-    	grn_items.qty_recd - grn_items.quantity_inv AS QtyOstdg,
-    	purch_order_details.std_cost_unit
+ 	grn_items.qty_recd - grn_items.quantity_inv AS QtyOstdg,
+ 	purch_order_details.std_cost_unit
 		FROM grn_items, purch_order_details, stock_master
 		WHERE grn_items.po_detail_item=purch_order_details.po_detail_item
  			AND stock_master.stock_id=grn_items.item_code
@@ -314,8 +314,8 @@
 				while ($myrow = DB::fetch($result)) {
 					$sql
 					 = "UPDATE purch_order_details
-                SET quantity_received = quantity_received - " . $myrow["qty_recd"] . "
-                WHERE po_detail_item = " . $myrow["po_detail_item"];
+ SET quantity_received = quantity_received - " . $myrow["qty_recd"] . "
+ WHERE po_detail_item = " . $myrow["po_detail_item"];
 					DB::query($sql, "a purchase order details record could not be voided.");
 				}
 			}
@@ -523,8 +523,8 @@
 			if ($mode == 1) {
 				$th = array(
 					_("Delivery"), _("Seq #"), _("P.O."), _("Item"), _("Description"), _("Date"), _("Received"), _("Invoiced"), _("Qty"), _("Price"), _("ExpPrice"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
-				//      if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
-				//         $th[] = "";
+				// if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+				// $th[] = "";
 				if (!$supp_trans->is_invoice) {
 					unset($th[14]);
 					$th[8] = _("Qty Yet To Credit");

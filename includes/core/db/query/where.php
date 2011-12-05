@@ -26,9 +26,9 @@
 		protected $count = 0;
 
 		/***
-		 * @param    array    $conditions
+		 * @param array $conditions
 		 * @param string $type
-		 * @param null   $uservar
+		 * @param null $uservar
 		 *
 		 * @return DB_Query_Select
 		 */
@@ -55,7 +55,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 *
 		 * @return DB_Query_Select
@@ -65,7 +65,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function or_where($condition, $uservar = null)
@@ -74,7 +74,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function and_where($condition, $uservar = null)
@@ -83,7 +83,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function or_open($condition, $uservar = null)
@@ -92,7 +92,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function and_open($condition, $uservar = null)
@@ -101,7 +101,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function close_and($condition, $uservar = null)
@@ -110,7 +110,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function close_or($condition, $uservar = null)
@@ -119,7 +119,7 @@
 			}
 
 		/**
-		 * @param      $condition
+		 * @param $condition
 		 * @param null $uservar
 		 * @return DB_Query_Select
 		 */public function open($condition, $uservar = null)

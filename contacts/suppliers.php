@@ -71,7 +71,7 @@
 	text_row(_("Bank Name/Account:"), 'bank_account', $supplier->bank_account, 42, 40);
 	amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit);
 	GL_Currency::row(_("Supplier's Currency:"), 'curr_code', $supplier->curr_code);
-	Tax_UI::groups_row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
+	Tax_Groups::row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
 	GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $supplier->payment_terms);
 	table_section_title(_("Accounts"), 2, 'tableheader3');
 	GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $supplier->payable_account);

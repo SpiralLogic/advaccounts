@@ -18,7 +18,7 @@
 	if (get_post('SubmitUser') && $_SESSION['current_user']->logged_in()) {
 		// After successfull login repeat last ajax call.
 		// Login form consists all post variables from last ajax call.
-		echo "<script language=\"javascript\"  type=\"text/javascript\">
+		echo "<script language=\"javascript\" type=\"text/javascript\">
 	var o = opener;
 	if (o) {
 		o.JsHttpRequest.request(document.getElementsByName('SubmitUser')[0], o.document.forms[0]);

@@ -18,7 +18,7 @@
 	 if (isset($_GET['item_code']))
 	 {
 		 $_POST['item_code'] = $_GET['item_code'];
-		 $selected_kit =  $_GET['item_code'];
+		 $selected_kit = $_GET['item_code'];
 	 }
 	 */
 

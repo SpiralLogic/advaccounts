@@ -102,11 +102,11 @@
 			1 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'   => ''),
+				'to' => ''),
 			2 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to'   => '')
+				'to' => '')
 		);
 		$rep = new ADVReport(_('Inventory Valuation Report'), "InventoryValReport", User::pagesize());
 		$rep->Font();

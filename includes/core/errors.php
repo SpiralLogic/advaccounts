@@ -36,8 +36,8 @@
 		 */
 		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 
-		//    Error handler - collects all php/user messages for
-		//    display in message box.
+		// Error handler - collects all php/user messages for
+		// display in message box.
 		/**
 		 * @static
 		 *

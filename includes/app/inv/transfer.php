@@ -78,7 +78,7 @@
 			{
 				$from = Dates::date2sql($from);
 				$to = Dates::date2sql($to);
-				$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . "  AND tran_date>='$from' AND tran_date<='$to'
+				$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
 				AND person_id = " . DB::escape($pid);
 				DB::query($sql, "The stock movement standard_cost cannot be updated");
 			}

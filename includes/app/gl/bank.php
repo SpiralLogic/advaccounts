@@ -61,7 +61,7 @@ class GL_Bank {
 	//	Add bank tranfer to database.
 	//
 	//	$from_account - source bank account id
-	//	$to_account   -	target bank account id
+	//	$to_account -	target bank account id
 	//
 public static	function add_bank_transfer($from_account, $to_account, $date_,
 														 $amount, $ref, $memo_, $charge = 0)
@@ -110,9 +110,9 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 	//	Add bank payment or deposit to database.
 	//
 	//	$from_account - bank account id
-	//  $item - transaction cart (line item's amounts in bank account's currency)
-	//  $person_type_id - defines type of $person_id identifiers
-	//  $person_id	- supplier/customer/other id
+	// $item - transaction cart (line item's amounts in bank account's currency)
+	// $person_type_id - defines type of $person_id identifiers
+	// $person_id	- supplier/customer/other id
 	// $person_detail_id - customer branch id or not used
 	//
 	// returns an array of (inserted trans type, trans no)
