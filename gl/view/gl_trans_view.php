@@ -68,7 +68,7 @@
 			table_header($th);
 			$heading_shown = true;
 		}
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow['account']);
 		label_cell($myrow['account_name']);
 		if ($dim >= 1) {

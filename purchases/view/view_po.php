@@ -38,7 +38,7 @@
 			start_row("class='overduebg'");
 			$overdue_items = true;
 		} else {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 		}
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
@@ -70,7 +70,7 @@
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
 		while ($myrow = DB::fetch($grns_result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell(GL_UI::trans_view(ST_SUPPRECEIVE, $myrow["id"]));
 			label_cell($myrow["reference"]);
 			label_cell(Dates::sql2date($myrow["delivery_date"]));
@@ -87,7 +87,7 @@
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);
 		while ($myrow = DB::fetch($invoice_result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
 			label_cell(Dates::sql2date($myrow["tran_date"]));
 			amount_cell($myrow["Total"]);

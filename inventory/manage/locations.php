@@ -139,7 +139,7 @@
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["loc_code"]);
 		label_cell($myrow["location_name"]);
 		label_cell($myrow["delivery_address"]);

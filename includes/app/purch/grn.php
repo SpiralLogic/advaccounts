@@ -400,7 +400,7 @@
 				}
 				if ($grn_already_on_invoice == false) {
 					if (!isset($_SESSION['delivery_po']) || $myrow["purch_order_no"] == $_SESSION['delivery_po']) {
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						$n = $myrow["id"];
 						label_cell(GL_UI::trans_view(25, $myrow["grn_batch_id"]));
 						label_cell($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], false) . hidden('item_code' . $n,
@@ -538,7 +538,7 @@
 			$i = $k = 0;
 			if (count($supp_trans->grn_items) > 0) {
 				foreach ($supp_trans->grn_items as $entered_grn) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					$grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
 					label_cell(GL_UI::trans_view(ST_SUPPRECEIVE, $grn_batch));
 					if ($mode == 1) {

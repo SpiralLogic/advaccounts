@@ -43,7 +43,7 @@
 	while ($item = DB::fetch($transfer_items))
 	{
 		if ($item['loc_code'] == $to_trans['loc_code']) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($item['stock_id']);
 			label_cell($item['description']);
 			qty_cell($item['qty'], false, Item::qty_dec($item['stock_id']));

@@ -101,7 +101,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		$bs_text = GL_Class::get_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";

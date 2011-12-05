@@ -118,7 +118,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		if ($myrow["tax_shipping"]) {
 			label_cell(_("Yes"));

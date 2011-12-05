@@ -145,7 +145,7 @@
 		get_reports() as $rep => $descr
 	)
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($rep == '' ? '-' : $rep, 'class=center');
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';

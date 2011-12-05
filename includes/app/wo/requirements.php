@@ -80,7 +80,7 @@
 						start_row("class='stockmankobg'");
 						$has_marked = true;
 					} else {
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 					}
 					if (User::show_codes()) {
 						label_cell($myrow["stock_id"] . " - " . $myrow["description"]);

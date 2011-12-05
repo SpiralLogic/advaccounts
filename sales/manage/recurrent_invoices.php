@@ -80,7 +80,7 @@
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["description"]);
 		label_cell(Debtor_UI::trans_view(ST_SALESORDER, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {

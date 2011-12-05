@@ -140,7 +140,7 @@
 				if ($marker && call_user_func($marker, $row)) {
 					start_row("class='$pager->marker_class'");
 				} else {
-					Display::alt_table_row_color($cc);
+					alt_table_row_color($cc);
 				}
 				foreach (
 					$pager->columns as $k => $col

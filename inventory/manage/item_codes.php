@@ -99,7 +99,7 @@
 	$k = $j = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["item_code"]);
 		qty_cell($myrow["quantity"], $dec);
 		label_cell($units);

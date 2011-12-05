@@ -73,7 +73,7 @@
 	$total_out = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		$trandate = Dates::sql2date($myrow["tran_date"]);
 		$type_name = $systypes_array[$myrow["type"]];
 		if ($myrow["qty"] > 0) {

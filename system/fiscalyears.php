@@ -406,7 +406,7 @@
 			if ($myrow['id'] == $company_year) {
 				start_row("class='stockmankobg'");
 			} else {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 			}
 			$from = Dates::sql2date($myrow["begin"]);
 			$to = Dates::sql2date($myrow["end"]);

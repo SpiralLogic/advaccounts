@@ -124,7 +124,7 @@
 				$total = $k = 0;
 				while ($myrow = DB::fetch($result))
 				{
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cell($myrow["account"] . " " . $myrow['account_name']);
 					debit_or_credit_cells($myrow["amt"]);
 					$total += $myrow["amt"];

@@ -136,7 +136,7 @@
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");
 			} else {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
 			label_cell($myrow["curr_symbol"]);

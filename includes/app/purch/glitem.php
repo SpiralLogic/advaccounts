@@ -69,7 +69,7 @@
 			{
 				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				echo GL_UI::all('gl_code', null, true, true);
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim >= 1) {
@@ -146,7 +146,7 @@
 				$i = $k = 0;
 				if (count($supp_trans->gl_codes) > 0) {
 					foreach ($supp_trans->gl_codes as $entered_gl_code) {
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						if ($mode == 3) {
 							$entered_gl_code->amount = -$entered_gl_code->amount;
 						}

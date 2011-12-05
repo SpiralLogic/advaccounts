@@ -176,7 +176,7 @@
 		$installers as $i => $inst
 	)
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		start_row();
 		label_cell($inst->version);
 		label_cell($inst->description);

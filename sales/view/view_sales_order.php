@@ -71,7 +71,7 @@
 		$k = 0;
 		$dn_numbers = array();
 		while ($del_row = DB::fetch($result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			$dn_numbers[] = $del_row["trans_link"];
 			$this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
 			$delivery_total += $this_total;
@@ -96,7 +96,7 @@
 			$result = DB::query($sql, "The related invoices could not be retreived");
 			$k = 0;
 			while ($inv_row = DB::fetch($result)) {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 				$invoices_total += $this_total;
 				$inv_numbers[] = $inv_row["trans_no"];
@@ -123,7 +123,7 @@
 			$result = DB::query($sql, "The related credit notes could not be retreived");
 			$k = 0;
 			while ($credits_row = DB::fetch($result)) {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
 				$credits_total += $this_total;
 				label_cell(Debtor_UI::trans_view($credits_row["type"], $credits_row["trans_no"]));
@@ -149,7 +149,7 @@
 	$k = 0; //row colour counter
 	foreach ($_SESSION['View']->line_items as $stock_item) {
 		$line_total = Num::round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
 		$dec = Item::qty_dec($stock_item->stock_id);

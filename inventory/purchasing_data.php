@@ -129,7 +129,7 @@
 			$k = $j = 0; //row colour counter
 			while ($myrow = DB::fetch($result))
 			{
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
 				label_cell($myrow["supp_name"]);
 				amount_decimal_cell($myrow["price"]);

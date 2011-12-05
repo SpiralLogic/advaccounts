@@ -83,7 +83,7 @@
 				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
 				 . $from . "&TransToDate=" . $to
 				 . "&AccGrp=" . $type . "'>" . $typename . "</a>";
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($acctstotal + $typestotal) * $convert);
 				end_row();
@@ -144,7 +144,7 @@
 						$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
 						 . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" .
 						 $accounttype['name'] . "</a>";
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal * $convert);
 						end_row();

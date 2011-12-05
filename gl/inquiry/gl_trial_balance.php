@@ -69,7 +69,7 @@
 			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" .
 			 $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" .
 			 $account["account_code"] . "'>" . $account["account_code"] . "</a>";

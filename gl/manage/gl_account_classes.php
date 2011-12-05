@@ -91,7 +91,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["cid"]);
 		label_cell($myrow['class_name']);
 		if (Config::get('accounts_gl_oldconvertstyle') == 1) {

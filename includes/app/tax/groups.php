@@ -139,7 +139,7 @@
 				'order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 		}
 
-		public static function groups_cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+		public static function cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -148,7 +148,7 @@
 			echo "</td>\n";
 		}
 
-		public static function groups_row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+		public static function row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Tax_Groups::cells(null, $name, $selected_id, $none_option, $submit_on_change);
 			echo "</tr>\n";

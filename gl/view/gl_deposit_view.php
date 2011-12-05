@@ -81,7 +81,7 @@
 		$total_amount = 0;
 		while ($item = DB::fetch($items)) {
 			if ($item["account"] != $to_trans["account_code"]) {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				label_cell($item["account"]);
 				label_cell($item["account_name"]);
 				if ($dim >= 1) {

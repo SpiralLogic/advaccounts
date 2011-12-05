@@ -205,7 +205,7 @@
 				$k = 0; //row colour counter
 				$total_cost = 0;
 				while ($myrow = DB::fetch($result)) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cell($myrow["component"]);
 					label_cell($myrow["description"]);
 					label_cell($myrow["WorkCentreDescription"]);
@@ -473,7 +473,7 @@
 						table_header($th);
 						$k = 0; //row colour counter
 						while ($myrow = DB::fetch($result)) {
-							Display::alt_table_row_color($k);
+							alt_table_row_color($k);
 							label_cell(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
 							label_cell($wo_cost_types[$myrow['person_id']]);
 							$date = Dates::sql2date($myrow["tran_date"]);

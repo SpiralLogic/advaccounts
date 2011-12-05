@@ -131,7 +131,7 @@
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		$type_text = $quick_entry_types[$myrow["type"]];
 		label_cell($myrow['description']);
 		label_cell($type_text);
@@ -180,7 +180,7 @@
 		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($quick_actions[$myrow['action']]);
 			$act_type = strtolower(substr($myrow['action'], 0, 1));
 			if ($act_type == 't') {

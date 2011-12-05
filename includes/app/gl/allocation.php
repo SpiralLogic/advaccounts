@@ -231,7 +231,7 @@
 					$_SESSION['alloc']->allocs as $alloc_item
 				)
 				{
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cell($systypes_array[$alloc_item->type]);
 					label_cell(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
 					label_cell($alloc_item->date_, "class=right");
@@ -354,7 +354,7 @@
 			table_header($th);
 			$k = $total_allocated = 0;
 			while ($alloc_row = DB::fetch($alloc_result)) {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				label_cell($systypes_array[$alloc_row['type']]);
 				label_cell(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
 				label_cell(Dates::sql2date($alloc_row['tran_date']));

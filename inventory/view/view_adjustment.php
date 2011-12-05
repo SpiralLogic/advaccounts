@@ -42,7 +42,7 @@
 			);
 			table_header($th);
 		}
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($adjustment['stock_id']);
 		label_cell($adjustment['description']);
 		qty_cell($adjustment['qty'], false, Item::qty_dec($adjustment['stock_id']));

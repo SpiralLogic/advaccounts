@@ -88,7 +88,7 @@
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["description"]);
 		label_cell($myrow["tax_name"]);
 		label_cell($myrow["dflt_units"], "class=center");

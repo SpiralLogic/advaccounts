@@ -352,7 +352,7 @@
 			foreach ($order->line_items as $line_no => $line) {
 				$line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
 				if ($id != $line_no) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
 					label_cell($line->description, "nowrap");
 					qty_cell($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
@@ -393,7 +393,7 @@
 
 		public static function item_controls($order, $rowcounter, $line_no = -1) {
 			$Ajax = Ajax::i();
-			Display::alt_table_row_color($rowcounter);
+			alt_table_row_color($rowcounter);
 			$id = find_submit('Edit');
 			if ($line_no != -1 && $line_no == $id) {
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;

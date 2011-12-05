@@ -55,7 +55,7 @@
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($loc_details))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);

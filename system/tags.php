@@ -107,7 +107,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow['name']);
 		label_cell($myrow['description']);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');

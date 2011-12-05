@@ -190,7 +190,7 @@
 		)
 		{
 			$is_mod = $mod['type'] == 'module';
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($mod['name']);
 			label_cell(
 				$is_mod ?
@@ -241,7 +241,7 @@
 			$mods as $i => $mod
 		)
 		{
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($mod['name']);
 			label_cell(
 				$mod['type'] == 'module' ?

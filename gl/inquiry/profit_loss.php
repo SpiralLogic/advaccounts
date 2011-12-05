@@ -103,7 +103,7 @@
 				$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate="
 				 . $from . "&TransToDate=" . $to . "&Compare=" . $compare
 				 . "&AccGrp=" . $type . "'>" . $typename . "</a>";
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($code_per_balance + $per_balance_total) * $convert);
 				amount_cell(($code_acc_balance + $acc_balance_total) * $convert);
@@ -217,7 +217,7 @@
 						$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate="
 						 . $from . "&TransToDate=" . $to . "&Compare=" . $compare
 						 . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal[0] * $convert);
 						amount_cell($TypeTotal[1] * $convert);

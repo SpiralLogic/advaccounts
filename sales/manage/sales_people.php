@@ -94,7 +94,7 @@
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["salesman_name"]);
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);

@@ -73,7 +73,7 @@
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
 		} else {

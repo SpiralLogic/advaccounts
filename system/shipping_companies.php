@@ -95,7 +95,7 @@
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["shipper_name"]);
 		label_cell($myrow["contact"]);
 		label_cell($myrow["phone"]);

@@ -143,7 +143,7 @@
 		$j = 1;
 		$k = 0; //row colour counter
 		while ($myrow = DB::fetch($result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			$running_total += $myrow["amount"];
 			$trandate = Dates::sql2date($myrow["tran_date"]);
 			label_cell($systypes_array[$myrow["type"]]);

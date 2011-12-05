@@ -32,7 +32,7 @@
 		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($myrow["stock_id"]);
 			label_cell($myrow["comp_name"]);
 			qty_cell($myrow["quantity"], false, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));

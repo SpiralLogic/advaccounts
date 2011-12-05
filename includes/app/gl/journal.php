@@ -69,7 +69,7 @@
 			$id = find_submit('Edit');
 			foreach ($order->gl_items as $line => $item) {
 				if ($id != $line) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cells($item->code_id, $item->description);
 					if ($dim >= 1) {
 						label_cell(Dimensions::get_string($item->dimension_id, true));

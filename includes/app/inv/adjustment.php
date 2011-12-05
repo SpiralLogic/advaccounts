@@ -104,7 +104,7 @@
 				foreach ($order->line_items as $line_no => $stock_item) {
 					$total += ($stock_item->standard_cost * $stock_item->quantity);
 					if ($id != $line_no) {
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						Item_UI::status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));

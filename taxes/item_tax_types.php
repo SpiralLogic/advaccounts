@@ -80,7 +80,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result2))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		if ($myrow["exempt"] == 0) {
 			$disallow_text = _("No");
 		} else {
@@ -125,7 +125,7 @@
 		$tax_types = Tax_Types::get_all_simple();
 		while ($myrow = DB::fetch($tax_types))
 		{
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($myrow["name"]);
 			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap class=right");
 			check_cells("", 'ExemptTax' . $myrow["id"], null);

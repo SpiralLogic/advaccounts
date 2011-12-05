@@ -339,7 +339,7 @@
 			start_row("class='stockmankobg'");
 			$has_marked = true;
 		} else {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 		}
 		Item_UI::status_cell($ln_itm->stock_id);
 		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);

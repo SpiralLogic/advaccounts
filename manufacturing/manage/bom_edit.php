@@ -79,7 +79,7 @@
 		$k = 0;
 		while ($myrow = DB::fetch($result))
 		{
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell($myrow["component"]);
 			label_cell($myrow["description"]);
 			label_cell($myrow["location_name"]);

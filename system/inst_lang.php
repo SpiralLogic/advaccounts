@@ -123,7 +123,7 @@
 			if ($conn[$i]['code'] == $lang) {
 				start_row("class='stockmankobg'");
 			} else {
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['code']);
 			label_cell($conn[$i]['name']);

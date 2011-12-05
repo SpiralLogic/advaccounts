@@ -95,7 +95,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		label_cell(Num::percent_format($myrow["rate"]), "class=right");
 		label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);

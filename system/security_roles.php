@@ -217,7 +217,7 @@
 			);
 		}
 		if (check_value('Section' . $m)) {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			check_cells(
 				$parms[1], 'Area' . $parms[0], null,
 				false, '', "class='center'"

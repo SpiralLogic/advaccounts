@@ -69,7 +69,7 @@
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["abbr"]);
 		label_cell($myrow["name"]);
 		label_cell(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));

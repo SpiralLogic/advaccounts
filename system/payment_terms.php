@@ -132,7 +132,7 @@
 		} else {
 			$after_text = $myrow["days_before_due"] . " " . _("days");
 		}
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["terms"]);
 		label_cell($full_text);
 		label_cell($after_text);

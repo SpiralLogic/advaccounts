@@ -50,7 +50,7 @@
 				}
 
 				public static function exchange_rate_from_home($currency_code, $date_) {
-					if ($currency_code == static::get_for_company() || $currency_code == null) {
+					if ($currency_code == static::for_company() || $currency_code == null) {
 						return 1.0000;
 					}
 					$date = Dates::date2sql($date_);

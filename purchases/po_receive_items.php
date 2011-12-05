@@ -40,7 +40,7 @@
 			$k = 0; //row colour counter
 			if (count($_SESSION['PO']->line_items) > 0) {
 				foreach ($_SESSION['PO']->line_items as $ln_itm) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					$qty_outstanding = $ln_itm->quantity - $ln_itm->qty_received;
 					if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $ln_itm->receive_qty == 0) { //If no quantites yet input default the balance to be received
 						$ln_itm->receive_qty = $qty_outstanding;

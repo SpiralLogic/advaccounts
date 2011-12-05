@@ -111,7 +111,7 @@
 			start_row("class='overduebg'");
 			$due = true;
 		} else {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 		}
 		label_cell($myrow["description"]);
 		label_cell(Debtor_UI::trans_view(30, $myrow["order_no"]));

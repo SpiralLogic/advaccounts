@@ -170,7 +170,7 @@
 		$k = 0;
 		while ($row = DB::fetch($rows))
 		{
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 			label_cell(GL_UI::trans_view($type, $row['trans_no']));
 			label_cell($row['description']);
 			label_cell($row['filename']);

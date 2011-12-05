@@ -1084,10 +1084,10 @@
 									Item::qty_dec($stock_item->stock_id)) . '<br>';
 								$has_marked = true;
 							} else {
-								Display::alt_table_row_color($k);
+								alt_table_row_color($k);
 							}
 						} else {
-							Display::alt_table_row_color($k);
+							alt_table_row_color($k);
 						}
 						label_cell($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
 						//label_cell($stock_item->description, "nowrap" );
@@ -1331,7 +1331,7 @@ JS;
 		public static function item_controls($order, &$rowcounter, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
-				Display::alt_table_row_color($rowcounter);
+				alt_table_row_color($rowcounter);
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) // edit old line
 				{

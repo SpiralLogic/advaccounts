@@ -83,7 +83,7 @@
 		if ($myrow["id"] == $base_sales) {
 			start_row("class='overduebg'");
 		} else {
-			Display::alt_table_row_color($k);
+			alt_table_row_color($k);
 		}
 		label_cell($myrow["sales_type"]);
 		$f = Num::format($myrow["factor"], 4);

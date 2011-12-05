@@ -272,7 +272,7 @@
 		$system_tests as $test
 	)
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		$result = call_user_func($test);
 		if (!$result) {
 			continue;

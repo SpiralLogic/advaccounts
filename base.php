@@ -9,6 +9,7 @@
 				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
+
 			return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
@@ -22,6 +23,7 @@
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+
 			Config::store();
 			Cache::set('autoloads', Autoloader::getLoaded());
 		}

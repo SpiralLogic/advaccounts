@@ -114,7 +114,7 @@
 			$id = find_submit('Edit');
 			foreach ($order->gl_items as $line => $item) {
 				if ($id != $line) {
-					Display::alt_table_row_color($k);
+					alt_table_row_color($k);
 					label_cell($item->code_id);
 					label_cell($item->description);
 					if ($dim >= 1) {

@@ -145,10 +145,11 @@
 					throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
 				}
 				static::$loaded[$class] = $filepath;
+				static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, 		 microtime(true) - ADV_START_TIME);
 			} catch (Autoload_Exception $e) {
 				Errors::exception_handler($e);
 			}
-			//		static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, 		 microtime(true) - ADV_START_TIME);
+
 		}
 
 		/**

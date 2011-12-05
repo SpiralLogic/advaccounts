@@ -99,7 +99,7 @@
 	$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["bank_account_name"], "nowrap");
 		label_cell($bank_account_types[$myrow["account_type"]], "nowrap");
 		label_cell($myrow["bank_curr_code"], "nowrap");

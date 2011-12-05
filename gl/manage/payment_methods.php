@@ -76,7 +76,7 @@
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["name"], "nowrap");
 		label_cell($myrow["undeposited"], "nowrap");
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');

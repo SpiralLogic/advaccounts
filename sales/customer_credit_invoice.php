@@ -232,7 +232,7 @@
 				if ($ln_itm->quantity == $ln_itm->qty_done) {
 					continue; // this line was fully credited/removed
 				}
-				Display::alt_table_row_color($k);
+				alt_table_row_color($k);
 				//	Item_UI::status_cell($ln_itm->stock_id); alternative view
 				label_cell($ln_itm->stock_id);
 				text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);

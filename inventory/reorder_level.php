@@ -44,7 +44,7 @@
 	$result = Inv_Location::get_details($_POST['stock_id']);
 	while ($myrow = DB::fetch($result))
 	{
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
 			$myrow["reorder_level"] = Validation::input_num($myrow["loc_code"]);
 			Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], Validation::input_num($myrow["loc_code"]));

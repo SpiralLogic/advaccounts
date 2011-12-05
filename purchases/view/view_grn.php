@@ -30,7 +30,7 @@
 	$k = 0; //row colour counter
 	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->qty_received * $stock_item->price;
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
 		label_cell($stock_item->req_del_date, "nowrap class=right");

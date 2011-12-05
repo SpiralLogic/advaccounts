@@ -460,7 +460,7 @@
 					$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(),
 						PHP_ROUND_HALF_EVEN);
 					if (!$editable || ($id != $line_no)) {
-						Display::alt_table_row_color($k);
+						alt_table_row_color($k);
 						label_cell($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
 						label_cell($po_line->description);
 						qty_cell($po_line->quantity, false, Item::qty_dec($po_line->stock_id));

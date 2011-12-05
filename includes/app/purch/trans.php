@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
-	class Purch_Trans implements IVoidable {
+	class Purch_Trans   {
 		protected static $_instance = null;
 
 		public static function i($reset_session = false) {

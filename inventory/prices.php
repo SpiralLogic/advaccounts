@@ -96,7 +96,7 @@
 	$k = 0; //row colour counter
 	$calculated = false;
 	while ($myrow = DB::fetch($prices_list)) {
-		Display::alt_table_row_color($k);
+		alt_table_row_color($k);
 		label_cell($myrow["curr_abrev"]);
 		label_cell($myrow["sales_type"]);
 		amount_cell($myrow["price"]);
