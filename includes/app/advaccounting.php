@@ -19,6 +19,7 @@
 		public $menu;
 
 		public function __construct() {
+
 			Session::hasLogin();
 			$installed_extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main Menu"));
@@ -79,8 +80,10 @@
 
 		public static function init() {
 			if (!isset($_SESSION["App"])) {
+
 				Session::i()->App = new advaccounting();
 			}
+
 		}
 
 		public static function write_extensions($extensions = null, $company = -1) {

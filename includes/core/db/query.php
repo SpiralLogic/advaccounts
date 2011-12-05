@@ -21,7 +21,7 @@
 		 */
 		protected $type;
 		/**
-		 * @var PDO
+		 * @var DB_Connection
 		 */
 		protected $conn;
 
@@ -29,13 +29,14 @@
 		 * @abstract
 		 *
 		 */
-		public abstract function execute();
+		protected abstract function execute();
 
 		/**
-		 * @param $db
+		 * @param $conn
 		 */
-		protected function __construct($db) {
-			$this->conn = $db;
+		protected function __construct($conn) {
+
+			$this->conn = $conn;
 			static::$query = $this;
 		}
 
@@ -45,6 +46,7 @@
 		 * @return bool
 		 */
 		protected function getQuery($data) {
+
 			if (!$this->compiled_query) {
 				$this->compiled_query = $this->execute($data);
 			}
@@ -57,6 +59,7 @@
 		 * @return DB_Query_Result
 		 */
 		public function exec($data = null) {
+
 			return $this->conn->exec($this->getQuery($data), $this->type, $this->data);
 		}
 
@@ -64,6 +67,7 @@
 		 * @return DB_Query_Result
 		 */
 		public function fetch() {
+
 			return $this->exec(null);
 		}
 

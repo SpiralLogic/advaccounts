@@ -157,7 +157,7 @@
 					DB::query($sql, "One of the purchase order detail records could not be inserted");
 				}
 			}
-			Ref::save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
+			Ref::save(ST_PURCHORDER,  $po_obj->reference);
 			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 			DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
 			DB::commit_transaction();

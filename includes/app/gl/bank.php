@@ -100,7 +100,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		static::add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, "");
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
-		Ref::save($trans_type, $trans_no, $ref);
+		Ref::save($trans_type,  $ref);
 		DB_AuditTrail::add($trans_type, $trans_no, $date_);
 		DB::commit_transaction();
 		return $trans_no;
@@ -195,7 +195,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 				$currency, $person_type_id, $person_id);
 		}
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
-		Ref::save($trans_type, $trans_no, $ref);
+		Ref::save($trans_type,  $ref);
 		DB_AuditTrail::add($trans_type, $trans_no, $date_);
 		if ($use_transaction) {
 			DB::commit_transaction();

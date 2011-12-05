@@ -27,7 +27,7 @@
 		/**
 		 * @return string
 		 */
-		public function execute() {
+		protected function execute() {
 			return $this->_buildQuery();
 		}
 

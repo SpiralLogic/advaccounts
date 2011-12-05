@@ -42,7 +42,7 @@
 			if ($memo_) {
 				DB_Comments::add(ST_MANUISSUE, $number, $date_, $memo_);
 			}
-			Ref::save(ST_MANUISSUE, $number, $ref);
+			Ref::save(ST_MANUISSUE,  $ref);
 			DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
 			DB::commit_transaction();
 		}

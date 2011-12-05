@@ -96,7 +96,7 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 class=right", "nowrap class=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
 	Sales_Trans::display_tax_details($tax_items, 6);
-	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 class=right",
+	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class=right",
 		"nowrap class=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));

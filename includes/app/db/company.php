@@ -9,18 +9,124 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class DB_Company {
-		/* Proportion by which a purchase invoice line is an overcharge for a purchase order item received
-					 is an overcharge. If the overcharge is more than this percentage then an error is reported and
-					 purchase invoice line cannot be entered
-					 The figure entered is interpreted as a percentage ie 20 means 0.2 or 20% not 20 times
-					 */
-/* Sherifoz 26.06.03 Proportion by which items can be received over the quantity that is specified in a purchase
-				 invoice
-				 The figure entered is interpreted as a percentage ie 10 means 0.1 or 10% not 10 times
-				 */
+	class DB_Company extends DB_abstract {
+		public function __construct($id = 0) {
+			parent::__construct($id);
+			$this->id = &$this->coy_code;
+		}
 
-		// fiscal year routines
+		function save($changes = null) {
+			if (is_array($changes)) {
+				$this->setFromArray($changes);
+			}
+			if (!$this->_canProcess()) {
+				return false;
+			}
+			if ($this->id == 0) {
+				$this->_saveNew();
+			}
+			DB::begin_transaction();
+			$result = DB::update('company')->values((array)$this)->where('coy_code=', $this->id)->exec();
+			DB::commit_transaction();
+			$_SESSION['config']['company']=$this;
+			return $this->_status(true, 'Processing', "Company has been updated.");
+		}
+
+		protected function delete() {
+			// TODO: Implement delete() method.
+		}
+
+		protected function _canProcess() {
+			return true;
+			// TODO: Implement _canProcess() method.
+		}
+
+		protected function _defaults() {
+			// TODO: Implement _defaults() method.
+		}
+
+		protected function _new() {
+			// TODO: Implement _new() method.
+		}
+
+		protected function _read($id = 0) {
+			$result = DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
+		}
+
+		protected function _saveNew() {
+			// TODO: Implement _saveNew() method.
+		}
+		public $id=0;
+
+		public $coy_code;
+		public $coy_name;
+		public $gst_no;
+		public $coy_no;
+		public $tax_prd;
+		public $tax_last;
+		public $postal_address;
+		public $phone;
+		public $fax;
+		public $email;
+		public $coy_logo;
+		public $domicile;
+		public $curr_default;
+		public $debtors_act;
+		public $pyt_discount_act;
+		public $creditors_act;
+		public $bank_charge_act;
+		public $exchange_diff_act;
+		public $profit_loss_year_act;
+		public $retained_earnings_act;
+		public $freight_act;
+		public $default_sales_act;
+		public $default_sales_discount_act;
+		public $default_prompt_pament_act;
+		public $default_inventory_act;
+		public $default_cogs_act;
+		public $default_adj_act;
+		public $default_inv_sales_act;
+		public $default_assembly_act;
+		public $payroll_act;
+		public $allow_negative_stock;
+		public $po_over_receive;
+		public $po_over_charge;
+		public $default_credit_limit;
+		public $default_workorder_required;
+		public $default_dim_required;
+		public $past_due_days;
+		public $use_dimension;
+		public $f_year;
+		public $no_item_list;
+		public $no_customer_list;
+		public $no_supplier_list;
+		public $base_sales;
+		public $foreign_codes;
+		public $accumulate_shipping;
+		public $legal_text;
+		public $default_delivery_required;
+		public $version_id;
+		public $time_zone;
+		public $custom0_name;
+		public $custom0_value;
+		public $add_pct;
+		public $round_to;
+		public $login_tout;
+		protected static $i = null;
+/***
+ * @static
+ * @param null $id
+ * @return DB_Company
+ */
+		public static function i($id = null) {
+			$id = $id ? : User::get()->company;
+
+			if (static::$i === null) {
+				static::$i= isset($_SESSION['config']['company'])?$_SESSION['config']['company']:new static($id);
+			}
+			return static::$i;
+		}
+
 		public static function add_fiscalyear($from_date, $to_date, $closed) {
 			$from = Dates::date2sql($from_date);
 			$to = Dates::date2sql($to_date);
@@ -96,15 +202,14 @@
 		}
 
 		public static function get_prefs() {
-			if (!isset($_SESSION['company_prefs'])) {
-				$sql = "SELECT * FROM company WHERE coy_code=1";
-				$result = DB::query($sql, "The company preferences could not be retrieved");
-				if (DB::num_rows($result) == 0) {
-					Errors::show_db_error("FATAL : Could not find company prefs", $sql);
+
+			if (!isset($_SESSION['config']['company'])) {
+				$_SESSION['config']['company'] = static::i();
+				if (!static::$i) {
+					Errors::error("FATAL : Could not find company prefs");
 				}
-				$_SESSION['company_prefs'] = DB::fetch($result);
 			}
-			return $_SESSION['company_prefs'];
+			return (array)$_SESSION['config']['company'];
 		}
 
 		public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
@@ -172,74 +277,15 @@
 			DB::query($sql, "could not update fiscal year");
 		}
 
-		public static function update_gl_setup($retained_act, $profit_loss_act, $debtors_act, $pyt_discount_act, $creditors_act,
-																					 $freight_act, $exchange_diff_act, $bank_charge_act, $default_sales_act, $default_sales_discount_act,
-																					 $default_prompt_payment_act, $default_inventory_act, $default_cogs_act,
-																					 $default_adj_act, $default_inv_sales_act, $default_assembly_act, $allow_negative_stock, $po_over_receive, $po_over_charge,
-																					 $accumulate_shipping, $legal_text, $past_due_days, $default_credit_limit, $default_workorder_required,
-																					 $default_dim_required,
-																					 $default_delivery_required) {
-			$sql = "UPDATE company SET
-				retained_earnings_act=" . DB::escape($retained_act) . ", profit_loss_year_act=" . DB::escape($profit_loss_act) . ",
-				debtors_act=" . DB::escape($debtors_act) . ", pyt_discount_act=" . DB::escape($pyt_discount_act) . ",
-				creditors_act=" . DB::escape($creditors_act) . ",
-				freight_act=" . DB::escape($freight_act) . ",
-				exchange_diff_act=" . DB::escape($exchange_diff_act) . ",
-				bank_charge_act=" . DB::escape($bank_charge_act) . ",
-				default_sales_act=" . DB::escape($default_sales_act) . ",
-				default_sales_discount_act=" . DB::escape($default_sales_discount_act) . ",
-				default_prompt_payment_act=" . DB::escape($default_prompt_payment_act) . ",
-				default_inventory_act=" . DB::escape($default_inventory_act) . ",
-				default_cogs_act=" . DB::escape($default_cogs_act) . ",
-				default_adj_act=" . DB::escape($default_adj_act) . ",
-				default_inv_sales_act=" . DB::escape($default_inv_sales_act) . ",
-				default_assembly_act=" . DB::escape($default_assembly_act) . ",
-				allow_negative_stock=$allow_negative_stock,
-				po_over_receive=$po_over_receive,
+		public static function update_gl_setup(array $data = null) {
+			static::i()->save($data);			var_dump(	static::i());
 
-				po_over_charge=$po_over_charge,
-				accumulate_shipping=$accumulate_shipping,
-				legal_text=" . DB::escape($legal_text) . ",
-				past_due_days=$past_due_days,
-				default_credit_limit=$default_credit_limit,
-				default_workorder_required=$default_workorder_required,
-				default_dim_required=$default_dim_required,
-				default_delivery_required=$default_delivery_required
-				WHERE coy_code=1";
-			DB::query($sql, "The company gl setup could not be updated ");
 		}
 
-		public static function update_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email,
-																				$coy_logo, $domicile, $Dimension, $curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, $base_sales,
-																				$time_zone, $add_pct, $round_to, $login_tout) {
+		public static function update_setup(array $data = null) {
 			if ($f_year == null) {
 				$f_year = 0;
 			}
-			$sql = "UPDATE company SET coy_name=" . DB::escape($coy_name) . ",
-				coy_no = " . DB::escape($coy_no) . ",
-				gst_no=" . DB::escape($gst_no) . ",
-				tax_prd=$tax_prd,
-				tax_last=$tax_last,
-				postal_address =" . DB::escape($postal_address) . ",
-				phone=" . DB::escape($phone) . ", fax=" . DB::escape($fax) . ",
-				email=" . DB::escape($email) . ",
-				coy_logo=" . DB::escape($coy_logo) . ",
-				domicile=" . DB::escape($domicile) . ",
-				use_dimension=$Dimension,
-				no_item_list=$no_item_list,
-				no_customer_list=$no_customer_list,
-				no_supplier_list=$no_supplier_list,
-				curr_default=" . DB::escape($curr_default) . ",
-				f_year=$f_year,
-				base_sales=$base_sales,
-				time_zone=$time_zone,
-				add_pct=$add_pct,
-				round_to=$round_to,
-				login_tout = " . DB::escape($login_tout) . "
-				WHERE coy_code=1";
-			DB::query($sql, "The company setup could not be updated ");
-			DB_Company::get_prefs();
+			static::i()->save($data);
 		}
 	}
-
-?>

@@ -35,30 +35,12 @@
 
 
 	if (isset($_POST['submit']) && can_process()) {
-		DB_Company::update_gl_setup(
-			$_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
-			$_POST['debtors_act'], $_POST['pyt_discount_act'],
-			$_POST['creditors_act'], $_POST['freight_act'],
-			$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
-			$_POST['default_sales_act'],
-			$_POST['default_sales_discount_act'],
-			$_POST['default_prompt_payment_act'],
-			$_POST['default_inventory_act'],
-			$_POST['default_cogs_act'],
-			$_POST['default_adj_act'],
-			$_POST['default_inv_sales_act'],
-			$_POST['default_assembly_act'],
-			check_value('allow_negative_stock'),
-			Validation::input_num('po_over_receive'),
-			Validation::input_num('po_over_charge'),
-			check_value('accumulate_shipping'),
-			$_POST['legal_text'],
-			$_POST['past_due_days'],
-			$_POST['default_credit_limit'],
-			$_POST['default_workorder_required'],
-			$_POST['default_dim_required'],
-			$_POST['default_delivery_required']
-		);
+		$_POST['allow_negative_stock']=	check_value('allow_negative_stock');
+					$_POST['po_over_receive']=Validation::input_num('po_over_receive');
+		$_POST['po_over_charge']=Validation::input_num('po_over_charge');
+		$_POST['accumulate_shipping']=check_value('accumulate_shipping');
+
+		DB_Company::update_gl_setup($_POST);
 		Errors::notice(_("The general GL setup has been updated."));
 	} /* end of if submit */
 
@@ -79,6 +61,7 @@
 	$_POST['default_sales_discount_act'] = $myrow["default_sales_discount_act"];
 	$_POST['default_prompt_payment_act'] = $myrow["default_prompt_payment_act"];
 	$_POST['default_inventory_act'] = $myrow["default_inventory_act"];
+	$_POST['default_credit_limit'] = $myrow["default_credit_limit"];
 	$_POST['default_cogs_act'] = $myrow["default_cogs_act"];
 	$_POST['default_adj_act'] = $myrow["default_adj_act"];
 	$_POST['default_inv_sales_act'] = $myrow['default_inv_sales_act'];

@@ -21,7 +21,7 @@
 						$line_item->quantity);
 				}
 				DB_Comments::add(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
-				Ref::save(ST_LOCTRANSFER, $transfer_id, $reference);
+				Ref::save(ST_LOCTRANSFER,  $reference);
 				DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
 				DB::commit_transaction();
 				return $transfer_id;

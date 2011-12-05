@@ -24,7 +24,7 @@
 						$line_item->quantity, $line_item->standard_cost, $memo_);
 				}
 				DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
-				Ref::save(ST_INVADJUST, $adj_id, $reference);
+				Ref::save(ST_INVADJUST,  $reference);
 				DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
 				DB::commit_transaction();
 				return $adj_id;

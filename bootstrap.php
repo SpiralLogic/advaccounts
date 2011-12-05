@@ -24,6 +24,7 @@
 	 *
 	 */
 	require DOCROOT . 'base.php';
+
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	define('CRLF', chr(13) . chr(10));

@@ -83,7 +83,7 @@
 				'sales_type' => 1,
 				'no_sale' => false, 'select' => false, 'type' => 'local', 'where' => '');
 			$o = array_merge($defaults, $options);
-			$UniqueID = $id;
+			$UniqueID = md5(serialize($o));
 			Cache::set($UniqueID, $o, DB_Company::get_pref('login_tout'));
 			$desc_js = $o['js'];
 			HTML::setReturn(true);
@@ -94,7 +94,7 @@
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
 																						 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
-				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
+				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parensharedt().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {
 				HTML::td()->td(true);

@@ -132,7 +132,7 @@
 			GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
 			DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 			if ($trans_no == 0) {
-				Ref::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
+				Ref::save(ST_CUSTCREDIT,  $credit_note->reference);
 			}
 			DB::commit_transaction();
 			return $credit_no;

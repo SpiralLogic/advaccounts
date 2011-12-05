@@ -272,7 +272,7 @@
 					DB::query($sql, "could not add work order");
 					$woid = DB::insert_id();
 					DB_Comments::add(ST_WORKORDER, $woid, $required_by, $memo_);
-					Ref::save(ST_WORKORDER, $woid, $wo_ref);
+					Ref::save(ST_WORKORDER,  $wo_ref);
 					DB_AuditTrail::add(ST_WORKORDER, $woid, $date_);
 					DB::commit_transaction();
 					return $woid;

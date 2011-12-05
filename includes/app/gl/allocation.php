@@ -270,8 +270,8 @@
 						$amount = -$amount;
 					}
 					if ($amount - $total_allocated < 0) {
-						$font1 = "<font color=red>";
-						$font2 = "</font>";
+						$font1 = "<span class='red'>";
+						$font2 = "</span>";
 					} else {
 						$font1 = $font2 = "";
 					}

@@ -10,39 +10,52 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 **********************************************************************
 	 */
-	class Item extends DB_abstract
-	{
-		public $id;
+	class Item extends DB_abstract {
+		public $id = 0;
 		public $stock_id;
+		public $tax_type_id = 1;
+		public $mb_flag = STOCK_MANUFACTURE;
+		public $sales_account = 4010;
+		public $inventory_accounts = 1200;
+		public $cogs_account = 5050;
+		public $adjustment_account = 1205;
+		public $assembly_account = 5110;
+		public $dimension_id = 0;
+		public $dimension2_id = 0;
+		public $actual_cost = 0;
+		public $last_cost = 0;
+		public $material_cost = 0;
+		public $labour_cost = 0;
+		public $overhead_cost = false;
+		public $inactive = false;
+		public $no_sale = false;
+		public $editable = 0;
+		public $tax_type_name = 'GST';
 		public $name;
-		public $category_id;
+		public $category_id = 6;
 		public $description;
-		public $last_cost;
 		public $uom;
-		public $units;
+		public $units = 'ea';
 		public $salePrices = array();
 		public $purchPrices = array();
 		protected $stockLevels = array();
 		public static $qoh_stock;
 
+		/***
+		 * @param Item $id
+		 */
 		public function __construct($id = 0) {
+
 			parent::__construct($id);
 			$this->uom = &$this->units;
 		}
 
 		protected function _read($id = 0) {
-			$sql = "SELECT * FROM stock_master WHERE id = " . DB::escape($id);
-			$result = DB::query($sql, 'Could not retrieve stock information');
-			if (DB::num_rows($result) == 1) {
-				$myrow = DB::fetch_assoc($result);
-				$this->id = $myrow['id'];
-				$this->stock_id = $myrow['stock_id'];
-				$this->name = $myrow['description'];
-				$this->category_id = $myrow['category_id'];
-				$this->description = $myrow['long_description'];
-				$this->last_cost = $myrow['last_cost'];
-				$this->units = $myrow['units'];
+			if (!is_numeric($id)) {
+				$stockid = static::getStockID((string)$id);
+				if ($stockid) $id = $stockid;
 			}
+			$result = DB::select()->from('stock_master')->where('id=', $id)->fetch()->intoObject($this);
 		}
 
 		protected function _canProcess() {
@@ -54,15 +67,37 @@
 		}
 
 		protected function _defaults() {
-			// TODO: Implement _defaults() method.
+			$this->id = 0;
+			$this->stock_id = null;
+			$this->tax_type_id = 1;
+			$this->mb_flag = STOCK_PURCHASED;
+			$this->sales_account = DB_Company::i()->default_inv_sales_act;
+			$this->inventory_accounts = DB_Company::i()->default_inventory_act;
+			$this->cogs_account = DB_Company::i()->default_cogs_act;
+			$this->adjustment_account = DB_Company::i()->default_adj_act;
+			$this->assembly_account = DB_Company::i()->default_assembly_act;
+			$this->actual_cost = 0;
+			$this->last_cost = 0;
+			$this->material_cost = 0;
+			$this->labour_cost = 0;
 		}
 
 		protected function _new() {
-			// TODO: Implement _new() method.
+			$this->_defaults();
+			return $this->_status(true, 'Initialize new Item', 'Now working with a new Item');
 		}
 
 		protected function _saveNew() {
-			// TODO: Implement _saveNew() method.
+		//	DB::begin_transaction();
+			$data = (array)$this;
+			unset($data['id']);
+			$this->id = DB::insert('stock_master')->values($data)->exec();
+			$sql = "INSERT INTO loc_stock (loc_code, stock_id) SELECT locations.loc_code, " . DB::escape($this->stock_id) . " FROM locations";
+			$result = DB::query($sql, "The item locstock could not be added");
+			DB::fetch($result);
+			Item_Code::add($this->stock_id, $this->stock_id, $this->description, $this->category_id, 1, 0);
+		//	DB::commit_transaction();
+			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
 
 		public function delete() {
@@ -77,22 +112,10 @@
 				return false;
 			}
 			if ($this->id == 0) {
-				$this->_saveNew();
+				return $this->_saveNew();
 			}
 			DB::begin_transaction();
-			$sql = "UPDATE stock_master SET description=" . DB::escape($this->name) . ",
-					long_description=" . DB::escape($this->description) . ",
-					category_id=" . DB::escape($this->category_id) . ",
-					stock_id=" . DB::escape($this->stock_id) . ",
-					units=" . DB::escape($this->units) . "
-		 WHERE id = " . DB::escape($this->id);
-			DB::query($sql, "The item could not be updated");
-			$sql = "UPDATE item_codes SET stock_id=" . DB::escape($this->stock_id) . ",
-							category_id=" . DB::escape($this->category_id) . ",
-							description=" . DB::escape($this->name) . ",
-							item_code=" . DB::escape($this->stock_id) . "
-							WHERE stockid = " . DB::escape($this->id);
-			DB::query($sql, "The item could not be updated");
+			$result = DB::update('stock_master')->values((array)$this)->where('id=', $this->id)->exec();
 			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
@@ -402,10 +425,10 @@
 			$o = array_merge($default, $options);
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
 			$stockbox->addButtons(array(
-																 'Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
+				'Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
 				item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
 			$stockbox->setOptions(array(
-																 'autoopen' => false, 'modal' => true, 'width' => 950, 'height' => 620, 'resizeable' => true));
+				'autoopen' => false, 'modal' => true, 'width' => 950, 'height' => 620, 'resizeable' => true));
 			$stockbox->show();
 			$action = <<<JS
 			$('#stockbox').html("<iframe src='/items/quickitems.php?stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
@@ -423,9 +446,9 @@ JS;
 		}
 
 		public static function	update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '',
-			$mb_flag = '',
-			$sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id,
-			$no_sale) {
+																	 $mb_flag = '',
+																	 $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id,
+																	 $no_sale) {
 			$sql = "UPDATE stock_master SET long_description=" . DB::escape($long_description) . ",
 		 		description=" . DB::escape($description) . ",
 		 		category_id=" . DB::escape($category_id) . ",
@@ -450,8 +473,8 @@ JS;
 		}
 
 		public static function	add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,
-			$sales_account,
-			$inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
+																$sales_account,
+																$inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
 			$sql = "INSERT INTO stock_master (stock_id, description, long_description, category_id,
 		 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
 		 		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale)
@@ -511,11 +534,12 @@ JS;
 			}
 			return $dec;
 		}
+
 		public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(),
-																	 $editkey = false, $legacy = false) {
+																	$editkey = false, $legacy = false) {
 			if (!$legacy) {
 				return Item::addSearchBox($name, array_merge(array(
-																													'submitonselect' => $submit_on_change, 'selected' => $selected_id, 'purchase' => true, 'cells' => true),
+						'submitonselect' => $submit_on_change, 'selected' => $selected_id, 'purchase' => true, 'cells' => true),
 					$opts));
 			}
 			$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
@@ -524,21 +548,30 @@ JS;
 				Display::set_editor('item', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
-																																																	'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
+					'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
 					 _("All Items") :
-					 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => false, 'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 10, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50),
+					 $all_option,
+					'spec_id' => ALL_TEXT,
+					'search_box' => false,
+					'search' => array("stock_id", "c.description", "s.description"),
+					'search_submit' => DB_Company::get_pref('no_item_list') != 0,
+					'size' => 10,
+					'select_submit' => $submit_on_change,
+					'category' => 2,
+					'order' => array('c.description', 'stock_id'),
+					'editable' => 30,
+					'max' => 50),
 				$opts));
 		}
 
 
 		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false,
-																	$all = false, $editkey = false, $legacy = false) {
+																 $all = false, $editkey = false, $legacy = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
 			echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-																																											'submitonselect' => $submit_on_change, 'cells' => true, 'purchase' => false, 'show_inactive' => $all, 'editable' => $editkey),
+					'submitonselect' => $submit_on_change, 'cells' => true, 'purchase' => false, 'show_inactive' => $all, 'editable' => $editkey),
 				$editkey, $legacy);
 		}
-
 	}

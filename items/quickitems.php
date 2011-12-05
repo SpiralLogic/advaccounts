@@ -46,7 +46,7 @@ JS;
 	$menu->startTab("Items", "Items");
 	echo <<<HTML
 <div id="Items" class="center">
-<hidden value="\${id}" id="id"></hidden>
+<input type="hidden" value="\${id}" id="id">
 <table class="tableinfo marginauto" style="width:80%">
 <tr><td><label for="stock_id">Code:</label></td><td><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>

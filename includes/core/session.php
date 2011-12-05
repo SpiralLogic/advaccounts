@@ -43,6 +43,7 @@
 		 *
 		 */
 		public static function hasLogin() {
+
 			static::i()->checkLogin();
 		}
 
@@ -139,6 +140,7 @@
 				}
 				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"],
 					$_POST["user_name_entry_field"], $_POST["password"]);
+
 				// select full vs fallback ui mode on login
 				$currentUser->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {

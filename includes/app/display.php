@@ -20,7 +20,7 @@
 			if ($extra != "") {
 				echo "<div class='center'><span $extra>$msg</span></div>\n";
 			} else {
-				echo "<div class='center'><span class='note_msg'>$msg</span></div>\n";
+				echo "<div class='center'>$msg</div>\n";
 			}
 			for ($i = 0; $i < $br2; $i++) {
 				echo "<br>";
@@ -86,7 +86,7 @@
 				return false;
 			}
 			start_table('tablestyle width50');
-			echo "<tr><td class=center><font color=red>$label</font><br>";
+			echo "<tr><td class=center><span class='red'>$label</span><br>";
 			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
 				echo "<div class='center'><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></div><br>";

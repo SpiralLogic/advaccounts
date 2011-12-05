@@ -97,7 +97,7 @@
 			} /*end of order_line loop */
 			$grn_item = static::add_item($grn, Purch_Order::add_freight($po, $date_), 'Freight', 'Freight Charges', 0, 1,
 				$po->freight, 0);
-			Ref::save(ST_SUPPRECEIVE, $grn, $reference);
+			Ref::save(ST_SUPPRECEIVE,  $reference);
 			DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
 			DB::commit_transaction();
 			return $grn;

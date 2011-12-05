@@ -86,17 +86,7 @@
 			$_POST['round_to'] = 1;
 		}
 		if ($input_error != 1) {
-			DB_Company::update_setup(
-				$_POST['coy_name'], $_POST['coy_no'],
-				$_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
-				$_POST['postal_address'], $_POST['phone'], $_POST['fax'],
-				$_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
-				$_POST['use_dimension'], $_POST['curr_default'], $_POST['f_year'],
-				check_value('no_item_list'), check_value('no_customer_list'),
-				check_value('no_supplier_list'), $_POST['base_sales'],
-				check_value('time_zone'), $_POST['add_pct'], $_POST['round_to'],
-				$_POST['login_tout']
-			);
+			DB_Company::update_setup($_POST);
 			$_SESSION['current_user']->timeout = $_POST['login_tout'];
 			Errors::notice(_("Company setup has been updated."));
 		}

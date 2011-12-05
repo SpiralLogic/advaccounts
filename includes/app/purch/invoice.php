@@ -310,7 +310,7 @@
 				/*Post a balance post if $total != 0 */
 				GL_Trans::add_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);
 				DB_Comments::add($trans_type, $invoice_id, $date_, $supp_trans->Comments);
-				Ref::save($trans_type, $invoice_id, $supp_trans->reference);
+				Ref::save($trans_type,  $supp_trans->reference);
 				if ($invoice_no != 0) {
 					$invoice_alloc_balance = Purch_Allocation::get_balance(ST_SUPPINVOICE, $invoice_no);
 					if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated

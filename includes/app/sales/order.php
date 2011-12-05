@@ -576,7 +576,7 @@
 					DB::query($sql, "order Details Cannot be Added");
 				} /* inserted line items into sales order details */
 				DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date);
-				Ref::save($order->trans_type, $order_no, $order->reference);
+				Ref::save($order->trans_type,  $order->reference);
 				DB::commit_transaction();
 				if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 					require_once(DOCROOT . "/reporting/includes/email.php");
@@ -693,7 +693,7 @@
 				} /* inserted line items into sales order details */
 				DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
 				Ref::delete($order->trans_type, $order_no);
-				Ref::save($order->trans_type, $order_no, $order->reference);
+				Ref::save($order->trans_type,  $order->reference);
 				DB::commit_transaction();
 				if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 					require_once(DOCROOT . "/reporting/includes/class.mail.php");

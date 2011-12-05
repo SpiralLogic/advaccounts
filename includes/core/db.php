@@ -27,7 +27,7 @@
 		/**
 		 * @var array
 		 */
-		protected static $conn = array();
+		protected static $connections = array();
 		/**
 		 * @var bool
 		 */
@@ -54,21 +54,23 @@
 		/***
 		 * @static
 		 *
-		 * @param null	$db
+		 * @param null	$conn
 		 * @param array $config
 		 *
 		 * @return DB_Connection
 		 */
-		protected static function _get($db = null, $config = array()) {
+		protected static function _get($conn = null, $config = array()) {
 			static::$prepared = null;
-			if ($db === null && static::$current) {
+			if ($conn === null && static::$current) {
 				return static::$current;
-			} elseif ($db === null) {
+			} elseif ($conn === null) {
 				$config = $config ? : Config::get('db_default');
-				$db = $config['name'];
+				$conn = $config['name'];
 			}
-			if (!isset($conn[$db])) {
-				static::$conn[$db] = static::$current = DB_Connection::i($db, $config);
+
+			if (!isset(static::$connections[$conn])) {
+
+				static::$connections[$conn] = static::$current = DB_Connection::i($conn, $config);
 			}
 			return static::$current;
 		}
@@ -82,10 +84,10 @@
 		 * @throws DB_Exception
 		 */
 		public static function set($db) {
-			if (!isset(static::$conn[$db])) {
+			if (!isset(static::$connections[$db])) {
 				throw new DB_Exception('There is no connection: ' . $db);
 			}
-			static::$current = static::$conn[$db];
+			static::$current = static::$connections[$db];
 			return static::$current;
 		}
 

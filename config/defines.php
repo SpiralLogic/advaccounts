@@ -157,12 +157,12 @@
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
 
-	define('TYPE_BANK_ACCOUNTS' ,serialize(array(
+	define('TYPE_BANK_ACCOUNTS', serialize(array(
 			BT_TRANSFER => _("Savings Account"),
 			_("Chequing Account"),
 			_("Credit Account"),
 			_("Cash Account"))
-		));
+	));
 	global $systypes_array, $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
 				 $class_types, $quick_actions, $quick_entry_types, $stock_types, $tag_types, $security_areas, $security_sections;
 	$access_levels = Cache::get('access_levels');

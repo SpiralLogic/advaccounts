@@ -12,7 +12,7 @@
 
 	//	Add or update Sales Invoice
 	//
-	class Sales_Invoice implements IVoidable {
+	class Sales_Invoice  {
 		public static function add(&$invoice) {
 		$trans_no = $invoice->trans_no;
 		if (is_array($trans_no)) {
@@ -150,7 +150,7 @@
 		GL_Trans::add_balance(ST_SALESINVOICE, $invoice_no, $date_, -$total, PT_CUSTOMER, $invoice->customer_id);
 		DB_Comments::add(10, $invoice_no, $date_, $invoice->Comments);
 		if ($trans_no == 0) {
-			Ref::save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
+			Ref::save(ST_SALESINVOICE,  $invoice->reference);
 		}
 		DB::commit_transaction();
 		return $invoice_no;

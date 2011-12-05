@@ -97,6 +97,7 @@
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
+
 			try {
 				$prepared = $this->prepare($sql);
 				switch ($type) {

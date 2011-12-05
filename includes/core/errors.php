@@ -127,7 +127,8 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(Exception $e) {
-			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+			var_dump($e->getCode());
+				static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
 			if (static::$fatal) {
 				exit(static::format());
@@ -150,14 +151,16 @@
 				return '';
 			}
 			foreach (static::$messages as $msg) {
+				$type = E_USER_NOTICE;
 				if ($msg['type'] > E_USER_NOTICE) {
 					continue;
 				}
 				$str = $msg['message'];
+				$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 				if ($msg['type'] < E_USER_ERROR && $msg['type'] != null) {
-					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+
 					$type = E_USER_ERROR;
-				} else {
+				} elseif ($msg['type']>E_USER_ERROR && $msg['type']<E_USER_NOTICE) {
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
@@ -207,14 +210,9 @@
 				$str .= "sql that failed was : " . $sql_statement . "<br>";
 			}
 			$str .= "<br><br>";
-			if ($msg) {
-				//		trigger_error($str, E_USER_ERROR);
-			} else // $msg can be null here only in debug mode, otherwise the error is ignored
-			{
-				trigger_error($str, E_USER_WARNING);
-			}
+
 			if ($exit) {
-				throw new DB_Exception($str);
+				throw new DB_Exception($str,E_USER_ERROR);
 			}
 		}
 
@@ -277,7 +275,7 @@
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
 				}
-				elseif ($trace['file'] == COREPATH . 'classes/error.php')
+				elseif ($trace['file'] == COREPATH . 'error.php')
 				{
 					unset($data['backtrace'][$key]);
 				}

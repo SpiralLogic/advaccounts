@@ -39,7 +39,7 @@
 			if ($memo_) {
 				DB_Comments::add(ST_MANURECEIVE, $id, $date_, $memo_);
 			}
-			Ref::save(ST_MANURECEIVE, $id, $ref);
+			Ref::save(ST_MANURECEIVE,  $ref);
 			DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
 			DB::commit_transaction();
 		}

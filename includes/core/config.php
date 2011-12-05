@@ -43,6 +43,7 @@
 			}
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
+
 				static::load();
 			}
 			static::$_initialised = true;
