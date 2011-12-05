@@ -102,8 +102,8 @@
 				$this->date_ = Dates::sql2date($trans["tran_date"]);
 			}
 			else {
-				$this->person_id = Display::get_post($this->person_type ? 'supplier_id' : 'customer_id');
-				$this->date_ = Display::get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
+				$this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
+				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
 			}
 			/* Now populate the array of possible (and previous actual) allocations
 																		for this customer/supplier. First get the transactions that have
@@ -193,7 +193,7 @@
 						);
 					}
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-					Banking::exchange_variation(
+					Bank::exchange_variation(
 						$this->type, $this->trans_no,
 						$alloc_item->type, $alloc_item->type_no, $this->date_,
 						$alloc_item->current_allocated,
@@ -221,12 +221,12 @@
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
-				Display::start_table('tablestyle width60');
+				start_table('tablestyle width60');
 				$th = array(
 					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
 					_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
 				);
-				Display::table_header($th);
+				table_header($th);
 				foreach (
 					$_SESSION['alloc']->allocs as $alloc_item
 				)
@@ -253,7 +253,7 @@
 							Num::price_format($un_allocated), false
 						)
 					);
-					Display::end_row();
+					end_row();
 					$total_allocated += Validation::input_num('amount' . $counter);
 					$counter++;
 				}
@@ -282,7 +282,7 @@
 						3
 					);
 				}
-				Display::end_table(1);
+				end_table(1);
 			}
 			hidden('TotalNumberOfAllocs', $counter);
 		}
@@ -334,7 +334,7 @@
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->add_to_cart(0, 'MiscSale', '1',
-				Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
+				Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
 			 'Order: ' . $memo);
 			$doc->write(1);
 			Sales_Order::finish();
@@ -349,9 +349,9 @@
 				return;
 			}
 			Display::heading(_("Allocations"));
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
-			Display::table_header($th);
+			table_header($th);
 			$k = $total_allocated = 0;
 			while ($alloc_row = DB::fetch($alloc_result)) {
 				Display::alt_table_row_color($k);
@@ -364,19 +364,19 @@
 				//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
 				amount_cell($alloc_row['Total'] - $alloc_row['amt']);
 				amount_cell($alloc_row['amt']);
-				Display::end_row();
+				end_row();
 				$total_allocated += $alloc_row['amt'];
 			}
-			Display::start_row();
+			start_row();
 			label_cell(_("Total Allocated:"), "class=right colspan=5");
 			amount_cell($total_allocated);
-			Display::end_row();
-			Display::start_row();
+			end_row();
+			start_row();
 			label_cell(_("Left to Allocate:"), "class=right colspan=5");
 			$total = Num::round($total, User::price_dec());
 			amount_cell($total - $total_allocated);
-			Display::end_row();
-			Display::end_table(1);
+			end_row();
+			end_table(1);
 		}
 
 

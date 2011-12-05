@@ -34,7 +34,7 @@
 
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = Sales_Branch::get(Display::get_post('branch_id'));
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -221,16 +221,16 @@
 		handle_new_credit(0);
 	}
 
-	Display::start_form();
+	start_form();
 	hidden('cart_id');
 	$customer_error = Sales_Credit::header($_SESSION['Items']);
 	if ($customer_error == "") {
-		Display::start_table('tables_style2 width90 pad10');
+		start_table('tables_style2 width90 pad10');
 		echo "<tr><td>";
 		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
 		Sales_Credit::option_controls($_SESSION['Items']);
 		echo "</td></tr>";
-		Display::end_table();
+		end_table();
 	} else {
 		Errors::error($customer_error);
 	}
@@ -238,7 +238,7 @@
 	submit_cells('Update', _("Update"));
 	submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 	echo "</tr></table></div>";
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

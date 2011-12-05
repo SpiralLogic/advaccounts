@@ -84,7 +84,7 @@
 				$rep->title = _('DELIVERY NOTE');
 			}
 			$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
-			$result = Sales_Debtor_Trans::get(ST_CUSTDELIVERY, $i);
+			$result = Debtor_Trans::get(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
 			while ($myrow2 = DB::fetch($result))
 			{

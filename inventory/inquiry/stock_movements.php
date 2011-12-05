@@ -15,24 +15,24 @@
 	Page::start(_($help_context = "Inventory Item Movement"));
 
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	if (Display::get_post('ShowMoves')) {
+	if (get_post('ShowMoves')) {
 		$Ajax->activate('doc_tbl');
 	}
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
-	Display::start_form();
+	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	Display::start_table('tablestyle_noborder');
+	start_table('tablestyle_noborder');
 	Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
 	Inv_Location::cells(_("From Location:"), 'StockLocation', null);
 	date_cells(_("From:"), 'AfterDate', '', null, -30);
 	date_cells(_("To:"), 'BeforeDate');
 	submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
-	Display::end_table();
-	Display::end_form();
+	end_table();
+	end_form();
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
 	$after_date = Dates::date2sql($_POST['AfterDate']);
@@ -46,12 +46,12 @@
 	$result = DB::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	Display::div_start('doc_tbl');
-	Display::start_table('tablestyle');
+	start_table('tablestyle');
 	$th = array(
 		_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
-	Display::table_header($th);
+	table_header($th);
 	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
@@ -61,12 +61,12 @@
 	if (!isset($before_qty_row[0])) {
 		$after_qty = $before_qty = 0;
 	}
-	Display::start_row("class='inquirybg'");
+	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "class=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
 	$dec = Item::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
-	Display::end_row();
+	end_row();
 	$j = 1;
 	$k = 0; //row colour counter
 	$total_in = 0;
@@ -122,22 +122,22 @@
 		label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap class=right");
 		label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap class=right");
 		qty_cell($after_qty, false, $dec);
-		Display::end_row();
+		end_row();
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			Display::table_header($th);
+			table_header($th);
 		}
 		//end of page full new headings if
 	}
 	//end of while loop
-	Display::start_row("class='inquirybg'");
+	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</b>", "class=center colspan=5");
 	qty_cell($total_in, false, $dec);
 	qty_cell($total_out, false, $dec);
 	qty_cell($after_qty, false, $dec);
-	Display::end_row();
-	Display::end_table(1);
+	end_row();
+	end_table(1);
 	Display::div_end();
 	end_page();
 

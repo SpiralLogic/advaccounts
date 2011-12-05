@@ -52,7 +52,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -62,11 +62,11 @@
 		$sql .= " WHERE !inactive";
 	}
 	$result = DB::query($sql, "could not get areas");
-	Display::start_form();
-	Display::start_table('tablestyle width30');
+	start_form();
+	start_table('tablestyle width30');
 	$th = array(_("Area Name"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -74,13 +74,13 @@
 		inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
 		edit_button_cell("Edit" . $myrow["area_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["area_code"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	echo '<br>';
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
@@ -92,8 +92,8 @@
 		hidden("selected_id", $selected_id);
 	}
 	text_row_ex(_("Area Name:"), 'description', 30);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

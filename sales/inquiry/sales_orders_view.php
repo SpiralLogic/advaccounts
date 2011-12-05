@@ -26,7 +26,7 @@
 		$trans_type = ST_SALESQUOTE;
 	} elseif (isset($searchArray)) {
 		$trans_type = ST_SALESORDER;
-	} elseif (Display::get_post('type')) {
+	} elseif (get_post('type')) {
 		$trans_type = $_POST['type'];
 	} elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
 		$trans_type = ST_SALESQUOTE;
@@ -173,8 +173,8 @@
 
 	//	Order range form
 	//
-	if (Display::get_post('_OrderNumber_changed')) { // enable/disable selection controls
-		$disable = Display::get_post('OrderNumber') !== '';
+	if (get_post('_OrderNumber_changed')) { // enable/disable selection controls
+		$disable = get_post('OrderNumber') !== '';
 		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 			$Ajax->addDisable(true, 'OrdersToDate', $disable);
@@ -189,10 +189,10 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	Display::start_form();
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
-	Debtor_UI::select_cells(_("Customer: "), 'customer_id', null, true);
+	start_form();
+	start_table('tablestyle_noborder');
+	start_row();
+	Debtor_UI::cells(_("Customer: "), 'customer_id', null, true);
 	ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
 	if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 		ref_cells(_("Ref"), 'OrderReference', '', null, '', true);
@@ -207,8 +207,8 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('order_view_mode', $_POST['order_view_mode']);
 	hidden('type', $trans_type);
-	Display::end_row();
-	Display::end_table(1);
+	end_row();
+	end_table(1);
 
 	//	Orders inquiry table
 	//
@@ -360,6 +360,6 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	submit_center('Update', _("Update"), true, '', null);
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

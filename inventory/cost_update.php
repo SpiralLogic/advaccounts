@@ -53,7 +53,7 @@
 		$Ajax->activate('cost_table');
 	}
 
-	Display::start_form();
+	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -74,7 +74,7 @@
 	hidden("OldMaterialCost", $myrow["material_cost"]);
 	hidden("OldLabourCost", $myrow["labour_cost"]);
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	$dec1 = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
 	$_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);
@@ -87,10 +87,10 @@
 		hidden("labour_cost", 0);
 		hidden("overhead_cost", 0);
 	}
-	Display::end_table(1);
+	end_table(1);
 	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

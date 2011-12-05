@@ -31,10 +31,10 @@
 	function display_po_receive_items()
 		{
 			Display::div_start('grn_items');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total"));
-			Display::table_header($th);
+			table_header($th);
 			/*show the line items on the order with the quantity being received for modification */
 			$total = 0;
 			$k = 0; //row colour counter
@@ -66,14 +66,14 @@
 					amount_decimal_cell($ln_itm->price);
 					percent_cell($ln_itm->discount * 100);
 					amount_cell($line_total);
-					Display::end_row();
+					end_row();
 				}
 			}
 			label_cell(_("Freight"), "colspan=9 class=right");
 			small_amount_cells(null, 'freight', Num::price_format($_SESSION['PO']->freight));
 			$display_total = Num::format($total + $_POST['freight'], User::price_dec());
 			label_row(_("Total value of items received"), $display_total, "colspan=9 class=right", "nowrap class=right");
-			Display::end_table();
+			end_table();
 			Display::div_end();
 		}
 
@@ -219,7 +219,7 @@
 		process_receive_po();
 	}
 
-	Display::start_form();
+	start_form();
 	Purch_GRN::display($_SESSION['PO'], true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
@@ -228,7 +228,7 @@
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
-	Display::end_form();
+	end_form();
 
 	end_page();
 ?>

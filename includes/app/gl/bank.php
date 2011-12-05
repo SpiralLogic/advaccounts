@@ -13,7 +13,7 @@ class GL_Bank {
 	protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
 																	$currency, $person_type_id = null, $person_id = "")
 	{
-		if (Banking::is_company_currency($currency)) {
+		if (Bank_Currency::is_company($currency)) {
 			return;
 		}
 		if ($date_ == null) {
@@ -34,7 +34,7 @@ class GL_Bank {
 			if ($row['for_amount'] == 0) {
 				continue;
 			}
-			$rate = Banking::get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
+			$rate = Bank_Currency::exchange_rate_from_home($row['bank_curr_code'], $date_);
 			$for_amount += Num::round($row['for_amount'] * $rate, User::price_dec());
 		}
 		$amount = GL_Trans::get_from_to("", $date_, $account);
@@ -68,7 +68,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 	{
 		DB::begin_transaction();
 		$trans_type = ST_BANKTRANSFER;
-		$currency = Banking::get_bank_account_currency($from_account);
+		$currency = Bank_Currency::for_company($from_account);
 		$trans_no = SysTypes::get_next_trans_no($trans_type);
 		$from_gl_account = Bank_Account::get_gl($from_account);
 		$to_gl_account = Bank_Account::get_gl($to_account);
@@ -96,7 +96,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		Bank_Trans::add($trans_type, $trans_no, $to_account, $ref,
 			$date_, $amount, PT_MISC, "",
 			$currency, "Cannot insert a destination bank transaction");
-		$currency = Banking::get_bank_account_currency($to_account);
+		$currency = Bank_Currency::for_company($to_account);
 		static::add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, "");
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
@@ -127,14 +127,14 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		if ($use_transaction) {
 			DB::begin_transaction();
 		}
-		$currency = Banking::get_bank_account_currency($from_account);
+		$currency = Bank_Currency::for_company($from_account);
 		$bank_gl_account = Bank_Account::get_gl($from_account);
 		// the gl items are already inversed/negated for type 2 (deposit)
 		$total_amount = $items->gl_items_total();
 		if ($person_type_id == PT_CUSTOMER) {
 			// we need to add a customer transaction record
 			// convert to customer currency
-			$cust_amount = Banking::exchange_from_to($total_amount, $currency, Banking::get_customer_currency($person_id), $date_);
+			$cust_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_debtor($person_id), $date_);
 			// we need to negate it too
 			$cust_amount = -$cust_amount;
 			$trans_no = Sales_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_,
@@ -144,7 +144,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		{
 			// we need to add a supplier transaction record
 			// convert to supp currency
-			$supp_amount = Banking::exchange_from_to($total_amount, $currency, Banking::get_supplier_currency($person_id), $date_);
+			$supp_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
 			// we need to negate it too
 			$supp_amount = -$supp_amount;
 			$trans_no = Purch_Trans::add($trans_type, $person_id, $date_, '',
@@ -162,7 +162,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 		$total = 0;
 		foreach ($items->gl_items as $gl_item)
 		{
-			$is_bank_to = Banking::is_bank_account($gl_item->code_id);
+			$is_bank_to = Bank_Account::is($gl_item->code_id);
 			if ($trans_type == ST_BANKPAYMENT AND $is_bank_to) {
 				// we don't allow payments to go to a bank account. use transfer for this !
 				Errors::show_db_error("invalid payment entered. Cannot pay to another bank account", "");
@@ -183,7 +183,7 @@ public static	function add_bank_transfer($from_account, $to_account, $date_,
 			}
 			// store tax details if the gl account is a tax account
 			$amount = $gl_item->amount;
-			$ex_rate = Banking::get_exchange_rate_from_home_currency($currency, $date_);
+			$ex_rate = Bank_Currency::exchange_rate_from_home($currency, $date_);
 			GL_Trans::add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
 				$ex_rate, $date_, $memo_);
 		}

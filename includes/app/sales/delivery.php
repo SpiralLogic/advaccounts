@@ -21,7 +21,7 @@
 			$trans_no = key($trans_no);
 		}
 		DB::begin_transaction();
-		$customer = Sales_Debtor::get($delivery->customer_id);
+		$customer = Debtor::get($delivery->customer_id);
 		$delivery_items_total = $delivery->get_items_total_dispatch();
 		$freight_tax = $delivery->get_shipping_tax();
 		// mark sales order for concurrency conflicts check
@@ -52,17 +52,17 @@
 		}
 		foreach ($delivery->line_items as $line_no => $delivery_line) {
 			$line_price = $delivery_line->line_price();
-			$line_taxfree_price = Taxes::get_tax_free_price_for_item($delivery_line->stock_id,
+			$line_taxfree_price = Tax::tax_free_price($delivery_line->stock_id,
 																															 $delivery_line->price, 0, $delivery->tax_included,
 																															 $delivery->tax_group_array);
-			$line_tax = Taxes::get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
+			$line_tax = Tax::full_price_for_item($delivery_line->stock_id, $delivery_line->price,
 																								 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 			if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
 			{
 				$delivery_line->standard_cost = Item_Price::get_standard_cost($delivery_line->stock_id);
 			}
 			/* add delivery details for all lines */
-			Sales_Debtor_Trans::add(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
+			Debtor_Trans::add(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 																			 $delivery_line->description, $delivery_line->qty_dispatched,
 																			 $delivery_line->line_price(), $line_tax,
 																			 $delivery_line->discount_percent, $delivery_line->standard_cost,
@@ -115,7 +115,7 @@
 		// taxes - this is for printing purposes
 		foreach ($taxes as $taxitem) {
 			if ($taxitem['Net'] != 0) {
-				$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($delivery->customer_id), $delivery->document_date);
+				$ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($delivery->customer_id), $delivery->document_date);
 				GL_Trans::add_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
 															$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference);
@@ -135,7 +135,7 @@
 		DB::begin_transaction();
 		GL_Trans::void($type, $type_no, true);
 		// reverse all the changes in the sales order
-		$items_result = Sales_Debtor_Trans::get($type, $type_no);
+		$items_result = Debtor_Trans::get($type, $type_no);
 		$order = Sales_Trans::get_order($type, $type_no);
 		if ($order) {
 			$order_items = Sales_Order::get_details($order, ST_SALESORDER);
@@ -145,7 +145,7 @@
 			}
 		}
 		// clear details after they've been reversed in the sales order
-		Sales_Debtor_Trans::void($type, $type_no);
+		Debtor_Trans::void($type, $type_no);
 		GL_Trans::void_tax_details($type, $type_no);
 		Sales_Allocation::void($type, $type_no);
 		// do this last because other voidings can depend on it

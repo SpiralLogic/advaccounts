@@ -17,14 +17,14 @@
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
 
-	Display::start_form();
+	start_form();
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_table('tablestyle_noborder');
+	start_row();
 	ref_cells(_("Ref"), 'reference', '', null, '', true);
-	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, true);
+	Debtor_UI::cells(_("Select a customer: "), 'customer_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
 	if (!isset($_POST['filterType'])) {
@@ -32,8 +32,8 @@
 	}
 	Debtor_UI::allocations_select(null, 'filterType', $_POST['filterType'], true);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	Session::i()->global_customer = $_POST['customer_id'];
 
 	function display_customer_summary($customer_record)
@@ -46,10 +46,10 @@
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
-			Display::table_header($th);
-			Display::start_row();
+			table_header($th);
+			start_row();
 			label_cell($customer_record["curr_code"]);
 			label_cell($customer_record["terms"]);
 			amount_cell($customer_record["Balance"] - $customer_record["Due"]);
@@ -57,19 +57,19 @@
 			amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
 			amount_cell($customer_record["Overdue2"]);
 			amount_cell($customer_record["Balance"]);
-			Display::end_row();
-			Display::end_table();
+			end_row();
+			end_table();
 		}
 
 
 	Display::div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
-		$customer_record = Sales_Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
+		$customer_record = Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
 		display_customer_summary($customer_record);
 		echo "<br>";
 	}
 	Display::div_end();
-	if (Display::get_post('RefreshInquiry')) {
+	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
 
@@ -309,7 +309,7 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	UI::emailDialogue('c');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

@@ -97,7 +97,7 @@
 				$pager->columns as $num_col => $col
 			) {
 				// record status control column is displayed only when control checkbox is on
-				if (isset($col['head']) && ($col['type'] != 'inactive' || Display::get_post('show_inactive'))) {
+				if (isset($col['head']) && ($col['type'] != 'inactive' || get_post('show_inactive'))) {
 					if (!isset($col['ord'])) {
 						$headers[] = $col['head'];
 					}
@@ -114,10 +114,10 @@
 				}
 			}
 			/* show a table of records returned by the sql */
-			Display::start_table('tablestyle width'.$pager->width);
-			Display::table_header($headers);
+			start_table('tablestyle width'.$pager->width);
+			table_header($headers);
 			if ($pager->header_fun) { // if set header handler
-				Display::start_row("class='{$pager->header_class}'");
+				start_row("class='{$pager->header_class}'");
 				$fun = $pager->header_fun;
 				if (method_exists($pager, $fun)) {
 					$h = $pager->$fun($pager);
@@ -130,7 +130,7 @@
 					$pars = isset($c[1]) ? $c[1] : '';
 					label_cell($c[0], $pars);
 				}
-				Display::end_row();
+				end_row();
 			}
 			$cc = 0; //row colour counter
 			foreach (
@@ -138,7 +138,7 @@
 			) {
 				$marker = $pager->marker;
 				if ($marker && call_user_func($marker, $row)) {
-					Display::start_row("class='$pager->marker_class'");
+					start_row("class='$pager->marker_class'");
 				} else {
 					Display::alt_table_row_color($cc);
 				}
@@ -198,7 +198,7 @@
 							label_cell(Num::format($cell, User::exrate_dec()), "class=center");
 							break;
 						case 'inactive':
-							if (Display::get_post('show_inactive')) {
+							if (get_post('show_inactive')) {
 								$pager->inactive_control_cell($row);
 							}
 							break;
@@ -219,11 +219,11 @@
 						case 'skip': // column not displayed
 					}
 				}
-				Display::end_row();
+				end_row();
 			}
 			//end of while loop
 			if ($pager->footer_fun) { // if set footer handler
-				Display::start_row("class='{$pager->footer_class}'");
+				start_row("class='{$pager->footer_class}'");
 				$fun = $pager->footer_fun;
 				if (method_exists($pager, $fun)) {
 					$h = $pager->$fun($pager);
@@ -236,9 +236,9 @@
 					$pars = isset($c[1]) ? $c[1] : '';
 					label_cell($c[0], $pars);
 				}
-				Display::end_row();
+				end_row();
 			}
-			Display::start_row("class='navibar'");
+			start_row("class='navibar'");
 			$colspan = count($pager->columns);
 			$inact = @$pager->inactive_ctrl == true
 			 ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
@@ -246,8 +246,8 @@
 				echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
 				echo "<div style='float:right;'>";
 				$but_pref = $pager->name . '_page_';
-				Display::start_table();
-				Display::start_row();
+				start_table();
+				start_row();
 				if (@$pager->inactive_ctrl) {
 					submit('Update', _('Update'), true, '', null);
 				} // inactive update
@@ -255,8 +255,8 @@
 				echo static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page, 'right');
 				echo static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page, 'right');
 				echo static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page, 'right');
-				Display::end_row();
-				Display::end_table();
+				end_row();
+				end_table();
 				echo "</div>";
 				$from = ($pager->curr_page - 1) * $pager->page_len + 1;
 				$to = $from + $pager->page_len - 1;
@@ -270,8 +270,8 @@
 			} else {
 				label_cell(_('No records') . $inact, "colspan=$colspan class='navibar'");
 			}
-			Display::end_row();
-			Display::end_table();
+			end_row();
+			end_table();
 			if (isset($pager->marker_txt)) {
 				Errors::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
 			}
@@ -469,8 +469,8 @@
 				$value = $row['inactive'] ? 1 : 0;
 				if (check_value('show_inactive')) {
 					if (isset($_POST['LInact'][$id])
-					 && (Display::get_post('_Inactive' . $id . '_update')
-						|| Display::get_post('Update'))
+					 && (get_post('_Inactive' . $id . '_update')
+						|| get_post('Update'))
 					 && (check_value('Inactive' . $id) != $value)
 					) {
 						DB::update_record_status($id, !$value, $table, $key);

@@ -77,7 +77,7 @@
 
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = Sales_Branch::get(Display::get_post('branch_id'));
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -242,12 +242,12 @@
 
 	function can_process()
 		{
-			if (!Display::get_post('customer_id')) {
+			if (!get_post('customer_id')) {
 				Errors::error(_("There is no customer selected."));
 				JS::set_focus('customer_id');
 				return false;
 			}
-			if (!Display::get_post('branch_id')) {
+			if (!get_post('branch_id')) {
 				Errors::error(_("This customer has no branch defined."));
 				JS::set_focus('branch_id');
 				return false;
@@ -576,19 +576,19 @@
 		$porder = _("Place Order");
 		$corder = _("Commit Order Changes");
 	}
-	Display::start_form();
+	start_form();
 	hidden('cart_id');
 	$customer_error = (!Input::session('Items')) ? _("There is no order currently being edited") :
 	 Sales_Order::header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		Display::start_table('tablesstyle pad10');
+		start_table('tablesstyle pad10');
 		echo "<tr><td>";
 	 Sales_Order::summary($orderitems, $_SESSION['Items'], true);
 		echo "</td></tr>";
 		echo "<tr><td>";
 		Sales_Order::display_delivery_details($_SESSION['Items']);
 		echo "</td></tr>";
-		Display::end_table(1);
+		end_table(1);
 		if ($_SESSION['Items']->trans_no == 0) {
 			submit_center_first('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 		} else {
@@ -603,7 +603,7 @@
 	} else {
 		Errors::error($customer_error);
 	}
-	Display::end_form();
+	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Debtor::addEditDialog();
 	Item::addEditDialog();

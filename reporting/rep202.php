@@ -158,7 +158,7 @@
 					continue;
 				}
 				if ($convert) {
-					$rate = Banking::get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+					$rate = Bank_Currency::exchange_rate_from_home($myrow['curr_code'], $to);
 				}
 				else {
 					$rate = 1.0;

@@ -118,19 +118,19 @@
 			} else {
 				Display::heading(_("Balance for this Dimension"));
 				Display::br();
-				Display::start_table('tablestyle');
+				start_table('tablestyle');
 				$th = array(_("Account"), _("Debit"), _("Credit"));
-				Display::table_header($th);
+				table_header($th);
 				$total = $k = 0;
 				while ($myrow = DB::fetch($result))
 				{
 					Display::alt_table_row_color($k);
 					label_cell($myrow["account"] . " " . $myrow['account_name']);
-					Display::debit_or_credit_cells($myrow["amt"]);
+					debit_or_credit_cells($myrow["amt"]);
 					$total += $myrow["amt"];
-					Display::end_row();
+					end_row();
 				}
-				Display::start_row();
+				start_row();
 				label_cell("<b>" . _("Balance") . "</b>");
 				if ($total >= 0) {
 					amount_cell($total, true);
@@ -139,8 +139,8 @@
 					label_cell("");
 					amount_cell(abs($total), true);
 				}
-				Display::end_row();
-				Display::end_table();
+				end_row();
+				end_table();
 			}
 		}
 
@@ -156,10 +156,10 @@
 			if ($showtype) {
 				$options['where'][] = "type_=$showtype";
 			}
-			return combo_input($name, $selected_id, $sql, 'id', 'ref', $options);
+			return select_box($name, $selected_id, $sql, 'id', 'ref', $options);
 		}
 
-		public static function select_cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
+		public static function cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -170,7 +170,7 @@
 
 		public static function select_row($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
-			Dimensions::select_cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
+			Dimensions::cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
 			echo "</tr>\n";
 		}
 

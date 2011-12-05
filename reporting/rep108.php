@@ -94,7 +94,7 @@
 			while ($myrow = DB::fetch($result)) {
 				$date = date('Y-m-d');
 				$myrow['order_'] = "";
-				$CustomerRecord = Sales_Debtor::get_details($myrow['debtor_no']);
+				$CustomerRecord = Debtor::get_details($myrow['debtor_no']);
 				if (round($CustomerRecord["Balance"], 2) == 0) {
 					continue;
 				}

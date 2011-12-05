@@ -52,7 +52,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		if ($sav) {
 			$_POST['show_inactive'] = 1;
@@ -65,11 +65,11 @@
 	}
 	$sql .= " ORDER BY description";
 	$result = DB::query($sql, "could not get groups");
-	Display::start_form();
-	Display::start_table('tablestyle width30');
+	start_form();
+	start_table('tablestyle width30');
 	$th = array(_("Group Name"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -77,13 +77,13 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	echo '<br>';
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
@@ -95,8 +95,8 @@
 		hidden("selected_id", $selected_id);
 	}
 	text_row_ex(_("Group Name:"), 'description', 30);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

@@ -19,7 +19,7 @@
 		global $Mode2, $selected_id2;
 		$Ajax = Ajax::i();
 		$default = $numeric_id ? -1 : '';
-		$selected_id2 = Display::get_post('selected_id2', $default);
+		$selected_id2 = get_post('selected_id2', $default);
 		foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
 			if (isset($_POST[$m])) {
 				$Ajax->activate('_page_body');
@@ -125,10 +125,10 @@
 	}
 
 	$result = GL_QuickEntry::get_all();
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(_("Description"), _("Type"), "", "");
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -137,13 +137,13 @@
 		label_cell($type_text);
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table(1);
-	Display::end_form();
+	end_table(1);
+	end_form();
 
-	Display::start_form();
-	Display::start_table('tablestyle2');
+	start_form();
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//if ($Mode == 'Edit')
 		//{
@@ -161,14 +161,14 @@
 	GL_QuickEntry::types(_("Entry Type") . ':', 'type');
 	text_row_ex(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
 	amount_row(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	if ($selected_id != -1) {
 		Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 		$result = GL_QuickEntry::get_lines($selected_id);
-		Display::start_form();
-		Display::start_table('tablestyle2');
+		start_form();
+		start_table('tablestyle2');
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension") . " 2", "", "");
@@ -177,7 +177,7 @@
 		} else {
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
 		}
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result)) {
 			Display::alt_table_row_color($k);
@@ -203,17 +203,17 @@
 			}
 			edit_button_cell("BEd" . $myrow["id"], _("Edit"));
 			delete_button_cell("BDel" . $myrow["id"], _("Delete"));
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table(1);
+		end_table(1);
 		hidden('selected_id', $selected_id);
 		hidden('selected_id2', $selected_id2);
 		hidden('description', $_POST['description']);
 		hidden('type', $_POST['type']);
-		Display::end_form();
-		Display::start_form();
+		end_form();
+		start_form();
 		Display::div_start('edit_line');
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id2 != -1) {
 			if ($Mode2 == 'BEd') {
 				//editing an existing status code
@@ -250,7 +250,7 @@
 		if ($dim > 1) {
 			Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
 		}
-		Display::end_table(1);
+		end_table(1);
 		if ($dim < 2) {
 			hidden('dimension2_id', 0);
 		}
@@ -263,7 +263,7 @@
 		hidden('description', $_POST['description']);
 		hidden('type', $_POST['type']);
 		submit_add_or_update_center2($selected_id2 == -1, '', true);
-		Display::end_form();
+		end_form();
 	}
 
 	end_page();

@@ -270,11 +270,11 @@
 			if ($type != null) {
 				$sql .= " WHERE type=$type";
 			}
-			return combo_input($name, $selected_id, $sql, 'id', 'description', array(
+			return select_box($name, $selected_id, $sql, 'id', 'description', array(
 																																							'spec_id' => '', 'order' => 'description', 'select_submit' => $submit_on_change, 'async' => false));
 		}
 
-		public static function  select_cells($label, $name, $selected_id = null, $type, $submit_on_change = false) {
+		public static function  cells($label, $name, $selected_id = null, $type, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -283,9 +283,9 @@
 			echo "</td>";
 		}
 
-		public static function  select_row($label, $name, $selected_id = null, $type, $submit_on_change = false) {
+		public static function  row($label, $name, $selected_id = null, $type, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
-			GL_QuickEntry::select_cells(null, $name, $selected_id, $type, $submit_on_change);
+			GL_QuickEntry::cells(null, $name, $selected_id, $type, $submit_on_change);
 			echo "</tr>\n";
 		}
 

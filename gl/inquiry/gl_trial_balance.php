@@ -16,27 +16,27 @@
 
 	// Ajax updates
 	//
-	if (Display::get_post('Show')) {
+	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
 	function gl_inquiry_controls()
 	{
-		Display::start_form();
-		Display::start_table('tablestyle_noborder');
+		start_form();
+		start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		check_cells(_("No zero values"), 'NoZero', null);
 		check_cells(_("Only balances"), 'Balance', null);
 		submit_cells('Show', _("Show"), '', '', 'default');
-		Display::end_table();
-		Display::end_form();
+		end_table();
+		end_form();
 	}
 
 
 	function display_trial_balance()
 	{
 		Display::div_start('balance_tbl');
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$tableheader
 		 = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
@@ -76,9 +76,9 @@
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
-				Display::debit_or_credit_cells($prev['balance']);
-				Display::debit_or_credit_cells($curr['balance']);
-				Display::debit_or_credit_cells($tot['balance']);
+				debit_or_credit_cells($prev['balance']);
+				debit_or_credit_cells($curr['balance']);
+				debit_or_credit_cells($tot['balance']);
 } else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
@@ -96,13 +96,13 @@
 			$pbal += $prev['balance'];
 			$cbal += $curr['balance'];
 			$tbal += $tot['balance'];
-			Display::end_row();
+			end_row();
 		}
 		//$prev = GL_Trans::get_balance(null, $begin, $_POST['TransFromDate'], false, false);
 		//$curr = GL_Trans::get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		//$tot = GL_Trans::get_balance(null, $begin, $_POST['TransToDate'], false, true);
 		if (!check_value('Balance')) {
-			Display::start_row("class='inquirybg' style='font-weight:bold'");
+			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_("Total") . " - " . $_POST['TransToDate'], "colspan=2");
 			amount_cell($pdeb);
 			amount_cell($pcre);
@@ -110,15 +110,15 @@
 			amount_cell($ccre);
 			amount_cell($tdeb);
 			amount_cell($tcre);
-			Display::end_row();
+			end_row();
 		}
-		Display::start_row("class='inquirybg' style='font-weight:bold'");
+		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
-		Display::debit_or_credit_cells($pbal);
-		Display::debit_or_credit_cells($cbal);
-		Display::debit_or_credit_cells($tbal);
-		Display::end_row();
-		Display::end_table(1);
+		debit_or_credit_cells($pbal);
+		debit_or_credit_cells($cbal);
+		debit_or_credit_cells($tbal);
+		end_row();
+		end_table(1);
 		Display::div_end();
 	}
 

@@ -59,7 +59,7 @@
 				echo "<td class='label'>$label</td>\n";
 			}
 			echo "<td>";
-			echo combo_input($name, $selected_id, $sql, 'id', 'pos_name', array(
+			echo select_box($name, $selected_id, $sql, 'id', 'pos_name', array(
 																																				 'select_submit' => $submit_on_change, 'async' => true, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')));
 			echo "</td></tr>\n";
 		}

@@ -138,15 +138,15 @@
 	}
 	Validation::check(Validation::SALES_TYPES,
 		_("There are no sales types defined. Please define at least one sales type before adding a customer."));
-	Display::start_form();
+	start_form();
 	if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
-		Display::start_table('tablestyle_noborder');
-		Display::start_row();
-		Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+		start_table('tablestyle_noborder');
+		start_row();
+		Debtor_UI::cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
-		Display::end_row();
-		Display::end_table();
-		if (Display::get_post('_show_inactive_update')) {
+		end_row();
+		end_table();
+		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('customer_id');
 			JS::set_focus('customer_id');
 		}
@@ -159,7 +159,7 @@
 		$_POST['dimension2_id'] = 0;
 		$_POST['sales_type'] = -1;
 		$_POST['email'] = '';
-		$_POST['curr_code'] = Banking::get_company_currency();
+		$_POST['curr_code'] = Bank_Currency::for_company();
 		$_POST['credit_status'] = -1;
 		$_POST['payment_terms'] = $_POST['notes'] = '';
 		$_POST['discount'] = $_POST['pymt_discount'] = Num::percent_format(0);
@@ -186,9 +186,9 @@
 		$_POST['notes'] = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
 	}
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
-	Display::table_section_title(_("Name and Address"));
+	start_outer_table('tablestyle2');
+	table_section(1);
+	table_section_title(_("Name and Address"));
 	text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
 	text_row(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
 	textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
@@ -201,8 +201,8 @@
 		hidden('curr_code', $_POST['curr_code']);
 	}
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
-	Display::table_section(2);
-	Display::table_section_title(_("Sales"));
+	table_section(2);
+	table_section_title(_("Sales"));
 	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
@@ -222,26 +222,26 @@
 		hidden('dimension2_id', 0);
 	}
 	if (!$new_customer) {
-		Display::start_row();
+		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
 		Display::link_params_td("/sales/manage/customer_branches.php",
 		 '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
 		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
-		Display::end_row();
+		end_row();
 	}
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	record_status_list_row(_("Customer status:"), 'inactive');
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	Display::div_start('controls');
 	if ($new_customer) {
 		submit_center('submit', _("Add New Customer"), true, '', 'default');
 	} else {
 		submit_center_first('submit', _("Update Customer"), _('Update customer data'), Input::request('popup') ? true : 'default');
-		submit_return('select', Display::get_post('customer_id'), _("Select this customer and return to document entry."));
+		submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
 	}
 	Display::div_end();
 	hidden('popup', Input::request('popup'));
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

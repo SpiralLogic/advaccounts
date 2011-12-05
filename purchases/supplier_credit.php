@@ -72,7 +72,7 @@
 				$input_error = true;
 			}
 		}
-		if (!Tax_Types::is_tax_gl_unique(Display::get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
 			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
@@ -217,7 +217,7 @@
 		$Ajax->activate('inv_tot');
 	}
 
-	Display::start_form();
+	start_form();
 	Purch_Invoice::header(Purch_Trans::i());
 	if ($_POST['supplier_id'] == '') {
 		Errors::error('No supplier found for entered search text');
@@ -232,12 +232,12 @@
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
-	if (Display::get_post('AddGLCodeToTrans')) {
+	if (get_post('AddGLCodeToTrans')) {
 		$Ajax->activate('inv_tot');
 	}
 	Display::br();
 	submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
 	Display::br();
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

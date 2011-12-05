@@ -25,13 +25,13 @@
 		$_POST['stock_id'] = $_GET['Item'];
 	}
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = Banking::get_company_currency();
+		$_POST['curr_abrev'] = Bank_Currency::for_company();
 	}
 
 	if (Input::request('frame')) {
-		Display::start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
+		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
-		Display::start_form();
+		start_form();
 	}
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -87,12 +87,12 @@
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
 	Display::div_start('price_table');
 	if (Input::request('frame')) {
-		Display::start_table('tablestyle width90');
+		start_table('tablestyle width90');
 	} else {
-		Display::start_table('tablestyle width30');
+		start_table('tablestyle width30');
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
 	while ($myrow = DB::fetch($prices_list)) {
@@ -102,9 +102,9 @@
 		amount_cell($myrow["price"]);
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table();
+	end_table();
 	if (DB::num_rows($prices_list) == 0) {
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
@@ -122,22 +122,22 @@
 	}
 	hidden('selected_id', $selected_id);
 	Display::div_start('price_details');
-	Display::start_table('tableinfo');
+	start_table('tableinfo');
 	GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
 	Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(Item_Price::get_kit(Display::get_post('stock_id'), Display::get_post('curr_abrev'),
-			Display::get_post('sales_type_id')));
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
+			get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
-	Display::end_table(1);
+	end_table(1);
 	if ($calculated) {
 		Errors::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	Display::div_end();
-	Display::end_form();
+	end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

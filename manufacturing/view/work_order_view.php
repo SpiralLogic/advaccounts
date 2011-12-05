@@ -20,18 +20,18 @@
 	}
 	Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 	Display::br(1);
-	$myrow = WO_WorkOrder::get($woid);
+	$myrow = WO::get($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		WO_Cost::display($woid, true);
 	} else {
-		WO_Cost::display_quick($woid, true);
+		WO_Quick::display($woid, true);
 	}
 	echo "<div class='center'>";
 	// display the WO requirements
 	Display::br(1);
 	if ($myrow["released"] == false) {
 		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
-		Manufacturing::display_bom($myrow["stock_id"]);
+		WO::display_bom($myrow["stock_id"]);
 	} else {
 		Display::heading(_("Work Order Requirements"));
 		WO_Requirements::display($woid, $myrow["units_reqd"]);

@@ -17,7 +17,7 @@
 			global $Mode, $selected_id;
 			$Ajax = Ajax::i();
 			$default = $numeric_id ? -1 : '';
-			$selected_id = Display::get_post('selected_id', $default);
+			$selected_id = get_post('selected_id', $default);
 			foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
 				if (isset($_POST[$m])) {
 					$Ajax->activate('_page_body');
@@ -144,7 +144,7 @@
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(Display::set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
-			JS::beforeload("_focus = '" . Display::get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
+			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
 			User::add_js_data();
 			if ($rend->has_header) {
 				Sidemenu::render();

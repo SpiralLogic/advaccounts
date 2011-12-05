@@ -200,7 +200,7 @@
 
 	function can_commit()
 		{
-			if (!Display::get_post('supplier_id')) {
+			if (!get_post('supplier_id')) {
 				Errors::error(_("There is no supplier selected."));
 				JS::set_focus('supplier_id');
 				return false;
@@ -210,7 +210,7 @@
 				JS::set_focus('OrderDate');
 				return false;
 			}
-			if (Display::get_post('delivery_address') == '') {
+			if (get_post('delivery_address') == '') {
 				Errors::error(_("There is no delivery address specified."));
 				JS::set_focus('delivery_address');
 				return false;
@@ -220,7 +220,7 @@
 				JS::set_focus('freight');
 				return false;
 			}
-			if (Display::get_post('StkLocation') == '') {
+			if (get_post('StkLocation') == '') {
 				Errors::error(_("There is no location specified to move any items into."));
 				JS::set_focus('StkLocation');
 				return false;
@@ -230,13 +230,13 @@
 				return false;
 			}
 			if (!$_SESSION['PO']->order_no) {
-				if (!Ref::is_valid(Display::get_post('ref'))) {
+				if (!Ref::is_valid(get_post('ref'))) {
 					Errors::error(_("There is no reference entered for this purchase order."));
 					JS::set_focus('ref');
 					return false;
 				}
 				while (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
-					//            if (!Ref::is_new(Display::get_post('ref'), ST_PURCHORDER)) {
+					//            if (!Ref::is_new(get_post('ref'), ST_PURCHORDER)) {
 					//Errors::error(_("The entered reference is already in use."));
 					//JS::set_focus('ref');
 					//return false;
@@ -344,7 +344,7 @@
 		}
 	}
 
-	Display::start_form();
+	start_form();
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
 <div class='center'>
@@ -354,9 +354,9 @@
 	Purch_Order::header($_SESSION['PO']);
 	echo "<br>";
 	Purch_Order::display_items($_SESSION['PO']);
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
-	Display::end_table(1);
+	end_table(1);
 	Display::div_start('controls', 'items_table');
 	if ($_SESSION['PO']->order_has_items()) {
 		submit_center_first('CancelOrder', _("Delete This Order"));
@@ -371,7 +371,7 @@
 	}
 	Display::div_end();
 
-	Display::end_form();
+	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();
 	if (isset($_SESSION['PO']->supplier_id)) {

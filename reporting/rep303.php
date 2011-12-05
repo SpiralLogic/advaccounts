@@ -144,11 +144,11 @@
 					$loc_code = $location;
 				}
 				$demandqty = Item::get_demand($trans['stock_id'], $loc_code);
-				$demandqty += Manufacturing::get_demand_asm_qty($trans['stock_id'], $loc_code);
-				$onorder = Manufacturing::get_on_porder_qty($trans['stock_id'], $loc_code);
-				$flag = Manufacturing::get_mb_flag($trans['stock_id']);
+				$demandqty += WO::get_demand_asm_qty($trans['stock_id'], $loc_code);
+				$onorder = WO::get_on_porder_qty($trans['stock_id'], $loc_code);
+				$flag = WO::get_mb_flag($trans['stock_id']);
 				if ($flag == STOCK_MANUFACTURE) {
-					$onorder += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
+					$onorder += WO::get_on_worder_qty($trans['stock_id'], $loc_code);
 				}
 				if ($no_zeros && $trans['QtyOnHand'] == 0 && $demandqty == 0 && $onorder == 0) {
 					continue;

@@ -66,22 +66,22 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Sales_Type::get_all(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle width30');
+	start_form();
+	start_table('tablestyle width30');
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	$base_sales = DB_Company::get_base_sales_type();
 	while ($myrow = DB::fetch($result)) {
 		if ($myrow["id"] == $base_sales) {
-			Display::start_row("class='overduebg'");
+			start_row("class='overduebg'");
 		} else {
 			Display::alt_table_row_color($k);
 		}
@@ -95,10 +95,10 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	Errors::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 
 	if (!isset($_POST['tax_included'])) {
@@ -107,7 +107,7 @@
 	if (!isset($_POST['base'])) {
 		$_POST['base'] = 0;
 	}
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Type::get($selected_id);
@@ -122,9 +122,9 @@
 	text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
 	amount_row(_("Calculation factor") . ':', 'factor', null, null, null, 4);
 	check_row(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

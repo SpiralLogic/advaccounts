@@ -13,12 +13,12 @@
 	{
 		public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
 			DB::begin_transaction();
-			$details = WO_WorkOrder::get($woid);
+			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
 				echo _("The order number sent is not valid.");
 				exit;
 			}
-			if (WO_WorkOrder::is_closed($woid)) {
+			if (WO::is_closed($woid)) {
 				Errors::error("UNEXPECTED : Producing Items for a closed Work Order");
 				DB::cancel_transaction();
 				exit;
@@ -35,7 +35,7 @@
 			// negative means "unproduce" or unassemble
 			Inv_Movement::add(ST_MANURECEIVE, $details["stock_id"], $id, $details["loc_code"], $date_, $memo_, $quantity, 0);
 			// update wo quantity and close wo if requested
-			WO_WorkOrder::update_finished_quantity($woid, $quantity, $close_wo);
+			WO::update_finished_quantity($woid, $quantity, $close_wo);
 			if ($memo_) {
 				DB_Comments::add(ST_MANURECEIVE, $id, $date_, $memo_);
 			}
@@ -69,7 +69,7 @@
 			DB::begin_transaction();
 			$row = WO_Produce::get($type_no);
 			// deduct the quantity of this production from the parent work order
-			WO_WorkOrder::update_finished_quantity($row["workorder_id"], -$row["quantity"]);
+			WO::update_finished_quantity($row["workorder_id"], -$row["quantity"]);
 			WO_Quick::costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sql2date($row['date_']), $type_no);
 			// clear the production record
 			$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
@@ -81,14 +81,14 @@
 			DB::commit_transaction();
 		}
 
-		function display($woid) {
+		public static function display($woid) {
 			$result = WO_Produce::get_all($woid);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Productions for this Order."), 1, 1);
 			} else {
-				Display::start_table('tablestyle');
+				start_table('tablestyle');
 				$th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
-				Display::table_header($th);
+				table_header($th);
 				$k = 0; //row colour counter
 				$total_qty = 0;
 				while ($myrow = DB::fetch($result)) {
@@ -98,11 +98,11 @@
 					label_cell($myrow['reference']);
 					label_cell(Dates::sql2date($myrow["date_"]));
 					qty_cell($myrow['quantity'], false, Item::qty_dec($myrow['reference']));
-					Display::end_row();
+					end_row();
 				}
 				//end of while
 				label_row(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", "nowrap class=right");
-				Display::end_table();
+				end_table();
 			}
 		}
 	}

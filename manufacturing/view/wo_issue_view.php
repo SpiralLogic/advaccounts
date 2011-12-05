@@ -22,11 +22,11 @@
 		{
 			$myrow = WO_Issue::get($issue_no);
 			Display::br(1);
-			Display::start_table('tablestyle');
+			start_table('tablestyle');
 			$th = array(
 				_("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
-			Display::table_header($th);
-			Display::start_row();
+			table_header($th);
+			start_row();
 			label_cell($myrow["issue_no"]);
 			label_cell($myrow["reference"]);
 			label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
@@ -34,9 +34,9 @@
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreName"]);
 			label_cell(Dates::sql2date($myrow["issue_date"]));
-			Display::end_row();
+			end_row();
 			DB_Comments::display_row(28, $issue_no);
-			Display::end_table(1);
+			end_table(1);
 			Display::is_voided(28, $issue_no, _("This issue has been voided."));
 		}
 
@@ -47,9 +47,9 @@
 			if (DB::num_rows($result) == 0) {
 				Errors::warning(_("There are no items for this issue."));
 			} else {
-				Display::start_table('tablestyle');
+				start_table('tablestyle');
 				$th = array(_("Component"), _("Quantity"), _("Units"));
-				Display::table_header($th);
+				table_header($th);
 				$j = 1;
 				$k = 0; //row colour counter
 				$total_cost = 0;
@@ -58,17 +58,17 @@
 					label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 					qty_cell($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));
 					label_cell($myrow["units"]);
-					Display::end_row();
+					end_row();
 					;
 					$j++;
 					If ($j == 12) {
 						$j = 1;
-						Display::table_header($th);
+						table_header($th);
 					}
 					//end of page full new headings if
 				}
 				//end of while
-				Display::end_table();
+				end_table();
 			}
 		}
 

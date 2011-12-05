@@ -112,7 +112,7 @@
 			}
 			move_uploaded_file($file1, $file2);
 		} else {
-			$extensions[$id]['filename'] = Display::get_post('filename');
+			$extensions[$id]['filename'] = get_post('filename');
 		}
 		if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
 			$file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -133,7 +133,7 @@
 			}
 			move_uploaded_file($file1, $file2);
 		} else {
-			$extensions[$id]['acc_file'] = Display::get_post('acc_file');
+			$extensions[$id]['acc_file'] = get_post('acc_file');
 		}
 		// security area guess for plugins
 		if ($extensions[$id]['type'] == 'plugin') {
@@ -176,12 +176,12 @@
 
 	function display_extensions()
 	{
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$th = array(
 			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
 			_("Access extensions"), "", ""
 		);
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		$mods = DB_Company::get_company_extensions();
 		$mods = Arr::natsort($mods, null, 'name');
@@ -208,14 +208,14 @@
 			}
 			delete_button_cell("Delete" . $i, _("Delete"));
 			submit_js_confirm('Delete' . $i, _('You are about to delete this extension\nDo you want to continue?'));
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table(1);
+		end_table(1);
 	}
 
 	function company_extensions($id)
 	{
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 		// get all available extensions and display
 		// with current status stored in company directory.
@@ -235,7 +235,7 @@
 			}
 		}
 		$mods = Arr::natsort($mods, null, 'name');
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		foreach (
 			$mods as $i => $mod
@@ -253,9 +253,9 @@
 				null, 'Active' . $i, @$mod['active'] ? 1 : 0,
 				false, false, "class='center'"
 			);
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table(1);
+		end_table(1);
 		submit_center('Update', _('Update'), true, false, 'default');
 	}
 
@@ -264,7 +264,7 @@
 	{
 		global $Mode;
 		$extensions = DB_Company::get_company_extensions();
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
 				$mod = $extensions[$selected_id];
@@ -287,7 +287,7 @@
 		file_row(_("Module File"), 'uploadfile');
 		file_row(_("Access Levels Extensions"), 'uploadfile3');
 		file_row(_("SQL File"), 'uploadfile2');
-		Display::end_table(0);
+		end_table(0);
 		Errors::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
@@ -307,14 +307,14 @@
 		handle_delete();
 		$Mode = 'RESET';
 	}
-	if (Display::get_post('Update')) {
+	if (get_post('Update')) {
 		$exts = DB_Company::get_company_extensions();
 		foreach (
 			$exts as $i => $ext
 		) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
-		advaccounting::write_extensions($exts, Display::get_post('extset'));
+		advaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
 		Errors::notice(_('Current active extensions set has been saved.'));
 	}
@@ -323,14 +323,14 @@
 		unset($_POST);
 	}
 
-	Display::start_form(true);
+	start_form(true);
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
 	}
 	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
 	echo Extensions::view('extset', null, true);
 	echo "</div><br>";
-	$set = Display::get_post('extset', -1);
+	$set = get_post('extset', -1);
 	if ($set == -1) {
 		display_extensions();
 		display_ext_edit($selected_id);
@@ -338,7 +338,7 @@
 		company_extensions($set);
 	}
 
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

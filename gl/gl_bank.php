@@ -27,7 +27,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	if (list_updated('PersonDetailID')) {
-		$br = Sales_Branch::get(Display::get_post('PersonDetailID'));
+		$br = Sales_Branch::get(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
@@ -119,7 +119,7 @@
 		$trans = GL_Bank::add_bank_transaction(
 			$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 			$_SESSION['pay_items'], $_POST['date_'],
-			$_POST['PayType'], $_POST['person_id'], Display::get_post('PersonDetailID'),
+			$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
 			$_POST['ref'], $_POST['memo_']
 		);
 		$trans_type = $trans[0];
@@ -146,7 +146,7 @@
 				JS::set_focus('code_id');
 				return false;
 			}
-			//if (Banking::is_bank_account($_POST['code_id']))
+			//if (Bank_Account::is($_POST['code_id']))
 			//{
 			//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 			//		Errors::error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
@@ -217,10 +217,10 @@
 		line_start_focus();
 	}
 
-	Display::start_form();
+	start_form();
 	Bank_UI::header($_SESSION['pay_items']);
-	Display::start_table('tablesstyle2 width90 pad10');
-	Display::start_row();
+	start_table('tablesstyle2 width90 pad10');
+	start_row();
 	echo "<td>";
 	Bank_UI::items(
 		$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
@@ -228,14 +228,14 @@
 	);
 	Bank_UI::option_controls();
 	echo "</td>";
-	Display::end_row();
-	Display::end_table(1);
+	end_row();
+	end_table(1);
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last(
 		'Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
 		 _("Process Payment") : _("Process Deposit"), '', 'default'
 	);
-	Display::end_form();
+	end_form();
 
 	end_page();
 

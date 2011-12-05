@@ -523,7 +523,7 @@ JS;
 			if ($editkey) {
 				Display::set_editor('item', $name, $editkey);
 			}
-			return combo_input($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
+			return select_box($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
 																																																	'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
 					 _("All Items") :
 					 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => false, 'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 10, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50),

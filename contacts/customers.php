@@ -56,7 +56,7 @@
 		);
 		HTML::td()->tr->table->div;
 	}
-	Display::start_form();
+	start_form();
 	$menu = new MenuUi();
 	$menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
 	HTML::div('customerIDs');
@@ -89,9 +89,9 @@
 					)
 	);
 	HTML::td()->tr->table->div;
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
-	Display::table_section_title(_("Shipping Details"), 2);
+	start_outer_table('tablestyle2');
+		table_section(1);
+	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
 		'branchSelect', array(
@@ -123,8 +123,8 @@
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 	Contacts_Postcode::render(array('br_city', $currentBranch->city),
 		array('br_state', $currentBranch->state),array('br_postcode', $currentBranch->postcode));
-	Display::table_section(2);
-	Display::table_section_title(_("Accounts Details"), 2);
+	table_section(2);
+	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
 		array(
@@ -142,12 +142,12 @@
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	Contacts_Postcode::render(array('acc_city', $customer->accounts->city),
 		array('acc_state', $customer->accounts->state),array('acc_postcode', $customer->accounts->postcode));
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
+	start_outer_table('tablestyle2');
+	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
-	Display::table_section_title(_("Accounts Details:"), 2);
+	table_section_title(_("Accounts Details:"), 2);
 	percent_row(_("Discount Percent:"), 'discount', $customer->discount,
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount,
@@ -178,9 +178,9 @@
 	if ($dim < 2) {
 		hidden('dimension2_id', 0);
 	}
-	Display::table_section(2);
-	Display::table_section_title(_("Contact log:"), 2);
-	Display::start_row();
+	table_section(2);
+	table_section_title(_("Contact log:"), 2);
+	start_row();
 	HTML::td(
 		array(
 				 'class' => 'ui-widget-content center',
@@ -196,7 +196,7 @@
 	Contacts_Log::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
 	HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
 	HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table(
@@ -218,10 +218,10 @@
 	text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 	HTML::td()->tr->table->script->div->div;
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
+	start_outer_table('tablestyle2');
+	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
-	Display::table_section_title(_("Sales"));
+	table_section_title(_("Sales"));
 	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
 	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
 	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
@@ -229,21 +229,21 @@
 	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
 	Tax_UI::groups_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
 	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
-	Display::table_section(2);
-	Display::table_section_title(_("GL Accounts"));
+	table_section(2);
+	table_section_title(_("GL Accounts"));
 	GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
 	GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
 	GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
 	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account',
 		$currentBranch->payment_discount_account);
-	Display::table_section_title(_("Notes"));
+	table_section_title(_("Notes"));
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
 	HTML::div('transactions');
 	$menu->endTab()->render();
 	hidden('popup', Input::request('popup'));
-	Display::end_form();
+	end_form();
 	HTML::div(
 		'contactLog', array(
 											 'title' => 'New contact log entry',
@@ -252,12 +252,12 @@
 									)
 	);
 	HTML::p('New log entry:', array('class' => 'validateTips'));
-	Display::start_table();
+	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
 	hidden('type', Contacts_Log::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
-	Display::end_table();
+	end_table();
 	HTML::p()->div->div(array('class' => 'center width50'));
 	UI::button(
 		'btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(

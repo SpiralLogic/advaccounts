@@ -51,7 +51,7 @@
 
 	function check_inputs()
 		{
-			if (!Display::get_post('supplier_id')) {
+			if (!get_post('supplier_id')) {
 				Errors::error(_("There is no supplier selected."));
 				JS::set_focus('supplier_id');
 				return false;
@@ -126,9 +126,9 @@
 
 	function handle_add_payment()
 		{
-			$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-			$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
-			$comp_currency = Banking::get_company_currency();
+			$supp_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
+			$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+			$comp_currency = Bank_Currency::for_company();
 			if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
 				$rate = 0;
 			} else {
@@ -160,41 +160,41 @@
 		}
 	}
 
-	Display::start_form();
-	Display::start_outer_table('tablestyle2 width60 pad5');
-	Display::table_section(1);
+	start_form();
+	start_outer_table('tablestyle2 width60 pad5');
+	table_section(1);
 	Purch_UI::suppliers_row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	Bank_UI::accounts_row(_("From Bank Account:"), 'bank_account', null, true);
-	Display::table_section(2);
+	Bank_Account::row(_("From Bank Account:"), 'bank_account', null, true);
+	table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
-	Display::table_section(3);
-	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+	table_section(3);
+	$supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
+	$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
 		GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 	amount_row(_("Bank Charge:"), 'charge');
-	Display::end_outer_table(1); // outer table
+	end_outer_table(1); // outer table
 	if ($bank_currency == $supplier_currency) {
 		Display::div_start('alloc_tbl');
 		Gl_Allocation::show_allocatable(false);
 		Display::div_end();
 	}
-	Display::start_table('tablestyle width60');
+	start_table('tablestyle width60');
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-	Display::end_table(1);
+	end_table(1);
 	if ($bank_currency != $supplier_currency) {
 		Errors::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

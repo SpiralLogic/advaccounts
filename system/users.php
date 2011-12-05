@@ -91,19 +91,19 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST); // clean all input fields
 		$_POST['show_inactive'] = $sav;
 	}
 	$result = Users::get_all(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(
 		_("User login"), _("Full Name"), _("Phone"),
 		_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
 	);
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
@@ -130,12 +130,12 @@
 		} else {
 			label_cell('');
 		}
-		Display::end_row();
+		end_row();
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -154,7 +154,7 @@
 		}
 		hidden('selected_id', $selected_id);
 		hidden('user_id');
-		Display::start_row();
+		start_row();
 		label_row(_("User login:"), Input::post('user_id'));
 	} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
@@ -166,7 +166,7 @@
 	$_POST['password'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);
 	if ($selected_id != -1) {
-		Display::table_section_title(_("Enter a new password to change, leave empty to keep current."));
+		table_section_title(_("Enter a new password to change, leave empty to keep current."));
 	}
 	text_row_ex(_("Full Name") . ":", 'real_name', 50);
 	text_row_ex(_("Telephone No.:"), 'phone', 30);
@@ -182,8 +182,8 @@
 		_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'),
 		false, _('Set this option to on if your browser directly supports pdf files')
 	);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

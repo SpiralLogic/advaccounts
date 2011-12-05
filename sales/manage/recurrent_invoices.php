@@ -70,11 +70,11 @@
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
-	Display::start_form();
-	Display::start_table('tablestyle width70');
+	start_form();
+	start_table('tablestyle width70');
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "", "");
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		$begin = Dates::sql2date($myrow["begin"]);
@@ -87,7 +87,7 @@
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Debtor::get_name($myrow["debtor_no"]));
 			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);
@@ -97,14 +97,14 @@
 		label_cell($last_sent);
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table();
-	Display::end_form();
+	end_table();
+	end_form();
 	echo '<br>';
 
-	Display::start_form();
-	Display::start_table('tablestyle2');
+	start_form();
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
@@ -134,8 +134,8 @@
 	small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);
 	date_row(_("Begin:"), 'begin');
 	date_row(_("End:"), 'end', null, null, 0, 0, 5);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

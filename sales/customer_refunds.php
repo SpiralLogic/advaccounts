@@ -40,12 +40,12 @@
 
 	function can_process()
 		{
-			if (!Display::get_post('customer_id')) {
+			if (!get_post('customer_id')) {
 				Errors::error(_("There is no customer selected."));
 				JS::setfocus('[name="customer_id"]');
 				return false;
 			}
-			if (!Display::get_post('BranchID')) {
+			if (!get_post('BranchID')) {
 				Errors::error(_("This customer has no branch defined."));
 				JS::setfocus('[name="BranchID"]');
 				return false;
@@ -124,16 +124,16 @@
 	}
 
 	if (isset($_POST['AddRefundItem'])) {
-		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
-		$comp_currency = Banking::get_company_currency();
+		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
+		$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+		$comp_currency = Bank_Currency::for_company();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
 		} else {
 			$rate = Validation::input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id = Sales_Debtor_Refund::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
+		$refund_id = Debtor_Refund::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
 			$_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate,
 			Validation::input_num('charge'));
 		$_SESSION['alloc']->trans_no = $refund_id;
@@ -157,9 +157,9 @@
 		}
 
 
-	Display::start_form();
-	Display::start_outer_table('tablestyle2 width60 pad5');
-	Display::table_section(1);
+	start_form();
+	start_outer_table('tablestyle2 width60 pad5');
+	table_section(1);
 	UI::search('customer', array(
 															'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
 	if (!isset($_POST['bank_account'])) // first page call
@@ -174,32 +174,32 @@
 	read_customer_data();
 	Session::i()->global_customer = $customer->id;
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
-		Display::end_outer_table();
+		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
 	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
-		Display::table_section(2);
-		Bank_UI::accounts_row(_("Into Bank Account:"), 'bank_account', null, true);
+		table_section(2);
+		Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
-		Display::table_section(3);
+		table_section(3);
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
-		$comp_currency = Banking::get_company_currency();
-		$cust_currency = Banking::get_customer_currency($customer->id);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		$comp_currency = Bank_Currency::for_company();
+		$cust_currency = Bank_Currency::for_debtor($customer->id);
+		$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
 		if ($cust_currency != $bank_currency) {
 			GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 		amount_row(_("Bank Charge:"), 'charge');
-		Display::end_outer_table(1);
+		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
 			Display::div_start('alloc_tbl');
 			Gl_Allocation::show_allocatable(true);
 			Display::div_end();
 		}
-		Display::start_table('tablestyle width60');
+		start_table('tablestyle width60');
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-		Display::end_table(1);
+		end_table(1);
 		if ($cust_currency != $bank_currency) {
 			Errors::warning(_("Amount and discount are in customer's currency."));
 		}
@@ -207,7 +207,7 @@
 		submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
 	}
 	Display::br();
-	Display::end_form();
+	end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

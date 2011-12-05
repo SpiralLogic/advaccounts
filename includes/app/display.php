@@ -85,91 +85,15 @@
 			if ($void_entry == null) {
 				return false;
 			}
-			Display::start_table('tablestyle width50');
+			start_table('tablestyle width50');
 			echo "<tr><td class=center><font color=red>$label</font><br>";
 			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
 				echo "<div class='center'><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></div><br>";
 			}
 			echo "</td></tr>";
-			Display::end_table(1);
+			end_table(1);
 			return true;
-		}
-
-		public static function debit_or_credit_cells($value) {
-			$value = Num::round($value, User::price_dec());
-			if ($value >= 0) {
-				amount_cell($value);
-				label_cell("");
-			} elseif ($value < 0) {
-				label_cell("");
-				amount_cell(abs($value));
-			}
-		}
-
-		public static function get_post($name, $dflt = '') {
-			return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
-		}
-
-		public static function start_form($multi = false, $action = "", $name = "") {
-			if ($name != "") {
-				$name = "name='$name'";
-			}
-			if ($action == "") {
-				$action = $_SERVER['PHP_SELF'];
-			}
-			if ($multi) {
-				echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
-			} else {
-				echo "<form method='post' action='$action' $name>\n";
-			}
-		}
-
-		public static function end_form($breaks = 0) {
-			if ($breaks) {
-				Display::br($breaks);
-			}
-			echo "<input type=\"hidden\" name=\"_focus\" value=\"" . Display::get_post('_focus') . "\">\n";
-			echo "</form>\n";
-		}
-
-		public static function start_table($class = "") {
-			echo "<div class='center'><table";
-			if ($class != "") {
-				echo " class='$class'";
-			}
-			echo " >\n";
-		}
-
-		public static function end_table($breaks = 0) {
-			echo "</table></div>\n";
-			if ($breaks) {
-				Display::br($breaks);
-			}
-		}
-
-		public static function start_outer_table($class= "") {
-
-			Display::start_table($class);
-			echo "<tr class='top'><td>\n"; // outer table
-		}
-
-		public static function table_section($number = 1, $width = false, $class = '') {
-			if ($number > 1) {
-				echo "</table>\n";
-				$width = ($width ? "width=$width" : "");
-				//echo "</td><td class='tableseparator' $width>\n"; // outer table
-				echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
-			}
-			echo "<table class='tablestyle_inner $class'>\n";
-		}
-
-		public static function end_outer_table($breaks = 0, $close_table = true) {
-			if ($close_table) {
-				echo "</table>\n";
-			}
-			echo "</td></tr>\n";
-			Display::end_table($breaks);
 		}
 
 		public static function meta_forward($forward_to, $params = "") {
@@ -342,40 +266,6 @@
 			echo "</td>\n";
 		}
 
-		public static function alt_table_row_color(&$k) {
-			if ($k == 1) {
-				echo "<tr class='oddrow grid'>\n";
-				$k = 0;
-			} else {
-				echo "<tr class='evenrow grid'>\n";
-				$k++;
-			}
-		}
-
-		public static function table_section_title($msg, $colspan = 2, $class = 'tableheader') {
-			echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
-		}
-
-		public static function table_header($labels, $params = '') {
-			echo '<thead>';
-			$labels = (array)$labels;
-			foreach ($labels as $label) {
-				labelheader_cell($label, $params);
-			}
-			echo '</thead>';
-		}
-
-		public static function start_row($param = "") {
-			if ($param != "") {
-				echo "<tr $param>\n";
-			} else {
-				echo "<tr>\n";
-			}
-		}
-
-		public static function end_row() {
-			echo "</tr>\n";
-		}
 
 		public static function br($num = 1) {
 			for ($i = 0; $i < $num; $i++) {

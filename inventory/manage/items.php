@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Items"), Input::request('popup'));
 	$user_comp = '';
-	$new_item = Display::get_post('stock_id') == '' || Display::get_post('cancel') || Display::get_post('clone');
+	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
@@ -21,12 +21,12 @@
 		$stock_id = $_POST['stock_id'];
 	}
 	if (list_updated('stock_id')) {
-		$_POST['NewStockID'] = Display::get_post('stock_id');
+		$_POST['NewStockID'] = get_post('stock_id');
 		clear_data();
 		$Ajax->activate('details');
 		$Ajax->activate('controls');
 	}
-	if (Display::get_post('cancel')) {
+	if (get_post('cancel')) {
 		$_POST['NewStockID'] = $_POST['stock_id'] = '';
 		clear_data();
 		JS::set_focus('stock_id');
@@ -128,8 +128,8 @@
 				Item::update(
 					$_POST['NewStockID'], $_POST['description'],
 					$_POST['long_description'], $_POST['category_id'],
-					$_POST['tax_type_id'], Display::get_post('units'),
-					Display::get_post('mb_flag'), $_POST['sales_account'],
+					$_POST['tax_type_id'], get_post('units'),
+					get_post('mb_flag'), $_POST['sales_account'],
 					$_POST['inventory_account'], $_POST['cogs_account'],
 					$_POST['adjustment_account'], $_POST['assembly_account'],
 					$_POST['dimension_id'], $_POST['dimension2_id'],
@@ -164,7 +164,7 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-	if (Display::get_post('clone')) {
+	if (get_post('clone')) {
 		unset($_POST['stock_id']);
 		unset($_POST['inactive']);
 		JS::set_focus('NewStockID');
@@ -231,34 +231,34 @@
 		}
 	}
 
-	Display::start_form(true);
+	start_form(true);
 	if (Validation::check(Validation::STOCK_ITEMS)) {
-		Display::start_table('tablestyle_noborder');
-		Display::start_row();
+		start_table('tablestyle_noborder');
+		start_row();
 		if ($new_item) {
 			Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, check_value('show_inactive'), false);
 			check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		} else {
 			hidden('stock_id', $_POST['stock_id']);
 		}
-		$new_item = Display::get_post('stock_id') == '';
-		Display::end_row();
-		Display::end_table();
-		if (Display::get_post('_show_inactive_update')) {
+		$new_item = get_post('stock_id') == '';
+		end_row();
+		end_table();
+		if (get_post('_show_inactive_update')) {
 			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
 			$Ajax->activate('stock_id');
 		}
 	}
 	Display::div_start('details');
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
-	Display::table_section_title(_("Item"));
+	start_outer_table('tablestyle2');
+	table_section(1);
+	table_section_title(_("Item"));
 
 	if ($new_item) {
 		text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 		$_POST['inactive'] = 0;
 	} else { // Must be modifying an existing item
-		if (Display::get_post('NewStockID') != Display::get_post('stock_id') || Display::get_post('addupdate')) { // first item display
+		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 			$_POST['NewStockID'] = $_POST['stock_id'];
 			$myrow = Item::get($_POST['NewStockID']);
 			$_POST['long_description'] = $myrow["long_description"];
@@ -307,10 +307,10 @@
 	Item_Unit::row(_('Units of Measure:'), 'units', null, $fresh_item);
 	check_row(_("Editable description:"), 'editable');
 	check_row(_("Exclude from sales:"), 'no_sale');
-	Display::table_section(2);
+	table_section(2);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		Display::table_section_title(_("Dimensions"));
+		table_section_title(_("Dimensions"));
 		Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) {
 			Dimensions::select_row(_("Dimension") . " 2", 'dimension2_id', null, true, " ", false, 2);
@@ -322,8 +322,8 @@
 	if ($dim < 2) {
 		hidden('dimension2_id', 0);
 	}
-	Display::table_section(2);
-	Display::table_section_title(_("GL Accounts"));
+	table_section(2);
+	table_section_title(_("GL Accounts"));
 	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 	if (!$_POST['mb_flag'] == STOCK_SERVICE) {
 		GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
@@ -339,7 +339,7 @@
 	} else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
-	Display::table_section_title(_("Other"));
+	table_section_title(_("Other"));
 	// Add image    for New Item  - by Joe
 	file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
 	// Add Image upload for New Item  - by Joe
@@ -359,30 +359,30 @@
 	}
 	check_row(_("Exclude from sales:"), 'no_sale');
 	record_status_list_row(_("Item status:"), 'inactive');
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	Display::div_end();
 	Display::div_start('controls');
 	if (!isset($_POST['NewStockID']) || $new_item) {
 		submit_center('addupdate', _("Insert New Item"), true, '', 'default');
 	} else {
 		submit_center_first('addupdate', _("Update Item"), '', Input::request('popup') ? true : 'default');
-		submit_return('select', Display::get_post('stock_id'), _("Select this items and return to document entry."), 'default');
+		submit_return('select', get_post('stock_id'), _("Select this items and return to document entry."), 'default');
 		submit('clone', _("Clone This Item"), true, '', true);
 		submit('delete', _("Delete This Item"), true, '', true);
 		submit('addupdatenew', _("Save & New"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
-	if (Display::get_post('stock_id')) {
-		Session::i()->global_stock_id = Display::get_post('stock_id');
+	if (get_post('stock_id')) {
+		Session::i()->global_stock_id = get_post('stock_id');
 		echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
-	if (Display::get_post('stock_id')) {
-		Session::i()->global_stock_id = Display::get_post('stock_id');
+	if (get_post('stock_id')) {
+		Session::i()->global_stock_id = get_post('stock_id');
 		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' style='width:48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	Display::div_end();
 	hidden('popup', Input::request('popup'));
-	Display::end_form();
+	end_form();
 
 	end_page();
 ?>

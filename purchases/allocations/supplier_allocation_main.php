@@ -14,7 +14,7 @@
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocations"));
 
-	Display::start_form();
+	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
@@ -84,6 +84,6 @@
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 	$table->width = "80%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

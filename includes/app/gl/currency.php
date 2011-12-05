@@ -70,8 +70,8 @@ class GL_Currency {
 	public static function select($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
 			// default to the company currency
-			return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
-																																									 'select_submit' => $submit_on_change, 'default' => Banking::get_company_currency(), 'async' => false));
+			return select_box($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
+																																									 'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => false));
 		}
 
 	public static function cells($label, $name, $selected_id = null, $submit_on_change = false) {

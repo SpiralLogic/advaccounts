@@ -28,7 +28,7 @@
 			JS::set_focus('rate');
 			return false;
 		}
-		if (!Tax_Types::is_tax_gl_unique(Display::get_post('sales_gl_code'), Display::get_post('purchasing_gl_code'), $selected_id)) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
 			Errors::error(_("Selected GL Accounts cannot be used by another tax type."));
 			JS::set_focus('sales_gl_code');
 			return false;
@@ -77,21 +77,21 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Tax_Types::get_all(check_value('show_inactive'));
-	Display::start_form();
+	start_form();
 	Errors::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
-	Display::start_table('tablestyle');
+	start_table('tablestyle');
 	$th = array(
 		_("Description"), _("Default Rate (%)"),
 		_("Sales GL Account"), _("Purchasing GL Account"), "", ""
 	);
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
@@ -103,12 +103,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -124,9 +124,9 @@
 	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", User::percent_dec());
 	GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', null);
 	GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

@@ -14,7 +14,7 @@
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 
-	Display::start_form();
+	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
@@ -29,8 +29,8 @@
 		unset($_POST['customer_id']);
 	}
 	/*if (isset($_POST['customer_id'])) {
-				 $custCurr = Banking::get_customer_currency($_POST['customer_id']);
-				 if (!Banking::is_company_currency($custCurr))
+				 $custCurr = Bank_Currency::for_debtor($_POST['customer_id']);
+				 if (!Bank_Currency::is_company($custCurr))
 					 echo _("Customer Currency:") . $custCurr;
 			 }*/
 	$settled = false;
@@ -83,6 +83,6 @@
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 	$table->width = "75%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

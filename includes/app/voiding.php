@@ -18,7 +18,7 @@
 					if (!GL_Trans::exists($type, $type_no)) {
 						return false;
 					}
-					GL_Trans::void_journal_trans($type, $type_no);
+					GL_Journal::void($type, $type_no);
 					break;
 				case ST_BANKPAYMENT : // it's a payment
 				case ST_BANKDEPOSIT : // it's a deposit
@@ -73,10 +73,10 @@
 					}
 					break;
 				case ST_WORKORDER : // it's a work order
-					if (!WO_WorkOrder::get($type_no, true)) {
+					if (!WO::get($type_no, true)) {
 						return false;
 					}
-					WO_WorkOrder::void($type_no);
+					WO::void($type_no);
 					break;
 				case ST_MANUISSUE : // it's a work order issue
 					if (!WO_Issue::exists($type_no)) {

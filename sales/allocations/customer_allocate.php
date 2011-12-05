@@ -34,7 +34,7 @@
 			Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
 			Display::heading(_("Total:") . " <b>" . Num::price_format($_SESSION['alloc']->amount) . "</b>");
 			echo "<br>";
-			Display::start_form();
+			start_form();
 			Display::div_start('alloc_tbl');
 			if (count($_SESSION['alloc']->allocs) > 0) {
 				Gl_Allocation::show_allocatable(true);
@@ -48,7 +48,7 @@
 					_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 			}
 			Display::div_end();
-			Display::end_form();
+			end_form();
 		}
 
 
@@ -69,7 +69,7 @@
 		clear_allocations();
 		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
 	}
-	if (Display::get_post('UpdateDisplay')) {
+	if (get_post('UpdateDisplay')) {
 		$_SESSION['alloc']->read();
 		$Ajax->activate('alloc_tbl');
 	}

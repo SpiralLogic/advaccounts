@@ -136,7 +136,7 @@
 		$cart->reference = $_POST['ref'];
 		$cart->memo_ = $_POST['memo_'];
 		$cart->tran_date = $_POST['date_'];
-		$trans_no = GL_Trans::write_journal_entries($cart, check_value('Reverse'));
+		$trans_no = GL_Journal::write($cart, check_value('Reverse'));
 		$cart->clear_items();
 		Dates::new_doc_date($_POST['date_']);
 		unset($_SESSION['journal_items']);
@@ -174,12 +174,12 @@
 				JS::set_focus('AmountCredit');
 				return false;
 			}
-			if (!Tax_Types::is_tax_gl_unique(Display::get_post('code_id'))) {
+			if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
 				Errors::error(_("Cannot post to GL account used by more than one tax type."));
 				JS::set_focus('code_id');
 				return false;
 			}
-			if (!User::get()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
+			if (!User::get()->can_access('SA_BANKJOURNAL') && Bank_Account::is($_POST['code_id'])) {
 				Errors::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 				JS::set_focus('code_id');
 				return false;
@@ -246,19 +246,19 @@
 		line_start_focus();
 	}
 
-	Display::start_form();
+	start_form();
 	GL_Journal::header($_SESSION['journal_items']);
-	Display::start_table('tables_style2 width90 pad10');
-	Display::start_row();
+	start_table('tables_style2 width90 pad10');
+	start_row();
 	echo "<td>";
 	GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
 	GL_Journal::option_controls();
 	echo "</td>";
-	Display::end_row();
-	Display::end_table(1);
+	end_row();
+	end_table(1);
 	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'),
 		'default');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

@@ -52,8 +52,8 @@
 		}
 	}
 
-	if (Display::get_post('_DeliveryNumber_changed')) {
-		$disable = Display::get_post('DeliveryNumber') !== '';
+	if (get_post('_DeliveryNumber_changed')) {
+		$disable = get_post('DeliveryNumber') !== '';
 		$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
 		$Ajax->addDisable(true, 'DeliveryToDate', $disable);
 		$Ajax->addDisable(true, 'StockLocation', $disable);
@@ -68,9 +68,9 @@
 		$Ajax->activate('deliveries_tbl');
 	}
 
-	Display::start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+	start_table('tablestyle_noborder');
+	start_row();
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
@@ -78,8 +78,8 @@
 	Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
@@ -189,7 +189,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	//$table->width = "92%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

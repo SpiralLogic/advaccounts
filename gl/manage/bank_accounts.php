@@ -87,14 +87,14 @@
 	$sql .= " ORDER BY account_code, bank_curr_code";
 	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
-	Display::start_form();
-	Display::start_table('tablestyle width80');
+	start_form();
+	start_table('tablestyle width80');
 	$th = array(
 		_("Account Name"), _("Type"), _("Currency"), _("GL Account"),
 		_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
 	);
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
 	while ($myrow = DB::fetch($result))
@@ -115,12 +115,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 	$is_editing = $selected_id != -1;
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
 			$myrow = Bank_Account::get($selected_id);
@@ -145,7 +145,7 @@
 
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 	} else {
-		Bank_UI::accounts_type_row(_("Account Type:"), 'account_type', null);
+		Bank_Account::type_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
@@ -161,8 +161,8 @@
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
 	text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
 	textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

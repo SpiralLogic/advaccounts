@@ -179,12 +179,12 @@
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$th = array(
 			_("Company"), _("Database Host"), _("Database User"),
 			_("Database Name"), _("Table Pref"), _("Default"), "", ""
 		);
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		$conn = Config::get_all('db');
 		$n = count($conn);
@@ -198,7 +198,7 @@
 				$what = _("No");
 			}
 			if ($i == $coyno) {
-				Display::start_row("class='stockmankobg'");
+				start_row("class='stockmankobg'");
 			} else {
 				Display::alt_table_row_color($k);
 			}
@@ -220,9 +220,9 @@
 				 :
 				 "<a href=''>$delete</a>"
 			);
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table();
+		end_table();
 		Errors::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -234,7 +234,7 @@
 		} else {
 			$n = count(Config::get_all('db'));
 		}
-		Display::start_form(true);
+		start_form(true);
 		echo "
 		<script language='javascript'>
 		function updateCompany() {
@@ -247,7 +247,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];
@@ -274,10 +274,10 @@
 		yesno_list_row(_("Default"), 'def', null, "", "", false);
 		file_row(_("Database Script"), "uploadfile");
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
-		Display::end_table();
+		end_table();
 		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<div class='center'><input  type='button' style='width:150px' value='" . _("Save") . "'></div>";
-		Display::end_form();
+		end_form();
 	}
 
 

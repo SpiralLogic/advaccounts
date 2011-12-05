@@ -389,7 +389,7 @@
 	{
 		$company_year = DB_Company::get_pref('f_year');
 		$result = DB_Company::get_all_fiscalyears();
-		Display::start_form();
+		start_form();
 		Errors::warning(
 			_(
 				"Warning: Deleting a fiscal year all transactions
@@ -397,14 +397,14 @@
 			),
 			0, 0, "class='currentfg'"
 		);
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result))
 		{
 			if ($myrow['id'] == $company_year) {
-				Display::start_row("class='stockmankobg'");
+				start_row("class='stockmankobg'");
 			} else {
 				Display::alt_table_row_color($k);
 			}
@@ -429,10 +429,10 @@
 			{
 				label_cell('');
 			}
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table();
-		Display::end_form();
+		end_table();
+		end_form();
 		Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -440,8 +440,8 @@
 	function display_fiscalyear_edit($selected_id)
 	{
 		global $Mode;
-		Display::start_form();
-		Display::start_table('tablestyle2');
+		start_form();
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				$myrow = DB_Company::get_fiscalyear($selected_id);
@@ -459,9 +459,9 @@
 		}
 		hidden('selected_id', $selected_id);
 		yesno_list_row(_("Is Closed:"), 'closed', null, "", "", false);
-		Display::end_table(1);
+		end_table(1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
-		Display::end_form();
+		end_form();
 	}
 
 

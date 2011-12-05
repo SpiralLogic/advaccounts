@@ -163,15 +163,15 @@
 		handle_new_order();
 	}
 
-	Display::start_form();
+	start_form();
 	Inv_Adjustment::header($_SESSION['adj_items']);
-	Display::start_outer_table('tablestyle width80 pad10');
+	start_outer_table('tablestyle width80 pad10');
 	Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
 	Inv_Adjustment::option_controls();
-	Display::end_outer_table(1, false);
+	end_outer_table(1, false);
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last('Process', _("Process Adjustment"), '', 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

@@ -130,7 +130,7 @@
 						if ($dim > 1) {
 							$rep->TextCol(5, 6, Dimensions::get_string($myrow['dimension2_id']));
 						}
-						$txt = Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false);
+						$txt = Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false);
 						$memo = $myrow['memo_'];
 						if ($txt != "") {
 							if ($memo != "") {

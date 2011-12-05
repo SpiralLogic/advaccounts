@@ -131,9 +131,9 @@
 			$AllocAmt = 0, $rate = 0, $dimension_id = 0, $dimension2_id = 0)
 			{
 				$new = $trans_no == 0;
-				$curr = Banking::get_customer_currency($debtor_no);
+				$curr = Bank_Currency::for_debtor($debtor_no);
 				if ($rate == 0) {
-					$rate = Banking::get_exchange_rate_from_home_currency($curr, $date_);
+					$rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
 				}
 				$SQLDate = Dates::date2sql($date_);
 				if ($due_date == "") {
@@ -230,7 +230,7 @@
 					if ($myrow != null) {
 						$cart->set_location($myrow['loc_code'], $myrow['location_name']);
 					}
-					$result = Sales_Debtor_Trans::get($doc_type, $trans_no);
+					$result = Debtor_Trans::get($doc_type, $trans_no);
 					if (DB::num_rows($result) > 0) {
 						for ($line_no = 0; $myrow = DB::fetch($result); $line_no++) {
 							$cart->line_items[$line_no] = new Sales_Line(
@@ -367,7 +367,7 @@
 						Sales_Delivery::void($type, $type_no);
 						break;
 					case ST_CUSTPAYMENT :
-						Sales_Debtor_Payment::void($type, $type_no);
+						Debtor_Payment::void($type, $type_no);
 						break;
 				}
 			}

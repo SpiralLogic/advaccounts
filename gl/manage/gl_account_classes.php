@@ -80,14 +80,14 @@
 	}
 
 	$result = GL_Class::get_all(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		$th[2] = _("Balance Sheet");
 	}
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
@@ -103,12 +103,12 @@
 		inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 		edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -131,11 +131,11 @@
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
 	} else {
-		GL_UI::class_types_row(_("Class Type:"), 'ctype', null);
+		GL_Class::types_row(_("Class Type:"), 'ctype', null);
 	}
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

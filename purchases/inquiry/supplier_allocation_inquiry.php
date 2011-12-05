@@ -24,12 +24,12 @@
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
 
-	Display::start_form();
+	start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_table('tablestyle_noborder');
+	start_row();
 	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
@@ -37,8 +37,8 @@
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 
 	function check_overdue($row)
 		{
@@ -147,6 +147,6 @@
 	$table->width = "90%";
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

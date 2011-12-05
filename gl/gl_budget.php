@@ -92,12 +92,12 @@
 		$Ajax->activate('budget_tbl');
 	}
 
-	Display::start_form();
+	start_form();
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 
 			$dim = DB_Company::get_pref('use_dimension');
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
 		GL_UI::all_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1'])) {
@@ -118,9 +118,9 @@
 			hidden('dim2', 0);
 		}
 		submit_row('submit', _("Get"), true, '', '', true);
-		Display::end_table(1);
+		end_table(1);
 		Display::div_start('budget_tbl');
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		$showdims = (($dim == 1 && $_POST['dim1'] == 0)
 		 || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 		if ($showdims) {
@@ -128,9 +128,9 @@
 		} else {
 			$th = array(_("Period"), _("Amount"), _("Last Year"));
 		}
-		Display::table_header($th);
+		table_header($th);
 		$year = $_POST['fyear'];
-		if (Display::get_post('update') == '') {
+		if (get_post('update') == '') {
 			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
 			$result = DB::query($sql, "could not get current fiscal year");
 			$fyear = DB::fetch($result);
@@ -144,8 +144,8 @@
 			$i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++
 		)
 		{
-			Display::start_row();
-			if (Display::get_post('update') == '') {
+			start_row();
+			if (get_post('update') == '') {
 				$_POST['amount' . $i] = Num::format(
 					get_only_budget_trans_from_to(
 						$date_, $date_, $_POST['account'], $_POST['dim1'],
@@ -168,23 +168,23 @@
 			$ltotal += $lamount;
 			label_cell(Num::format($lamount, 0), "nowrap class=right");
 			$date_ = Dates::add_months($date_, 1);
-			Display::end_row();
+			end_row();
 		}
-		Display::start_row();
+		start_row();
 		label_cell("<b>" . _("Total") . "</b>");
 		label_cell(Num::format($total, 0), 'class=right style="font-weight:bold"', 'Total');
 		if ($showdims) {
 			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap class=right");
 		}
 		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap class=right");
-		Display::end_row();
-		Display::end_table(1);
+		end_row();
+		end_table(1);
 		Display::div_end();
 		submit_center_first('update', _("Update"), '', null);
 		submit('add', _("Save"), true, '', 'default');
 		submit_center_last('delete', _("Delete"), '', true);
 	}
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

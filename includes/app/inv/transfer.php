@@ -86,16 +86,16 @@
 
 		function header($order)
 			{
-				Display::start_outer_table('tablestyle width70');
-				Display::table_section(1);
+				start_outer_table('tablestyle width70');
+				table_section(1);
 				Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
 				Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
-				Display::table_section(2, "33%");
+				table_section(2, "33%");
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
 				date_row(_("Date:"), 'AdjDate', '', true);
-				Display::table_section(3, "33%");
+				table_section(3, "33%");
 				movement_types_list_row(_("Transfer Type:"), 'type', null);
-				Display::end_outer_table(1); // outer table
+				end_outer_table(1); // outer table
 			}
 
 
@@ -103,12 +103,12 @@
 			{
 				Display::heading($title);
 				Display::div_start('items_table');
-				Display::start_table('tablestyle width90');
+				start_table('tablestyle width90');
 				$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
 				if (count($order->line_items)) {
 					$th[] = '';
 				}
-				Display::table_header($th);
+				table_header($th);
 				$subtotal = 0;
 				$k = 0; //row colour counter
 				$id = find_submit('Edit');
@@ -121,7 +121,7 @@
 						label_cell($stock_item->units);
 						edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
 						delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
-						Display::end_row();
+						end_row();
 					} else {
 						Inv_Transfer::item_controls($order, $line_no);
 					}
@@ -129,7 +129,7 @@
 				if ($id == -1) {
 					Inv_Transfer::item_controls($order);
 				}
-				Display::end_table();
+				end_table();
 				Display::div_end();
 			}
 
@@ -137,7 +137,7 @@
 		function item_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
-				Display::start_row();
+				start_row();
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
 					$_POST['stock_id'] = $order->line_items[$id]->stock_id;
@@ -168,16 +168,16 @@
 				} else {
 					submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 				}
-				Display::end_row();
+				end_row();
 			}
 
 
 		function option_controls()
 			{
 				echo "<br>";
-				Display::start_table();
+				start_table();
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
-				Display::end_table(1);
+				end_table(1);
 			}
 
 	}

@@ -11,7 +11,7 @@
 		// SALES PERSONS
 		public static function	persons($name, $selected_id = null, $spec_opt = false) {
 			$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
-			return combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
+			return select_box($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
 																																													 'order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 		}
 
@@ -33,7 +33,7 @@
 		// SALES AREA
 		public static function	areas($name, $selected_id = null) {
 			$sql = "SELECT area_code, description, inactive FROM areas";
-			return combo_input($name, $selected_id, $sql, 'area_code', 'description', array());
+			return select_box($name, $selected_id, $sql, 'area_code', 'description', array());
 		}
 
 		public static function	areas_cells($label, $name, $selected_id = null) {
@@ -53,7 +53,7 @@
 
 		public static function	groups($name, $selected_id = null, $special_option = false) {
 			$sql = "SELECT id, description, inactive FROM groups";
-			return combo_input($name, $selected_id, $sql, 'id', 'description', array(
+			return select_box($name, $selected_id, $sql, 'id', 'description', array(
 																																							'spec_option' => $special_option === true ? ' ' :
 																																							 $special_option, 'order' => 'description', 'spec_id' => 0,));
 		}
@@ -76,7 +76,7 @@
 
 		public static function	shippers($name, $selected_id = null) {
 			$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
-			return combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
+			return select_box($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
 		}
 
 		public static function	shippers_cells($label, $name, $selected_id = null) {
@@ -117,7 +117,7 @@
 			$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
 				FROM sales_orders as sorder, sales_order_details as line
 				WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
-			return combo_input($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
+			return select_box($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
 																																									 'format' => '_format_template_items', 'spec_option' => $special_option === true ?
 				 ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,));
 		}
@@ -163,7 +163,7 @@
 					 i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
 					FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
 					WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
-			return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
+			return select_box($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
 																																																		 'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
 					 _("All Items") :
 					 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => true, 'search' => array("i.item_code", "c.description", "i.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 15, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'i.item_code'), 'editable' => 30, 'max' => 50),

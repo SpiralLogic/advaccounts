@@ -23,7 +23,7 @@
 	}
 	$receipt = Sales_Trans::get($trans_id, $trans_type);
 	echo "<br>";
-	Display::start_table('tablestyle2 width90');
+	start_table('tablestyle2 width90');
 	echo "<tr class='tableheader2 top'><th colspan=6>";
 	if ($trans_type == ST_CUSTPAYMENT) {
 		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
@@ -31,23 +31,23 @@
 		Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
 	echo "</td></tr>";
-	Display::start_row();
+	start_row();
 	label_cells(_("From Customer"), $receipt['DebtorName']);
 	label_cells(_("Into Bank Account"), $receipt['bank_account_name']);
 	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']));
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	label_cells(_("Payment Currency"), $receipt['curr_code']);
 	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']));
 	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']));
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
 	label_cells(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
-	Display::end_form();
-	Display::end_row();
+	end_form();
+	end_row();
 	DB_Comments::display_row($trans_type, $trans_id);
-	Display::end_table(1);
+	end_table(1);
 	$voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
 		GL_Allocation::display(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);

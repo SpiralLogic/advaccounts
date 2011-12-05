@@ -20,18 +20,18 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	Display::start_form();
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
-	Debtor_UI::select_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+	start_form();
+	start_table('tablestyle_noborder');
+	start_row();
+	Debtor_UI::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 	date_cells(_("from:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
 	Debtor_UI::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->global_customer = $_POST['customer_id'];
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 
 	function check_overdue($row)
 		{
@@ -159,6 +159,6 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

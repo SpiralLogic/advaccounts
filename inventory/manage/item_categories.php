@@ -63,7 +63,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -76,15 +76,15 @@
 		$sql .= " AND !c.inactive";
 	}
 	$result = DB::query($sql, "could not get stock categories");
-	Display::start_form();
-	Display::start_table('tablestyle width90');
+	start_form();
+	start_table('tablestyle width90');
 	$th = array(
 		_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 		_("Assembly Account"), "", ""
 	);
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
@@ -101,14 +101,14 @@
 		inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
 		edit_button_cell("Edit" . $myrow["category_id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["category_id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	echo '<br>';
 
 	Display::div_start('details');
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
@@ -134,24 +134,24 @@
 		$_POST['description'] = '';
 		$_POST['no_sale'] = 0;
 		$company_record = DB_Company::get_prefs();
-		if (Display::get_post('inventory_account') == "") {
+		if (get_post('inventory_account') == "") {
 			$_POST['inventory_account'] = $company_record["default_inventory_act"];
 		}
-		if (Display::get_post('cogs_account') == "") {
+		if (get_post('cogs_account') == "") {
 			$_POST['cogs_account'] = $company_record["default_cogs_act"];
 		}
-		if (Display::get_post('sales_account') == "") {
+		if (get_post('sales_account') == "") {
 			$_POST['sales_account'] = $company_record["default_inv_sales_act"];
 		}
-		if (Display::get_post('adjustment_account') == "") {
+		if (get_post('adjustment_account') == "") {
 			$_POST['adjustment_account'] = $company_record["default_adj_act"];
 		}
-		if (Display::get_post('assembly_account') == "") {
+		if (get_post('assembly_account') == "") {
 			$_POST['assembly_account'] = $company_record["default_assembly_act"];
 		}
 	}
 	text_row(_("Category Name:"), 'description', null, 30, 30);
-	Display::table_section_title(_("Default values for new items"));
+	table_section_title(_("Default values for new items"));
 	Tax_UI::item_types_row(_("Item Tax Type:"), 'tax_type_id', null);
 	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, true);
 	Item_Unit::row(_("Units of Measure:"), 'units', null);
@@ -184,10 +184,10 @@
 	if ($dim < 2) {
 		hidden('dim2', 0);
 	}
-	Display::end_table(1);
+	end_table(1);
 	Display::div_end();
 	submit_add_or_update_center($selected_id == -1, '', 'both', true);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

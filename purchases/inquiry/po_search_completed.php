@@ -19,10 +19,10 @@
 
 	// Ajax updates
 	//
-	if (Display::get_post('SearchOrders')) {
+	if (get_post('SearchOrders')) {
 		$Ajax->activate('orders_tbl');
-	} elseif (Display::get_post('_order_number_changed')) {
-		$disable = Display::get_post('order_number') !== '';
+	} elseif (get_post('_order_number_changed')) {
+		$disable = get_post('order_number') !== '';
 		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 		$Ajax->addDisable(true, 'OrdersToDate', $disable);
 		$Ajax->addDisable(true, 'StockLocation', $disable);
@@ -37,21 +37,21 @@
 		$Ajax->activate('orders_tbl');
 	}
 
-	Display::start_form();
+	start_form();
 	if (Input::request('frame')) {
-		Display::start_table('tablestyle_noborder hidden');
+		start_table('tablestyle_noborder hidden');
 	} else {
-		Display::start_table('tablestyle_noborder');
+		start_table('tablestyle_noborder');
 	}
-	Display::start_row();
+	start_row();
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
 	Inv_Location::cells(_("into location:"), 'StockLocation', null, true);
 	Item::cells(_("for item:"), 'SelectStockFromList', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
@@ -195,7 +195,7 @@
 			'fun'		=> 'receive_link'
 		)
 	);
-	if (Display::get_post('StockLocation') != ALL_TEXT) {
+	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 
@@ -204,6 +204,6 @@
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

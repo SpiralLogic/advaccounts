@@ -49,7 +49,7 @@
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			for ($i = $fno[0]; $i <= $tno[0]; $i++) {
-				$myrow = WO_WorkOrder::get($i);
+				$myrow = WO::get($i);
 				if ($myrow === false) {
 					continue;
 				}
@@ -73,7 +73,7 @@
 					$qoh = 0;
 					$show_qoh = true;
 					// if it's a non-stock item (eg. service) don't show qoh
-					if (!Manufacturing::has_stock_holding($myrow2["mb_flag"])) {
+					if (!WO::has_stock_holding($myrow2["mb_flag"])) {
 						$show_qoh = false;
 					}
 					if ($show_qoh) {

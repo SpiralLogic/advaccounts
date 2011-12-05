@@ -23,7 +23,7 @@
 		$Ajax->activate('reorders');
 	}
 
-	Display::start_form();
+	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -36,9 +36,9 @@
 	Display::div_end();
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	Display::div_start('reorders');
-	Display::start_table('tablestyle width30');
+	start_table('tablestyle width30');
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
-	Display::table_header($th);
+	table_header($th);
 	$j = 1;
 	$k = 0; //row colour counter
 	$result = Inv_Location::get_details($_POST['stock_id']);
@@ -55,17 +55,17 @@
 		$_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 		qty_cell($qoh, false, $dec);
 		qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
-		Display::end_row();
+		end_row();
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			Display::table_header($th);
+			table_header($th);
 		}
 	}
-	Display::end_table(1);
+	end_table(1);
 	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

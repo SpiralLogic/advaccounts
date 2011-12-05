@@ -23,19 +23,19 @@
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
 
-	Display::start_form();
+	start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_table('tablestyle_noborder');
+	start_row();
 	Purch_UI::suppliers_cells(_("Select a supplier:"), 'supplier_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate');
 	Purch_UI::allocation_row("filterType", null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	Session::i()->supplier_id = $_POST['supplier_id'];
 
 	function display_supplier_summary($supplier_record)
@@ -45,11 +45,11 @@
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
-			Display::table_header($th);
-			Display::start_row();
+			table_header($th);
+			start_row();
 			label_cell($supplier_record["curr_code"]);
 			label_cell($supplier_record["terms"]);
 			amount_cell($supplier_record["Balance"] - $supplier_record["Due"]);
@@ -58,8 +58,8 @@
 			amount_cell($supplier_record["Overdue2"]);
 			amount_cell($supplier_record["Balance"]);
 			amount_cell(Purch_Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
-			Display::end_row();
-			Display::end_table(1);
+			end_row();
+			end_table(1);
 		}
 
 
@@ -69,7 +69,7 @@
 		display_supplier_summary($supplier_record);
 	}
 	Display::div_end();
-	if (Display::get_post('RefreshInquiry')) {
+	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
 
@@ -215,7 +215,7 @@
 	$table->width = "85%";
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

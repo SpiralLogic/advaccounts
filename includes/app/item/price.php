@@ -110,7 +110,7 @@
 			}
 			$add_pct = DB_Company::get_pref('add_pct');
 			$base_id = DB_Company::get_base_sales_type();
-			$home_curr = Banking::get_company_currency();
+			$home_curr = Bank_Currency::for_company();
 			//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 			$sql = "SELECT price, curr_abrev, sales_type_id
 			FROM prices
@@ -118,7 +118,7 @@
 				AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
 			$result = DB::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 			$num_rows = DB::num_rows($result);
-			$rate = Num::round(Banking::get_exchange_rate_from_home_currency($currency, $date), User::exrate_dec());
+			$rate = Num::round(Bank_Currency::exchange_rate_from_home($currency, $date), User::exrate_dec());
 			$round_to = DB_Company::get_pref('round_to');
 			$prices = array();
 			while ($myrow = DB::fetch($result)) {
@@ -206,7 +206,7 @@
 		}
 
 		public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
-			$mb_flag = Manufacturing::get_mb_flag($stock_id);
+			$mb_flag = WO::get_mb_flag($stock_id);
 			if (Input::post('mb_flag') == STOCK_SERVICE) {
 				Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
 			}

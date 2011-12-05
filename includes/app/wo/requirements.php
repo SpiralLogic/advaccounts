@@ -26,7 +26,7 @@
 
 		public static function add($woid, $stock_id) {
 			// create Work Order Requirements based on the bom
-			$result = Manufacturing::get_bom($stock_id);
+			$result = WO::get_bom($stock_id);
 			while ($myrow = DB::fetch($result)) {
 				$sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
 			VALUES (" . DB::escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
@@ -50,15 +50,15 @@
 			DB::query($sql, "The work requirements issued quantity couldn't be voided");
 		}
 
-		function display($woid, $quantity, $show_qoh = false, $date = null) {
+		public static	function display($woid, $quantity, $show_qoh = false, $date = null) {
 			$result = WO_Requirements::get($woid);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Requirements for this Order."), 1, 0);
 			} else {
-				Display::start_table('tablestyle width90');
+				start_table('tablestyle width90');
 				$th = array(
 					_("Component"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand"));
-				Display::table_header($th);
+				table_header($th);
 				$k = 0; //row colour counter
 				$has_marked = false;
 				if ($date == null) {
@@ -68,7 +68,7 @@
 					$qoh = 0;
 					$show_qoh = true;
 					// if it's a non-stock item (eg. service) don't show qoh
-					if (!Manufacturing::has_stock_holding($myrow["mb_flag"])) {
+					if (!WO::has_stock_holding($myrow["mb_flag"])) {
 						$show_qoh = false;
 					}
 					if ($show_qoh) {
@@ -77,7 +77,7 @@
 					if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && !DB_Company::get_pref('allow_negative_stock')
 					) {
 						// oops, we don't have enough of one of the component items
-						Display::start_row("class='stockmankobg'");
+						start_row("class='stockmankobg'");
 						$has_marked = true;
 					} else {
 						Display::alt_table_row_color($k);
@@ -98,9 +98,9 @@
 					} else {
 						label_cell("");
 					}
-					Display::end_row();
+					end_row();
 				}
-				Display::end_table();
+				end_table();
 				if ($has_marked) {
 					Display::note(_("Marked items have insufficient quantities in stock."), 0, 0, "class='red'");
 				}

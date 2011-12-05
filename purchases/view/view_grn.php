@@ -22,10 +22,10 @@
 	echo "<br>";
 	Purch_GRN::display($purchase_order);
 	Display::heading(_("Line Details"));
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
-	Display::table_header($th);
+	table_header($th);
 	$total = 0;
 	$k = 0; //row colour counter
 	foreach ($purchase_order->line_items as $stock_item) {
@@ -40,12 +40,12 @@
 		amount_decimal_cell($stock_item->price);
 		amount_cell($line_total);
 		qty_cell($stock_item->qty_inv, false, $dec);
-		Display::end_row();
+		end_row();
 		$total += $line_total;
 	}
 	$display_total = Num::format($total, User::price_dec());
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap class=right");
-	Display::end_table(1);
+	end_table(1);
 	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 	end_page(true);
 

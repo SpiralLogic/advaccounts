@@ -9,6 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APPPATH . "ui/ui_forms.php");
-	include_once(APPPATH . "ui/ui_tables.php");
+	include_once(APPPATH . "ui/forms.php");
+	include_once(APPPATH . "ui/tables.php");
 

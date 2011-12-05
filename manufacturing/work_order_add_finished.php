@@ -31,7 +31,7 @@
 		exit;
 	}
 
-	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
+	$wo_details = WO::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
@@ -71,7 +71,7 @@
 			}
 			// if unassembling we need to check the qoh
 			if (($_POST['ProductionType'] == 0) && !DB_Company::get_pref('allow_negative_stock')) {
-				$wo_details = WO_WorkOrder::get($_POST['selected_id']);
+				$wo_details = WO::get($_POST['selected_id']);
 				$qoh = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 				if (-Validation::input_num('quantity') + $qoh < 0) {
 					Errors::error(_("The unassembling cannot be processed because there is insufficient stock."));
@@ -119,7 +119,7 @@
 
 	WO_Cost::display($_POST['selected_id']);
 
-	Display::start_form();
+	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 	$dec = Item::qty_dec($wo_details["stock_id"]);
@@ -127,7 +127,7 @@
 		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
 			$dec);
 	}
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	Display::br();
 	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
 	if (!isset($_POST['ProductionType'])) {
@@ -138,10 +138,10 @@
 	small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 	date_row(_("Date:"), 'date_');
 	textarea_row(_("Memo:"), 'memo_', null, 40, 3);
-	Display::end_table(1);
+	end_table(1);
 	submit_center_first('Process', _("Process"), '', 'default');
 	submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

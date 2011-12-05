@@ -121,7 +121,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -131,11 +131,11 @@
 	}
 	$result = DB::query($sql, "could not query locations");
 	;
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
@@ -148,13 +148,13 @@
 		inactive_control_cell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
 		edit_button_cell("Edit" . $myrow["loc_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["loc_code"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	//END WHILE LIST LOOP
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	echo '<br>';
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		//editing an existing Location
@@ -182,9 +182,9 @@
 	text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
 	text_row_ex(_("Facsimile No:"), 'fax', 32, 30);
 	email_row_ex(_("E-mail:"), 'email', 30);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

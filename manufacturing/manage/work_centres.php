@@ -63,17 +63,17 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = WO_WorkCentre::get_all(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle width50');
+	start_form();
+	start_table('tablestyle width50');
 	$th = array(_("Name"), _("description"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -82,12 +82,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -99,9 +99,9 @@
 	}
 	text_row_ex(_("Name:"), 'name', 40);
 	text_row_ex(_("Description:"), 'description', 50);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

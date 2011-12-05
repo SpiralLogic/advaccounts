@@ -22,43 +22,43 @@
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
-	Display::start_table('tablestyle2 width95');
+	start_table('tablestyle2 width95');
 	echo "<tr class='top'><td>"; // outer table
 	/*Now the customer charged to details in a sub table*/
-	Display::start_table('tablestyle width100');
+	start_table('tablestyle width100');
 	$th = array(_("Customer"));
-	Display::table_header($th);
+	table_header($th);
 	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
-	Display::end_table();
+	end_table();
 	/*end of the small table showing charge to account details */
 	echo "</td><td>"; // outer table
-	Display::start_table('tablestyle width100');
+	start_table('tablestyle width100');
 	$th = array(_("Branch"));
-	Display::table_header($th);
+	table_header($th);
 	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
-	Display::end_table();
+	end_table();
 	echo "</td><td>"; // outer table
-	Display::start_table('tablestyle width100');
-	Display::start_row();
+	start_table('tablestyle width100');
+	start_row();
 	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
 	label_cells(_("Currency"), $myrow["curr_code"], "class='tableheader2'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
-	Display::end_row();
+	end_row();
 	DB_Comments::display_row(ST_CUSTCREDIT, $trans_id);
-	Display::end_table();
+	end_table();
 	echo "</td></tr>";
-	Display::end_table(1); // outer table
+	end_table(1); // outer table
 	$sub_total = 0;
-	$result = Sales_Debtor_Trans::get(ST_CUSTCREDIT, $trans_id);
-	Display::start_table('tablestyle width95');
+	$result = Debtor_Trans::get(ST_CUSTCREDIT, $trans_id);
+	start_table('tablestyle width95');
 	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
-		Display::table_header($th);
+		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
 		while ($myrow2 = DB::fetch($result)) {
@@ -80,7 +80,7 @@
 			amount_cell($myrow2["unit_price"]);
 			label_cell($display_discount, "class=right");
 			amount_cell($value);
-			Display::end_row();
+			end_row();
 		} //end while there are line items to print out
 	} else {
 		Errors::warning(_("There are no line items on this credit note."), 1, 2);
@@ -98,7 +98,7 @@
 	Sales_Trans::display_tax_details($tax_items, 6);
 	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 class=right",
 		"nowrap class=right");
-	Display::end_table(1);
+	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
 		GL_Allocation::display(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);

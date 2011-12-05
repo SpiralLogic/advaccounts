@@ -91,7 +91,7 @@
 					$rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
 				}
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-				$result = Sales_Debtor_Trans::get($j, $i);
+				$result = Debtor_Trans::get($j, $i);
 				$SubTotal = 0;
 				while ($myrow2 = DB::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {

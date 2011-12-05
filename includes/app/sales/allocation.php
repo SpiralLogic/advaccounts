@@ -63,7 +63,7 @@
 			DB::query($sql, "could not clear allocation");
 			// 2008-09-20 Joe Hunt
 			if ($date != "") {
-				Banking::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
+				Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
 					$row['amt'], PT_CUSTOMER, true);
 			}
 			//////////////////////

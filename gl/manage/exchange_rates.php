@@ -89,7 +89,7 @@
 	{
 		global $selected_id;
 		$Ajax = Ajax::i();
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate
 			$myrow = GL_ExchangeRate::get($selected_id);
@@ -113,7 +113,7 @@
 			submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
 			User::exrate_dec()
 		);
-		Display::end_table(1);
+		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
@@ -135,7 +135,7 @@
 		handle_delete();
 	}
 
-	Display::start_form();
+	start_form();
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
@@ -165,7 +165,7 @@
 		),
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-	if (Banking::is_company_currency($_POST['curr_abrev'])) {
+	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
 		Errors::warning(_("The selected currency is the company currency."), 2);
 		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	} else {
@@ -178,7 +178,7 @@
 		Display::br(1);
 		display_rate_edit();
 	}
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

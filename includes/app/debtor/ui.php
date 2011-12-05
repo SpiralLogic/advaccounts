@@ -16,7 +16,7 @@
 				Display::set_editor('branch', $name, $editkey);
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
-			return combo_input($name, $selected_id, $sql, 'branch_code', 'br_name', array(
+			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
 																																									 'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
 				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
@@ -48,13 +48,13 @@
 			if ($editkey) {
 				Display::set_editor('customer', $name, $editkey);
 			}
-			return combo_input($name, $selected_id, $sql, 'debtor_no', 'name', array(
+			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
 																																							'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
 				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}
 
-		function select_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+		function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}

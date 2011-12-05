@@ -77,7 +77,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -87,11 +87,11 @@
 		$sql .= " WHERE !inactive";
 	}
 	$result = DB::query($sql, "could not get sales persons");
-	Display::start_form();
-	Display::start_table('tablestyle width60');
+	start_form();
+	start_table('tablestyle width60');
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -105,10 +105,10 @@
 		inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
 		edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
-		Display::end_row();
+		end_row();
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
-	Display::end_table();
+	end_table();
 	echo '<br>';
 
 	$_POST['salesman_email'] = "";
@@ -132,7 +132,7 @@
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
 	}
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);
@@ -140,9 +140,9 @@
 	percent_row(_("Provision") . ':', 'provision');
 	amount_row(_("Break Pt.:"), 'break_pt');
 	percent_row(_("Provision") . " 2:", 'provision2');
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

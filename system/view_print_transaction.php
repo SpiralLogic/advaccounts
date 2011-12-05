@@ -37,8 +37,8 @@
 	function viewing_controls()
 	{
 		Errors::warning(_("Only documents can be printed."));
-		Display::start_table('tablestyle_noborder');
-		Display::start_row();
+		start_table('tablestyle_noborder');
+		start_row();
 		SysTypes::view_cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {
 			$_POST['FromTransNo'] = "1";
@@ -49,8 +49,8 @@
 		ref_cells(_("from #:"), 'FromTransNo');
 		ref_cells(_("to #:"), 'ToTransNo');
 		submit_cells('ProcessSearch', _("Search"), '', '', 'default');
-		Display::end_row();
-		Display::end_table(1);
+		end_row();
+		end_table(1);
 	}
 
 
@@ -131,10 +131,10 @@
 		$Ajax->activate('transactions');
 	}
 
-	Display::start_form(false);
+	start_form(false);
 	viewing_controls();
 	handle_search();
-	Display::end_form(2);
+	end_form(2);
 	end_page();
 
 ?>

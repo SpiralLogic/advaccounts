@@ -264,9 +264,9 @@
 	}
 
 
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	foreach (
 		$system_tests as $test
@@ -295,9 +295,9 @@
 			"<span style='color:$color'>" .
 			 ($result['result'] ? _('Ok') : '<b>' . $comm . '</b>') . '</span>'
 		);
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table();
+	end_table();
 	end_page();
 
 ?>

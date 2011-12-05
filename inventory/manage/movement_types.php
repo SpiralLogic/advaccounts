@@ -58,17 +58,17 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Inv_Movement::get_all_types(  check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle width30');
+	start_form();
+	start_table('tablestyle width30');
 	$th = array(_("Description"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
@@ -77,12 +77,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -92,9 +92,9 @@
 		hidden('selected_id', $selected_id);
 	}
 	text_row(_("Description:"), 'name', null, 50, 50);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

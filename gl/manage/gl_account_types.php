@@ -93,11 +93,11 @@
 	}
 
 	$result = GL_Type::get_all(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
@@ -115,12 +115,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
@@ -137,11 +137,11 @@
 		text_row_ex(_("ID:"), 'id', 10);
 	}
 	text_row_ex(_("Name:"), 'name', 50);
-	GL_UI::types_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
-	GL_UI::chart_class_row(_("Class Type:"), 'class_id', null);
-	Display::end_table(1);
+	GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
+	GL_Class::select_row(_("Class Type:"), 'class_id', null);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

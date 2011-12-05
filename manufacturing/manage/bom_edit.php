@@ -42,7 +42,7 @@
 	 }
 	 else
 	 {
-		 $selected_component = Display::get_post("selected_component", -1);
+		 $selected_component = get_post("selected_component", -1);
 	 }
 	 */
 
@@ -68,14 +68,14 @@
 
 	function display_bom_items($selected_parent)
 	{
-		$result = Manufacturing::get_bom($selected_parent);
+		$result = WO::get_bom($selected_parent);
 		Display::div_start('bom');
-		Display::start_table('tablestyle width60');
+		start_table('tablestyle width60');
 		$th = array(
 			_("Code"), _("Description"), _("Location"),
 			_("Work Centre"), _("Quantity"), _("Units"), '', ''
 		);
-		Display::table_header($th);
+		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result))
 		{
@@ -88,9 +88,9 @@
 			label_cell($myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-			Display::end_row();
+			end_row();
 		} //END WHILE LIST LOOP
-		Display::end_table();
+		end_table();
 		Display::div_end();
 	}
 
@@ -159,28 +159,28 @@
 		unset($_POST['quantity']);
 	}
 
-	Display::start_form();
-	Display::start_form(false);
-	Display::start_table('tablestyle_noborder');
+	start_form();
+	start_form(false);
+	start_table('tablestyle_noborder');
 	Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	Display::end_table();
+	end_table();
 	Display::br();
-	Display::end_form();
+	end_form();
 
-	if (Display::get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
+	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
 		$selected_parent = $_POST['stock_id'];
 		if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 			on_submit($selected_parent, $selected_id);
 		}
 
-		Display::start_form();
+		start_form();
 		display_bom_items($selected_parent);
 
 		echo '<br>';
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				//editing a selected component from the link to the line item
@@ -198,25 +198,25 @@
 			}
 			hidden('selected_id', $selected_id);
 		} else {
-			Display::start_row();
+			start_row();
 			label_cell(_("Component:"));
 			echo "<td>";
 			echo Item_UI::component('component', $selected_parent, null, false, true);
-			if (Display::get_post('_component_update')) {
+			if (get_post('_component_update')) {
 				$Ajax->activate('quantity');
 			}
 			echo "</td>";
-			Display::end_row();
+			end_row();
 		}
 		hidden('stock_id', $selected_parent);
 		Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-		$dec = Item::qty_dec(Display::get_post('component'));
+		$dec = Item::qty_dec(get_post('component'));
 		$_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-		Display::end_table(1);
+		end_table(1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
-		Display::end_form();
+		end_form();
 	}
 	// ----------------------------------------------------------------------------------
 	end_page();

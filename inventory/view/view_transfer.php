@@ -20,24 +20,24 @@
 	$to_trans = $transfer_items[1];
 	Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 	echo "<br>";
-	Display::start_table('tablestyle2 width90');
-	Display::start_row();
+	start_table('tablestyle2 width90');
+	start_row();
 	label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
 	label_cells(_("From Location"), $from_trans['location_name'], "class='tableheader2'");
 	label_cells(_("To Location"), $to_trans['location_name'], "class='tableheader2'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	label_cells(_("Reference"), $from_trans['reference'], "class='tableheader2'");
 	$adjustment_type = Inv_Movement::get_type($from_trans['person_id']);
 	label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($from_trans['tran_date']), "class='tableheader2'");
-	Display::end_row();
+	end_row();
 	DB_Comments::display_row(ST_LOCTRANSFER, $trans_no);
-	Display::end_table(1);
+	end_table(1);
 	echo "<br>";
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
-	Display::table_header($th);
+	table_header($th);
 	$transfer_items = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
 	$k = 0;
 	while ($item = DB::fetch($transfer_items))
@@ -48,11 +48,11 @@
 			label_cell($item['description']);
 			qty_cell($item['qty'], false, Item::qty_dec($item['stock_id']));
 			label_cell($item['units']);
-			Display::end_row();
+			end_row();
 			;
 		}
 	}
-	Display::end_table(1);
+	end_table(1);
 	Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 	end_page(true);
 ?>

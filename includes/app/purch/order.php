@@ -376,8 +376,8 @@
 		public static function header($order) {
 			$Ajax = Ajax::i();
 			$editable = ($order->order_no == 0);
-			Display::start_outer_table('tablestyle2 width90');
-			Display::table_section(1);
+			start_outer_table('tablestyle2 width90');
+			table_section(1);
 			if ($editable) {
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
@@ -390,7 +390,7 @@
 				hidden('supplier_id', $order->supplier_id);
 				label_row(_("Supplier:"), $order->supplier_name, 'class="label" name="supplier_name"');
 			}
-			if ($order->supplier_id != Display::get_post('supplier_id', -1)) {
+			if ($order->supplier_id != get_post('supplier_id', -1)) {
 				$old_supp = $order->supplier_id;
 				Purch_Order::supplier_to_order($order, $_POST['supplier_id']);
 				// supplier default price update
@@ -403,9 +403,9 @@
 				$Ajax->activate('items_table');
 			}
 			Session::i()->supplier_id = $_POST['supplier_id'];
-			if (!Banking::is_company_currency($order->curr_code)) {
+			if (!Bank_Currency::is_company($order->curr_code)) {
 				label_row(_("Supplier Currency:"), $order->curr_code);
-				GL_ExchangeRate::display($order->curr_code, Banking::get_company_currency(), $_POST['OrderDate']);
+				GL_ExchangeRate::display($order->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
 			}
 			if ($editable) {
 				ref_row(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
@@ -414,14 +414,14 @@
 				label_row(_("Purchase Order #:"), $order->reference);
 			}
 			Sales_UI::persons_row(_("Sales Person:"), 'salesman', $order->salesman);
-			Display::table_section(2);
+			table_section(2);
 			date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 			if (isset($_POST['_OrderDate_changed'])) {
 				$Ajax->activate('_ex_rate');
 			}
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 			Inv_Location::row(_("Receive Into:"), 'StkLocation', null, false, true);
-			Display::table_section(3);
+			table_section(3);
 			if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" || isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == ""
 			) {
 				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['StkLocation'] . "'";
@@ -437,7 +437,7 @@
 				}
 			}
 			textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
-			Display::end_outer_table(); // outer table
+			end_outer_table(); // outer table
 		}
 
 
@@ -445,13 +445,13 @@
 			$Ajax = Ajax::i();
 			Display::heading(_("Order Items"));
 			Display::div_start('items_table');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), "");
 			if (count($order->line_items)) {
 				$th[] = '';
 			}
-			Display::table_header($th);
+			table_header($th);
 			$id = find_submit('Edit');
 			$total = 0;
 			$k = 0;
@@ -474,7 +474,7 @@
 							edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
 							delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 						}
-						Display::end_row();
+						end_row();
 					} else {
 						Purch_Order::item_controls($order, $po_line->stock_id);
 					}
@@ -485,33 +485,33 @@
 				Purch_Order::item_controls($order);
 			}
 			label_cell(_("Freight"), "colspan=8 class=right");
-			small_amount_cells(null, 'freight', Num::price_format(Display::get_post('freight', 0)));
+			small_amount_cells(null, 'freight', Num::price_format(get_post('freight', 0)));
 			$display_total = Num::price_format($total + Validation::input_num('freight'));
-			Display::start_row();
+			start_row();
 			label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class=right",
 				"nowrap class=right _nofreight='$total'", 2);
-			Display::end_row();
-			Display::end_table(1);
+			end_row();
+			end_table(1);
 			Display::div_end();
 		}
 
 
 		public static function summary(&$po, $is_self = false, $editable = false) {
-			Display::start_table('tablestyle2 width90');
+			start_table('tablestyle2 width90');
 			echo "<tr  class='tableheader2 top'><th colspan=4>";
 			Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 			echo "</td></tr>";
-			Display::start_row();
+			start_row();
 			label_cells(_("Supplier"), $po->supplier_name, "class='label'");
 			label_cells(_("Reference"), $po->reference, "class='label'");
-			if (!Banking::is_company_currency($po->curr_code)) {
+			if (!Bank_Currency::is_company($po->curr_code)) {
 				label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 			}
 			if (!$is_self) {
 				label_cells(_("Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $po->order_no), "class='label'");
 			}
-			Display::end_row();
-			Display::start_row();
+			end_row();
+			start_row();
 			label_cells(_("Date"), $po->orig_order_date, "class='label'");
 			if ($editable) {
 				if (!isset($_POST['Location'])) {
@@ -522,20 +522,20 @@
 			} else {
 				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
 			}
-			Display::end_row();
+			end_row();
 			if (!$editable) {
 				label_row(_("Delivery Address"), $po->delivery_address, "class='label'", "colspan=9");
 			}
 			if ($po->Comments != "") {
 				label_row(_("Order Comments"), $po->Comments, "class='label'", "colspan=9");
 			}
-			Display::end_table(1);
+			end_table(1);
 		}
 
 
 		public static function item_controls($order, $stock_id = null) {
 			$Ajax = Ajax::i();
-			Display::start_row();
+			start_row();
 			$dec2 = 0;
 			$id = find_submit('Edit');
 			if (($id != -1) && $stock_id != null) {
@@ -593,7 +593,7 @@
 			} else {
 				submit_cells('EnterLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 			}
-			Display::end_row();
+			end_row();
 		}
 	} /* end of class defintion */
 

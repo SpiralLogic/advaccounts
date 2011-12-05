@@ -107,7 +107,7 @@
 		}
 		else
 		{
-			$fromc = Sales_Debtor::get_name($fromcust);
+			$fromc = Debtor::get_name($fromcust);
 		}
 		$cols = array(0, 75, 175, 250, 300, 375, 450, 515);
 		$headers
@@ -163,8 +163,8 @@
 				$catt = $trans['cat_description'];
 				$rep->NewLine();
 			}
-			$curr = Banking::get_customer_currency($trans['debtor_no']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['tran_date']));
+			$curr = Bank_Currency::for_debtor($trans['debtor_no']);
+			$rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
 			$cb = $trans['amt'] - $trans['cost'];
 			$rep->NewLine();

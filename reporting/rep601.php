@@ -107,7 +107,7 @@
 						$rep->TextCol(1, 2, $myrow['trans_no']);
 						$rep->TextCol(2, 3, $myrow['ref']);
 						$rep->DateCol(3, 4, $myrow["trans_date"], true);
-						$rep->TextCol(4, 5, Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
+						$rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
 						if ($myrow['amount'] > 0.0) {
 							$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 							$total_debit += abs($myrow['amount']);

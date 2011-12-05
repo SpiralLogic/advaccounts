@@ -76,7 +76,7 @@
 				$input_error = true;
 			}
 		}
-		if (!Tax_Types::is_tax_gl_unique(Display::get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
 			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
@@ -152,22 +152,22 @@
 			if (!check_data()) {
 				return;
 			}
-			if (Display::get_post('ChgTax', 0) != 0) {
+			if (get_post('ChgTax', 0) != 0) {
 				$taxexists = false;
 				foreach (Purch_Trans::i()->gl_codes as &$gl_item) {
 					if ($gl_item->gl_code == 2430) {
 						$taxexists = true;
-						$gl_item->amount += Display::get_post('ChgTax');
+						$gl_item->amount += get_post('ChgTax');
 						break;
 					}
 				}
 				if (!$taxexists) {
-					Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Display::get_post('ChgTax'), 'GST Correction');
+					Purch_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
 				}
 			}
-			if (Display::get_post('ChgTotal', 0) != 0) {
+			if (get_post('ChgTotal', 0) != 0) {
 				Purch_Trans::i()
-				 ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Display::get_post('ChgTotal'),
+				 ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'),
 					'Rounding Correction');
 			}
 			$invoice_no = Purch_Invoice::add(Purch_Trans::i());
@@ -310,7 +310,7 @@
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
-	Display::start_form();
+	start_form();
 	Purch_Invoice::header(Purch_Trans::i());
 	if ($_SESSION['supplier_id']) {
 		$_POST['supplier_id'] = $_SESSION['supplier_id'];
@@ -333,13 +333,13 @@
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
-	if (Display::get_post('AddGLCodeToTrans')) {
+	if (get_post('AddGLCodeToTrans')) {
 		$Ajax->activate('inv_tot');
 	}
 	Display::br();
 	submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
 	Display::br();
-	Display::end_form();
+	end_form();
 
 	Item::addEditDialog();
 	$js = <<<JS

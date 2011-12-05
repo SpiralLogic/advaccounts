@@ -20,18 +20,18 @@
 		{
 			global $systypes_array;
 			$trans_name = $systypes_array[$_GET['type_id']];
-			Display::start_table('tablestyle width95');
+			start_table('tablestyle width95');
 			$th = array(
 				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
-			Display::table_header($th);
-			Display::start_row();
+			table_header($th);
+			start_row();
 			label_cell("$trans_name #" . $_GET['trans_no']);
 			label_cell($myrow["reference"]);
 			label_cell(Dates::sql2date($myrow["tran_date"]));
-			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			Display::end_row();
+			label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+			end_row();
 			DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
-			Display::end_table(1);
+			end_table(1);
 		}
 
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
@@ -64,8 +64,8 @@
 		}
 		if (!$heading_shown) {
 			display_gl_heading($myrow);
-			Display::start_table('tablestyle width95');
-			Display::table_header($th);
+			start_table('tablestyle width95');
+			table_header($th);
 			$heading_shown = true;
 		}
 		Display::alt_table_row_color($k);
@@ -77,13 +77,13 @@
 		if ($dim > 1) {
 			label_cell(Dimensions::get_string($myrow['dimension2_id'], true));
 		}
-		Display::debit_or_credit_cells($myrow['amount']);
+		debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
-		Display::end_row();
+		end_row();
 	}
 	//end of while loop
 	if ($heading_shown) {
-		Display::end_table(1);
+		end_table(1);
 	}
 	Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 	end_page(true);

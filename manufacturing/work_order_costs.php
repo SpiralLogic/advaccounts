@@ -29,7 +29,7 @@
 		exit;
 	}
 
-	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
+	$wo_details = WO::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
@@ -65,10 +65,10 @@
 		DB::begin_transaction();
 		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0,
 			$wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
-		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
+		$is_bank_to = Bank_Account::is($_POST['cr_acc']);
 		if ($is_bank_to) {
 			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER,
-				$_POST['PaymentType'], Banking::get_company_currency(), "Cannot insert a destination bank transaction");
+				$_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
 		}
 		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
@@ -78,10 +78,10 @@
 
 	WO_Cost::display($_POST['selected_id']);
 
-	Display::start_form();
+	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	Display::br();
 	yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
 	date_row(_("Date:"), 'date_');
@@ -94,11 +94,11 @@
 	amount_row(_("Additional Costs:"), 'costs');
 	GL_UI::all_row(_("Debit Account"), 'db_acc', null);
 	GL_UI::all_row(_("Credit Account"), 'cr_acc', null);
-	Display::end_table(1);
+	end_table(1);
 	hidden('dim1', $item_accounts["dimension_id"]);
 	hidden('dim2', $item_accounts["dimension2_id"]);
 	submit_center('process', _("Process Additional Cost"), true, '', true);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

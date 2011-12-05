@@ -119,7 +119,7 @@
 		}
 		else
 		{
-			$salesfolk = Sales_Debtor::get_salesman($folk);
+			$salesfolk = Debtor::get_salesman($folk);
 		}
 		if ($more != '') {
 			$morestr = _('Greater than ') . Num::format($more, $dec);

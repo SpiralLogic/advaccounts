@@ -137,7 +137,7 @@
 			switch ($type) {
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
-					return combo_input(
+					return select_box(
 						$name, '', $sql, 'curr_abrev', 'name', array(
 							'spec_option' => _("No Currency Filter"),
 							'spec_id' => ALL_TEXT,
@@ -208,14 +208,14 @@
 					return "<textarea rows=4 cols=30 name='$name'></textarea>";
 				case 'ACCOUNTS': // not used
 //					$sql = "SELECT id, name FROM ".''."chart_types";
-//					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
-					return GL_UI::types($name, null, _("No Account Group Filter"), true);
+//					return select_box($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
+					return GL_Type::select($name, null, _("No Account Group Filter"), true);
 				case 'ACCOUNTS_NO_FILTER': // not used
-					return GL_UI::types($name);
+					return GL_Type::select($name);
 				case 'GL_ACCOUNTS':
 					return GL_UI::all($name);
 				case 'BANK_ACCOUNTS':
-					return Bank_UI::accounts($name);
+					return Bank_Account::select($name);
 				case 'DIMENSION':
 					return Dimensions::select($name, null, false, ' ', false, true, 0);
 				case 'DIMENSIONS':
@@ -232,7 +232,7 @@
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
-						return combo_input(
+						return select_box(
 							$name, '', $sql, 'debtor_no', 'name', array(
 								'spec_option' => _("No Customer Filter"),
 								'spec_id' => ALL_NUMERIC
@@ -241,14 +241,14 @@
 					} // FIX allitems numeric!
 						//						return Debtor_UI::select($name, null, _("No Customer Filter"));
 					else {
-						return combo_input($name, '', $sql, 'debtor_no', 'name', null);
+						return select_box($name, '', $sql, 'debtor_no', 'name', null);
 					}
 				//						return Debtor_UI::select($name);
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER') {
-						return combo_input(
+						return select_box(
 							$name, '', $sql, 'supplier_id', 'supp_name', array(
 								'spec_option' => _("No Supplier Filter"),
 								'spec_id' => ALL_NUMERIC
@@ -257,7 +257,7 @@
 					} // FIX allitems numeric!
 						//						return Purch_UI::suppliers($name, null, _("No Supplier Filter"));
 					else {
-						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', null);
+						return select_box($name, '', $sql, 'supplier_id', 'supp_name', null);
 					}
 				//						return Purch_UI::suppliers($name);
 				case 'INVOICE':
@@ -268,7 +268,7 @@
 					 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
-					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'DELIVERY':
 					$DN = _("DN");
 					$sql
@@ -277,7 +277,7 @@
 					 debtors_master.name) as IName
 						FROM debtors_master, debtor_trans
 						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
-					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ORDERS':
 					$ref = (Config::get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
 					$sql
@@ -285,7 +285,7 @@
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY sales_orders.order_no DESC";
-					return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'order_no', 'IName', array('order' => false));
 				case 'QUOTATIONS':
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
 					$sql
@@ -293,14 +293,14 @@
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY sales_orders.order_no DESC";
-					return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'order_no', 'IName', array('order' => false));
 				case 'PO':
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
 					$sql
 					 = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
 						suppliers.supp_name) as IName
 						FROM suppliers, purch_orders WHERE suppliers.supplier_id=purch_orders.supplier_id ORDER BY purch_orders.order_no DESC";
-					return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'order_no', 'IName', array('order' => false));
 				case 'REMITTANCE':
 					$BP = _("BP");
 					$SP = _("SP");
@@ -310,7 +310,7 @@
 					 = "SELECT concat(supp_trans.trans_no, '-',
 						supp_trans.type) AS TNO, concat(supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
 						FROM suppliers, supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=supp_trans.supplier_id ORDER BY supp_trans.trans_no DESC";
-					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'RECEIPT':
 					$BD = _("BD");
 					$CP = _("CP");
@@ -320,7 +320,7 @@
 					 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
-					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'REFUND':
 					$BD = _("BD");
 					$CP = _("CP");
@@ -331,7 +331,7 @@
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
 						' $CP ', ' $CN ')), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
-					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ITEMS':
 					return Item_UI::manufactured($name);
 				case 'WORKORDER':
@@ -339,7 +339,7 @@
 					 = "SELECT workorders.id, concat(workorders.id, '-',
 						stock_master.description) as IName
 						FROM stock_master, workorders WHERE stock_master.stock_id=workorders.stock_id ORDER BY workorders.id DESC";
-					return combo_input($name, '', $sql, 'id', 'IName', array('order' => false));
+					return select_box($name, '', $sql, 'id', 'IName', array('order' => false));
 				case 'LOCATIONS':
 					return Inv_Location::select($name, null, _("No Location Filter"));
 				case 'CATEGORIES':
@@ -354,7 +354,7 @@
 					return GL_UI::fiscalyears($name);
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM users";
-					return combo_input(
+					return select_box(
 						$name, '', $sql, 'id', 'user_id', array(
 							'spec_option' => _("No Users Filter"),
 							'spec_id' => ALL_NUMERIC

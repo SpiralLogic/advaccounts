@@ -153,7 +153,7 @@
 					$rep->NewLine();
 				}
 				$rep->TextCol(0, 1, $myrow['order_no']);
-				$rep->TextCol(1, 2, Sales_Debtor::get_name($myrow['debtor_no']));
+				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_no']));
 				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_code']));
 				$rep->TextCol(3, 4, $myrow['customer_ref']);
 				$rep->DateCol(4, 5, $myrow['ord_date'], true);

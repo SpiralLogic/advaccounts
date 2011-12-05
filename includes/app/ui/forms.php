@@ -9,6 +9,29 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
+	function start_form($multi = false, $action = "", $name = "") {
+		if ($name != "") {
+			$name = "name='$name'";
+		}
+		if ($action == "") {
+			$action = $_SERVER['PHP_SELF'];
+		}
+		if ($multi) {
+			echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
+		} else {
+			echo "<form method='post' action='$action' $name>\n";
+		}
+	}
+
+	function end_form($breaks = 0) {
+		if ($breaks) {
+			Display::br($breaks);
+		}
+		echo "<input type=\"hidden\" name=\"_focus\" value=\"" . get_post('_focus') . "\">\n";
+		echo "</form>\n";
+	}
+
 	/**
 	 * Seek for _POST variable with $prefix.
 	 * If var is found returns variable name with prefix stripped,
@@ -29,6 +52,10 @@
 		return $numeric ? -1 : null;
 	}
 
+	function get_post($name, $dflt = '') {
+		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+	}
+
 	/**
 	 *	Helper function.
 	 *	Returns true if selector $name is subject to update.
@@ -44,7 +71,7 @@
 	function hidden($name, $value = null, $echo = true) {
 		$Ajax = Ajax::i();
 		if ($value === null) {
-			$value = Display::get_post($name);
+			$value = get_post($name);
 		}
 		$ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
 		$Ajax->addUpdate($name, $name, $value);
@@ -70,7 +97,7 @@
 	 *
 	 * @return string
 	 */
-	function combo_input($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
+	function select_box($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
 		$Ajax = Ajax::i();
 		$opts = array( // default options
 			'where' => array(), // additional constraints
@@ -131,12 +158,12 @@
 			 ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
 		}
 		if ($selected_id == null) {
-			$selected_id = Display::get_post($name, (string)$opts['default']);
+			$selected_id = get_post($name, (string)$opts['default']);
 		}
 		if (!is_array($selected_id)) {
 			$selected_id = array((string)$selected_id);
 		} // code is generalized for multiple selection support
-		$txt = Display::get_post($search_box);
+		$txt = get_post($search_box);
 		$rel = '';
 		$limit = '';
 		if (isset($_POST['_' . $name . '_update'])) { // select list or search box change
@@ -172,7 +199,7 @@
 					if ($spec_option === false && $selected_id == array()) {
 						$limit = ' LIMIT 1';
 					} else {
-						$opts['where'][] = $valfield . "='" . Display::get_post($name, $spec_id) . "'";
+						$opts['where'][] = $valfield . "='" . get_post($name, $spec_id) . "'";
 					}
 				} else {
 					if ($txt != '*') {
@@ -223,7 +250,7 @@
 				$value = $contact_row[0];
 				$descr = $opts['format'] == null ? $contact_row[1] : call_user_func($opts['format'], $contact_row);
 				$sel = '';
-				if (Display::get_post($search_button) && ($txt == $value)) {
+				if (get_post($search_button) && ($txt == $value)) {
 					$selected_id[] = $value;
 				}
 				if (in_array((string)$value, $selected_id, true)) {
@@ -282,7 +309,7 @@
 				}
 				JS::set_focus($name . '_text'); // prevent lost focus
 			} else {
-				if (Display::get_post($search_submit ? $search_submit : "_{$name}_button")) {
+				if (get_post($search_submit ? $search_submit : "_{$name}_button")) {
 					JS::set_focus($name);
 				}
 			} // prevent lost focus
@@ -298,7 +325,7 @@
 		if ($select_submit != false || $search_button) {
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
-				 'display:none;'), '_' . $name . '_update') . "\n";
+			 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		// ------ make combo ----------
 		$edit_entry = '';
@@ -308,7 +335,7 @@
 			if ($search_submit != false || $opts['editable']) {
 				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
 				$edit_entry .= sprintf($_search_button, $disabled, User::theme(), (User::fallback() ? '' :
-					 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
+				 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
 		JS::default_focus(($search_box && $by_id) ? $search_box : $name);
@@ -354,7 +381,7 @@
 		$disabled = $opts['disabled'] ? "disabled" : '';
 		$multi = $opts['multi'];
 		if ($selected_id == null) {
-			$selected_id = Display::get_post($name, $opts['default']);
+			$selected_id = get_post($name, $opts['default']);
 		}
 		if (!is_array($selected_id)) {
 			$selected_id = array($selected_id);
@@ -402,7 +429,7 @@
 		if ($select_submit != false) { // if submit on change is used - add select button
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
-				 'display:none;'), '_' . $name . '_update') . "\n";
+			 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		JS::default_focus($name);
 		return $selector;
@@ -587,12 +614,12 @@
 				$icon = ICON_DELETE;
 			}
 			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='1'" . ($title ?
+				'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='1'" . ($title ?
 			 " title='$title'" : " title='$value'") . ($aspect ? " aspect='$aspect'" :
 			 '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		} else {
 			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='$value'" . ($title ?
+				'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='$value'" . ($title ?
 			 " title='$title'" : '') . ($aspect ? " aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
@@ -634,7 +661,7 @@
 			}
 		}
 		if ($value === null) {
-			$value = Display::get_post($name, 0);
+			$value = get_post($name, 0);
 		}
 		$str .= "<input" . ($value == 1 ? ' checked' :
 		 '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
@@ -670,7 +697,7 @@
 		}
 		echo "<td>";
 		if ($value === null) {
-			$value = Display::get_post($name);
+			$value = get_post($name);
 		}
 		echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" . ($title ?
 		 " title='$title'" : '') . ">";
@@ -721,21 +748,21 @@
 	}
 
 	function email_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
-		if (Display::get_post($name)) {
+		if (get_post($name)) {
 			$label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
 		}
 		text_row($label, $name, $value, $size, $max, $title, $params, $post_label);
 	}
 
 	function email_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
-		if (Display::get_post($name)) {
+		if (get_post($name)) {
 			$label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
 		}
 		text_row_ex($label, $name, $size, $max, $title, $value, $params, $post_label);
 	}
 
 	function link_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
-		$val = Display::get_post($name);
+		$val = get_post($name);
 		if ($val) {
 			if (strpos($val, 'http://') === false) {
 				$val = 'http://' . $val;
@@ -746,7 +773,7 @@
 	}
 
 	function link_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
-		$val = Display::get_post($name);
+		$val = get_post($name);
 		if ($val) {
 			if (strpos($val, 'http://') === false) {
 				$val = 'http://' . $val;
@@ -799,14 +826,14 @@
 		echo "<td>";
 		$class = $submit_on_change ? 'class="searchbox"' : '';
 		$aspect = $check ? 'aspect="cdate"' : '';
-		if ($check && (Display::get_post($name) != Dates::Today())) {
+		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
 		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ?
 		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
 		DatePicker::add($name, array(
-																'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
+			'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
@@ -1001,7 +1028,7 @@
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
 		if (check_value('show_inactive')) {
-			if (isset($_POST['LInact'][$id]) && (Display::get_post('_Inactive' . $id . '_update') || Display::get_post('Update')) && (check_value('Inactive' . $id) != $value)
+			if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
 			) {
 				DB::update_record_status($id, !$value, $table, $key);
 			}
@@ -1030,7 +1057,7 @@
 		if (check_value('show_inactive')) {
 			Arr::insert($th, count($th) - 2, _("Inactive"));
 		}
-		if (Display::get_post('_show_inactive_update')) {
+		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('_page_body');
 		}
 	}
@@ -1040,7 +1067,7 @@
 		$items['0'] = strlen($name_no) ? $name_no : _("No");
 		$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 		return array_selector($name, $selected_id, $items, array(
-																														'select_submit' => $submit_on_change, 'async' => false)); // FIX?
+			'select_submit' => $submit_on_change, 'async' => false)); // FIX?
 	}
 
 	function yesno_list_cells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
@@ -1068,7 +1095,7 @@
 			$items[$i] = "$i";
 		}
 		return array_selector($name, $selected, $items, array(
-																												 'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC));
+			'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC));
 	}
 
 	function number_list_cells($label, $name, $selected, $from, $to, $no_option = false) {
@@ -1117,7 +1144,7 @@
 	function _format_add_curr($row) {
 		static $company_currency;
 		if ($company_currency == null) {
-			$company_currency = Banking::get_company_currency();
+			$company_currency = Bank_Currency::for_company();
 		}
 		return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
 	}

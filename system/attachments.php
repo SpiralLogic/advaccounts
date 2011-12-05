@@ -137,11 +137,11 @@
 	}
 	function viewing_controls()
 	{
-		Display::start_form();
-		Display::start_table('tablestyle_noborder');
+		start_form();
+		start_table('tablestyle_noborder');
 		SysTypes::view_row(_("Type:"), 'filterType', null, true);
-		Display::end_table(1);
-		Display::end_form();
+		end_table(1);
+		end_form();
 	}
 
 
@@ -164,9 +164,9 @@
 		$rows = get_attached_documents($type);
 		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 		Display::div_start('transactions');
-		Display::start_form();
-		Display::start_table('tablestyle');
-		Display::table_header($th);
+		start_form();
+		start_table('tablestyle');
+		table_header($th);
 		$k = 0;
 		while ($row = DB::fetch($rows))
 		{
@@ -181,11 +181,11 @@
 			button_cell("view" . $row['id'], _("View"), false, ICON_VIEW);
 			button_cell("download" . $row['id'], _("Download"), false, ICON_DOWN);
 			delete_button_cell("Delete" . $row['id'], _("Delete"));
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table(1);
+		end_table(1);
 		hidden('filterType', $type);
-		Display::end_form();
+		end_form();
 		Display::div_end();
 	}
 
@@ -194,8 +194,8 @@
 	if (isset($_POST['filterType'])) {
 		display_rows($_POST['filterType']);
 	}
-	Display::start_form(true);
-	Display::start_table('tablestyle2');
+	start_form(true);
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$row = get_attachment($selected_id);
@@ -211,12 +211,12 @@
 	}
 	text_row_ex(_("Description") . ':', 'description', 40);
 	file_row(_("Attached File") . ":", 'filename', 'filename');
-	Display::end_table(1);
+	end_table(1);
 	if (isset($_POST['filterType'])) {
 		hidden('filterType', $_POST['filterType']);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

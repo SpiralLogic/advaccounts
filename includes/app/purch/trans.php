@@ -100,11 +100,11 @@
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
-			$taxes = Taxes::get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
+			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
-					$index = Taxes::is_tax_account($gl_code->gl_code);
+					$index = Tax::is_account($gl_code->gl_code);
 					if ($index !== false) {
 						$taxes[$index]['Value'] += $gl_code->amount;
 					}
@@ -127,7 +127,7 @@
 					User::price_dec(), PHP_ROUND_HALF_EVEN);
 			}
 			foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
-				if (!Taxes::is_tax_account($gl_line->gl_code)) {
+				if (!Tax::is_account($gl_line->gl_code)) {
 					$total += $gl_line->amount;
 				}
 			}
@@ -145,9 +145,9 @@
 				$due_date = Dates::date2sql($due_date);
 			}
 			$trans_no = SysTypes::get_next_trans_no($type);
-			$curr = Banking::get_supplier_currency($supplier_id);
+			$curr = Bank_Currency::for_creditor($supplier_id);
 			if ($rate == 0) {
-				$rate = Banking::get_exchange_rate_from_home_currency($curr, $date_);
+				$rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
 			}
 			$sql = "INSERT INTO supp_trans (trans_no, type, supplier_id, tran_date, due_date,
 				reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
@@ -247,7 +247,7 @@
 				$err_msg = "The supplier GL transaction could not be inserted";
 			}
 			return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo,
-				$amount, Banking::get_supplier_currency($supplier_id),
+				$amount, Bank_Currency::for_creditor($supplier_id),
 				PT_SUPPLIER, $supplier_id, $err_msg, $rate);
 		}
 

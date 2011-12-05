@@ -62,10 +62,10 @@
 		Errors::notice(_("The general GL setup has been updated."));
 	} /* end of if submit */
 
-	Display::start_form();
-	//Display::start_outer_table("class='tablestyle'");
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
+	start_form();
+	//start_outer_table("class='tablestyle'");
+	start_outer_table('tablestyle2');
+	table_section(1);
 	$myrow = DB_Company::get_prefs();
 	$_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];
 	$_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
@@ -94,7 +94,7 @@
 	$_POST['default_dim_required']       = $myrow['default_dim_required'];
 	$_POST['default_delivery_required']  = $myrow['default_delivery_required'];
 
-	Display::table_section_title(_("General GL"));
+	table_section_title(_("General GL"));
 	// Not used in FA2.0.
 	//GL_UI::all_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
 	// Not used in FA2.0.
@@ -105,13 +105,13 @@
 	GL_UI::all_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 	GL_UI::all_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
 
-	Display::table_section_title(_("Customers and Sales"));
+	table_section_title(_("Customers and Sales"));
 	text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
 	check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
 	textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
 	GL_UI::all_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
-	Display::table_section_title(_("Customers and Sales Defaults"));
+	table_section_title(_("Customers and Sales Defaults"));
 	// default for customer branch
 	GL_UI::all_row(_("Receivable Account:"), 'debtors_act');
 	GL_UI::all_row(
@@ -125,23 +125,23 @@
 		$_POST['default_delivery_required'], 6, 6, '', "", _("days")
 	);
 
-	Display::table_section(2);
-	Display::table_section_title(_("Dimension Defaults"));
+	table_section(2);
+	table_section_title(_("Dimension Defaults"));
 	text_row(
 		_("Dimension Required By After:"), 'default_dim_required',
 		$_POST['default_dim_required'], 6, 6, '', "", _("days")
 	);
 
-	Display::table_section_title(_("Suppliers and Purchasing"));
+	table_section_title(_("Suppliers and Purchasing"));
 	percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 	percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
-	Display::table_section_title(_("Suppliers and Purchasing Defaults"));
+	table_section_title(_("Suppliers and Purchasing Defaults"));
 	GL_UI::all_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
 	GL_UI::all_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
-	Display::table_section_title(_("Inventory"));
+	table_section_title(_("Inventory"));
 	check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
 	label_row(null, _("Warning:  This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
-	Display::table_section_title(_("Items Defaults"));
+	table_section_title(_("Items Defaults"));
 	GL_UI::all_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
 	GL_UI::all_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
 	// this one is default for items and suppliers (purchase account)
@@ -149,15 +149,15 @@
 	GL_UI::all_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
 	GL_UI::all_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
 
-	Display::table_section_title(_("Manufacturing Defaults"));
+	table_section_title(_("Manufacturing Defaults"));
 	text_row(
 		_("Work Order Required By After:"), 'default_workorder_required',
 		$_POST['default_workorder_required'], 6, 6, '', "", _("days")
 	);
 
-	Display::end_outer_table(1);
+	end_outer_table(1);
 	submit_center('submit', _("Update"), true, '', 'default');
-	Display::end_form(2);
+	end_form(2);
 
 	end_page();
 

@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Balance Sheet Drilldown"));
 
 	// Ajax updates
-	if (Display::get_post('Show')) {
+	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
 	if (isset($_GET["TransFromDate"])) {
@@ -48,10 +48,10 @@
 				 . $from . "&TransToDate=" . $to
 				 . "&account=" . $account['account_code'] . "'>" . $account['account_code']
 				 . " " . $account['account_name'] . "</a>";
-				Display::start_row("class='stockmankobg'");
+				start_row("class='stockmankobg'");
 				label_cell($url);
 				amount_cell(($curr_balance + $prev_balance) * $convert);
-				Display::end_row();
+				end_row();
 			}
 			$acctstotal += $curr_balance + $prev_balance;
 		}
@@ -68,10 +68,10 @@
 		//Display Type Summary if total is != 0
 		if (($acctstotal + $typestotal) != 0) {
 			if ($drilldown && $type == $_POST["AccGrp"]) {
-				Display::start_row("class='inquirybg' style='font-weight:bold'");
+				start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_('Total') . " " . $typename);
 				amount_cell(($acctstotal + $typestotal) * $convert);
-				Display::end_row();
+				end_row();
 			}
 			//START Patch#1 : Display  only direct child types
 			$acctype1 = GL_Type::get($type);
@@ -86,7 +86,7 @@
 				Display::alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($acctstotal + $typestotal) * $convert);
-				Display::end_row();
+				end_row();
 			}
 		}
 		return ($acctstotal + $typestotal);
@@ -94,10 +94,10 @@
 
 	function inquiry_controls()
 	{
-		Display::start_table('tablestyle_noborder');
+		start_table('tablestyle_noborder');
 		date_cells(_("As at:"), 'TransToDate');
 		submit_cells('Show', _("Show"), '', '', 'default');
-		Display::end_table();
+		end_table();
 		hidden('TransFromDate');
 		hidden('AccGrp');
 	}
@@ -117,7 +117,7 @@
 			$drilldown = 0;
 		} // Root level
 		Display::div_start('balance_tbl');
-		Display::start_table('tablestyle width30');
+		start_table('tablestyle width30');
 		if (!$drilldown) //Root Level
 		{
 			$equityclose = $lclose = $calculateclose = 0.0;
@@ -131,7 +131,7 @@
 				$ctype      = $class["ctype"];
 				$classname  = $class["class_name"];
 				//Print Class Name
-				Display::table_section_title($class["class_name"]);
+				table_section_title($class["class_name"]);
 				//Get Account groups/types under this group/type
 				$typeresult = GL_Type::get_all(false, $class['cid'], -1);
 				while ($accounttype = DB::fetch($typeresult))
@@ -147,15 +147,15 @@
 						Display::alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal * $convert);
-						Display::end_row();
+						end_row();
 					}
 					$classclose += $TypeTotal;
 				}
 				//Print Class Summary
-				Display::start_row("class='inquirybg' style='font-weight:bold'");
+				start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_('Total') . " " . $class["class_name"]);
 				amount_cell($classclose * $convert);
-				Display::end_row();
+				end_row();
 				if ($ctype == CL_EQUITY) {
 					$equityclose += $classclose;
 					$econvert = $convert;
@@ -173,14 +173,14 @@
 			$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate="
 			 . $from . "&TransToDate=" . $to
 			 . "&Compare=0'>" . _('Calculated Return') . "</a>";
-			Display::start_row("class='inquirybg' style='font-weight:bold'");
+			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell($url);
 			amount_cell($calculateclose);
-			Display::end_row();
-			Display::start_row("class='inquirybg' style='font-weight:bold'");
+			end_row();
+			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
 			amount_cell($lclose * $lconvert + $equityclose * $econvert + $calculateclose);
-			Display::end_row();
+			end_row();
 		}
 		else //Drill Down
 		{
@@ -192,18 +192,18 @@
 			$class       = GL_Class::get($classid);
 			$convert     = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
-			Display::table_section_title(GL_Type::get_name($_POST["AccGrp"]));
+			table_section_title(GL_Type::get_name($_POST["AccGrp"]));
 			$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, PATH_TO_ROOT);
 		}
-		Display::end_table(1); // outer table
+		end_table(1); // outer table
 		Display::div_end();
 	}
 
 
-	Display::start_form();
+	start_form();
 	inquiry_controls();
 	display_balance_sheet();
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

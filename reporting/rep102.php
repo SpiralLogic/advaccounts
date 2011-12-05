@@ -74,7 +74,7 @@
 		if ($fromcust == ALL_NUMERIC) {
 			$from = _('All');
 		} else {
-			$from = Sales_Debtor::get_name($fromcust);
+			$from = Debtor::get_name($fromcust);
 		}
 		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
@@ -153,12 +153,12 @@
 				continue;
 			}
 			if ($convert) {
-				$rate = Banking::get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+				$rate = Bank_Currency::exchange_rate_from_home($myrow['curr_code'], $to);
 			}
 			else {
 				$rate = 1.0;
 			}
-			$custrec = Sales_Debtor::get_details($myrow['debtor_no'], $to);
+			$custrec = Debtor::get_details($myrow['debtor_no'], $to);
 			foreach (
 				$custrec as $i => $value
 			)

@@ -17,7 +17,7 @@
 
 	// Ajax updates
 	//
-	if (Display::get_post('Show')) {
+	if (get_post('Show')) {
 		$Ajax->activate('trans_tbl');
 	}
 	if (isset($_GET["account"])) {
@@ -51,29 +51,29 @@
 	function gl_inquiry_controls()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
-		Display::start_form();
-		Display::start_table('tablestyle_noborder');
-		Display::start_row();
+		start_form();
+		start_table('tablestyle_noborder');
+		start_row();
 		GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
-		Display::end_row();
-		Display::end_table();
-		Display::start_table();
-		Display::start_row();
+		end_row();
+		end_table();
+		start_table();
+		start_row();
 		if ($dim >= 1) {
-			Dimensions::select_cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
+			Dimensions::cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
 		}
 		if ($dim > 1) {
-			Dimensions::select_cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
+			Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
 		}
 		small_amount_cells(_("Amount min:"), 'amount_min', null);
 		small_amount_cells(_("Amount max:"), 'amount_max', null);
 		submit_cells('Show', _("Show"), '', '', 'default');
-		Display::end_row();
-		Display::end_table();
+		end_row();
+		end_table();
 		echo '<hr>';
-		Display::end_form();
+		end_form();
 	}
 
 
@@ -99,7 +99,7 @@
 		}
 		// Only show balances if an account is specified AND we're not filtering by amounts
 		$show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
 			$account_col = array(_("Account"));
@@ -119,7 +119,7 @@
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
 		}
 		$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
-		Display::table_header($th);
+		table_header($th);
 		if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
 			$begin = "";
 		} else {
@@ -132,12 +132,12 @@
 		$bfw = 0;
 		if ($show_balances) {
 			$bfw = GL_Trans::get_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
-			Display::start_row("class='inquirybg'");
+			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
-			Display::debit_or_credit_cells($bfw);
+			debit_or_credit_cells($bfw);
 			label_cell("");
 			label_cell("");
-			Display::end_row();
+			end_row();
 		}
 		$running_total = $bfw;
 		$j = 1;
@@ -158,29 +158,29 @@
 			if ($dim > 1) {
 				label_cell(Dimensions::get_string($myrow['dimension2_id'], true));
 			}
-			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			Display::debit_or_credit_cells($myrow["amount"]);
+			label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+			debit_or_credit_cells($myrow["amount"]);
 			if ($show_balances) {
 				amount_cell($running_total);
 			}
 			label_cell($myrow['memo_']);
-			Display::end_row();
+			end_row();
 			$j++;
 			if ($j == 12) {
 				$j = 1;
-				Display::table_header($th);
+				table_header($th);
 			}
 		}
 		//end of while loop
 		if ($show_balances) {
-			Display::start_row("class='inquirybg'");
+			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=$colspan");
-			Display::debit_or_credit_cells($running_total);
+			debit_or_credit_cells($running_total);
 			label_cell("");
 			label_cell("");
-			Display::end_row();
+			end_row();
 		}
-		Display::end_table(2);
+		end_table(2);
 		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 		}
@@ -189,7 +189,7 @@
 
 	gl_inquiry_controls();
 	Display::div_start('trans_tbl');
-	if (Display::get_post('Show') || Display::get_post('account')) {
+	if (get_post('Show') || get_post('account')) {
 		show_results();
 	}
 	Display::div_end();

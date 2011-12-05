@@ -76,7 +76,7 @@
 
 		public static function	roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
 			$sql = "SELECT id, role, inactive FROM security_roles";
-			return combo_input($name, $selected_id, $sql, 'id', 'description', array(
+			return select_box($name, $selected_id, $sql, 'id', 'description', array(
 																																							'spec_option' => $new_item ? _("New role") :
 																																							 false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
 		}

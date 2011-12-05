@@ -51,7 +51,7 @@
 		public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference,
 			$quantity, $standard_cost, $memo_)
 			{
-				$mb_flag = Manufacturing::get_mb_flag($stock_id);
+				$mb_flag = WO::get_mb_flag($stock_id);
 				if (Input::post('mb_flag') == STOCK_SERVICE) {
 					Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 				}
@@ -71,19 +71,19 @@
 
 		public static function header($order)
 			{
-				Display::start_outer_table('tablestyle2 width70'); // outer table
-				Display::table_section(1);
+				start_outer_table('tablestyle2 width70'); // outer table
+				table_section(1);
 				Inv_Location::row(_("Location:"), 'StockLocation', null);
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
-				Display::table_section(2, "33%");
+				table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
-				Display::table_section(3, "33%");
+				table_section(3, "33%");
 				movement_types_list_row(_("Detail:"), 'type', null);
 				if (!isset($_POST['Increase'])) {
 					$_POST['Increase'] = 1;
 				}
 				yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
-				Display::end_outer_table(1); // outer table
+				end_outer_table(1); // outer table
 			}
 
 
@@ -91,13 +91,13 @@
 			{
 				Display::heading($title);
 				Display::div_start('items_table');
-				Display::start_table('tablestyle width90');
+				start_table('tablestyle width90');
 				$th = array(
 					_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), _("Total"), "");
 				if (count($order->line_items)) {
 					$th[] = '';
 				}
-				Display::table_header($th);
+				table_header($th);
 				$total = 0;
 				$k = 0; //row colour counter
 				$id = find_submit('Edit');
@@ -113,7 +113,7 @@
 						amount_cell($stock_item->standard_cost * $stock_item->quantity);
 						edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
 						delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
-						Display::end_row();
+						end_row();
 					} else {
 						Inv_Adjustment::item_controls($order, $line_no);
 					}
@@ -122,7 +122,7 @@
 					Inv_Adjustment::item_controls($order);
 				}
 				label_row(_("Total"), Num::format($total, User::price_dec()), "class=right colspan=5", "class=right", 2);
-				Display::end_table();
+				end_table();
 				Display::div_end();
 			}
 
@@ -130,7 +130,7 @@
 		public static function item_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
-				Display::start_row();
+				start_row();
 				$dec2 = 0;
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
@@ -170,16 +170,16 @@
 				} else {
 					submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 				}
-				Display::end_row();
+				end_row();
 			}
 
 
 		public static function option_controls()
 			{
 				echo "<br>";
-				Display::start_table('center');
+				start_table('center');
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
-				Display::end_table(1);
+				end_table(1);
 			}
 
 	}

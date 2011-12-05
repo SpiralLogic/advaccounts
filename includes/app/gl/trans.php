@@ -21,7 +21,7 @@
 			$date = Dates::date2sql($date_);
 			if ($currency != null) {
 				if ($rate == 0) {
-					$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
+					$amount_in_home_currency = Bank_Currency::to_home($amount, $currency, $date_);
 				} else {
 					$amount_in_home_currency = Num::round($amount * $rate, User::price_dec());
 				}
@@ -250,7 +250,7 @@
 		//
 		public static function  add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
 		{
-			$tax_type = Taxes::is_tax_account($gl_code);
+			$tax_type = Tax::is_account($gl_code);
 			if (!$tax_type) {
 				return;
 			} // $gl_code is not tax account
@@ -336,66 +336,6 @@
 		}
 
 
-		// Write/update journal entries.
-		//
-		public static function  write_journal_entries($cart, $reverse, $use_transaction = true)
-		{
-			$date_ = $cart->tran_date;
-			$ref = $cart->reference;
-			$memo_ = $cart->memo_;
-			$trans_type = $cart->trans_type;
-			$new = $cart->order_id == 0;
-			if ($new) {
-				$cart->order_id = SysTypes::get_next_trans_no($trans_type);
-			}
-			$trans_id = $cart->order_id;
-			if ($use_transaction) {
-				DB::begin_transaction();
-			}
-			if (!$new) {
-				static::void_journal_trans($trans_type, $trans_id, false);
-			}
-			foreach ($cart->gl_items as $journal_item) {
-				// post to first found bank account using given gl acount code.
-				$is_bank_to = Banking::is_bank_account($journal_item->code_id);
-				static::add($trans_type, $trans_id, $date_, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, $journal_item->amount);
-				if ($is_bank_to) {
-					Bank_Trans::add($trans_type, $trans_id, $is_bank_to, $ref, $date_, $journal_item->amount, 0, "", Banking::get_company_currency(), "Cannot insert a destination bank transaction");
-				}
-				// store tax details if the gl account is a tax account
-				static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
-			}
-			if ($new) {
-				DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
-				Ref::save($trans_type, $trans_id, $ref);
-			} else {
-				DB_Comments::update($trans_type, $trans_id, null, $memo_);
-				Ref::update($trans_type, $trans_id, $ref);
-			}
-			DB_AuditTrail::add($trans_type, $trans_id, $date_);
-			if ($reverse) {
-				//$reversingDate = date(User::date_display(),
-				//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-				$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
-				$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
-				foreach ($cart->gl_items as $journal_item) {
-					$is_bank_to = Banking::is_bank_account($journal_item->code_id);
-					static::add($trans_type, $trans_id_reverse, $reversingDate, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, -$journal_item->amount);
-					if ($is_bank_to) {
-						Bank_Trans::add($trans_type, $trans_id_reverse, $is_bank_to, $ref, $reversingDate, -$journal_item->amount, 0, "", Banking::get_company_currency(), "Cannot insert a destination bank transaction");
-					}
-					// store tax details if the gl account is a tax account
-					static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
-				}
-				DB_Comments::add($trans_type, $trans_id_reverse, $reversingDate, $memo_);
-				Ref::save($trans_type, $trans_id_reverse, $ref);
-				DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
-			}
-			if ($use_transaction) {
-				DB::commit_transaction();
-			}
-			return $trans_id;
-		}
 
 
 		public static function  exists($type, $trans_id)
@@ -417,21 +357,6 @@
 				DB::commit_transaction();
 			}
 		}
-
-
-		public static function  void_journal_trans($type, $type_no, $use_transaction = true)
-		{
-			if ($use_transaction) {
-				DB::begin_transaction();
-			}
-			Bank_Trans::void($type, $type_no, true);
-			//	static::void($type, $type_no, true);	 // this is done above
-			//	static::void_tax_details($type, $type_no); // ditto
-			if ($use_transaction) {
-				DB::commit_transaction();
-			}
-		}
-
 
 		public static function  get_value($account, $type, $trans_no)
 		{

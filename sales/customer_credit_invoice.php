@@ -184,17 +184,17 @@
 
 	function display_credit_items()
 		{
-			Display::start_form();
+			start_form();
 			hidden('cart_id');
-			Display::start_table('tablestyle2 width90 pad5');
+			start_table('tablestyle2 width90 pad5');
 			echo "<tr><td>"; // outer table
-			Display::start_table('tablestyle width100');
-			Display::start_row();
+			start_table('tablestyle width100');
+			start_row();
 			label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 			label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 			label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
-			Display::end_row();
-			Display::start_row();
+			end_row();
+			start_row();
 			//	if (!isset($_POST['ref']))
 			//		$_POST['ref'] = Ref::get_next(11);
 			if ($_SESSION['Items']->trans_no == 0) {
@@ -213,20 +213,20 @@
 			//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 			//	label_cell(_("Sales Type"), "class='tableheader2'");
 			//	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
-			Display::end_row();
-			Display::end_table();
+			end_row();
+			end_table();
 			echo "</td><td>"; // outer table
-			Display::start_table('tablestyle width100');
+			start_table('tablestyle width100');
 			label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 			date_row(_("Credit Note Date"), 'CreditDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'");
-			Display::end_table();
+			end_table();
 			echo "</td></tr>";
-			Display::end_table(1); // outer table
+			end_table(1); // outer table
 			Display::div_start('credit_items');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
-			Display::table_header($th);
+			table_header($th);
 			$k = 0; //row colour counter
 			foreach ($_SESSION['Items']->line_items as $line_no => $ln_itm) {
 				if ($ln_itm->quantity == $ln_itm->qty_done) {
@@ -244,24 +244,24 @@
 				amount_cell($ln_itm->price);
 				percent_cell($ln_itm->discount_percent * 100);
 				amount_cell($line_total);
-				Display::end_row();
+				end_row();
 			}
 			if (!Validation::is_num('ChargeFreightCost')) {
 				$_POST['ChargeFreightCost'] = Num::price_format($_SESSION['Items']->freight_cost);
 			}
 			$colspan = 7;
-			Display::start_row();
+			start_row();
 			label_cell(_("Credit Shipping Cost"), "colspan=$colspan style='text-align:right;'");
-			small_amount_cells(null, "ChargeFreightCost", Num::price_format(Display::get_post('ChargeFreightCost', 0)));
-			Display::end_row();
+			small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
+			end_row();
 			$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 			$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
 			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
 			$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
-			$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+			$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 			$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
 			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
-			Display::end_table();
+			end_table();
 			Display::div_end();
 		}
 
@@ -274,7 +274,7 @@
 				$Ajax->activate('options');
 			}
 			Display::div_start('options');
-			Display::start_table('tablestyle2');
+			start_table('tablestyle2');
 			Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
 			if ($_POST['CreditType'] == "Return") {
 				/*if the credit note is a return of goods then need to know which location to receive them into */
@@ -292,7 +292,7 @@
 		}
 
 
-	if (Display::get_post('Update')) {
+	if (get_post('Update')) {
 		$Ajax->activate('credit_items');
 	}
 
@@ -303,7 +303,7 @@
 	echo "&nbsp";
 	submit('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 	echo "</div>";
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

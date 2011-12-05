@@ -11,7 +11,7 @@ class Tax_UI {
 	// TAX TYPES
 	public static function  types($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 		$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
-		return combo_input($name, $selected_id, $sql, 'id', 'name', array(
+		return select_box($name, $selected_id, $sql, 'id', 'name', array(
 																																		 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 	}
 
@@ -33,7 +33,7 @@ class Tax_UI {
 	// TAX GROUPS
 	public static function  groups($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 		$sql = "SELECT id, name FROM tax_groups";
-		return combo_input($name, $selected_id, $sql, 'id', 'name', array(
+		return select_box($name, $selected_id, $sql, 'id', 'name', array(
 																																		 'order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 	}
 
@@ -55,7 +55,7 @@ class Tax_UI {
 	// ITEM TAX TYPES
 	public static function  item_types($name, $selected_id = null) {
 		$sql = "SELECT id, name FROM item_tax_types";
-		return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
+		return select_box($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
 	}
 
 	public static function  item_types_cells($label, $name, $selected_id = null) {

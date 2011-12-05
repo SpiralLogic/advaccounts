@@ -75,7 +75,7 @@
 		$Ajax->activate('_page_body');
 	}
 
-	Display::start_form();
+	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -90,12 +90,12 @@
 	$dflt_cat = $result['category_id'];
 	$result = Item_Code::get_all($_POST['stock_id']);
 	Display::div_start('code_table');
-	Display::start_table('tablestyle width60');
+	start_table('tablestyle width60');
 	$th = array(
 		_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""
 	);
-	Display::table_header($th);
+	table_header($th);
 	$k = $j = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
 	{
@@ -107,14 +107,14 @@
 		label_cell($myrow["cat_name"]);
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		edit_button_cell("Delete" . $myrow['id'], _("Delete"));
-		Display::end_row();
+		end_row();
 		$j++;
 		If ($j == 12) {
 			$j = 1;
-			Display::table_header($th);
+			table_header($th);
 		} //end of page full new headings
 	} //end of while loop
-	Display::end_table();
+	end_table();
 	Display::div_end();
 
 	if ($selected_id != '') {
@@ -132,15 +132,15 @@
 		$_POST['category_id'] = $dflt_cat;
 	}
 	echo "<br>";
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	hidden('code_id', $selected_id);
 	text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
 	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
 	text_row(_("Description:"), 'description', null, 50, 200);
 	Item_Category::row(_("Category:"), 'category_id', null);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

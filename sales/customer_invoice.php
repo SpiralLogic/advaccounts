@@ -289,15 +289,15 @@
 	$viewing = isset($_GET['ViewInvoice']);
 	$is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
-	Display::start_form();
+	start_form();
 	hidden('cart_id');
-	Display::start_table('tablestyle2 width90 pad5');
-	Display::start_row();
+	start_table('tablestyle2 width90 pad5');
+	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 	label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 	} else {
@@ -306,8 +306,8 @@
 	label_cells(_("Delivery Notes:"),
 		Debtor_UI::trans_view(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 	label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	if (!isset($_POST['ship_via'])) {
 		$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 	}
@@ -336,18 +336,18 @@
 	} else {
 		label_cell($_POST['due_date']);
 	}
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	$row = Sales_Order::get_customer($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
-		Display::end_form();
+		end_form();
 		end_page();
 		exit();
 	}
 	Display::heading(_("Invoice Items"));
 	Display::div_start('Items');
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
@@ -356,7 +356,7 @@
 	if ($is_edition) {
 		$th[4] = _("Credited");
 	}
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	$has_marked = false;
 	$show_qoh = true;
@@ -403,7 +403,7 @@
 			}
 			$dn_line_cnt--;
 		}
-		Display::end_row();
+		end_row();
 	}
 	/* Don't re-calculate freight if some of the order has already been delivered -
 					depending on the business logic required this condition may not be required.
@@ -424,7 +424,7 @@
 		set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 	}
 	$colspan = 9;
-	Display::start_row();
+	start_row();
 	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
 	if (!$viewing) {
 		small_amount_cells(null, 'ChargeFreightCost', null);
@@ -434,28 +434,28 @@
 	if ($is_batch_invoice) {
 		label_cell('', 'colspan=2');
 	}
-	Display::end_row();
+	end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
-	$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
+	$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Invoice Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
-	Display::end_table(1);
+	end_table(1);
 	Display::div_end();
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
-	Display::end_table(1);
-	Display::start_table('red bold');
+	end_table(1);
+	start_table('red bold');
 	label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO EDIT ANYTHING IN THE FUTURE ON THIS INVOICE"));
-	Display::end_table();
+	end_table();
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
-	Display::start_table('red bold');
+	start_table('red bold');
 	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"),
 		'center');
-	Display::end_table();
-	Display::end_form();
+	end_table();
+	end_form();
 	end_page();
 ?>

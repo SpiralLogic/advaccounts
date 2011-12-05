@@ -15,13 +15,13 @@
 			$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0)
 			{
 				DB::begin_transaction();
-				$supplier_currency = Banking::get_supplier_currency($supplier_id);
-				$bank_account_currency = Banking::get_bank_account_currency($bank_account);
+				$supplier_currency = Bank_Currency::for_creditor($supplier_id);
+				$bank_account_currency = Bank_Currency::for_company($bank_account);
 				$bank_gl_account = Bank_Account::get_gl($bank_account);
 				if ($rate == 0) {
-					$supp_amount = Banking::exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
-					$supp_discount = Banking::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
-					$supp_charge = Banking::exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
+					$supp_amount = Bank::exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
+					$supp_discount = Bank::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
+					$supp_charge = Bank::exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
 				} else {
 					$supp_amount = round($amount / $rate, User::price_dec());
 					$supp_discount = round($discount / $rate, User::price_dec());

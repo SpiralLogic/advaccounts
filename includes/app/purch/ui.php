@@ -15,7 +15,7 @@
 			if ($editkey) {
 				Display::set_editor('supplier', $name, $editkey);
 			}
-			return combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name', array(
+			return select_box($name, $selected_id, $sql, 'supplier_id', 'supp_name', array(
 																																										 'format' => '_format_add_curr', 'order' => array('supp_ref'), 'search_box' => $mode != 0, 'type' => 1, 'spec_option' => $spec_option === true ?
 				 _("All Suppliers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => false, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment') : _('Select supplier'), 'show_inactive' => $all));

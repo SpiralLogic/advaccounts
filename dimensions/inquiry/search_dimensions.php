@@ -22,11 +22,11 @@
 
 	// Ajax updates
 	//
-	if (Display::get_post('SearchOrders')) {
+	if (get_post('SearchOrders')) {
 		$Ajax->activate('dim_table');
-	} elseif (Display::get_post('_OrderNumber_changed'))
+	} elseif (get_post('_OrderNumber_changed'))
 	{
-		$disable = Display::get_post('OrderNumber') !== '';
+		$disable = get_post('OrderNumber') !== '';
 		$Ajax->addDisable(true, 'FromDate', $disable);
 		$Ajax->addDisable(true, 'ToDate', $disable);
 		$Ajax->addDisable(true, 'type_', $disable);
@@ -46,9 +46,9 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	Display::start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	start_table('tablestyle_noborder');
+	start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 	date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
@@ -60,8 +60,8 @@
 		$_POST['OpenOnly'] = 1;
 	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	$dim = DB_Company::get_pref('use_dimension');
 	function view_link($row)
 	{
@@ -157,7 +157,7 @@
 	$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 	$table->width = "80%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

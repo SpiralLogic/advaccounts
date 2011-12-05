@@ -104,17 +104,17 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = Display::get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 
 	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(_("Description"), _("Shipping Tax"), "", "");
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result))
 	{
@@ -131,13 +131,13 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 		;
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//editing an existing status code
 		if ($Mode == 'Edit') {
@@ -160,18 +160,18 @@
 	}
 	text_row_ex(_("Description:"), 'name', 40);
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
-	Display::end_table();
+	end_table();
 	Errors::warning(_("Select the taxes that are included in this group."), 1);
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt
 	$th = array(_("Tax"), _("Rate (%)"));
-	Display::table_header($th);
+	table_header($th);
 	for (
 		$i = 0; $i < 5; $i++
 	)
 	{
-		Display::start_row();
+		start_row();
 		if (!isset($_POST['tax_type_id' . $i])) {
 			$_POST['tax_type_id' . $i] = 0;
 		}
@@ -185,11 +185,11 @@
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
 			//  User::percent_dec());
 		}
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 
 	end_page();
 

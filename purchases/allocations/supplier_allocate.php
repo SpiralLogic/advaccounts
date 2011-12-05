@@ -28,7 +28,7 @@
 	function edit_allocations_for_transaction($type, $trans_no)
 	{
 		global $systypes_array;
-		Display::start_form();
+		start_form();
 		Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
 		Display::heading($_SESSION['alloc']->person_name);
 		Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
@@ -45,7 +45,7 @@
 			submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}
 		Display::div_end();
-		Display::end_form();
+		end_form();
 	}
 
 
@@ -65,7 +65,7 @@
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
 		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
 	}
-	if (Display::get_post('UpdateDisplay')) {
+	if (get_post('UpdateDisplay')) {
 		$_SESSION['alloc']->read();
 		$Ajax->activate('alloc_tbl');
 	}

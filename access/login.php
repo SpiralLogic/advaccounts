@@ -41,9 +41,9 @@
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	Display::div_start('_page_body');
 	Display::br(2);
-	Display::start_form(false, $_SESSION['timeout']['uri'], "loginform");
-	Display::start_table('login');
-	Display::start_row();
+	start_form(false, $_SESSION['timeout']['uri'], "loginform");
+	start_table('login');
+	start_row();
 	echo "<td class='center' colspan=2>";
 	if (!$login_timeout) { // ADV logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts' height='50' border='0' /></a>";
@@ -51,10 +51,10 @@
 		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}
 	echo "</td>\n";
-	Display::end_row();
+	end_row();
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . User::get()->ui_mode . "' />\n";
 	if (!$login_timeout) {
-		Display::table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
+		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
 	}
 	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
 	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
@@ -75,11 +75,11 @@
 			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
 		}
 		echo "</select>\n";
-		Display::start_row();
+		start_row();
 		label_cell($demo_text, "colspan=2 class='center'");
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table(1);
+	end_table(1);
 	echo "<div class='center'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></div>\n";
 	foreach (
 		$_SESSION['timeout']['post'] as $p => $val
@@ -89,7 +89,7 @@
 			echo "<input type='hidden' name='$p' value='$val'>";
 		}
 	}
-	Display::end_form(1);
+	end_form(1);
 	Display::div_end();
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";

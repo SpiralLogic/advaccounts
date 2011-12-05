@@ -88,8 +88,8 @@
 				}
 				$stock_id = $trans['item_code'];
 			}
-			$curr = Banking::get_supplier_currency($trans['supplier_id']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['delivery_date']));
+			$curr = Bank_Currency::for_creditor($trans['supplier_id']);
+			$rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$trans['act_price'] *= $rate;
 			$rep->NewLine();

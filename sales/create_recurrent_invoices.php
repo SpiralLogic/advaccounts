@@ -87,10 +87,10 @@
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
-	Display::start_table('tablestyle width70');
+	start_table('tablestyle width70');
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);
 	$due = false;
@@ -108,7 +108,7 @@
 		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today,
 			$begin) && Dates::date1_greater_date2($end, $today);
 		if ($overdue) {
-			Display::start_row("class='overduebg'");
+			start_row("class='overduebg'");
 			$due = true;
 		} else {
 			Display::alt_table_row_color($k);
@@ -119,7 +119,7 @@
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Debtor::get_name($myrow["debtor_no"]));
 			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);
@@ -132,9 +132,9 @@
 		} else {
 			label_cell("");
 		}
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table();
+	end_table();
 	if ($due) {
 		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
 	} else {

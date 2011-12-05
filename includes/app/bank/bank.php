@@ -16,86 +16,15 @@
 	//	because we have no way to select right bank account if
 	//	there is more than one using given gl account.
 	//
-	class Banking
+	class Bank
 	{
-		public static function is_bank_account($account_code) {
-			$sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
-			$result = DB::query($sql, "checking account is bank account");
-			if (DB::num_rows($result) > 0) {
-				$acct = DB::fetch($result);
-				return $acct['id'];
-			} else {
-				return false;
-			}
-		}
-
-		public static function is_company_currency($currency) {
-			return (static::get_company_currency() == $currency);
-		}
-
-		public static function get_company_currency() {
-			$sql = "SELECT curr_default FROM company";
-			$result = DB::query($sql, "retreive company currency");
-			if (DB::num_rows($result) == 0) {
-				Errors::show_db_error("Could not find the requested currency. Fatal.", $sql);
-			}
-			$myrow = DB::fetch_row($result);
-			return $myrow[0];
-		}
-
-		public static function get_bank_account_currency($id) {
-			$sql = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
-			$result = DB::query($sql, "retreive bank account currency");
-			$myrow = DB::fetch_row($result);
-			return $myrow[0];
-		}
-
-		public static function get_customer_currency($customer_id) {
-			$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no = '$customer_id'";
-			$result = DB::query($sql, "Retreive currency of customer $customer_id");
-			$myrow = DB::fetch_row($result);
-			return $myrow[0];
-		}
-
-		public static function get_supplier_currency($supplier_id) {
-			$sql = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
-			$result = DB::query($sql, "Retreive currency of supplier $supplier_id");
-			$myrow = DB::fetch_row($result);
-			return $myrow[0];
-		}
-
-		public static function get_exchange_rate_from_home_currency($currency_code, $date_) {
-			if ($currency_code == static::get_company_currency() || $currency_code == null) {
-				return 1.0000;
-			}
-			$date = Dates::date2sql($date_);
-			$sql = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
-				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
-			$result = DB::query($sql, "could not query exchange rates");
-			if (DB::num_rows($result) == 0) {
-				// no stored exchange rate, just return 1
-				Errors::error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."), $currency_code, $date_));
-				return 1.000;
-			}
-			$myrow = DB::fetch_row($result);
-			return $myrow[0];
-		}
-
-		public static function get_exchange_rate_to_home_currency($currency_code, $date_) {
-			return 1 / static::get_exchange_rate_from_home_currency($currency_code, $date_);
-		}
-
-		public static function to_home_currency($amount, $currency_code, $date_) {
-			$ex_rate = static::get_exchange_rate_to_home_currency($currency_code, $date_);
-			return Num::round($amount / $ex_rate, User::price_dec());
-		}
 
 		public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
 			//	echo "converting from $from_curr_code to $to_curr_code <BR>";
 			if ($from_curr_code == $to_curr_code) {
 				return 1.0000;
 			}
-			$home_currency = static::get_company_currency();
+			$home_currency = static::for_company();
 			if ($to_curr_code == $home_currency) {
 				return static::get_exchange_rate_to_home_currency($from_curr_code, $date_);
 			}
@@ -179,13 +108,13 @@
 				case PT_MISC :
 				case PT_QUICKENTRY :
 				case PT_WORKORDER :
-					return static::get_company_currency();
+					return static::for_company();
 				case PT_CUSTOMER :
 					return static::get_customer_currency($person_id);
 				case PT_SUPPLIER :
 					return static::get_supplier_currency($person_id);
 				default :
-					return static::get_company_currency();
+					return static::for_company();
 			}
 		}
 
@@ -205,7 +134,7 @@
 					global $wo_cost_types;
 					return $wo_cost_types[$person_id];
 				case PT_CUSTOMER :
-					return ($full ? $payment_person_types[$type] . " " : "") . Sales_Debtor::get_name($person_id);
+					return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);
 				case PT_SUPPLIER :
 					return ($full ? $payment_person_types[$type] . " " : "") . Purch_Creditor::get_name($person_id);
 				default :

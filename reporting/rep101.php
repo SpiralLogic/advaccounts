@@ -107,7 +107,7 @@
 			}
 			else
 			{
-				$cust = Sales_Debtor::get_name($fromcust);
+				$cust = Debtor::get_name($fromcust);
 			}
 			$dec = User::price_dec();
 			if ($currency == ALL_TEXT) {

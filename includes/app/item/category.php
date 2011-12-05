@@ -45,7 +45,7 @@
 
 		public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 			$sql = "SELECT category_id, description, inactive FROM stock_category";
-			return combo_input($name, $selected_id, $sql, 'category_id', 'description', array(
+			return select_box($name, $selected_id, $sql, 'category_id', 'description', array(
 																																											 'order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 		}
 

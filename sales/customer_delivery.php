@@ -213,7 +213,7 @@
 		{
 			if (!DB_Company::get_pref('allow_negative_stock')) {
 				foreach ($_SESSION['Items']->line_items as $itm) {
-					if ($itm->qty_dispatched && Manufacturing::has_stock_holding($itm->mb_flag)) {
+					if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
 						$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 						if ($itm->qty_dispatched > $qoh) {
 							Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
@@ -250,17 +250,17 @@
 		$Ajax->activate('Items');
 	}
 
-	Display::start_form();
+	start_form();
 	hidden('cart_id');
-	Display::start_table('tablestyle2 width90 pad5');
+	start_table('tablestyle2 width90 pad5');
 	echo "<tr><td>"; // outer table
-	Display::start_table('tablestyle width100');
-	Display::start_row();
+	start_table('tablestyle width100');
+	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='label'");
 	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='label'");
 	label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='label'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	//if (!isset($_POST['ref']))
 	//	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
 	if ($_SESSION['Items']->trans_no == 0) {
@@ -271,8 +271,8 @@
 	label_cells(_("For Sales Order"), Debtor_UI::trans_view(ST_SALESORDER, $_SESSION['Items']->order_no),
 		"class='tableheader2'");
 	label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='label'");
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	if (!isset($_POST['Location'])) {
 		$_POST['Location'] = $_SESSION['Items']->Location;
 	}
@@ -291,34 +291,34 @@
 		}
 	}
 	date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='label'");
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	echo "</td><td>"; // outer table
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 	}
-	Display::start_row();
+	start_row();
 	date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	echo "</td></tr>";
-	Display::end_table(1); // outer table
+	end_table(1); // outer table
 	$row = Sales_Order::get_customer($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
-		Display::end_form();
+		end_form();
 		end_page();
 		exit();
 	}
 	Display::heading(_("Delivery Items"));
 	Display::div_start('Items');
-	Display::start_table('tablestyle width90');
+	start_table('tablestyle width90');
 	$new = $_SESSION['Items']->trans_no == 0;
 	$th = array(
 		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") :
 		 _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	$has_marked = false;
 	foreach ($_SESSION['Items']->line_items as $line => $ln_itm) {
@@ -327,7 +327,7 @@
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if (DB_Company::get_pref('allow_negative_stock') || !Manufacturing::has_stock_holding($ln_itm->mb_flag) || $ln_itm->qty_dispatched == 0
+		if (DB_Company::get_pref('allow_negative_stock') || !WO::has_stock_holding($ln_itm->mb_flag) || $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;
 		}
@@ -336,7 +336,7 @@
 		}
 		if ($show_qoh && ($ln_itm->qty_dispatched > $qoh)) {
 			// oops, we don't have enough of one of the component items
-			Display::start_row("class='stockmankobg'");
+			start_row("class='stockmankobg'");
 			$has_marked = true;
 		} else {
 			Display::alt_table_row_color($k);
@@ -354,33 +354,33 @@
 		label_cell($ln_itm->tax_type_name);
 		label_cell($display_discount_percent, "nowrap class=right");
 		amount_cell($line_total);
-		Display::end_row();
+		end_row();
 	}
-	$_POST['ChargeFreightCost'] = Display::get_post('ChargeFreightCost', Num::price_format($_SESSION['Items']->freight_cost));
+	$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format($_SESSION['Items']->freight_cost));
 	$colspan = 9;
-	Display::start_row();
+	start_row();
 	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
 	small_amount_cells(null, 'ChargeFreightCost', $_SESSION['Items']->freight_cost);
-	Display::end_row();
+	end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
-	$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+	$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Amount Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
-	Display::end_table(1);
+	end_table(1);
 	if ($has_marked) {
 		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
-	Display::end_table(1);
+	end_table(1);
 	Display::div_end();
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

@@ -59,7 +59,7 @@
 		// SALES TYPES
 				public static function	select($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 					$sql = "SELECT id, sales_type, inactive FROM sales_types";
-					return combo_input($name, $selected_id, $sql, 'id', 'sales_type', array(
+					return select_box($name, $selected_id, $sql, 'id', 'sales_type', array(
 																																								 'spec_option' => $special_option === true ? _("All Sales Types") :
 																																									$special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	  'async' => false,
 																																						));

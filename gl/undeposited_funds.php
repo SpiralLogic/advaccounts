@@ -17,7 +17,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	function check_date()
 	{
-		if (!Dates::is_date(Display::get_post('deposit_date'))) {
+		if (!Dates::is_date(get_post('deposit_date'))) {
 			Errors::error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
 			return false;
@@ -80,7 +80,7 @@
 
 	function fmt_person($row)
 	{
-		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
+		return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
 	}
 
 	$update_pager = false;
@@ -102,34 +102,34 @@
 		{
 			return false;
 		}
-		if (Display::get_post('bank_date') == '') // new reconciliation
+		if (get_post('bank_date') == '') // new reconciliation
 		{
 			$Ajax->activate('bank_date');
 		}
-		$_POST['bank_date'] = Dates::date2sql(Display::get_post('deposited_date'));
+		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
 										 ." WHERE id=".DB::escape($deposit_id);
 
 										DB::query($sql, "Can't change undeposited status");*/
 		// save last reconcilation status (date, end balance)
 		if (check_value("dep_" . $deposit_id)) {
-			$_SESSION['undeposited']["dep_" . $deposit_id] = Display::get_post('amount_' . $deposit_id);
-			$_POST['deposited'] = $_POST['to_deposit'] + Display::get_post('amount_' . $deposit_id);
+			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
+			$_POST['deposited'] = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
 		} else {
 			unset($_SESSION['undeposited']["dep_" . $deposit_id]);
-			$_POST['deposited'] = $_POST['to_deposit'] - Display::get_post('amount_' . $deposit_id);
+			$_POST['deposited'] = $_POST['to_deposit'] - get_post('amount_' . $deposit_id);
 		}
 		return true;
 	}
 
 	if (list_updated('deposit_date')) {
-		$_POST['deposit_date'] = Display::get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
+		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
 		update_data();
 	}
-	if (Display::get_post('_deposit_date_changed')) {
+	if (get_post('_deposit_date_changed')) {
 		$_POST['deposited'] = 0;
 		$_SESSION['undeposited'] = array();
-		$_POST['deposit_date'] = check_date() ? (Display::get_post('deposit_date')) : '';
+		$_POST['deposit_date'] = check_date() ? (get_post('deposit_date')) : '';
 		foreach ($_POST as $rowid => $row) {
 			if (substr($rowid, 0, 4) == 'dep_') {
 				unset($_POST[$rowid]);
@@ -194,20 +194,20 @@
 	}
 	$_POST['deposited'] = $_POST['to_deposit'];
 	$Ajax->activate('summary');
-	Display::start_form();
+	start_form();
 	echo "<hr>";
 	Display::div_start('summary');
-	Display::start_table();
-	Display::table_header(_("Deposit Date"));
-	Display::start_row();
-	date_cells("", "deposit_date", _('Date of funds to deposit'), Display::get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
-	Display::end_row();
-	Display::table_header(_("Total Amount"));
-	Display::start_row();
+	start_table();
+	table_header(_("Deposit Date"));
+	start_row();
+	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+	end_row();
+	table_header(_("Total Amount"));
+	start_row();
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	Display::div_end();
 	echo "<hr>";
@@ -230,7 +230,7 @@
 	DB_Pager::display($table);
 	Display::br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

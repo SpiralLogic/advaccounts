@@ -80,7 +80,7 @@
 
 		public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
-			return combo_input($name, $selected_id, $sql, 'loc_code', 'location_name', array(
+			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name', array(
 																																											'spec_option' => $all_option === true ?
 																																											 _("All Locations") :
 																																											 $all_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change));

@@ -23,11 +23,11 @@
 
 	// Ajax updates
 	//
-	if (Display::get_post('SearchOrders')) {
+	if (get_post('SearchOrders')) {
 		$Ajax->activate('orders_tbl');
-	} elseif (Display::get_post('_OrderNumber_changed'))
+	} elseif (get_post('_OrderNumber_changed'))
 	{
-		$disable = Display::get_post('OrderNumber') !== '';
+		$disable = get_post('OrderNumber') !== '';
 		$Ajax->addDisable(true, 'StockLocation', $disable);
 		$Ajax->addDisable(true, 'OverdueOnly', $disable);
 		$Ajax->addDisable(true, 'OpenOnly', $disable);
@@ -45,9 +45,9 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	Display::start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	start_table('tablestyle_noborder');
+	start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
@@ -56,8 +56,8 @@
 	}
 	Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 
 	function check_overdue($row)
 		{
@@ -234,6 +234,6 @@
 	$table->set_marker('check_overdue', _("Marked orders are overdue."));
 	$table->width = "90%";
 	DB_Pager::display($table);
-	Display::end_form();
+	end_form();
 	end_page();
 ?>

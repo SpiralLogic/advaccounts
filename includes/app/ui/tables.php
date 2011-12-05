@@ -91,3 +91,93 @@
 			label_cell(unit_price_format($label), "nowrap class=right " . $params, $id);
 		}
 	}
+
+	function alt_table_row_color(&$k) {
+		if ($k == 1) {
+			echo "<tr class='oddrow grid'>\n";
+			$k = 0;
+		} else {
+			echo "<tr class='evenrow grid'>\n";
+			$k++;
+		}
+	}
+
+	function table_section_title($msg, $colspan = 2, $class = 'tableheader') {
+		echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
+	}
+
+	function table_header($labels, $params = '') {
+		echo '<thead>';
+		$labels = (array)$labels;
+		foreach ($labels as $label) {
+			labelheader_cell($label, $params);
+		}
+		echo '</thead>';
+	}
+
+	function start_row($param = "") {
+		if ($param != "") {
+			echo "<tr $param>\n";
+		} else {
+			echo "<tr>\n";
+		}
+	}
+
+	function end_row() {
+		echo "</tr>\n";
+	}
+
+	function debit_or_credit_cells($value) {
+		$value = Num::round($value, User::price_dec());
+		if ($value >= 0) {
+			amount_cell($value);
+			label_cell("");
+		} elseif ($value < 0) {
+			label_cell("");
+			amount_cell(abs($value));
+		}
+	}
+
+	function start_table($class = "") {
+		echo "<div class='center'><table";
+		if ($class != "") {
+			echo " class='$class'";
+		}
+		echo " >\n";
+	}
+
+	function end_table($breaks = 0) {
+		echo "</table></div>\n";
+		if ($breaks) {
+			Display::br($breaks);
+		}
+	}
+
+	function start_outer_table($class = "") {
+
+		start_table($class);
+		echo "<tr class='top'><td>\n"; // outer table
+	}
+
+	function table_section($number = 1, $width = false, $class = '') {
+		if ($number > 1) {
+			echo "</table>\n";
+			$width = ($width ? "width=$width" : "");
+			//echo "</td><td class='tableseparator' $width>\n"; // outer table
+			echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
+		}
+		echo "<table class='tablestyle_inner $class'>\n";
+	}
+
+	function
+
+	end_outer_table($breaks = 0, $close_table = true) {
+		if ($close_table) {
+			echo "</table>\n";
+		}
+		echo "</td></tr>\n";
+		end_table($breaks);
+	}
+
+
+

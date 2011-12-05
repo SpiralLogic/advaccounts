@@ -121,20 +121,20 @@
 
 	function display_currencies()
 	{
-		$company_currency = Banking::get_company_currency();
+		$company_currency = Bank_Currency::for_company();
 		$result = GL_Currency::get_all(check_value('show_inactive'));
-		Display::start_table('tablestyle');
+		start_table('tablestyle');
 		$th = array(
 			_("Abbreviation"), _("Symbol"), _("Currency Name"),
 			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
 		);
 		inactive_control_column($th);
-		Display::table_header($th);
+		table_header($th);
 		$k = 0; //row colour counter
 		while ($myrow = DB::fetch($result))
 		{
 			if ($myrow[1] == $company_currency) {
-				Display::start_row("class='currencybg'");
+				start_row("class='currencybg'");
 			} else {
 				Display::alt_table_row_color($k);
 			}
@@ -156,10 +156,10 @@
 			} else {
 				label_cell('');
 			}
-			Display::end_row();
+			end_row();
 		} //END WHILE LIST LOOP
 		inactive_control_row($th);
-		Display::end_table();
+		end_table();
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
@@ -167,7 +167,7 @@
 	function display_currency_edit($selected_id)
 	{
 		global $Mode;
-		Display::start_table('tablestyle2');
+		start_table('tablestyle2');
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency
@@ -190,8 +190,8 @@
 		text_row_ex(_("Currency Name:"), 'CurrencyName', 20);
 		text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);
 		text_row_ex(_("Country:"), 'country', 40);
-		check_row(_("Automatic exchange rate update:"), 'auto_update', Display::get_post('auto_update'));
-		Display::end_table(1);
+		check_row(_("Automatic exchange rate update:"), 'auto_update', get_post('auto_update'));
+		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
 
@@ -210,10 +210,10 @@
 		$_POST['CurrencyName'] = $_POST['country'] = '';
 		$_POST['hundreds_name'] = '';
 	}
-	Display::start_form();
+	start_form();
 	display_currencies();
 	display_currency_edit($selected_id);
-	Display::end_form();
+	end_form();
 
 	end_page();
 

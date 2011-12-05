@@ -103,7 +103,7 @@
 					$SubTotal += $Net;
 					#  __ADVANCEDEDIT__ BEGIN #
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
-					$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
+					$TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
 					#  __ADVANCEDEDIT__ END #
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
 					$DisplayQty = Num::format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));

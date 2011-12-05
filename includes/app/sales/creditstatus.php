@@ -54,7 +54,7 @@
 					$disabled = (!$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT'));
 				}
 				$sql = "SELECT id, reason_description, inactive FROM credit_status";
-				return combo_input($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
+				return select_box($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
 			}
 
 			public static function cells($label, $name, $selected_id = null, $disabled = null) {

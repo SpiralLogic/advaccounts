@@ -52,7 +52,7 @@
 
 		public	function full_charge_price($tax_group_id, $tax_group = null)
 			{
-				return Taxes::get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
+				return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
 					$tax_group);
 			}
 
@@ -60,7 +60,7 @@
 			{
 				//		if ($tax_group_id==null)
 				//			return $this->chg_price;
-				return Taxes::get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
+				return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
 					0, $tax_group);
 			}
 
@@ -73,18 +73,18 @@
 				echo GL_UI::all('gl_code', null, true, true);
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim >= 1) {
-					Dimensions::select_cells(null, 'dimension_id', null, true, " ", false, 1);
+					Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
 					hidden('dimension_id', 0);
 				}
 				if ($dim > 1) {
-					Dimensions::select_cells(null, 'dimension2_id', null, true, " ", false, 2);
+					Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
 					hidden('dimension2_id', 0);
 				}
 				textarea_cells(null, 'memo_', null, 50, 1);
 				amount_cells(null, 'amount');
 				submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), true);
 				submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), true);
-				Display::end_row();
+				end_row();
 			}
 
 		// $mode = 0 none at the moment
@@ -103,14 +103,14 @@
 				} else {
 					$heading = _("GL Items for this Credit Note");
 				}
-				Display::start_outer_table('tablestyle2 width90');
+				start_outer_table('tablestyle2 width90');
 				if ($mode == 1) {
 					$qes = GL_QuickEntry::has(QE_SUPPINV);
 					if ($qes !== false) {
 						echo "<div style='float:right;'>";
 						echo _("Quick Entry:") . "&nbsp;";
 						echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
-						$qid = GL_QuickEntry::get(Display::get_post('qid'));
+						$qid = GL_QuickEntry::get(get_post('qid'));
 						if (list_updated('qid')) {
 							unset($_POST['totamount']); // enable default
 							$Ajax->activate('totamount');
@@ -124,9 +124,9 @@
 					}
 				}
 				Display::heading($heading);
-				Display::end_outer_table(0, false);
+				end_outer_table(0, false);
 				Display::div_start('gl_items');
-				Display::start_table('tablestyle width80');
+				start_table('tablestyle width80');
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim == 2) {
 					$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -141,7 +141,7 @@
 					$th[] = "";
 					$th[] = "";
 				}
-				Display::table_header($th);
+				table_header($th);
 				$total_gl_value = 0;
 				$i = $k = 0;
 				if (count($supp_trans->gl_codes) > 0) {
@@ -164,9 +164,9 @@
 							delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"), _('Remove line from document'));
 							label_cell("");
 						}
-						Display::end_row();
+						end_row();
 						/////////// 2009-08-18 Joe Hunt
-						if ($mode > 1 && !Taxes::is_tax_account($entered_gl_code->gl_code)) {
+						if ($mode > 1 && !Tax::is_account($entered_gl_code->gl_code)) {
 							$total_gl_value += $entered_gl_code->amount;
 						} else {
 							$total_gl_value += $entered_gl_code->amount;
@@ -174,7 +174,7 @@
 						$i++;
 						if ($i > 15) {
 							$i = 0;
-							Display::table_header($th);
+							table_header($th);
 						}
 					}
 				}
@@ -184,7 +184,7 @@
 				$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
 				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class=right", "nowrap class=right",
 					($mode == 1 ? 3 : 0));
-				Display::end_table(1);
+				end_table(1);
 				Display::div_end();
 				return $total_gl_value;
 			}

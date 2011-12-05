@@ -54,7 +54,7 @@
 
 		public static 	function row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
-			Bank_UI::accounts_type_cells(null, $name, $selected_id);
+			Bank_Account::type_cells(null, $name, $selected_id);
 			echo "</tr>\n";
 		}
 

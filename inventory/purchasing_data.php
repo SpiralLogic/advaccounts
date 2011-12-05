@@ -88,9 +88,9 @@
 	}
 
 	if (Input::request('frame')) {
-		Display::start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
+		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
-		Display::start_form();
+		start_form();
 	}
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -101,7 +101,7 @@
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
+	$mb_flag = WO::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
 		Errors::error(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
@@ -117,15 +117,15 @@
 			Errors::warning(_("There is no supplier prices set up for the product selected"));
 		} else {
 			if (Input::request('frame')) {
-				Display::start_table('tablestyle width90');
+				start_table('tablestyle width90');
 			} else {
-				Display::start_table('tablestyle width65');
+				start_table('tablestyle width65');
 			}
 			$th = array(
 				_("Updated"), _("Supplier"), _("Price"), _("Currency"),
 				_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
 			);
-			Display::table_header($th);
+			table_header($th);
 			$k = $j = 0; //row colour counter
 			while ($myrow = DB::fetch($result))
 			{
@@ -139,14 +139,14 @@
 				label_cell($myrow["supplier_description"]);
 				edit_button_cell("Edit" . $myrow['supplier_id'], _("Edit"));
 				delete_button_cell("Delete" . $myrow['supplier_id'], _("Delete"));
-				Display::end_row();
+				end_row();
 				$j++;
 				If ($j == 12) {
 					$j = 1;
-					Display::table_header($th);
+					table_header($th);
 				} //end of page full new headings
 			} //end of while loop
-			Display::end_table();
+			end_table();
 		}
 		Display::div_end();
 	}
@@ -168,7 +168,7 @@
 	}
 	Display::br();
 	hidden('selected_id', $selected_id);
-	Display::start_table('tableinfo');
+	start_table('tableinfo');
 	if ($Mode == 'Edit') {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
@@ -176,7 +176,7 @@
 		Purch_UI::suppliers_row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
-	amount_row(_("Price:"), 'price', null, '', Banking::get_supplier_currency($selected_id), $dec2);
+	amount_row(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);
 	text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, false, 51);
 	if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
 		$_POST['conversion_factor'] = Num::exrate_format(1);
@@ -186,9 +186,9 @@
 		Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec()
 	);
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {

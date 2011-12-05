@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BACKUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	if (Display::get_post('view')) {
-		if (!Display::get_post('backups')) {
+	if (get_post('view')) {
+		if (!get_post('backups')) {
 			Errors::error(_('Select backup file first.'));
 		} else {
-			$filename = BACKUP_PATH . Display::get_post('backups');
+			$filename = BACKUP_PATH . get_post('backups');
 			if (Ajax::in_ajax()) {
 				$Ajax->popup($filename);
 			}
@@ -29,8 +29,8 @@
 		}
 	}
 	;
-	if (Display::get_post('download')) {
-		download_file(BACKUP_PATH . Display::get_post('backups'));
+	if (get_post('download')) {
+		download_file(BACKUP_PATH . get_post('backups'));
 		exit;
 	}
 	Page::start(_($help_context = "Backup and Restore Database"), false, false, '', '');
@@ -120,21 +120,21 @@
 	$db_name = User::get()->company;
 	$connections = Config::get_all('db');
 	$conn = $connections[$db_name];
-	if (Display::get_post('creat')) {
-		generate_backup($conn, Display::get_post('comp'), Display::get_post('comments'));
+	if (get_post('creat')) {
+		generate_backup($conn, get_post('comp'), get_post('comments'));
 		$Ajax->activate('backups');
 	}
 	;
-	if (Display::get_post('restore')) {
-		if (DB_Utils::import(BACKUP_PATH . Display::get_post('backups'), $conn)) {
+	if (get_post('restore')) {
+		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
 			Errors::notice(_("Restore backup completed."));
 		}
 	}
-	if (Display::get_post('deldump')) {
-		if (unlink(BACKUP_PATH . Display::get_post('backups'))) {
+	if (get_post('deldump')) {
+		if (unlink(BACKUP_PATH . get_post('backups'))) {
 			Errors::notice(
 				_("File successfully deleted.") . " "
-				 . _("Filename") . ": " . Display::get_post('backups')
+				 . _("Filename") . ": " . get_post('backups')
 			);
 			$Ajax->activate('backups');
 		} else {
@@ -142,7 +142,7 @@
 		}
 	}
 	;
-	if (Display::get_post('upload')) {
+	if (get_post('upload')) {
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
 		$fname = $_FILES['uploadfile']['name'];
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
@@ -158,19 +158,19 @@
 		}
 	}
 
-	Display::start_form(true);
-	Display::start_outer_table('tablestyle2');
-	Display::table_section(1);
-	Display::table_section_title(_("Create backup"));
+	start_form(true);
+	start_outer_table('tablestyle2');
+	table_section(1);
+	table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);
 	compress_list_row(_("Compression:"), 'comp');
 	submit_row('creat', _("Create Backup"), false, "colspan=2 class='center'", '', 'process');
-	Display::table_section(2);
-	Display::table_section_title(_("Backup scripts maintenance"));
-	Display::start_row();
+	table_section(2);
+	table_section_title(_("Backup scripts maintenance"));
+	start_row();
 	echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
 	echo "<td class='top'>";
-	Display::start_table();
+	start_table();
 	submit_row('view', _("View Backup"), false, '', '', true);
 	submit_row('download', _("Download Backup"), false, '', '', false);
 	submit_row('restore', _("Restore Backup"), false, '', '', 'process');
@@ -178,14 +178,14 @@
 	submit_row('deldump', _("Delete Backup"), false, '', '', true);
 	// don't use 'delete' name or IE js errors appear
 	submit_js_confirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
-	Display::end_table();
+	end_table();
 	echo "</td>";
-	Display::end_row();
-	Display::start_row();
+	end_row();
+	start_row();
 	echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
 	submit_cells('upload', _("Upload file"), '', '', true);
-	Display::end_row();
-	Display::end_outer_table();
-	Display::end_form();
+	end_row();
+	end_outer_table();
+	end_form();
 	end_page();
 ?>

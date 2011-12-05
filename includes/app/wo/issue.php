@@ -13,13 +13,13 @@
 	{
 		public static function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_) {
 			DB::begin_transaction();
-			$details = WO_WorkOrder::get($woid);
+			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
 				echo _("The order number sent is not valid.");
 				DB::cancel_transaction();
 				exit;
 			}
-			if (WO_WorkOrder::is_closed($woid)) {
+			if (WO::is_closed($woid)) {
 				Errors::error("UNEXPECTED : Issuing items for a closed Work Order");
 				DB::cancel_transaction();
 				exit;
@@ -93,18 +93,18 @@
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Issues for this Order."), 0, 1);
 			} else {
-				Display::start_table('tablestyle');
+				start_table('tablestyle');
 				$th = array(_("#"), _("Reference"), _("Date"));
-				Display::table_header($th);
+				table_header($th);
 				$k = 0; //row colour counter
 				while ($myrow = DB::fetch($result)) {
 					Display::alt_table_row_color($k);
 					label_cell(GL_UI::trans_view(28, $myrow["issue_no"]));
 					label_cell($myrow['reference']);
 					label_cell(Dates::sql2date($myrow["issue_date"]));
-					Display::end_row();
+					end_row();
 				}
-				Display::end_table();
+				end_table();
 			}
 		}
 
@@ -131,13 +131,13 @@
 		public static function display_items($title, &$order) {
 			Display::heading($title);
 			Display::div_start('items_table');
-			Display::start_table('tablestyle width90');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), '');
 			if (count($order->line_items)) {
 				$th[] = '';
 			}
-			Display::table_header($th);
+			table_header($th);
 			//	$total = 0;
 			$k = 0; //row colour counter
 			$id = find_submit('Edit');
@@ -153,7 +153,7 @@
 					//			amount_cell($stock_item->standard_cost * $stock_item->quantity);
 					edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
 					delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
-					Display::end_row();
+					end_row();
 				} else {
 					WO_Issue::edit_controls($order, $line_no);
 				}
@@ -162,13 +162,13 @@
 				WO_Issue::edit_controls($order);
 			}
 			//	label_row(_("Total"), Num::format($total,User::price_dec()), "colspan=5", "class=right");
-			Display::end_table();
+			end_table();
 			Display::div_end();
 		}
 
 		public static function edit_controls($order, $line_no = -1) {
 			$Ajax = Ajax::i();
-			Display::start_row();
+			start_row();
 			$id = find_submit('Edit');
 			if ($line_no != -1 && $line_no == $id) {
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;
@@ -180,7 +180,7 @@
 				label_cell($order->line_items[$id]->description);
 				$Ajax->activate('items_table');
 			} else {
-				$wo_details = WO_WorkOrder::get($_SESSION['issue_items']->order_id);
+				$wo_details = WO::get($_SESSION['issue_items']->order_id);
 				Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
 				if (list_updated('stock_id')) {
 					$Ajax->activate('units');
@@ -204,12 +204,12 @@
 			} else {
 				submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 			}
-			Display::end_row();
+			end_row();
 		}
 
 		public static function option_controls() {
 			echo "<br>";
-			Display::start_table();
+			start_table();
 			ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
 			if (!isset($_POST['IssueType'])) {
 				$_POST['IssueType'] = 0;
@@ -220,7 +220,7 @@
 			workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 			date_row(_("Issue Date:"), 'date_');
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);
-			Display::end_table(1);
+			end_table(1);
 		}
 	}
 

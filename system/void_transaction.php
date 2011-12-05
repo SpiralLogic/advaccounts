@@ -63,7 +63,7 @@
 				}
 				break;
 			case ST_WORKORDER : // it's a work order
-				if (!WO_WorkOrder::get($type_no, true)) {
+				if (!WO::get($type_no, true)) {
 					return false;
 				}
 				break;
@@ -89,13 +89,13 @@
 
 	function voiding_controls()
 	{
-		Display::start_form();
-		Display::start_table('tablestyle2');
+		start_form();
+		start_table('tablestyle2');
 		SysTypes::view_row(_("Transaction Type:"), "filterType", null, true);
 		text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
 		date_row(_("Voiding Date:"), 'date_');
 		textarea_row(_("Memo:"), 'memo_', null, 30, 4);
-		Display::end_table(1);
+		end_table(1);
 		if (!isset($_POST['ProcessVoiding'])) {
 			submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 		} else {
@@ -119,7 +119,7 @@
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
 			}
 		}
-		Display::end_form();
+		end_form();
 	}
 
 

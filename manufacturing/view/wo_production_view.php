@@ -22,20 +22,20 @@
 		{
 			$myrow = WO_Produce::get($prod_id);
 			Display::br(1);
-			Display::start_table('tablestyle');
+			start_table('tablestyle');
 			$th = array(
 				_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
-			Display::table_header($th);
-			Display::start_row();
+			table_header($th);
+			start_row();
 			label_cell($myrow["id"]);
 			label_cell($myrow["reference"]);
 			label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
 			label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 			qty_cell($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
 			label_cell(Dates::sql2date($myrow["date_"]));
-			Display::end_row();
+			end_row();
 			DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
-			Display::end_table(1);
+			end_table(1);
 			Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 		}
 

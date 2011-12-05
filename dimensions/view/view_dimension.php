@@ -27,25 +27,25 @@
 		echo _("The dimension number sent is not valid.");
 		exit;
 	}
-	Display::start_table('tablestyle');
+	start_table('tablestyle');
 	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
-	Display::table_header($th);
-	Display::start_row();
+	table_header($th);
+	start_row();
 	label_cell($myrow["id"]);
 	label_cell($myrow["reference"]);
 	label_cell($myrow["name"]);
 	label_cell($myrow["type_"]);
 	label_cell(Dates::sql2date($myrow["date_"]));
 	label_cell(Dates::sql2date($myrow["due_date"]));
-	Display::end_row();
+	end_row();
 	DB_Comments::display_row(ST_DIMENSION, $id);
-	Display::end_table();
+	end_table();
 	if ($myrow["closed"] == true) {
 		Errors::warning(_("This dimension is closed."));
 	}
-	Display::start_form();
-	Display::start_table('tablestyle_noborder');
-	Display::start_row();
+	start_form();
+	start_table('tablestyle_noborder');
+	start_row();
 	if (!isset($_POST['TransFromDate'])) {
 		$_POST['TransFromDate'] = Dates::begin_fiscalyear();
 	}
@@ -55,10 +55,10 @@
 	date_cells(_("from:"), 'TransFromDate');
 	date_cells(_("to:"), 'TransToDate');
 	submit_cells('Show', _("Show"), '', false, 'default');
-	Display::end_row();
-	Display::end_table();
+	end_row();
+	end_table();
 	hidden('trans_no', $id);
-	Display::end_form();
+	end_form();
 	Dimensions::display_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 	Display::br(1);
 	end_page(true);

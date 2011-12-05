@@ -85,8 +85,8 @@
 		global $installers;
 		$inst = $installers[$index];
 		$ret = true;
-		$force = Display::get_post('force_' . $index);
-		if ($force || Display::get_post('install_' . $index)) {
+		$force = get_post('force_' . $index);
+		if ($force || get_post('install_' . $index)) {
 			$state = $inst->installed();
 			if (!$state || $force) {
 				if (!$inst->pre_check($force)) {
@@ -118,7 +118,7 @@
 	}
 
 	$installers = get_installers();
-	if (Display::get_post('Upgrade')) {
+	if (get_post('Upgrade')) {
 		$ret = true;
 		foreach (
 			Config::get_all('db') as $conn
@@ -163,13 +163,13 @@
 		}
 		$Ajax->activate('_page_body');
 	}
-	Display::start_form();
-	Display::start_table('tablestyle');
+	start_form();
+	start_table('tablestyle');
 	$th = array(
 		_("Version"), _("Description"), _("Sql file"), _("Install"),
 		_("Force upgrade")
 	);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0; //row colour counter
 	$partial = 0;
 	foreach (
@@ -177,7 +177,7 @@
 	)
 	{
 		Display::alt_table_row_color($k);
-		Display::start_row();
+		start_row();
 		label_cell($inst->version);
 		label_cell($inst->description);
 		label_cell($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'class=center');
@@ -199,9 +199,9 @@
 			$partial++;
 		}
 		check_cells(null, 'force_' . $i, 0);
-		Display::end_row();
+		end_row();
 	}
-	Display::end_table(1);
+	end_table(1);
 	if ($partial != 0) {
 		Errors::warning(
 			_(
@@ -212,7 +212,7 @@ You have to clean database manually to enable them, or try to perform forced upg
 		Display::br();
 	}
 	submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

@@ -13,7 +13,7 @@
 	class Purch_GRN {
 		public static function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = false) {
 			if ($supplier != null) {
-				$currency = Banking::get_supplier_currency($supplier);
+				$currency = Bank_Currency::for_creditor($supplier);
 			} else {
 				$currency = null;
 			}
@@ -21,7 +21,7 @@
 			Num::price_decimal($price, $dec);
 			$price = Num::round($price, $dec);
 			if ($currency != null) {
-				$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
+				$ex_rate = Bank_Currency::exchange_rate_to_home($currency, $date);
 				$price_in_home_currency = $price / $ex_rate;
 			} else
 			{
@@ -332,17 +332,17 @@
 
 
 		public function display(&$po, $editable = false) {
-			Display::start_table('tablestyle2 width90');
-			Display::start_row();
+			start_table('tablestyle2 width90');
+			start_row();
 			label_cells(_("Supplier"), $po->supplier_name, "class='label'");
-			if (!Banking::is_company_currency($po->curr_code)) {
+			if (!Bank_Currency::is_company($po->curr_code)) {
 				label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 			}
 			label_cells(_("For Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $po->order_no), "class='label'");
 			label_cells(_("Ordered On"), $po->orig_order_date, "class='label'");
 			label_cells(_("Supplier's Reference"), $po->requisition_no, "class='label'");
-			Display::end_row();
-			Display::start_row();
+			end_row();
+			start_row();
 			if ($editable) {
 				if (!isset($_POST['ref'])) {
 					$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
@@ -361,14 +361,14 @@
 				label_cells(_("Reference"), $po->reference, "class='label'");
 				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
 			}
-			Display::end_row();
+			end_row();
 			if (!$editable) {
 				label_row(_("Delivery Address"), $po->delivery_address, "class='label'", "colspan=9");
 			}
 			if ($po->Comments != "") {
 				label_row(_("Order Comments"), $po->Comments, "class='label'", "colspan=9");
 			}
-			Display::end_table(1);
+			end_table(1);
 		}
 
 		//--------------
@@ -455,7 +455,7 @@
 									$n));
 						}
 						Display::link_params_td("/purchases/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" . $myrow["purch_order_no"],
-							' class="button"') . Display::end_row();
+							' class="button"') . end_row();
 					}
 				}
 			}
@@ -476,7 +476,7 @@
 			if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
 				return 0;
 			}
-			Display::start_outer_table('tablestyle_noborder');
+			start_outer_table('tablestyle_noborder');
 			$heading2 = "";
 			if ($mode == 1) {
 				if ($supp_trans->is_invoice) {
@@ -509,17 +509,17 @@
 				}
 				echo "</td><td width=10% class='right'>";
 				submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
-				Display::end_outer_table(0, false);
-				Display::start_outer_table('center');
-				Display::start_row();
+				end_outer_table(0, false);
+				start_outer_table('center');
+				start_row();
 				date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
 				date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
 				submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
-				Display::end_row();
+				end_row();
 			}
-			Display::end_outer_table(0, false);
+			end_outer_table(0, false);
 			Display::div_start('grn_items');
-			Display::start_table('tablestyle2 width90');
+			start_table('tablestyle2 width90');
 			if ($mode == 1) {
 				$th = array(
 					_("Delivery"), _("Seq #"), _("P.O."), _("Item"), _("Description"), _("Date"), _("Received"), _("Invoiced"), _("Qty"), _("Price"), _("ExpPrice"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
@@ -533,7 +533,7 @@
 				$th = array(
 					_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Line Value"));
 			}
-			Display::table_header($th);
+			table_header($th);
 			$total_grn_value = 0;
 			$i = $k = 0;
 			if (count($supp_trans->grn_items) > 0) {
@@ -568,13 +568,13 @@
 						label_cell(""); // PO
 						delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 					}
-					Display::end_row();
+					end_row();
 					$total_grn_value += Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100),
 						User::price_dec());
 					$i++;
 					if ($i > 15) {
 						$i = 0;
-						Display::table_header($th);
+						table_header($th);
 					}
 				}
 			}
@@ -586,7 +586,7 @@
 			}
 			label_row(_("Total"), Num::price_format($total_grn_value), "colspan=$colspan class=right", "nowrap class=right");
 			if (!$ret) {
-				Display::start_row();
+				start_row();
 				echo "<td colspan=" . ($colspan + 1) . ">";
 				if ($supp_trans->is_invoice) {
 					Errors::warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."),
@@ -596,9 +596,9 @@
 					Errors::notice(_("Credits can only be applied to invoiced items."), 0, 0);
 				}
 				echo "</td>";
-				Display::end_row();
+				end_row();
 			}
-			Display::end_table(1);
+			end_table(1);
 			Display::div_end();
 			return $total_grn_value;
 		}

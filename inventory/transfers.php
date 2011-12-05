@@ -166,19 +166,19 @@
 		handle_new_order();
 	}
 
-	Display::start_form();
+	start_form();
 	Inv_Transfer::header($_SESSION['transfer_items']);
-	Display::start_table('tablesstyle width70 pad10');
-	Display::start_row();
+	start_table('tablesstyle width70 pad10');
+	start_row();
 	echo "<td>";
 	Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
 	Inv_Transfer::option_controls();
 	echo "</td>";
-	Display::end_row();
-	Display::end_table(1);
+	end_row();
+	end_table(1);
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last('Process', _("Process Transfer"), '', 'default');
-	Display::end_form();
+	end_form();
 	end_page();
 
 ?>

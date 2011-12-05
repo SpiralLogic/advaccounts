@@ -63,8 +63,8 @@
 		$_POST['undeposited'] = $_POST['name'] = '';
 	}
 	/* Always show the list of accounts */
-	Display::start_form();
-	Display::start_table('tablestyle width80');
+	start_form();
+	start_table('tablestyle width80');
 	$sql = "SELECT * FROM payment_methods";
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !inactive";
@@ -73,7 +73,7 @@
 	$result = DB::query($sql, "could not get payment methods");
 	$th = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
 	inactive_control_column($th);
-	Display::table_header($th);
+	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		Display::alt_table_row_color($k);
@@ -82,12 +82,12 @@
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		Display::end_row();
+		end_row();
 	}
 	inactive_control_row($th);
-	Display::end_table(1);
+	end_table(1);
 	$is_editing = $selected_id != -1;
-	Display::start_table('tablestyle2');
+	start_table('tablestyle2');
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
 			$myrow = GL_PaymentMethod::get($selected_id);
@@ -100,8 +100,8 @@
 	}
 	text_row(_("Payment Method Name:"), 'name', null, 50, 100);
 	yesno_list_row(_("Goes to Undeposited Funds:"), 'undeposited');
-	Display::end_table(1);
+	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	Display::end_form();
+	end_form();
 	end_page();
 ?>
