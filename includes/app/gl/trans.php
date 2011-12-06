@@ -14,7 +14,7 @@
 	// $date_ is display date (non-sql)
 	// $amount is in $currency currency
 	// if $currency is not set, then defaults to no conversion
-	class GL_Trans implements IVoidable
+	class GL_Trans
 	{
 		public static function add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0)
 		{

@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class Sales_Allocation implements IVoidable {
+	class Sales_Allocation {
 	public static function add($amount, $trans_type_from, $trans_no_from,
 															 $trans_type_to, $trans_no_to) {
 		$sql

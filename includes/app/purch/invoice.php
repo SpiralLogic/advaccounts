@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Purch_Invoice implements IVoidable
+	class Purch_Invoice
 	{
 
 		public static function get_supplier_to_trans($supp_trans, $supplier_id)

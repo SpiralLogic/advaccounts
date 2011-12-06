@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class Purch_Allocation implements IVoidable
+	class Purch_Allocation
 	{
 		public static function add($amount, $trans_type_from, $trans_no_from,
 			$trans_type_to, $trans_no_to, $date_)
