@@ -62,7 +62,7 @@
 		if ($ord->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"),
 				"OutstandingOnly=1");
-			die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
+			die ("<br><span class='bold'>" . _("This order has no items. There is nothing to delivery.") . "</span>");
 		}
 		$ord->trans_type = ST_CUSTDELIVERY;
 		$ord->src_docs = $ord->trans_no;
@@ -76,7 +76,7 @@
 		$_SESSION['Items'] = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 		if ($_SESSION['Items']->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
-			echo "<br><div class='center'><b>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></b>";
+			echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
 			Page::footer_exit();
 		}
 		copy_from_cart();

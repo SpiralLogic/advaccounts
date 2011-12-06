@@ -41,7 +41,7 @@
 			$past1 = DB_Company::get_pref('past_due_days');
 			$past2 = 2 * $past1;
 			if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
-				echo "<div class='center'><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></div>";
+				echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
 			}
 			$nowdue = "1-" . $past1 . " " . _('Days');
 			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');

@@ -77,7 +77,7 @@
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
 		} else {
-			$disallow_text = "<b>" . _("NO INVOICING") . "</b>";
+			$disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
 		}
 		label_cell($myrow["reason_description"]);
 		label_cell($disallow_text);

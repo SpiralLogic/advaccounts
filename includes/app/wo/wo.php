@@ -223,7 +223,7 @@
 					//end of page full new headings if
 				}
 				//end of while
-				label_row("<b>" . _("Total Cost") . "</b>", "<b>" . Num::format($total_cost, User::price_dec()) . "</b>",
+				label_row("<span class='bold'>" . _("Total Cost") . "</span>", "<span class='bold'>" . Num::format($total_cost, User::price_dec()) . "</span>",
 					"colspan=6 class=right", "nowrap class=right");
 				end_table();
 			}

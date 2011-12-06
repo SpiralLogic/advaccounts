@@ -179,8 +179,8 @@
 		 */
 		protected function loginFail() {
 			header("HTTP/1.1 401 Authorization Required");
-			echo "<div class='center'><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
-			echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
+			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
+			echo _("The user and password combination is not valid for the system.") . "<br><br>";
 			echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
 			echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
 			echo "</div>";

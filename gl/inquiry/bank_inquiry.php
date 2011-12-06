@@ -58,7 +58,7 @@
 	AND trans_date < '$date_after'";
 	$before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
+	label_cell("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
 	$bfw_row = DB::fetch_row($before_qty);
 	$bfw = $bfw_row[0];
 	debit_or_credit_cells($bfw);
@@ -90,7 +90,7 @@
 	}
 	//end of while loop
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=4");
+	label_cell("<span class='bold'>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</span>", "colspan=4");
 	debit_or_credit_cells($running_total);
 	label_cell("");
 	label_cell("", "colspan=2");

@@ -197,9 +197,9 @@
 			$warning = $msg == null;
 			$db_error = DB::error_no();
 			if ($warning) {
-				$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
+				$str = "<span class='bold'>" . _("Debug mode database warning:") . "</span><br>";
 			} else {
-				$str = "<b>" . _("DATABASE ERROR :") . "</b> $msg<br>";
+				$str = "<span class='bold'>" . _("DATABASE ERROR :") . "</span> $msg<br>";
 			}
 			if ($db_error != 0) {
 				$str .= "error code : " . $db_error . "<br>";

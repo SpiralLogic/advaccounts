@@ -62,7 +62,7 @@
 		$after_qty = $before_qty = 0;
 	}
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "class=center colspan=5");
+	label_cell("<span class='bold'>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</span>", "class=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
 	$dec = Item::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
@@ -132,7 +132,7 @@
 	}
 	//end of while loop
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</b>", "class=center colspan=5");
+	label_cell("<span class='bold'>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</span>", "class=center colspan=5");
 	qty_cell($total_in, false, $dec);
 	qty_cell($total_out, false, $dec);
 	qty_cell($after_qty, false, $dec);

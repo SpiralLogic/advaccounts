@@ -753,6 +753,8 @@ table.tablestyle {
 	border-collapse: collapse;
 	border: 1px solid #e1e1e1;
 	margin:0 auto;
+	width:100%;
+
 }
 
 table.tablestyle td {
@@ -1196,7 +1198,12 @@ div.note_msg {
 .pointer {
 	cursor: pointer;
 }
-
+.font5 {
+	font-size:5;
+}
+.font5 {
+	font-size:4;
+}
 td.tableheader3 {
 	margin: 0 auto;
 	text-align: center;

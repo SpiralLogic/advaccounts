@@ -225,7 +225,7 @@
 		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
 		Display::link_params_td("/sales/manage/customer_branches.php",
-		 '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
+		 '<span class='bold'>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
 		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
 		end_row();
 	}

@@ -93,7 +93,7 @@
 				}
 				echo "</div>";
 			}
-					$this->display_loaded();
+				if (Config::get('debug'))	$this->display_loaded();
 			echo "</div>\n";
 			echo "</div>\n";
 		}

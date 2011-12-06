@@ -28,7 +28,7 @@
  </tr>
  <tr>
  <td><div class='center'>";
-	echo "<a href='/index.php'><b>" . _("Click here to Login Again.") . "</b></a>";
+	echo "<a class='bold' href='/index.php'>" . _("Click here to Login Again.") . "</a>";
 	echo "</div></td>
  </tr>
 </table>

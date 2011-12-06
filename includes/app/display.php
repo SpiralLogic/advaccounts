@@ -87,9 +87,9 @@
 			}
 			start_table('tablestyle width50');
 			echo "<tr><td class=center><span class='red'>$label</span><br>";
-			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
+			echo "<span class='red'>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</span><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
-				echo "<div class='center'><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></div><br>";
+				echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
 			}
 			echo "</td></tr>";
 			end_table(1);
@@ -277,7 +277,7 @@
 			global $ajax_divs;
 			if ($non_ajax) { // div for non-ajax elements
 				array_push($ajax_divs, array($id, null));
-				echo "<div style='display:none' class='js_only' " . ($id != '' ? "id='$id'" : '') . ">";
+				echo "<div class='js_only hidden' " . ($id != '' ? "id='$id'" : '') . ">";
 			} else { // ajax ready div
 				array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));
 				echo "<div " . ($id != '' ? "id='$id'" : '') . ">";

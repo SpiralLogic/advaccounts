@@ -13,7 +13,7 @@
 
 	function amount_cell($label, $bold = false, $params = "", $id = null) {
 		if ($bold) {
-			label_cell("<b>" . Num::price_format($label) . "</b>", "class='amount'" . $params, $id);
+			label_cell("<span class='bold'>" . Num::price_format($label) . "</span>", "class='amount'" . $params, $id);
 		} else {
 			label_cell(Num::price_format($label), "class='amount'" . $params, $id);
 		}
@@ -68,7 +68,7 @@
 
 	function percent_cell($label, $bold = false, $id = null) {
 		if ($bold) {
-			label_cell("<b>" . Num::percent_format($label) . "</b>", "nowrap class=right", $id);
+			label_cell("<span class='bold'>" . Num::percent_format($label) . "</span>", "nowrap class=right", $id);
 		} else {
 			label_cell(Num::percent_format($label), "nowrap class=right", $id);
 		}
@@ -79,7 +79,7 @@
 			$dec = User::qty_dec();
 		}
 		if ($bold) {
-			label_cell("<b>" . Num::format($label, $dec) . "</b>", "nowrap class=right", $id);
+			label_cell("<span class='bold'>" . Num::format($label, $dec) . "</span>", "nowrap class=right", $id);
 		} else {
 			label_cell(Num::format(Num::round($label), $dec), "nowrap class=right", $id);
 		}
@@ -87,7 +87,7 @@
 
 	function unit_amount_cell($label, $bold = false, $params = "", $id = null) {
 		if ($bold) {
-			label_cell("<b>" . unit_price_format($label) . "</b>", "nowrap class=right " . $params, $id);
+			label_cell("<span class='bold'>" . unit_price_format($label) . "</span>", "nowrap class=right " . $params, $id);
 		} else {
 			label_cell(unit_price_format($label), "nowrap class=right " . $params, $id);
 		}
@@ -163,9 +163,9 @@
 	function table_section($number = 1, $width = false, $class = '') {
 		if ($number > 1) {
 			echo "</table>\n";
-			$width = ($width ? "width=$width" : "");
+			$width = ($width ? "width:$width" : "");
 			//echo "</td><td class='tableseparator' $width>\n"; // outer table
-			echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
+			echo "</td><td style='border-left:1px solid #cccccc; $width'>\n"; // outer table
 		}
 		echo "<table class='tablestyle_inner $class'>\n";
 	}

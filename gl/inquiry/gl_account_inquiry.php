@@ -133,7 +133,7 @@
 		if ($show_balances) {
 			$bfw = GL_Trans::get_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
 			start_row("class='inquirybg'");
-			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
+			label_cell("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</span>", "colspan=$colspan");
 			debit_or_credit_cells($bfw);
 			label_cell("");
 			label_cell("");
@@ -174,7 +174,7 @@
 		//end of while loop
 		if ($show_balances) {
 			start_row("class='inquirybg'");
-			label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=$colspan");
+			label_cell("<span class='bold'>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</span>", "colspan=$colspan");
 			debit_or_credit_cells($running_total);
 			label_cell("");
 			label_cell("");

@@ -131,7 +131,7 @@
 					end_row();
 				}
 				start_row();
-				label_cell("<b>" . _("Balance") . "</b>");
+				label_cell("<span class='bold'>" . _("Balance") . "</span>");
 				if ($total >= 0) {
 					amount_cell($total, true);
 					label_cell("");

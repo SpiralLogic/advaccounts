@@ -77,15 +77,15 @@
 			amount_cell($tx['net_input']);
 			end_row();
 			alt_table_row_color($k);
-			label_cell("<b>" . $tx['name'] . " " . $tx['rate'] . "%</b>");
-			label_cell("<b>" . _("Net payable or collectible") . ":</b>");
+			label_cell("<span class='bold'>" . $tx['name'] . " " . $tx['rate'] . "%</span>");
+			label_cell("<span class='bold'>" . _("Net payable or collectible") . ":</span>");
 			amount_cell($net, true);
 			label_cell("");
 			end_row();
 		}
 		alt_table_row_color($k);
 		label_cell("");
-		label_cell("<b>" . _("Total payable or refund") . ":</b>");
+		label_cell("<span class='bold'>" . _("Total payable or refund") . ":</span>");
 		amount_cell($total, true);
 		label_cell("");
 		end_row();

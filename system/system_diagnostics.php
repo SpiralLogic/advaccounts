@@ -293,7 +293,7 @@
 			($result['type'] == 2 ? 'orange' : 'green')));
 		label_cell(
 			"<span style='color:$color'>" .
-			 ($result['result'] ? _('Ok') : '<b>' . $comm . '</b>') . '</span>'
+			 ($result['result'] ? _('Ok') : '<span class="bold">' . $comm . '</span>') . '</span>'
 		);
 		end_row();
 	}

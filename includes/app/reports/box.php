@@ -34,12 +34,12 @@
 			$rep_counter = 0;
 			$st_reports = "";
 			$st_params = "";
-			$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
+			$st_classes = "<span class='bold'>" . _("Report Classes:") . "</span><br>";
 			foreach ($this->ar_classes as $key => $value) {
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
 				$acc = Display::access_string($key);
 				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter' class='menu_option' id='" . JS::default_focus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
-				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
+				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _("Reports For Class: ") . "&nbsp;$key</span></td></tr>\n";
 				foreach ($value as $report) {
 					$acc = Display::access_string($report->name);
 					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";

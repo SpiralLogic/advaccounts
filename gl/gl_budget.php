@@ -171,12 +171,12 @@
 			end_row();
 		}
 		start_row();
-		label_cell("<b>" . _("Total") . "</b>");
-		label_cell(Num::format($total, 0), 'class=right style="font-weight:bold"', 'Total');
+		label_cell("<span class='bold'>" . _("Total") . "</span>");
+		label_cell(Num::format($total, 0), 'class="right bold" ', 'Total');
 		if ($showdims) {
-			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap class=right");
+			label_cell("<span class='bold'>" . Num::format($btotal, 0) . "</span>", "nowrap class=right");
 		}
-		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap class=right");
+		label_cell("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", "nowrap class=right");
 		end_row();
 		end_table(1);
 		Display::div_end();

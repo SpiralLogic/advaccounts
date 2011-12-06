@@ -633,7 +633,7 @@
 
 				if (!empty($supp_trans->tax_description)) label_cells(_("Tax Group:"), $supp_trans->tax_description);
 				if ($supplier_currency != $company_currency) {
-					label_cells(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
+					label_cells(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
 					end_row();
 					end_row();
 				}
