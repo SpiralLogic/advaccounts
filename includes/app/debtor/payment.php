@@ -12,7 +12,7 @@
 	/*
 			 Write/update customer payment.
 		 */
-	class Debtor_Payment implements IVoidable {
+	class Debtor_Payment {
 		public function add($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
 	{

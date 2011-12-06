@@ -74,7 +74,7 @@
 				$this->has_header = false;
 				echo "<br>";
 			} elseif ($title && !$is_index) {
-				echo "<div class='center'><table id='title'><tr><td style='width:100%' class='titletext'>$title</td><td class=right>" . (User::hints() ?
+				echo "<div class='center'><table id='title'><tr><td class='width100 titletext'>$title</td><td class=right>" . (User::hints() ?
 				 "<span id='hints'></span>" : '') . "</td></tr></table></div>";
 			}
 		}

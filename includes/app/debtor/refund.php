@@ -12,7 +12,7 @@
 	/*
 			 Write/update customer refund.
 		 */
-	class Debtor_Refund implements IVoidable {
+	class Debtor_Refund {
 
 		public static function add($trans_no, $customer_id, $branch_id, $bank_account,
 																 $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0)
