@@ -109,6 +109,7 @@
 				$this->logged = true;
 				$this->last_act = time();
 				$this->timeout = DB_Company::get_pref('login_tout');
+				$_SESSION['HTTP_USER_AGENT']=sha1($_SERVER['HTTP_USER_AGENT']);
 				$this->set_salesman();
 			}
 			return $this->logged;
