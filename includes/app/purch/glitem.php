@@ -65,7 +65,7 @@
 			}
 
 
-		public	function display_controls($supp_trans, $k)
+		public	static function display_controls($supp_trans, $k)
 			{
 				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
@@ -91,7 +91,7 @@
 		//		 = 1 display on invoice/credit page
 		//		 = 2 display on view invoice
 		//		 = 3 display on view credit
-		public	function display_items($supp_trans, $mode = 0)
+		public	static function display_items($supp_trans, $mode = 0)
 			{
 				$Ajax = Ajax::i();
 				// if displaying in form, and no items, exit
@@ -182,7 +182,7 @@
 					Purch_GLItem::display_controls($supp_trans, $k);
 				}
 				$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
-				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class=right", "nowrap class=right",
+				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class='right bold'", "nowrap class='right bold'",
 					($mode == 1 ? 3 : 0));
 				end_table(1);
 				Display::div_end();

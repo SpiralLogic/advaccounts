@@ -195,7 +195,7 @@
 							email_cell($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
 							break;
 						case 'rate':
-							label_cell(Num::format($cell, User::exrate_dec()), "class=center");
+							label_cell(Num::format($cell, User::exrate_dec()), "class='center'");
 							break;
 						case 'inactive':
 							if (get_post('show_inactive')) {
@@ -240,7 +240,7 @@
 			}
 			start_row("class='navibar'");
 			$colspan = count($pager->columns);
-			$inact = @$pager->inactive_ctrl == true
+			$inact = $pager->inactive_ctrl == true
 			 ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
 			if ($pager->rec_count) {
 				echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";

@@ -10,6 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
+
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Inquiry"));
@@ -37,7 +38,6 @@
 	end_row();
 	end_table();
 	Session::i()->supplier_id = $_POST['supplier_id'];
-
 	function display_supplier_summary($supplier_record)
 		{
 			$past1 = DB_Company::get_pref('past_due_days');
@@ -173,7 +173,7 @@
 		$sql .= " AND trans . tran_date >= '$date_after'
 	 AND trans . tran_date <= '$date_to'";
 	}
-	if (Input::post('supplier_id') != ALL_TEXT) {
+	if (Input::post('supplier_id')) {
 		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
@@ -194,17 +194,19 @@
 		}
 	}
 	$cols = array(
-		_("Type") => array(
-			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array('type' => 'id'), _("Supplier ID") => 'skip', _("Supplier's Reference"), _("Date") => array(
-			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
+		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
+		_("#") => array( 	'fun' => 'trans_view', 'ord' => ''),
+		_("Reference"), _("Supplier") => array('type' => 'id'),
+		_("Supplier ID") => 'skip',
+		_("Supplier's Reference"),
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
 			'type' => 'date', 'fun' => 'due_date'), _("Currency") => array('align' => 'center'), _("Debit") => array(
 			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
 			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), array(
 			'insert' => true, 'fun' => 'gl_view'), array(
 			'insert' => true, 'fun' => 'credit_link'), array(
 			'insert' => true, 'fun' => 'prt_link'));
-	if (Input::post('supplier_id') != ALL_TEXT) {
+	if (Input::post('supplier_id')) {
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
@@ -212,7 +214,7 @@
 	/*show a table of the transactions returned by the sql */
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
-	$table->width = "85%";
+	$table->width = "80";
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();

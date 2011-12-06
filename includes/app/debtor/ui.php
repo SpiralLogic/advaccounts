@@ -6,8 +6,7 @@
 	 * Time: 1:49 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_UI
-	{
+	class Debtor_UI {
 		// BRANCHES
 		public static function branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			$sql = "SELECT branch_code, branch_ref FROM cust_branch
@@ -17,7 +16,7 @@
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
 			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
-																																									 'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
+				'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
 				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
 
@@ -49,7 +48,7 @@
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-																																							'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
+				'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
 				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}
@@ -98,7 +97,8 @@
 				case ST_CUSTDELIVERY:
 					$viewer .= "view_dispatch.php";
 					break;
-				case ST_SALESORDER || $type == ST_SALESQUOTE:
+				case ST_SALESORDER:
+				case ST_SALESQUOTE:
 					$viewer .= "view_sales_order.php";
 					break;
 				default:

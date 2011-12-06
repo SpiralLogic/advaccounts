@@ -59,7 +59,7 @@
 				$curr = $trans['SupplierCurrCode'];
 				$date = Dates::sql2date($trans['tran_date']);
 			}
-			if (static::is_company_currency($curr)) {
+			if (Bank_Currency::is_company($curr)) {
 				return;
 			}
 			$inv_amt = Num::round($amount * $trans['rate'], User::price_dec());
