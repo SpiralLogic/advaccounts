@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -127,7 +126,7 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(Exception $e) {
-				static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
 			if (static::$fatal) {
 				exit(static::format());
@@ -151,15 +150,12 @@
 			}
 			foreach (static::$messages as $msg) {
 				$type = E_USER_NOTICE;
-				if ($msg['type'] > E_USER_NOTICE) {
-					continue;
-				}
 				$str = $msg['message'];
-				$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-				if ($msg['type'] <= E_USER_ERROR && $msg['type'] != null) {
 
+				if ($msg['type'] <= E_USER_ERROR && $msg['type'] != null) {
+					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$type = E_USER_ERROR;
-				} elseif ($msg['type']>E_USER_ERROR && $msg['type']<E_USER_NOTICE) {
+				} elseif ($msg['type'] > E_USER_ERROR && $msg['type'] < E_USER_NOTICE) {
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];

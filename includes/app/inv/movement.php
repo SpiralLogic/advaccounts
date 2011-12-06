@@ -100,4 +100,24 @@
 					$show_or_hide, $price, $discount_percent, "The customer stock movement record cannot be inserted");
 			}
 
+
+			public static function row($label, $name, $selected_id = null) {
+				echo "<tr><td class='label'>$label</td>";
+				Inv_Movement::types_cells(null, $name, $selected_id);
+				echo "</tr>\n";
+			}
+		public static function types($name, $selected_id = null) {
+			$sql = "SELECT id, name FROM movement_types";
+			return select_box($name, $selected_id, $sql, 'id', 'name', array());
+		}
+
+		public static function types_cells($label, $name, $selected_id = null) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo Inv_Movement::types($name, $selected_id);
+			echo "</td>\n";
+		}
+
 	}

@@ -78,7 +78,7 @@
 				table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
 				table_section(3, "33%");
-				movement_types_list_row(_("Detail:"), 'type', null);
+				Inv_Movement::row(_("Detail:"), 'type', null);
 				if (!isset($_POST['Increase'])) {
 					$_POST['Increase'] = 1;
 				}

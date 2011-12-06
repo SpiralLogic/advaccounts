@@ -21,7 +21,7 @@
 		unset ($_SESSION['View']);
 	}
 	$_SESSION['View'] = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
-	start_table('tablesstyle2 nopad width95');
+	start_table('tablestyle2 nopad width95');
 	echo "<tr class='tableheader2 top'><th colspan=3>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));

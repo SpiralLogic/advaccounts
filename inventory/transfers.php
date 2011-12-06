@@ -168,7 +168,7 @@
 
 	start_form();
 	Inv_Transfer::header($_SESSION['transfer_items']);
-	start_table('tablesstyle width70 pad10');
+	start_table('tablestyle width70 pad10');
 	start_row();
 	echo "<td>";
 	Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
