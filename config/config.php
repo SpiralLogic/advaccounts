@@ -7,8 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'debug'														=> false,
-		'debug_sql'												=> false,
+		'debug'														=> true,
+		'debug_sql'												=> true,
 		'debug_pdf'												=> false,
 		'debug_query_log'									=> false,
 		'debug_select_log'								 => false,

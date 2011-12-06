@@ -43,6 +43,10 @@
 		if ($params == "") {
 			echo "<td class='label'>$label</td>";
 			$label = null;
+		} elseif (stristr($params,'class')) {
+			echo "<td $params>$label</td>";
+					$label = null;
+
 		}
 		label_cells($label, $value, $params, $params2, $id);
 		if ($leftfill != 0) {

@@ -241,9 +241,9 @@
 	{
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;
-		$test['test'] = PATH_TO_ROOT . '/config/installed_extensions.php';
+		$test['test'] = PATH_TO_ROOT . '/config/extensions.php';
 		$test['result'] = is_file($test['test']) && is_writable($test['test']);
-		$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
+		$test['test'] . ',' . COMPANY_PATH . '/*/extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 		foreach (
 			Config::get_all('db') as $n => $comp
@@ -252,7 +252,7 @@
 			if (!is_dir($path)) {
 				continue;
 			}
-			$path .= "/config/installed_extensions.php";
+			$path .= "/config/extensions.php";
 			if (!is_file($path) || !is_writable($path)) {
 				$test['result'] = false;
 				$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);

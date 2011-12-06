@@ -97,7 +97,7 @@
 			} /*end of order_line loop */
 			$grn_item = static::add_item($grn, Purch_Order::add_freight($po, $date_), 'Freight', 'Freight Charges', 0, 1,
 				$po->freight, 0);
-			Ref::save(ST_SUPPRECEIVE,  $reference);
+			Ref::save(ST_SUPPRECEIVE, $reference);
 			DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
 			DB::commit_transaction();
 			return $grn;
@@ -331,7 +331,7 @@
 		}
 
 
-		public function display(&$po, $editable = false) {
+		public static  function display(&$po, $editable = false) {
 			start_table('tablestyle2 width90');
 			start_row();
 			label_cells(_("Supplier"), $po->supplier_name, "class='label'");
@@ -372,7 +372,7 @@
 		}
 
 		//--------------
-		public function display_for_selection($supp_trans, $k) {
+		public static  function display_for_selection($supp_trans, $k) {
 			if ($supp_trans->is_invoice) {
 				$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, true);
 			} else {
@@ -470,7 +470,7 @@
 		//		 = 1 display on invoice/credit page
 		//		 = 2 display on view invoice
 		//		 = 3 display on view credit
-		public function display_items($supp_trans, $mode = 0) {
+		public static  function display_items($supp_trans, $mode = 0) {
 			$ret = true;
 			// if displaying in form, and no items, exit
 			if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
@@ -531,7 +531,7 @@
 				}
 			} else {
 				$th = array(
-					_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Line Value"));
+					_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Each Price"), _("Line Value"));
 			}
 			table_header($th);
 			$total_grn_value = 0;
@@ -582,9 +582,9 @@
 				$ret = Purch_GRN::display_for_selection($supp_trans, $k);
 				$colspan = 13;
 			} else {
-				$colspan = 7;
+				$colspan = 8;
 			}
-			label_row(_("Total"), Num::price_format($total_grn_value), "colspan=$colspan class=right", "nowrap class=right");
+			label_row(_("Total"), Num::price_format($total_grn_value), "colspan=$colspan class='right bold'", "nowrap class='right bold'");
 			if (!$ret) {
 				start_row();
 				echo "<td colspan=" . ($colspan + 1) . ">";

@@ -784,6 +784,7 @@ table.tablestyle2 th .headingtext {
 table.tablestyle2 td {
 	border-collapse: collapse;
 	border: 1px solid #E1E1E1;
+	padding:3px;
 }
 
 table.tablestyle_inner {
@@ -1271,11 +1272,11 @@ td.tableheader3 {
 .width100 {
 	width:100%
 }
-.alignright {
+.right {
 	text-align: right;
 }
 
-.alignleft {
+.left {
 	text-align: left;
 }
 
@@ -1311,7 +1312,7 @@ td.tableheader3 {
 .hidden {
 	display: none;
 }
-.nopad {
+.pad0 {
 	padding:0;
 }
 .pad10 {

@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Validation
-	{
+	class Validation {
 		const CUSTOMERS = "debtors_master";
 		const CURRENCIES = "currencies";
 		const SALES_TYPES = "sales_types";
@@ -74,6 +73,7 @@
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
 		public static function is_int($postname, $min = null, $max = null) {
+			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
 			$options = array();
 			if ($min !== null) {
 				$options['min_range'] = $min;
@@ -91,13 +91,15 @@
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
 		public static function is_num($postname, $min = null, $max = null, $default = 0) {
-			$result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT);
+			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
+			$result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT,FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
 			if ($min !== null && $result < $min) {
 				$result = false;
 			}
 			if ($max !== null && $result > $max) {
 				$result = false;
 			}
+			FB::info($result);
 			return ($result === false || $result === null) ? $default : 1;
 		}
 
@@ -106,14 +108,15 @@
 		 *	 Read numeric value from user formatted input
 		 *
 		 * @param null $postname
-		 * @param int  $default
+		 * @param int	$default
 		 *
 		 * @internal param int $dflt
 		 *
 		 * @return bool|float|int|mixed|string
 		 */
 		public static function input_num($postname = null, $default = 0) {
-			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
+			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
+			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
 			return ($result === false || $result === null) ? $default : User::numeric($result);
 		}
