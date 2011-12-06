@@ -19,18 +19,18 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo customer_list('customer_id', $_POST['customer_id'], true, true);
+	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+	echo Debtor_UI::select('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
-	echo "</center><br><br>";
+	echo "</div><br><br>";
 	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
 		unset($_POST['customer_id']);
 	}
 	/*if (isset($_POST['customer_id'])) {
-				 $custCurr = Banking::get_customer_currency($_POST['customer_id']);
-				 if (!Banking::is_company_currency($custCurr))
+				 $custCurr = Bank_Currency::for_debtor($_POST['customer_id']);
+				 if (!Bank_Currency::is_company($custCurr))
 					 echo _("Customer Currency:") . $custCurr;
 			 }*/
 	$settled = false;
@@ -50,12 +50,12 @@
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function alloc_link($row)
 		{
-			return pager_link(_("Allocate"),
+			return DB_Pager::link(_("Allocate"),
 			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		}
 
@@ -82,7 +82,7 @@
 	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 	$table->width = "75%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 ?>

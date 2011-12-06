@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class Sales_Debtor_Trans
+	class Debtor_Trans
 	{
 		public static function get($debtor_trans_type, $debtor_trans_no)
 			{
@@ -87,7 +87,7 @@
 					$err_msg = "The customer GL transaction could not be inserted";
 				}
 				return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
-					Banking::get_customer_currency($customer_id),
+					Bank_Currency::for_debtor($customer_id),
 					PT_CUSTOMER, $customer_id, $err_msg, $rate);
 			}
 	}

@@ -176,7 +176,7 @@
 
 	function display_extensions()
 	{
-		start_table(Config::get('tables_style'));
+		start_table('tablestyle');
 		$th = array(
 			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
 			_("Access extensions"), "", ""
@@ -194,9 +194,9 @@
 			label_cell($mod['name']);
 			label_cell(
 				$is_mod ?
-				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
-			$ttl = access_string($mod['title']);
+			$ttl = Display::access_string($mod['title']);
 			label_cell($ttl[0]);
 			label_cell($mod['path']);
 			label_cell($mod['filename']);
@@ -215,7 +215,7 @@
 
 	function company_extensions($id)
 	{
-		start_table(Config::get('tables_style'));
+		start_table('tablestyle');
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 		// get all available extensions and display
 		// with current status stored in company directory.
@@ -245,13 +245,13 @@
 			label_cell($mod['name']);
 			label_cell(
 				$mod['type'] == 'module' ?
-				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
-			$ttl = access_string($mod['title']);
+			$ttl = Display::access_string($mod['title']);
 			label_cell($ttl[0]);
 			check_cells(
 				null, 'Active' . $i, @$mod['active'] ? 1 : 0,
-				false, false, "align='center'"
+				false, false, "class='center'"
 			);
 			end_row();
 		}
@@ -264,7 +264,7 @@
 	{
 		global $Mode;
 		$extensions = DB_Company::get_company_extensions();
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
 				$mod = $extensions[$selected_id];
@@ -281,7 +281,7 @@
 		}
 		text_row_ex(_("Name"), 'name', 30);
 		text_row_ex(_("Folder"), 'path', 20);
-		tab_list_row(_("Menu Tab"), 'tab', null, true);
+		Users::tabs_row(_("Menu Tab"), 'tab', null, true);
 		text_row_ex(_("Menu Link Text"), 'title', 30);
 		record_status_list_row(_("Default status"), 'active');
 		file_row(_("Module File"), 'uploadfile');
@@ -327,9 +327,9 @@
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
 	}
-	echo "<center>" . _('Extensions:') . "&nbsp;&nbsp;";
-	echo extset_list('extset', null, true);
-	echo "</center><br>";
+	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
+	echo Extensions::view('extset', null, true);
+	echo "</div><br>";
 	$set = get_post('extset', -1);
 	if ($set == -1) {
 		display_extensions();

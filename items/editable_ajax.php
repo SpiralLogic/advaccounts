@@ -8,7 +8,7 @@
 	 */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$item = array('id' => $_POST['row_id']);
-	$q    = DB::update('stock')->where('id=', $item['id']);
+	$q = DB::update('stock')->where('id=', $item['id']);
 	switch ($_POST['column']) {
 	case 0:
 		$f = 'id';

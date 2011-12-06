@@ -31,11 +31,11 @@
 			Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type],
 				$_SESSION['alloc']->trans_no));
 			Display::heading($_SESSION['alloc']->person_name);
-			Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-			Display::heading(_("Total:") . " <b>" . Num::price_format($_SESSION['alloc']->amount) . "</b>");
+			Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
+			Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
 			echo "<br>";
 			start_form();
-			div_start('alloc_tbl');
+			Display::div_start('alloc_tbl');
 			if (count($_SESSION['alloc']->allocs) > 0) {
 				Gl_Allocation::show_allocatable(true);
 				submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
@@ -47,7 +47,7 @@
 				submit_center('Cancel', _("Back to Allocations"), true,
 					_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 			}
-			div_end();
+			Display::div_end();
 			end_form();
 		}
 
@@ -62,7 +62,7 @@
 
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		meta_forward("/sales/allocations/customer_allocation_main.php");
+		Display::meta_forward("/sales/allocations/customer_allocation_main.php");
 	}
 
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {

@@ -25,7 +25,7 @@
 		$todate = Dates::date2sql($to);
 		$sql
 		 = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
-	            taxrec.net_amount*ex_rate AS net_amount,
+	 taxrec.net_amount*ex_rate AS net_amount,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM trans_tax_details taxrec
@@ -75,7 +75,7 @@
 			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
-		$rep = new FrontReport(_('Tax Report'), "TaxReport", User::pagesize());
+		$rep = new ADVReport(_('Tax Report'), "TaxReport", User::pagesize());
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
 		}

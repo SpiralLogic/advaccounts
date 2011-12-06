@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class GL_AccountType
+	class GL_Type
 	{
 		function add($id, $name, $class_id, $parent)
 			{
@@ -63,4 +63,27 @@
 				$sql = "DELETE FROM chart_types WHERE id = " . DB::escape($id);
 				DB::query($sql, "could not delete account type");
 			}
+		public static function	select($name, $selected_id = null, $all_option = false, $all_option_numeric = true) {
+				$sql = "SELECT id, name FROM chart_types";
+				return select_box($name, $selected_id, $sql, 'id', 'name', array(
+																																				 'order' => 'id', 'spec_option' => $all_option, 'spec_id' => $all_option_numeric ?
+					 0 : ALL_TEXT));
+			}
+
+			public static function	cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
+				if ($label != null) {
+					echo "<td>$label</td>\n";
+				}
+				echo "<td>";
+				echo GL_Type::select($name, $selected_id, $all_option, $all_option_numeric);
+				echo "</td>\n";
+			}
+
+			public static function	row($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
+				echo "<tr><td class='label'>$label</td>";
+				GL_Type::cells(null, $name, $selected_id, $all_option, $all_option_numeric);
+				echo "</tr>\n";
+			}
+
+
 	}

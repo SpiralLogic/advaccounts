@@ -56,6 +56,30 @@
 			$sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
 			DB::query($sql, "The Sales type prices could not be deleted");
 		}
+		// SALES TYPES
+				public static function	select($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+					$sql = "SELECT id, sales_type, inactive FROM sales_types";
+					return select_box($name, $selected_id, $sql, 'id', 'sales_type', array(
+																																								 'spec_option' => $special_option === true ? _("All Sales Types") :
+																																									$special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	 'async' => false,
+																																						));
+				}
+
+				public static function	cells($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+					if ($label != null) {
+						echo "<td>$label</td>\n";
+					}
+					echo "<td>";
+					echo static::select($name, $selected_id, $submit_on_change, $special_option);
+					echo "</td>\n";
+				}
+
+				public static function	row($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+					echo "<tr><td class='label'>$label</td>";
+					static::cells(null, $name, $selected_id, $submit_on_change, $special_option);
+					echo "</tr>\n";
+				}
+
 	}
 
 ?>

@@ -24,6 +24,7 @@
 	 *
 	 */
 	require DOCROOT . 'base.php';
+
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	define('CRLF', chr(13) . chr(10));
@@ -35,34 +36,29 @@
 	require COREPATH . DS . 'autoloader.php';
 	Autoloader::add_core_classes(
 		array(
-			'Adv_Exception',
-			'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB',
-			'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert',
-			'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where',
-			'Dialog',
-			'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS',
-			'Language', 'Menu', 'MenuUi', 'Num',  'Session', 'Status',
-			'UploadHandler'
+			'Adv_Exception', 'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB',
+			'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert', 'DB_Query_Result', 'DB_Query_Select',
+			'DB_Query_Update', 'DB_Query_Where', 'Dialog', 'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS',
+			'Language', 'Menu', 'MenuUi', 'Num', 'Session', 'Status', 'UploadHandler'
 		)
 	);
 	Autoloader::add_vendor_classes(
 		array(
-			'Crypt_AES', 'Crypt_DES',
-			'Crypt_Hash', 'Crypt_Random',
-			'Crypt_RC4', 'Crypt_Rijndael',
-			'Crypt_RSA', 'Crypt_TripleDES', 'FB','PHPQuickProfiler','Console',
-			'PHPMailer', 'SMTP', 'OLEwriter','JsHttpRequest',
-			'TCPDF', 'Cpdf'
+			'Crypt_AES', 'Crypt_DES',	'Crypt_Hash', 'Crypt_Random', 'Crypt_RC4', 'Crypt_Rijndael', 'Crypt_RSA', 'Crypt_TripleDES',
+			'FB','PHPQuickProfiler','Console', 'PHPMailer', 'SMTP', 'OLEwriter','JsHttpRequest', 'TCPDF', 'Cpdf'
 		)
 	);
-	Session::init();
-	Config::init();
+
 	require APPPATH . "main.php";
+
+	Session::init();
+
+	Config::init();
 	/***
 	 *
-	 */
+	 */	ob_start('adv_ob_flush_handler', 0);
+
 	register_shutdown_function('adv_shutdown_function_handler');
-	ob_start('adv_ob_flush_handler', 0);
 	Errors::init();
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.

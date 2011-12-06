@@ -1,7 +1,7 @@
 /*
  Behaviour v1.1 by Ben Nolan, June 2005. Based largely on the work
  of Simon Willison (see comments by Simon below).
- Small fixes by J.Dobrowolski for Front Accounting May 2008
+ Small fixes by J.Dobrowolski for ADV Accounting May 2008
  Description:
 
  Uses css selectors to apply javascript behaviours to enable

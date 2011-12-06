@@ -1,5 +1,5 @@
 <?php
-	include "bootstrap.php";
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	echo "<pre>";
 	$sql = "SELECT * FROM debtor_balances WHERE Balance>0";
 	$result = DB::query($sql, "The customer details could not be retrieved");
@@ -41,12 +41,12 @@ $('#table').after(data);
 
 }
 function toArray(obj) {
-  var array = [];
-  // iterate backwards ensuring that length is an UInt32
-  for (var i = obj.length >>> 0; i--;) {
-    array[i] = obj[i];
-  }
-  return array;
+ var array = [];
+ // iterate backwards ensuring that length is an UInt32
+ for (var i = obj.length >>> 0; i--;) {
+ array[i] = obj[i];
+ }
+ return array;
 }
 JS;
 	JS::beforeload($js);

@@ -10,17 +10,27 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	$bank_account_types = array(
-		BT_TRANSFER => _("Savings Account"),
-		_("Chequing Account"),
-		_("Credit Account"),
-		_("Cash Account")
-	);
 	$bank_transfer_types = array(
 		BT_TRANSFER => _("Transfer"),
 		_("Cheque"),
 		_("Credit"),
 		_("Cash")
+	);
+	$payment_person_types = array(
+		PT_MISC => _("Miscellaneous"),
+		_("Work Order"),
+		_("Customer"),
+		_("Supplier"),
+		_("Quick Entry")
+	);
+	$wo_types_array = array(
+		WO_ASSEMBLY => _("Assemble"),
+		WO_UNASSEMBLY => _("Unassemble"),
+		WO_ADVANCED => _("Advanced Manufacture")
+	);
+	$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
 	);
 	$class_types = array(
 		CL_ASSETS => _("Assets"),
@@ -99,7 +109,6 @@
 	);
 
 	return array(
-		'bank_account_types' => $bank_account_types,
 		'bank_transfer_types' => $bank_transfer_types,
 		'class_types' => $class_types,
 		'payment_person_types' => $payment_person_types,

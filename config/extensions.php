@@ -6,7 +6,7 @@
 
 	 'name' - name for identification purposes;
 	 'type' - type of extension: 'module' or 'plugin'
-	 'path' - FA root based installation path
+	 'path' - ADV root based installation path
 	 'filename' - name of module menu file, or plugin filename; related to path.
 	 'tab' - index of the module tab (new for module, or one of standard module names for plugin);
 	 'title' - is the menu text (for plugin) or new tab name
@@ -17,17 +17,17 @@
  */
 	$GLOBALS['next_id'] = 2; // unique id for next installed extension
 	$GLOBALS['installed_extensions'] = array(
-		1 => array('tab'      => 'system',
-							 'name'     => 'Advanced',
-							 'path'     => 'advanced',
-							 'title'    => 'Advanced',
-							 'active'   => '1',
-							 'type'     => 'plugin',
+		1 => array('tab' => 'system',
+							 'name' => 'Advanced',
+							 'path' => 'advanced',
+							 'title' => 'Advanced',
+							 'active' => '1',
+							 'type' => 'plugin',
 							 'filename' => 'advanced.php',
 							 'acc_file' => 'acc_levels.php',
-							 'access'   => 'SA_ADVANCED',
+							 'access' => 'SA_ADVANCED',
 		),
 	);
-	return array('next_id'   => $GLOBALS['next_id'],
+	return array('next_id' => $GLOBALS['next_id'],
 							 'installed' => $GLOBALS['installed_extensions']);
 ?>

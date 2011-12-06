@@ -22,7 +22,7 @@
 	function gl_inquiry_controls()
 	{
 		start_form();
-		start_table("class='tablestyle_noborder'");
+		start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		check_cells(_("No zero values"), 'NoZero', null);
@@ -35,28 +35,28 @@
 
 	function display_trial_balance()
 	{
-		div_start('balance_tbl');
-		start_table(Config::get('tables_style'));
+		Display::div_start('balance_tbl');
+		start_table('tablestyle');
 		$tableheader
 		 = "<tr>
-        <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
-        <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
+ <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
+ <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
 		<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
 		</tr><tr>
 		<td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
+ <td class='tableheader'>" . _("Credit") . "</td>
 		<td class='tableheader'>" . _("Debit") . "</td>
 		<td class='tableheader'>" . _("Credit") . "</td>
-        <td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
-        </tr>";
+ <td class='tableheader'>" . _("Debit") . "</td>
+ <td class='tableheader'>" . _("Credit") . "</td>
+ </tr>";
 		echo $tableheader;
 		$k = 0;
 		$accounts = GL_Account::get_all();
-		$pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-		$begin    = Dates::begin_fiscalyear();
+		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+		$begin = Dates::begin_fiscalyear();
 		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
 			$begin = $_POST['TransFromDate'];
 		}
@@ -65,7 +65,7 @@
 		{
 			$prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-			$tot  = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
+			$tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
 			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
@@ -76,9 +76,9 @@
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
-				Display::debit_or_credit_cells($prev['balance']);
-				Display::debit_or_credit_cells($curr['balance']);
-				Display::debit_or_credit_cells($tot['balance']);
+				debit_or_credit_cells($prev['balance']);
+				debit_or_credit_cells($curr['balance']);
+				debit_or_credit_cells($tot['balance']);
 } else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
@@ -114,12 +114,12 @@
 		}
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
-		Display::debit_or_credit_cells($pbal);
-		Display::debit_or_credit_cells($cbal);
-		Display::debit_or_credit_cells($tbal);
+		debit_or_credit_cells($pbal);
+		debit_or_credit_cells($cbal);
+		debit_or_credit_cells($tbal);
 		end_row();
 		end_table(1);
-		div_end();
+		Display::div_end();
 	}
 
 

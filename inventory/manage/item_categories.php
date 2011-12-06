@@ -77,7 +77,7 @@
 	}
 	$result = DB::query($sql, "could not get stock categories");
 	start_form();
-	start_table(Config::get('tables_style') . "  width=90%");
+	start_table('tablestyle width90');
 	$th = array(
 		_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
@@ -91,13 +91,13 @@
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
 		label_cell($myrow["tax_name"]);
-		label_cell($myrow["dflt_units"], "align=center");
+		label_cell($myrow["dflt_units"], "class=center");
 		label_cell($stock_types[$myrow["dflt_mb_flag"]]);
-		label_cell($myrow["dflt_sales_act"], "align=center");
-		label_cell($myrow["dflt_inventory_act"], "align=center");
-		label_cell($myrow["dflt_cogs_act"], "align=center");
-		label_cell($myrow["dflt_adjustment_act"], "align=center");
-		label_cell($myrow["dflt_assembly_act"], "align=center");
+		label_cell($myrow["dflt_sales_act"], "class=center");
+		label_cell($myrow["dflt_inventory_act"], "class=center");
+		label_cell($myrow["dflt_cogs_act"], "class=center");
+		label_cell($myrow["dflt_adjustment_act"], "class=center");
+		label_cell($myrow["dflt_assembly_act"], "class=center");
 		inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
 		edit_button_cell("Edit" . $myrow["category_id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["category_id"], _("Delete"));
@@ -107,8 +107,8 @@
 	end_table();
 	echo '<br>';
 
-	div_start('details');
-	start_table(Config::get('tables_style2'));
+	Display::div_start('details');
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
@@ -152,30 +152,30 @@
 	}
 	text_row(_("Category Name:"), 'description', null, 30, 30);
 	table_section_title(_("Default values for new items"));
-	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
-	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
-	stock_units_list_row(_("Units of Measure:"), 'units', null);
+	Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
+	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, true);
+	Item_Unit::row(_("Units of Measure:"), 'units', null);
 	check_row(_("Exclude from sales:"), 'no_sale');
-	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
+	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
 	} else {
-		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
-		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
+		GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
+		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+		GL_UI::all_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 	if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
-		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+		GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	} else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		dimensions_list_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
 		if ($dim > 1) {
-			dimensions_list_row(_("Dimension") . " 2", 'dim2', null, true, " ", false, 2);
+			Dimensions::select_row(_("Dimension") . " 2", 'dim2', null, true, " ", false, 2);
 		}
 	}
 	if ($dim < 1) {
@@ -185,7 +185,7 @@
 		hidden('dim2', 0);
 	}
 	end_table(1);
-	div_end();
+	Display::div_end();
 	submit_add_or_update_center($selected_id == -1, '', 'both', true);
 	end_form();
 	end_page();

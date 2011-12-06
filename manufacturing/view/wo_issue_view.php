@@ -21,15 +21,15 @@
 	function display_wo_issue($issue_no)
 		{
 			$myrow = WO_Issue::get($issue_no);
-			br(1);
-			start_table(Config::get('tables_style'));
+			Display::br(1);
+			start_table('tablestyle');
 			$th = array(
 				_("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
 			table_header($th);
 			start_row();
 			label_cell($myrow["issue_no"]);
 			label_cell($myrow["reference"]);
-			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+			label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
 			label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreName"]);
@@ -47,7 +47,7 @@
 			if (DB::num_rows($result) == 0) {
 				Errors::warning(_("There are no items for this issue."));
 			} else {
-				start_table(Config::get('tables_style'));
+				start_table('tablestyle');
 				$th = array(_("Component"), _("Quantity"), _("Units"));
 				table_header($th);
 				$j = 1;

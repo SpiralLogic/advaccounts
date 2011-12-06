@@ -16,7 +16,7 @@
 			 	category_id = " . DB::escape($category) . ",
 			 	quantity = " . DB::escape($qty) . ",
 			 	is_foreign = " . DB::escape($foreign) . "
-		        	WHERE ";
+		 	WHERE ";
 			if ($id == -1) // update with unknown $id i.e. from items table editor
 			{
 				$sql .= "item_code = " . DB::escape($item_code)
@@ -35,7 +35,7 @@
 			 = "INSERT INTO item_codes
 					(item_code, stock_id, description, category_id, quantity, is_foreign)
 					VALUES( " . DB::escape($item_code) . "," . DB::escape($stock_id) . ",
-			  		" . DB::escape($description) . "," . DB::escape($category)
+			 		" . DB::escape($description) . "," . DB::escape($category)
 			 . "," . DB::escape($qty) . "," . DB::escape($foreign) . ")";
 			DB::query($sql, "an item code could not be added");
 		}

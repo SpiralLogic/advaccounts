@@ -34,8 +34,8 @@
 		if ($error != 1) {
 			Printer::write_def(
 				$selected_id, get_post('name'), get_post('descr'),
-				get_post('queue'), get_post('host'), input_num('port', 0),
-				input_num('tout', 0)
+				get_post('queue'), get_post('host'), Validation::input_num('port', 0),
+				Validation::input_num('tout', 0)
 			);
 			Errors::notice(
 				$selected_id == -1 ?
@@ -66,7 +66,7 @@
 
 	$result = Printer::get_all();
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	table_header($th);
 	$k = 0; //row colour counter
@@ -86,7 +86,7 @@
 	echo '<br>';
 
 	start_form();
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_printer($selected_id);

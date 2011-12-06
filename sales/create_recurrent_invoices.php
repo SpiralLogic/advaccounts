@@ -87,7 +87,7 @@
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
-	start_table(Config::get('tables_style') . "  width=70%");
+	start_table('tablestyle width70');
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
 	table_header($th);
@@ -114,12 +114,12 @@
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["description"]);
-		label_cell(ui_view::get_customer_trans_view_str(30, $myrow["order_no"]));
+		label_cell(Debtor_UI::trans_view(30, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Debtor::get_name($myrow["debtor_no"]));
 			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);

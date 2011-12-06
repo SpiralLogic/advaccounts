@@ -16,7 +16,7 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
-	br(1);
+	Display::br(1);
 	$adjustment_items = Inv_Adjustment::get($trans_no);
 	$k = 0;
 	$header_shown = false;
@@ -24,7 +24,7 @@
 	{
 		if (!$header_shown) {
 			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
-			start_table(Config::get('tables_style2') . " width=90%");
+			start_table('tablestyle2 width90');
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
 			label_cells(_("Reference"), $adjustment['reference'], "class='tableheader2'", "colspan=6");
@@ -35,7 +35,7 @@
 			end_table();
 			$header_shown = true;
 			echo "<br>";
-			start_table(Config::get('tables_style') . "  width=90%");
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item"), _("Description"), _("Quantity"),
 				_("Units"), _("Unit Cost")

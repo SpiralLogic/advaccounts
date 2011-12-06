@@ -23,11 +23,11 @@
 
 	function get_po($order_no)
 		{
-			#  __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
+			# __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
 			$sql
-			 = "SELECT purch_orders.*, suppliers.supp_name,  suppliers.supp_account_no,
-   		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
-   		suppliers.email, suppliers.address, suppliers.contact
+			 = "SELECT purch_orders.*, suppliers.supp_name, suppliers.supp_account_no,
+ 		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
+ 		suppliers.email, suppliers.address, suppliers.contact
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
@@ -69,7 +69,7 @@
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", User::pagesize());
+				$rep = new ADVReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
@@ -77,10 +77,10 @@
 			for ($i = $from; $i <= $to; $i++)
 			{
 				$myrow = get_po($i);
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->title = _('PURCHASE ORDER');
@@ -158,7 +158,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, $doc_TOTAL_PO, -2);
 				$rep->TextCol(6, 7, $DisplayTotal, -2);
-				$words = ui_view::price_in_words($SubTotal, ST_PURCHORDER);
+				$words = Item_Price::to_words($SubTotal, ST_PURCHORDER);
 				if ($words != "") {
 					$rep->NewLine(1);
 					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

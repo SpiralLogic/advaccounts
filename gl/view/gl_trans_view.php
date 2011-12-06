@@ -20,7 +20,7 @@
 		{
 			global $systypes_array;
 			$trans_name = $systypes_array[$_GET['type_id']];
-			start_table(Config::get('tables_style') . "  width=95%");
+			start_table('tablestyle width95');
 			$th = array(
 				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
 			table_header($th);
@@ -28,7 +28,7 @@
 			label_cell("$trans_name #" . $_GET['trans_no']);
 			label_cell($myrow["reference"]);
 			label_cell(Dates::sql2date($myrow["tran_date"]));
-			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+			label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 			end_row();
 			DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
 			end_table(1);
@@ -40,7 +40,7 @@
 	$result = DB::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
 	if (DB::num_rows($result) == 0) {
-		echo "<p><center>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+		echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
 		end_page(true);
 		exit;
 	}
@@ -64,7 +64,7 @@
 		}
 		if (!$heading_shown) {
 			display_gl_heading($myrow);
-			start_table(Config::get('tables_style') . "  width=95%");
+			start_table('tablestyle width95');
 			table_header($th);
 			$heading_shown = true;
 		}
@@ -77,7 +77,7 @@
 		if ($dim > 1) {
 			label_cell(Dimensions::get_string($myrow['dimension2_id'], true));
 		}
-		Display::debit_or_credit_cells($myrow['amount']);
+		debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
 		end_row();
 	}

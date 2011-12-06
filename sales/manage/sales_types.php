@@ -31,13 +31,13 @@
 
 
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
+		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
 
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
+		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
@@ -73,7 +73,7 @@
 
 	$result = Sales_Type::get_all(check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style') . "  width=30%");
+	start_table('tablestyle width30');
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
 	table_header($th);
@@ -91,7 +91,7 @@
 			$f = "<I>" . _('Base') . "</I>";
 		}
 		label_cell($f);
-		label_cell($myrow["tax_included"] ? _('Yes') : _('No'), 'align=center');
+		label_cell($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
 		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
@@ -107,7 +107,7 @@
 	if (!isset($_POST['base'])) {
 		$_POST['base'] = 0;
 	}
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Type::get($selected_id);

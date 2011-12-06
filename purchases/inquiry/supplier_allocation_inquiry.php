@@ -28,12 +28,12 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
+	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
-	supp_allocations_list_cell("filterType", null);
+	Purch_UI::allocation_row("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->supplier_id = $_POST['supplier_id'];
@@ -53,7 +53,7 @@
 
 	function view_link($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -70,7 +70,7 @@
 
 	function alloc_link($row)
 		{
-			$link = pager_link(_("Allocations"),
+			$link = DB_Pager::link(_("Allocations"),
 			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 			return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
 			 $link : '';
@@ -99,16 +99,16 @@
 		supplier.supp_name,
 		supplier.supplier_id as id,
 		trans.supp_reference,
-    	trans.tran_date, 
+ 	trans.tran_date,
 		trans.due_date,
 		supplier.curr_code, 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-    	FROM supp_trans as trans, suppliers as supplier
-    	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'";
+ 	FROM supp_trans as trans, suppliers as supplier
+ 	WHERE supplier.supplier_id = trans.supplier_id
+ 	AND trans.tran_date >= '$date_after'
+ 	AND trans.tran_date <= '$date_to'";
 	if ($_POST['supplier_id'] != ALL_TEXT) {
 		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'], false, false);
 	}
@@ -145,7 +145,7 @@
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
 	end_page();

@@ -24,7 +24,7 @@
 						$line_item->quantity, $line_item->standard_cost, $memo_);
 				}
 				DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
-				Ref::save(ST_INVADJUST, $adj_id, $reference);
+				Ref::save(ST_INVADJUST,  $reference);
 				DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
 				DB::commit_transaction();
 				return $adj_id;
@@ -51,7 +51,7 @@
 		public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference,
 			$quantity, $standard_cost, $memo_)
 			{
-				$mb_flag = Manufacturing::get_mb_flag($stock_id);
+				$mb_flag = WO::get_mb_flag($stock_id);
 				if (Input::post('mb_flag') == STOCK_SERVICE) {
 					Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 				}
@@ -71,9 +71,9 @@
 
 		public static function header($order)
 			{
-				start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
+				start_outer_table('tablestyle2 width70'); // outer table
 				table_section(1);
-				locations_list_row(_("Location:"), 'StockLocation', null);
+				Inv_Location::row(_("Location:"), 'StockLocation', null);
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
 				table_section(2, "33%");
 				date_row(_("Date:"), 'AdjDate', '', true);
@@ -90,8 +90,8 @@
 		public static function display_items($title, $order)
 			{
 				Display::heading($title);
-				div_start('items_table');
-				start_table(Config::get('tables_style') . "  width=90%");
+				Display::div_start('items_table');
+				start_table('tablestyle width90');
 				$th = array(
 					_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), _("Total"), "");
 				if (count($order->line_items)) {
@@ -105,7 +105,7 @@
 					$total += ($stock_item->standard_cost * $stock_item->quantity);
 					if ($id != $line_no) {
 						alt_table_row_color($k);
-						ui_view::stock_status_cell($stock_item->stock_id);
+						Item_UI::status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
@@ -121,9 +121,9 @@
 				if ($id == -1) {
 					Inv_Adjustment::item_controls($order);
 				}
-				label_row(_("Total"), Num::format($total, User::price_dec()), "align=right colspan=5", "align=right", 2);
+				label_row(_("Total"), Num::format($total, User::price_dec()), "class=right colspan=5", "class=right", 2);
 				end_table();
-				div_end();
+				Display::div_end();
 			}
 
 
@@ -144,7 +144,7 @@
 					label_cell($order->line_items[$id]->description, 'nowrap');
 					$Ajax->activate('items_table');
 				} else {
-					stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+					Item_UI::costable_cells(null, 'stock_id', null, false, true);
 					if (list_updated('stock_id')) {
 						$Ajax->activate('units');
 						$Ajax->activate('qty');
@@ -177,7 +177,7 @@
 		public static function option_controls()
 			{
 				echo "<br>";
-				start_table();
+				start_table('center');
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				end_table(1);
 			}

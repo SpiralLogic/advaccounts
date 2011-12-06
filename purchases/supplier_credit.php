@@ -19,12 +19,12 @@
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPCREDIT;
-		echo "<center>";
+		echo "<div class='center'>";
 		Errors::notice(_("Supplier credit note has been processed."));
-		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
-		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
-		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Credit Note")));
+		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
+		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
 
@@ -49,7 +49,7 @@
 
 
 	//	GL postings are often entered in the same form to two accounts
-	//  so fileds are cleared only on user demand.
+	// so fileds are cleared only on user demand.
 	//
 	if (isset($_POST['ClearFields'])) {
 		clear_fields();
@@ -80,7 +80,7 @@
 		if ($input_error == false) {
 			Purch_Trans::i()
 			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'],
-				input_num('amount'), $_POST['memo_']);
+				Validation::input_num('amount'), $_POST['memo_']);
 			JS::set_focus('gl_code');
 		}
 	}
@@ -89,7 +89,7 @@
 		{
 			global $total_grn_value, $total_gl_value;
 			if (!Purch_Trans::i()->is_valid_trans_to_post()) {
-				Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+				Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
 				JS::set_focus('');
 				return false;
 			}
@@ -143,7 +143,7 @@
 			}
 			Purch_Trans::i()->clear_items();
 			Purch_Trans::killInstance();
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
 
@@ -171,8 +171,8 @@
 				$complete = False;
 				Purch_Trans::i()
 				 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
-					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n),
-					$_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
+					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n),
+					$_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete,
 					$_POST['std_cost_unit' . $n], "");
 			}
 		}
@@ -211,7 +211,7 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], Validation::input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
@@ -224,9 +224,9 @@
 	} else {
 		$total_grn_value = Purch_GRN::display_items(Purch_Trans::i(), 1);
 		$total_gl_value = Purch_GLItem::display_items(Purch_Trans::i(), 1);
-		div_start('inv_tot');
+		Display::div_start('inv_tot');
 		Purch_Invoice::totals(Purch_Trans::i());
-		div_end();
+		Display::div_end();
 	}
 	if ($id != -1) {
 		$Ajax->activate('grn_items');
@@ -235,9 +235,9 @@
 	if (get_post('AddGLCodeToTrans')) {
 		$Ajax->activate('inv_tot');
 	}
-	br();
+	Display::br();
 	submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
-	br();
+	Display::br();
 	end_form();
 	end_page();
 ?>

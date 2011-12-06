@@ -9,23 +9,32 @@
 	include(DOCROOT . "config/defines.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
-/***
- *
- */
-	class Config_Exception extends Exception { }
-/***
- *
- */
+	/***
+	 *
+	 */
+	class Config_Exception extends Exception
+	{
+	}
+
+	/***
+	 *
+	 */
 	class Config
 	{
 		/***
 		 * @var array|null
 		 */
 		static $_vars = null;
+		/**
+		 * @var bool
+		 */
 		protected static $_initialised = false;
 
-		public static function init()
-		{
+		/**
+		 * @static
+		 * @return mixed
+		 */
+		public static function init() {
 			if (static::$_initialised === true) {
 				return;
 			}
@@ -34,14 +43,21 @@
 			}
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
+
 				static::load();
 			}
 			static::$_initialised = true;
 			static::js();
 		}
 
-		protected static function load($group = 'config')
-		{
+		/**
+		 * @static
+		 *
+		 * @param string $group
+		 *
+		 * @return mixed
+		 * @throws Config_Exception
+		 */protected static function load($group = 'config') {
 			$file = DOCROOT . "config" . DS . $group . '.php';
 			$group_name = $group;
 			if (is_array($group)) {
@@ -58,22 +74,29 @@
 			}
 			/** @noinspection PhpIncludeInspection */
 			static::$_vars[$group_name] = include($file);
-		}
+	}
 
-		public static function set($var, $value, $group = 'config')
-		{
+		/**
+		 * @static
+		 * @param $var
+		 * @param $value
+		 * @param string $group
+		 * @return mixed
+		 */public static function set($var, $value, $group = 'config') {
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
-/***
- * @static
- * @param $var
- * @param null $array_key
- * @param null $group
- * @return mixed
- */
-		public static function get($var, $array_key = null, $group = null)
-		{
+
+		/***
+		 * @static
+		 *
+		 * @param $var
+		 * @param null $array_key
+		 * @param null $group
+		 *
+		 * @return mixed
+		 */
+		public static function get($var, $array_key = null, $group = null) {
 			static::init();
 			if (!strstr($var, '.')) {
 				$group = 'config';
@@ -93,32 +116,43 @@
 			if (!isset(static::$_vars[$group][$var])) {
 				return false;
 			}
-			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
+			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] :
+			 static::$_vars[$group][$var];
 		}
 
-		public static function remove($var, $group = 'config')
-		{
+		/**
+		 * @static
+		 * @param $var
+		 * @param string $group
+		 */public static function remove($var, $group = 'config') {
 			if (array_key_exists($var, static::$_vars[$group])) {
 				unset(static::$_vars[$group][$var]);
 			}
-		}
+	}
 
-		public static function store()
-		{
+		/**
+		 * @static
+		 *
+		 */public static function store() {
 			$_SESSION['config'] = static::$_vars;
-		}
+	}
 
-		public static function get_all($group = 'config')
-		{
+		/**
+		 * @static
+		 * @param string $group
+		 * @return mixed
+		 */public static function get_all($group = 'config') {
 			static::init();
 			if (!isset(static::$_vars[$group])) {
 				static::load($group);
 			}
 			return static::$_vars[$group];
-		}
+	}
 
-		protected static function js()
-		{
+		/**
+		 * @static
+		 *
+		 */protected static function js() {
 			JS::headerFile(static::get('assets.header'));
 			JS::footerFile(static::get('assets.footer'));
 		}

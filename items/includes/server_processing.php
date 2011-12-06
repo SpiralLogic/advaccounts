@@ -11,10 +11,10 @@
 	/* DB table to use */
 	$sTable = "stock_master";
 	/* Database connection information */
-	$gaSql['user']     = "fa";
+	$gaSql['user'] = "fa";
 	$gaSql['password'] = "1willenberg";
-	$gaSql['db']       = "fa";
-	$gaSql['server']   = "localhost";
+	$gaSql['db'] = "fa";
+	$gaSql['server'] = "localhost";
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 			 * If you just want to use the basic configuration for DataTables with PHP server-side, there is
 			 * no need to edit below this line
@@ -39,7 +39,7 @@
 			 */
 	$sOrder = "";
 	if (isset($_GET['iSortCol_0'])) {
-		$sOrder = "ORDER BY  ";
+		$sOrder = "ORDER BY ";
 		for ($i = 0; $i < intval($_GET['iSortingCols']); $i++)
 		{
 			if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
@@ -87,7 +87,7 @@
 	$sQuery
 	 = "
 		SELECT SQL_CALC_FOUND_ROWS " . str_replace(" , ", " ", implode(", ", $aColumns)) . "
-		FROM   $sTable
+		FROM $sTable
 		$sWhere
 		$sOrder
 		$sLimit
@@ -100,28 +100,28 @@
 	";
 	$rResultFilterTotal = mysql_query($sQuery, $gaSql['link']) or die(mysql_error());
 	$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
-	$iFilteredTotal     = $aResultFilterTotal[0];
+	$iFilteredTotal = $aResultFilterTotal[0];
 	/* Total data set length */
 	$sQuery
 	 = "
 		SELECT COUNT(" . $sIndexColumn . ")
-		FROM   $sTable
+		FROM $sTable
 	";
 	$rResultTotal = mysql_query($sQuery, $gaSql['link']) or die(mysql_error());
 	$aResultTotal = mysql_fetch_array($rResultTotal);
-	$iTotal       = $aResultTotal[0];
+	$iTotal = $aResultTotal[0];
 	/*
 			 * Output
 			 */
 	$output = array(
-		"sEcho"                => intval($_GET['sEcho']),
-		"iTotalRecords"        => $iTotal,
+		"sEcho" => intval($_GET['sEcho']),
+		"iTotalRecords" => $iTotal,
 		"iTotalDisplayRecords" => $iFilteredTotal,
-		"aaData"               => array()
+		"aaData" => array()
 	);
 	while ($aRow = mysql_fetch_array($rResult))
 	{
-		$row             = array();
+		$row = array();
 		$row['DT_RowId'] = $aRow['stock_id'];
 		for ($i = 0; $i < count($aColumns); $i++)
 		{

@@ -37,26 +37,26 @@
 	}
 
 	start_form();
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
+	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
-	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	//stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
+	Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+	//Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+			return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
 		}
 
 	function edit_link($row)
 		{
-			return pager_link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+			return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 		}
 
 	function prt_link($row)
@@ -66,7 +66,7 @@
 
 	function receive_link($row)
 		{
-			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
 
 	function check_overdue($row)
@@ -110,8 +110,8 @@
 	} else {
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 		$data_before = Dates::date2sql($_POST['OrdersToDate']);
-		$sql .= "  AND porder.ord_date >= '$data_after'";
-		$sql .= "  AND porder.ord_date <= '$data_before'";
+		$sql .= " AND porder.ord_date >= '$data_after'";
+		$sql .= " AND porder.ord_date <= '$data_before'";
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
 			$sql .= " AND porder.into_stock_location = " . DB::escape($_POST['StockLocation'], false, false);
 		}
@@ -136,7 +136,7 @@
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked orders have overdue items."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
 	end_page();

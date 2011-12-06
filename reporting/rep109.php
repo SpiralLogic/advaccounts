@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 		Copyright (C) Advanced Group PTY LTD
 		Released under the terms of the GNU General Public License, GPL,
 		as published by the Free Software Foundation, either version 3
@@ -39,13 +39,13 @@
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
 				if ($print_as_quote == 0) {
-					$rep = new FrontReport(_("ORDER"), "SalesOrderBulk", User::pagesize());
+					$rep = new ADVReport(_("ORDER"), "SalesOrderBulk", User::pagesize());
 				} elseif ($print_as_quote == 2) {
-					$rep = new FrontReport(_("PROFORMA INVOICE"), "QuoteBulk", User::pagesize());
+					$rep = new ADVReport(_("PROFORMA INVOICE"), "QuoteBulk", User::pagesize());
 				} elseif ($print_as_quote == 3) {
-					$rep = new FrontReport(_("PROFORMA INVOICE"), "QuoteBulk", User::pagesize());
+					$rep = new ADVReport(_("PROFORMA INVOICE"), "QuoteBulk", User::pagesize());
 				} else {
-					$rep = new FrontReport(_("QUOTE"), "QuoteBulk", User::pagesize());
+					$rep = new ADVReport(_("QUOTE"), "QuoteBulk", User::pagesize());
 				}
 				$rep->currency = $cur;
 				$rep->Font();
@@ -59,11 +59,11 @@
 				} else {
 					$myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
 				}
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($print_as_quote == 1) {
@@ -101,10 +101,10 @@
 						 $myrow2["quantity"]), User::price_dec()
 					);
 					$SubTotal += $Net;
-					#  __ADVANCEDEDIT__ BEGIN #
+					# __ADVANCEDEDIT__ BEGIN #
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
-					$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
-					#  __ADVANCEDEDIT__ END #
+					$TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
+					# __ADVANCEDEDIT__ END #
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
 					$DisplayQty = Num::format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
 					$DisplayNet = Num::format($Net, $dec);
@@ -168,11 +168,11 @@
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);
 				$rep->NewLine();
 				$rep->NewLine();
-				#  __ADVANCEDEDIT__ BEGIN # added tax to invoice
+				# __ADVANCEDEDIT__ BEGIN # added tax to invoice
 				$rep->TextCol(4, 7, 'Total GST (10%)', -2);
 				$rep->TextCol(7, 8, $DisplayTaxTot, -2);
 				$rep->NewLine();
-				#  __ADVANCEDEDIT__ END #
+				# __ADVANCEDEDIT__ END #
 				$rep->Font('bold');
 				#	if ($myrow['tax_included'] == 0)
 				#	$rep->TextCol(4, 7, $doc_TOTAL_ORDER, - 2);
@@ -180,9 +180,9 @@
 				$rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
 				if ($print_as_quote < 3) {
-					$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
+					$words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
 				} else {
-					$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+					$words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 				}
 				if ($words != "") {
 					$rep->NewLine(1);

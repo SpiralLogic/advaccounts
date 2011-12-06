@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Validation::check(Validation::SALES_TYPES,
-		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES,		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
 	Page::simple_mode(true);
 
 	$input_error = 0;
@@ -26,11 +25,11 @@
 		$_POST['stock_id'] = $_GET['Item'];
 	}
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = Banking::get_company_currency();
+		$_POST['curr_abrev'] = Bank_Currency::for_company();
 	}
 
 	if (Input::request('frame')) {
-		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
+		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
 	}
@@ -38,9 +37,9 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
-		echo "<center>" . _("Item:") . "&nbsp;";
-		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
-		echo "<hr></center>";
+		echo "<div class='center'>" . _("Item:") . "&nbsp;";
+		echo Sales_UI::items('stock_id', $_POST['stock_id'], false, true, '', array(), true);
+		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
 
@@ -53,10 +52,10 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				//editing an existing price
-				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
+				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("This price has been updated.");
 			} else {
-				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
+				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
 			Errors::notice($msg);
@@ -86,11 +85,11 @@
 	}
 
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
-	div_start('price_table');
+	Display::div_start('price_table');
 	if (Input::request('frame')) {
-		start_table(Config::get('tables_style') . "  width=90%");
+		start_table('tablestyle width90');
 	} else {
-		start_table(Config::get('tables_style') . "  width=30%");
+		start_table('tablestyle width30');
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 	table_header($th);
@@ -112,7 +111,7 @@
 		}
 		Errors::warning(_("There are no prices set up for this part."), 1);
 	}
-	div_end();
+	Display::div_end();
 
 	echo "<br>";
 	if ($Mode == 'Edit') {
@@ -122,10 +121,10 @@
 		$_POST['price'] = Num::price_format($myrow["price"]);
 	}
 	hidden('selected_id', $selected_id);
-	div_start('price_details');
-	start_table('class="tableinfo"');
-	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
-	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+	Display::div_start('price_details');
+	start_table('tableinfo');
+	GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
+	Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
 		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
 			get_post('sales_type_id')));
@@ -137,7 +136,7 @@
 		Errors::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-	div_end();
+	Display::div_end();
 	end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);

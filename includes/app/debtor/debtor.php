@@ -6,7 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Customer extends Contacts_Company {
+	class Debtor extends Contacts_Company {
 
 		public static function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
@@ -87,7 +87,7 @@ JS;
 		}
 
 		public function addBranch($details = null) {
-			$branch = new Contacts_Branch($details);
+			$branch = new Debtor_Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
 			$this->branches[$branch->branch_code] = $branch;
@@ -144,13 +144,13 @@ JS;
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
-						FROM debtor_trans LEFT OUTER JOIN sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
-		    			WHERE  debtor_trans.debtor_no = " . DB::escape($this->id) . "
-		    			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
-		    				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
-		    				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+						FROM debtor_trans LEFT OUTER JOIN sales_orders ON debtor_trans.order_ = sales_orders.order_no
+		 			WHERE debtor_trans.debtor_no = " . DB::escape($this->id) . "
+		 			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
+		 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+		 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-		    				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
+		 				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
 			$result = DB::query($sql);
 			$results = array();
 			while ($row = DB::fetch_assoc($result)) {
@@ -199,11 +199,11 @@ JS;
 		protected function setFromArray($changes = NULL) {
 			parent::setFromArray($changes);
 			if (isset($changes['accounts']) && is_array($changes['accounts'])) {
-				$this->accounts = new Contacts_Accounts($changes['accounts']);
+				$this->accounts = new Debtor_Account($changes['accounts']);
 			}
 			if (isset($changes['branches']) && is_array($changes['branches'])) {
 				foreach ($changes['branches'] as $branchid => $branch) {
-					$this->branches[$branchid] = new Contacts_Branch($branch);
+					$this->branches[$branchid] = new Debtor_Branch($branch);
 				}
 			}
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
@@ -239,7 +239,7 @@ JS;
 				return false;
 			}
 			if ($this->id != 0) {
-				$previous = new Contacts_Customer($this->id);
+				$previous = new Debtor($this->id);
 				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
 					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
@@ -273,14 +273,14 @@ JS;
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
 			$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
-			$this->curr_code = Banking::get_company_currency();
+			$this->curr_code = Bank_Currency::for_company();
 			$this->discount = $this->pymt_discount = Num::percent_format(0);
 			$this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
 		}
 
 		protected function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
-			$this->accounts = DB::fetch()->asClassLate('Contacts_Accounts')->all();
+			$this->accounts = DB::fetch()->asClassLate('Debtor_Account')->all();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts = clone($this->branches[$this->defaultBranch]);
 				$this->accounts->br_name = 'Accounts Department';
@@ -295,7 +295,7 @@ JS;
 			 ->from('cust_branch')
 			 ->where('debtor_no=', $this->debtor_no)
 			 ->where('branch_ref !=', 'accounts');
-			$branches = DB::fetch()->asClassLate('Contacts_Branch');
+			$branches = DB::fetch()->asClassLate('Debtor_Branch');
 			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_code] = $branch;
 			}
@@ -316,8 +316,8 @@ JS;
 
 		protected function _new() {
 			$this->_defaults();
-			$this->accounts = new Contacts_Accounts();
-			$this->branches[0] = new Contacts_Branch();
+			$this->accounts = new Debtor_Account();
+			$this->branches[0] = new Debtor_Branch();
 			$this->contacts[0] = new Contacts_Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
@@ -364,5 +364,128 @@ JS;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
+		public static function get_details($customer_id, $to = null)
+		{
+			if ($to == null) {
+				$todate = date("Y-m-d");
+			}
+			else {
+				$todate = Dates::date2sql($to);
+			}
+			$past1 = DB_Company::get_pref('past_due_days');
+			$past2 = 2 * $past1;
+			// removed - debtor_trans.alloc from all summations
+			$value
+					 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+		-1, 1) *" .		 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "		 . "debtor_trans.ov_discount)";
+			$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
+			$sql						= "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
+			Sum(" . $value . ") AS Balance,
+			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
+			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
+			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
 
+			FROM debtors_master,
+				 payment_terms,
+				 credit_status,
+				 debtor_trans
+			WHERE
+				 debtors_master.payment_terms = payment_terms.terms_indicator
+				 AND debtors_master.credit_status = credit_status.id
+				 AND debtors_master.debtor_no = " . DB::escape($customer_id) . "
+				 AND debtor_trans.tran_date <= '$todate'
+				 AND debtor_trans.type <> 13
+				 AND debtors_master.debtor_no = debtor_trans.debtor_no
+			GROUP BY
+				 debtors_master.name,
+				 payment_terms.terms,
+				 payment_terms.days_before_due,
+				 payment_terms.day_in_following_month,
+				 debtors_master.credit_limit,
+				 credit_status.dissallow_invoices,
+				 credit_status.reason_description";
+			$result = DB::query($sql, "The customer details could not be retrieved");
+			if (DB::num_rows($result) == 0) {
+				/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
+				$nil_balance = true;
+				$sql
+				 = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
+	 		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
+	 		FROM debtors_master,
+	 		 payment_terms,
+	 		 credit_status
+
+	 		WHERE
+	 		 debtors_master.payment_terms = payment_terms.terms_indicator
+	 		 AND debtors_master.credit_status = credit_status.id
+	 		 AND debtors_master.debtor_no = " . DB::escape($customer_id);
+				$result = DB::query($sql, "The customer details could not be retrieved");
+			}
+			else {
+				$nil_balance = false;
+			}
+			$customer_record = DB::fetch($result);
+			if ($nil_balance == true) {
+				$customer_record["Balance"] = 0;
+				$customer_record["Due"] = 0;
+				$customer_record["Overdue1"] = 0;
+				$customer_record["Overdue2"] = 0;
+			}
+			return $customer_record;
+		}
+
+		public static function get($customer_id)
+		{
+			$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
+			$result = DB::query($sql, "could not get customer");
+			return DB::fetch($result);
+		}
+
+		public static function get_name($customer_id)
+		{
+			$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
+			$result = DB::query($sql, "could not get customer");
+			$row = DB::fetch_row($result);
+			return $row[0];
+		}
+
+		public static function get_habit($customer_id)
+		{
+			$sql
+			 = "SELECT debtors_master.pymt_discount,
+				 credit_status.dissallow_invoices
+				FROM debtors_master, credit_status
+				WHERE debtors_master.credit_status = credit_status.id
+					AND debtors_master.debtor_no = " . DB::escape($customer_id);
+			$result = DB::query($sql, "could not query customers");
+			return DB::fetch($result);
+		}
+
+		public static function get_area($id)
+		{
+			$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
+			$result = DB::query($sql, "could not get sales type");
+			$row = DB::fetch_row($result);
+			return $row[0];
+		}
+
+		public static function get_salesman_name($id)
+		{
+			$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
+			$result = DB::query($sql, "could not get sales type");
+			$row = DB::fetch_row($result);
+			return $row[0];
+		}
+
+		public static function get_credit($customer_id)
+		{
+			$custdet = Debtor::get_details($customer_id);
+			return ($customer_id > 0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
+		}
+
+		public static function is_new($id)
+		{
+			$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
+			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
+		}
 	}

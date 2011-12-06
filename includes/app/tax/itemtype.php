@@ -81,7 +81,7 @@
 			for ($i = 0; $i < count($exemptions); $i++)
 			{
 				$sql = "INSERT INTO item_tax_type_exemptions (item_tax_type_id, tax_type_id)
-			VALUES (" . DB::escape($id) . ",  " . DB::escape($exemptions[$i]) . ")";
+			VALUES (" . DB::escape($id) . ", " . DB::escape($exemptions[$i]) . ")";
 				DB::query($sql, "could not add item tax type exemptions");
 			}
 		}
@@ -97,6 +97,28 @@
 
 			return DB::query($sql, "could not get item tax type exemptions");
 		}
+
+			// ITEM TAX TYPES
+			public static function select($name, $selected_id = null) {
+				$sql = "SELECT id, name FROM item_tax_types";
+				return select_box($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
+			}
+
+			public static function cells($label, $name, $selected_id = null) {
+				if ($label != null) {
+					echo "<td>$label</td>\n";
+				}
+				echo "<td>";
+				echo Tax_ItemType::select($name, $selected_id);
+				echo "</td>\n";
+			}
+
+			public static function row($label, $name, $selected_id = null) {
+				echo "<tr><td class='label'>$label</td>";
+				Tax_ItemType::cells(null, $name, $selected_id);
+				echo "</tr>\n";
+			}
+
 	}
 
 ?>

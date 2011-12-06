@@ -25,17 +25,17 @@
 		$to = Dates::date2sql($to);
 		$sql
 		 = "SELECT DISTINCT grn_batch.supplier_id,
-            purch_order_details.*,
-            stock_master.description, stock_master.inactive
-        FROM stock_master,
-            purch_order_details,
-            grn_batch
-        WHERE stock_master.stock_id=purch_order_details.item_code
-        AND grn_batch.purch_order_no=purch_order_details.order_no
-        AND purch_order_details.quantity_received>0
-        AND grn_batch.delivery_date>='$from'
-        AND grn_batch.delivery_date<='$to'
-        ORDER BY stock_master.stock_id, grn_batch.delivery_date";
+ purch_order_details.*,
+ stock_master.description, stock_master.inactive
+ FROM stock_master,
+ purch_order_details,
+ grn_batch
+ WHERE stock_master.stock_id=purch_order_details.item_code
+ AND grn_batch.purch_order_no=purch_order_details.order_no
+ AND purch_order_details.quantity_received>0
+ AND grn_batch.delivery_date>='$from'
+ AND grn_batch.delivery_date<='$to'
+ ORDER BY stock_master.stock_id, grn_batch.delivery_date";
 		return DB::query($sql, "No transactions were returned");
 	}
 
@@ -65,9 +65,9 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to)
+				'to' => $to)
 		);
-		$rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
+		$rep = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -88,8 +88,8 @@
 				}
 				$stock_id = $trans['item_code'];
 			}
-			$curr = Banking::get_supplier_currency($trans['supplier_id']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['delivery_date']));
+			$curr = Bank_Currency::for_creditor($trans['supplier_id']);
+			$rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$trans['act_price'] *= $rate;
 			$rep->NewLine();

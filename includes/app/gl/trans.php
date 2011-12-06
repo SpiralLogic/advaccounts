@@ -14,14 +14,14 @@
 	// $date_ is display date (non-sql)
 	// $amount is in $currency currency
 	// if $currency is not set, then defaults to no conversion
-	class GL_Trans
+	class GL_Trans implements IVoidable
 	{
-		public static function  add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0)
+		public static function add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0)
 		{
 			$date = Dates::date2sql($date_);
 			if ($currency != null) {
 				if ($rate == 0) {
-					$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
+					$amount_in_home_currency = Bank_Currency::to_home($amount, $currency, $date_);
 				} else {
 					$amount_in_home_currency = Num::round($amount * $rate, User::price_dec());
 				}
@@ -64,7 +64,7 @@
 		// GL Trans for standard costing, always home currency regardless of person
 		// $date_ is display date (non-sql)
 		// $amount is in HOME currency
-		public static function  add_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $person_type_id = null, $person_id = null, $err_msg = "")
+		public static function add_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $person_type_id = null, $person_id = null, $err_msg = "")
 		{
 			if ($amount != 0) {
 				return static::add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, null, $person_type_id, $person_id, $err_msg);
@@ -73,8 +73,8 @@
 			}
 		}
 
-		// public static function  for even out rounding problems
-		public static function  add_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null)
+		// public static function for even out rounding problems
+		public static function add_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null)
 		{
 			$amount = Num::round($amount, User::price_dec());
 			if ($amount != 0) {
@@ -85,7 +85,7 @@
 		}
 
 
-		public static function  get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null)
+		public static function get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null)
 		{
 			$from = Dates::date2sql($from_date);
 			$to = Dates::date2sql($to_date);
@@ -119,7 +119,7 @@
 		}
 
 
-		public static function  get_many($type, $trans_id)
+		public static function get_many($type, $trans_id)
 		{
 			$sql = "SELECT gl_trans.*, " . "chart_master.account_name FROM " . "gl_trans, chart_master
 		WHERE chart_master.account_code=gl_trans.account
@@ -128,7 +128,7 @@
 		}
 
 
-		public static function  get_wo_cost($trans_id, $person_id = -1)
+		public static function get_wo_cost($trans_id, $person_id = -1)
 		{
 			$sql = "SELECT gl_trans.*, chart_master.account_name FROM " . "gl_trans, chart_master
 		WHERE chart_master.account_code=gl_trans.account
@@ -141,17 +141,17 @@
 			return DB::query($sql, "The gl transactions could not be retrieved");
 		}
 
-		public static function  get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
+		public static function get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
 		{
 			$from = Dates::date2sql($from_date);
 			$to = Dates::date2sql($to_date);
 			$sql = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
 			if ($from_date != "") {
-				$sql .= "  AND tran_date > '$from'";
+				$sql .= " AND tran_date > '$from'";
 			}
 			if ($to_date != "") {
-				$sql .= "  AND tran_date < '$to'";
+				$sql .= " AND tran_date < '$to'";
 			}
 			if ($dimension != 0) {
 				$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DB::escape($dimension));
@@ -165,7 +165,7 @@
 		}
 
 
-		public static function  get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
+		public static function get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
 		{
 			$from = Dates::date2sql($from_date);
 			$to = Dates::date2sql($to_date);
@@ -189,7 +189,7 @@
 		}
 
 
-		public static function  get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true)
+		public static function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true)
 		{
 			$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit,
 		SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
@@ -207,7 +207,7 @@
 			}
 			$from_date = Dates::date2sql($from);
 			if ($from_incl) {
-				$sql .= " tran_date >= '$from_date'  AND";
+				$sql .= " tran_date >= '$from_date' AND";
 			} else {
 				$sql .= " tran_date > IF(ctype>0 AND ctype<" . CL_INCOME . ", '0000-00-00', '$from_date') AND";
 			}
@@ -222,7 +222,7 @@
 		}
 
 
-		public static function  get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
+		public static function get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
 		{
 			$from = Dates::date2sql($from_date);
 			$to = Dates::date2sql($to_date);
@@ -248,9 +248,9 @@
 
 		//	Stores journal/bank transaction tax details if applicable
 		//
-		public static function  add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
+		public static function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
 		{
-			$tax_type = Taxes::is_tax_account($gl_code);
+			$tax_type = Tax::is_account($gl_code);
 			if (!$tax_type) {
 				return;
 			} // $gl_code is not tax account
@@ -275,7 +275,7 @@
 		//	Store transaction tax details for fiscal purposes with 'freezed'
 		//	actual tax type rate.
 		//
-		public static function  add_tax_details($trans_type, $trans_no, $tax_id, $rate, $included, $amount, $net_amount, $ex_rate, $tran_date, $memo)
+		public static function add_tax_details($trans_type, $trans_no, $tax_id, $rate, $included, $amount, $net_amount, $ex_rate, $tran_date, $memo)
 		{
 			$sql = "INSERT INTO trans_tax_details
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
@@ -286,7 +286,7 @@
 		}
 
 
-		public static function  get_tax_details($trans_type, $trans_no)
+		public static function get_tax_details($trans_type, $trans_no)
 		{
 			$sql = "SELECT trans_tax_details.*, " . "tax_types.name AS tax_type_name
 		FROM trans_tax_details,tax_types
@@ -298,14 +298,14 @@
 		}
 
 
-		public static function  void_tax_details($type, $type_no)
+		public static function void_tax_details($type, $type_no)
 		{
 			$sql = "UPDATE trans_tax_details SET amount=0, net_amount=0
 		WHERE trans_no=" . DB::escape($type_no) . " AND trans_type=" . DB::escape($type);
 			DB::query($sql, "The transaction tax details could not be voided");
 		}
 
-		public static function  get_tax_summary($from, $to)
+		public static function get_tax_summary($from, $to)
 		{
 			$fromdate = Dates::date2sql($from);
 			$todate = Dates::date2sql($to);
@@ -336,69 +336,9 @@
 		}
 
 
-		// Write/update journal entries.
-		//
-		public static function  write_journal_entries($cart, $reverse, $use_transaction = true)
-		{
-			$date_ = $cart->tran_date;
-			$ref = $cart->reference;
-			$memo_ = $cart->memo_;
-			$trans_type = $cart->trans_type;
-			$new = $cart->order_id == 0;
-			if ($new) {
-				$cart->order_id = SysTypes::get_next_trans_no($trans_type);
-			}
-			$trans_id = $cart->order_id;
-			if ($use_transaction) {
-				DB::begin_transaction();
-			}
-			if (!$new) {
-				static::void_journal_trans($trans_type, $trans_id, false);
-			}
-			foreach ($cart->gl_items as $journal_item) {
-				// post to first found bank account using given gl acount code.
-				$is_bank_to = Banking::is_bank_account($journal_item->code_id);
-				static::add($trans_type, $trans_id, $date_, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, $journal_item->amount);
-				if ($is_bank_to) {
-					Bank_Trans::add($trans_type, $trans_id, $is_bank_to, $ref, $date_, $journal_item->amount, 0, "", Banking::get_company_currency(), "Cannot insert a destination bank transaction");
-				}
-				// store tax details if the gl account is a tax account
-				static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
-			}
-			if ($new) {
-				DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
-				Ref::save($trans_type, $trans_id, $ref);
-			} else {
-				DB_Comments::update($trans_type, $trans_id, null, $memo_);
-				Ref::update($trans_type, $trans_id, $ref);
-			}
-			DB_AuditTrail::add($trans_type, $trans_id, $date_);
-			if ($reverse) {
-				//$reversingDate = date(User::date_display(),
-				//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-				$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
-				$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
-				foreach ($cart->gl_items as $journal_item) {
-					$is_bank_to = Banking::is_bank_account($journal_item->code_id);
-					static::add($trans_type, $trans_id_reverse, $reversingDate, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, -$journal_item->amount);
-					if ($is_bank_to) {
-						Bank_Trans::add($trans_type, $trans_id_reverse, $is_bank_to, $ref, $reversingDate, -$journal_item->amount, 0, "", Banking::get_company_currency(), "Cannot insert a destination bank transaction");
-					}
-					// store tax details if the gl account is a tax account
-					static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
-				}
-				DB_Comments::add($trans_type, $trans_id_reverse, $reversingDate, $memo_);
-				Ref::save($trans_type, $trans_id_reverse, $ref);
-				DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
-			}
-			if ($use_transaction) {
-				DB::commit_transaction();
-			}
-			return $trans_id;
-		}
 
 
-		public static function  exists($type, $trans_id)
+		public static function exists($type, $trans_id)
 		{
 			$sql = "SELECT type_no FROM gl_trans WHERE type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_id);
 			$result = DB::query($sql, "Cannot retreive a gl transaction");
@@ -406,7 +346,7 @@
 		}
 
 
-		public static function  void($type, $trans_id, $nested = false)
+		public static function void($type, $trans_id, $nested = false)
 		{
 			if (!$nested) {
 				DB::begin_transaction();
@@ -418,22 +358,7 @@
 			}
 		}
 
-
-		public static function  void_journal_trans($type, $type_no, $use_transaction = true)
-		{
-			if ($use_transaction) {
-				DB::begin_transaction();
-			}
-			Bank_Trans::void($type, $type_no, true);
-			//	static::void($type, $type_no, true);	 // this is done above
-			//	static::void_tax_details($type, $type_no); // ditto
-			if ($use_transaction) {
-				DB::commit_transaction();
-			}
-		}
-
-
-		public static function  get_value($account, $type, $trans_no)
+		public static function get_value($account, $type, $trans_no)
 		{
 			$sql = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::escape($account) . " AND type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_no);
 			$result = DB::query($sql, "query for gl trans value");

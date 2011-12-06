@@ -63,9 +63,9 @@
 		$_POST['show_inactive'] = $sav;
 	}
 
-	$result = Inv_Movement::get_all_types(  check_value('show_inactive'));
+	$result = Inv_Movement::get_all_types( check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style') . "  width=30%");
+	start_table('tablestyle width30');
 	$th = array(_("Description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -82,7 +82,7 @@
 	inactive_control_row($th);
 	end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code

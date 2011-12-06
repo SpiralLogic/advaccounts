@@ -42,7 +42,7 @@
 				User::prefs()->theme = $_POST['theme'];
 			}
 			if ($chg_theme || $chg_lang) {
-				meta_forward($_SERVER['PHP_SELF']);
+				Display::meta_forward($_SERVER['PHP_SELF']);
 			}
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
@@ -52,7 +52,7 @@
 		}
 	}
 	start_form();
-	start_outer_table(Config::get('tables_style2'));
+	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Decimal Places"));
 	text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
@@ -74,23 +74,23 @@
 		$_POST['language'] = $_SESSION['Language']->code;
 	}
 	table_section_title(_("Language"));
-	languages_list_row(_("Language:"), 'language', $_POST['language']);
+	Languages::row(_("Language:"), 'language', $_POST['language']);
 	table_section(2);
 	table_section_title(_("Miscellaneous"));
 	check_row(_("Show hints for new users:"), 'show_hints', User::hints());
 	check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
 	check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
-	themes_list_row(_("Theme:"), "theme", User::theme());
+	Users::themes_row(_("Theme:"), "theme", User::theme());
 	/* The array $themes is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	pagesizes_list_row(_("Page Size:"), "page_size", User::pagesize());
-	tab_list_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
+	Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::pagesize());
+	Users::tabs_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
 	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['profile'])) {
 		$_POST['profile'] = User::print_profile();
 	}
-	print_profiles_list_row(
+	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile',
 		null, _('Browser printing support')
 	);

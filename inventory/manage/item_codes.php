@@ -22,7 +22,7 @@
 			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
-		elseif (!input_num('quantity'))
+		elseif (!Validation::input_num('quantity'))
 		{
 			$input_error = 1;
 			Errors::error(_("The price entered was not positive number."));
@@ -79,9 +79,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
-	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
-	echo "<hr></center>";
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
+	echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
+	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$result = Item_Code::get_defaults($_POST['stock_id']);
 	$dec = $result['decimals'];
@@ -89,8 +89,8 @@
 	$dflt_desc = $result['description'];
 	$dflt_cat = $result['category_id'];
 	$result = Item_Code::get_all($_POST['stock_id']);
-	div_start('code_table');
-	start_table(Config::get('tables_style') . "  width=60%");
+	Display::div_start('code_table');
+	start_table('tablestyle width60');
 	$th = array(
 		_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""
@@ -115,7 +115,7 @@
 		} //end of page full new headings
 	} //end of while loop
 	end_table();
-	div_end();
+	Display::div_end();
 
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
@@ -132,12 +132,12 @@
 		$_POST['category_id'] = $dflt_cat;
 	}
 	echo "<br>";
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	hidden('code_id', $selected_id);
 	text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
 	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
 	text_row(_("Description:"), 'description', null, 50, 200);
-	stock_categories_list_row(_("Category:"), 'category_id', null);
+	Item_Category::row(_("Category:"), 'category_id', null);
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();

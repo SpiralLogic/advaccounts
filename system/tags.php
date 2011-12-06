@@ -100,7 +100,7 @@
 
 	$result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(_("Tag Name"), _("Tag Description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -118,7 +118,7 @@
 	inactive_control_row($th);
 	end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) // We've selected a tag
 	{
 		if ($Mode == 'Edit') {

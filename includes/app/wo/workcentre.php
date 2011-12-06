@@ -11,22 +11,19 @@
 	 ***********************************************************************/
 	class WO_WorkCentre
 	{
-		public static function add($name, $description)
-		{
+		public static function add($name, $description) {
 			$sql = "INSERT INTO workcentres (name, description)
 		VALUES (" . DB::escape($name) . "," . DB::escape($description) . ")";
 			DB::query($sql, "could not add work centre");
 		}
 
-		public static function update($type_id, $name, $description)
-		{
+		public static function update($type_id, $name, $description) {
 			$sql = "UPDATE workcentres SET name=" . DB::escape($name) . ", description=" . DB::escape($description) . "
 		WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not update work centre");
 		}
 
-		public static function get_all($all = false)
-		{
+		public static function get_all($all = false) {
 			$sql = "SELECT * FROM workcentres";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -34,15 +31,13 @@
 			return DB::query($sql, "could not get all work centres");
 		}
 
-		public static function get($type_id)
-		{
+		public static function get($type_id) {
 			$sql = "SELECT * FROM workcentres WHERE id=" . DB::escape($type_id);
 			$result = DB::query($sql, "could not get work centre");
 			return DB::fetch($result);
 		}
 
-		public static function delete($type_id)
-		{
+		public static function delete($type_id) {
 			$sql = "DELETE FROM workcentres WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not delete work centre");
 		}

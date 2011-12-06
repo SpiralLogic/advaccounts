@@ -67,7 +67,7 @@
 
 	$result = Sales_CreditStatus::get_all(check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style') . "  width=40%");
+	start_table('tablestyle width40');
 	$th = array(_("Description"), _("Dissallow Invoices"), '', '');
 	inactive_control_column($th);
 	table_header($th);
@@ -77,7 +77,7 @@
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
 		} else {
-			$disallow_text = "<b>" . _("NO INVOICING") . "</b>";
+			$disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
 		}
 		label_cell($myrow["reason_description"]);
 		label_cell($disallow_text);
@@ -90,7 +90,7 @@
 	end_table();
 	echo '<br>';
 
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code

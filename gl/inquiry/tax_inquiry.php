@@ -34,8 +34,8 @@
 	function tax_inquiry_controls()
 	{
 		start_form();
-		//start_table(Config::get('tables_style2'));
-		start_table("class='tablestyle_noborder'");
+		//start_table('tablestyle2');
+		start_table('tablestyle_noborder');
 		start_row();
 		date_cells(_("from:"), 'TransFromDate', '', null, -30);
 		date_cells(_("to:"), 'TransToDate');
@@ -48,9 +48,9 @@
 
 	function show_results()
 	{
-		/*Now get the transactions  */
-		div_start('trans_tbl');
-		start_table(Config::get('tables_style'));
+		/*Now get the transactions */
+		Display::div_start('trans_tbl');
+		start_table('tablestyle');
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 		table_header($th);
 		$k = 0;
@@ -77,20 +77,20 @@
 			amount_cell($tx['net_input']);
 			end_row();
 			alt_table_row_color($k);
-			label_cell("<b>" . $tx['name'] . " " . $tx['rate'] . "%</b>");
-			label_cell("<b>" . _("Net payable or collectible") . ":</b>");
+			label_cell("<span class='bold'>" . $tx['name'] . " " . $tx['rate'] . "%</span>");
+			label_cell("<span class='bold'>" . _("Net payable or collectible") . ":</span>");
 			amount_cell($net, true);
 			label_cell("");
 			end_row();
 		}
 		alt_table_row_color($k);
 		label_cell("");
-		label_cell("<b>" . _("Total payable or refund") . ":</b>");
+		label_cell("<span class='bold'>" . _("Total payable or refund") . ":</span>");
 		amount_cell($total, true);
 		label_cell("");
 		end_row();
 		end_table(2);
-		div_end();
+		Display::div_end();
 	}
 
 

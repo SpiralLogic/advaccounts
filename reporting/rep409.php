@@ -43,19 +43,19 @@
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", User::pagesize());
+				$rep = new ADVReport(_('WORK ORDER'), "WorkOrderBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			for ($i = $fno[0]; $i <= $tno[0]; $i++) {
-				$myrow = WO_WorkOrder::get($i);
+				$myrow = WO::get($i);
 				if ($myrow === false) {
 					continue;
 				}
 				$date_ = Dates::sql2date($myrow["date_"]);
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->title = _('WORK ORDER');
@@ -73,7 +73,7 @@
 					$qoh = 0;
 					$show_qoh = true;
 					// if it's a non-stock item (eg. service) don't show qoh
-					if (!Manufacturing::has_stock_holding($myrow2["mb_flag"])) {
+					if (!WO::has_stock_holding($myrow2["mb_flag"])) {
 						$show_qoh = false;
 					}
 					if ($show_qoh) {

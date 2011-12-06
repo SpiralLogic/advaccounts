@@ -11,24 +11,15 @@
 	 ***********************************************************************
 
 	Controler part of database table pager with column sort.
-	To display actual html object call display_db_pager($name) inside
+	To display actual html object call DB_Pager::display($name) inside
 	any form.
 
-	View definition you will find in the following file:
-	require_once("$path_to_root/includes/ChromePHP.php");
-	CP::useFile('/tmp/chromelogs'.'/chromelogs');
-	require_once('FirePHPCore/fb.php');
-	require_once($path_to_root . "/includes/firephp.php");
 	 */
-	include_once(APPPATH . "ui/db_pager_view.php");
-	/**
-	 *
-	 */
-	class db_pager {
-
-
+	class DB_Pager
+	{
 		/**
 		 * @static
+		 *
 		 * @param $name
 		 * @param $sql
 		 * @param $coldef
@@ -36,7 +27,8 @@
 		 * @param null $key
 		 * @param int $page_len
 		 * @param null $sort
-		 * @return mixed
+		 *
+		 * @return DB_Pager
 		 */
 		static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
 			if (isset($_SESSION[$name])
@@ -45,7 +37,7 @@
 				unset($_SESSION[$name]); // kill pager if sql has changed
 			}
 			if (!isset($_SESSION[$name])) {
-				$_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
+				$_SESSION[$name] = new static($sql, $name, $table, $page_len);
 				$_SESSION[$name]->main_tbl = $table;
 				$_SESSION[$name]->key = $key;
 				$_SESSION[$name]->set_sql($sql);
@@ -57,9 +49,11 @@
 
 		/**
 		 * @static
+		 *
 		 * @param bool $table
 		 * @param bool $feild
 		 * @param bool $where
+		 *
 		 * @return int
 		 */
 		static function countFilter($table = false, $feild = false, $where = false) {
@@ -70,6 +64,220 @@
 			}
 		}
 
+		static function link($link_text, $url, $icon = false) {
+			if (User::graphic_links() && $icon) {
+				$link_text = set_icon($icon, $link_text);
+			}
+			$href = PATH_TO_ROOT . $url;
+			$href = (Input::request('frame')) ? "javascript:window.parent.location='$href'"
+			 : PATH_TO_ROOT . $url;
+			return "<a href=\"$href\" class='button' >" . $link_text . "</a>";
+		}
+
+		static function navi($name, $value, $enabled = true, $icon = false) {
+			return "<button " . ($enabled ? '' : 'disabled')
+			 . " class=\"navibutton\" type=\"submit\""
+			 . " name=\"$name\" id=\"$name\" value=\"$value\">"
+			 . ($icon ? "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '')
+			 . "<span>$value</span></button>\n";
+		}
+
+		static function navi_cell($name, $value, $enabled = true, $align = 'left') {
+			label_cell(static::navi($name, $value, $enabled), "class='$align'");
+		}
+
+		//
+		// Sql paged table view. Call this function inside form.
+		//
+		static function display(&$pager) {
+			$pager->select_records();
+			Display::div_start("_{$pager->name}_span");
+			$headers = array();
+			foreach (
+				$pager->columns as $num_col => $col
+			) {
+				// record status control column is displayed only when control checkbox is on
+				if (isset($col['head']) && ($col['type'] != 'inactive' || get_post('show_inactive'))) {
+					if (!isset($col['ord'])) {
+						$headers[] = $col['head'];
+					}
+					else {
+						$icon = (($col['ord'] == 'desc')
+						 ? 'sort_desc.gif'
+						 :
+						 ($col['ord'] == 'asc' ? 'sort_asc.gif' : 'sort_none.gif'));
+						$headers[] = static::navi(
+							$pager->name . '_sort_' . $num_col,
+							$col['head'], true, $icon
+						);
+					}
+				}
+			}
+			/* show a table of records returned by the sql */
+			start_table('tablestyle width'.$pager->width);
+			table_header($headers);
+			if ($pager->header_fun) { // if set header handler
+				start_row("class='{$pager->header_class}'");
+				$fun = $pager->header_fun;
+				if (method_exists($pager, $fun)) {
+					$h = $pager->$fun($pager);
+				} elseif (function_exists($fun)) {
+					$h = call_user_func($fun, $pager);
+				}
+				foreach (
+					$h as $c
+				) { // draw header columns
+					$pars = isset($c[1]) ? $c[1] : '';
+					label_cell($c[0], $pars);
+				}
+				end_row();
+			}
+			$cc = 0; //row colour counter
+			foreach (
+				$pager->data as $line_no => $row
+			) {
+				$marker = $pager->marker;
+				if ($marker && call_user_func($marker, $row)) {
+					start_row("class='$pager->marker_class'");
+				} else {
+					alt_table_row_color($cc);
+				}
+				foreach (
+					$pager->columns as $k => $col
+				) {
+					$coltype = isset($col['type']) ? $col['type'] : '';
+					$cell = isset($col['name']) ? $row[$col['name']] : '';
+					if (isset($col['fun'])) { // use data input function if defined
+						$fun = $col['fun'];
+						if (method_exists($pager, $fun)) {
+							$cell = $pager->$fun($row, $cell);
+						} elseif (function_exists($fun)) {
+							$cell = call_user_func($fun, $row, $cell);
+						} else
+						{
+							$cell = '';
+						}
+					}
+					switch ($coltype) { // format column
+						case 'time':
+							label_cell($cell, "width=40");
+							break;
+						case 'date':
+							label_cell(Dates::sql2date($cell), "class='center' nowrap");
+							break;
+						case 'dstamp': // time stamp displayed as date
+							label_cell(Dates::sql2date(substr($cell, 0, 10)), "class='center' nowrap");
+							break;
+						case 'tstamp': // time stamp - FIX user format
+							label_cell(
+								Dates::sql2date(substr($cell, 0, 10)) .
+								 ' ' . substr($cell, 10), "class='center'"
+							);
+							break;
+						case 'percent':
+							percent_cell($cell);
+							break;
+						case 'amount':
+							if ($cell == '') {
+								label_cell('');
+							} else {
+								amount_cell($cell, false);
+							}
+							break;
+						case 'qty':
+							if ($cell == '') {
+								label_cell('');
+							} else {
+								qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null);
+							}
+							break;
+						case 'email':
+							email_cell($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
+							break;
+						case 'rate':
+							label_cell(Num::format($cell, User::exrate_dec()), "class=center");
+							break;
+						case 'inactive':
+							if (get_post('show_inactive')) {
+								$pager->inactive_control_cell($row);
+							}
+							break;
+						case 'id':
+							if (isset($col['align'])) {
+								label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "' class='" . $col['align'] . "'");
+							} else {
+								label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
+							}
+							break;
+						default:
+							//		 case 'text':
+							if (isset($col['align'])) {
+								label_cell($cell, "class='" . $col['align'] . "'");
+							} else {
+								label_cell($cell);
+							}
+						case 'skip': // column not displayed
+					}
+				}
+				end_row();
+			}
+			//end of while loop
+			if ($pager->footer_fun) { // if set footer handler
+				start_row("class='{$pager->footer_class}'");
+				$fun = $pager->footer_fun;
+				if (method_exists($pager, $fun)) {
+					$h = $pager->$fun($pager);
+				} elseif (function_exists($fun)) {
+					$h = call_user_func($fun, $pager);
+				}
+				foreach (
+					$h as $c
+				) { // draw footer columns
+					$pars = isset($c[1]) ? $c[1] : '';
+					label_cell($c[0], $pars);
+				}
+				end_row();
+			}
+			start_row("class='navibar'");
+			$colspan = count($pager->columns);
+			$inact = @$pager->inactive_ctrl == true
+			 ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+			if ($pager->rec_count) {
+				echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
+				echo "<div style='float:right;'>";
+				$but_pref = $pager->name . '_page_';
+				start_table();
+				start_row();
+				if (@$pager->inactive_ctrl) {
+					submit('Update', _('Update'), true, '', null);
+				} // inactive update
+				echo static::navi_cell($but_pref . 'first', _('First'), $pager->first_page, 'right');
+				echo static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page, 'right');
+				echo static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page, 'right');
+				echo static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page, 'right');
+				end_row();
+				end_table();
+				echo "</div>";
+				$from = ($pager->curr_page - 1) * $pager->page_len + 1;
+				$to = $from + $pager->page_len - 1;
+				if ($to > $pager->rec_count) {
+					$to = $pager->rec_count;
+				}
+				$all = $pager->rec_count;
+				HTML::span(true, "Records $to-$from of $all");
+				echo $inact;
+				echo "</td>";
+			} else {
+				label_cell(_('No records') . $inact, "colspan=$colspan class='navibar'");
+			}
+			end_row();
+			end_table();
+			if (isset($pager->marker_txt)) {
+				Errors::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+			}
+			Display::div_end();
+			return true;
+		}
 
 		/**
 		 * @var
@@ -225,9 +433,9 @@
 			$this->set_sql($sql);
 		}
 
-
 		/**
 		 * @param null $page
+		 *
 		 * @return bool
 		 *
 		 * Set query result page
@@ -239,9 +447,9 @@
 			return true;
 		}
 
-
 		/**
 		 * @param $row
+		 *
 		 * @return string
 		 *
 		 * Helper for display inactive control cells
@@ -268,7 +476,7 @@
 						DB::update_record_status($id, !$value, $table, $key);
 						$value = !$value;
 					}
-					echo '<td align="center">' . checkbox(null, $name, $value, true, '', "align='center'")
+					echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'")
 					 . hidden("LInact[$id]", $value, false) . '</td>';
 				}
 			} else
@@ -305,7 +513,6 @@
 				}
 				$dbfeild_names = array_keys($this->data[0]);
 				$cnt = min(count($dbfeild_names), count($this->columns));
-
 				for ($c = $i = 0; $c < $cnt; $c++) {
 					if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 						//	if (!@($this->columns[$c]['type']=='skip'))
@@ -321,7 +528,6 @@
 			}
 			return true;
 		}
-
 
 		/**
 		 * @param $name - base name for pager controls and $_SESSION object name
@@ -388,7 +594,6 @@
 			}
 		}
 
-
 		/**
 		 * @param $flds
 		 *
@@ -404,7 +609,7 @@
 				if (is_string($colnum)) { // 'colname'=>params
 					$h = $colnum;
 					$c = $coldef;
-				} else { //  n=>params
+				} else { // n=>params
 					if (is_array($coldef)) {
 						$h = '';
 						$c = $coldef;
@@ -448,7 +653,6 @@
 			$this->footer_class = $footercl;
 		}
 
-
 		/**
 		 * @param $to
 		 *
@@ -489,7 +693,6 @@
 			$this->first_page = ($page != 1) ? 1 : null;
 		}
 
-
 		/**
 		 * @param $sql
 		 *
@@ -523,9 +726,9 @@
 			}
 		}
 
-
 		/**
 		 * @param null $where
+		 *
 		 * @return mixed
 		 * Set additional constraint on record set
 		 */
@@ -544,9 +747,9 @@
 			$this->ready = false;
 		}
 
-
 		/**
 		 * @param $col
+		 *
 		 * @return bool
 		 *
 		 * Change sort column direction
@@ -564,7 +767,6 @@
 			return true;
 		}
 
-
 		/**
 		 * @param $func
 		 * @param string $headercl
@@ -578,7 +780,6 @@
 			$this->header_class = $headercl;
 		}
 
-
 		/**
 		 * @param $table
 		 * @param $key
@@ -587,7 +788,8 @@
 		 *
 		 */
 		public function set_inactive_ctrl($table, $key) {
-			$this->inactive_ctrl = array('table' => $table,
+			$this->inactive_ctrl = array(
+				'table' => $table,
 				'key' => $key);
 		}
 
@@ -641,6 +843,7 @@
 
 		/**
 		 * @param bool $count
+		 *
 		 * @return string
 		 *
 		 * Generate db query from base sql

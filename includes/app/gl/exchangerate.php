@@ -1,4 +1,5 @@
-<?php
+<!--suppress ALL -->
+ <?php
 	/**********************************************************************
 	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
@@ -36,7 +37,7 @@
 
 		public static function update($curr_code, $date_, $buy_rate, $sell_rate)
 			{
-				if (Banking::is_company_currency($curr_code)) {
+				if (Bank_Currency::is_company($curr_code)) {
 					Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 				}
 				$date = Dates::date2sql($date_);
@@ -48,7 +49,7 @@
 
 		public static function add($curr_code, $date_, $buy_rate, $sell_rate)
 			{
-				if (Banking::is_company_currency($curr_code)) {
+				if (Bank_Currency::is_company($curr_code)) {
 					Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 				}
 				$date = Dates::date2sql($date_);
@@ -183,7 +184,7 @@
 			{
 				$Ajax = Ajax::i();
 				if ($from_currency != $to_currency) {
-					$comp_currency = Banking::get_company_currency();
+					$comp_currency = Bank_Currency::for_company();
 					if ($from_currency == $comp_currency) {
 						$currency = $to_currency;
 					}
@@ -204,18 +205,18 @@
 						}
 					}
 					if (!$rate) {
-						$rate = Banking::get_exchange_rate_from_home_currency($currency, $date_);
+						$rate = Bank_Currency::exchange_rate_from_home($currency, $date_);
 					}
 					if ($from_currency != $comp_currency) {
-						$rate = 1 / ($rate / Banking::get_exchange_rate_from_home_currency($to_currency, $date_));
+						$rate = 1 / ($rate / Bank_Currency::exchange_rate_from_home($to_currency, $date_));
 					}
 					$rate = Num::format($rate, User::exrate_dec());
 					if ($edit_rate) {
-						text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency");
+						text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
 					}
 					else {
 						label_cells(_("Exchange Rate:"),
-							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", 'class="label"',
+							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency",
 							'');
 					}
 					$Ajax->addUpdate('_ex_rate', '_ex_rate', $rate);

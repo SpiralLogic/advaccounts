@@ -66,7 +66,7 @@
 	$sql .= " ORDER BY description";
 	$result = DB::query($sql, "could not get groups");
 	start_form();
-	start_table(Config::get('tables_style') . "  width=30%");
+	start_table('tablestyle width30');
 	$th = array(_("Group Name"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -83,7 +83,7 @@
 	end_table();
 	echo '<br>';
 
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area

@@ -1,23 +1,23 @@
 <?php
 	/* vim: set expandtab tabstop=4 shiftwidth=4: */
 	//
-	//  Copyright (c) 2003 Laurent Bedubourg
+	// Copyright (c) 2003 Laurent Bedubourg
 	//
-	//  This library is free software; you can redistribute it and/or
-	//  modify it under the terms of the GNU Lesser General Public
-	//  License as published by the Free Software Foundation; either
-	//  version 2.1 of the License, or (at your option) any later version.
+	// This library is free software; you can redistribute it and/or
+	// modify it under the terms of the GNU Lesser General Public
+	// License as published by the Free Software Foundation; either
+	// version 2.1 of the License, or (at your option) any later version.
 	//
-	//  This library is distributed in the hope that it will be useful,
-	//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	//  Lesser General Public License for more details.
+	// This library is distributed in the hope that it will be useful,
+	// but WITHOUT ANY WARRANTY; without even the implied warranty of
+	// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	// Lesser General Public License for more details.
 	//
-	//  You should have received a copy of the GNU Lesser General Public
-	//  License along with this library; if not, write to the Free Software
-	//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	// You should have received a copy of the GNU Lesser General Public
+	// License along with this library; if not, write to the Free Software
+	// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 	//
-	//  Authors: Laurent Bedubourg <laurent.bedubourg@free.fr>
+	// Authors: Laurent Bedubourg <laurent.bedubourg@free.fr>
 	//
 	//require_once "PEAR.php";
 	/**
@@ -26,23 +26,45 @@
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 * @access private
 	 */
-	class gettextNativeSupport {
+	class gettextNativeSupport
+	{
+		/**
+		 * @var array
+		 */
 		public $_interpolation_vars = array();
+		/**
+		 *
+		 */
 		const GETTEXT_NATIVE = 1;
+		/**
+		 *
+		 */
 		const GETTEXT_PHP = 2;
 
+		/**
+		 * @param $str
+		 *
+		 * @return int
+		 */
 		public function raise_error($str) {
 			Errors::error($str);
 			return 1;
 		}
 
+		/**
+		 * @param $err
+		 *
+		 * @return bool
+		 */
 		public function is_error($err) {
 			return $err > 0;
 		}
 
 		/***
 		 * @static
+		 *
 		 * @param int $managerType
+		 *
 		 * @return gettext_php_support|gettextNativeSupport
 		 */
 		public static function init($managerType = self::GETTEXT_NATIVE) {
@@ -55,7 +77,12 @@
 			return new gettext_php_support();
 		}
 
-
+		/**
+		 * @param $lang_code
+		 * @param $encoding
+		 *
+		 * @return int
+		 */
 		function set_language($lang_code, $encoding) {
 			putenv("LANG=$lang_code");
 			putenv("LC_ALL=$lang_code");
@@ -74,6 +101,10 @@
 			return 0;
 		}
 
+		/**
+		 * @param			$domain
+		 * @param bool $path
+		 */
 		function add_domain($domain, $path = false) {
 			if ($path === false) {
 				bindtextdomain($domain, "./locale/");
@@ -84,7 +115,11 @@
 			textdomain($domain);
 		}
 
-
+		/**
+		 * @param $key
+		 *
+		 * @return string
+		 */
 		function _get_translation($key) {
 			return gettext($key);
 		}
@@ -96,16 +131,27 @@
 			$this->_interpolation_vars = array();
 		}
 
-				function set_var($key, $value) {
+		/**
+		 * @param $key
+		 * @param $value
+		 */
+		function set_var($key, $value) {
 			$this->_interpolation_vars[$key] = $value;
 		}
 
-
+		/**
+		 * @param $hash
+		 */
 		function set_vars($hash) {
 			$this->_interpolation_vars = array_merge($this->_interpolation_vars,
 				$hash);
 		}
 
+		/**
+		 * @param $key
+		 *
+		 * @return int|mixed|string
+		 */
 		function gettext($key) {
 			$value = $this->_get_translation($key);
 			if ($value === false) {
@@ -130,6 +176,11 @@
 			return $value;
 		}
 
+		/**
+		 * @param $name
+		 *
+		 * @return bool
+		 */
 		function _get_var($name) {
 			if (!array_key_exists($name, $this->_interpolation_vars)) {
 				return false;
@@ -147,17 +198,35 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support extends gettextNativeSupport {
+	class gettext_php_support extends gettextNativeSupport
+	{
+		/**
+		 * @var string
+		 */
 		public $_path = 'locale/';
+		/**
+		 * @var bool
+		 */
 		public $_lang_code = false;
+		/**
+		 * @var array
+		 */
 		public $_domains = array();
+		/**
+		 * @var int
+		 */
 		public $_end = -1;
+		/**
+		 * @var array
+		 */
 		public $_jobs = array();
 
 		/**
 		 * Set the translation domain.
+		 *
 		 * @param	string $lang_code -- language code
-		 * @param         $encoding
+		 * @param				 $encoding
+		 *
 		 * @return int
 		 * @throws GetText_Error
 		 */
@@ -288,15 +357,35 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_domain {
+	class gettext_domain
+	{
+		/**
+		 * @var
+		 */
 		public $name;
+		/**
+		 * @var
+		 */
 		public $path;
+		/**
+		 * @var array
+		 */
 		public $_keys = array();
 
+		/**
+		 * @param $key
+		 *
+		 * @return bool
+		 */
 		function has_key($key) {
 			return array_key_exists($key, $this->_keys);
 		}
 
+		/**
+		 * @param $key
+		 *
+		 * @return mixed
+		 */
 		function get($key) {
 			return $this->_keys[$key];
 		}
@@ -308,14 +397,30 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support_parser {
+	class gettext_php_support_parser
+	{
+		/**
+		 * @var array
+		 */
 		public $_hash = array();
+		/**
+		 * @var
+		 */
 		public $_current_key;
+		/**
+		 * @var
+		 */
 		public $_current_value;
+
+		/**
+		 * @param $str
+		 *
+		 * @return int
+		 */
 		public function raise_error($str) {
-				Errors::error($str);
-				return 1;
-			}
+			Errors::error($str);
+			return 1;
+		}
 
 		/**
 		 * Parse specified .po file.
@@ -398,7 +503,8 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support_compiler {
+	class gettext_php_support_compiler
+	{
 		/**
 		 * Write hash in an includable php file.
 		 *
@@ -407,10 +513,16 @@
 		 * @return int
 		 */
 		public function raise_error($str) {
-		 			Errors::error($str);
-		 			return 1;
-		 		}
+			Errors::error($str);
+			return 1;
+		}
 
+		/**
+		 * @param $hash
+		 * @param $source_path
+		 *
+		 * @return int
+		 */
 		function compile(&$hash, $source_path) {
 			$dest_path = preg_replace('/\.po$/', '.php', $source_path);
 			$fp = @fopen($dest_path, "w");
@@ -426,14 +538,13 @@
 			{
 				$key = str_replace("'", "\\'", $key);
 				$value = str_replace("'", "\\'", $value);
-				fwrite($fp, '    \'' . $key . '\' => \'' . $value . "',\n");
+				fwrite($fp, ' \'' . $key . '\' => \'' . $value . "',\n");
 			}
 			fwrite($fp, ');' . "\n");
 			fwrite($fp, '?>');
 			fclose($fp);
-		return 0;
-	}
-
+			return 0;
+		}
 	}
 
 ?>

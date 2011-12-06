@@ -12,19 +12,33 @@
 	 * Licensed under the MIT license:
 	 * http://creativecommons.org/licenses/MIT/
 	 */
-
-	class UploadHandler {
-
+	/**
+	 *
+	 */
+	class UploadHandler
+	{
+		/**
+		 * @var #Farray_replace_recursive|array|?
+		 */
 		private $options;
+		/**
+		 * @var
+		 */
 		private $order_no;
+		/**
+		 * @var
+		 */
 		private static $inserted;
 
+		/**
+		 * @param $order_no
+		 * @param $options
+		 */
 		function __construct($order_no, $options) {
 			$this->order_no = $order_no;
 			error_reporting(E_ALL | E_STRICT);
 			ini_set('post_max_size', '3M');
 			ini_set('upload_max_filesize', '3M');
-
 			$this->options = array(
 				'script_url' => $_SERVER['PHP_SELF'],
 				'upload_dir' => DOCROOT . '/upload/upload/',
@@ -62,6 +76,11 @@
 			}
 		}
 
+		/**
+		 * @param $file_name
+		 *
+		 * @return null|stdClass
+		 */
 		private function get_file_object($file_name) {
 			$file_path = $this->options['upload_dir'] . $file_name;
 			if (is_file($file_path) && $file_name[0] !== '.') {
@@ -92,13 +111,22 @@
 			return null;
 		}
 
+		/**
+		 * @return array
+		 */
 		private function get_file_objects() {
 			return array_values(array_filter(array_map(
-						array($this, 'get_file_object'),
-						scandir($this->options['upload_dir'])
-					)));
+				array($this, 'get_file_object'),
+				scandir($this->options['upload_dir'])
+			)));
 		}
 
+		/**
+		 * @param $file_name
+		 * @param $options
+		 *
+		 * @return bool
+		 */
 		private function create_scaled_image($file_name, $options) {
 			$file_path = $this->options['upload_dir'] . $file_name;
 			$new_file_path = $options['upload_dir'] . $file_name;
@@ -152,6 +180,13 @@
 			return $success;
 		}
 
+		/**
+		 * @param $uploaded_file
+		 * @param $file
+		 * @param $error
+		 *
+		 * @return string
+		 */
 		private function has_error($uploaded_file, $file, $error) {
 			if ($error) {
 				return $error;
@@ -183,6 +218,15 @@
 			return $error;
 		}
 
+		/**
+		 * @param $uploaded_file
+		 * @param $name
+		 * @param $size
+		 * @param $type
+		 * @param $error
+		 *
+		 * @return stdClass
+		 */
 		private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
 			$file = new stdClass();
 			// Remove path information and dots around the filename, to prevent uploading
@@ -244,10 +288,12 @@
 			return $file;
 		}
 
+		/**
+		 * @return mixed
+		 */
 		public function get() {
 			$info = array();
 			$upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
-
 			if ($upload_id) {
 				$sql = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
 				$result = DB::query($sql, 'Could not retrieve file');
@@ -273,6 +319,9 @@
 			}
 		}
 
+		/**
+		 *
+		 */
 		public function post() {
 			$upload = isset($_FILES[$this->options['param_name']]) ?
 			 $_FILES[$this->options['param_name']] : array(
@@ -320,8 +369,12 @@
 			echo json_encode($info);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 */
 		public static function insert($id) {
-
 			if (!self::$inserted) {
 				JS::footerFile(array('/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'));
 				self::$inserted = true;
@@ -373,12 +426,18 @@
 ';
 		}
 
+		/**
+		 *
+		 */
 		private function make_dir() {
 			$old = umask(0);
 			//@mkdir($this->upload_dir, 0777);
 			umask($old);
 		}
 
+		/**
+		 *
+		 */
 		public function delete() {
 			$name = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
 			$id = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
@@ -390,8 +449,11 @@
 	}
 
 	if (!function_exists('getallheaders')) {
+		/**
+		 * @return array
+		 */
 		function getallheaders() {
-			$headers=array();
+			$headers = array();
 			foreach ($_SERVER as $name => $value) {
 				if (substr($name, 0, 5) == 'HTTP_') {
 					$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;

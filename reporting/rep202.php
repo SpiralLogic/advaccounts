@@ -41,7 +41,7 @@
 			payment_terms,
 			supp_trans
 
-	   	WHERE suppliers.payment_terms = payment_terms.terms_indicator
+	 	WHERE suppliers.payment_terms = payment_terms.terms_indicator
 			AND suppliers.supplier_id = supp_trans.supplier_id
 			AND supp_trans.supplier_id = $supplier_id
 			AND supp_trans.tran_date <= '$todate'
@@ -135,7 +135,7 @@
 			if ($convert) {
 				$headers[2] = _('currency');
 			}
-			$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::pagesize());
+			$rep = new ADVReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::pagesize());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
@@ -158,7 +158,7 @@
 					continue;
 				}
 				if ($convert) {
-					$rate = Banking::get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+					$rate = Bank_Currency::exchange_rate_from_home($myrow['curr_code'], $to);
 				}
 				else {
 					$rate = 1.0;

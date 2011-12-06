@@ -31,13 +31,12 @@
 		// Previous display_errors value.
 		public $_prevDisplayErrors = null;
 		// Internal: response content-type depending on loader type.
-		public $_contentTypes
-		 = array(
-			 "script" => "text/javascript",
-			 "xml" => "text/plain", // In XMLHttpRequest mode we must return text/plain - stupid Opera 8.0. :(
-			 "form" => "text/html",
-			 "" => "text/plain", // for unknown loader
-		 );
+		public $_contentTypes = array(
+			"script" => "text/javascript",
+			"xml" => "text/plain", // In XMLHttpRequest mode we must return text/plain - stupid Opera 8.0. :(
+			"form" => "text/html",
+			"" => "text/plain", // for unknown loader
+		);
 		// Internal: conversion to UTF-8 JSON cancelled because of non-ascii key.
 		public $_toUtfFailed = false;
 		// Internal: list of characters 128...255 (for strpbrk() ASCII check).
@@ -60,68 +59,69 @@
 		 *
 		 * If an object is created WITHOUT an active AJAX query, it is simply marked as
 		 * non-active. Use statuc method isActive() to check.
+		 *
+		 * @param $enc
 		 */
-		function JsHttpRequest($enc)
-			{
-				global $JsHttpRequest_Active;
-				// To be on a safe side - do not allow to drop reference counter on ob processing.
-				$GLOBALS['_RESULT'] =& $this->RESULT;
-				// Parse QUERY_STRING.
-				if (preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m)) {
-					$this->ID = $m[2];
-					$this->LOADER = strtolower($m[3]);
-					$_SERVER['QUERY_STRING'] = preg_replace('/^&+|&+$/s', '', preg_replace('/(^|&)' . session_name() . '=[^&]*&?/s', '&',
-					 $m[1] . $m[4]));
-					unset(
-					$_GET['JsHttpRequest'],
-					$_REQUEST['JsHttpRequest'],
-					$_GET[session_name()],
-					$_POST[session_name()],
-					$_REQUEST[session_name()]
+		function __construct($enc) {
+			global $JsHttpRequest_Active;
+			// To be on a safe side - do not allow to drop reference counter on ob processing.
+			$GLOBALS['_RESULT'] =& $this->RESULT;
+			// Parse QUERY_STRING.
+			if (preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m)) {
+				$this->ID = $m[2];
+				$this->LOADER = strtolower($m[3]);
+				$_SERVER['QUERY_STRING'] = preg_replace('/^&+|&+$/s', '', preg_replace('/(^|&)' . session_name() . '=[^&]*&?/s', '&',
+				 $m[1] . $m[4]));
+				unset(
+				$_GET['JsHttpRequest'],
+				$_REQUEST['JsHttpRequest'],
+				$_GET[session_name()],
+				$_POST[session_name()],
+				$_REQUEST[session_name()]
+				);
+				// Detect Unicode conversion method.
+				$this->_unicodeConvMethod = function_exists('mb_convert_encoding')
+				 ? 'mb'
+				 : (function_exists('iconv')
+					? 'iconv' : null);
+				// Fill an emergency buffer. We erase it at the first line of OB processor
+				// to free some memory. This memory may be used on memory_limit error.
+				$this->_emergBuffer = str_repeat('a', 1024 * 200);
+				// Intercept fatal errors via display_errors (seems it is the only way).
+				$this->_uniqHash = md5('JsHttpRequest' . microtime() . getmypid());
+				$this->_prevDisplayErrors = ini_get('display_errors');
+				ini_set('display_errors', $this->_magic); //
+				ini_set('error_prepend_string', $this->_uniqHash . ini_get('error_prepend_string'));
+				ini_set('error_append_string', ini_get('error_append_string') . $this->_uniqHash);
+				if (function_exists('xdebug_disable')) {
+					xdebug_disable();
+				} // else Fatal errors are not catched
+				// Start OB handling early.
+				ob_start(array(&$this, "_obHandler"));
+				$JsHttpRequest_Active = true;
+				// Set up the encoding.
+				$this->setEncoding($enc);
+				// Check if headers are already sent (see Content-Type library usage).
+				// If true - generate a debug message and exit.
+				$file = $line = null;
+				$headersSent = version_compare(PHP_VERSION, "4.3.0") < 0 ? headers_sent() : headers_sent($file, $line);
+				if ($headersSent) {
+					trigger_error(
+						"HTTP headers are already sent" . ($line !== null ? " in $file on line $line"
+						 : " somewhere in the script") . ". "
+						 . "Possibly you have an extra space (or a newline) before the first line of the script or any library. "
+						 . "Please note that JsHttpRequest uses its own Content-Type header and fails if "
+						 . "this header cannot be set. See header() function documentation for more details",
+						E_USER_ERROR
 					);
-					// Detect Unicode conversion method.
-					$this->_unicodeConvMethod = function_exists('mb_convert_encoding')
-					 ? 'mb'
-					 : (function_exists('iconv')
-						? 'iconv' : null);
-					// Fill an emergency buffer. We erase it at the first line of OB processor
-					// to free some memory. This memory may be used on memory_limit error.
-					$this->_emergBuffer = str_repeat('a', 1024 * 200);
-					// Intercept fatal errors via display_errors (seems it is the only way).
-					$this->_uniqHash = md5('JsHttpRequest' . microtime() . getmypid());
-					$this->_prevDisplayErrors = ini_get('display_errors');
-					ini_set('display_errors', $this->_magic); //
-					ini_set('error_prepend_string', $this->_uniqHash . ini_get('error_prepend_string'));
-					ini_set('error_append_string', ini_get('error_append_string') . $this->_uniqHash);
-					if (function_exists('xdebug_disable')) {
-						xdebug_disable();
-					} // else Fatal errors are not catched
-					// Start OB handling early.
-					ob_start(array(&$this, "_obHandler"));
-					$JsHttpRequest_Active = true;
-					// Set up the encoding.
-					$this->setEncoding($enc);
-					// Check if headers are already sent (see Content-Type library usage).
-					// If true - generate a debug message and exit.
-					$file = $line = null;
-					$headersSent = version_compare(PHP_VERSION, "4.3.0") < 0 ? headers_sent() : headers_sent($file, $line);
-					if ($headersSent) {
-						trigger_error(
-							"HTTP headers are already sent" . ($line !== null ? " in $file on line $line"
-							 : " somewhere in the script") . ". "
-							 . "Possibly you have an extra space (or a newline) before the first line of the script or any library. "
-							 . "Please note that JsHttpRequest uses its own Content-Type header and fails if "
-							 . "this header cannot be set. See header() function documentation for more details",
-							E_USER_ERROR
-						);
-						exit();
-					}
-				} else {
-					$this->ID = 0;
-					$this->LOADER = 'unknown';
-					$JsHttpRequest_Active = false;
+					exit();
 				}
+			} else {
+				$this->ID = 0;
+				$this->LOADER = 'unknown';
+				$JsHttpRequest_Active = false;
 			}
+		}
 
 		/**
 		 * Static function.
@@ -129,21 +129,20 @@
 		 *
 		 * @return boolean	True if the library is active, false otherwise.
 		 */
-		function isActive()
-			{
-				return !empty($GLOBALS['JsHttpRequest_Active']);
-			}
+		function isActive() {
+			return !empty($GLOBALS['JsHttpRequest_Active']);
+		}
 
 		/**
 		 * string getJsCode()
 		 *
 		 * Return JavaScript part of the library.
+		 *
 		 * @return string
 		 */
-		function getJsCode()
-			{
-				return file_get_contents(dirname(__FILE__) . '/JsHttpRequest.js');
-			}
+		function getJsCode() {
+			return file_get_contents(dirname(__FILE__) . '/JsHttpRequest.js');
+		}
 
 		/**
 		 * void setEncoding(string $encoding)
@@ -155,16 +154,17 @@
 		 *	 "windows-1251 entities" - set windows encoding, BUT additionally replace:
 		 *							 "&"		 ->	"&amp;"
 		 *							 hieroglyph	->	&#XXXX; entity
+		 *
+		 * @param $enc
 		 */
-		function setEncoding($enc)
-			{
-				// Parse an encoding.
-				preg_match('/^(\S*)(?:\s+(\S*))$/', $enc, $p);
-				$this->SCRIPT_ENCODING = strtolower(!empty($p[1]) ? $p[1] : $enc);
-				$this->SCRIPT_DECODE_MODE = !empty($p[2]) ? $p[2] : '';
-				// Manually parse QUERY_STRING because of damned Unicode's %uXXXX.
-				$this->_correctSuperglobals();
-			}
+		function setEncoding($enc) {
+			// Parse an encoding.
+			preg_match('/^(\S*)(?:\s+(\S*))$/', $enc, $p);
+			$this->SCRIPT_ENCODING = strtolower(!empty($p[1]) ? $p[1] : $enc);
+			$this->SCRIPT_DECODE_MODE = !empty($p[2]) ? $p[2] : '';
+			// Manually parse QUERY_STRING because of damned Unicode's %uXXXX.
+			$this->_correctSuperglobals();
+		}
 
 		/**
 		 * string quoteInput(string $input)
@@ -176,15 +176,18 @@
 		 *
 		 * Use this function INSTEAD of htmlspecialchars() for $_GET data
 		 * in your scripts.
+		 *
+		 * @param $s
+		 *
+		 * @return mixed|string
 		 */
-		function quoteInput($s)
-			{
-				if ($this->SCRIPT_DECODE_MODE == 'entities') {
-					return str_replace(array('"', '<', '>'), array('&quot;', '&lt;', '&gt;'), $s);
-				} else {
-					return htmlspecialchars($s);
-				}
+		function quoteInput($s) {
+			if ($this->SCRIPT_DECODE_MODE == 'entities') {
+				return str_replace(array('"', '<', '>'), array('&quot;', '&lt;', '&gt;'), $s);
+			} else {
+				return htmlspecialchars($s);
 			}
+		}
 
 		/**
 		 * Convert a PHP scalar, array or hash to JS scalar/array/hash. This function is
@@ -195,54 +198,53 @@
 		 *
 		 * @return string	JavaScript equivalent structure.
 		 */
-		function php2js($a = false)
-			{
-				if (is_null($a)) {
-					return 'null';
+		function php2js($a = false) {
+			if (is_null($a)) {
+				return 'null';
+			}
+			if ($a === false) {
+				return 'false';
+			}
+			if ($a === true) {
+				return 'true';
+			}
+			if (is_scalar($a)) {
+				if (is_float($a)) {
+					// Always use "." for floats.
+					$a = str_replace(",", ".", strval($a));
 				}
-				if ($a === false) {
-					return 'false';
-				}
-				if ($a === true) {
-					return 'true';
-				}
-				if (is_scalar($a)) {
-					if (is_float($a)) {
-						// Always use "." for floats.
-						$a = str_replace(",", ".", strval($a));
-					}
-					// All scalars are converted to strings to avoid indeterminism.
-					// PHP's "1" and 1 are equal for all PHP operators, but
-					// JS's "1" and 1 are not. So if we pass "1" or 1 from the PHP backend,
-					// we should get the same result in the JS frontend (string).
-					// Character replacements for JSON.
-					static $jsonReplaces
-					= array(
-						array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'),
-						array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"')
-					);
-					return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
-				}
-				$isList = true;
-				for ($i = 0, reset($a); $i < count($a); $i++, next($a)) {
-					if (key($a) !== $i) {
-						$isList = false;
-						break;
-					}
-				}
-				$result = array();
-				if ($isList) {
-					foreach ($a as $v) {
-						$result[] = $this->php2js($v);
-					}
-					return '[ ' . join(', ', $result) . ' ]';
-				} else {
-					foreach ($a as $k => $v) {
-						$result[] = $this->php2js($k) . ': ' . $this->php2js($v);
-					}
-					return '{ ' . join(', ', $result) . ' }';
+				// All scalars are converted to strings to avoid indeterminism.
+				// PHP's "1" and 1 are equal for all PHP operators, but
+				// JS's "1" and 1 are not. So if we pass "1" or 1 from the PHP backend,
+				// we should get the same result in the JS frontend (string).
+				// Character replacements for JSON.
+				static $jsonReplaces
+				= array(
+					array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'),
+					array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"')
+				);
+				return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
+			}
+			$isList = true;
+			for ($i = 0, reset($a); $i < count($a); $i++, next($a)) {
+				if (key($a) !== $i) {
+					$isList = false;
+					break;
 				}
 			}
+			$result = array();
+			if ($isList) {
+				foreach ($a as $v) {
+					$result[] = $this->php2js($v);
+				}
+				return '[ ' . join(', ', $result) . ' ]';
+			} else {
+				foreach ($a as $k => $v) {
+					$result[] = $this->php2js($k) . ': ' . $this->php2js($v);
+				}
+				return '{ ' . join(', ', $result) . ' }';
+			}
+		}
 
 		/**
 		 * Internal methods.
@@ -250,205 +252,203 @@
 		/**
 		 * Parse & decode QUERY_STRING.
 		 */
-		function _correctSuperglobals()
-			{
-				// In case of FORM loader we may go to nirvana, everything is already parsed by PHP.
-				if ($this->LOADER == 'form') {
-					return;
-				}
-				// ATTENTION!!!
-				// HTTP_RAW_POST_DATA is only accessible when Content-Type of POST request
-				// is NOT default "application/x-www-form-urlencoded"!!!
-				// Library frontend sets "application/octet-stream" for that purpose,
-				// see JavaScript code. In PHP 5.2.2.HTTP_RAW_POST_DATA is not set sometimes;
-				// in such cases - read the POST data manually from the STDIN stream.
-				$rawPost = strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') == 0 ? (isset($GLOBALS['HTTP_RAW_POST_DATA']) ?
-				 $GLOBALS['HTTP_RAW_POST_DATA'] : @file_get_contents("php://input")) : null;
-				$source = array(
-					'_GET' => !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null,
-					'_POST' => $rawPost,
-				);
-				foreach ($source as $dst => $src) {
-					// First correct all 2-byte entities.
-					$s = preg_replace('/%(?!5B)(?!5D)([0-9a-f]{2})/si', '%u00\\1', $src);
-					// Now we can use standard parse_str() with no worry!
-					$data = null;
-					parse_str($s, $data);
-					$GLOBALS[$dst] = $this->_ucs2EntitiesDecode($data);
-				}
-				$GLOBALS['HTTP_GET_VARS'] = $_GET; // deprecated vars
-				$GLOBALS['HTTP_POST_VARS'] = $_POST;
-				$_REQUEST
-				 = (isset($_COOKIE) ? $_COOKIE : array()) +
-				 (isset($_POST) ? $_POST : array()) +
-				 (isset($_GET) ? $_GET : array());
-				if (ini_get('register_globals')) {
-					// TODO?
-				}
+		function _correctSuperglobals() {
+			// In case of FORM loader we may go to nirvana, everything is already parsed by PHP.
+			if ($this->LOADER == 'form') {
+				return;
 			}
+			// ATTENTION!!!
+			// HTTP_RAW_POST_DATA is only accessible when Content-Type of POST request
+			// is NOT default "application/x-www-form-urlencoded"!!!
+			// Library frontend sets "application/octet-stream" for that purpose,
+			// see JavaScript code. In PHP 5.2.2.HTTP_RAW_POST_DATA is not set sometimes;
+			// in such cases - read the POST data manually from the STDIN stream.
+			$rawPost = strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') == 0 ? (isset($GLOBALS['HTTP_RAW_POST_DATA']) ?
+			 $GLOBALS['HTTP_RAW_POST_DATA'] : @file_get_contents("php://input")) : null;
+			$source = array(
+				'_GET' => !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null,
+				'_POST' => $rawPost,
+			);
+			foreach ($source as $dst => $src) {
+				// First correct all 2-byte entities.
+				$s = preg_replace('/%(?!5B)(?!5D)([0-9a-f]{2})/si', '%u00\\1', $src);
+				// Now we can use standard parse_str() with no worry!
+				$data = null;
+				parse_str($s, $data);
+				$GLOBALS[$dst] = $this->_ucs2EntitiesDecode($data);
+			}
+			$GLOBALS['HTTP_GET_VARS'] = $_GET; // deprecated vars
+			$GLOBALS['HTTP_POST_VARS'] = $_POST;
+			$_REQUEST
+			 = (isset($_COOKIE) ? $_COOKIE : array()) +
+			 (isset($_POST) ? $_POST : array()) +
+			 (isset($_GET) ? $_GET : array());
+			if (ini_get('register_globals')) {
+				// TODO?
+			}
+		}
 
 		/**
 		 * Called in case of error too!
+		 *
+		 * @param $text
+		 * @return mixed|null|string
 		 */
-		function _obHandler($text)
-			{
-				unset($this->_emergBuffer); // free a piece of memory for memory_limit error
-				unset($GLOBALS['JsHttpRequest_Active']);
-				// Check for error & fetch a resulting data.
-				$wasFatalError = false;
-				if (preg_match_all("/{$this->_uniqHash}(.*?){$this->_uniqHash}/sx", $text, $m)) {
-					// Display_errors:
-					// 1. disabled manually after the library initialization, or
-					// 2. was initially disabled and is not changed
-					$needRemoveErrorMessages = !ini_get('display_errors') || (!$this->_prevDisplayErrors && ini_get('display_errors') == $this->_magic);
-					foreach ($m[0] as $error) {
-						if (preg_match('/\bFatal error(<.*?>)?:/i', $error)) {
-							$wasFatalError = true;
-						}
-						if ($needRemoveErrorMessages) {
-							$text = str_replace($error, '', $text); // strip the whole error message
-						} else {
-							$text = str_replace($this->_uniqHash, '', $text);
-						}
+		function _obHandler($text) {
+			unset($this->_emergBuffer); // free a piece of memory for memory_limit error
+			unset($GLOBALS['JsHttpRequest_Active']);
+			// Check for error & fetch a resulting data.
+			$wasFatalError = false;
+			if (preg_match_all("/{$this->_uniqHash}(.*?){$this->_uniqHash}/sx", $text, $m)) {
+				// Display_errors:
+				// 1. disabled manually after the library initialization, or
+				// 2. was initially disabled and is not changed
+				$needRemoveErrorMessages = !ini_get('display_errors') || (!$this->_prevDisplayErrors && ini_get('display_errors') == $this->_magic);
+				foreach ($m[0] as $error) {
+					if (preg_match('/\bFatal error(<.*?>)?:/i', $error)) {
+						$wasFatalError = true;
 					}
-				}
-				if ($wasFatalError) {
-					// On fatal errors - force "null" result. This is needed, because $_RESULT
-					// may not be fully completed at the moment of the error.
-					$this->RESULT = null;
-				} else {
-					// Read the result from globals if not set directly.
-					if (!isset($this->RESULT)) {
-						global $_RESULT;
-						$this->RESULT = $_RESULT;
-					}
-					// Avoid manual NULLs in the result (very important!).
-					if ($this->RESULT === null) {
-						$this->RESULT = false;
-					}
-				}
-				// Note that 500 error is generated when a PHP error occurred.
-				$status = $this->RESULT === null ? 500 : 200;
-				$result = array(
-					'id' => $this->ID,
-					'js' => $this->RESULT, // null always means a fatal error...
-					'text' => $text, // ...independent on $text!!!
-				);
-				$encoding = $this->SCRIPT_ENCODING;
-				$text = null; // to be on a safe side
-				// Try to use very fast json_encode: 3-4 times faster than a manual encoding.
-				if (function_exists('array_walk_recursive') && function_exists('json_encode') && $this->_unicodeConvMethod) {
-					$this->_nonAsciiChars = join("", array_map('chr', range(128, 255)));
-					$this->_toUtfFailed = false;
-					$resultUtf8 = $result;
-					array_walk_recursive($resultUtf8, array(&$this, '_toUtf8_callback'), $this->SCRIPT_ENCODING);
-					if (!$this->_toUtfFailed) {
-						// If some key contains non-ASCII character, convert everything manually.
-						$text = json_encode($resultUtf8);
-						$encoding = "UTF-8";
-					}
-				}
-				// On failure, use manual encoding.
-				if ($text === null) {
-					$text = $this->php2js($result);
-				}
-				if ($this->LOADER != "xml") {
-					// In non-XML mode we cannot use plain JSON. So - wrap with JS function call.
-					// If top.JsHttpRequestGlobal is not defined, loading is aborted and
-					// iframe is removed, so - do not call dataReady().
-					$text = ""
-					 . ($this->LOADER == "form" ? 'top && top.JsHttpRequestGlobal && top.JsHttpRequestGlobal'
-						: 'JsHttpRequest')
-					 . ".dataReady(" . $text . ")\n"
-					 . "";
-					if ($this->LOADER == "form") {
-						$text = '<script type="text/javascript" language="JavaScript"><!--' . "\n$text" . '//--></script>';
-					}
-					// Always return 200 code in non-XML mode (else SCRIPT does not work in FF).
-					// For XML mode, 500 code is okay.
-					$status = 200;
-				}
-				// Status header. To be safe, display it only in error mode. In case of success
-				// termination, do not modify the status (""HTTP/1.1 ..." header seems to be not
-				// too cross-platform).
-				if ($this->RESULT === null) {
-					if (php_sapi_name() == "cgi") {
-						header("Status: $status");
+					if ($needRemoveErrorMessages) {
+						$text = str_replace($error, '', $text); // strip the whole error message
 					} else {
-						header("HTTP/1.1 $status");
+						$text = str_replace($this->_uniqHash, '', $text);
 					}
 				}
-				// In XMLHttpRequest mode we must return text/plain - damned stupid Opera 8.0. :(
-				$ctype = !empty($this->_contentTypes[$this->LOADER]) ? $this->_contentTypes[$this->LOADER]
-				 : $this->_contentTypes[''];
-				header("Content-type: $ctype; charset=$encoding");
-				return $text;
 			}
+			if ($wasFatalError) {
+				// On fatal errors - force "null" result. This is needed, because $_RESULT
+				// may not be fully completed at the moment of the error.
+				$this->RESULT = null;
+			} else {
+				// Read the result from globals if not set directly.
+				if (!isset($this->RESULT)) {
+					global $_RESULT;
+					$this->RESULT = $_RESULT;
+				}
+				// Avoid manual NULLs in the result (very important!).
+				if ($this->RESULT === null) {
+					$this->RESULT = false;
+				}
+			}
+			// Note that 500 error is generated when a PHP error occurred.
+			$status = $this->RESULT === null ? 500 : 200;
+			$result = array(
+				'id' => $this->ID,
+				'js' => $this->RESULT, // null always means a fatal error...
+				'text' => $text, // ...independent on $text!!!
+			);
+			$encoding = $this->SCRIPT_ENCODING;
+			$text = null; // to be on a safe side
+			// Try to use very fast json_encode: 3-4 times faster than a manual encoding.
+			if (function_exists('array_walk_recursive') && function_exists('json_encode') && $this->_unicodeConvMethod) {
+				$this->_nonAsciiChars = join("", array_map('chr', range(128, 255)));
+				$this->_toUtfFailed = false;
+				$resultUtf8 = $result;
+				array_walk_recursive($resultUtf8, array(&$this, '_toUtf8_callback'), $this->SCRIPT_ENCODING);
+				if (!$this->_toUtfFailed) {
+					// If some key contains non-ASCII character, convert everything manually.
+					$text = json_encode($resultUtf8);
+					$encoding = "UTF-8";
+				}
+			}
+			// On failure, use manual encoding.
+			if ($text === null) {
+				$text = $this->php2js($result);
+			}
+			if ($this->LOADER != "xml") {
+				// In non-XML mode we cannot use plain JSON. So - wrap with JS function call.
+				// If top.JsHttpRequestGlobal is not defined, loading is aborted and
+				// iframe is removed, so - do not call dataReady().
+				$text = ""
+				 . ($this->LOADER == "form" ? 'top && top.JsHttpRequestGlobal && top.JsHttpRequestGlobal'
+					: 'JsHttpRequest')
+				 . ".dataReady(" . $text . ")\n"
+				 . "";
+				if ($this->LOADER == "form") {
+					$text = '<script type="text/javascript" language="JavaScript"><!--' . "\n$text" . '//--></script>';
+				}
+				// Always return 200 code in non-XML mode (else SCRIPT does not work in FF).
+				// For XML mode, 500 code is okay.
+				$status = 200;
+			}
+			// Status header. To be safe, display it only in error mode. In case of success
+			// termination, do not modify the status (""HTTP/1.1 ..." header seems to be not
+			// too cross-platform).
+			if ($this->RESULT === null) {
+				if (php_sapi_name() == "cgi") {
+					header("Status: $status");
+				} else {
+					header("HTTP/1.1 $status");
+				}
+			}
+			// In XMLHttpRequest mode we must return text/plain - damned stupid Opera 8.0. :(
+			$ctype = !empty($this->_contentTypes[$this->LOADER]) ? $this->_contentTypes[$this->LOADER]
+			 : $this->_contentTypes[''];
+			header("Content-type: $ctype; charset=$encoding");
+			return $text;
+		}
 
 		/**
 		 * Internal function, used in array_walk_recursive() before json_encode() call.
 		 * If a key contains non-ASCII characters, this function sets $this->_toUtfFailed = true,
 		 * becaues array_walk_recursive() cannot modify array keys.
 		 */
-		function _toUtf8_callback(&$v, $k, $fromEnc)
-			{
-				if ($v === null || is_bool($v)) {
-					return;
-				}
-				if ($this->_toUtfFailed || !is_scalar($v) || strpbrk($k, $this->_nonAsciiChars) !== false) {
-					$this->_toUtfFailed = true;
-				} else {
-					$v = $this->_unicodeConv($fromEnc, 'UTF-8', $v);
-				}
+		function _toUtf8_callback(&$v, $k, $fromEnc) {
+			if ($v === null || is_bool($v)) {
+				return;
 			}
+			if ($this->_toUtfFailed || !is_scalar($v) || strpbrk($k, $this->_nonAsciiChars) !== false) {
+				$this->_toUtfFailed = true;
+			} else {
+				$v = $this->_unicodeConv($fromEnc, 'UTF-8', $v);
+			}
+		}
 
 		/**
 		 * Decode all %uXXXX entities in string or array (recurrent).
 		 * String must not contain %XX entities - they are ignored!
 		 */
-		function _ucs2EntitiesDecode($data)
-			{
-				if (is_array($data)) {
-					$d = array();
-					foreach ($data as $k => $v) {
-						$d[$this->_ucs2EntitiesDecode($k)] = $this->_ucs2EntitiesDecode($v);
-					}
-					return $d;
-				} else {
-					if (strpos($data, '%u') !== false) { // improve speed
-						$data = preg_replace_callback('/%u([0-9A-F]{1,4})/si',
-							array(&$this, '_ucs2EntitiesDecodeCallback'), $data);
-					}
-					return $data;
+		function _ucs2EntitiesDecode($data) {
+			if (is_array($data)) {
+				$d = array();
+				foreach ($data as $k => $v) {
+					$d[$this->_ucs2EntitiesDecode($k)] = $this->_ucs2EntitiesDecode($v);
 				}
+				return $d;
+			} else {
+				if (strpos($data, '%u') !== false) { // improve speed
+					$data = preg_replace_callback('/%u([0-9A-F]{1,4})/si',
+						array(&$this, '_ucs2EntitiesDecodeCallback'), $data);
+				}
+				return $data;
 			}
+		}
 
 		/**
 		 * Decode one %uXXXX entity (RE callback).
 		 */
-		function _ucs2EntitiesDecodeCallback($p)
-			{
-				$hex = $p[1];
-				$dec = hexdec($hex);
-				if ($dec === "38" && $this->SCRIPT_DECODE_MODE == 'entities') {
-					// Process "&" separately in "entities" decode mode.
-					$c = "&amp;";
+		function _ucs2EntitiesDecodeCallback($p) {
+			$hex = $p[1];
+			$dec = hexdec($hex);
+			if ($dec === "38" && $this->SCRIPT_DECODE_MODE == 'entities') {
+				// Process "&" separately in "entities" decode mode.
+				$c = "&amp;";
+			} else {
+				if ($this->_unicodeConvMethod) {
+					$c = @$this->_unicodeConv('UCS-2BE', $this->SCRIPT_ENCODING, pack('n', $dec));
 				} else {
-					if ($this->_unicodeConvMethod) {
-						$c = @$this->_unicodeConv('UCS-2BE', $this->SCRIPT_ENCODING, pack('n', $dec));
+					$c = $this->_decUcs2Decode($dec, $this->SCRIPT_ENCODING);
+				}
+				if (!strlen($c)) {
+					if ($this->SCRIPT_DECODE_MODE == 'entities') {
+						$c = '&#' . $dec . ';';
 					} else {
-						$c = $this->_decUcs2Decode($dec, $this->SCRIPT_ENCODING);
-					}
-					if (!strlen($c)) {
-						if ($this->SCRIPT_DECODE_MODE == 'entities') {
-							$c = '&#' . $dec . ';';
-						} else {
-							$c = '?';
-						}
+						$c = '?';
 					}
 				}
-				return $c;
 			}
+			return $c;
+		}
 
 		/**
 		 * Wrapper for iconv() or mb_convert_encoding() functions.
@@ -456,13 +456,12 @@
 		 *
 		 * @see iconv()
 		 */
-		function _unicodeConv($fromEnc, $toEnc, $v)
-			{
-				if ($this->_unicodeConvMethod == 'iconv') {
-					return iconv($fromEnc, $toEnc, $v);
-				}
-				return mb_convert_encoding($v, $toEnc, $fromEnc);
+		function _unicodeConv($fromEnc, $toEnc, $v) {
+			if ($this->_unicodeConvMethod == 'iconv') {
+				return iconv($fromEnc, $toEnc, $v);
 			}
+			return mb_convert_encoding($v, $toEnc, $fromEnc);
+		}
 
 		/**
 		 * If there is no ICONV, try to decode 1-byte characters and UTF-8 manually
@@ -471,33 +470,32 @@
 		/**
 		 * Convert from UCS-2BE decimal to $toEnc.
 		 */
-		function _decUcs2Decode($code, $toEnc)
-			{
-				// Little speedup by using array_flip($this->_encTables) and later hash access.
-				static $flippedTable = null;
-				if ($code < 128) {
-					return chr($code);
-				}
-				if (isset($this->_encTables[$toEnc])) {
-					if (!$flippedTable) {
-						$flippedTable = array_flip($this->_encTables[$toEnc]);
-					}
-					if (isset($flippedTable[$code])) {
-						return chr(128 + $flippedTable[$code]);
-					}
-				} else if ($toEnc == 'utf-8' || $toEnc == 'utf8') {
-					// UTF-8 conversion rules: http://www.cl.cam.ac.uk/~mgk25/unicode.html
-					if ($code < 0x800) {
-						return chr(0xC0 + ($code >> 6)) .
-						 chr(0x80 + ($code & 0x3F));
-					} else { // if ($code <= 0xFFFF) -- it is almost always so for UCS2-BE
-						return chr(0xE0 + ($code >> 12)) .
-						 chr(0x80 + (0x3F & ($code >> 6))) .
-						 chr(0x80 + ($code & 0x3F));
-					}
-				}
-				return "";
+		function _decUcs2Decode($code, $toEnc) {
+			// Little speedup by using array_flip($this->_encTables) and later hash access.
+			static $flippedTable = null;
+			if ($code < 128) {
+				return chr($code);
 			}
+			if (isset($this->_encTables[$toEnc])) {
+				if (!$flippedTable) {
+					$flippedTable = array_flip($this->_encTables[$toEnc]);
+				}
+				if (isset($flippedTable[$code])) {
+					return chr(128 + $flippedTable[$code]);
+				}
+			} else if ($toEnc == 'utf-8' || $toEnc == 'utf8') {
+				// UTF-8 conversion rules: http://www.cl.cam.ac.uk/~mgk25/unicode.html
+				if ($code < 0x800) {
+					return chr(0xC0 + ($code >> 6)) .
+					 chr(0x80 + ($code & 0x3F));
+				} else { // if ($code <= 0xFFFF) -- it is almost always so for UCS2-BE
+					return chr(0xE0 + ($code >> 12)) .
+					 chr(0x80 + (0x3F & ($code >> 6))) .
+					 chr(0x80 + ($code & 0x3F));
+				}
+			}
+			return "";
+		}
 
 		/**
 		 * UCS-2BE -> 1-byte encodings (from #128).

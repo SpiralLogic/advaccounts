@@ -21,7 +21,7 @@
 						$line_item->quantity);
 				}
 				DB_Comments::add(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
-				Ref::save(ST_LOCTRANSFER, $transfer_id, $reference);
+				Ref::save(ST_LOCTRANSFER,  $reference);
 				DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
 				DB::commit_transaction();
 				return $transfer_id;
@@ -78,7 +78,7 @@
 			{
 				$from = Dates::date2sql($from);
 				$to = Dates::date2sql($to);
-				$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . "  AND tran_date>='$from' AND tran_date<='$to'
+				$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
 				AND person_id = " . DB::escape($pid);
 				DB::query($sql, "The stock movement standard_cost cannot be updated");
 			}
@@ -86,10 +86,10 @@
 
 		function header($order)
 			{
-				start_outer_table("width=70%  " . Config::get('tables_style'));
+				start_outer_table('tablestyle width70');
 				table_section(1);
-				locations_list_row(_("From Location:"), 'FromStockLocation', null);
-				locations_list_row(_("To Location:"), 'ToStockLocation', null);
+				Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
+				Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
 				table_section(2, "33%");
 				ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
 				date_row(_("Date:"), 'AdjDate', '', true);
@@ -102,8 +102,8 @@
 		function display_items($title, &$order)
 			{
 				Display::heading($title);
-				div_start('items_table');
-				start_table(Config::get('tables_style') . "  width=90%");
+				Display::div_start('items_table');
+				start_table('tablestyle width90');
 				$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
 				if (count($order->line_items)) {
 					$th[] = '';
@@ -115,7 +115,7 @@
 				foreach ($order->line_items as $line_no => $stock_item) {
 					if ($id != $line_no) {
 						alt_table_row_color($k);
-						ui_view::stock_status_cell($stock_item->stock_id);
+						Item_UI::status_cell($stock_item->stock_id);
 						label_cell($stock_item->description);
 						qty_cell($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
 						label_cell($stock_item->units);
@@ -130,7 +130,7 @@
 					Inv_Transfer::item_controls($order);
 				}
 				end_table();
-				div_end();
+				Display::div_end();
 			}
 
 
@@ -148,7 +148,7 @@
 					label_cell($order->line_items[$id]->description);
 					$Ajax->activate('items_table');
 				} else {
-					stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+					Item_UI::costable_cells(null, 'stock_id', null, false, true);
 					if (list_updated('stock_id')) {
 						$Ajax->activate('units');
 						$Ajax->activate('qty');

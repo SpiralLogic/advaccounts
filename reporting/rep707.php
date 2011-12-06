@@ -62,7 +62,7 @@
 			$code_acc_balance += $acc_balance;
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_AccountType::get_all(false, false, $type);
+		$result = GL_Type::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -188,7 +188,7 @@
 			$end = Dates::add_months($to, -12);
 			$headers[3] = _('Period Y-1');
 		}
-		$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", User::pagesize());
+		$rep = new ADVReport(_('Profit and Loss Statement'), "ProfitAndLoss", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -196,7 +196,7 @@
 		$classacc = 0.0;
 		$salesper = 0.0;
 		$salesacc = 0.0;
-		$classresult = GL_AccountClass::get_all(false, 0);
+		$classresult = GL_Class::get_all(false, 0);
 		while ($class = DB::fetch($classresult)) {
 			$class_per_total = 0;
 			$class_acc_total = 0;
@@ -207,7 +207,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult)) {
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
 				$class_per_total += $classtotal[0];

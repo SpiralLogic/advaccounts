@@ -63,7 +63,7 @@
 
 	$result = Sales_Point::get_all(check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(
 		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
 	inactive_control_column($th);
@@ -88,7 +88,7 @@
 	if (!$cash) {
 		Errors::warning(_("To have cash POS first define at least one cash bank account."));
 	}
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = Sales_Point::get($selected_id);
@@ -108,12 +108,12 @@
 	if ($cash) {
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
 		check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
-		cash_accounts_list_row(_("Default cash account") . ':', 'account');
+		Bank_UI::cash_accounts_row(_("Default cash account") . ':', 'account');
 	} else {
 		hidden('credit', 1);
 		hidden('account', 0);
 	}
-	locations_list_row(_("POS location") . ':', 'location');
+	Inv_Location::row(_("POS location") . ':', 'location');
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();

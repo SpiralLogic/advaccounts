@@ -6,7 +6,8 @@
 	 * Time: 11:15 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Connection {
+	class DB_Connection
+	{
 		/**
 		 * @var array
 		 */
@@ -80,6 +81,7 @@
 
 		/**
 		 * @param $sql
+		 *
 		 * @return PDOStatement
 		 *
 		 */
@@ -91,9 +93,11 @@
 		 * @param $sql
 		 * @param $type
 		 * @param null $data
+		 *
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
+
 			try {
 				$prepared = $this->prepare($sql);
 				switch ($type) {
@@ -149,6 +153,7 @@
 		/**
 		 * @param		 $sql
 		 * @param int $fetchas
+		 *
 		 * @return bool
 		 */
 		public function query($sql, $fetchas = PDO::FETCH_OBJ) {
@@ -167,6 +172,7 @@
 
 		/**
 		 * @param $value
+		 *
 		 * @return mixed
 		 */
 		public function quote($value) {
@@ -177,7 +183,6 @@
 		 *
 		 */
 		protected function _connect() {
-			$time = microtime(true);
 
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
@@ -204,6 +209,7 @@
 
 		/**
 		 * @param PDO|int $value
+		 *
 		 * @return mixed
 		 */
 		public function getAttribute(PDO $value) {
@@ -213,22 +219,23 @@
 		/**
 		 * @param PDOException $e
 		 * @param bool				 $exit
+		 *
 		 * @return bool
 		 * @throws DB_Exception
 		 */
 		protected function _error(PDOException $e, $exit = false) {
-		if (Config::get('debug_sql')) {
+			if (Config::get('debug_sql')) {
 				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
 			} else {
 				$error = $e->errorInfo[2];
-			//	Errors::show_db_error(' <pre>' . '</pre></p>');
+				//	Errors::show_db_error(' <pre>' . '</pre></p>');
 			}
 			if ($this->intransaction) {
 				$this->conn->rollBack();
 			}
 			trigger_error($error, E_USER_ERROR);
 			if ($exit) {
-		//		throw new DB_Exception($error);
+				//		throw new DB_Exception($error);
 			}
 			return false;
 		}

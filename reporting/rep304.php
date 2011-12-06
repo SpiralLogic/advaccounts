@@ -107,7 +107,7 @@
 		}
 		else
 		{
-			$fromc = Sales_Debtor::get_name($fromcust);
+			$fromc = Debtor::get_name($fromcust);
 		}
 		$cols = array(0, 75, 175, 250, 300, 375, 450, 515);
 		$headers
@@ -121,21 +121,21 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to),
+				'to' => $to),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'   => ''),
+				'to' => ''),
 			3 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to'   => ''),
+				'to' => ''),
 			4 => array(
 				'text' => _('Customer'),
 				'from' => $fromc,
-				'to'   => '')
+				'to' => '')
 		);
-		$rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
+		$rep = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -163,8 +163,8 @@
 				$catt = $trans['cat_description'];
 				$rep->NewLine();
 			}
-			$curr = Banking::get_customer_currency($trans['debtor_no']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['tran_date']));
+			$curr = Bank_Currency::for_debtor($trans['debtor_no']);
+			$rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
 			$cb = $trans['amt'] - $trans['cost'];
 			$rep->NewLine();

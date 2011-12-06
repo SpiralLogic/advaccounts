@@ -10,14 +10,14 @@
  */
 	return array('installed' => array(
 		0 => array(
-			'code'     => 'en_AU',
-			'name'     => 'Australia',
-			'encoding' => 'utf8'
+			'code' => 'en_AU',
+			'name' => 'Australia',
+			'encoding' => 'utf-8'
 		),
 		array(
-			'code'     => 'en_GB',
-			'name'     => 'English',
-			'encoding' => 'utf8'
+			'code' => 'en_GB',
+			'name' => 'English',
+			'encoding' => 'utf-8'
 		)
 	)
 	);

@@ -25,9 +25,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	start_table("class='tablestyle_noborder'");
-	stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
-	locations_list_cells(_("From Location:"), 'StockLocation', null);
+	start_table('tablestyle_noborder');
+	Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
+	Inv_Location::cells(_("From Location:"), 'StockLocation', null);
 	date_cells(_("From:"), 'AfterDate', '', null, -30);
 	date_cells(_("To:"), 'BeforeDate');
 	submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
@@ -45,8 +45,8 @@
 	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
 	$result = DB::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
-	div_start('doc_tbl');
-	start_table(Config::get('tables_style'));
+	Display::div_start('doc_tbl');
+	start_table('tablestyle');
 	$th = array(
 		_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
@@ -62,7 +62,7 @@
 		$after_qty = $before_qty = 0;
 	}
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "align=center colspan=5");
+	label_cell("<span class='bold'>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</span>", "class=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
 	$dec = Item::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
@@ -85,8 +85,8 @@
 		}
 		$after_qty += $myrow["qty"];
 		label_cell($type_name);
-		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
-		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+		label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
+		label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
 		label_cell($trandate);
 		$person = $myrow["person_id"];
 		$gl_posting = "";
@@ -119,8 +119,8 @@
 			$person = "";
 		}
 		label_cell($person);
-		label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap align=right");
-		label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap align=right");
+		label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap class=right");
+		label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap class=right");
 		qty_cell($after_qty, false, $dec);
 		end_row();
 		$j++;
@@ -132,13 +132,13 @@
 	}
 	//end of while loop
 	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</b>", "align=center colspan=5");
+	label_cell("<span class='bold'>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</span>", "class=center colspan=5");
 	qty_cell($total_in, false, $dec);
 	qty_cell($total_out, false, $dec);
 	qty_cell($after_qty, false, $dec);
 	end_row();
 	end_table(1);
-	div_end();
+	Display::div_end();
 	end_page();
 
 ?>

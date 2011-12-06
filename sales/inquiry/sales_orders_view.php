@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
@@ -82,7 +82,7 @@
 
 	function view_link($row, $order_no)
 		{
-			return ui_view::get_customer_trans_view_str($row['trans_type'], $order_no);
+			return Debtor_UI::trans_view($row['trans_type'], $order_no);
 		}
 
 	function prt_link($row)
@@ -98,7 +98,7 @@
 	function edit_link($row)
 		{
 			$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
-			return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+			return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 		}
 
 	function email_link($row)
@@ -109,16 +109,16 @@
 	function dispatch_link($row)
 		{
 			if ($row['trans_type'] == ST_SALESORDER) {
-				return pager_link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+				return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 			} else {
-				return pager_link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+				return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 			}
 		}
 
 	function invoice_link($row)
 		{
 			if ($row['trans_type'] == ST_SALESORDER) {
-				return pager_link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
+				return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
 			} else {
 				return '';
 			}
@@ -126,12 +126,12 @@
 
 	function delivery_link($row)
 		{
-			return pager_link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
+			return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
 		}
 
 	function order_link($row)
 		{
-			return pager_link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
+			return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
 		}
 
 	function tmpl_checkbox($row)
@@ -190,17 +190,17 @@
 		$Ajax->activate('orders_tbl');
 	}
 	start_form();
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
-	customer_list_cells(_("Customer: "), 'customer_id', null, true);
+	Debtor_UI::cells(_("Customer: "), 'customer_id', null, true);
 	ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
 	if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 		ref_cells(_("Ref"), 'OrderReference', '', null, '', true);
 		date_cells(_("From:"), 'OrdersAfterDate', '', null, -30);
 		date_cells(_("To:"), 'OrdersToDate', '', null, 1);
 	}
-	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+	Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+	Item::cells(_("Item:"), 'SelectStockFromList', null, true);
 	if ($trans_type == ST_SALESQUOTE) {
 		check_cells(_("Show All:"), 'show_all');
 	}
@@ -259,13 +259,13 @@
 				continue;
 			}
 			$ajaxsearch = DB::escape("%" . trim($ajaxsearch) . "%", false, false);
-			$sql .= " AND (  debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
-			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
+			$sql .= " AND ( debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
 		}
 		$sql .= " GROUP BY sorder.ord_date,
-        sorder.order_no,
+ sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_code,
 				sorder.customer_ref,
@@ -296,7 +296,7 @@
 			$sql .= " AND sorder.type=1";
 		}
 		$sql .= " GROUP BY sorder.ord_date,
-        sorder.order_no,
+ sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_code,
 				sorder.customer_ref,
@@ -358,7 +358,7 @@
 	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
 	end_page();

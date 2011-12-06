@@ -1,14 +1,14 @@
 <?php
 
 	/* * ********************************************************************
-	  Copyright (C) Advanced Group PTY LTD
-	  Released under the terms of the GNU General Public License, GPL,
-	  as published by the Free Software Foundation, either version 3
-	  of the License, or (at your option) any later version.
-	  This program is distributed in the hope that it will be useful,
-	  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-	  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 Copyright (C) Advanced Group PTY LTD
+	 Released under the terms of the GNU General Public License, GPL,
+	 as published by the Free Software Foundation, either version 3
+	 of the License, or (at your option) any later version.
+	 This program is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
 	if (isset($header2type)) {
 		$doc_Cust_no = "Cust no";
@@ -49,7 +49,7 @@
 		} else {
 			if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 				$doc_Our_Ref = "Type";
-			} else #  __ADVANCEDEDIT__ BEGIN #
+			} else # __ADVANCEDEDIT__ BEGIN #
 				// $doc_Our_Ref = "Sales Person";
 			{
 				$doc_Our_Ref = "Contact";
@@ -65,7 +65,7 @@
 				$doc_Customers_Ref = "Customers Reference";
 				$doc_Our_Order_No = "Our Order No";
 			}
-			#  __ADVANCEDEDIT__ END #
+			# __ADVANCEDEDIT__ END #
 		}
 		$doc_Extra = "";
 		$doc_Our_VAT_no = "Our ABN No.";

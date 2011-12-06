@@ -20,7 +20,7 @@
 	{
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
-			$paths   = array(
+			$paths = array(
 				PATH_TO_ROOT . '/reporting/',
 				COMPANY_PATH . '/reporting/'
 			);
@@ -40,10 +40,10 @@
 						$repno = $match[1];
 						$title = '';
 						$line = file_get_contents($path . $fname);
-						if (preg_match('/.*(FrontReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
+						if (preg_match('/.*(ADVReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
 							$title = trim($match[2]);
 						}
-						else // for any 3rd party printouts without FrontReport() class use
+						else // for any 3rd party printouts without ADVReport() class use
 							if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
 								$title = trim($match[2]);
 							}
@@ -61,8 +61,8 @@
 	function clear_form()
 	{
 		global $selected_id;
-		$Ajax          = Ajax::i();
-		$selected_id   = '';
+		$Ajax = Ajax::i();
+		$selected_id = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
 	}
@@ -91,7 +91,7 @@
 			foreach (
 				get_reports() as $rep => $descr
 			) {
-				$val        = get_post('Prn' . $rep);
+				$val = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
 			if ($_POST['profile_id'] == '') {
@@ -118,7 +118,7 @@
 	}
 	start_form();
 	start_table();
-	print_profiles_list_row(
+	Reports_UI::print_profiles_row(
 		_('Select printing profile') . ':', 'profile_id', null,
 		_('New printing profile'), true
 	);
@@ -136,21 +136,21 @@
 	while ($myrow = DB::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
-	$k    = 0;
+	$k = 0;
 	$unkn = 0;
 	foreach (
 		get_reports() as $rep => $descr
 	)
 	{
 		alt_table_row_color($k);
-		label_cell($rep == '' ? '-' : $rep, 'align=center');
+		label_cell($rep == '' ? '-' : $rep, 'class=center');
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
 		echo '<td>';
-		echo printers_list(
+		echo Reports_UI::printers(
 			'Prn' . $rep, null,
 			$rep == '' ? _('Browser support') : _('Default')
 		);
@@ -166,7 +166,7 @@
 } else {
 		echo '<br>';
 	}
-	div_start('controls');
+	Display::div_start('controls');
 	if (get_post('profile_id') == '') {
 		submit_center('submit', _("Add New Profile"), true, '', 'default');
 	} else {
@@ -179,7 +179,7 @@
 			_('Delete printer profile (only if not used by any user)'), true
 		);
 	}
-	div_end();
+	Display::div_end();
 	end_form();
 	end_page();
 

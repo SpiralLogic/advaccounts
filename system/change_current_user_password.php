@@ -58,7 +58,7 @@
 		Errors::warning('You are required to change your password!');
 	}
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	table_section_title(_("Enter your new password in the fields."));
 	$myrow = Users::get(User::get()->user);
 	label_row(_("User login:"), $myrow['user_id']);

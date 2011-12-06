@@ -72,7 +72,7 @@
 			if (isset($_POST['add'])) {
 				add_update_gl_budget_trans(
 					$da, $_POST['account'], $_POST['dim1'],
-					$_POST['dim2'], input_num('amount' . $i)
+					$_POST['dim2'], Validation::input_num('amount' . $i)
 				);
 			} else {
 				delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
@@ -85,7 +85,7 @@
 		} else {
 			Errors::notice(_("The Budget has been deleted."));
 		}
-		//meta_forward($_SERVER['PHP_SELF']);
+		//Display::meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');
 	}
 	if (isset($_POST['submit']) || isset($_POST['update'])) {
@@ -97,9 +97,9 @@
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 
 			$dim = DB_Company::get_pref('use_dimension');
-		start_table(Config::get('tables_style2'));
-		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
-		gl_all_accounts_list_row(_("Account Code:"), 'account', null);
+		start_table('tablestyle2');
+		GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
+		GL_UI::all_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1'])) {
 			$_POST['dim1'] = 0;
 		}
@@ -107,11 +107,11 @@
 			$_POST['dim2'] = 0;
 		}
 		if ($dim == 2) {
-			dimensions_list_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], true, null, false, 1);
-			dimensions_list_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], true, null, false, 2);
+			Dimensions::select_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], true, null, false, 1);
+			Dimensions::select_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], true, null, false, 2);
 		}
 		else if ($dim == 1) {
-			dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
+			Dimensions::select_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
 			hidden('dim2', 0);
 		} else {
 			hidden('dim1', 0);
@@ -119,8 +119,8 @@
 		}
 		submit_row('submit', _("Get"), true, '', '', true);
 		end_table(1);
-		div_start('budget_tbl');
-		start_table(Config::get('tables_style2'));
+		Display::div_start('budget_tbl');
+		start_table('tablestyle2');
 		$showdims = (($dim == 1 && $_POST['dim1'] == 0)
 		 || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 		if ($showdims) {
@@ -157,29 +157,29 @@
 			amount_cells(null, 'amount' . $i, null, 15, null, 0);
 			if ($showdims) {
 				$d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-				label_cell(Num::format($d, 0), "nowrap align=right");
+				label_cell(Num::format($d, 0), "nowrap class=right");
 				$btotal += $d;
 			}
 			$lamount = GL_Trans::get_from_to(
 				Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'],
 				$_POST['dim1'], $_POST['dim2']
 			);
-			$total += input_num('amount' . $i);
+			$total += Validation::input_num('amount' . $i);
 			$ltotal += $lamount;
-			label_cell(Num::format($lamount, 0), "nowrap align=right");
+			label_cell(Num::format($lamount, 0), "nowrap class=right");
 			$date_ = Dates::add_months($date_, 1);
 			end_row();
 		}
 		start_row();
-		label_cell("<b>" . _("Total") . "</b>");
-		label_cell(Num::format($total, 0), 'align=right style="font-weight:bold"', 'Total');
+		label_cell("<span class='bold'>" . _("Total") . "</span>");
+		label_cell(Num::format($total, 0), 'class="right bold" ', 'Total');
 		if ($showdims) {
-			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap align=right");
+			label_cell("<span class='bold'>" . Num::format($btotal, 0) . "</span>", "nowrap class=right");
 		}
-		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap align=right");
+		label_cell("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", "nowrap class=right");
 		end_row();
 		end_table(1);
-		div_end();
+		Display::div_end();
 		submit_center_first('update', _("Update"), '', null);
 		submit('add', _("Save"), true, '', 'default');
 		submit_center_last('delete', _("Delete"), '', true);

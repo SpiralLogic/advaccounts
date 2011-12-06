@@ -57,7 +57,7 @@
 			} else {
 				include_once(APPPATH . "reports/pdf.php");
 			}
-			$rep = new FrontReport(_('Bank Statement'), "BankStatement", User::pagesize());
+			$rep = new ADVReport(_('Bank Statement'), "BankStatement", User::pagesize());
 			$dec = User::price_dec();
 			$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
 			$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
@@ -65,7 +65,7 @@
 				_('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'),
 				_('Debit'), _('Credit'), _('Balance')
 			);
-			$account = GL_BankAccount::get($acc);
+			$account = Bank_Account::get($acc);
 			$act = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
 			$params = array(
 				0 => $comments,
@@ -107,7 +107,7 @@
 						$rep->TextCol(1, 2, $myrow['trans_no']);
 						$rep->TextCol(2, 3, $myrow['ref']);
 						$rep->DateCol(3, 4, $myrow["trans_date"], true);
-						$rep->TextCol(4, 5, Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
+						$rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
 						if ($myrow['amount'] > 0.0) {
 							$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 							$total_debit += abs($myrow['amount']);

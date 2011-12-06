@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
-	class Purch_Trans {
+	class Purch_Trans   {
 		protected static $_instance = null;
 
 		public static function i($reset_session = false) {
@@ -91,7 +91,7 @@
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
-			$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+			$tax_group = Tax_Groups::get_items_as_array($tax_group_id);
 			foreach ($this->grn_items as $ln_itm) {
 				$items[] = $ln_itm->item_code;
 				$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
@@ -100,11 +100,11 @@
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
-			$taxes = Taxes::get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
+			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
-					$index = Taxes::is_tax_account($gl_code->gl_code);
+					$index = Tax::is_account($gl_code->gl_code);
 					if ($index !== false) {
 						$taxes[$index]['Value'] += $gl_code->amount;
 					}
@@ -118,7 +118,7 @@
 			$total = 0;
 			// preload the taxgroup !
 			if ($tax_group_id != null) {
-				$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+				$tax_group = Tax_Groups::get_items_as_array($tax_group_id);
 			} else {
 				$tax_group = null;
 			}
@@ -127,7 +127,7 @@
 					User::price_dec(), PHP_ROUND_HALF_EVEN);
 			}
 			foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
-				if (!Taxes::is_tax_account($gl_line->gl_code)) {
+				if (!Tax::is_account($gl_line->gl_code)) {
 					$total += $gl_line->amount;
 				}
 			}
@@ -145,9 +145,9 @@
 				$due_date = Dates::date2sql($due_date);
 			}
 			$trans_no = SysTypes::get_next_trans_no($type);
-			$curr = Banking::get_supplier_currency($supplier_id);
+			$curr = Bank_Currency::for_creditor($supplier_id);
 			if ($rate == 0) {
-				$rate = Banking::get_exchange_rate_from_home_currency($curr, $date_);
+				$rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
 			}
 			$sql = "INSERT INTO supp_trans (trans_no, type, supplier_id, tran_date, due_date,
 				reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
@@ -231,7 +231,7 @@
 				Purch_Invoice::void($type, $type_no);
 				return true;
 			}
-			if ($type == SUPPRECEIVE) {
+			if ($type == ST_SUPPRECEIVE) {
 				return Purch_GRN::void($type_no);
 			}
 			return false;
@@ -247,7 +247,7 @@
 				$err_msg = "The supplier GL transaction could not be inserted";
 			}
 			return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo,
-				$amount, Banking::get_supplier_currency($supplier_id),
+				$amount, Bank_Currency::for_creditor($supplier_id),
 				PT_SUPPLIER, $supplier_id, $err_msg, $rate);
 		}
 
@@ -272,17 +272,17 @@
 				$tax = Num::format(abs($tax_item['amount']), User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax",
-						"colspan=$columns align=right", "align=right");
+						"colspan=$columns class=right", "class=right");
 				}
 				else {
-					label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns align=right",
-						"align=right");
+					label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns class=right",
+						"class=right");
 				}
 				$tax_total += $tax;
 			}
 			if ($tax_recorded != 0) {
 				$tax_correction = Num::format($tax_recorded - $tax_total, User::price_dec());
-				label_row("Tax Correction ", $tax_correction, "colspan=$columns align=right", "align=right");
+				label_row("Tax Correction ", $tax_correction, "colspan=$columns class=right", "class=right");
 			}
 		}
 

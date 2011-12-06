@@ -31,11 +31,11 @@
 		'print_default_excel'							=> false,
 		// Wiki context help configuration
 		// If your help wiki use translated page titles uncomment next line
-		// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
+		// $old_style_help = 1; // this setting is depreciated and subject to removal in next ADV versions
 		// 	locally installed wiki module
 		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 		// 	context help feed from advaccounting.net
-		// Config::get('help_baseurl')  = 'http://advaccounting.com/fawiki/index.php?n=Help.';
+		// Config::get('help_baseurl') = 'http://advaccounting.com/fawiki/index.php?n=Help.';
 		// 	not used
 		'help_baseurl'										 => null,
 		/* per user data/cache directory */
@@ -56,8 +56,8 @@
 		'ui_date_seperator'								=> '/',
 		'use_fiscalyear'=>false,
 		/* Default border and spacing for tables
-							 *  Should be moved to CSS */
-		'tables_style'										 => "class='tablestyle'",
+							 * Should be moved to CSS */
+		'tables_style'										 => "class='tablestyle center'",
 		'tables_style2'										=> "class='tablestyle2'",
 /* Accounts Payable
 		 System check to see if quantity charged on purchase invoices exceeds the quantity received.

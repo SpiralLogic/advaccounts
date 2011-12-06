@@ -35,4 +35,27 @@
 				$result = DB::query($sql, "could not retreive bank account for $id");
 				return DB::fetch($result);
 			}
+		public static function select($name, $selected_id = null) {
+			$result = DB::select('name')->from('payment_methods')->where('inactive=', 0);
+			while ($row = DB::fetch($result)) {
+				$payment_methods[] = $row['name'];
+			}
+			return array_selector($name, $selected_id, $payment_methods);
+		}
+
+		public static function cells($label, $name, $selected_id = null) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo GL_PaymentMethod::select($name, $selected_id);
+			echo "</td>\n";
+		}
+
+		public static 	function row($label, $name, $selected_id = null) {
+			echo "<tr><td class='label'>$label</td>";
+			Bank_Account::type_cells(null, $name, $selected_id);
+			echo "</tr>\n";
+		}
+
 	}

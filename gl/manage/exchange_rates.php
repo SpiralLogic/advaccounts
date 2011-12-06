@@ -22,7 +22,7 @@
 			JS::set_focus('date_');
 			return false;
 		}
-		if (input_num('BuyRate') <= 0) {
+		if (Validation::input_num('BuyRate') <= 0) {
 			Errors::error(_("The exchange rate cannot be zero or a negative number."));
 			JS::set_focus('BuyRate');
 			return false;
@@ -45,12 +45,12 @@
 		if ($selected_id != "") {
 			GL_ExchangeRate::update(
 				$_POST['curr_abrev'], $_POST['date_'],
-				input_num('BuyRate'), input_num('BuyRate')
+				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
 			);
 		} else {
 			GL_ExchangeRate::add(
 				$_POST['curr_abrev'], $_POST['date_'],
-				input_num('BuyRate'), input_num('BuyRate')
+				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
 			);
 		}
 		$selected_id = '';
@@ -89,7 +89,7 @@
 	{
 		global $selected_id;
 		$Ajax = Ajax::i();
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate
 			$myrow = GL_ExchangeRate::get($selected_id);
@@ -139,10 +139,10 @@
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
-	echo "<center>";
-	echo _("Select a currency :") . "  ";
-	echo currencies_list('curr_abrev', null, true);
-	echo "</center>";
+	echo "<div class='center'>";
+	echo _("Select a currency :") . " ";
+	echo GL_Currency::select('curr_abrev', null, true);
+	echo "</div>";
 	// if currency sel has changed, clear the form
 	if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
 		clear_data();
@@ -165,17 +165,17 @@
 		),
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-	if (Banking::is_company_currency($_POST['curr_abrev'])) {
+	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
 		Errors::warning(_("The selected currency is the company currency."), 2);
 		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	} else {
-		br(1);
+		Display::br(1);
 		$table->width = "40%";
 		if ($table->rec_count == 0) {
 			$table->ready = false;
 		}
-		display_db_pager($table);
-		br(1);
+		DB_Pager::display($table);
+		Display::br(1);
 		display_rate_edit();
 	}
 	end_form();

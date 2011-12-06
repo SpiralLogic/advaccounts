@@ -58,12 +58,12 @@
 
 	function trans_view($trans)
 	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row)
 	{
-		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+		return GL_UI::view($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row)
@@ -80,7 +80,7 @@
 
 	function fmt_person($row)
 	{
-		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
+		return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
 	}
 
 	$update_pager = false;
@@ -142,7 +142,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS NULL";
 		$query = DB::query($sql);
 		$undeposited = array();
 		while ($row = DB::fetch($query)) {
@@ -177,12 +177,12 @@
 			}
 		} else {
 			$row = reset($togroup);
-			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DB::escape($row['id']);
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
 			DB::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
 		unset($_SESSION['undeposited']);
-		meta_forward($_SERVER['PHP_SELF']);
+		Display::meta_forward($_SERVER['PHP_SELF']);
 	}
 	$_POST['to_deposit'] = 0;
 	if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) {
@@ -196,7 +196,7 @@
 	$Ajax->activate('summary');
 	start_form();
 	echo "<hr>";
-	div_start('summary');
+	Display::div_start('summary');
 	start_table();
 	table_header(_("Deposit Date"));
 	start_row();
@@ -209,7 +209,7 @@
 	end_row();
 	end_table();
 	submit_center('Deposit', _("Deposit"), true, '', false);
-	div_end();
+	Display::div_end();
 	echo "<hr>";
 	$date = Dates::add_days($_POST['deposit_date'], 10);
 	$sql = "SELECT	type, trans_no, ref, trans_date,
@@ -227,8 +227,8 @@
 			'insert' => true, 'fun' => 'dep_checkbox'));
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
-	br(1);
+	DB_Pager::display($table);
+	Display::br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
 	end_page();

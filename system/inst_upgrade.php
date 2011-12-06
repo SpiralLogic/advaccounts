@@ -15,8 +15,8 @@
 	//
 	//	Checks $field existence in $table with given field $properties
 	//	$table - table name without prefix
-	//  $field -  optional field name
-	//  $properties - optional properties of field defined by MySQL:
+	// $field - optional field name
+	// $properties - optional properties of field defined by MySQL:
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
 	function check_table($pref, $table, $field = null, $properties = null)
@@ -164,7 +164,7 @@
 		$Ajax->activate('_page_body');
 	}
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(
 		_("Version"), _("Description"), _("Sql file"), _("Install"),
 		_("Force upgrade")
@@ -180,7 +180,7 @@
 		start_row();
 		label_cell($inst->version);
 		label_cell($inst->description);
-		label_cell($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'align=center');
+		label_cell($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'class=center');
 		// this is checked only for first (site admin) company,
 		// but in fact we should always upgrade all data sets after
 		// source upgrade.
@@ -209,7 +209,7 @@
 You have to clean database manually to enable them, or try to perform forced upgrade."
 			)
 		);
-		br();
+		Display::br();
 	}
 	submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 	end_form();

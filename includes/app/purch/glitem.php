@@ -52,7 +52,7 @@
 
 		public	function full_charge_price($tax_group_id, $tax_group = null)
 			{
-				return Taxes::get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
+				return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
 					$tax_group);
 			}
 
@@ -60,7 +60,7 @@
 			{
 				//		if ($tax_group_id==null)
 				//			return $this->chg_price;
-				return Taxes::get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
+				return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
 					0, $tax_group);
 			}
 
@@ -70,14 +70,14 @@
 				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
 				alt_table_row_color($k);
-				echo gl_all_accounts_list('gl_code', null, true, true);
+				echo GL_UI::all('gl_code', null, true, true);
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim >= 1) {
-					dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+					Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
 					hidden('dimension_id', 0);
 				}
 				if ($dim > 1) {
-					dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+					Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
 					hidden('dimension2_id', 0);
 				}
 				textarea_cells(null, 'memo_', null, 50, 1);
@@ -103,20 +103,20 @@
 				} else {
 					$heading = _("GL Items for this Credit Note");
 				}
-				start_outer_table(Config::get('tables_style') . "  width=90%");
+				start_outer_table('tablestyle2 width90');
 				if ($mode == 1) {
 					$qes = GL_QuickEntry::has(QE_SUPPINV);
 					if ($qes !== false) {
 						echo "<div style='float:right;'>";
 						echo _("Quick Entry:") . "&nbsp;";
-						echo quick_entries_list('qid', null, QE_SUPPINV, true);
+						echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
 						$qid = GL_QuickEntry::get(get_post('qid'));
 						if (list_updated('qid')) {
 							unset($_POST['totamount']); // enable default
 							$Ajax->activate('totamount');
 						}
 						echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
-						$amount = input_num('totamount', $qid['base_amount']);
+						$amount = Validation::input_num('totamount', $qid['base_amount']);
 						$dec = User::price_dec();
 						echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 						submit('go', _("Go"), true, false, true);
@@ -125,8 +125,8 @@
 				}
 				Display::heading($heading);
 				end_outer_table(0, false);
-				div_start('gl_items');
-				start_table(Config::get('tables_style') . "  width=90%");
+				Display::div_start('gl_items');
+				start_table('tablestyle width80');
 				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim == 2) {
 					$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -166,7 +166,7 @@
 						}
 						end_row();
 						/////////// 2009-08-18 Joe Hunt
-						if ($mode > 1 && !Taxes::is_tax_account($entered_gl_code->gl_code)) {
+						if ($mode > 1 && !Tax::is_account($entered_gl_code->gl_code)) {
 							$total_gl_value += $entered_gl_code->amount;
 						} else {
 							$total_gl_value += $entered_gl_code->amount;
@@ -182,10 +182,10 @@
 					Purch_GLItem::display_controls($supp_trans, $k);
 				}
 				$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
-				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right",
+				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class=right", "nowrap class=right",
 					($mode == 1 ? 3 : 0));
 				end_table(1);
-				div_end();
+				Display::div_end();
 				return $total_gl_value;
 			}
 	}

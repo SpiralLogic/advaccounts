@@ -13,18 +13,18 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Item Where Used Inquiry"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	start_form(false, true);
+	start_form(false);
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
-	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "<hr></center>";
+	echo "<div class='center'>" . _("Select an item to display its parent item(s).") . "&nbsp;";
+	echo Item::select('stock_id', $_POST['stock_id'], false, true);
+	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 
 	function select_link($row)
 		{
-			return pager_link($row["parent"] . " - " . $row["description"],
+			return DB_Pager::link($row["parent"] . " - " . $row["description"],
 			 "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 		}
 
@@ -48,7 +48,7 @@
 	);
 	$table =& db_pager::new_db_pager('usage_table', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 

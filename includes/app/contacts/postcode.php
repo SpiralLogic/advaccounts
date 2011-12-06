@@ -42,7 +42,7 @@ JS;
 		}
 
 		public static function searchByCity($city = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label,  CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
 			$result = DB::query($sql, "Could not find city");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
 				;
@@ -51,7 +51,7 @@ JS;
 		}
 
 		public static function searchByPostcode($postcode = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label,  CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
 			$result = DB::query($sql, "Could not find postcode");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
 				;
@@ -62,22 +62,22 @@ JS;
 		protected static function initjs() {
 			$js = <<<JS
 						Adv.extend({
-						    postcode: (function() {
-						            var sets= [];
-						        return {
+						 postcode: (function() {
+						 var sets= [];
+						 return {
 												add: function(set,city,state,code) {
 													sets[set] = {city:$(city),state:$(state),postcode:$(code)}
 												},
-						            fetch: function(data,item,ui) {
-						          		var set=$(ui).data("set");
-						               data = data.value.split('|');
-												    sets[set].city.val(data[0]).trigger('change');
-						                sets[set].state.val(data[1]).trigger('change');
-						                sets[set].postcode.val(data[2]).trigger('change');
-						                    return false;
-						            }
-						        }
-						    }())
+						 fetch: function(data,item,ui) {
+						 		var set=$(ui).data("set");
+						 data = data.value.split('|');
+												 sets[set].city.val(data[0]).trigger('change');
+						 sets[set].state.val(data[1]).trigger('change');
+						 sets[set].postcode.val(data[2]).trigger('change');
+						 return false;
+						 }
+						 }
+						 }())
 						})
 JS;
 			JS::beforeload($js);

@@ -9,7 +9,44 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Session extends Input {
+	class Session extends Input
+	{
+		/**
+		 * @static
+		 * @return Session
+		 */
+		public static function init() {
+			return static::i();
+		}
+
+		/**
+		 * @static
+		 * @return Session|mixed
+		 */
+		public static function i() {
+			if (static::$_i === null) {
+				static::$_i = new static;
+			}
+			return static::$_i;		}
+
+		/**
+		 * @static
+		 *
+		 */
+		public static function kill() {
+			session_unset();
+			session_destroy();
+		}
+
+		/**
+		 * @static
+		 *
+		 */
+		public static function hasLogin() {
+
+			static::i()->checkLogin();
+		}
+
 		/**
 		 * @var Session
 		 */
@@ -32,48 +69,15 @@
 		protected $_session = array();
 
 		/**
-		 * @static
-		 * @return Session
-		 */
-		public static function init() {
-			if (static::$_i === null) {
-				static::$_i = new static;
-			}
-			return static::$_i;
-		}
-
-		/**
-		 * @static
-		 * @return Session|mixed
-		 */
-		public static function i() {
-			return static::init();
-		}
-
-		/**
-		 * @static
 		 *
-		 */
-		public static function kill() {
-			session_unset();
-			session_destroy();
-		}
-
-		/**
-		 * @static
-		 *
-		 */
-		public static function hasLogin() {
-			static::i()->checkLogin();
-		}
-
-		/**
-		 *
-		 */
+ */
 		final protected function __construct() {
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			session_start();
+			if (!class_exists('Memcached',false) || !session_start()) {
+				ini_set('session.save_handler','files');
+				session_start();
+			};
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 					$this->showLogin();
@@ -88,7 +92,9 @@
 			$this->setLanguage();
 			$this->_session = &$_SESSION;
 			// Ajax communication object
-			if (class_exists('Ajax')) $GLOBALS['Ajax'] = Ajax::i();
+			if (class_exists('Ajax')) {
+				$GLOBALS['Ajax'] = Ajax::i();
+			}
 		}
 
 		/**
@@ -134,6 +140,7 @@
 				}
 				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"],
 					$_POST["user_name_entry_field"], $_POST["password"]);
+
 				// select full vs fallback ui mode on login
 				$currentUser->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {
@@ -144,7 +151,7 @@
 				static::$lang->set_language($_SESSION['Language']->code);
 			} else {
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-					meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
+					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
 			}
 		}
@@ -172,11 +179,11 @@
 		 */
 		protected function loginFail() {
 			header("HTTP/1.1 401 Authorization Required");
-			echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
-			echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
+			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
+			echo _("The user and password combination is not valid for the system.") . "<br><br>";
 			echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
 			echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
-			echo "</center>";
+			echo "</div>";
 			static::kill();
 			die();
 		}
@@ -187,7 +194,7 @@
 		 * @return null
 		 */
 		public function __get($var) {
-			return static::_isset($this->_session, $var) ? : null;
+			return isset($this->_session[$var]) ? $this->_session[$var]: null;
 		}
 
 		/**

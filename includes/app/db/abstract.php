@@ -36,6 +36,7 @@
 				return $this->_status(true, 'initalise', 'Created new ' . get_class($this) . "!");
 			} elseif (is_array($id)) {
 				$this->_defaults();
+				if (isset($id['id'])) $this->_read($id['id']);
 				$this->setFromArray($id);
 				return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
 			}

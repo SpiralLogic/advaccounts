@@ -16,7 +16,7 @@
 
 	function view_link($trans)
 	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
 	function prt_link($row)
@@ -31,15 +31,15 @@
 
 	function gl_view($row)
 	{
-		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+		return GL_UI::view($row["type"], $row["trans_no"]);
 	}
 
 	function viewing_controls()
 	{
 		Errors::warning(_("Only documents can be printed."));
-		start_table("class='tablestyle_noborder'");
+		start_table('tablestyle_noborder');
 		start_row();
-		systypes_list_cells(_("Type:"), 'filterType', null, true);
+		SysTypes::view_cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {
 			$_POST['FromTransNo'] = "1";
 		}
@@ -85,7 +85,7 @@
 			}
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
 			WHERE $trans_no_name >= " . DB::escape($_POST['FromTransNo'],false,false) . "
-			AND  $trans_no_name <= " . DB::escape($_POST['ToTransNo'],false,false);
+			AND $trans_no_name <= " . DB::escape($_POST['ToTransNo'],false,false);
 			if ($type_name != null) {
 				$sql .= " AND `$type_name` = " . DB::escape($_POST['filterType'],false,false);
 			}
@@ -119,7 +119,7 @@
 			}
 			$table =& db_pager::new_db_pager('transactions', $sql, $cols);
 			$table->width = "40%";
-			display_db_pager($table);
+			DB_Pager::display($table);
 		}
 	}
 

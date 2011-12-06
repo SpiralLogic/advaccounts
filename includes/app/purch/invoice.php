@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Purch_Invoice
+	class Purch_Invoice implements IVoidable
 	{
 
 		public static function get_supplier_to_trans($supp_trans, $supplier_id)
@@ -79,8 +79,8 @@
 				DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 				$sql
 				 = "UPDATE grn_items
-        SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
-        WHERE id = " . DB::escape($id);
+ SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
+ WHERE id = " . DB::escape($id);
 				DB::query($sql, "The quantity invoiced off the items received record could not be updated");
 				return array($ret, $date, $unit_price);
 			}
@@ -89,19 +89,19 @@
 			{
 				$dec = User::price_dec();
 				Num::price_decimal($amount2, $dec);
-				$currency = Banking::get_supplier_currency($supplier);
-				$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $old_date);
+				$currency = Bank_Currency::for_creditor($supplier);
+				$ex_rate = Bank_Currency::exchange_rate_to_home($currency, $old_date);
 				$amount1 = $amount1 / $ex_rate;
-				$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
+				$ex_rate = Bank_Currency::exchange_rate_to_home($currency, $date);
 				$amount2 = $amount2 / $ex_rate;
 				$diff = $amount2 - $amount1;
 				return Num::round($diff, $dec);
 			}
 
 
-		public static function add($supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
+		public static function add(Purch_Trans $supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
 			{
-				//$company_currency = Banking::get_company_currency();
+				//$company_currency = Bank_Currency::for_company();
 				/*Start an sql transaction */
 				DB::begin_transaction();
 				$tax_total = 0;
@@ -126,8 +126,8 @@
 					$supp_trans->ov_discount = -$supp_trans->ov_discount; // this isn't used at all...
 				}
 				$date_ = $supp_trans->tran_date;
-				$ex_rate = Banking::get_exchange_rate_from_home_currency(
-					Banking::get_supplier_currency($supp_trans->supplier_id),
+				$ex_rate = Bank_Currency::exchange_rate_from_home(
+					Bank_Currency::for_creditor($supp_trans->supplier_id),
 					$date_
 				);
 				/*First insert the invoice into the supp_trans table*/
@@ -160,7 +160,7 @@
 				)
 				{
 					/*GL Items are straight forward - just do the debit postings to the GL accounts specified -
-																									 the credit is to creditors control act  done later for the total invoice value + tax*/
+																									 the credit is to creditors control act done later for the total invoice value + tax*/
 					if (!$supp_trans->is_invoice) {
 						$entered_gl_code->amount = -$entered_gl_code->amount;
 					}
@@ -310,7 +310,7 @@
 				/*Post a balance post if $total != 0 */
 				GL_Trans::add_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);
 				DB_Comments::add($trans_type, $invoice_id, $date_, $supp_trans->Comments);
-				Ref::save($trans_type, $invoice_id, $supp_trans->reference);
+				Ref::save($trans_type,  $supp_trans->reference);
 				if ($invoice_no != 0) {
 					$invoice_alloc_balance = Purch_Allocation::get_balance(ST_SUPPINVOICE, $invoice_no);
 					if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated
@@ -326,7 +326,7 @@
 								$date_
 							);
 							// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
-							Banking::exchange_variation(
+							Bank::exchange_variation(
 								ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
 								$allocate_amount, PT_SUPPLIER
 							);
@@ -462,12 +462,12 @@
 								}
 								$sql
 								 = "UPDATE purch_order_details
-        				SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
+ 				SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
 								if ($match !== false) {
 									$sql .= "act_price=" . $match['unit_price'] . ", ";
 								}
 								$sql .= "quantity_received = quantity_received + " . -$details_row["quantity"] . "
-    				    WHERE po_detail_item = " . $details_row["po_detail_item_id"];
+ 				 WHERE po_detail_item = " . $details_row["po_detail_item_id"];
 								DB::query(
 									$sql,
 									"a purchase order details record could not be updated. This receipt of goods has not been processed "
@@ -544,7 +544,7 @@
 						$supp_trans->gl_codes as $gl_line
 					) {
 						////////// 2009-08-18 Joe Hunt
-						if (!Taxes::is_tax_account($gl_line->gl_code)) {
+						if (!Tax::is_account($gl_line->gl_code)) {
 							$supp_trans->ov_amount += $gl_line->amount;
 						}
 					}
@@ -559,40 +559,11 @@
 				if (!isset($_POST['tran_date'])) {
 					Purch_Invoice::copy_from_trans($supp_trans);
 				}
-				start_outer_table("width=40% " . Config::get('tables_style2'));
-				div_start('summary');
+				start_outer_table('tablestyle2 width60');
+				Display::div_start('summary');
 				start_table();
-				table_header(_("Supplier:"));
-				start_row();
-				if (isset($_POST['invoice_no'])) {
-					$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
-					$_POST['supplier_id'] = $trans['supplier_id'];
-					$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-					label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], false));
-				} else {
-					if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
-						$_POST['supplier_id'] = Session::i()->supplier_id;
-					}
-					echo "<td >";
-					supplier_list_cells(null, 'supplier_id', $_POST['supplier_id'], false, true);
-				}
-				if ($supp_trans->supplier_id != $_POST['supplier_id']) {
-					// supplier has changed
-					// delete all the order items - drastic but necessary because of
-					// change of currency, etc
-					$supp_trans->clear_items();
-					Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
-					Purch_Invoice::copy_from_trans($supp_trans);
-				}
-				end_row();
-				start_row();
-				table_header("PO#: ");
-				if ($supp_trans->is_invoice) {
-					ref_cells(null, 'reference', '', Ref::get_next(ST_SUPPINVOICE));
-				} else {
-					ref_cells(null, 'reference', '', Ref::get_next(ST_SUPPCREDIT));
-				}
-				end_row();
+
+
 				start_row();
 				table_header(_("Invoie #:"));
 				if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
@@ -624,18 +595,45 @@
 				date_cells(null, 'due_date');
 				end_row();
 				end_table();
-				div_end();
+				Display::div_end();
 				start_table();
 				start_row();
-				label_cells(_("Terms:"), $supp_trans->terms_description, 'class="label"');
-				$supplier_currency = Banking::get_supplier_currency($supp_trans->supplier_id);
-				$company_currency = Banking::get_company_currency();
+
+				if (isset($_POST['invoice_no'])) {
+									$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
+									$_POST['supplier_id'] = $trans['supplier_id'];
+									$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+									label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], false));
+								} else {
+									if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
+										$_POST['supplier_id'] = Session::i()->supplier_id;
+									}
+									Purch_UI::suppliers_cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+				JS::set_focus('supplier_id');
+				}
+								if ($supp_trans->supplier_id != $_POST['supplier_id']) {
+									// supplier has changed
+									// delete all the order items - drastic but necessary because of
+									// change of currency, etc
+									$supp_trans->clear_items();
+									Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
+									Purch_Invoice::copy_from_trans($supp_trans);
+								}
+				if (!empty($supp_trans->terms_description)) label_cells(_("Terms:"), $supp_trans->terms_description);
+				$supplier_currency = Bank_Currency::for_creditor($supp_trans->supplier_id);
+				$company_currency = Bank_Currency::for_company();
 				GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
 				Session::i()->supplier_id = $_POST['supplier_id'];
 				start_row();
-				label_cells(_("Tax Group:"), $supp_trans->tax_description, 'class="label"');
+								if ($supp_trans->is_invoice) {
+									ref_cells("PO#: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE));
+								} else {
+									ref_cells("CREDIT#: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT));
+								}
+
+				if (!empty($supp_trans->tax_description)) label_cells(_("Tax Group:"), $supp_trans->tax_description);
 				if ($supplier_currency != $company_currency) {
-					label_cells(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>", 'class="label"');
+					label_cells(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
 					end_row();
 					end_row();
 				}
@@ -649,27 +647,27 @@
 				Purch_Invoice::copy_to_trans($supp_trans);
 				$dim = DB_Company::get_pref('use_dimension');
 				$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-				start_table(Config::get('tables_style2') . " width=90%");
-				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
+				start_table('tablestyle2 width90');
+				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan style='text-align:right;'", "class=right");
 				$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-				$tax_total = Taxes::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
-				label_cell(_("Total Correction"), "colspan=$colspan align=right width='90%'");
+				$tax_total = Tax::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
+				label_cell(_("Total Correction"), "colspan=$colspan style='text-align:right;' style='width:90%'");
 				small_amount_cells(null, 'ChgTotal', Num::price_format(get_post('ChgTotal'), 2));
 				$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
 				if ($supp_trans->is_invoice) {
 					label_row(
-						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;'",
-					 "align=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
+						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan style='text-align:right;' style='font-weight:bold;'",
+					 "class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
 					);
 				} else {
 					label_row(
 						_("Credit Note Total"), Num::price_format($total),
-						"colspan=$colspan align=right style='font-weight:bold;color:red;'",
-					 "nowrap align=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'"
+						"colspan=$colspan style='text-align:right;' style='font-weight:bold;color:red;'",
+					 "nowrap class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;color:red;'"
 					);
 				}
 				end_table(1);
-				start_table(Config::get('tables_style2'));
+				start_table('tablestyle2');
 				textarea_row(_("Memo:"), "Comments", null, 50, 3);
 				end_table(1);
 			}

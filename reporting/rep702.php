@@ -42,7 +42,7 @@
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
 					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
-			$rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
+			$rep = new ADVReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
@@ -63,7 +63,7 @@
 					$rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
 					$rep->TextCol(1, 2, Ref::get($myrow['type'], $myrow['type_no']));
 					$rep->DateCol(2, 3, $myrow['tran_date'], true);
-					$coms = Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
+					$coms = Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
 					$memo = DB_Comments::get_string($myrow['type'], $myrow['type_no']);
 					if ($memo != '') {
 						if ($coms == "") {

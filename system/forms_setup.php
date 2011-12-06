@@ -24,7 +24,7 @@
 		Errors::notice(_("Forms settings have been updated."));
 	}
 	start_form();
-	start_outer_table(Config::get('tables_style2'));
+	start_outer_table('tablestyle2');
 	$systypes = SysTypes::get_systypes();
 	table_section(1);
 	$th = array(_("Form"), _("Next Reference"));

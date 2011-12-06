@@ -10,10 +10,19 @@
 	{
 		// saves the string in $fileData to the file $backupfile as gz file or not ($zip)
 		// returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
-		public static function save_to_file($backupfile, $fileData, $zip=false)
-		{
+		/**
+		 * @static
+		 *
+		 * @param			$backupfile
+		 * @param			$fileData
+		 * @param bool $zip
+		 *
+		 * @return bool
+		 */
+		public static function save_to_file($backupfile, $fileData, $zip = false) {
 			if ($zip == "gzip") {
-				if ($zp = gzopen(BACKUP_PATH . $backupfile, "a9")) {
+				$zp = gzopen(BACKUP_PATH . $backupfile, "a9");
+				if ($zp) {
 					gzwrite($zp, $fileData);
 					gzclose($zp);
 					return true;
@@ -66,7 +75,8 @@
 				$cdrec .= "\x00\x00"; // version made by
 				$cdrec .= $sub1 . $sub2;
 				// length of filename, extra field length, file comment length, disk number start, internal file attributes, external file attributes - 'archive' bit set, offset
-				$cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V', 0);
+				$cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V',
+					0);
 				$cdrec .= $name;
 				// combine data
 				$fileData = $fr . $cdrec . $eof_ctrl_dir;
@@ -91,15 +101,26 @@
 			}
 		}
 
-		public static function convert_size($size)
-		{
+		/**
+		 * @static
+		 *
+		 * @param $size
+		 *
+		 * @return string
+		 */
+		public static function convert_size($size) {
 			$unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 			$i = (int)floor(log($size, 1024));
 			return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
 		}
 
-		public static function flush_dir($path, $wipe = false)
-		{
+		/**
+		 * @static
+		 *
+		 * @param			$path
+		 * @param bool $wipe
+		 */
+		public static function flush_dir($path, $wipe = false) {
 			$dir = opendir($path);
 			while (false !== ($fname = readdir($dir))) {
 				if ($fname == '.' || $fname == '..' || $fname == 'CVS' || (!$wipe && $fname == 'index.php')) {

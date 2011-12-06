@@ -12,7 +12,7 @@
 	if (AJAX_REFERRER) {
 		if (Input::has_post('type', 'id')) {
 			if ($_POST['type'] === CT_CUSTOMER ) {
-				$content = Contacts_Customer::getEmailDialogue($_POST['id']);
+				$content = Debtor::getEmailDialogue($_POST['id']);
 			} elseif ($_POST['type'] ===CT_SUPPLIER ){
 				$content = Contacts_Supplier::getEmailDialogue($_POST['id']);
 			}

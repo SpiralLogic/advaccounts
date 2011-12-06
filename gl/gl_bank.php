@@ -44,18 +44,18 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 		Errors::notice(_("Payment $trans_no has been entered"));
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 		Page::footer_exit();
 	}
 	if (isset($_GET['AddedDep'])) {
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 		Errors::notice(_("Deposit $trans_no has been entered"));
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
+		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
+		Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
 		Page::footer_exit();
 	}
 	if (isset($_POST['_date__changed'])) {
@@ -127,7 +127,7 @@
 		Dates::new_doc_date($_POST['date_']);
 		$_SESSION['pay_items']->clear_items();
 		unset($_SESSION['pay_items']);
-		meta_forward(
+		Display::meta_forward(
 			$_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ?
 			 "AddedID=$trans_no" : "AddedDep=$trans_no"
 		);
@@ -146,7 +146,7 @@
 				JS::set_focus('code_id');
 				return false;
 			}
-			//if (Banking::is_bank_account($_POST['code_id']))
+			//if (Bank_Account::is($_POST['code_id']))
 			//{
 			//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 			//		Errors::error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
@@ -161,7 +161,7 @@
 
 	function handle_update_item()
 		{
-			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * input_num('amount');
+			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
 				$_SESSION['pay_items']->update_gl_item(
 					$_POST['Index'], $_POST['code_id'],
@@ -185,7 +185,7 @@
 			if (!check_item_data()) {
 				return;
 			}
-			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * input_num('amount');
+			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
 			$_SESSION['pay_items']->add_gl_item(
 				$_POST['code_id'], $_POST['dimension_id'],
 				$_POST['dimension2_id'], $amount, $_POST['LineMemo']
@@ -209,7 +209,7 @@
 	}
 	if (isset($_POST['go'])) {
 		GL_QuickEntry::show_menu(
-			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
+			$_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
 		$_POST['totamount'] = Num::price_format(0);
@@ -218,15 +218,15 @@
 	}
 
 	start_form();
-	GL_BankUI::header($_SESSION['pay_items']);
-	start_table(Config::get('tables_style2') . " width=90%", 10);
+	Bank_UI::header($_SESSION['pay_items']);
+	start_table('tablesstyle2 width90 pad10');
 	start_row();
 	echo "<td>";
-	GL_BankUI::items(
+	Bank_UI::items(
 		$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
 		 _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']
 	);
-	GL_BankUI::option_controls();
+	Bank_UI::option_controls();
 	echo "</td>";
 	end_row();
 	end_table(1);

@@ -39,7 +39,7 @@
 					phone2=" . DB::escape($this->phone2) . ",
 					email=" . DB::escape($this->email) . ",
 					department=" . DB::escape($this->department) . " WHERE parent_id =" . DB::escape($this->parent_id) . "
-		    	    AND id=" . DB::escape($this->id);
+		 	 AND id=" . DB::escape($this->id);
 			DB::query($sql, "The customer could not be updated");
 			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Contact has been updated.");

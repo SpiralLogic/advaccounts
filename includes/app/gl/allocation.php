@@ -161,7 +161,7 @@
 			if ($this->person_type) {
 				Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			} else {
-				Sales_Allocation::clear($this->type, $this->trans_no, $this->date_);
+				Sales_Allocation::void($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
 			$total_allocated = 0;
@@ -193,7 +193,7 @@
 						);
 					}
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-					Banking::exchange_variation(
+					Bank::exchange_variation(
 						$this->type, $this->trans_no,
 						$alloc_item->type, $alloc_item->type_no, $this->date_,
 						$alloc_item->current_allocated,
@@ -221,7 +221,7 @@
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
-				start_table(Config::get('tables_style') . "  width=60%");
+				start_table('tablestyle width60');
 				$th = array(
 					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
 					_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
@@ -233,9 +233,9 @@
 				{
 					alt_table_row_color($k);
 					label_cell($systypes_array[$alloc_item->type]);
-					label_cell(ui_view::get_trans_view_str($alloc_item->type, $alloc_item->type_no));
-					label_cell($alloc_item->date_, "align=right");
-					label_cell($alloc_item->due_date, "align=right");
+					label_cell(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
+					label_cell($alloc_item->date_, "class=right");
+					label_cell($alloc_item->due_date, "class=right");
 					amount_cell($alloc_item->amount);
 					amount_cell($alloc_item->amount_allocated);
 					$_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
@@ -254,13 +254,13 @@
 						)
 					);
 					end_row();
-					$total_allocated += input_num('amount' . $counter);
+					$total_allocated += Validation::input_num('amount' . $counter);
 					$counter++;
 				}
 				if ($show_totals) {
 					label_row(
 						_("Total Allocated"), Num::price_format($total_allocated),
-						"colspan=6 align=right", "align=right id='total_allocated'", 3
+						"colspan=6 class=right", "class=right id='total_allocated'", 3
 					);
 					$amount = $_SESSION['alloc']->amount;
 					if ($_SESSION['alloc']->type == ST_SUPPCREDIT
@@ -270,15 +270,15 @@
 						$amount = -$amount;
 					}
 					if ($amount - $total_allocated < 0) {
-						$font1 = "<font color=red>";
-						$font2 = "</font>";
+						$font1 = "<span class='red'>";
+						$font2 = "</span>";
 					} else {
 						$font1 = $font2 = "";
 					}
 					$left_to_allocate = Num::price_format($amount - $total_allocated);
 					label_row(
 						_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
-						"colspan=6 align=right", "nowrap align=right id='left_to_allocate'",
+						"colspan=6 class=right", "nowrap class=right id='left_to_allocate'",
 						3
 					);
 				}
@@ -300,26 +300,26 @@
 				}
 				/*Now check to see that the AllocAmt is no greater than the
 																							 amount left to be allocated against the transaction under review */
-				if (input_num('amount' . $counter) > input_num('un_allocated' . $counter)) {
+				if (Validation::input_num('amount' . $counter) > Validation::input_num('un_allocated' . $counter)) {
 					Errors::error(_("At least one transaction is overallocated."));
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
-				$_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
-				$total_allocated += input_num('amount' . $counter);
+				$_SESSION['alloc']->allocs[$counter]->current_allocated = Validation::input_num('amount' . $counter);
+				$total_allocated += Validation::input_num('amount' . $counter);
 			}
 			$amount = $_SESSION['alloc']->amount;
 			if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT))) {
 				$amount = -$amount;
 			}
-			if ($total_allocated - ($amount + input_num('discount')) > Config::get('accounts_allocation_allowance')) {
+			if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts_allocation_allowance')) {
 				Errors::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 				return false;
 			}
 			return true;
 		}
 
-		public static function create_miscorder(Contacts_Customer $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
+		public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			Sales_Order::start();
 			$type = ST_SALESINVOICE;
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
@@ -334,7 +334,7 @@
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->add_to_cart(0, 'MiscSale', '1',
-				Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
+				Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
 			 'Order: ' . $memo);
 			$doc->write(1);
 			Sales_Order::finish();
@@ -349,14 +349,14 @@
 				return;
 			}
 			Display::heading(_("Allocations"));
-			start_table(Config::get('tables_style') . "  width=90%");
+			start_table('tablestyle width90');
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 			table_header($th);
 			$k = $total_allocated = 0;
 			while ($alloc_row = DB::fetch($alloc_result)) {
 				alt_table_row_color($k);
 				label_cell($systypes_array[$alloc_row['type']]);
-				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
+				label_cell(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
 				label_cell(Dates::sql2date($alloc_row['tran_date']));
 				$alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
 				$alloc_row['amt'] = Num::round($alloc_row['amt'], User::price_dec());
@@ -368,11 +368,11 @@
 				$total_allocated += $alloc_row['amt'];
 			}
 			start_row();
-			label_cell(_("Total Allocated:"), "align=right colspan=5");
+			label_cell(_("Total Allocated:"), "class=right colspan=5");
 			amount_cell($total_allocated);
 			end_row();
 			start_row();
-			label_cell(_("Left to Allocate:"), "align=right colspan=5");
+			label_cell(_("Left to Allocate:"), "class=right colspan=5");
 			$total = Num::round($total, User::price_dec());
 			amount_cell($total - $total_allocated);
 			end_row();

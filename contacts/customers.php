@@ -4,20 +4,20 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Session::i()->App->selected_application = 'Contacts';
 	if (isset($_POST['name'])) {
-		$data['customer'] = $customer = new Contacts_Customer($_POST);
+		$data['customer'] = $customer = new Debtor($_POST);
 		$data['customer']->save();
 	} elseif (Input::request('id', Input::NUMERIC) > 0) {
-		$data['customer'] = $customer = new Contacts_Customer(Input::request('id', Input::NUMERIC));
+		$data['customer'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 		$_SESSION['global_customer_id'] = $customer->id;
 	} else {
-		$data['customer'] = $customer = new Contacts_Customer();
+		$data['customer'] = $customer = new Debtor();
 	}
 	$data['status'] = $customer->getStatus();
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Contacts_Customer::search($_GET['term']);
+			$data = Debtor::search($_GET['term']);
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
@@ -89,8 +89,8 @@
 					)
 	);
 	HTML::td()->tr->table->div;
-	start_outer_table(Config::get('tables_style2'), 5);
-	table_section(1);
+	start_outer_table('tablestyle2');
+		table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
@@ -144,7 +144,7 @@
 		array('acc_state', $customer->accounts->state),array('acc_postcode', $customer->accounts->postcode));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	start_outer_table(Config::get('tables_style2'), 5);
+	start_outer_table('tablestyle2');
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
@@ -154,23 +154,23 @@
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,
 		($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
+	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 	if (!$customer->id) {
-		currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
+		GL_Currency::row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
 	} else {
 		label_row(_("Customer's Currency:"), $customer->curr_code);
 		hidden('curr_code', $customer->curr_code);
 	}
-	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
-	credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
-		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
+		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
 	}
 	if ($dim > 1) {
-		dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
+		Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
 	}
 	if ($dim < 1) {
 		hidden('dimension_id', 0);
@@ -218,23 +218,23 @@
 	text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 	HTML::td()->tr->table->script->div->div;
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table(Config::get('tables_style2'), 5);
+	start_outer_table('tablestyle2');
 	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	table_section_title(_("Sales"));
-	sales_persons_list_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
-	sales_areas_list_row(_("Sales Area:"), 'br_area', $currentBranch->area);
-	sales_groups_list_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
-	locations_list_row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
-	shippers_list_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
-	tax_groups_list_row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
+	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
+	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
+	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
+	Inv_Location::row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
+	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
+	Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
 	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
 	table_section(2);
 	table_section_title(_("GL Accounts"));
-	gl_all_accounts_list_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
-	gl_all_accounts_list_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
-	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
-	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account',
+	GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
+	GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
+	GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
+	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account',
 		$currentBranch->payment_discount_account);
 	table_section_title(_("Notes"));
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);

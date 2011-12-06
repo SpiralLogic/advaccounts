@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 				 Copyright (C) Advanced Group PTY LTD
 				 Released under the terms of the GNU General Public License, GPL,
 				 as published by the Free Software Foundation, either version 3
@@ -53,26 +53,26 @@
 				$sql = "UPDATE cust_branch SET br_name = " . DB::escape($_POST['br_name']) . ",
 				branch_ref = " . DB::escape($_POST['br_ref']) . ",
 				br_address = " . DB::escape($_POST['br_address']) . ",
-    	        phone=" . DB::escape($_POST['phone']) . ",
-    	        phone2=" . DB::escape($_POST['phone2']) . ",
-    	        fax=" . DB::escape($_POST['fax']) . ",
-    	        contact_name=" . DB::escape($_POST['contact_name']) . ",
-    	        salesman= " . DB::escape($_POST['salesman']) . ",
-    	        area=" . DB::escape($_POST['area']) . ",
-    	        email=" . DB::escape($_POST['email']) . ",
-    	        tax_group_id=" . DB::escape($_POST['tax_group_id']) . ",
+ 	 phone=" . DB::escape($_POST['phone']) . ",
+ 	 phone2=" . DB::escape($_POST['phone2']) . ",
+ 	 fax=" . DB::escape($_POST['fax']) . ",
+ 	 contact_name=" . DB::escape($_POST['contact_name']) . ",
+ 	 salesman= " . DB::escape($_POST['salesman']) . ",
+ 	 area=" . DB::escape($_POST['area']) . ",
+ 	 email=" . DB::escape($_POST['email']) . ",
+ 	 tax_group_id=" . DB::escape($_POST['tax_group_id']) . ",
 				sales_account=" . DB::escape($_POST['sales_account']) . ",
 				sales_discount_account=" . DB::escape($_POST['sales_discount_account']) . ",
 				receivables_account=" . DB::escape($_POST['receivables_account']) . ",
 				payment_discount_account=" . DB::escape($_POST['payment_discount_account']) . ",
-    	        default_location=" . DB::escape($_POST['default_location']) . ",
-    	        br_post_address =" . DB::escape($_POST['br_post_address']) . ",
-    	        disable_trans=" . DB::escape($_POST['disable_trans']) . ",
+ 	 default_location=" . DB::escape($_POST['default_location']) . ",
+ 	 br_post_address =" . DB::escape($_POST['br_post_address']) . ",
+ 	 disable_trans=" . DB::escape($_POST['disable_trans']) . ",
 				group_no=" . DB::escape($_POST['group_no']) . ",
-    	        default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
-                notes=" . DB::escape($_POST['notes']) . "
-    	        WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
-    	        AND debtor_no=" . DB::escape($_POST['customer_id']);
+ 	 default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
+ notes=" . DB::escape($_POST['notes']) . "
+ 	 WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
+ 	 AND debtor_no=" . DB::escape($_POST['customer_id']);
 				$note = _('Selected customer branch has been updated');
 			} else {
 				/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
@@ -143,9 +143,11 @@
 	}
 
 	start_form();
-	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo customer_list('customer_id', null, false, true);
-	echo "</center><br>";
+	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+	echo Debtor_UI::select('customer_id', null, false, true);
+	echo "</div><br>";
+	$num_branches=-0;
+	if (Input::post('customer_id')>0){
 	$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
 	$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
@@ -171,11 +173,13 @@
 		$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
 		$table->set_inactive_ctrl('cust_branch', 'branch_code');
 		//$table->width = "85%";
-		display_db_pager($table);
+		DB_Pager::display($table);
 	} else {
 		Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
+	}}else {
+		Errors::warning(_("No Customer selected."));
 	}
-	start_outer_table(Config::get('tables_style2'), 5);
+	start_outer_table('tablestyle2');
 	table_section(1);
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
@@ -245,20 +249,20 @@
 	text_row(_("Fax Number:"), 'fax', null, 32, 30);
 	email_row(_("E-mail:"), 'email', null, 35, 55);
 	table_section_title(_("Sales"));
-	sales_persons_list_row(_("Sales Person:"), 'salesman', null);
-	sales_areas_list_row(_("Sales Area:"), 'area', null);
-	sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
-	locations_list_row(_("Default Inventory Location:"), 'default_location', null);
-	shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
-	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	Sales_UI::persons_row(_("Sales Person:"), 'salesman', null);
+	Sales_UI::areas_row(_("Sales Area:"), 'area', null);
+	Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, true);
+	Inv_Location::row(_("Default Inventory Location:"), 'default_location', null);
+	Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', null);
+	Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
 	yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 	table_section(2);
 	table_section_title(_("GL Accounts"));
 	// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
-	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
-	gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
-	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account');
-	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
+	GL_UI::all_row(_("Sales Account:"), 'sales_account', null, false, false, true);
+	GL_UI::all_row(_("Sales Discount Account:"), 'sales_discount_account');
+	GL_UI::all_row(_("Accounts Receivable Account:"), 'receivables_account');
+	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
 	table_section_title(_("Addresses"));
 	textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
 	textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);

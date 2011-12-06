@@ -1,6 +1,6 @@
 <?php
 
-	/*   * ********************************************************************
+	/* * ********************************************************************
 		Copyright (C) Advanced Group PTY LTD
 		Released under the terms of the GNU General Public License, GPL,
 		as published by the Free Software Foundation, either version 3
@@ -166,7 +166,7 @@
 	$col += $width;
 	$this->NewLine();
 	$this->NewLine();
-	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
+	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email: " . $customer_branch_details['email']);
 	$this->NewLine();
 	$id = $myrow['payment_terms'];
 	$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
@@ -174,7 +174,7 @@
 	$row = DB::fetch($result);
 	$str = $row["terms"];
 	$this->Font('italic');
-	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ": " . $str);
 	$this->Font();
 	$this->row = $iline5 - $this->lineHeight - 1;
 	$this->Font('bold');

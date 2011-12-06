@@ -84,11 +84,11 @@
 			DB::commit_transaction();
 		}
 
-		/*
-			 Check if gl_code is used by more than 2 tax types,
-			 or check if the two gl codes are not used by any other
-			 than selected tax type.
-			 Necessary for pre-2.2 installations.
+		/**
+		Check if gl_code is used by more than 2 tax types,
+		or check if the two gl codes are not used by any other
+		than selected tax type.
+		Necessary for pre-2.2 installations.
 		 */
 		public static function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
 
@@ -107,6 +107,28 @@
 
 			return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
 		}
+		// TAX TYPES
+		public static function types($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+			$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
+			return select_box($name, $selected_id, $sql, 'id', 'name', array(
+																																			 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
+		}
+
+		public static function types_cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo Tax_Types::select($name, $selected_id, $none_option, $submit_on_change);
+			echo "</td>\n";
+		}
+
+		public static function types_row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+			echo "<tr><td class='label'>$label</td>";
+			Tax_Types::cells(null, $name, $selected_id, $none_option, $submit_on_change);
+			echo "</tr>\n";
+		}
+
 	}
 
 ?>

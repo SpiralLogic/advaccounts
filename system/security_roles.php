@@ -166,9 +166,9 @@
 	}
 
 	start_form();
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
-	security_roles_list_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
+	Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
 	$new_role = get_post('role') == '';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
@@ -182,13 +182,13 @@
 		$Ajax->activate('details');
 	}
 
-	div_start('details');
-	start_table(Config::get('tables_style2'));
+	Display::div_start('details');
+	start_table('tablestyle2');
 	text_row(_("Role name:"), 'name', null, 20, 22);
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
 	end_table(1);
-	start_table(Config::get('tables_style') . " width=40%");
+	start_table('tablestyle width40');
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
 	foreach (
@@ -220,7 +220,7 @@
 			alt_table_row_color($k);
 			check_cells(
 				$parms[1], 'Area' . $parms[0], null,
-				false, '', "align='center'"
+				false, '', "class='center'"
 			);
 			end_row();
 		} else {
@@ -228,8 +228,8 @@
 		}
 	}
 	end_table(1);
-	div_end();
-	div_start('controls');
+	Display::div_end();
+	Display::div_start('controls');
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
@@ -240,7 +240,7 @@
 		submit('delete', _("Delete This Role"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
-	div_end();
+	Display::div_end();
 	end_form();
 	end_page();
 

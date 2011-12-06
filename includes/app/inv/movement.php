@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Inv_Movement
+	class Inv_Movement implements IVoidable
 	{
 		public static function add_type($name)
 			{

@@ -35,20 +35,20 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
+				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the delete code below*/
 				$sql = "UPDATE salesman SET salesman_name=" . DB::escape($_POST['salesman_name']) . ",
-    			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
-    			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
-    			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
-    			provision=" . input_num('provision') . ",
-    			break_pt=" . input_num('break_pt') . ",
-    			provision2=" . input_num('provision2') . "
-    			WHERE salesman_code = " . DB::escape($selected_id);
+ 			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
+ 			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
+ 			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
+ 			provision=" . Validation::input_num('provision') . ",
+ 			break_pt=" . Validation::input_num('break_pt') . ",
+ 			provision2=" . Validation::input_num('provision2') . "
+ 			WHERE salesman_code = " . DB::escape($selected_id);
 			} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
-    			provision, break_pt, provision2)
-    			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . input_num('provision') . ", " . input_num('break_pt') . ", " . input_num('provision2') . ")";
+ 			provision, break_pt, provision2)
+ 			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -88,7 +88,7 @@
 	}
 	$result = DB::query($sql, "could not get sales persons");
 	start_form();
-	start_table(Config::get('tables_style') . "  width=60%");
+	start_table('tablestyle width60');
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -99,9 +99,9 @@
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);
 		email_cell($myrow["salesman_email"]);
-		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap class=right");
 		amount_cell($myrow["break_pt"]);
-		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap class=right");
 		inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
 		edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
@@ -115,7 +115,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing Sales-person
-			$sql = "SELECT *  FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
+			$sql = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get sales person");
 			$myrow = DB::fetch($result);
 			$_POST['salesman_name'] = $myrow["salesman_name"];
@@ -132,7 +132,7 @@
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
 	}
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);

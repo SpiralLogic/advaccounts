@@ -1,9 +1,9 @@
-# LAnguage template file for FrontAccounting 2.1.1
-# Copyright (C) 2009 FrontAccounting LLC
+# LAnguage template file for advaccounts 2.1.1
+# Copyright (C) 2011 advaccounts LLC
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FrontAccounting\n"
+"Project-Id-Version: advaccounts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-16 15:47+0100\n"
 "PO-Revision-Date: 2010-03-06 13:48+1000\n"
@@ -7589,7 +7589,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account226/sales/customer_invoice.php:132
 msgid ""
 "There are no delivery notes for this invoice.<br>\n"
-"\t\tMost likely this invoice was created in Front Accounting version prior to 2.0\n"
+"\t\tMost likely this invoice was created in ADV Accounting version prior to 2.0\n"
 "\t\tand therefore can not be modified."
 msgstr ""
 
@@ -9189,42 +9189,42 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:184
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:184
 #, php-format
 msgid "Cannot open the extension setup file '%s' for writing."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:192
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:192
 #, php-format
 msgid "Cannot write to the extensions setup file '%s'."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:248
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:248
 msgid "Cannot open the languages file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:255
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:255
 msgid "Cannot write to the language file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:265
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:265
 msgid "The language files folder "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/maintenance_db.inc:431
+#: c:\Apache2\htdocs\account226/admin/conn/maintenance_db.inc:431
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/users_db.inc:216
+#: c:\Apache2\htdocs\account226/admin/conn/users_db.inc:216
 msgid "user online"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/users_db.inc:216
+#: c:\Apache2\htdocs\account226/admin/conn/users_db.inc:216
 msgid "users online"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/admin/db/voiding_db.inc:109
+#: c:\Apache2\htdocs\account226/admin/conn/voiding_db.inc:109
 msgid "Voided."
 msgstr ""
 
@@ -9236,8 +9236,8 @@ msgstr ""
 msgid "Balance for this Dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/gl/includes/db/gl_db_banking.inc:46
-#: c:\Apache2\htdocs\account226/gl/includes/db/gl_db_banking.inc:49
+#: c:\Apache2\htdocs\account226/gl/includes/conn/gl_db_banking.inc:46
+#: c:\Apache2\htdocs\account226/gl/includes/conn/gl_db_banking.inc:49
 msgid "Exchange Variance"
 msgstr ""
 
@@ -10085,19 +10085,19 @@ msgstr ""
 msgid "Service"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/db/audit_trail_db.inc:93
+#: c:\Apache2\htdocs\account226/includes/conn/audit_trail_db.inc:93
 msgid "Some transactions journal GL postings were not indexed due to lack of audit trail record."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/db/inventory_db.inc:140
+#: c:\Apache2\htdocs\account226/includes/conn/inventory_db.inc:140
 msgid "Cost was "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/db/inventory_db.inc:140
+#: c:\Apache2\htdocs\account226/includes/conn/inventory_db.inc:140
 msgid " changed to "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/db/inventory_db.inc:140
+#: c:\Apache2\htdocs\account226/includes/conn/inventory_db.inc:140
 msgid " for item "
 msgstr ""
 
@@ -10548,28 +10548,28 @@ msgstr ""
 msgid "Issue Date:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/manufacturing/includes/db/work_orders_db.inc:180
+#: c:\Apache2\htdocs\account226/manufacturing/includes/conn/work_orders_db.inc:180
 msgid "Updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/manufacturing/includes/db/work_orders_db.inc:199
+#: c:\Apache2\htdocs\account226/manufacturing/includes/conn/work_orders_db.inc:199
 msgid "Canceled."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/manufacturing/includes/db/work_orders_db.inc:275
+#: c:\Apache2\htdocs\account226/manufacturing/includes/conn/work_orders_db.inc:275
 msgid "Released."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/manufacturing/includes/db/work_orders_quick_db.inc:83
+#: c:\Apache2\htdocs\account226/manufacturing/includes/conn/work_orders_quick_db.inc:83
 msgid "Quick production."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/manufacturing/includes/db/work_order_produce_items_db.inc:60
+#: c:\Apache2\htdocs\account226/manufacturing/includes/conn/work_order_produce_items_db.inc:60
 msgid "Production."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/includes/db/invoice_db.inc:245
-#: c:\Apache2\htdocs\account226/purchasing/includes/db/invoice_db.inc:249
+#: c:\Apache2\htdocs\account226/purchasing/includes/conn/invoice_db.inc:245
+#: c:\Apache2\htdocs\account226/purchasing/includes/conn/invoice_db.inc:249
 msgid "Cost diff."
 msgstr ""
 
@@ -11116,26 +11116,26 @@ msgstr ""
 msgid "This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_invoice_db.inc:182
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_invoice_db.inc:182
 msgid "Cash invoice"
 msgstr "Cash tax invoice"
 
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:101
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:251
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:101
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:251
 msgid "Stocks below Re-Order Level at "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:104
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:256
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:104
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:256
 msgid "Below"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:105
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:257
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:105
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:257
 msgid "Please reorder"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/sales/includes/db/sales_order_db.inc:132
+#: c:\Apache2\htdocs\account226/sales/includes/conn/sales_order_db.inc:132
 msgid "Deleted."
 msgstr ""
 

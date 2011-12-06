@@ -121,9 +121,9 @@
 
 	function display_currencies()
 	{
-		$company_currency = Banking::get_company_currency();
+		$company_currency = Bank_Currency::for_company();
 		$result = GL_Currency::get_all(check_value('show_inactive'));
-		start_table(Config::get('tables_style'));
+		start_table('tablestyle');
 		$th = array(
 			_("Abbreviation"), _("Symbol"), _("Currency Name"),
 			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
@@ -147,7 +147,7 @@
 				$myrow[1] == $company_currency
 				 ? '-'
 				 :
-				 ($myrow["auto_update"] ? _('Yes') : _('No')), "align='center'"
+				 ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'"
 			);
 			inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
@@ -167,7 +167,7 @@
 	function display_currency_edit($selected_id)
 	{
 		global $Mode;
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency

@@ -48,7 +48,7 @@
 			Errors::error(_('For batch invoicing you should select at least one delivery. All items must be dispatched to the same customer branch.'));
 		} else {
 			$_SESSION['DeliveryBatch'] = $selected;
-			meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
+			Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
 
@@ -68,14 +68,14 @@
 		$Ajax->activate('deliveries_tbl');
 	}
 
-	start_form(false, false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-	start_table("class='tablestyle_noborder'");
+	start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+	start_table('tablestyle_noborder');
 	start_row();
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
-	locations_list_cells(_("Location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
+	Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+	Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 	end_row();
@@ -90,7 +90,7 @@
 
 	function trans_view($trans, $trans_no)
 		{
-			return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
+			return Debtor_UI::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
 		}
 
 	function batch_checkbox($row)
@@ -104,7 +104,7 @@
 	function edit_link($row)
 		{
 			return $row["Outstanding"] == 0 ? '' :
-			 pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+			 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
 		}
 
 	function prt_link($row)
@@ -115,7 +115,7 @@
 	function invoice_link($row)
 		{
 			return $row["Outstanding"] == 0 ? '' :
-			 pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+			 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
 		}
 
 	function check_overdue($row)
@@ -188,7 +188,7 @@
 	$table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	//$table->width = "92%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 

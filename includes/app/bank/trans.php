@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Bank_Trans
+	class Bank_Trans implements IVoidable
 	{
 
 		// add a bank transaction
@@ -21,9 +21,9 @@
 			$sqlDate = Dates::date2sql($date_);
 			// convert $amount to the bank's currency
 			if ($currency != "") {
-				$bank_account_currency = Banking::get_bank_account_currency($bank_act);
+				$bank_account_currency = Bank_Currency::for_company($bank_act);
 				if ($rate == 0) {
-					$to_bank_currency = Banking::get_exchange_rate_from_to($currency, $bank_account_currency, $date_);
+					$to_bank_currency = Bank::get_exchange_rate_from_to($currency, $bank_account_currency, $date_);
 				}
 				else
 				{
@@ -36,7 +36,7 @@
 				$amount_bank = $amount;
 			}
 			// Also store the rate to the home
-			//$BankToHomeCurrencyRate = Banking::get_exchange_rate_to_home_currency($bank_account_currency, $date_);
+			//$BankToHomeCurrencyRate = Bank_Currency::exchange_rate_to_home($bank_account_currency, $date_);
 			$sql
 			 = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
@@ -83,11 +83,9 @@
 		}
 
 
-		public static function void($type, $type_no, $nested = false)
+		public static function void($type, $type_no)
 		{
-			if (!$nested) {
 				DB::begin_transaction();
-			}
 			$sql
 			 = "UPDATE bank_trans SET amount=0
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
@@ -100,9 +98,7 @@
 			Purch_Allocation::void($type, $type_no);
 			Purch_Trans::void($type, $type_no);
 			GL_Trans::void_tax_details($type, $type_no);
-			if (!$nested) {
 				DB::commit_transaction();
-			}
 		}
 
 	}

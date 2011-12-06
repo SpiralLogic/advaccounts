@@ -45,7 +45,7 @@
 			return;
 		}
 		return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
-    class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
+ class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
 	}
 
 	function systype_name($dummy, $type)
@@ -56,13 +56,13 @@
 
 	function trans_view($trans)
 	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row)
 	{
 		if ($row['type'] != 15) {
-			return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+			return GL_UI::view($row["type"], $row["trans_no"]);
 		}
 	}
 
@@ -81,7 +81,7 @@
 	function fmt_person($row)
 	{
 
-		return Banking::payment_person_name($row["person_type_id"], $row["person_id"],true, $row["trans_no"]);
+		return Bank::payment_person_name($row["person_type_id"], $row["person_id"],true, $row["trans_no"]);
 	}
 
 	$update_pager = false;
@@ -111,7 +111,7 @@
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
-		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
+		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
 		$Ajax->activate('difference');
 		return true;
@@ -131,7 +131,7 @@
 			DB::query($sql, 'Couldn\'t update undesposited status');
 		}
 		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
-    undeposited=" . $groupid . " WHERE id=" . $groupid;
+ undeposited=" . $groupid . " WHERE id=" . $groupid;
 		DB::query($sql, "Couldn't update removed group data");
 		update_data();
 	}
@@ -178,8 +178,8 @@
 	start_form();
 	start_table();
 	start_row();
-	bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
-	bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'), 'bank_date', null, true, _("New"));
+	Bank_Account::cells(_("Account:"), 'bank_account', null, true);
+	Bank_UI::reconcile_cells(_("Bank Statement:"), get_post('bank_account'), 'bank_date', null, true, _("New"));
 	//button_cell("reset", "reset", "reset");
 	end_row();
 	end_table();
@@ -202,7 +202,7 @@
 		}
 	}
 	echo "<hr>";
-	div_start('summary');
+	Display::div_start('summary');
 	start_table();
 	table_header(_("Reconcile Date"));
 	start_row();
@@ -215,8 +215,8 @@
 	table_header(_("Ending Balance"));
 	start_row();
 	amount_cells_ex("", "end_balance", 15);
-	$reconciled = input_num('reconciled');
-	$difference = input_num("end_balance") - input_num("beg_balance") - $reconciled;
+	$reconciled = Validation::input_num('reconciled');
+	$difference = Validation::input_num("end_balance") - Validation::input_num("beg_balance") - $reconciled;
 	end_row();
 	table_header(_("Account Total"));
 	start_row();
@@ -231,14 +231,14 @@
 	amount_cell($difference, false, '', "difference");
 	end_row();
 	end_table();
-	div_end();
+	Display::div_end();
 	echo "<hr>";
 
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
 	$sql = GL_Account::get_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
-	$act = GL_BankAccount::get($_POST["bank_account"]);
+	$act = Bank_Account::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(
 		_("Type") => array(
@@ -251,8 +251,8 @@
 			'insert' => true, 'fun' => 'ungroup'));
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
-	br(1);
+	DB_Pager::display($table);
+	Display::br(1);
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
 	end_form();
 

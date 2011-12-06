@@ -97,7 +97,7 @@
 	}
 	$result = Users::get_all(check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table('tablestyle');
 	$th = array(
 		_("User login"), _("Full Name"), _("Phone"),
 		_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
@@ -135,7 +135,7 @@
 	inactive_control_row($th);
 	end_table(1);
 
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -171,10 +171,10 @@
 	text_row_ex(_("Full Name") . ":", 'real_name', 50);
 	text_row_ex(_("Telephone No.:"), 'phone', 30);
 	email_row_ex(_("Email Address:"), 'email', 50);
-	security_roles_list_row(_("Access Level:"), 'Access', null);
-	languages_list_row(_("Language:"), 'language', null);
-	pos_list_row(_("User's POS") . ':', 'pos', null);
-	print_profiles_list_row(
+	Security::roles_row(_("Access Level:"), 'Access', null);
+	Languages::row(_("Language:"), 'language', null);
+	Sales_Point::row(_("User's POS") . ':', 'pos', null);
+	Reports_UI::print_profiles_row(
 		_("Printing profile") . ':', 'profile', null,
 		_('Browser printing support')
 	);

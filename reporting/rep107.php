@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 					Copyright (C) Advanced Group PTY LTD
 					Released under the terms of the GNU General Public License, GPL,
 					as published by the Free Software Foundation, either version 3
@@ -46,7 +46,7 @@
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
+			$rep = new ADVReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -63,7 +63,7 @@
 				}
 				$sign = $j == ST_SALESINVOICE ? 1 : -1;
 				$myrow = Sales_Trans::get($i, $j);
-				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
 				$branch['disable_branch'] = $paylink; // helper
@@ -74,7 +74,7 @@
 					$sales_order = null;
 				}
 				if ($email == 1) {
-					$rep = new FrontReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($j == ST_SALESINVOICE) {
@@ -91,7 +91,7 @@
 					$rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
 				}
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-				$result = Sales_Debtor_Trans::get($j, $i);
+				$result = Debtor_Trans::get($j, $i);
 				$SubTotal = 0;
 				while ($myrow2 = DB::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {
@@ -178,7 +178,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
-				$words = ui_view::price_in_words($myrow['Total'], $j);
+				$words = Item_Price::to_words($myrow['Total'], $j);
 				$rep->NewLine();
 				$rep->NewLine();
 				$invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);

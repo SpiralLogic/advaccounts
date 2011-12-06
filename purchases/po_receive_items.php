@@ -18,9 +18,9 @@
 		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
 		Errors::notice(_("Purchase Order Delivery has been processed"));
-		Display::note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
-		hyperlink_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
-		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
+		Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));
+		Display::link_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+		Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();
 	}
 
@@ -30,8 +30,8 @@
 
 	function display_po_receive_items()
 		{
-			div_start('grn_items');
-			start_table("colspan=7 " . Config::get('tables_style') . " width=90%");
+			Display::div_start('grn_items');
+			start_table('tablestyle width90');
 			$th = array(
 				_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total"));
 			table_header($th);
@@ -59,9 +59,9 @@
 					qty_cell($ln_itm->qty_received, false, $dec);
 					qty_cell($qty_outstanding, false, $dec);
 					if ($qty_outstanding > 0) {
-						qty_cells(null, $ln_itm->line_no, Num::format($ln_itm->receive_qty, $dec), "align=right", null, $dec);
+						qty_cells(null, $ln_itm->line_no, Num::format($ln_itm->receive_qty, $dec), "class=right", null, $dec);
 					} else {
-						label_cell(Num::format($ln_itm->receive_qty, $dec), "align=right");
+						label_cell(Num::format($ln_itm->receive_qty, $dec), "class=right");
 					}
 					amount_decimal_cell($ln_itm->price);
 					percent_cell($ln_itm->discount * 100);
@@ -69,12 +69,12 @@
 					end_row();
 				}
 			}
-			label_cell(_("Freight"), "colspan=9 align=right");
+			label_cell(_("Freight"), "colspan=9 class=right");
 			small_amount_cells(null, 'freight', Num::price_format($_SESSION['PO']->freight));
 			$display_total = Num::format($total + $_POST['freight'], User::price_dec());
-			label_row(_("Total value of items received"), $display_total, "colspan=9 align=right", "nowrap align=right");
+			label_row(_("Total value of items received"), $display_total, "colspan=9 class=right", "nowrap class=right");
 			end_table();
-			div_end();
+			Display::div_end();
 		}
 
 
@@ -167,9 +167,9 @@
 			}
 			if (check_po_changed()) {
 				Errors::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
-				hyperlink_no_params("/purchases/inquiry/po_search.php",
+				Display::link_no_params("/purchases/inquiry/po_search.php",
 					_("Select a different purchase order for receiving goods against"));
-				hyperlink_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"),
+				Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"),
 				 "PONumber=" . $_SESSION
 				 ['PO']->order_no);
 				unset($_SESSION['PO']->line_items);
@@ -184,13 +184,13 @@
 			Dates::new_doc_date($_POST['DefaultReceivedDate']);
 			unset($_SESSION['PO']->line_items);
 			unset($_SESSION['PO']);
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 		}
 
 
 	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
 		Purch_Order::create();
-		/*read in all the selected order into the Items cart  */
+		/*read in all the selected order into the Items cart */
 		Purch_Order::get($_GET['PONumber'], $_SESSION['PO']);
 	}
 
@@ -206,7 +206,7 @@
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 				}
-				$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
+				$_SESSION['PO']->line_items[$line->line_no]->receive_qty = Validation::input_num($line->line_no);
 				if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
 					$_SESSION['PO']->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];
 				}
@@ -223,7 +223,7 @@
 	Purch_GRN::display($_SESSION['PO'], true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
-	hyperlink_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"),
+	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"),
 	 "ModifyOrderNumber=" . $_SESSION['PO']->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);

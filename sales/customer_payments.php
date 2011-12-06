@@ -37,12 +37,12 @@
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
 		Errors::notice(_("The customer payment has been successfully entered."));
-		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
-		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
-		Display::note(ui_view::get_gl_view_str(ST_CUSTPAYMENT, $payment_no,
+		Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
+		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
+		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no,
 			_("&View the GL Journal Entries for this Customer Payment")));
-		//	hyperlink_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
-		hyperlink_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
+		//	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
+		Display::link_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 		Page::footer_exit();
 	}
 
@@ -87,7 +87,7 @@
 				JS::set_focus('charge');
 				return false;
 			}
-			if (isset($_POST['charge']) && input_num('charge') > 0) {
+			if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 				$charge_acct = DB_Company::get_pref('bank_charge_act');
 				if (GL_Account::get($charge_acct) == false) {
 					Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
@@ -108,13 +108,13 @@
 				JS::set_focus('discount');
 				return false;
 			}
-			//if ((input_num('amount') - input_num('discount') <= 0)) {
-			if (input_num('amount') <= 0) {
+			//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
+			if (Validation::input_num('amount') <= 0) {
 				Errors::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 				JS::set_focus('discount');
 				return false;
 			}
-			$_SESSION['alloc']->amount = input_num('amount');
+			$_SESSION['alloc']->amount = Validation::input_num('amount');
 			if (isset($_POST["TotalNumberOfAllocs"])) {
 				return Gl_Allocation::check();
 			} else {
@@ -141,29 +141,29 @@
 	}
 
 	if (isset($_POST['AddPaymentItem'])) {
-		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
-		$comp_currency = Banking::get_company_currency();
+		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
+		$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+		$comp_currency = Bank_Currency::for_company();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
 		} else {
-			$rate = input_num('_ex_rate');
+			$rate = Validation::input_num('_ex_rate');
 		}
 		if (check_value('createinvoice')) {
-			Gl_Allocation::create_miscorder(new Contacts_Customer($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'],
-				$_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
+			Gl_Allocation::create_miscorder(new Debtor($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'],
+				$_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
 		}
-		$payment_no = Sales_Debtor_Payment::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
-			$_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate,
-			input_num('charge'));
+		$payment_no = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
+			$_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate,
+			Validation::input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 	}
 
 	function read_customer_data()
 		{
-			$myrow = Sales_Debtor::get_habit($_POST['customer_id']);
+			$myrow = Debtor::get_habit($_POST['customer_id']);
 			$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 			$_POST['pymt_discount'] = $myrow["pymt_discount"];
 			$_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
@@ -171,15 +171,15 @@
 
 
 	start_form();
-	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
+	start_outer_table('tablestyle2 width90 pad2');
 	table_section(1);
-	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
+	Debtor_UI::select_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
 	}
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
-		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+		Debtor_UI::branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
@@ -192,27 +192,27 @@
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		if (!list_updated('bank_account')) {
-			$_POST['bank_account'] = GL_BankAccount::get_customer_default($_POST['customer_id']);
+			$_POST['bank_account'] = Bank_Account::get_customer_default($_POST['customer_id']);
 		}
-		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+		Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 		table_section(3);
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
-		$comp_currency = Banking::get_company_currency();
-		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		$comp_currency = Bank_Currency::for_company();
+		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
+		$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
 		if ($cust_currency != $bank_currency) {
 			GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 		amount_row(_("Bank Charge:"), 'charge');
 		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
-			div_start('alloc_tbl');
+			Display::div_start('alloc_tbl');
 			$_SESSION['alloc']->read();
 			Gl_Allocation::show_allocatable(false);
-			div_end();
+			Display::div_end();
 		}
-		start_table(Config::get('tables_style') . "  width=60%");
+		start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');
 		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
@@ -222,15 +222,15 @@
 		if ($cust_currency != $bank_currency) {
 			Display::note(_("Amount and discount are in customer's currency."));
 		}
-		br();
+		Display::br();
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 	}
-	br();
+	Display::br();
 	end_form();
 	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
-  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
-  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
+ alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
+ if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
 	(Input::request('frame')) ? end_page() : end_page(true, true, true);

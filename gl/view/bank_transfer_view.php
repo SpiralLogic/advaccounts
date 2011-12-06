@@ -28,7 +28,7 @@
 		$from_trans = $trans2;
 		$to_trans = $trans1;
 	}
-	$company_currency = Banking::get_company_currency();
+	$company_currency = Bank_Currency::for_company();
 	$show_currencies = false;
 	$show_both_amounts = false;
 	if (($from_trans['bank_curr_code'] != $company_currency) || ($to_trans['bank_curr_code'] != $company_currency)) {
@@ -40,13 +40,13 @@
 	}
 	Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style') . "  width=90%");
+	start_table('tablestyle width90');
 	start_row();
 	label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 	if ($show_currencies) {
 		label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
 	if ($show_currencies) {
 		end_row();
 		start_row();
@@ -59,7 +59,7 @@
 		label_cells(
 			_("Amount"), Num::format(
 				$to_trans['amount'], User::price_dec()
-			), "class='tableheader2'", "align=right"
+			), "class='tableheader2'", "class=right"
 		);
 	}
 	end_row();

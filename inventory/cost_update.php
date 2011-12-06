@@ -22,8 +22,8 @@
 	if (isset($_POST['UpdateData'])) {
 		$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
 		 + $_POST['OldOverheadCost'];
-		$new_cost = input_num('material_cost') + input_num('labour_cost')
-		 + input_num('overhead_cost');
+		$new_cost = Validation::input_num('material_cost') + Validation::input_num('labour_cost')
+		 + Validation::input_num('overhead_cost');
 		$should_update = true;
 		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost')
 		 || !Validation::is_num('overhead_cost')
@@ -40,12 +40,12 @@
 		if ($should_update) {
 			$update_no = Item_Price::update_cost(
 				$_POST['stock_id'],
-				input_num('material_cost'), input_num('labour_cost'),
-				input_num('overhead_cost'), $old_cost
+				Validation::input_num('material_cost'), Validation::input_num('labour_cost'),
+				Validation::input_num('overhead_cost'), $old_cost
 			);
 			Errors::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
-				Display::note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -57,9 +57,9 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
-	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "</center><hr>";
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
+	echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
+	echo "</div><hr>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$sql
 	 = "SELECT description, units, material_cost, labour_cost,
@@ -70,11 +70,11 @@
 	$result = DB::query($sql);
 	Errors::check_db_error("The cost details for the item could not be retrieved", $sql);
 	$myrow = DB::fetch($result);
-	div_start('cost_table');
+	Display::div_start('cost_table');
 	hidden("OldMaterialCost", $myrow["material_cost"]);
 	hidden("OldLabourCost", $myrow["labour_cost"]);
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
-	start_table(Config::get('tables_style2'));
+	start_table('tablestyle2');
 	$dec1 = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
 	$_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);
@@ -88,7 +88,7 @@
 		hidden("overhead_cost", 0);
 	}
 	end_table(1);
-	div_end();
+	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
 	end_page();

@@ -10,10 +10,10 @@
 	{
 		static function check_page($page_security) {
 			if (!User::get()->can_access_page($page_security)) {
-				echo "<center><br><br><br><b>";
+				echo "<div class='center'><br><br><br><span class='bold'>";
 				echo _("The security settings on your account do not permit you to access this function");
-				echo "</b>";
-				echo "<br><br><br><br></center>";
+				echo "</span>";
+				echo "<br><br><br><br></div>";
 				end_page();
 				exit;
 			}
@@ -51,39 +51,48 @@
 			return $row;
 		}
 
-
 		public static function add_role($name, $description, $sections, $areas) {
-			$sql
-			 = "INSERT INTO security_roles (role, description, sections, areas)
-			VALUES ("
-			 . DB::escape($name) . ","
-			 . DB::escape($description) . ","
-			 . DB::escape(implode(';', $sections)) . ","
-			 . DB::escape(implode(';', $areas)) . ")";
+			$sql = "INSERT INTO security_roles (role, description, sections, areas)
+			VALUES (" . DB::escape($name) . "," . DB::escape($description) . "," . DB::escape(implode(';', $sections)) . "," . DB::escape(implode(';', $areas)) . ")";
 			DB::query($sql, "could not add new security role");
 		}
 
-
 		public static function update_role($id, $name, $description, $sections, $areas) {
-			$sql = "UPDATE security_roles SET role=" . DB::escape($name)
-			 . ",description=" . DB::escape($description)
-			 . ",sections=" . DB::escape(implode(';', $sections))
-			 . ",areas=" . DB::escape(implode(';', $areas))
-			 . " WHERE id=$id";
+			$sql = "UPDATE security_roles SET role=" . DB::escape($name) . ",description=" . DB::escape($description) . ",sections=" . DB::escape(implode(';', $sections)) . ",areas=" . DB::escape(implode(';', $areas)) . " WHERE id=$id";
 			DB::query($sql, "could not update role");
 		}
-
 
 		public static function get_profile($id) {
 			$sql = "DELETE FROM security_roles WHERE id=$id";
 			DB::query($sql, "could not delete role");
 		}
 
-
 		public static function check_role_used($id) {
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 			$ret = DB::query($sql, 'cannot check role usage');
 			$row = DB::fetch($ret);
 			return $row[0];
+		}
+
+		public static function	roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
+			$sql = "SELECT id, role, inactive FROM security_roles";
+			return select_box($name, $selected_id, $sql, 'id', 'description', array(
+																																							'spec_option' => $new_item ? _("New role") :
+																																							 false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
+		}
+
+		public static function	roles_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo Security::roles($name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+			echo "</td>\n";
+		}
+
+		public static function	roles_row($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
+			echo "<tr><td class='label'>$label</td>";
+			Security::roles_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+			echo "</tr>\n";
 		}
 	}

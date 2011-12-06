@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class Purch_Allocation
+	class Purch_Allocation implements IVoidable
 	{
 		public static function add($amount, $trans_type_from, $trans_no_from,
 			$trans_type_to, $trans_no_to, $date_)
@@ -75,7 +75,7 @@
 					DB::query($sql, "could not clear allocation");
 					// 2008-09-20 Joe Hunt
 					if ($date != "") {
-						Banking::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
+						Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
 							$row['amt'], PT_SUPPLIER, true);
 					}
 					//////////////////////

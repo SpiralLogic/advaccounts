@@ -27,16 +27,16 @@
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<center>" . _("Item:") . "&nbsp;";
-	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "<hr></center>";
-	div_start('show_heading');
+	echo "<div class='center'>" . _("Item:") . "&nbsp;";
+	echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
+	echo "<hr></div>";
+	Display::div_start('show_heading');
 	Display::item_heading($_POST['stock_id']);
-	br();
-	div_end();
+	Display::br();
+	Display::div_end();
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	div_start('reorders');
-	start_table(Config::get('tables_style') . "  width=30%");
+	Display::div_start('reorders');
+	start_table('tablestyle width30');
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
 	table_header($th);
 	$j = 1;
@@ -46,8 +46,8 @@
 	{
 		alt_table_row_color($k);
 		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
-			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
-			Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
+			$myrow["reorder_level"] = Validation::input_num($myrow["loc_code"]);
+			Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], Validation::input_num($myrow["loc_code"]));
 			Errors::notice(_("Reorder levels has been updated."));
 		}
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
@@ -63,7 +63,7 @@
 		}
 	}
 	end_table(1);
-	div_end();
+	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
 	end_page();

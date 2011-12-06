@@ -16,8 +16,8 @@
 
 	if (isset($_GET['AddedID'])) {
 		Errors::notice(_("The work order issue has been entered."));
-		Display::note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
-		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+		Display::note(GL_UI::trans_view(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+		Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		Page::footer_exit();
 	}
 
@@ -77,7 +77,7 @@
 		if ($failed_data != null) {
 			Errors::error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _("From location :") . $failed_data[1] . "<br>");
 		} else {
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
 		}
 	} /*end of process credit note */
 
@@ -101,7 +101,7 @@
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
 				$id = $_POST['LineNo'];
-				$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
+				$_SESSION['issue_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
 			}
 			line_start_focus();
 		}
@@ -119,7 +119,7 @@
 			if (!check_item_data()) {
 				return;
 			}
-			WO_Issue::add_to($_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'), input_num('std_cost'));
+			WO_Issue::add_to($_SESSION['issue_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
 			line_start_focus();
 		}
 
@@ -145,7 +145,7 @@
 	WO_Cost::display($_SESSION['issue_items']->order_id);
 	echo "<br>";
 	start_form();
-	start_table(Config::get('tables_style') . "  width=90%", 10);
+	start_table('tablesstyle width90 pad10');
 	echo "<tr><td>";
 	WO_Issue::display_items(_("Items to Issue"), $_SESSION['issue_items']);
 	WO_Issue::option_controls();

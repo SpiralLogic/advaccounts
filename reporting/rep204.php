@@ -1,6 +1,6 @@
 <?php
 
-	/*     * ********************************************************************
+	/* * ********************************************************************
 			Copyright (C) Advanced Group PTY LTD
 			Released under the terms of the GNU General Public License, GPL,
 			as published by the Free Software Foundation, either version 3
@@ -79,7 +79,7 @@
 		$params = array(0 => $comments,
 			1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
 		);
-		$rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", User::pagesize());
+		$rep = new ADVReport(_('Outstanding GRNs Report'), "OutstandingGRN", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

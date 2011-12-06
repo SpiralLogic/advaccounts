@@ -23,9 +23,9 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 		Errors::notice(_("Items adjustment has been processed"));
-		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
-		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
+		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
+		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 		Page::footer_exit();
 	}
 
@@ -99,7 +99,7 @@
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['adj_items']->clear_items();
 		unset($_SESSION['adj_items']);
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
 
 	function check_item_data()
@@ -122,7 +122,7 @@
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
 				$id = $_POST['LineNo'];
-				$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
+				$_SESSION['adj_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
 			}
 			line_start_focus();
 		}
@@ -140,7 +140,7 @@
 			if (!check_item_data()) {
 				return;
 			}
-			Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], input_num('qty'), input_num('std_cost'));
+			Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
 			line_start_focus();
 		}
 
@@ -165,7 +165,7 @@
 
 	start_form();
 	Inv_Adjustment::header($_SESSION['adj_items']);
-	start_outer_table(Config::get('tables_style') . "  width=80%", 10);
+	start_outer_table('tablestyle width80 pad10');
 	Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
 	Inv_Adjustment::option_controls();
 	end_outer_table(1, false);

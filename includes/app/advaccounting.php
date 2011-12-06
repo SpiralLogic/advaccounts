@@ -1,6 +1,6 @@
 <?php
 
-	/*     * *******************************************************************
+	/* * *******************************************************************
 				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
@@ -18,12 +18,12 @@
 		public $selected_application;
 		public $menu;
 
-		public 	function __construct()
-		{
+		public function __construct() {
+
 			Session::hasLogin();
 			$installed_extensions = Config::get('extensions.installed');
-			$this->menu = new Menu(_("Main  Menu"));
-			$this->menu->add_item(_("Main  Menu"), "index.php");
+			$this->menu = new Menu(_("Main Menu"));
+			$this->menu->add_item(_("Main Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
 			$apps = Config::get('apps.active');
@@ -45,24 +45,21 @@
 			$this->add_application(new Apps_System());
 		}
 
-		public 	function add_application(&$app)
-		{
+		public function add_application(&$app) {
 			if ($app->enabled) // skip inactive modules
 			{
 				$this->applications[$app->id] = &$app;
 			}
 		}
 
-		public 	function get_application($id)
-		{
+		public function get_application($id) {
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
 			}
 			return null;
 		}
 
-		public 	function get_selected_application()
-		{
+		public function get_selected_application() {
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
 			}
@@ -72,8 +69,7 @@
 			return null;
 		}
 
-		public 	function display()
-		{
+		public function display() {
 			$rend = Renderer::get();
 			$rend->header();
 			//$rend->menu_header($this->menu);
@@ -82,16 +78,15 @@
 			$rend->footer();
 		}
 
-		public static function init()
-		{
+		public static function init() {
 			if (!isset($_SESSION["App"])) {
+
 				Session::i()->App = new advaccounting();
 			}
+
 		}
 
-
-		public static function write_extensions($extensions = null, $company = -1)
-		{
+		public static function write_extensions($extensions = null, $company = -1) {
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
 				$extensions = $installed_extensions;
@@ -109,7 +104,7 @@
 
 			'name' - name for identification purposes;
 			'type' - type of extension: 'module' or 'plugin'
-			'path' - FA root based installation path
+			'path' - ADV root based installation path
 			'filename' - name of module menu file, or plugin filename; related to path.
 			'tab' - index of the module tab (new for module, or one of standard module names for plugin);
 			'title' - is the menu text (for plugin) or new tab name

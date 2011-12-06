@@ -46,8 +46,8 @@
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
 
-	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-	start_table("class='tablestyle_noborder'");
+	start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+	start_table('tablestyle_noborder');
 	start_row();
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 	number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
@@ -65,7 +65,7 @@
 	$dim = DB_Company::get_pref('use_dimension');
 	function view_link($row)
 	{
-		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
+		return Dimensions::trans_view(ST_DIMENSION, $row["id"]);
 	}
 
 	function is_closed($row)
@@ -91,10 +91,10 @@
 
 	function edit_link($row)
 	{
-		//return $row["closed"] ?  '' :
-		//	pager_link(_("Edit"),
+		//return $row["closed"] ? '' :
+		//	DB_Pager::link(_("Edit"),
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
-		return pager_link(
+		return DB_Pager::link(
 			_("Edit"),
 		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
 		);
@@ -156,7 +156,7 @@
 	$table =& db_pager::new_db_pager('dim_tbl', $sql, $cols);
 	$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 

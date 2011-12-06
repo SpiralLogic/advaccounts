@@ -95,7 +95,7 @@
 		$filename = PATH_TO_ROOT . "/lang/$lang";
 		Files::flush_dir($filename);
 		rmdir($filename);
-		meta_forward($_SERVER['PHP_SELF']);
+		Display::meta_forward($_SERVER['PHP_SELF']);
 	}
 
 
@@ -110,7 +110,7 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables_style'));
+		start_table('tablestyle');
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		table_header($th);
 		$k = 0;
@@ -170,7 +170,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			$conn = Config::get('languages.installed', $selected_id);
 			$_POST['code'] = $conn['code'];
@@ -193,7 +193,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 		end_table(0);
 		Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
-		echo "<center><input  type='button' style='width:150px' value='" . _("Save") . "'></center>";
+		echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
 		end_form();
 	}
 
@@ -204,13 +204,13 @@
 		}
 		if ($_GET['c'] == 'u') {
 			if (handle_submit()) {
-				//meta_forward($_SERVER['PHP_SELF']);
+				//Display::meta_forward($_SERVER['PHP_SELF']);
 			}
 		}
 	}
 
 	display_languages();
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
+	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
 	display_language_edit($selected_id);
 
 	end_page();

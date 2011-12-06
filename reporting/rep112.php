@@ -27,10 +27,10 @@
 			 = "SELECT debtor_trans.*,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
-   				debtors_master.name AS DebtorName,  debtors_master.debtor_ref,
-   				debtors_master.curr_code, debtors_master.payment_terms, debtors_master.tax_id AS tax_id,
-   				debtors_master.email, debtors_master.address
-    			FROM debtor_trans, debtors_master
+ 				debtors_master.name AS DebtorName, debtors_master.debtor_ref,
+ 				debtors_master.curr_code, debtors_master.payment_terms, debtors_master.tax_id AS tax_id,
+ 				debtors_master.email, debtors_master.address
+ 			FROM debtor_trans, debtors_master
 				WHERE debtor_trans.debtor_no = debtors_master.debtor_no
 				AND debtor_trans.type = " . DB::escape($type) . "
 				AND debtor_trans.trans_no = " . DB::escape($trans_no);
@@ -75,7 +75,7 @@
 			$aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
-			$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", User::pagesize());
+			$rep = new ADVReport(_('RECEIPT'), "ReceiptBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -94,7 +94,7 @@
 					if (!$myrow) {
 						continue;
 					}
-					$baccount = GL_BankAccount::get_default($myrow['curr_code']);
+					$baccount = Bank_Account::get_default($myrow['curr_code']);
 					$params['bankaccount'] = $baccount['id'];
 					$rep->title = _('RECEIPT');
 					$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
@@ -134,7 +134,7 @@
 					$rep->Font('bold');
 					$rep->TextCol(3, 6, $doc_Total_Payment, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
-					$words = ui_view::price_in_words($myrow['Total'], ST_CUSTPAYMENT);
+					$words = Item_Price::to_words($myrow['Total'], ST_CUSTPAYMENT);
 					if ($words != "") {
 						$rep->NewLine(1);
 						$rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, -2);

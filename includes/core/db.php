@@ -6,13 +6,35 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB {
+	class DB
+	{
+		/**
+		 *
+		 */
 		const SELECT = 0;
+		/**
+		 *
+		 */
 		const INSERT = 1;
+		/**
+		 *
+		 */
 		const UPDATE = 2;
+		/**
+		 *
+		 */
 		const DELETE = 4;
-		protected static $conn = array();
+		/**
+		 * @var array
+		 */
+		protected static $connections = array();
+		/**
+		 * @var bool
+		 */
 		protected static $current = false;
+		/**
+		 * @var array
+		 */
 		protected static $data = array();
 		/***
 		 * @var string
@@ -23,42 +45,62 @@
 		 */
 		protected static $prepared = null;
 
+		/**
+		 *
+		 */
 		final function __construct() {
 		}
 
 		/***
 		 * @static
 		 *
-		 * @param null	$db
+		 * @param null	$conn
 		 * @param array $config
 		 *
 		 * @return DB_Connection
 		 */
-		protected static function _get($db = null, $config = array()) {
+		protected static function _get($conn = null, $config = array()) {
 			static::$prepared = null;
-			if ($db === null && static::$current) {
+			if ($conn === null && static::$current) {
 				return static::$current;
-			} elseif ($db === null) {
+			} elseif ($conn === null) {
 				$config = $config ? : Config::get('db_default');
-				$db = $config['name'];
+				$conn = $config['name'];
 			}
-			if (!isset($conn[$db])) {
-				static::$conn[$db] = static::$current = DB_Connection::i($db, $config);
+
+			if (!isset(static::$connections[$conn])) {
+
+				static::$connections[$conn] = static::$current = DB_Connection::i($conn, $config);
 			}
 			return static::$current;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $db
+		 *
+		 * @return bool
+		 * @throws DB_Exception
+		 */
 		public static function set($db) {
-			if (!isset(static::$conn[$db])) {
+			if (!isset(static::$connections[$db])) {
 				throw new DB_Exception('There is no connection: ' . $db);
 			}
-			static::$current = static::$conn[$db];
+			static::$current = static::$connections[$db];
 			return static::$current;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$sql
+		 * @param null $err_msg
+		 *
+		 * @return null|PDOStatement
+		 */
 		public static function query($sql, $err_msg = null) {
 			try {
-
 				$prepared = static::prepare($sql);
 				$prepared->execute();
 				static::$prepared = $prepared;
@@ -72,14 +114,30 @@
 				Errors::error($error);
 			}
 			static::$data = array();
-
 			return static::$prepared;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$value
+		 * @param null $type
+		 *
+		 * @return mixed
+		 */
 		public static function quote($value, $type = null) {
 			return static::_get()->quote($value, $type);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$value
+		 * @param bool $null
+		 * @param bool $paramaterized
+		 *
+		 * @return bool|mixed|string
+		 */
 		public static function escape($value, $null = false, $paramaterized = true) {
 			$value = trim($value);
 			//check for null/unset/empty strings
@@ -107,6 +165,14 @@
 			return $value;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $sql
+		 *
+		 * @return bool|null|PDOStatement
+		 * @throws DB_Exception
+		 */
 		public static function prepare($sql) {
 			try {
 				static::$prepared = static::_get()->prepare($sql);
@@ -130,11 +196,18 @@
 					FB::info(static::$queryString);
 				}
 				Errors::error($error);
+				return false;
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $data
+		 *
+		 * @return array|bool
+		 */
 		public static function execute($data) {
-
 			if (!static::$prepared) {
 				return false;
 			}
@@ -149,10 +222,14 @@
 					FB::info(static::$queryString);
 				}
 				Errors::error($error);
+				return false;
 			}
 		}
 
-
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function insert_id() {
 			return static::_get()->lastInsertId();
 		}
@@ -167,25 +244,47 @@
 			return new DB_Query_Select($columns, static::_get());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $into
+		 *
+		 * @return DB_Query_Update
+		 */
 		public static function update($into) {
 			return new DB_Query_Update($into, static::_get());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $into
+		 *
+		 * @return DB_Query_Insert
+		 */
 		public static function insert($into) {
 			return new DB_Query_Insert($into, static::_get());
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $into
+		 *
+		 * @return DB_Query_Delete
+		 */
 		public static function delete($into) {
 			return new DB_Query_Delete($into, static::_get());
 		}
 
 		/***
 		 * @static
+		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
+		 *
 		 * @return DB_Query_Result This is something
 		 */
 		public static function fetch($result = null) {
-
 			if ($result !== null) {
 				return $result->fetch();
 			}
@@ -195,75 +294,149 @@
 			return static::$prepared->fetch(PDO::FETCH_BOTH);
 		}
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function fetch_row() {
 			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function fetch_assoc() {
 			return static::$prepared->fetch(PDO::FETCH_ASSOC);
 		}
 
+		/**
+		 * @static
+		 * @return array
+		 */
 		public static function fetch_all() {
 			return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 		}
 
+		/**
+		 * @static
+		 * @return DB_Connection
+		 */
 		public static function begin() {
 			return static::_get()->begin();
 		}
 
+		/**
+		 * @static
+		 * @return DB_Connection
+		 */
 		public static function commit() {
 			return static::_get()->commit();
 		}
 
+		/**
+		 * @static
+		 * @return DB_Connection
+		 */
 		public static function cancel() {
 			return static::_get()->cancel();
 		}
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function error_no() {
 			return static::_get()->errorCode();
 		}
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function error_msg() {
 			$info = static::_get()->errorInfo();
 			return $info[2];
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param PDO $value
+		 *
+		 * @return mixed
+		 */
 		public static function getAttribute(PDO $value) {
 			return static::_get()->getAttribute($value);
 		}
 
+		/**
+		 * @static
+		 * @return bool
+		 */
 		public static function free_result() {
 			return (static::$prepared) ? static::$prepared->closeCursor() : false;
 		}
 
+		/**
+		 * @static
+		 * @return int
+		 */
 		public static function num_rows() {
 			return static::$prepared->rowCount();
 		}
 
+		/**
+		 * @static
+		 * @return int
+		 */
 		public static function num_fields() {
 			return static::$prepared->columnCount();
 		}
 
 		//DB wrapper functions to change only once for whole application
+		/**
+		 * @static
+		 * @return int
+		 */
 		public static function num_affected_rows() {
 			return static::$prepared->rowCount();
 		}
 
+		/**
+		 * @static
+		 *
+		 */
 		public static function begin_transaction() {
 			DB::begin("could not start a transaction");
 		}
 
+		/**
+		 * @static
+		 *
+		 */
 		public static function commit_transaction() {
 			DB::commit("could not commit a transaction");
 		}
 
+		/**
+		 * @static
+		 *
+		 */
 		public static function cancel_transaction() {
 			DB::cancel("could not commit a transaction");
 		}
 
-
 		//	Update record activity status.
 		//
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 * @param $status
+		 * @param $table
+		 * @param $key
+		 */
 		public static function update_record_status($id, $status, $table, $key) {
 			$sql = "UPDATE " . $table . " SET inactive = " . DB::escape($status) . " WHERE $key=" . DB::escape($id);
 			DB::query($sql, "Can't update record status");

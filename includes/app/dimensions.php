@@ -49,7 +49,6 @@
 			DB::commit_transaction();
 		}
 
-
 		public static function get($id, $allow_null = false) {
 			$sql = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "The dimension could not be retrieved");
@@ -58,7 +57,6 @@
 			}
 			return DB::fetch($result);
 		}
-
 
 		public static function get_string($id, $html = false, $space = ' ') {
 			if ($id <= 0) {
@@ -74,17 +72,14 @@
 			return $dim;
 		}
 
-
 		public static function get_all() {
 			$sql = "SELECT * FROM dimensions ORDER BY date_";
 			return DB::query($sql, "The dimensions could not be retrieved");
 		}
 
-
 		public static function has_deposits($id) {
 			return Dimensions::has_payments($id);
 		}
-
 
 		public static function has_payments($id) {
 			$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
@@ -98,20 +93,17 @@
 			return ($result['closed'] == '1');
 		}
 
-
 		public static function close($id) {
 			$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not close dimension");
 		}
-
 
 		public static function reopen($id) {
 			$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
 			DB::query($sql, "could not reopen dimension");
 		}
 
-
-		public 	function display_balance($id, $from, $to) {
+		public static function display_balance($id, $from, $to) {
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
 			$sql
@@ -125,8 +117,8 @@
 				Errors::warning(_("There are no transactions for this dimension for the selected period."));
 			} else {
 				Display::heading(_("Balance for this Dimension"));
-				br();
-				start_table(Config::get('tables_style'));
+				Display::br();
+				start_table('tablestyle');
 				$th = array(_("Account"), _("Debit"), _("Credit"));
 				table_header($th);
 				$total = $k = 0;
@@ -134,12 +126,12 @@
 				{
 					alt_table_row_color($k);
 					label_cell($myrow["account"] . " " . $myrow['account_name']);
-					Display::debit_or_credit_cells($myrow["amt"]);
+					debit_or_credit_cells($myrow["amt"]);
 					$total += $myrow["amt"];
 					end_row();
 				}
 				start_row();
-				label_cell("<b>" . _("Balance") . "</b>");
+				label_cell("<span class='bold'>" . _("Balance") . "</span>");
 				if ($total >= 0) {
 					amount_cell($total, true);
 					label_cell("");
@@ -152,6 +144,48 @@
 			}
 		}
 
+		// DIMENSIONS
+		public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
+			$sql = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
+			$options = array(
+				'order' => 'reference', 'spec_option' => $no_option ? $showname :
+				 false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false);
+			if (!$showclosed) {
+				$options['where'][] = "closed=0";
+			}
+			if ($showtype) {
+				$options['where'][] = "type_=$showtype";
+			}
+			return select_box($name, $selected_id, $sql, 'id', 'ref', $options);
+		}
+
+		public static function cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo Dimensions::select($name, $selected_id, $no_option, $showname, $submit_on_change, $showclosed, $showtype);
+			echo "</td>\n";
+		}
+
+		public static function select_row($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
+			echo "<tr><td class='label'>$label</td>";
+			Dimensions::cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
+			echo "</tr>\n";
+		}
+
+		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+			if ($type == ST_DIMENSION) {
+				$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
+			}
+			else {
+				return null;
+			}
+			if ($label == "") {
+				$label = $trans_no;
+			}
+			return Display::viewer_link($label, $viewer, $class, $id, $icon);
+		}
 	}
 
 ?>

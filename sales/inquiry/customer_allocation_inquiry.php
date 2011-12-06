@@ -21,12 +21,12 @@
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	start_form();
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+	Debtor_UI::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 	date_cells(_("from:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
-	cust_allocations_list_cells(_("Type:"), 'filterType', null);
+	Debtor_UI::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->global_customer = $_POST['customer_id'];
@@ -40,7 +40,7 @@
 
 	function order_link($row)
 		{
-			return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
+			return $row['order_'] > 0 ? Debtor_UI::trans_view(ST_SALESORDER, $row['order_']) : "";
 		}
 
 	function systype_name($dummy, $type)
@@ -51,7 +51,7 @@
 
 	function view_link($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function due_date($row)
@@ -66,14 +66,14 @@
 
 	function alloc_link($row)
 		{
-			$link = pager_link(_("Allocation"),
+			$link = DB_Pager::link(_("Allocation"),
 			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 			if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
 				/*its a credit note which could have an allocation */
 				return $link;
 			} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
 			) {
-				/*its a receipt  which could have an allocation*/
+				/*its a receipt which could have an allocation*/
 				return $link;
 			} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
 				/*its a negative receipt */
@@ -99,7 +99,7 @@
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql = "SELECT
-  		trans.type,
+ 		trans.type,
 		trans.trans_no,
 		trans.reference,
 		trans.order_,
@@ -107,17 +107,17 @@
 		trans.due_date,
 		debtor.name,
 		debtor.curr_code,
-    	(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_freight
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-    	FROM debtor_trans as trans, debtors_master as debtor
-    	WHERE debtor.debtor_no = trans.debtor_no
+ 	FROM debtor_trans as trans, debtors_master as debtor
+ 	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
 				+ trans.ov_freight_tax + trans.ov_discount != 0)
-    		AND trans.tran_date >= '$data_after'
-    		AND trans.tran_date <= '$date_to'";
+ 		AND trans.tran_date >= '$data_after'
+ 		AND trans.tran_date <= '$date_to'";
 	if ($_POST['customer_id'] != ALL_TEXT) {
 		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
 	}
@@ -158,7 +158,7 @@
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 ?>

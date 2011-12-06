@@ -179,7 +179,7 @@
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables_style'));
+		start_table('tablestyle');
 		$th = array(
 			_("Company"), _("Database Host"), _("Database User"),
 			_("Database Name"), _("Table Pref"), _("Default"), "", ""
@@ -247,7 +247,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];
@@ -276,7 +276,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 		end_table();
 		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
-		echo "<center><input  type='button' style='width:150px' value='" . _("Save") . "'></center>";
+		echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
 		end_form();
 	}
 
@@ -292,7 +292,7 @@
 	}
 
 	display_companies();
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
+	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
 
 	end_page();

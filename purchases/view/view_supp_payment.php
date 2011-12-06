@@ -17,7 +17,7 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	$receipt = Purch_Trans::get($trans_no, ST_SUPPAYMENT);
-	$company_currency = Banking::get_company_currency();
+	$company_currency = Bank_Currency::for_company();
 	$show_currencies = false;
 	$show_both_amounts = false;
 	if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency)) {
@@ -27,10 +27,10 @@
 		$show_currencies = true;
 		$show_both_amounts = true;
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	Display::heading(_("Payment to Supplier") . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style2') . " width=90%");
+	start_table('tablestyle2 width90');
 	start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
 	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");

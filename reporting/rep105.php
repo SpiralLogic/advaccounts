@@ -27,25 +27,25 @@
 		$sql
 		 = "SELECT sales_orders.order_no,
 				sales_orders.debtor_no,
-                sales_orders.branch_code,
-                sales_orders.customer_ref,
-                sales_orders.ord_date,
-                sales_orders.from_stk_loc,
-                sales_orders.delivery_date,
-                sales_order_details.stk_code,
-                stock_master.description,
-                stock_master.units,
-                sales_order_details.quantity,
-                sales_order_details.qty_sent
-            FROM sales_orders
-            	INNER JOIN sales_order_details
-            	    ON (sales_orders.order_no = sales_order_details.order_no
-            	    AND sales_orders.trans_type = sales_order_details.trans_type
-            	    AND sales_orders.trans_type = " . ST_SALESORDER . ")
-            	INNER JOIN stock_master
-            	    ON sales_order_details.stk_code = stock_master.stock_id
-            WHERE sales_orders.ord_date >='$fromdate'
-                AND sales_orders.ord_date <='$todate'";
+ sales_orders.branch_code,
+ sales_orders.customer_ref,
+ sales_orders.ord_date,
+ sales_orders.from_stk_loc,
+ sales_orders.delivery_date,
+ sales_order_details.stk_code,
+ stock_master.description,
+ stock_master.units,
+ sales_order_details.quantity,
+ sales_order_details.qty_sent
+ FROM sales_orders
+ 	INNER JOIN sales_order_details
+ 	 ON (sales_orders.order_no = sales_order_details.order_no
+ 	 AND sales_orders.trans_type = sales_order_details.trans_type
+ 	 AND sales_orders.trans_type = " . ST_SALESORDER . ")
+ 	INNER JOIN stock_master
+ 	 ON sales_order_details.stk_code = stock_master.stock_id
+ WHERE sales_orders.ord_date >='$fromdate'
+ AND sales_orders.ord_date <='$todate'";
 		if ($category > 0) {
 			$sql .= " AND stock_master.category_id=" . DB::escape($category);
 		}
@@ -118,23 +118,23 @@
 			1 => array(
 				'text' => _('Period'),
 				'from' => $from,
-				'to'   => $to),
+				'to' => $to),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'   => ''),
+				'to' => ''),
 			3 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to'   => ''),
+				'to' => ''),
 			4 => array(
 				'text' => _('Selection'),
 				'from' => $back,
-				'to'   => '')
+				'to' => '')
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-		$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
+		$rep = new ADVReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();
@@ -153,7 +153,7 @@
 					$rep->NewLine();
 				}
 				$rep->TextCol(0, 1, $myrow['order_no']);
-				$rep->TextCol(1, 2, Sales_Debtor::get_name($myrow['debtor_no']));
+				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_no']));
 				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_code']));
 				$rep->TextCol(3, 4, $myrow['customer_ref']);
 				$rep->DateCol(4, 5, $myrow['ord_date'], true);

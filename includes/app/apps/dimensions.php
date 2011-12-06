@@ -13,7 +13,7 @@
 		function __construct() {
 			global $installed_extensions;
 			$dim = DB_Company::get_pref('use_dimension');
-			parent::__construct("proj", _($this->help_context = "&Dimensions"), $dim);
+			parent::__construct("Dimensions", _($this->help_context = "&Dimensions"), $dim);
 
 			if ($dim > 0) {
 				$this->add_module(_("Transactions"));
@@ -36,7 +36,7 @@
 				if (count($installed_extensions) > 0) {
 					foreach ($installed_extensions as $mod)
 					{
-						if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "proj") {
+						if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "dimensions") {
 							$this->add_rapp_function(2, $mod["title"],
 							 "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
 								isset($mod["access"]) ? $mod["access"] : 'SA_OPEN');

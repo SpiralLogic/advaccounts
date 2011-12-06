@@ -55,31 +55,27 @@
 			| \xEF\xBB[\x80-\xBC]														# AL
 			| \xD9[\xA0-\xA9\xAB\xAC]												# AN
 			)/x");
-	if (!class_exists('TCPDF', false)) {
-		include(dirname(__FILE__) . DS . 'tcpdf.php');
-	}
 	class Cpdf extends TCPDF
 	{
-		function __construct($pageSize = 'A4', $l = array(), $pageOrientation = 'P')
-			{
-				if (!isset($l['a_meta_charset'])) {
-					$l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
-				}
-				$enc = $l['a_meta_charset'];
-				$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
-				if ($uni) {
-					ini_set("memory_limit", "48M");
-				}
-				parent::__construct($pageOrientation, 'pt', $pageSize, $uni, $enc);
-				$this->setLanguageArray($l);
-				$this->setPrintHeader(false);
-				$this->setPrintFooter(false);
-				$this->setPDFVersion("1.3");
-				$this->setAutoPageBreak(0);
-				$this->AddPage();
-				$this->SetLineWidth(1);
-				$this->cMargin = 0;
+		function __construct($pageSize = 'A4', $l = array(), $pageOrientation = 'P') {
+			if (!isset($l['a_meta_charset'])) {
+				$l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
 			}
+			$enc = $l['a_meta_charset'];
+			$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
+			if ($uni) {
+				ini_set("memory_limit", "48M");
+			}
+			parent::__construct($pageOrientation, 'pt', $pageSize, $uni, $enc);
+			$this->setLanguageArray($l);
+			$this->setPrintHeader(false);
+			$this->setPrintFooter(false);
+			$this->setPDFVersion("1.3");
+			$this->setAutoPageBreak(0);
+			$this->AddPage();
+			$this->SetLineWidth(1);
+			$this->cMargin = 0;
+		}
 
 		// $fontname should be a standard PDF font (like 'times', 'helvetica' or 'courier')
 		// or one that's been installed on your system.  An empty string can also be used
@@ -95,112 +91,103 @@
 		//      * I: italic
 		//      * U: underline
 		//      * D: line trough (aka "strike through")
-		function selectFont($fontname, $style = '')
-			{
-				// Parse the style - check for special cases, otherwise leave as-is
-				if ($style == 'italic') {
-					$style = 'i';
-				} elseif ($style == 'bold') {
-					$style = 'b';
-				}
-				// Parse the fontname
-				if ($fontname != '') {
-					$fontname = basename($fontname);
-				}
-				if ($fontname == '') {
-					if ($this->isunicode) {
-						switch ($this->l['a_meta_language']) {
-							case "ar_EG" :
-								$fontname = "ae_tholoth";
-								break;
-							case "zh_CN" :
-								$fontname = "gbsn00lp";
-								break;
-							case "zh_TW" :
-								$fontname = "chinese_traditional_cid0";
-								break;
-							default :
-								$fontname = "dejavu";
-								break;
-						}
-					} elseif ($this->encoding === "ISO-8859-2") {
-						switch ($this->l['a_meta_language']) {
-							default :
-								$fontname = "freesans";
-								break;
-						}
-					} elseif ($this->encoding === "ISO-8859-5") {
-						switch ($this->l['a_meta_language']) {
-							default :
-								$fontname = "freesans5";
-								break;
-						}
+		function selectFont($fontname, $style = '') {
+			// Parse the style - check for special cases, otherwise leave as-is
+			if ($style == 'italic') {
+				$style = 'i';
+			} elseif ($style == 'bold') {
+				$style = 'b';
+			}
+			// Parse the fontname
+			if ($fontname != '') {
+				$fontname = basename($fontname);
+			}
+			if ($fontname == '') {
+				if ($this->isunicode) {
+					switch ($this->l['a_meta_language']) {
+						case "ar_EG" :
+							$fontname = "ae_tholoth";
+							break;
+						case "zh_CN" :
+							$fontname = "gbsn00lp";
+							break;
+						case "zh_TW" :
+							$fontname = "chinese_traditional_cid0";
+							break;
+						default :
+							$fontname = "helvetica";
+							break;
 					}
-					// else use built-in adobe fonts helvetica.
+				} elseif ($this->encoding === "ISO-8859-2") {
+					switch ($this->l['a_meta_language']) {
+						default :
+							$fontname = "freesans";
+							break;
+					}
+				} elseif ($this->encoding === "ISO-8859-5") {
+					switch ($this->l['a_meta_language']) {
+						default :
+							$fontname = "freesans5";
+							break;
+					}
 				}
-				$this->SetFont($fontname, $style);
+				// else use built-in adobe fonts helvetica.
 			}
+			$this->SetFont($fontname, $style);
+		}
 
-		function Header1()
-			{
-			}
+		function Header1() {
+		}
 
-		function Footer()
-			{
-			}
+		function Footer() {
+		}
 
-		function newPage()
-			{
-				parent::AddPage();
-			}
+		function newPage() {
+			parent::AddPage();
+		}
 
-		function line($x1, $y1, $x2, $y2, $style = array())
-			{
-				parent::Line($x1, $this->h - $y1, $x2, $this->h - $y2, $style);
-			}
+		function line($x1, $y1, $x2, $y2, $style = array()) {
+			parent::Line($x1, $this->h - $y1, $x2, $this->h - $y2, $style);
+		}
 
-		function rectangle($x, $y, $w, $h, $style = '', $border_style = array(), $fill_color = array())
-			{
-				parent::Rect($x, $this->h - $y, $w, $h, $style, $border_style, $fill_color);
-			}
+		function rectangle($x, $y, $w, $h, $style = '', $border_style = array(), $fill_color = array()) {
+			parent::Rect($x, $this->h - $y, $w, $h, $style, $border_style, $fill_color);
+		}
 
 		function addText($xb, $yb, $size, $txt) //,$angle=0,$wordSpaceAdjust=0)
-			{
-				if ($this->isunicode && $this->encoding != "UTF-8") {
-					$txt = iconv($this->encoding, "UTF-8", $txt);
-				}
-				$this->SetFontSize($size);
-				$this->Text($xb, $this->h - $yb, $txt);
+		{
+			if ($this->isunicode && $this->encoding != "UTF-8") {
+				$txt = iconv($this->encoding, "UTF-8", $txt);
 			}
+			$this->SetFontSize($size);
+			$this->Text($xb, $this->h - $yb, $txt);
+		}
 
-		function addInfo($label, $value)
-			{
-				if ($label == 'Title') {
-					$this->SetTitle($value);
-				}
-				if ($label == 'Subject') {
-					$this->SetSubject($value);
-				}
-				if ($label == 'Creator') {
-					// The Creator info in source is not exactly it should be ;)
-					$value = str_replace("ros.co.nz", "tcpdf.org", $value);
-					$value = str_replace("R&OS", "", $value);
-					$this->SetCreator($value);
-				}
-				if ($label == 'Author') {
-					$this->SetAuthor($value);
-				}
+		function addInfo($label, $value) {
+			if ($label == 'Title') {
+				$this->SetTitle($value);
 			}
+			if ($label == 'Subject') {
+				$this->SetSubject($value);
+			}
+			if ($label == 'Creator') {
+				// The Creator info in source is not exactly it should be ;)
+				$value = str_replace("ros.co.nz", "tcpdf.org", $value);
+				$value = str_replace("R&OS", "", $value);
+				$this->SetCreator($value);
+			}
+			if ($label == 'Author') {
+				$this->SetAuthor($value);
+			}
+		}
 
-		function addJpegFromFile($img, $x, $y, $w = 0, $h = 0)
-			{
-				$this->Image($img, $x, $this->h - $y - $h, $w, $h);
-			}
+		function addJpegFromFile($img, $x, $y, $w = 0, $h = 0) {
+			$this->Image($img, $x, $this->h - $y - $h, $w, $h);
+		}
 
-		function addPngFromFile($img, $x, $y, $w = 0, $h = 0)
-			{
-				$this->Image($img, $x, $this->h - $y - $h, $w, $h);
-			}
+		function addPngFromFile($img, $x, $y, $w = 0, $h = 0) {
+			$this->Image($img, $x, $this->h - $y - $h, $w, $h);
+		}
 
 		/*
 	 * Next Two functions are adopted from R&OS pdf class
@@ -208,10 +195,9 @@
 		/**
 		 * draw a part of an ellipse
 		 */
-		function partEllipse($x0, $y0, $astart, $afinish, $r1, $r2 = 0, $angle = 0, $nSeg = 8)
-			{
-				$this->ellipse($x0, $y0, $r1, $r2, $angle, $nSeg, $astart, $afinish, 0);
-			}
+		function partEllipse($x0, $y0, $astart, $afinish, $r1, $r2 = 0, $angle = 0, $nSeg = 8) {
+			$this->ellipse($x0, $y0, $r1, $r2, $angle, $nSeg, $astart, $afinish, 0);
+		}
 
 		/**
 		 * draw an ellipse
@@ -223,76 +209,71 @@
 		 * nSeg is not allowed to be less than 2, as this will simply draw a line (and will even draw a
 		 * pretty crappy shape at 2, as we are approximating with bezier curves.
 		 */
-		function ellipse($x0, $y0, $r1, $r2 = 0, $angle = 0, $nSeg = 8, $astart = 0, $afinish = 360, $close = 1, $fill = 0)
-			{
-				parent::Ellipse($x0, $y0, $r1, $r2, $angle, $astart . $afinish, ($close ? 'C' : ''), "", "", $nSeg);
-			}
+		function ellipse($x0, $y0, $r1, $r2 = 0, $angle = 0, $nSeg = 8, $astart = 0, $afinish = 360, $close = 1, $fill = 0) {
+			parent::Ellipse($x0, $y0, $r1, $r2, $angle, $astart . $afinish, ($close ? 'C' : ''), "", "", $nSeg);
+		}
 
-		function Stream()
-			{
-				parent::Output('', 'I');
-			}
+		function Stream() {
+			parent::Output('', 'I');
+		}
 
-		function calcTextWrap($txt, $width, $spacebreak = false)
-			{
-				$ret = "";
-				$txt2 = $txt;
-				$w = $this->GetStringWidth($txt);
-				if ($w > $width && $w > 0 && $width != 0) {
-					$n = strlen($txt);
-					$k = intval($n * $width / $w);
-					if ($k > 0 && $k < $n) {
-						$txt2 = substr($txt, 0, $k);
-						if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
-							$txt2 = substr($txt2, 0, $pos);
-							$ret = substr($txt, $pos + 1);
-						} else {
-							$ret = substr($txt, $k);
-						}
+		function calcTextWrap($txt, $width, $spacebreak = false) {
+			$ret = "";
+			$txt2 = $txt;
+			$w = $this->GetStringWidth($txt);
+			if ($w > $width && $w > 0 && $width != 0) {
+				$n = strlen($txt);
+				$k = intval($n * $width / $w);
+				if ($k > 0 && $k < $n) {
+					$txt2 = substr($txt, 0, $k);
+					if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
+						$txt2 = substr($txt2, 0, $pos);
+						$ret = substr($txt, $pos + 1);
+					} else {
+						$ret = substr($txt, $k);
 					}
 				}
-				return array($txt2, $ret);
 			}
+			return array($txt2, $ret);
+		}
 
 		function addTextWrap($xb, $yb, $w, $h, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1,
-			$spacebreak = false)
-			{
-				$ret = "";
-				if (!$this->rtl) {
-					if ($align == 'right') {
-						$align = 'R';
-					} elseif ($align == 'left') {
-						$align = 'L';
-					} elseif ($align == 'center') {
-						$align = 'C';
-					} elseif ($align == 'justify') {
-						$align = 'J';
-					}
-				} else {
+			$spacebreak = false) {
+			$ret = "";
+			if (!$this->rtl) {
+				if ($align == 'right') {
 					$align = 'R';
+				} elseif ($align == 'left') {
+					$align = 'L';
+				} elseif ($align == 'center') {
+					$align = 'C';
+				} elseif ($align == 'justify') {
+					$align = 'J';
 				}
-				// If horizontal scaling was requested, check to see if we're trying to scale
-				// too much.  If so, cut back string first and then scale it.
-				$maxScaleFactor = 1.4;
-				if ($stretch == 1 || $stretch == 2) {
-					$txt = $this->calcTextWrap($txt, $w * $maxScaleFactor, $spacebreak);
-				} // Wrap text if stretching isn't turned on
-				else {
-					$txt = $this->calcTextWrap($txt, $w, $spacebreak);
-				}
-				$ret = $txt[1];
-				$txt = $txt[0];
-				$this->SetXY($xb, $this->h - $yb - $h);
-				$txt = parent::unhtmlentities($txt);
-				if ($this->isunicode && $this->encoding != "UTF-8") {
-					$txt = iconv($this->encoding, "UTF-8", $txt);
-				}
-				$this->Cell($w, $h, $txt, $border, 0, $align, $fill, $link, $stretch);
-				return $ret;
+			} else {
+				$align = 'R';
 			}
+			// If horizontal scaling was requested, check to see if we're trying to scale
+			// too much.  If so, cut back string first and then scale it.
+			$maxScaleFactor = 1.4;
+			if ($stretch == 1 || $stretch == 2) {
+				$txt = $this->calcTextWrap($txt, $w * $maxScaleFactor, $spacebreak);
+			} // Wrap text if stretching isn't turned on
+			else {
+				$txt = $this->calcTextWrap($txt, $w, $spacebreak);
+			}
+			$ret = $txt[1];
+			$txt = $txt[0];
+			$this->SetXY($xb, $this->h - $yb - $h);
+			$txt = parent::unhtmlentities($txt);
+			if ($this->isunicode && $this->encoding != "UTF-8") {
+				$txt = iconv($this->encoding, "UTF-8", $txt);
+			}
+			$this->Cell($w, $h, $txt, $border, 0, $align, $fill, $link, $stretch);
+			return $ret;
+		}
 
-		function Text($x, $y, $txt, $stroke = 0, $clip = false)
-			{
-				parent::Text($x, $y, parent::unhtmlentities($txt), $stroke, $clip);
-			}
+		function Text($x, $y, $txt, $stroke = 0, $clip = false) {
+			parent::Text($x, $y, parent::unhtmlentities($txt), $stroke, $clip);
+		}
 	} // end of class

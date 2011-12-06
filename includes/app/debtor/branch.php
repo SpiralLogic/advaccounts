@@ -6,7 +6,7 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Branch extends DB_abstract {
+	class Debtor_Branch extends DB_abstract {
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -108,12 +108,12 @@
 					payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
 					default_ship_via=" . DB::escape($this->default_ship_via) . ",
 					disable_trans=" . DB::escape($this->disable_trans) . ",
-		            group_no=" . DB::escape($this->group_no) . ",
-		            notes=" . DB::escape($this->notes) . ",
-		            inactive=" . DB::escape($this->inactive) . ",
-		            branch_ref=" . DB::escape($this->branch_ref) . "
-		              WHERE branch_code =" . DB::escape($this->branch_code) . "
-		    	        AND debtor_no=" . DB::escape($this->debtor_no);
+		 group_no=" . DB::escape($this->group_no) . ",
+		 notes=" . DB::escape($this->notes) . ",
+		 inactive=" . DB::escape($this->inactive) . ",
+		 branch_ref=" . DB::escape($this->branch_ref) . "
+		 WHERE branch_code =" . DB::escape($this->branch_code) . "
+		 	 AND debtor_no=" . DB::escape($this->debtor_no);
 			DB::query($sql, "The customer could not be updated");
 			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Branch has been updated.");

@@ -24,10 +24,10 @@
 		$_POST['filterType'] = -1;
 	}
 	start_form();
-	start_table("class='tablestyle_noborder'");
+	start_table('tablestyle_noborder');
 	start_row();
 	ref_cells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
-	journal_types_list_cells(_("Type:"), "filterType");
+	GL_Journal::cells(_("Type:"), "filterType");
 	date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 	date_cells(_("To:"), 'ToDate');
 	check_cells(_("Show closed:"), 'AlsoClosed', null);
@@ -50,12 +50,12 @@
 
 	function view_link($row)
 	{
-		return ui_view::get_trans_view_str($row["type"], $row["type_no"]);
+		return GL_UI::trans_view($row["type"], $row["type_no"]);
 	}
 
 	function gl_link($row)
 	{
-		return ui_view::get_gl_view_str($row["type"], $row["type_no"]);
+		return GL_UI::view($row["type"], $row["type_no"]);
 	}
 
 	$editors = array(
@@ -64,28 +64,28 @@
 //	2=> Bank Deposit,
 //	4=> Funds Transfer,
 		ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
-//   11=>
+// 11=>
 // free hand (debtors_trans.order_==0)
 //	"/sales/credit_note_entry.php?ModifyCredit=%d"
 // credit invoice
 //	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
 //	 12=> Customer Payment,
 		ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
-//   16=> Location Transfer,
-//   17=> Inventory Adjustment,
-//   20=> Supplier Invoice,
-//   21=> Supplier Credit Note,
-//   22=> Supplier Payment,
-//   25=> Purchase Order Delivery,
-//   28=> Work Order Issue,
-//   29=> Work Order Production",
-//   35=> Cost Update,
+// 16=> Location Transfer,
+// 17=> Inventory Adjustment,
+// 20=> Supplier Invoice,
+// 21=> Supplier Credit Note,
+// 22=> Supplier Payment,
+// 25=> Purchase Order Delivery,
+// 28=> Work Order Issue,
+// 29=> Work Order Production",
+// 35=> Cost Update,
 	);
 	function edit_link($row)
 	{
 		global $editors;
 		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
-		 pager_link(
+		 DB_Pager::link(
 			 _("Edit"),
 			 sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			 ICON_EDIT
@@ -95,7 +95,7 @@
 	/*
 	 // Tom Hallman 11 Nov 2009
 	 // IF(gl.type = 1... statement is for deposits/payments that may not actually result
-	 // in a deposit, such as when a fix is made.  Without that statement (and the
+	 // in a deposit, such as when a fix is made. Without that statement (and the
 	 // joining of the bank_trans table), the fix deposit/payment amount would show up
 	 // incorrectly as only the positive side of the fix.
 	 $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
@@ -197,7 +197,7 @@
 	}
 	$table =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 

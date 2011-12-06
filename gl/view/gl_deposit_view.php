@@ -21,15 +21,15 @@
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}
 	$to_trans = DB::fetch($result);
-	$company_currency = Banking::get_company_currency();
+	$company_currency = Bank_Currency::for_company();
 	$show_currencies = false;
 	if ($to_trans['bank_curr_code'] != $company_currency) {
 		$show_currencies = true;
 	}
-	echo "<center>";
+	echo "<div class='center'>";
 	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
-	start_table(Config::get('tables_style') . "  width=90%");
+	start_table('tablestyle width90');
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
@@ -42,11 +42,11 @@
 	if ($show_currencies) {
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("From"), Banking::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']),
+	label_cells(_("From"), Bank::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']),
 		"class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 	end_row();
@@ -64,7 +64,7 @@
 		if ($show_currencies) {
 			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
-		start_table(Config::get('tables_style') . "  width=90%");
+		start_table('tablestyle width90');
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(
@@ -96,7 +96,7 @@
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
+		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class=right", "class=right");
 		end_table(1);
 		GL_Allocation::display($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}

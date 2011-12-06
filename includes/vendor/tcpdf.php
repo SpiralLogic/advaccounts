@@ -126,8 +126,8 @@
 	/**
 	 * main configuration file
 	 */
-	/** -------------------------------FrontAccounting 2.0	---------------------------
-	 * following changes are done for FrontAccounting 2.0 - Joe Hunt 06.08.2008
+	/** -------------------------------ADVAccounts 2.0	---------------------------
+	 * following changes are done for ADVAccounts 2.0 - Joe Hunt 06.08.2008
 	 * 1. /config/tcpdf_config.php is not included, commented out
 	 * 2. Following 3 defines instead:
 	 *	if (!defined("K_PATH_FONTS"))
@@ -141,7 +141,7 @@
 	 *	and
 	 *	if (!defined("K_RE_PATTERN_ARABIC"))
 	 * 4. Parameter $unicode in constructor renamed to $uni.
-	 * 5. Header function renamed to Header1 (due to conflict with FrontReport Header)
+	 * 5. Header function renamed to Header1 (due to conflict with ADVReport Header)
 	 * 6. Line 6190, SetLineWidth (cast of values to avoid problem in PHP 5.2.6
 	 * 7. Line 6261. ereg replaced by preg_match (with start and end delimiter)
 	 * 8. Lines 8642,9256 and 9348. split replaced by preg_split.
@@ -176,7 +176,6 @@
 	 */
 	require(dirname(__FILE__) . "/html_entity_decode_php4.php");
 
-	if (!class_exists('TCPDF',false)) {
 		/**
 		 * define default PDF document producer
 		 */
@@ -1108,7 +1107,7 @@
 			 * @param String  $encoding    charset encoding; default is UTF-8
 			 */
 			function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $uni = true, $encoding = "UTF-8") {
-				if ($uni) // Fix for FrontAccounting
+				if ($uni) // Fix for ADVAccounts
 				{
 					global $unicode, $unicode_mirror, $unicode_arlet, $laa_array, $diacritics;
 					include_once(dirname(__FILE__) . "/unicode_data2.php");
@@ -6576,7 +6575,7 @@
 				//Set line width
 				$this->LineWidth = $width;
 				//$this->linestyleWidth = sprintf('%.2f w', ($width * $this->k));
-				// FrontAccounting fix
+				// ADVAccounts fix
 				// My PHP 5.2.6 environment gave an "Unsupported operand types"
 				// error for the multiplication on the next line some of the
 				// time when this method is called - I debugged and sometimes
@@ -10980,7 +10979,7 @@
 				}
 			}
 		} // END OF TCPDF CLASS
-	}
+
 	//============================================================+
 	// END OF FILE
 	//============================================================+

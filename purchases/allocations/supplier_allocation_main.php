@@ -19,11 +19,11 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
-	echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
+	echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
+	echo Purch_UI::suppliers('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
-	echo "</center><br><br>";
+	echo "</div><br><br>";
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
 		unset($_POST['supplier_id']);
@@ -45,12 +45,12 @@
 
 	function trans_view($trans)
 		{
-			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 		}
 
 	function alloc_link($row)
 		{
-			return pager_link(_("Allocate"),
+			return DB_Pager::link(_("Allocate"),
 			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		}
 
@@ -83,7 +83,7 @@
 	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	end_form();
 	end_page();
 ?>

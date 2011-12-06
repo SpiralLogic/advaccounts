@@ -6,45 +6,73 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache {
+	class Cache
+	{
 		/**
 		 * @var Memcached
 		 */
-		protected static $instance = null;
+		protected static $i = null;
+		/**
+		 * @var bool
+		 */
+		protected static $connected = false;
 
 		/**
 		 * @static
 		 * @return Memcached
 		 */
-		protected static function _i() {
-			if (static::$instance === null) {
-				static::$instance = new Memcached('ADV');
-				static::$instance->addServer('127.0.0.1', 11211);
-				if (isset($_GET['reload_config'])) static::$instance->flush(0);
+		protected static function i() {
+			if (static::$i === null) {
+				if (class_exists('Memcached', false)) {
+					static::$i = new Memcached('ADV');
+					static::$connected = static::$i->addServer('127.0.0.1', 11211);
+					static::$i->setOption(Memcached::OPT_PREFIX_KEY, DOCROOT);
+					if (static::$connected && isset($_GET['reload_config'])) {
+						static::$i->flush(0);
+					}
+				}
 			}
-			return static::$instance;
+			return (static::$connected) ? static::$i : false;
 		}
 
 		/**
 		 * @static
 		 *
-		 * @param $key
-		 * @param $value
+		 * @param		 $key
+		 * @param		 $value
+		 * @param int $expires
 		 *
 		 * @return mixed
 		 */
-		public static function set($key, $value,$expires=86400) {
-			static::_i()->set($key, $value,time() +$expires);
+		public static function set($key, $value, $expires = 86400) {
+			if (static::i() !== false) {
+				static::i()->set($key, $value, time() + $expires);
+			}
+			elseif (class_exists('Session', false)) {
+				$_SESSION['cache'][$key] = $value;
+			}
 			return $value;
 		}
 
 		/**
 		 * @static
+		 *
 		 * @param $key
+		 *
 		 * @return mixed
 		 */
 		public static function get($key) {
-			return static::_i()->get($key);
+			if (static::i() !== false) {
+				$result = static::i()->get($key);
+				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
+			}
+			elseif (class_exists('Session', false)) {
+				if (!isset($_SESSION['cache'])) $_SESSION['cache']=array();
+				$result = $_SESSION['cache'][$key] ;
+			} else {
+				$result = false;
+			}
+			return $result;
 		}
 
 		/**
@@ -52,20 +80,19 @@
 		 * @return mixed
 		 */
 		public static function getStats() {
-			return static::_i()->getStats();
+			return (static::$connected) ? static::i()->getStats() : false;
 		}
 
 		/**
 		 * @static
-		 * @param $key
-		 * @param $value
+		 *
+		 * @param int $time
 		 */
-		public static function renew($key, $value) {
-			static::_i()->set($key, $value);
-		}
-
-
 		public static function flush($time = 0) {
-			static::_i()->flush($time);
+			if (static::i()) {
+				static::i()->flush($time);
+			} else {
+				$_SESSION['cache'] = array();
+			}
 		}
 	}

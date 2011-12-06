@@ -47,7 +47,7 @@
 			} else {
 				include_once(APPPATH . "reports/pdf.php");
 			}
-			$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", User::pagesize());
+			$rep = new ADVReport(_('GL Account Transactions'), "GLAccountTransactions", User::pagesize());
 			$dec = User::price_dec();
 			//$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
 			$cols = array(0, 65, 105, 125, 175, 230, 290, 345, 405, 465, 525);
@@ -130,7 +130,7 @@
 						if ($dim > 1) {
 							$rep->TextCol(5, 6, Dimensions::get_string($myrow['dimension2_id']));
 						}
-						$txt = Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false);
+						$txt = Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false);
 						$memo = $myrow['memo_'];
 						if ($txt != "") {
 							if ($memo != "") {

@@ -15,7 +15,6 @@
 	$page_security = 'SA_OPEN';
 
 	require_once("bootstrap.php");
-
 	$app = Session::i()->App;
 	Extensions::add_access();
 	if (Input::get('application')) {

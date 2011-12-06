@@ -68,9 +68,9 @@
 
 	function display_bom_items($selected_parent)
 	{
-		$result = Manufacturing::get_bom($selected_parent);
-		div_start('bom');
-		start_table(Config::get('tables_style') . "  width=60%");
+		$result = WO::get_bom($selected_parent);
+		Display::div_start('bom');
+		start_table('tablestyle width60');
 		$th = array(
 			_("Code"), _("Description"), _("Location"),
 			_("Work Centre"), _("Quantity"), _("Units"), '', ''
@@ -91,7 +91,7 @@
 			end_row();
 		} //END WHILE LIST LOOP
 		end_table();
-		div_end();
+		Display::div_end();
 	}
 
 
@@ -105,7 +105,7 @@
 		if ($selected_component != -1) {
 			$sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added'])
 			 . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
-			quantity= " . input_num('quantity') . "
+			quantity= " . Validation::input_num('quantity') . "
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			Errors::check_db_error("Could not update this bom component", $sql);
@@ -131,7 +131,7 @@
 					 = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . ","
 					 . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", "
-					 . input_num('quantity') . ")";
+					 . Validation::input_num('quantity') . ")";
 					DB::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
@@ -160,14 +160,14 @@
 	}
 
 	start_form();
-	start_form(false, true);
-	start_table("class='tablestyle_noborder'");
-	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+	start_form(false);
+	start_table('tablestyle_noborder');
+	Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
 	end_table();
-	br();
+	Display::br();
 	end_form();
 
 	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
@@ -180,7 +180,7 @@
 		display_bom_items($selected_parent);
 
 		echo '<br>';
-		start_table(Config::get('tables_style2'));
+		start_table('tablestyle2');
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
 				//editing a selected component from the link to the line item
@@ -201,7 +201,7 @@
 			start_row();
 			label_cell(_("Component:"));
 			echo "<td>";
-			echo stock_component_items_list('component', $selected_parent, null, false, true);
+			echo Item_UI::component('component', $selected_parent, null, false, true);
 			if (get_post('_component_update')) {
 				$Ajax->activate('quantity');
 			}
@@ -209,10 +209,10 @@
 			end_row();
 		}
 		hidden('stock_id', $selected_parent);
-		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
+		Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
 		$dec = Item::qty_dec(get_post('component'));
-		$_POST['quantity'] = Num::format(input_num('quantity', 1), $dec);
+		$_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		end_table(1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');

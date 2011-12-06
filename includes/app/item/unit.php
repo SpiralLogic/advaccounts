@@ -26,14 +26,14 @@ public static		function write($selected, $abbr, $description, $decimals)
 	 	abbr = " . DB::escape($abbr) . ",
 	 	name = " . DB::escape($description) . ",
 	 	decimals = " . DB::escape($decimals) . "
-        	WHERE abbr = " . DB::escape($selected);
+ 	WHERE abbr = " . DB::escape($selected);
 			}
 			else
 			{
 				$sql
 				 = "INSERT INTO item_units
 			(abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
-	  		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
+	 		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
 			}
 			DB::query($sql, "an item unit could not be updated");
 		}
@@ -87,4 +87,20 @@ public static		function write($selected, $abbr, $description, $decimals)
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
+
+			// STOCK UNITS
+		public static		function row($label, $name, $value = null, $enabled = true) {
+				$result = Item_Unit::get_all();
+				echo "<tr>";
+				if ($label != null) {
+					echo "<td class='label'>$label</td>\n";
+				}
+				echo "<td>";
+				while ($unit = DB::fetch($result)) {
+					$units[$unit['abbr']] = $unit['name'];
+				}
+				echo array_selector($name, $value, $units, array('disabled' => !$enabled));
+				echo "</td></tr>\n";
+			}
+
 	}

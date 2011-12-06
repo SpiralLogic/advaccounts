@@ -39,16 +39,16 @@
 
 	start_form();
 	if (Input::request('frame')) {
-		start_table("class='tablestyle_noborder' style='display:none;'");
+		start_table('tablestyle_noborder hidden');
 	} else {
-		start_table("class='tablestyle_noborder'");
+		start_table('tablestyle_noborder');
 	}
 	start_row();
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
-	locations_list_cells(_("into location:"), 'StockLocation', null, true);
-	stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
+	Inv_Location::cells(_("into location:"), 'StockLocation', null, true);
+	Item::cells(_("for item:"), 'SelectStockFromList', null, true);
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
@@ -65,12 +65,12 @@
 
 	function trans_view($trans)
 	{
-		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
 	}
 
 	function edit_link($row)
 	{
-		return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 	}
 
 	function prt_link($row)
@@ -94,9 +94,9 @@
 	function receive_link($row)
 	{
 		if ($row['Received'] > 0) {
-			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 		} elseif ($row['Invoiced'] > 0) {
-			return pager_link(
+			return DB_Pager::link(
 				_("Invoice"),
 			 "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE
 			);
@@ -138,8 +138,8 @@
 			$sql
 			 .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
-		  OR porder.requisition_no LIKE $ajaxsearch
-		   OR location.location_name LIKE $ajaxsearch)";
+		 OR porder.requisition_no LIKE $ajaxsearch
+		 OR location.location_name LIKE $ajaxsearch)";
 		}
 	} elseif (isset($order_number) && $order_number != "") {
 		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%', false, false);
@@ -148,7 +148,7 @@
 			$sql .= " AND porder.into_stock_location = ";
 			$sql .= ($_GET['NFY'] == 1) ? "'NFY'" : DB::escape($_POST['StockLocation'], false, false);
 		} else {
-			$data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
+			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 			$date_before = Dates::date2sql($_POST['OrdersToDate']);
 			$sql .= " AND porder.ord_date >= '$data_after'";
 			$sql .= " AND porder.ord_date <= '$date_before'";
@@ -199,9 +199,9 @@
 		$cols[_("Location")] = 'skip';
 	}
 
-	$table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
-	display_db_pager($table);
+	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
 	end_form();

@@ -158,18 +158,18 @@
 		}
 	}
 
-	start_form(true, true);
-	start_outer_table(Config::get('tables_style2'));
+	start_form(true);
+	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);
 	compress_list_row(_("Compression:"), 'comp');
-	submit_row('creat', _("Create Backup"), false, "colspan=2 align='center'", '', 'process');
+	submit_row('creat', _("Create Backup"), false, "colspan=2 class='center'", '', 'process');
 	table_section(2);
 	table_section_title(_("Backup scripts maintenance"));
 	start_row();
-	echo "<td style='padding-left:20px'align='left'>" . get_backup_file_combo() . "</td>";
-	echo "<td valign='top'>";
+	echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
+	echo "<td class='top'>";
 	start_table();
 	submit_row('view', _("View Backup"), false, '', '', true);
 	submit_row('download', _("Download Backup"), false, '', '', false);
@@ -182,7 +182,7 @@
 	echo "</td>";
 	end_row();
 	start_row();
-	echo "<td style='padding-left:20px' align='left'><input name='uploadfile' type='file'></td>";
+	echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
 	submit_cells('upload', _("Upload file"), '', '', true);
 	end_row();
 	end_outer_table();

@@ -55,7 +55,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if (count($installed_extensions) > 0) {
 				foreach ($installed_extensions as $mod)
 				{
-					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "Purchases")
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "purchases")
 						$this->add_rapp_function(2, $mod["title"],
 																		 "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
 																		 isset($mod["access"]) ? $mod["access"] : 'SA_OPEN');

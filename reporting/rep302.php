@@ -60,7 +60,7 @@
 			$date0 = date('Y-m-d', mktime(0, 0, 0, date('m') - 4, 1, date('Y')));
 			$sql
 			 = "SELECT SUM(CASE WHEN tran_date >= '$date0' AND tran_date < '$date1' THEN -qty ELSE 0 END) AS prd0,
-		   		SUM(CASE WHEN tran_date >= '$date1' AND tran_date < '$date2' THEN -qty ELSE 0 END) AS prd1,
+		 		SUM(CASE WHEN tran_date >= '$date1' AND tran_date < '$date2' THEN -qty ELSE 0 END) AS prd1,
 				SUM(CASE WHEN tran_date >= '$date2' AND tran_date < '$date3' THEN -qty ELSE 0 END) AS prd2,
 				SUM(CASE WHEN tran_date >= '$date3' AND tran_date < '$date4' THEN -qty ELSE 0 END) AS prd3,
 				SUM(CASE WHEN tran_date >= '$date4' AND tran_date <= '$date5' THEN -qty ELSE 0 END) AS prd4
@@ -132,7 +132,7 @@
 					'from' => $loc,
 					'to' => '')
 			);
-			$rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", User::pagesize());
+			$rep = new ADVReport(_('Inventory Planning Report'), "InventoryPlanning", User::pagesize());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
@@ -158,9 +158,9 @@
 					$loc_code = $location;
 				}
 				$custqty = Item::get_demand($trans['stock_id'], $loc_code);
-				$custqty += Manufacturing::get_demand_asm_qty($trans['stock_id'], $loc_code);
-				$suppqty = Manufacturing::get_on_porder_qty($trans['stock_id'], $loc_code);
-				$suppqty += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
+				$custqty += WO::get_demand_asm_qty($trans['stock_id'], $loc_code);
+				$suppqty = WO::get_on_porder_qty($trans['stock_id'], $loc_code);
+				$suppqty += WO::get_on_worder_qty($trans['stock_id'], $loc_code);
 				$period = getPeriods($trans['stock_id'], $trans['loc_code']);
 				$rep->NewLine();
 				$dec = Item::qty_dec($trans['stock_id']);

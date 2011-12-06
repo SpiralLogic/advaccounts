@@ -25,8 +25,8 @@
 				return false;
 			}
 			$sql = "INSERT INTO " . self::$dbTable . " (contact_id, contact_name, type,
-        message) VALUES (" . DB::escape($contact_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
-        " . DB::escape($message) . ")";
+ message) VALUES (" . DB::escape($contact_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
+ " . DB::escape($message) . ")";
 			DB::query($sql, "Couldn't insert contact log");
 			return DB::insert_id();
 		}
