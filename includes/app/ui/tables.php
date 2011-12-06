@@ -163,9 +163,9 @@
 	function table_section($number = 1, $width = false, $class = '') {
 		if ($number > 1) {
 			echo "</table>\n";
-			$width = ($width ? "width=$width" : "");
+			$width = ($width ? "width:$width" : "");
 			//echo "</td><td class='tableseparator' $width>\n"; // outer table
-			echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
+			echo "</td><td style='border-left:1px solid #cccccc; $width'>\n"; // outer table
 		}
 		echo "<table class='tablestyle_inner $class'>\n";
 	}

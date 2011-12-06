@@ -983,7 +983,7 @@
 			Display::heading($title);
 			Display::div_start('items_table');
 			if (count($_SESSION['Items']->line_items) > 0) {
-				start_outer_table('width90');
+				start_outer_table('center width90');
 				table_section(1);
 				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"),
 					"NewOrder=Yes&UseOrder=1' class='button'", true, true);
@@ -992,7 +992,7 @@
 					"NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 				end_outer_table(1);
 			}
-			start_table('tablestyle width90');
+			start_table('tablestyle center');
 			$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 			if ($order->trans_no == 0) {
 				unset($th[3]);

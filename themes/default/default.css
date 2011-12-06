@@ -753,6 +753,8 @@ table.tablestyle {
 	border-collapse: collapse;
 	border: 1px solid #e1e1e1;
 	margin:0 auto;
+	width:100%;
+
 }
 
 table.tablestyle td {

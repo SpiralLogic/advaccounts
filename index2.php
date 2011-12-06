@@ -6,8 +6,15 @@
 	 * Time: 6:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-phpinfo();
-/*	require_once('bootstrap.php');
+	ini_set('session.gc_maxlifetime', 36000); // 10hrs
+			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
+
+	ini_set('session.save_handler','memcached');
+
+	session_start();
+	phpinfo();
+	/*
+	require_once('bootstrap.php');
 	$filecsv = fopen(DOCROOT . '/upload/test.csv', 'r');
 
 	echo '<pre>';
