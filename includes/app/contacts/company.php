@@ -40,7 +40,8 @@
 				 		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
 				 		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
 											</div>';
-			$type = array_pop(explode('_', get_called_class()));
+			$type = explode('_', get_called_class());
+			$type = array_pop($type);
 			$details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
 			$type = strtolower($type);
 			$details->setTemplateData(($id) ? $company : '');

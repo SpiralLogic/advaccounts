@@ -926,7 +926,7 @@
 			}
 		}
 
-		function customer_to_order($order, $customer_id, $branch_id) {
+		public static 	function customer_to_order($order, $customer_id, $branch_id) {
 			$ret_error = "";
 			$myrow = Sales_Order::get_customer($customer_id);
 			$name = $myrow['name'];
@@ -1062,7 +1062,7 @@
 			end_row();
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
-			label_cells(_("Total Discount"), $total_discount, "colspan=$colspan style='text-align:right;'", "class=right");
+			label_cells(_("Total Discount"), $total_discount, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1073,12 +1073,12 @@
 JS;
 			JS::addLiveEvent('#discountall', 'click', $action);
 			end_row();
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", 2);
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right", 2);
 			$taxes = $order->get_taxes(Validation::input_num('freight_cost'));
 			$tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
 			$display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
 			start_row();
-			label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
+			label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right");
 			submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
 			end_row();
 			end_table();

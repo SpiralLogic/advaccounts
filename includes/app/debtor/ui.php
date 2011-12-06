@@ -9,7 +9,7 @@
 	class Debtor_UI
 	{
 		// BRANCHES
-		function branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		public static function branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			$sql = "SELECT branch_code, branch_ref FROM cust_branch
 			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 			if ($editkey) {
@@ -21,7 +21,7 @@
 				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
 
-		function branches_list_cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		public static function branches_list_cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -30,19 +30,19 @@
 			echo "</td>\n";
 		}
 
-		function branches_list_row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		public static function branches_list_row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Debtor_UI::branches_list_cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
 			echo "</tr>";
 		}
 
 		// CUSTOMERS
-		function credit_row($customer, $credit, $parms = '') {
+		public static function credit_row($customer, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " >" . Num::price_format($credit) . "</a>", $parms);
 		}
 
-		function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors_master ";
 			$mode = DB_Company::get_pref('no_customer_list');
 			if ($editkey) {
@@ -54,7 +54,7 @@
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}
 
-		function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -63,13 +63,13 @@
 			echo "</td>\n";
 		}
 
-		function select_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+		public static function select_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
 			echo Debtor_UI::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 			echo "</td>\n</tr>\n";
 		}
 
-		function allocations_select($label, $name, $selected = null) {
+		public static function allocations_select($label, $name, $selected = null) {
 			if ($label != null) {
 				label_cell($label);
 			}
@@ -80,7 +80,7 @@
 			echo "</td>\n";
 		}
 
-		function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "sales/view/";
 			switch ($type) {
 				case ST_SALESINVOICE:

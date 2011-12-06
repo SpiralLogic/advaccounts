@@ -219,7 +219,7 @@
 
 	start_form();
 	Bank_UI::header($_SESSION['pay_items']);
-	start_table('tablesstyle2 width90 pad10');
+	start_table('tablestyle2 width90 pad10');
 	start_row();
 	echo "<td>";
 	Bank_UI::items(
