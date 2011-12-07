@@ -27,7 +27,8 @@
 			if (static::$_i === null) {
 				static::$_i = new static;
 			}
-			return static::$_i;		}
+			return static::$_i;
+		}
 
 		/**
 		 * @static
@@ -38,12 +39,15 @@
 			session_destroy();
 		}
 
+		public static function regenerate() {
+			session_regenerate_id();
+		}
+
 		/**
 		 * @static
 		 *
 		 */
 		public static function hasLogin() {
-
 			static::i()->checkLogin();
 		}
 
@@ -70,22 +74,19 @@
 
 		/**
 		 *
- */
+		 */
 		final protected function __construct() {
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			if (!class_exists('Memcached',false) || !session_start()) {
-				ini_set('session.save_handler','files');
+			if (!class_exists('Memcached', false) || !session_start()) {
+				ini_set('session.save_handler', 'files');
 				session_start();
-			};
-
+			}
+			;
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
-					$this->showLogin();
 				}
-			}
-			else
-			{
+			} else {
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 			}
 			header("Cache-control: private");
@@ -128,74 +129,12 @@
 		}
 
 		/**
-		 *
-		 */
-		protected function checkLogin() {
-			// logout.php is the only page we should have always
-			// accessable regardless of access level and current login status.
-			$currentUser = User::get();
-			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-				$currentUser->timeout();
-				if (!$currentUser->logged_in()) {
-					$this->showLogin();
-				}
-				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"],
-					$_POST["user_name_entry_field"], $_POST["password"]);
-
-				// select full vs fallback ui mode on login
-				$currentUser->ui_mode = $_POST['ui_mode'];
-				if (!$succeed) {
-					// Incorrect password
-					$this->loginFail();
-				}
-				session_regenerate_id();
-				static::$lang->set_language($_SESSION['Language']->code);
-			} else {
-				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
-				}
-			}
-		}
-
-		/**
-		 *
-		 */
-		protected function showLogin() {
-			$Ajax = Ajax::i();
-			if (!Input::post("user_name_entry_field")) {
-				// strip ajax marker from uri, to force synchronous page reload
-				$_SESSION['timeout'] = array(
-					'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']),
-					'post' => $_POST);
-				require(DOCROOT . "access/login.php");
-				if (Ajax::in_ajax() || AJAX_REFERRER) {
-					$Ajax->activate('_page_body');
-				}
-				exit();
-			}
-		}
-
-		/**
-		 *
-		 */
-		protected function loginFail() {
-			header("HTTP/1.1 401 Authorization Required");
-			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
-			echo _("The user and password combination is not valid for the system.") . "<br><br>";
-			echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
-			echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
-			echo "</div>";
-			static::kill();
-			die();
-		}
-
-		/**
 		 * @param $var
 		 *
 		 * @return null
 		 */
 		public function __get($var) {
-			return isset($this->_session[$var]) ? $this->_session[$var]: null;
+			return isset($this->_session[$var]) ? $this->_session[$var] : null;
 		}
 
 		/**

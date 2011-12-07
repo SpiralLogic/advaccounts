@@ -19,8 +19,7 @@
 		public $menu;
 
 		public function __construct() {
-
-			Session::hasLogin();
+			static::checkLogin();
 			$installed_extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main Menu"));
 			$this->menu->add_item(_("Main Menu"), "index.php");
@@ -79,11 +78,78 @@
 		}
 
 		public static function init() {
+			require_once APPPATH . "main.php";
 			if (!isset($_SESSION["App"])) {
-
 				Session::i()->App = new advaccounting();
 			}
+			if (isset($_SESSION['HTTP_USER_AGENT'])) {
+				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
+					static::showLogin();
+				}
+			} else {
+				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
+			}
+			throw new Adv_Exception('test');
+			static::checkLogin();
+		}
 
+		/**
+		 *
+		 */
+		protected static function checkLogin() {
+			// logout.php is the only page we should have always
+			// accessable regardless of access level and current login status.
+			$currentUser = User::get();
+			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
+				$currentUser->timeout();
+				if (!$currentUser->logged_in()) {
+					static::showLogin();
+				}
+				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+				// select full vs fallback ui mode on login
+				$currentUser->ui_mode = $_POST['ui_mode'];
+				if (!$succeed) {
+					// Incorrect password
+					static::loginFail();
+				}
+				Session::regenerate();
+				Session::$lang->set_language($_SESSION['Language']->code);
+			} else {
+				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
+				}
+			}
+		}
+
+		/**
+		 *
+		 */
+		protected static function showLogin() {
+			$Ajax = Ajax::i();
+			if (!Input::post("user_name_entry_field")) {
+				// strip ajax marker from uri, to force synchronous page reload
+				$_SESSION['timeout'] = array(
+					'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST);
+				require(DOCROOT . "access/login.php");
+				if (Ajax::in_ajax() || AJAX_REFERRER) {
+					$Ajax->activate('_page_body');
+				}
+				exit();
+			}
+		}
+
+		/**
+		 *
+		 */
+		static function loginFail() {
+			header("HTTP/1.1 401 Authorization Required");
+			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
+			echo _("The user and password combination is not valid for the system.") . "<br><br>";
+			echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
+			echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
+			echo "</div>";
+			Session::kill();
+			die();
 		}
 
 		public static function write_extensions($extensions = null, $company = -1) {
