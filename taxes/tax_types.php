@@ -112,7 +112,7 @@
 		hidden('selected_id', $selected_id);
 	}
 	text_row_ex(_("Description:"), 'name', 50);
-	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", User::percent_dec());
+	small_amount_row(_("Default Rate:"), 'rate', '0', "", "%", User::percent_dec());
 	GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', null);
 	GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
 	end_table(1);
