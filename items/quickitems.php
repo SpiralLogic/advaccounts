@@ -50,7 +50,7 @@ JS;
 <table class="tableinfo marginauto" style="width:80%">
 <tr><td><label for="stock_id">Code:</label></td><td><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
-<tr><td ><label for="description">Description:</label></td><td><textarea id="description" rows="6" cols="36">\${description} </textarea></td></tr>
+<tr><td ><label for="long_description">Description:</label></td><td><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></td></tr>
 <tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
 <tr><td ><label for="uom">Units of Mesasure:</label><br></td><td><input id="uom" type="text" value="\${uom}" maxlength="10"></td></tr>
 </table></div><div class="center">
