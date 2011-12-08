@@ -37,15 +37,15 @@
 		$_SESSION['Items']->store();
 		exit();
 	}
-	if (Input::get('customer_id', Input::NUMERIC)) {
+	if (Input::get('customer_id', Input::NUMERIC)>-1) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		$Ajax->activate('customer_id');
 	}
-	if (Input::get('NewDelivery', Input::NUMERIC, 0) !== false) {
+	if (Input::get('NewDelivery')>-1) {
 		$page_title = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
-	if (Input::get('NewInvoice', Input::NUMERIC, 0) !== false) {
+	if (Input::get('NewInvoice')>-1) {
 		$page_title = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	} elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
