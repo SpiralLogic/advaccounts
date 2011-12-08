@@ -6,8 +6,7 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB
-	{
+	class DB {
 		/**
 		 *
 		 */
@@ -44,6 +43,7 @@
 		 * @var PDOStatement
 		 */
 		protected static $prepared = null;
+		protected static $debug = null;
 
 		/**
 		 *
@@ -173,7 +173,8 @@
 		 * @return bool|null|PDOStatement
 		 * @throws DB_Exception
 		 */
-		public static function prepare($sql) {
+		public static function prepare($sql, $debug = false) {
+			static::$debug = $debug;
 			try {
 				static::$prepared = static::_get()->prepare($sql);
 				$sql = static::$prepared->queryString;
@@ -182,7 +183,7 @@
 				}
 				foreach (static::$data as $k => $v) {
 					static::$prepared->bindValue($k + 1, $v[0], $v[1]);
-					if (Config::get('debug_sql')) {
+					if ($debug || Config::get('debug_sql')) {
 						$sql = preg_replace('/\?/i', " '$v[0]' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 					}
 				}
@@ -192,7 +193,7 @@
 			catch (PDOException $e) {
 				$error = '<p>DATABASE ERROR (prepared): ' . $e->getMessage() . ' <pre>' . $e->getTraceAsString()
 				 . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
-				if (Config::get('debug_sql')) {
+				if ($debug || Config::get('debug_sql')) {
 					FB::info(static::$queryString);
 				}
 				Errors::error($error);
@@ -212,7 +213,15 @@
 				return false;
 			}
 			try {
+
 				static::$prepared->execute($data);
+				if (static::$debug) {
+					$sql = static::$queryString;
+					foreach ($data as $k => $v) {
+						$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+					}
+					FB::info($sql);
+				}
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
 			catch (PDOException $e) {
