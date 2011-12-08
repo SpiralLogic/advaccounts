@@ -94,7 +94,7 @@
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
 																						 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
-				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parensharedt().css("white-space","nowrap"); ';
+				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {
 				HTML::td()->td(true);

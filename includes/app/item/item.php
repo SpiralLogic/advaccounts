@@ -34,6 +34,7 @@
 		public $name;
 		public $category_id = 6;
 		public $description;
+		public $long_description;
 		public $uom;
 		public $units = 'ea';
 		public $salePrices = array();
@@ -48,6 +49,7 @@
 
 			parent::__construct($id);
 			$this->uom = &$this->units;
+			$this->name = &$this->description;
 		}
 
 		protected function _read($id = 0) {
