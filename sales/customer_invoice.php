@@ -426,7 +426,7 @@
 	}
 	$colspan = 9;
 	start_row();
-	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
+	label_cell(_("Shipping Cost"), "colspan=$colspan class='right'");
 	if (!$viewing) {
 		small_amount_cells(null, 'ChargeFreightCost', null);
 	} else {
@@ -438,11 +438,11 @@
 	end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right", $is_batch_invoice ? 2 : 0);
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Invoice Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Invoice Total"), $display_total, "colspan=$colspan class='right'", "class=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);
 	Display::div_end();
 	start_table('tablestyle2');

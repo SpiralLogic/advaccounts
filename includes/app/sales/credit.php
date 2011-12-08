@@ -373,19 +373,19 @@
 			}
 			$colspan = 6;
 			$display_sub_total = Num::price_format($subtotal);
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right", 2);
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class=right", 2);
 			if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
 				$_POST['ChargeFreightCost'] = 0;
 			}
 			start_row();
-			label_cell(_("Shipping"), "colspan=$colspan style='text-align:right;'");
+			label_cell(_("Shipping"), "colspan=$colspan class='right bold'");
 			small_amount_cells(null, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
 			label_cell('', 'colspan=2');
 			end_row();
 			$taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 			$tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
 			$display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
-			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class='amount'", 2);
+			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right bold'", "class='amount'", 2);
 			end_table();
 			Display::div_end();
 		}
