@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -42,8 +43,6 @@
 		 *
 		 */
 		static function init() {
-			set_error_handler('adv_error_handler');
-			set_exception_handler('adv_exception_handler');
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
@@ -129,7 +128,7 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
 			if (static::$fatal) {
-				exit(static::format());
+				//	exit(static::format());
 			}
 		}
 
@@ -141,9 +140,7 @@
 		 */
 		static function format() {
 			$msg_class = array(
-				E_USER_ERROR => array('ERROR', 'err_msg'),
-				E_USER_WARNING => array('WARNING', 'warn_msg'),
-				E_USER_NOTICE => array('USER', 'note_msg'));
+				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg'));
 			$content = '';
 			if (count(static::$messages) == 0) {
 				return '';
@@ -151,7 +148,6 @@
 			foreach (static::$messages as $msg) {
 				$type = E_USER_NOTICE;
 				$str = $msg['message'];
-
 				if ($msg['type'] <= E_USER_ERROR && $msg['type'] != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$type = E_USER_ERROR;
@@ -256,18 +252,11 @@
 		 */
 		protected static function prepare_exception(\Exception $e) {
 			$data = array(
-				'type' => $e->getCode(),
-				'message' => get_class($e) . ' ' . $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine(),
-				'backtrace' => $e->getTrace());
-			foreach ($data['backtrace'] as $key => $trace)
-			{
+				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace());
+			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
-				}
-				elseif ($trace['file'] == COREPATH . 'errors.php')
-				{
+				} elseif ($trace['file'] == COREPATH . 'errors.php') {
 					unset($data['backtrace'][$key]);
 				}
 			}
