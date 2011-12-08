@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -127,9 +126,7 @@
 		static function exception_handler(Exception $e) {
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
-			if (static::$fatal) {
-				//	exit(static::format());
-			}
+
 		}
 
 		//	Formats system messages before insert them into message <div>
@@ -146,12 +143,13 @@
 				return '';
 			}
 			foreach (static::$messages as $msg) {
-				$type = E_USER_NOTICE;
+				$type = $msg['type'];
 				$str = $msg['message'];
-				if ($msg['type'] <= E_USER_ERROR && $msg['type'] != null) {
+				if ($type < E_USER_ERROR && $type != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$type = E_USER_ERROR;
-				} elseif ($msg['type'] > E_USER_ERROR && $msg['type'] < E_USER_NOTICE) {
+				}
+				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];

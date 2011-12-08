@@ -10,8 +10,7 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-	class advaccounting
-	{
+	class advaccounting {
 		public $user;
 		public $settings;
 		public $applications;
@@ -19,7 +18,6 @@
 		public $menu;
 
 		public function __construct() {
-			static::checkLogin();
 			$installed_extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main Menu"));
 			$this->menu->add_item(_("Main Menu"), "index.php");
@@ -89,7 +87,6 @@
 			} else {
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 			}
-			throw new Adv_Exception('test');
 			static::checkLogin();
 		}
 
@@ -101,20 +98,22 @@
 			// accessable regardless of access level and current login status.
 			$currentUser = User::get();
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-				$currentUser->timeout();
-				if (!$currentUser->logged_in()) {
+
+				if (Input::post("user_name_entry_field")) {
+
+					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+					// select full vs fallback ui mode on login
+					$currentUser->ui_mode = $_POST['ui_mode'];
+					if (!$succeed) {
+						// Incorrect password
+						static::loginFail();
+					}
+					Session::regenerate();
+					Session::$lang->set_language($_SESSION['Language']->code);
+				} elseif (!$currentUser->logged_in()) {
 					static::showLogin();
 				}
-				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
-				// select full vs fallback ui mode on login
-				$currentUser->ui_mode = $_POST['ui_mode'];
-				if (!$succeed) {
-					// Incorrect password
-					static::loginFail();
-				}
-				Session::regenerate();
-				Session::$lang->set_language($_SESSION['Language']->code);
-			} else {
+
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
@@ -126,16 +125,14 @@
 		 */
 		protected static function showLogin() {
 			$Ajax = Ajax::i();
-			if (!Input::post("user_name_entry_field")) {
-				// strip ajax marker from uri, to force synchronous page reload
-				$_SESSION['timeout'] = array(
-					'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST);
-				require(DOCROOT . "access/login.php");
-				if (Ajax::in_ajax() || AJAX_REFERRER) {
-					$Ajax->activate('_page_body');
-				}
-				exit();
+			// strip ajax marker from uri, to force synchronous page reload
+			$_SESSION['timeout'] = array(
+				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST);
+			require(DOCROOT . "access/login.php");
+			if (Ajax::in_ajax() || AJAX_REFERRER) {
+				$Ajax->activate('_page_body');
 			}
+			exit();
 		}
 
 		/**
