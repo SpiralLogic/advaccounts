@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Payment Terms"));
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {
@@ -108,7 +107,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$sql = "SELECT * FROM payment_terms";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -143,7 +141,6 @@
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {
@@ -174,6 +171,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -20,7 +20,6 @@
 	if (Input::post('stock_id')) {
 		$Ajax->activate('status_tbl');
 	}
-
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	start_form();
 	if (!Input::post('stock_id')) {
@@ -84,6 +83,6 @@
 	end_table();
 	Display::div_end();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

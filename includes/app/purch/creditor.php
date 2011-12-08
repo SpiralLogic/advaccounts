@@ -11,21 +11,20 @@
 	 ***********************************************************************/
 	class Purch_Creditor
 	{
-		public static function get_to_trans($supplier_id, $to = null)
+		public static function get_to_trans($supplier_id, $to = null) {
+			if ($to == null) {
+				$todate = date("Y-m-d");
+			}
+			else
 			{
-				if ($to == null) {
-					$todate = date("Y-m-d");
-				}
-				else
-				{
-					$todate = Dates::date2sql($to);
-				}
-				$past1 = DB_Company::get_pref('past_due_days');
-				$past2 = 2 * $past1;
-				// removed - supp_trans.alloc from all summations
-				$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
-				$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
-				$sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
+				$todate = Dates::date2sql($to);
+			}
+			$past1 = DB_Company::get_pref('past_due_days');
+			$past2 = 2 * $past1;
+			// removed - supp_trans.alloc from all summations
+			$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
+			$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
+			$sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
 
 		Sum($value) AS Balance,
 
@@ -48,43 +47,44 @@
 			 payment_terms.terms,
 			 payment_terms.days_before_due,
 			 payment_terms.day_in_following_month";
-				$result = DB::query($sql, "The customer details could not be retrieved");
-				if (DB::num_rows($result) == 0) {
-					/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-					$nil_balance = true;
-					$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
+			$result = DB::query($sql, "The customer details could not be retrieved");
+			if (DB::num_rows($result) == 0) {
+				/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
+				$nil_balance = true;
+				$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
 			FROM suppliers,
 				 payment_terms
 			WHERE
 				 suppliers.payment_terms = payment_terms.terms_indicator
 				 AND suppliers.supplier_id = " . DB::escape($supplier_id);
-					$result = DB::query($sql, "The customer details could not be retrieved");
-				} else {
-					$nil_balance = false;
-				}
-				$supp = DB::fetch($result);
-				if ($nil_balance == true) {
-					$supp["Balance"] = 0;
-					$supp["Due"] = 0;
-					$supp["Overdue1"] = 0;
-					$supp["Overdue2"] = 0;
-				}
-				return $supp;
+				$result = DB::query($sql, "The customer details could not be retrieved");
+			} else {
+				$nil_balance = false;
 			}
+			$supp = DB::fetch($result);
+			if ($nil_balance == true) {
+				$supp["Balance"] = 0;
+				$supp["Due"] = 0;
+				$supp["Overdue1"] = 0;
+				$supp["Overdue2"] = 0;
+			}
+			return $supp;
+		}
 
 		/**
 		 *	 Get how much we owe the supplier for the period
+		 *
 		 * @param $supplier_id
 		 * @param $date_from
 		 * @param $date_to
+		 *
 		 * @return mixed
 		 */
-		public static function get_oweing($supplier_id, $date_from, $date_to)
-			{
-				$date_from = Dates::date2sql($date_from);
-				$date_to = Dates::date2sql($date_to);
-				// Sherifoz 22.06.03 Also get the description
-				$sql = "SELECT
+		public static function get_oweing($supplier_id, $date_from, $date_to) {
+			$date_from = Dates::date2sql($date_from);
+			$date_to = Dates::date2sql($date_to);
+			// Sherifoz 22.06.03 Also get the description
+			$sql = "SELECT
 
 
  	SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -96,30 +96,53 @@
 		AND trans . tran_date <= '$date_to'
 		AND trans.supplier_id = " . DB::escape($supplier_id) . "
 		AND trans.type = " . ST_SUPPINVOICE;
-				$result = DB::query($sql);
-				$results = DB::fetch($result);
-				return $results['Total'];
-			}
+			$result = DB::query($sql);
+			$results = DB::fetch($result);
+			return $results['Total'];
+		}
 
-		public static function get($supplier_id)
-			{
-				$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
-				$result = DB::query($sql, "could not get supplier");
-				return DB::fetch($result);
-			}
+		public static function get($supplier_id) {
+			$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+			$result = DB::query($sql, "could not get supplier");
+			return DB::fetch($result);
+		}
 
-		public static function get_name($supplier_id)
-			{
-				$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
-				$result = DB::query($sql, "could not get supplier");
-				$row = DB::fetch_row($result);
-				return $row[0];
-			}
+		public static function get_name($supplier_id) {
+			$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+			$result = DB::query($sql, "could not get supplier");
+			$row = DB::fetch_row($result);
+			return $row[0];
+		}
 
-		public static function get_accounts_name($supplier_id)
-			{
-				$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
-				$result = DB::query($sql, "could not get supplier");
-				return DB::fetch($result);
+		public static function get_accounts_name($supplier_id) {
+			$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+			$result = DB::query($sql, "could not get supplier");
+			return DB::fetch($result);
+		}
+
+		public static function suppliers($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+			$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
+			$mode = DB_Company::get_pref('no_supplier_list');
+			if ($editkey) {
+				Display::set_editor('supplier', $name, $editkey);
 			}
+			return select_box($name, $selected_id, $sql, 'supplier_id', 'supp_name', array(
+																																										'format' => '_format_add_curr', 'order' => array('supp_ref'), 'search_box' => $mode != 0, 'type' => 1, 'spec_option' => $spec_option === true ?
+				 _("All Suppliers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => false, 'sel_hint' => $mode ?
+				 _('Press Space tab to filter by name fragment') : _('Select supplier'), 'show_inactive' => $all));
+		}
+
+		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+			if ($label != null) {
+				echo "<td class='label'>$label</td><td>\n";
+			}
+			echo Purch_Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
+			echo "</td>\n";
+		}
+
+		public static function suppliers_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+			echo "<tr><td class='label' name='supplier_name'>$label</td><td>";
+			echo Purch_Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
+			echo "</td></tr>\n";
+		}
 	}

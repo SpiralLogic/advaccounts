@@ -28,16 +28,15 @@
 	}
 	start_table('tablestyle_noborder');
 	start_row();
-	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
+	Purch_Creditor::cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
-	Purch_UI::allocation_row("filterType", null);
+	Purch_Allocation::row("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
-
 	function check_overdue($row) {
 		return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
 	}
@@ -135,12 +134,11 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

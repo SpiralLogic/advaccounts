@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	class Inv_Transfer {
+	class Inv_Transfer
+	{
 		public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
 			DB::begin_transaction();
 			$transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
@@ -25,16 +25,25 @@
 			return $transfer_id;
 		}
 
-
-		// add 2 stock_moves entries for a stock transfer
-		// $date_ is display date (not sql)
-		// std_cost is in HOME currency
-		// it seems the standard_cost field is not used at all
+		/***
+		 * @static
+		 *
+		 * @param $transfer_id
+		 * @param $stock_id
+		 * @param $location_from
+		 * @param $location_to
+		 * @param $date_ is display date (not sql)
+		 * @param $type
+		 * @param $reference
+		 * @param $quantity
+		 *
+		 * add 2 stock_moves entries for a stock transfer
+		 *
+		 */
 		public static function add_item($transfer_id, $stock_id, $location_from, $location_to, $date_, $type, $reference, $quantity) {
 			Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from, $date_, $reference, -$quantity, 0, $type);
 			Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to, $date_, $reference, $quantity, 0, $type);
 		}
-
 
 		public static function get($trans_no) {
 			$result = Inv_Transfer::get_items($trans_no);
@@ -54,7 +63,6 @@
 			}
 		}
 
-
 		public static function get_items($trans_no) {
 			$result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
 			if (DB::num_rows($result) == 0) {
@@ -62,7 +70,6 @@
 			}
 			return $result;
 		}
-
 
 		public static function void($type_no) {
 			Inv_Movement::void(ST_LOCTRANSFER, $type_no);
@@ -76,8 +83,7 @@
 			DB::query($sql, "The stock movement standard_cost cannot be updated");
 		}
 
-
-		public static function header($order) {
+		public static function header() {
 			start_outer_table('tablestyle width70');
 			table_section(1);
 			Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
@@ -90,8 +96,7 @@
 			end_outer_table(1); // outer table
 		}
 
-
-		public static function display_items($title, &$order) {
+		public static function display_items($title, $order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
@@ -100,7 +105,6 @@
 				$th[] = '';
 			}
 			table_header($th);
-			$subtotal = 0;
 			$k = 0; //row colour counter
 			$id = find_submit('Edit');
 			foreach ($order->line_items as $line_no => $stock_item) {
@@ -123,7 +127,6 @@
 			end_table();
 			Display::div_end();
 		}
-
 
 		public static function item_controls($order, $line_no = -1) {
 			$Ajax = Ajax::i();
@@ -160,7 +163,6 @@
 			}
 			end_row();
 		}
-
 
 		public static function option_controls() {
 			echo "<br>";

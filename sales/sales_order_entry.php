@@ -20,7 +20,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(
-				 ST_SALESORDER =>  'SA_SALESORDER',
+				 ST_SALESORDER => 'SA_SALESORDER',
 				 ST_SALESQUOTE => 'SA_SALESQUOTE',
 				 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
 				 ST_SALESINVOICE => 'SA_SALESINVOICE'),
@@ -31,7 +31,6 @@
 				 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
 				 'NewDelivery' => 'SA_SALESDELIVERY',
 				 'NewInvoice' => 'SA_SALESINVOICE'));
-
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::post('saveorder')) {
@@ -591,6 +590,6 @@
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Debtor::addEditDialog();
 	Item::addEditDialog();
-	end_page();
+	Renderer::end_page();
 	unset($_SESSION['order_no']);
 

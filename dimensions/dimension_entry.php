@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Dimension Entry"));
-
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
 	} elseif (isset($_POST['selected_id'])) {
@@ -21,79 +20,69 @@
 	} else {
 		$selected_id = -1;
 	}
-
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		Errors::notice(_("The dimension has been entered."));
 		safe_exit();
 	}
-
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
 		Errors::notice(_("The dimension has been updated."));
 		safe_exit();
 	}
-
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
 		Errors::notice(_("The dimension has been deleted."));
 		safe_exit();
 	}
-
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
 		Errors::notice(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
 		safe_exit();
 	}
-
 	if (isset($_GET['ReopenedID'])) {
 		$id = $_GET['ReopenedID'];
 		Errors::notice(_("The dimension has been re-opened. ") . " #$id");
 		safe_exit();
 	}
+	function safe_exit() {
+		Display::link_no_params("", _("Enter a &new dimension"));
+		echo "<br>";
+		Display::link_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
+		Page::footer_exit();
+	}
 
-	function safe_exit()
-		{
-			Display::link_no_params("", _("Enter a &new dimension"));
-			echo "<br>";
-			Display::link_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
-			Page::footer_exit();
+	function can_process() {
+		global $selected_id;
+		if ($selected_id == -1) {
+			if (!Ref::is_valid($_POST['ref'])) {
+				Errors::error(_("The dimension reference must be entered."));
+				JS::set_focus('ref');
+				return false;
+			}
+			if (!Ref::is_new($_POST['ref'], ST_DIMENSION)) {
+				Errors::error(_("The entered reference is already in use."));
+				JS::set_focus('ref');
+				return false;
+			}
 		}
-
-
-	function can_process()
-		{
-			global $selected_id;
-			if ($selected_id == -1) {
-				if (!Ref::is_valid($_POST['ref'])) {
-					Errors::error(_("The dimension reference must be entered."));
-					JS::set_focus('ref');
-					return false;
-				}
-				if (!Ref::is_new($_POST['ref'], ST_DIMENSION)) {
-					Errors::error(_("The entered reference is already in use."));
-					JS::set_focus('ref');
-					return false;
-				}
-			}
-			if (strlen($_POST['name']) == 0) {
-				Errors::error(_("The dimension name must be entered."));
-				JS::set_focus('name');
-				return false;
-			}
-			if (!Dates::is_date($_POST['date_'])) {
-				Errors::error(_("The date entered is in an invalid format."));
-				JS::set_focus('date_');
-				return false;
-			}
-			if (!Dates::is_date($_POST['due_date'])) {
-				Errors::error(_("The required by date entered is in an invalid format."));
-				JS::set_focus('due_date');
-				return false;
-			}
-			return true;
+		if (strlen($_POST['name']) == 0) {
+			Errors::error(_("The dimension name must be entered."));
+			JS::set_focus('name');
+			return false;
 		}
-
+		if (!Dates::is_date($_POST['date_'])) {
+			Errors::error(_("The date entered is in an invalid format."));
+			JS::set_focus('date_');
+			return false;
+		}
+		if (!Dates::is_date($_POST['due_date'])) {
+			Errors::error(_("The required by date entered is in an invalid format."));
+			JS::set_focus('due_date');
+			return false;
+		}
+		return true;
+	}
 
 	if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) {
 		if (!isset($_POST['dimension_tags'])) {
@@ -112,7 +101,6 @@
 			}
 		}
 	}
-
 	if (isset($_POST['delete'])) {
 		$cancel_delete = false;
 		// can't delete it there are productions or issues
@@ -128,7 +116,6 @@
 			Display::meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
-
 	if (isset($_POST['close'])) {
 		// update the closed flag
 		Dimensions::close($selected_id);
@@ -139,7 +126,6 @@
 		Dimensions::reopen($selected_id);
 		Display::meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
 	}
-
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
@@ -198,7 +184,6 @@
 		submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 	}
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Work Centres"));
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -33,9 +32,7 @@
 			$Mode = 'RESET';
 		}
 	}
-
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
 		$result = DB::query($sql, "check can delete work centre");
 		$myrow = DB::fetch_row($result);
@@ -53,7 +50,6 @@
 		return true;
 	}
 
-
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			WO_WorkCentre::delete($selected_id);
@@ -67,7 +63,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$result = WO_WorkCentre::get_all(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle width50');
@@ -86,7 +81,6 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -102,7 +96,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

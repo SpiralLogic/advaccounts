@@ -54,5 +54,5 @@
 	}
 	end_table(1);
 	Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
-	end_page(true);
+	Renderer::end_page(true);
 ?>

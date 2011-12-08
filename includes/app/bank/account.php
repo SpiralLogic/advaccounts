@@ -9,12 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	class Bank_Account {
-
+	class Bank_Account
+	{
 		public static function add($account_code, $account_type, $bank_account_name,
-															 $bank_name, $bank_account_number, $bank_address, $bank_curr_code,
-															 $dflt_curr_act) {
+			$bank_name, $bank_account_number, $bank_address, $bank_curr_code,
+			$dflt_curr_act) {
 			if ($dflt_curr_act) // only one default account for any currency
 			{
 				Bank_Currency::clear_default($bank_curr_code);
@@ -29,9 +28,8 @@
 			DB::query($sql, "could not add a bank account for $account_code");
 		}
 
-
 		public static function update($id, $account_code, $account_type, $bank_account_name,
-																	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
+			$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
 			if ($dflt_curr_act) // only one default account for any currency
 			{
 				Bank_Currency::clear_default($bank_curr_code);
@@ -46,12 +44,10 @@
 			DB::query($sql, "could not update bank account for $account_code");
 		}
 
-
 		public static function delete($id) {
 			$sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete bank account for $id");
 		}
-
 
 		public static function get($id) {
 			$sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
@@ -59,14 +55,12 @@
 			return DB::fetch($result);
 		}
 
-
 		public static function get_gl($id) {
 			$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not retreive bank account for $id");
 			$bank_account = DB::fetch($result);
 			return $bank_account['account_code'];
 		}
-
 
 		public static function get_default($curr) {
 			/* default bank account is selected as first found account from:
@@ -108,7 +102,7 @@
 			$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
 												FROM bank_accounts";
 			return select_box($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-				'format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => false));
+																																									 'format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => false));
 		}
 
 		public static function	cells($label, $name, $selected_id = null, $submit_on_change = false) {
@@ -127,7 +121,8 @@
 		}
 
 		public static function	type($name, $selected_id = null) {
-			return array_selector($name, $selected_id, unserialize(TYPE_BANK_ACCOUNTS));
+			global $bank_account_types;
+			return array_selector($name, $selected_id, $bank_account_types);
 		}
 
 		public static function	type_cells($label, $name, $selected_id = null) {

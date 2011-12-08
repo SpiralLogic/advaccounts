@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Users"));
 	Page::simple_mode(true);
-
-	function can_process($user)
-	{
+	function can_process($user) {
 		if (strlen($_POST['user_id']) < 4) {
 			Errors::error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
@@ -44,7 +42,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
@@ -82,13 +79,11 @@
 			$Mode = 'RESET';
 		}
 	}
-
 	if ($Mode == 'Delete') {
 		Users::delete($selected_id);
 		Errors::notice(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
@@ -134,7 +129,6 @@
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
@@ -185,5 +179,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

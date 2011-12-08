@@ -10,7 +10,11 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-	class advaccounting {
+	include(DOCROOT . 'config' . DS . 'defines.php');
+	include(DOCROOT . 'config' . DS . 'types.php');
+	include(DOCROOT . 'config' . DS . 'access_levels.php');
+	class advaccounting
+	{
 		public $user;
 		public $settings;
 		public $applications;
@@ -67,7 +71,7 @@
 		}
 
 		public function display() {
-			$rend = Renderer::get();
+			$rend = Renderer::i();
 			$rend->header();
 			//$rend->menu_header($this->menu);
 			$rend->display_applications($this);
@@ -98,10 +102,9 @@
 			// accessable regardless of access level and current login status.
 			$currentUser = User::get();
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-
 				if (Input::post("user_name_entry_field")) {
-
-					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"],
+						$_POST["password"]);
 					// select full vs fallback ui mode on login
 					$currentUser->ui_mode = $_POST['ui_mode'];
 					if (!$succeed) {
@@ -113,7 +116,6 @@
 				} elseif (!$currentUser->logged_in()) {
 					static::showLogin();
 				}
-
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
@@ -138,7 +140,7 @@
 		/**
 		 *
 		 */
-		static function loginFail() {
+		public static function loginFail() {
 			header("HTTP/1.1 401 Authorization Required");
 			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
 			echo _("The user and password combination is not valid for the system.") . "<br><br>";

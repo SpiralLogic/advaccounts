@@ -20,12 +20,53 @@
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
-	require DOCROOT . 'base.php';
+	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
+	define('CRLF', chr(13) . chr(10));
+	$path = substr(str_repeat('../', substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
+	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
+	/**
+	 * Do we have access to mbstring?
+	 * We need this in order to work with UTF-8 strings
+	 */
+	define('MBSTRING', function_exists('mb_get_info'));
+	/**
+	 * Register all the error/shutdown handlers
+	 */
+	register_shutdown_function(function () {
+		$Ajax = Ajax::i();
+		if (isset($Ajax)) {
+			$Ajax->run();
+		}
+		// flush all output buffers (works also with exit inside any div levels)
+		while (ob_get_level()) {
+			ob_end_flush();
+		}
+		Config::store();
+		Cache::set('autoloads', Autoloader::getLoaded());
+	});
+	set_exception_handler(function (\Exception $e) {
+		Errors::init();
+		return \Errors::exception_handler($e);
+	});
+	set_error_handler(function ($severity, $message, $filepath, $line) {
+		Errors::init();
+		return \Errors::handler($severity, $message, $filepath, $line);
+	});
+	if (!function_exists('adv_ob_flush_handler')) {
+		function adv_ob_flush_handler($text) {
+			$Ajax = Ajax::i();
+			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text)) {
+				$Ajax->aCommands = array();
+				Errors::$fatal = true;
+				$text = '';
+				Errors::$messages[] = error_get_last();
+			}
+			$Ajax->run();
+			return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+		}
+	}
 	require COREPATH . 'autoloader.php';
-	Autoloader::add_core_classes(array(
-																		'Adv_Exception', 'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB', 'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert', 'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where', 'Dialog', 'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS', 'Language', 'Menu', 'MenuUi', 'Num', 'Session', 'Status', 'UploadHandler'));
-	Autoloader::add_vendor_classes(array(
-																			'Crypt_AES', 'Crypt_DES', 'Crypt_Hash', 'Crypt_Random', 'Crypt_RC4', 'Crypt_Rijndael', 'Crypt_RSA', 'Crypt_TripleDES', 'FB', 'PHPQuickProfiler', 'Console', 'PHPMailer', 'SMTP', 'OLEwriter', 'JsHttpRequest', 'TCPDF', 'Cpdf'));
 	Session::init();
 	Config::init();
 	/***
@@ -36,6 +77,6 @@
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, function(&$v) {
-			$v = is_string($v) ? trim($v) : $v;
-		});
+		$v = is_string($v) ? trim($v) : $v;
+	});
 	advaccounting::init();

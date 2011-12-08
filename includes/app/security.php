@@ -14,7 +14,7 @@
 				echo _("The security settings on your account do not permit you to access this function");
 				echo "</span>";
 				echo "<br><br><br><br></div>";
-				end_page();
+				Renderer::end_page();
 				exit;
 			}
 		}
@@ -58,7 +58,8 @@
 		}
 
 		public static function update_role($id, $name, $description, $sections, $areas) {
-			$sql = "UPDATE security_roles SET role=" . DB::escape($name) . ",description=" . DB::escape($description) . ",sections=" . DB::escape(implode(';', $sections)) . ",areas=" . DB::escape(implode(';', $areas)) . " WHERE id=$id";
+			$sql = "UPDATE security_roles SET role=" . DB::escape($name) . ",description=" . DB::escape($description) . ",sections=" . DB::escape(implode(';',
+				$sections)) . ",areas=" . DB::escape(implode(';', $areas)) . " WHERE id=$id";
 			DB::query($sql, "could not update role");
 		}
 
@@ -77,8 +78,8 @@
 		public static function	roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
 			$sql = "SELECT id, role, inactive FROM security_roles";
 			return select_box($name, $selected_id, $sql, 'id', 'description', array(
-																																							'spec_option' => $new_item ? _("New role") :
-																																							 false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
+																																						 'spec_option' => $new_item ? _("New role") :
+																																							false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
 		}
 
 		public static function	roles_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {

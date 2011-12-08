@@ -47,6 +47,6 @@
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap class=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

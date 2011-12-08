@@ -16,7 +16,6 @@
 	Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
 	Page::simple_mode(true);
 	$selected_component = $selected_id;
-
 	//if (isset($_GET["NewItem"]))
 	//{
 	//	$_POST['stock_id'] = $_GET["NewItem"];
@@ -45,9 +44,7 @@
 		 $selected_component = get_post("selected_component", -1);
 	 }
 	 */
-
-	function check_for_recursive_bom($ultimate_parent, $component_to_check)
-	{
+	function check_for_recursive_bom($ultimate_parent, $component_to_check) {
 		/* returns true ie 1 if the bom contains the parent part as a component
 						ie the bom is recursive otherwise false ie 0 */
 		$sql = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
@@ -65,9 +62,7 @@
 		} //end if $result is true
 		return 0;
 	} //end of function check_for_recursive_bom
-
-	function display_bom_items($selected_parent)
-	{
+	function display_bom_items($selected_parent) {
 		$result = WO::get_bom($selected_parent);
 		Display::div_start('bom');
 		start_table('tablestyle width60');
@@ -94,9 +89,7 @@
 		Display::div_end();
 	}
 
-
-	function on_submit($selected_parent, $selected_component = -1)
-	{
+	function on_submit($selected_parent, $selected_component = -1) {
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
@@ -147,7 +140,6 @@
 		}
 	}
 
-
 	if ($Mode == 'Delete') {
 		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
 		DB::query($sql, "Could not delete this bom components");
@@ -158,7 +150,6 @@
 		$selected_id = -1;
 		unset($_POST['quantity']);
 	}
-
 	start_form();
 	start_form(false);
 	start_table('tablestyle_noborder');
@@ -169,16 +160,13 @@
 	end_table();
 	Display::br();
 	end_form();
-
 	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
 		$selected_parent = $_POST['stock_id'];
 		if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 			on_submit($selected_parent, $selected_id);
 		}
-
 		start_form();
 		display_bom_items($selected_parent);
-
 		echo '<br>';
 		start_table('tablestyle2');
 		if ($selected_id != -1) {
@@ -219,6 +207,6 @@
 		end_form();
 	}
 	// ----------------------------------------------------------------------------------
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -58,7 +58,6 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Attach Documents"));
 	Page::simple_mode(true);
-
 	if (isset($_GET['filterType'])) // catch up external links
 	{
 		$_POST['filterType'] = $_GET['filterType'];
@@ -135,32 +134,27 @@
 		unset($_POST['description']);
 		$selected_id = -1;
 	}
-	function viewing_controls()
-	{
+	function viewing_controls() {
 		start_form();
 		start_table('tablestyle_noborder');
-		SysTypes::view_row(_("Type:"), 'filterType', null, true);
+		SysTypes::row(_("Type:"), 'filterType', null, true);
 		end_table(1);
 		end_form();
 	}
 
-
-	function get_attached_documents($type)
-	{
+	function get_attached_documents($type) {
 		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type)
 		 . " ORDER BY trans_no";
 		return DB::query($sql, "Could not retrieve attachments");
 	}
 
-	function get_attachment($id)
-	{
+	function get_attachment($id) {
 		$sql = "SELECT * FROM attachments WHERE id=" . DB::escape($id);
 		$result = DB::query($sql, "Could not retrieve attachments");
 		return DB::fetch($result);
 	}
 
-	function display_rows($type)
-	{
+	function display_rows($type) {
 		$rows = get_attached_documents($type);
 		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 		Display::div_start('transactions');
@@ -189,7 +183,6 @@
 		Display::div_end();
 	}
 
-
 	viewing_controls();
 	if (isset($_POST['filterType'])) {
 		display_rows($_POST['filterType']);
@@ -217,6 +210,6 @@
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

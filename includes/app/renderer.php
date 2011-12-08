@@ -13,28 +13,39 @@
 	class Renderer
 	{
 		public $has_header = true;
-		protected static $_instance = null;
+		protected static $_i = null;
 
 		/***
 		 * @static
 		 * @return Renderer
 		 */
-		public static function get() {
-			if (static::$_instance === null) {
-				static::$_instance = new static;
+		public static function i() {
+			if (static::$_i === null) {
+				static::$_i = new static;
 			}
-			return static::$_instance;
+			return static::$_i;
 		}
 
-		function header() {
+		public function header() {
 			Page::start(_($help_context = "Main Menu"), false, true);
 		}
 
-		function footer() {
-			end_page(false, true);
+		public function footer() {
+			Renderer::end_page(false, true);
 		}
 
-		function menu_header($title, $no_menu, $is_index) {
+		public static function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
+			if (Input::request('frame' || Input::get('popup'))) {
+				$is_index = $hide_back_link = true;
+			}
+			if (!$is_index && !$hide_back_link && function_exists('link_back')) {
+				Display::link_back(true, $no_menu);
+			}
+			Display::div_end(); // end of _page_body section
+			Page::footer($no_menu, $is_index, $hide_back_link);
+		}
+
+		public function menu_header($title, $no_menu, $is_index) {
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -79,7 +90,7 @@
 			}
 		}
 
-		function menu_footer($no_menu, $is_index) {
+		public function menu_footer($no_menu, $is_index) {
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
@@ -93,12 +104,14 @@
 				}
 				echo "</div>";
 			}
-				if (Config::get('debug'))	$this->display_loaded();
+			if (Config::get('debug')) {
+				$this->display_loaded();
+			}
 			echo "</div>\n";
 			echo "</div>\n";
 		}
 
-		function display_loaded() {
+		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
 			$row = "<table id='loaded'>";
 			while ($v1 = array_shift($loaded)) {
@@ -108,7 +121,7 @@
 			echo $row . "</table>";
 		}
 
-		function display_applications(&$waapp) {
+		public function display_applications(&$waapp) {
 			$selected_app = $waapp->get_selected_application();
 			if ($selected_app->direct) {
 				Display::meta_forward($selected_app->direct);

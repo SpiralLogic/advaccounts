@@ -21,12 +21,10 @@
 	echo Item::select('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
-
-	function select_link($row)
-		{
-			return DB_Pager::link($row["parent"] . " - " . $row["description"],
-			 "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
-		}
+	function select_link($row) {
+		return DB_Pager::link($row["parent"] . " - " . $row["description"],
+		 "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
+	}
 
 	$sql
 	 = "SELECT
@@ -50,6 +48,6 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

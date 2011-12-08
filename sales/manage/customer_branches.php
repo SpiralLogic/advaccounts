@@ -14,14 +14,12 @@
 	//$page_security = 3;
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Customer Branches"), Input::request('popup'));
-
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
 	Validation::check(Validation::SHIPPERS, _("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	Page::simple_mode(true);
-
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = strtoupper($_GET['debtor_no']);
 	}
@@ -32,7 +30,6 @@
 		$selected_id = $_POST['branch_code'] = $br['branch_code'];
 		$Mode = 'Edit';
 	}
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -122,61 +119,57 @@
 		$_POST['customer_id'] = $cust_id;
 		$Ajax->activate('_page_body');
 	}
-	function branch_email($row)
-	{
+	function branch_email($row) {
 		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
 	}
 
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
 	}
 
-	function del_link($row)
-	{
+	function del_link($row) {
 		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
 	}
 
-	function select_link($row)
-	{
+	function select_link($row) {
 		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
 	}
 
 	start_form();
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo Debtor_UI::select('customer_id', null, false, true);
+	echo Debtor::select('customer_id', null, false, true);
 	echo "</div><br>";
-	$num_branches=-0;
-	if (Input::post('customer_id')>0){
-	$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
-	$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
+	$num_branches = -0;
+	if (Input::post('customer_id') > 0) {
+		$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
+		$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code
 		AND b.debtor_no = " . DB::escape($_POST['customer_id']);
-	if (!get_post('show_inactive')) {
-		$sql .= " AND !b.inactive";
-	}
-
-	if ($num_branches) {
-		$cols = array(
-			'branch_code' => 'skip', _("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"), _("Phone No"), _("Fax No"), _("E-mail") => 'email', _("Tax Group"), _("Inactive") => 'inactive', //		array('fun'=>'inactive'),
-			' ' => array(
-				'insert' => true, 'fun' => 'select_link'), array(
-				'insert' => true, 'fun' => 'edit_link'), array(
-				'insert' => true, 'fun' => 'del_link'));
-		if (!Input::request('popup')) {
-			$cols[' '] = 'skip';
+		if (!get_post('show_inactive')) {
+			$sql .= " AND !b.inactive";
 		}
-		$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
-		$table->set_inactive_ctrl('cust_branch', 'branch_code');
-		//$table->width = "85%";
-		DB_Pager::display($table);
+		if ($num_branches) {
+			$cols = array(
+				'branch_code' => 'skip', _("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"), _("Phone No"), _("Fax No"), _("E-mail") => 'email', _("Tax Group"), _("Inactive") => 'inactive', //		array('fun'=>'inactive'),
+				' ' => array(
+					'insert' => true, 'fun' => 'select_link'), array(
+					'insert' => true, 'fun' => 'edit_link'), array(
+					'insert' => true, 'fun' => 'del_link'));
+			if (!Input::request('popup')) {
+				$cols[' '] = 'skip';
+			}
+			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
+			$table->set_inactive_ctrl('cust_branch', 'branch_code');
+			//$table->width = "85%";
+			DB_Pager::display($table);
+		} else {
+			Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
+		}
 	} else {
-		Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
-	}}else {
 		Errors::warning(_("No Customer selected."));
 	}
 	start_outer_table('tablestyle2');
@@ -270,5 +263,5 @@
 	end_outer_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

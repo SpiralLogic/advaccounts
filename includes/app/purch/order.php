@@ -11,7 +11,8 @@
 	 ***********************************************************************/
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
  */
-	class Purch_Order {
+	class Purch_Order
+	{
 		public $supplier_id;
 		public $supplier_details;
 		public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
@@ -28,7 +29,7 @@
 		public $salesman;
 		public $reference;
 
-	public function __construct() {
+		public function __construct() {
 			/*Constructor function initialises a new purchase order object */
 			$this->line_items = array();
 			$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
@@ -126,7 +127,6 @@
 			DB::query($sql, "The order detail lines could not be deleted");
 		}
 
-
 		public static function add(&$po_obj) {
 			DB::begin_transaction();
 			/*Insert to purchase order header record */
@@ -157,13 +157,12 @@
 					DB::query($sql, "One of the purchase order detail records could not be inserted");
 				}
 			}
-			Ref::save(ST_PURCHORDER,  $po_obj->reference);
+			Ref::save(ST_PURCHORDER, $po_obj->reference);
 			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 			DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
 			DB::commit_transaction();
 			return $po_obj->order_no;
 		}
-
 
 		public static function update(&$po_obj) {
 			DB::begin_transaction();
@@ -214,7 +213,6 @@
 			return $po_obj->order_no;
 		}
 
-
 		public static function get_header($order_no, &$order) {
 			$sql = "SELECT purch_orders.*, suppliers.supp_name,
 	 		suppliers.curr_code, locations.location_name
@@ -242,7 +240,6 @@
 			Errors::show_db_error("FATAL : duplicate purchase order found", "", true);
 			return false;
 		}
-
 
 		public static function get_items($order_no, Purch_Order $order, $open_items_only = false) {
 			/*now populate the line po array with the purchase order details records */
@@ -286,14 +283,12 @@
 			} //end of checks on returned data set
 		}
 
-
 		public static function get($order_no, &$order, $open_items_only = false) {
 			$result = Purch_Order::get_header($order_no, $order);
 			if ($result) {
 				Purch_Order::get_items($order_no, $order, $open_items_only);
 			}
 		}
-
 
 		public static function	 add_freight(&$po, $date_) {
 			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
@@ -308,7 +303,6 @@
 			DB::query($sql, "One of the purchase order detail records could not be updated");
 			return DB::insert_id();
 		}
-
 
 		public static function get_data($supplier_id, $stock_id) {
 			$sql
@@ -356,7 +350,6 @@
 			$order->supplier_id = $_POST['supplier_id'] = $supplier_id;
 		}
 
-
 		public static function create() {
 			if (isset($_SESSION['PO'])) {
 				unset($_SESSION['PO']->line_items);
@@ -372,7 +365,6 @@
 			$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
 		}
 
-
 		public static function header($order) {
 			$Ajax = Ajax::i();
 			$editable = ($order->order_no == 0);
@@ -382,7 +374,7 @@
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
 				}
-				Purch_UI::suppliers_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+				Purch_Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 			} else {
 				if (isset($_POST['supplier_id'])) {
 					Purch_Order::supplier_to_order($order, $_POST['supplier_id']);
@@ -440,7 +432,6 @@
 			end_outer_table(); // outer table
 		}
 
-
 		public static function display_items($order, $editable = true) {
 			$Ajax = Ajax::i();
 			Display::heading(_("Order Items"));
@@ -495,7 +486,6 @@
 			Display::div_end();
 		}
 
-
 		public static function summary(&$po, $is_self = false, $editable = false) {
 			start_table('tablestyle2 width90');
 			echo "<tr class='tableheader2 top'><th colspan=4>";
@@ -531,7 +521,6 @@
 			}
 			end_table(1);
 		}
-
 
 		public static function item_controls($order, $stock_id = null) {
 			$Ajax = Ajax::i();
@@ -571,7 +560,6 @@
 				$_POST['description'] = '';
 				$dec = $item_info["decimals"];
 				$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
-
 				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($order->supplier_id, Input::post('stock_id')), $dec2);
 				$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 				$_POST['discount'] = Num::percent_format(0);

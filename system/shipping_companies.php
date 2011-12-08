@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Shipping Company"));
 	Page::simple_mode(true);
-
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['shipper_name']) == 0) {
 			Errors::error(_("The shipping company name cannot be empty."));
 			JS::set_focus('shipper_name');
@@ -23,7 +21,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		$sql
@@ -37,7 +34,6 @@
 		Errors::notice(_('New shipping company has been added'));
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		$sql = "UPDATE shippers SET shipper_name=" . DB::escape($_POST['shipper_name']) . " ,
 		contact =" . DB::escape($_POST['contact']) . " ,
@@ -49,7 +45,6 @@
 		Errors::notice(_('Selected shipping company has been updated'));
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 		$sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
@@ -80,7 +75,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$sql = "SELECT * FROM shippers";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -108,7 +102,6 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -132,5 +125,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

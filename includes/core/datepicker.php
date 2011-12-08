@@ -24,9 +24,10 @@
 		/**
 		 * @static
 		 *
-		 * @param $name
+		 * @param       $name
 		 * @param array $options
-		 */static function add($name, $options = array()) {
+		 */
+		static function add($name, $options = array()) {
 			$options = array_merge(static::$options, $options);
 			$js = '$("#' . $name . '").one("focus",function() { $(this).datepicker(' . JS::arrayToOptions($options) . ').focus() }); ';
 			if ($options['rebind']) {

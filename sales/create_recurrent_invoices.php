@@ -13,35 +13,33 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
-	function set_last_sent($id, $date)
-		{
-			$date = Dates::date2sql($date);
-			$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
-			DB::query($sql, "The recurrent invoice could not be updated or added");
-		}
+	function set_last_sent($id, $date) {
+		$date = Dates::date2sql($date);
+		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
+		DB::query($sql, "The recurrent invoice could not be updated or added");
+	}
 
-	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
-		{
-			$doc = new Sales_Order(ST_SALESORDER, array($order_no));
-			Sales_Order::customer_to_order($doc, $customer_id, $branch_id);
-			$doc->trans_type = ST_SALESORDER;
-			$doc->trans_no = 0;
-			$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
-			$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
-			$doc->reference = Ref::get_next($doc->trans_type);
-			//$doc->Comments='';
-			foreach ($doc->line_items as $line_no => $item) {
-				$line = &$doc->line_items[$line_no];
-				$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type,
-					$doc->price_factor, $doc->document_date);
-			}
-			$cart = $doc;
-			$cart->trans_type = ST_SALESINVOICE;
-			$cart->reference = Ref::get_next($cart->trans_type);
-			$invno = $cart->write(1);
-			set_last_sent($tmpl_no, $cart->document_date);
-			return $invno;
+	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no) {
+		$doc = new Sales_Order(ST_SALESORDER, array($order_no));
+		Sales_Order::customer_to_order($doc, $customer_id, $branch_id);
+		$doc->trans_type = ST_SALESORDER;
+		$doc->trans_no = 0;
+		$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+		$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
+		$doc->reference = Ref::get_next($doc->trans_type);
+		//$doc->Comments='';
+		foreach ($doc->line_items as $line_no => $item) {
+			$line = &$doc->line_items[$line_no];
+			$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type,
+				$doc->price_factor, $doc->document_date);
 		}
+		$cart = $doc;
+		$cart->trans_type = ST_SALESINVOICE;
+		$cart->reference = Ref::get_next($cart->trans_type);
+		$invno = $cart->write(1);
+		set_last_sent($tmpl_no, $cart->document_date);
+		return $invno;
+	}
 
 	if (isset($_GET['recurrent'])) {
 		$date = Dates::Today();
@@ -76,14 +74,12 @@
 			Errors::error(_("The entered date is not in fiscal year."));
 		}
 	}
-
-	function get_sales_group_name($group_no)
-		{
-			$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-			$result = DB::query($sql, "could not get group");
-			$row = DB::fetch($result);
-			return $row[0];
-		}
+	function get_sales_group_name($group_no) {
+		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
+		$result = DB::query($sql, "could not get group");
+		$row = DB::fetch($result);
+		return $row[0];
+	}
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
@@ -114,7 +110,7 @@
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["description"]);
-		label_cell(Debtor_UI::trans_view(30, $myrow["order_no"]));
+		label_cell(Debtor::trans_view(30, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
@@ -141,5 +137,5 @@
 		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
-	end_page();
+	Renderer::end_page();
 ?>

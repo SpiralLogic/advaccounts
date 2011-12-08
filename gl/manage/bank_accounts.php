@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Bank Accounts"));
 	Page::simple_mode();
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -96,7 +95,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
+	global $bank_account_types;
 	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
@@ -141,8 +140,7 @@
 	}
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 	if ($is_editing) {
-		$bank_account_types = unserialize(TYPE_BANK_ACCOUNTS);
-
+		global $bank_account_types;
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 	} else {
 		Bank_Account::type_row(_("Account Type:"), 'account_type', null);
@@ -164,5 +162,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

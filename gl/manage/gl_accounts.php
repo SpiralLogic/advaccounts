@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Chart of Accounts"));
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
-
 	if (isset($_POST['_AccountList_update'])) {
 		$_POST['selected_account'] = $_POST['AccountList'];
 		unset($_POST['account_code']);
@@ -27,7 +26,6 @@
 	} else {
 		$selected_account = "";
 	}
-
 	if (isset($_POST['add']) || isset($_POST['update'])) {
 		$input_error = 0;
 		if (strlen($_POST['account_code']) == 0) {
@@ -85,9 +83,7 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-
-	function can_delete($selected_account)
-	{
+	function can_delete($selected_account) {
 		if ($selected_account == "") {
 			return false;
 		}
@@ -183,7 +179,6 @@
 		return true;
 	}
 
-
 	if (isset($_POST['delete'])) {
 		if (can_delete($selected_account)) {
 			GL_Account::delete($selected_account);
@@ -195,7 +190,6 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-
 	start_form();
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 		start_table('tablestyle_noborder');
@@ -254,6 +248,6 @@
 		submit_center_last('delete', _("Delete account"), '', true);
 	}
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

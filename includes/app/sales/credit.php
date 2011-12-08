@@ -9,11 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	// if ($writeoff_acc==0) return goods into $cart->Location
 	// if src_docs!=0 => credit invoice else credit note
 	//
-	class Sales_Credit {
+	class Sales_Credit
+	{
 		public static function add($credit_note, $write_off_acc) {
 			$credit_invoice = is_array($credit_note->src_docs) ? reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 			$credit_date = $credit_note->document_date;
@@ -132,12 +132,11 @@
 			GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
 			DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 			if ($trans_no == 0) {
-				Ref::save(ST_CUSTCREDIT,  $credit_note->reference);
+				Ref::save(ST_CUSTCREDIT, $credit_note->reference);
 			}
 			DB::commit_transaction();
 			return $credit_no;
 		}
-
 
 		// Insert a stock movement coming back in to show the credit note and
 		// 	a reversing stock movement to show the write off
@@ -161,7 +160,6 @@
 				$credit_note->document_date, $reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price,
 				$credit_line->discount_percent);
 		}
-
 
 		public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
 			$stock_gl_codes = Item::get_gl_code($order_line->stock_id);
@@ -226,12 +224,12 @@
 			if (!isset($_POST['customer_id']) && (Session::i()->global_customer != ALL_TEXT)) {
 				$_POST['customer_id'] = Session::i()->global_customer;
 			}
-			Debtor_UI::select_row(_("Customer:"), 'customer_id', null, false, true, false, true);
+			Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
 			if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
 				// customer has changed
 				$Ajax->activate('branch_id');
 			}
-			Debtor_UI::branches_list_row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
+			Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 			//if (($_SESSION['credit_items']->order_no == 0) ||
 			//	($order->customer_id != $_POST['customer_id']) ||
 			//	($order->Branch != $_POST['branch_id']))
@@ -335,7 +333,6 @@
 			return $customer_error;
 		}
 
-
 		public static function display_items($title, &$order) {
 			Display::heading($title);
 			Display::div_start('items_table');
@@ -390,7 +387,6 @@
 			Display::div_end();
 		}
 
-
 		public static function item_controls($order, $rowcounter, $line_no = -1) {
 			$Ajax = Ajax::i();
 			alt_table_row_color($rowcounter);
@@ -438,7 +434,6 @@
 			end_row();
 		}
 
-
 		public static function option_controls($credit) {
 			$Ajax = Ajax::i();
 			echo "<br>";
@@ -469,7 +464,7 @@
 			}
 			echo "<td>\n";
 			echo array_selector($name, $selected, array(
-					'Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")),
+																								 'Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")),
 				array('select_submit' => $submit_on_change));
 			echo "</td>\n";
 		}

@@ -16,23 +16,22 @@
 		echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
 		exit;
 	}
-	function display_gl_heading($myrow)
-		{
-			global $systypes_array;
-			$trans_name = $systypes_array[$_GET['type_id']];
-			start_table('tablestyle width95');
-			$th = array(
-				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
-			table_header($th);
-			start_row();
-			label_cell("$trans_name #" . $_GET['trans_no']);
-			label_cell($myrow["reference"]);
-			label_cell(Dates::sql2date($myrow["tran_date"]));
-			label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			end_row();
-			DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
-			end_table(1);
-		}
+	function display_gl_heading($myrow) {
+		global $systypes_array;
+		$trans_name = $systypes_array[$_GET['type_id']];
+		start_table('tablestyle width95');
+		$th = array(
+			_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
+		table_header($th);
+		start_row();
+		label_cell("$trans_name #" . $_GET['trans_no']);
+		label_cell($myrow["reference"]);
+		label_cell(Dates::sql2date($myrow["tran_date"]));
+		label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+		end_row();
+		DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
+		end_table(1);
+	}
 
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
@@ -41,7 +40,7 @@
 	//alert("sql = ".$sql);
 	if (DB::num_rows($result) == 0) {
 		echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
-		end_page(true);
+		Renderer::end_page(true);
 		exit;
 	}
 	/*show a table of the transactions returned by the sql */
@@ -86,6 +85,6 @@
 		end_table(1);
 	}
 	Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

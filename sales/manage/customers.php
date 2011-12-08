@@ -17,47 +17,43 @@
 		$_POST['customer_id'] = $_GET['debtor_no'];
 	}
 	$new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == "");
-
-	function can_process()
-		{
-			if (strlen($_POST['CustName']) == 0) {
-				Errors::error(_("The customer name cannot be empty."));
-				JS::set_focus('CustName');
-				return false;
-			}
-			if (strlen($_POST['cust_ref']) == 0) {
-				Errors::error(_("The customer short name cannot be empty."));
-				JS::set_focus('cust_ref');
-				return false;
-			}
-			if (!Validation::is_num('credit_limit', 0)) {
-				Errors::error(_("The credit limit must be numeric and not less than zero."));
-				JS::set_focus('credit_limit');
-				return false;
-			}
-			if (!Validation::is_num('pymt_discount', 0, 100)) {
-				Errors::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-				JS::set_focus('pymt_discount');
-				return false;
-			}
-			if (!Validation::is_num('discount', 0, 100)) {
-				Errors::error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-				JS::set_focus('discount');
-				return false;
-			}
-			return true;
+	function can_process() {
+		if (strlen($_POST['CustName']) == 0) {
+			Errors::error(_("The customer name cannot be empty."));
+			JS::set_focus('CustName');
+			return false;
 		}
+		if (strlen($_POST['cust_ref']) == 0) {
+			Errors::error(_("The customer short name cannot be empty."));
+			JS::set_focus('cust_ref');
+			return false;
+		}
+		if (!Validation::is_num('credit_limit', 0)) {
+			Errors::error(_("The credit limit must be numeric and not less than zero."));
+			JS::set_focus('credit_limit');
+			return false;
+		}
+		if (!Validation::is_num('pymt_discount', 0, 100)) {
+			Errors::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			JS::set_focus('pymt_discount');
+			return false;
+		}
+		if (!Validation::is_num('discount', 0, 100)) {
+			Errors::error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			JS::set_focus('discount');
+			return false;
+		}
+		return true;
+	}
 
-
-	function handle_submit()
-		{
-			global $new_customer;
-			$Ajax = Ajax::i();
-			if (!can_process()) {
-				return;
-			}
-			if ($new_customer == false) {
-				$sql = "UPDATE debtors_master SET name=" . DB::escape($_POST['CustName']) . ",
+	function handle_submit() {
+		global $new_customer;
+		$Ajax = Ajax::i();
+		if (!can_process()) {
+			return;
+		}
+		if ($new_customer == false) {
+			$sql = "UPDATE debtors_master SET name=" . DB::escape($_POST['CustName']) . ",
 			debtor_ref=" . DB::escape($_POST['cust_ref']) . ",
 			address=" . DB::escape($_POST['address']) . ",
 			tax_id=" . DB::escape($_POST['tax_id']) . ",
@@ -73,31 +69,29 @@
  sales_type = " . DB::escape($_POST['sales_type']) . ",
  notes=" . DB::escape($_POST['notes']) . "
  WHERE debtor_no = " . DB::escape($_POST['customer_id']);
-				DB::query($sql, "The customer could not be updated");
-				DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors_master', 'debtor_no');
-				$Ajax->activate('customer_id'); // in case of status change
-				Errors::notice(_("Customer has been updated."));
-			} else { //it is a new customer
-				DB::begin_transaction();
-				$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+			DB::query($sql, "The customer could not be updated");
+			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors_master', 'debtor_no');
+			$Ajax->activate('customer_id'); // in case of status change
+			Errors::notice(_("Customer has been updated."));
+		} else { //it is a new customer
+			DB::begin_transaction();
+			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
 			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
 			" . Validation::input_num('pymt_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
-				DB::query($sql, "The customer could not be added");
-				$_POST['customer_id'] = DB::insert_id();
-				$new_customer = false;
-				DB::commit_transaction();
-				Errors::notice(_("A new customer has been added."));
-				$Ajax->activate('_page_body');
-			}
+			DB::query($sql, "The customer could not be added");
+			$_POST['customer_id'] = DB::insert_id();
+			$new_customer = false;
+			DB::commit_transaction();
+			Errors::notice(_("A new customer has been added."));
+			$Ajax->activate('_page_body');
 		}
-
+	}
 
 	if (isset($_POST['submit'])) {
 		handle_submit();
 	}
-
 	if (isset($_POST['delete'])) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
@@ -142,7 +136,7 @@
 	if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
 		start_table('tablestyle_noborder');
 		start_row();
-		Debtor_UI::cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+		Debtor::cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		end_row();
 		end_table();
@@ -225,7 +219,7 @@
 		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
 		Display::link_params_td("/sales/manage/customer_branches.php",
-		 '<span class='bold'>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
+			'<span class='bold'>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
 		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
 		end_row();
 	}
@@ -243,5 +237,5 @@
 	Display::div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

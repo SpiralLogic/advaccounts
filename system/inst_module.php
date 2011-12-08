@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Activate extensions"));
 	Page::simple_mode(true);
-
-	function update_extensions($extensions)
-	{
+	function update_extensions($extensions) {
 		if (!advaccounting::write_extensions($extensions)) {
 			Errors::notice(_("Cannot update system extensions list."));
 			return false;
@@ -50,8 +48,7 @@
 		return true;
 	}
 
-	function check_data($id, $exts)
-	{
+	function check_data($id, $exts) {
 		if ($_POST['name'] == "") {
 			Errors::error(_("Extension name cannot be empty."));
 			return false;
@@ -79,9 +76,7 @@
 		return true;
 	}
 
-
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id, $next_extension_id;
 		$extensions = DB_Company::get_company_extensions();
 		if (!check_data($selected_id, $extensions)) {
@@ -156,8 +151,7 @@
 		return true;
 	}
 
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id;
 		$extensions = DB_Company::get_company_extensions();
 		$id = $selected_id;
@@ -173,9 +167,7 @@
 		return true;
 	}
 
-
-	function display_extensions()
-	{
+	function display_extensions() {
 		start_table('tablestyle');
 		$th = array(
 			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
@@ -213,8 +205,7 @@
 		end_table(1);
 	}
 
-	function company_extensions($id)
-	{
+	function company_extensions($id) {
 		start_table('tablestyle');
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 		// get all available extensions and display
@@ -259,9 +250,7 @@
 		submit_center('Update', _('Update'), true, false, 'default');
 	}
 
-
-	function display_ext_edit($selected_id)
-	{
+	function display_ext_edit($selected_id) {
 		global $Mode;
 		$extensions = DB_Company::get_company_extensions();
 		start_table('tablestyle2');
@@ -292,7 +281,6 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
@@ -322,7 +310,6 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-
 	start_form(true);
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
@@ -337,8 +324,7 @@
 	} else {
 		company_extensions($set);
 	}
-
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

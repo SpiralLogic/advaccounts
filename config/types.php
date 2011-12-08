@@ -9,114 +9,108 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
+	global $bank_transfer_types, $class_types, $payment_person_types, $quick_actions, $quick_entry_types, $stock_types, $systypes_array, $tag_types, $wo_cost_types,
+				 $wo_types_array;
+	$bank_account_types = array(
+		BT_TRANSFER => "Savings Account",
+		"Chequing Account",
+		"Credit Account",
+		"Cash Account"
+	);
 	$bank_transfer_types = array(
-		BT_TRANSFER => _("Transfer"),
-		_("Cheque"),
-		_("Credit"),
-		_("Cash")
+		BT_TRANSFER => "Transfer",
+		"Cheque",
+		"Credit",
+		"Cash"
 	);
 	$payment_person_types = array(
-		PT_MISC => _("Miscellaneous"),
-		_("Work Order"),
-		_("Customer"),
-		_("Supplier"),
-		_("Quick Entry")
+		PT_MISC => "Miscellaneous",
+		"Work Order",
+		"Customer",
+		"Supplier",
+		"Quick Entry"
 	);
 	$wo_types_array = array(
-		WO_ASSEMBLY => _("Assemble"),
-		WO_UNASSEMBLY => _("Unassemble"),
-		WO_ADVANCED => _("Advanced Manufacture")
+		WO_ASSEMBLY => "Assemble",
+		WO_UNASSEMBLY => "Unassemble",
+		WO_ADVANCED => "Advanced Manufacture"
 	);
 	$wo_cost_types = array(
-		WO_LABOUR => _("Labour Cost"),
-		WO_OVERHEAD => _("Overhead Cost"),
+		WO_LABOUR => "Labour Cost",
+		WO_OVERHEAD => "Overhead Cost",
 	);
 	$class_types = array(
-		CL_ASSETS => _("Assets"),
-		CL_LIABILITIES => _("Liabilities"),
-		CL_EQUITY => _("Equity"),
-		CL_INCOME => _("Income"),
-		CL_COGS => _("Cost of Goods Sold"),
-		CL_EXPENSE => _("Expense"),
+		CL_ASSETS => "Assets",
+		CL_LIABILITIES => "Liabilities",
+		CL_EQUITY => "Equity",
+		CL_INCOME => "Income",
+		CL_COGS => "Cost of Goods Sold",
+		CL_EXPENSE => "Expense",
 	);
 	$quick_actions = array(
-		'=' => _('Remainder'), // post current base amount to GL account
-		'a' => _('Amount'), // post amount to GL account
-		'a+' => _('Amount, increase base'), // post amount to GL account and increase base
-		'a-' => _('Amount, reduce base'), // post amount to GL account and reduce base
-		'%' => _('% amount of base'), // store acc*amount% to GL account
-		'%+' => _('% amount of base, increase base'), // ditto & increase base amount
-		'%-' => _('% amount of base, reduce base'), // ditto & reduce base amount
-		'T' => _('Taxes added'), // post taxes calculated on base amount
-		'T+' => _('Taxes added, increase base'), // ditto & increase base amount
-		'T-' => _('Taxes added, reduce base'), // ditto & reduce base amount
-		't' => _('Taxes included'), // post taxes calculated on base amount
-		't+' => _('Taxes included, increase base'), // ditto & increase base amount
-		't-' => _('Taxes included, reduce base') // ditto & reduce base amount
+		'=' => 'Remainder', // post current base amount to GL account
+		'a' => 'Amount', // post amount to GL account
+		'a+' => 'Amount, increase base', // post amount to GL account and increase base
+		'a-' => 'Amount, reduce base', // post amount to GL account and reduce base
+		'%' => '% amount of base', // store acc*amount% to GL account
+		'%+' => '% amount of base, increase base', // ditto & increase base amount
+		'%-' => '% amount of base, reduce base', // ditto & reduce base amount
+		'T' => 'Taxes added', // post taxes calculated on base amount
+		'T+' => 'Taxes added, increase base', // ditto & increase base amount
+		'T-' => 'Taxes added, reduce base', // ditto & reduce base amount
+		't' => 'Taxes included', // post taxes calculated on base amount
+		't+' => 'Taxes included, increase base', // ditto & increase base amount
+		't-' => 'Taxes included, reduce base' // ditto & reduce base amount
 	);
 	$quick_entry_types = array(
-		QE_DEPOSIT => _("Bank Deposit"),
-		QE_PAYMENT => _("Bank Payment"),
-		QE_JOURNAL => _("Journal Entry"),
-		QE_SUPPINV => _("Supplier Invoice/Credit")
+		QE_DEPOSIT => "Bank Deposit",
+		QE_PAYMENT => "Bank Payment",
+		QE_JOURNAL => "Journal Entry",
+		QE_SUPPINV => "Supplier Invoice/Credit"
 	);
 	$stock_types = array(
-		STOCK_MANUFACTURE => _("Manufactured"),
-		STOCK_PURCHASED => _("Purchased"),
-		STOCK_SERVICE => _("Service"),
-		STOCK_INFO => _("Information")
+		STOCK_MANUFACTURE => "Manufactured",
+		STOCK_PURCHASED => "Purchased",
+		STOCK_SERVICE => "Service",
+		STOCK_INFO => "Information"
 	);
 	$systypes_array = array(
-		ST_JOURNAL => _("Journal Entry"),
-		ST_BANKPAYMENT => _("Bank Payment"),
-		ST_BANKDEPOSIT => _("Bank Deposit"),
-		ST_BANKTRANSFER => _("Funds Transfer"),
-		ST_SALESINVOICE => _("Sales&nbsp;Invoice"),
-		ST_CUSTCREDIT => _("Customer Credit Note"),
-		ST_DEPOSIT_GROUP => _("Group Deposit"),
-		ST_CUSTPAYMENT => _("Payment"),
-		ST_CUSTREFUND => _("Customer Refund"),
-		ST_CUSTDELIVERY => _("Delivery&nbsp;Note"),
-		ST_LOCTRANSFER => _("Location Transfer"),
-		ST_INVADJUST => _("Inventory Adjustment"),
-		ST_PURCHORDER => _("Purchase Order"),
-		ST_SUPPINVOICE => _("Supplier Invoice"),
-		ST_SUPPCREDIT => _("Supplier Credit Note"),
-		ST_SUPPAYMENT => _("Supplier&nbsp;Payment"),
-		ST_SUPPRECEIVE => _("Purchase Order Delivery"),
-		ST_WORKORDER => _("Work Order"),
-		ST_MANUISSUE => _("Work Order Issue"),
-		ST_MANURECEIVE => _("Work Order Production"),
-		ST_SALESORDER => _("Sales Order"),
-		ST_SALESQUOTE => _("Sales Quotation"),
-		ST_PROFORMA => _("Sales Proforma Invoice"),
-		ST_COSTUPDATE => _("Cost Update"),
-		ST_DIMENSION => _("Dimension")
+		ST_JOURNAL => "Journal Entry",
+		ST_BANKPAYMENT => "Bank Payment",
+		ST_BANKDEPOSIT => "Bank Deposit",
+		ST_BANKTRANSFER => "Funds Transfer",
+		ST_SALESINVOICE => "Sales&nbsp;Invoice",
+		ST_CUSTCREDIT => "Customer Credit Note",
+		ST_DEPOSIT_GROUP => "Group Deposit",
+		ST_CUSTPAYMENT => "Payment",
+		ST_CUSTREFUND => "Customer Refund",
+		ST_CUSTDELIVERY => "Delivery&nbsp;Note",
+		ST_LOCTRANSFER => "Location Transfer",
+		ST_INVADJUST => "Inventory Adjustment",
+		ST_PURCHORDER => "Purchase Order",
+		ST_SUPPINVOICE => "Supplier Invoice",
+		ST_SUPPCREDIT => "Supplier Credit Note",
+		ST_SUPPAYMENT => "Supplier&nbsp;Payment",
+		ST_SUPPRECEIVE => "Purchase Order Delivery",
+		ST_WORKORDER => "Work Order",
+		ST_MANUISSUE => "Work Order Issue",
+		ST_MANURECEIVE => "Work Order Production",
+		ST_SALESORDER => "Sales Order",
+		ST_SALESQUOTE => "Sales Quotation",
+		ST_PROFORMA => "Sales Proforma Invoice",
+		ST_COSTUPDATE => "Cost Update",
+		ST_DIMENSION => "Dimension"
 	);
 	$tag_types = array(
-		TAG_ACCOUNT => _("Account"),
-		TAG_DIMENSION => _("Dimension")
+		TAG_ACCOUNT => "Account",
+		TAG_DIMENSION => "Dimension"
 	);
 	$wo_cost_types = array(
-		WO_LABOUR => _("Labour Cost"),
-		WO_OVERHEAD => _("Overhead Cost"),
+		WO_LABOUR => "Labour Cost",
+		WO_OVERHEAD => "Overhead Cost",
 	);
 	$wo_types_array = array(
-		WO_ASSEMBLY => _("Assemble"),
-		WO_UNASSEMBLY => _("Unassemble"),
-		WO_ADVANCED => _("Advanced Manufacture")
-	);
-
-	return array(
-		'bank_transfer_types' => $bank_transfer_types,
-		'class_types' => $class_types,
-		'payment_person_types' => $payment_person_types,
-		'quick_actions' => $quick_actions,
-		'quick_entry_types' => $quick_entry_types,
-		'stock_types' => $stock_types,
-		'systypes_array' => $systypes_array,
-		'tag_types' => $tag_types,
-		'wo_cost_types' => $wo_cost_types,
-		'wo_types_array' => $wo_types_array
+		WO_ASSEMBLY => "Assemble",
+		WO_UNASSEMBLY => "Unassemble",
+		WO_ADVANCED => "Advanced Manufacture"
 	);

@@ -6,7 +6,7 @@
 	if (AJAX_REFERRER) {
 		$data['post'] = $_POST;
 		if (isset($_POST['user_id'])) {
-			$data['result'] = Messages::setNewMessage($_POST['user_id'], $_POST['subject'], $_POST['message']);
+			$data['result'] = Messages::set($_POST['user_id'], $_POST['subject'], $_POST['message']);
 		}
 		echo json_encode($data);
 		exit();
@@ -22,5 +22,5 @@
 																																																					 'cols' => 35, 'rows' => 5, 'title' => 'Message to send:'))->textarea->label->br;
 	UI::button('btnSend', 'Send Message');
 	HTML::_div();
-	end_page(true, true);
+	Renderer::end_page(true, true);
 ?>

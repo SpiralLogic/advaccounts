@@ -20,7 +20,7 @@
 				WHERE chart.account_type=type.id";
 			}
 			return select_box($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
-																																																		 'format' => '_format_account', 'type' => 2, 'spec_option' => $all_option === true ?
+																																																		'format' => '_format_account', 'type' => 2, 'spec_option' => $all_option === true ?
 				 _("Use Item Sales Accounts") :
 				 $all_option, 'spec_id' => '', 'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => false, 'size' => 12, 'max' => 10, 'cells' => true, 'select_submit' => $submit_on_change, 'async' => false, 'category' => 2, 'show_inactive' => $all));
 		}
@@ -39,7 +39,6 @@
 			GL_UI::all_cells(null, $name, $selected_id, $skip_bank_accounts, $cells, $all_option);
 			echo "</tr>\n";
 		}
-
 
 		public static function	view($type, $trans_no, $label = "", $force = false, $class = '', $id = '') {
 			if (!$force && !User::show_gl_info()) {
@@ -62,13 +61,10 @@
 		}
 
 		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
-
-			$view_str = Debtor_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
-
+			$view_str = Debtor::trans_view($type, $trans_no, $label, $icon, $class, $id);
 			if ($view_str != null) {
 				return $view_str;
 			}
-
 			$view_str = Purch_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
 			if ($view_str != null) {
 				return $view_str;
@@ -96,13 +92,11 @@
 			return null;
 		}
 
-
-		// FISCALYEARS
 		public static function fiscalyears($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT * FROM fiscal_year";
 			// default to the company current fiscal year
 			return select_box($name, $selected_id, $sql, 'id', '', array(
-																																	 'order' => 'begin', 'default' => DB_Company::get_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
+																																	'order' => 'begin', 'default' => DB_Company::get_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
 		}
 
 		public static function fiscalyears_cells($label, $name, $selected_id = null) {
@@ -146,7 +140,6 @@
 			echo "</tr>\n";
 		}
 
-		// PAYMENT TERMS
 		public static function payment_terms($name, $selected_id = null, $disabled = null) {
 			if ($disabled === null) {
 				$disabled = (!$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT'));

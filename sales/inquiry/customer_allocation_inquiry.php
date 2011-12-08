@@ -16,85 +16,73 @@
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
-
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	start_form();
 	start_table('tablestyle_noborder');
 	start_row();
-	Debtor_UI::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+	Debtor::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 	date_cells(_("from:"), 'TransAfterDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
-	Debtor_UI::allocations_select(_("Type:"), 'filterType', null);
+	Debtor_Payment::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	Session::i()->global_customer = $_POST['customer_id'];
 	end_row();
 	end_table();
+	function check_overdue($row) {
+		return ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
+	}
 
-	function check_overdue($row)
-		{
-			return ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
+	function order_link($row) {
+		return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
+	}
+
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
+
+	function view_link($trans) {
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
+
+	function due_date($row) {
+		return $row["type"] == 10 ? $row["due_date"] : '';
+	}
+
+	function fmt_balance($row) {
+		return $row["TotalAmount"] - $row["Allocated"];
+	}
+
+	function alloc_link($row) {
+		$link = DB_Pager::link(_("Allocation"),
+		 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+		if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
+			/*its a credit note which could have an allocation */
+			return $link;
+		} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
+		) {
+			/*its a receipt which could have an allocation*/
+			return $link;
+		} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
+			/*its a negative receipt */
+			return '';
 		}
+	}
 
-	function order_link($row)
-		{
-			return $row['order_'] > 0 ? Debtor_UI::trans_view(ST_SALESORDER, $row['order_']) : "";
-		}
+	function fmt_debit($row) {
+		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
+		 -$row["TotalAmount"] : $row["TotalAmount"];
+		return $value >= 0 ? Num::price_format($value) : '';
+	}
 
-	function systype_name($dummy, $type)
-		{
-			global $systypes_array;
-			return $systypes_array[$type];
-		}
-
-	function view_link($trans)
-		{
-			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-		}
-
-	function due_date($row)
-		{
-			return $row["type"] == 10 ? $row["due_date"] : '';
-		}
-
-	function fmt_balance($row)
-		{
-			return $row["TotalAmount"] - $row["Allocated"];
-		}
-
-	function alloc_link($row)
-		{
-			$link = DB_Pager::link(_("Allocation"),
-			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-			if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
-				/*its a credit note which could have an allocation */
-				return $link;
-			} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
-			) {
-				/*its a receipt which could have an allocation*/
-				return $link;
-			} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
-				/*its a negative receipt */
-				return '';
-			}
-		}
-
-	function fmt_debit($row)
-		{
-			$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
-			 -$row["TotalAmount"] : $row["TotalAmount"];
-			return $value >= 0 ? Num::price_format($value) : '';
-		}
-
-	function fmt_credit($row)
-		{
-			$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ?
-			 -$row["TotalAmount"] : $row["TotalAmount"];
-			return $value > 0 ? Num::price_format($value) : '';
-		}
-
+	function fmt_credit($row) {
+		$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ?
+		 -$row["TotalAmount"] : $row["TotalAmount"];
+		return $value > 0 ? Num::price_format($value) : '';
+	}
 
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
@@ -140,7 +128,6 @@
 	if (!check_value('showSettled')) {
 		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,6) != 0) ";
 	}
-
 	$cols = array(
 		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link'),
@@ -160,5 +147,5 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

@@ -158,7 +158,7 @@ JS;
 		 * @static
 		 *
 		 */
-		static function png_fix() {
+		public static function png_fix() {
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
@@ -167,7 +167,7 @@ JS;
 		 * @static
 		 *
 		 */
-		static function get_websales() {
+		public static function get_websales() {
 			static $inserted;
 			if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 				$_SESSION['getWebsales'] = true;
@@ -182,18 +182,18 @@ JS;
 			}
 		}
 
-		//
-		//	Set default focus on first field $name if not set yet
-		//	Returns unique name if $name=null
-		//
 		/**
 		 * @static
 		 *
 		 * @param null $name
 		 *
 		 * @return null|string
+		 *
+		 * Set default focus on first field $name if not set yet
+		 * Returns unique name if $name=null
+		 *
 		 */
-		static function default_focus($name = null) {
+		public static function default_focus($name = null) {
 			if ($name == null) {
 				$name = uniqid('_el', true);
 			}
@@ -203,14 +203,11 @@ JS;
 			return $name;
 		}
 
-		/*
-							 Reset focus to next control element (e.g. link).
-					 */
 		/**
 		 * @static
 		 *
 		 */
-		static function reset_focus() {
+		public static function reset_focus() {
 			unset($_POST['_focus']);
 		}
 
@@ -405,7 +402,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $js
-		 * @param $var
+		 * @param						$var
 		 */
 		protected static function register($js = false, &$var) {
 			if (is_array($js)) {
@@ -421,7 +418,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $file
-		 * @param $var
+		 * @param						$var
 		 */
 		protected static function registerFile($file, &$var) {
 			if (is_array($file)) {
@@ -446,14 +443,14 @@ JS;
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
-		} /*
-					 Setting focus on element $name in $form.
-					 If $form<0 $name is element id.
-				 */
-		/**
+		}
+
+		/***
 		 * @static
 		 *
 		 * @param $name
+		 * Setting focus on element $name in $form.
+		 * If $form<0 $name is element id.
 		 */
 		public static function set_focus($name) {
 			$Ajax = Ajax::i();

@@ -14,7 +14,6 @@
 	JS::set_focus('account');
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "General Ledger Inquiry"));
-
 	// Ajax updates
 	//
 	if (get_post('Show')) {
@@ -47,9 +46,7 @@
 	if (!isset($_POST["amount_max"])) {
 		$_POST["amount_max"] = Num::price_format(0);
 	}
-
-	function gl_inquiry_controls()
-	{
+	function gl_inquiry_controls() {
 		$dim = DB_Company::get_pref('use_dimension');
 		start_form();
 		start_table('tablestyle_noborder');
@@ -76,9 +73,7 @@
 		end_form();
 	}
 
-
-	function show_results()
-	{
+	function show_results() {
 		global $systypes_array;
 		if (!isset($_POST["account"])) {
 			$_POST["account"] = null;
@@ -92,7 +87,8 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
+			Validation::input_num('amount_min'), Validation::input_num('amount_max'));
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 		if ($_POST["account"] != null) {
 			Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
@@ -186,14 +182,12 @@
 		}
 	}
 
-
 	gl_inquiry_controls();
 	Display::div_start('trans_tbl');
 	if (get_post('Show') || get_post('account')) {
 		show_results();
 	}
 	Display::div_end();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -9,32 +9,15 @@
 	$GLOBALS['ajax_divs'] = array();
 	class Display
 	{
-		public static function heading($msg) {
-			echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
-		}
-
-		public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
-			for ($i = 0; $i < $br; $i++) {
-				echo "<br>";
+		public static function access_string($label, $clean = false) {
+			$access = '';
+			$slices = array();
+			if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
+				$label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
+				$access = " accesskey='" . strtoupper($slices[2]) . "'";
 			}
-			if ($extra != "") {
-				echo "<div class='center'><span $extra>$msg</span></div>\n";
-			} else {
-				echo "<div class='center'>$msg</div>\n";
-			}
-			for ($i = 0; $i < $br2; $i++) {
-				echo "<br>";
-			}
-		}
-
-		public static function item_heading($stock_id) {
-			if ($stock_id != "") {
-				$result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
-				$myrow = DB::fetch_row($result);
-				static::heading("$stock_id - $myrow[0]");
-				$units = $myrow[1];
-				static::heading(_("in units of : ") . $units);
-			}
+			$label = str_replace('&&', '&', $label);
+			return $clean ? $label : array($label, $access);
 		}
 
 		public static function backtrace($cond = true, $msg = '') {
@@ -80,6 +63,40 @@
 			}
 		}
 
+		public static function br($num = 1) {
+			for ($i = 0; $i < $num; $i++) {
+				echo "<br>";
+			}
+		}
+
+		public static function div_start($id = '', $trigger = null, $non_ajax = false) {
+			global $ajax_divs;
+			if ($non_ajax) { // div for non-ajax elements
+				array_push($ajax_divs, array($id, null));
+				echo "<div class='js_only hidden' " . ($id != '' ? "id='$id'" : '') . ">";
+			} else { // ajax ready div
+				array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));
+				echo "<div " . ($id != '' ? "id='$id'" : '') . ">";
+				ob_start();
+			}
+		}
+
+		public static function div_end() {
+			global $ajax_divs;
+			$Ajax = Ajax::i();
+			if (count($ajax_divs)) {
+				$div = array_pop($ajax_divs);
+				if ($div[1] !== null) {
+					$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
+				}
+				echo "</div>";
+			}
+		}
+
+		public static function heading($msg) {
+			echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
+		}
+
 		public static function is_voided($type, $id, $label) {
 			$void_entry = Voiding::get($type, $id);
 			if ($void_entry == null) {
@@ -96,6 +113,28 @@
 			return true;
 		}
 
+		public static function item_heading($stock_id) {
+			if ($stock_id != "") {
+				$result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
+				$myrow = DB::fetch_row($result);
+				static::heading("$stock_id - $myrow[0]");
+				$units = $myrow[1];
+				static::heading(_("in units of : ") . $units);
+			}
+		}
+
+		public static function menu_link($url, $label, $id = null) {
+			$id = JS::default_focus($id);
+			$pars = Display::access_string($label);
+			return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
+		}
+
+		public static function menu_button($url, $label, $id = null) {
+			$id = JS::default_focus($id);
+			$pars = Display::access_string($label);
+			return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
+		}
+
 		public static function meta_forward($forward_to, $params = "") {
 			$Ajax = Ajax::i();
 			echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
@@ -108,20 +147,18 @@
 			exit;
 		}
 
-		// Find and replace hotkey marker.
-		// if $clean == true marker is removed and clean label is returned
-		// (for use in wiki help system), otherwise result is array of label
-		// with underlined hotkey letter and access property string.
-		//
-		public static function access_string($label, $clean = false) {
-			$access = '';
-			$slices = array();
-			if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-				$label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
-				$access = " accesskey='" . strtoupper($slices[2]) . "'";
+		public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
+			for ($i = 0; $i < $br; $i++) {
+				echo "<br>";
 			}
-			$label = str_replace('&&', '&', $label);
-			return $clean ? $label : array($label, $access);
+			if ($extra != "") {
+				echo "<div class='center'><span $extra>$msg</span></div>\n";
+			} else {
+				echo "<div class='center'>$msg</div>\n";
+			}
+			for ($i = 0; $i < $br2; $i++) {
+				echo "<br>";
+			}
 		}
 
 		public static function link_back($center = true, $no_menu = true) {
@@ -157,56 +194,6 @@
 			echo "<td>";
 			Display::link_no_params($target, $label);
 			echo "</td>\n";
-		}
-
-		public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
-			if ($url != '') {
-				$class .= " openWindow";
-			}
-			if ($class != '') {
-				$class = " class='$class'";
-			}
-			if ($id != '') {
-				$class = " id='$id'";
-			}
-			if ($url != "") {
-				$pars = Display::access_string($label);
-				if (User::graphic_links() && $icon) {
-					$pars[0] = set_icon($icon, $pars[0]);
-				}
-				$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' $pars[1]>$pars[0]</a>";
-			} else {
-				$preview_str = $label;
-			}
-			return $preview_str;
-		}
-
-		public static function menu_link($url, $label, $id = null) {
-			$id = JS::default_focus($id);
-			$pars = Display::access_string($label);
-			return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
-		}
-
-		public static function menu_button($url, $label, $id = null) {
-			$id = JS::default_focus($id);
-			$pars = Display::access_string($label);
-			return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
-		}
-
-		public static function submenu_option($title, $url, $id = null) {
-			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
-		}
-
-		public static function submenu_button($title, $url, $id = null) {
-			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
-		}
-
-		public static function submenu_view($title, $type, $number, $id = null) {
-			Display::note(GL_UI::trans_view($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
-		}
-
-		public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
 		}
 
 		public static function link_params($target, $label, $link_params = '', $center = true, $params = '') {
@@ -266,45 +253,16 @@
 			echo "</td>\n";
 		}
 
-
-		public static function br($num = 1) {
-			for ($i = 0; $i < $num; $i++) {
-				echo "<br>";
-			}
-		}
-
-		public static function div_start($id = '', $trigger = null, $non_ajax = false) {
-			global $ajax_divs;
-			if ($non_ajax) { // div for non-ajax elements
-				array_push($ajax_divs, array($id, null));
-				echo "<div class='js_only hidden' " . ($id != '' ? "id='$id'" : '') . ">";
-			} else { // ajax ready div
-				array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));
-				echo "<div " . ($id != '' ? "id='$id'" : '') . ">";
-				ob_start();
-			}
-		}
-
-		public static function div_end() {
-			global $ajax_divs;
-			$Ajax = Ajax::i();
-			if (count($ajax_divs)) {
-				$div = array_pop($ajax_divs);
-				if ($div[1] !== null) {
-					$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
-				}
-				echo "</div>";
-			}
-		}
-
-		/*
-						 Bind editors for various selectors.
-						 $type - type of editor
-						 $input - name of related input field
-						 $caller - optional function key code (available values F1-F12: 112-123,
-							 true: default)
-					 */
-		//$Pagehelp = array();
+		/**
+		 *
+		 * Bind editors for various selectors.
+		 *
+		 * @param			$type	- type of editor
+		 * @param			$input - name of related input field
+		 * @param bool $caller- optional function key code (available values F1-F12: 112-123, true: default)
+		 *
+		 * @return array
+		 */
 		public static function set_editor($type, $input, $caller = true) {
 			static $Editors = array();
 			/* Table editor interfaces. Key is editor type
@@ -326,5 +284,43 @@
 			/*	$help = 'F' . ($key - 111) . ' - ';
 									$help .= $popup_editors[$type][2];
 									$Pagehelp[] = $help;*/
+		}
+
+		public static function submenu_option($title, $url, $id = null) {
+			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		}
+
+		public static function submenu_button($title, $url, $id = null) {
+			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		}
+
+		public static function submenu_view($title, $type, $number, $id = null) {
+			Display::note(GL_UI::trans_view($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
+		}
+
+		public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
+			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
+		}
+
+		public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
+			if ($url != '') {
+				$class .= " openWindow";
+			}
+			if ($class != '') {
+				$class = " class='$class'";
+			}
+			if ($id != '') {
+				$class = " id='$id'";
+			}
+			if ($url != "") {
+				$pars = Display::access_string($label);
+				if (User::graphic_links() && $icon) {
+					$pars[0] = set_icon($icon, $pars[0]);
+				}
+				$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' $pars[1]>$pars[0]</a>";
+			} else {
+				$preview_str = $label;
+			}
+			return $preview_str;
 		}
 	}

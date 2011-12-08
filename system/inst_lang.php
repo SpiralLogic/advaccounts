@@ -12,7 +12,6 @@
 	$page_security = 'SA_CREATELANGUAGE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Update Languages"));
-
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
@@ -22,9 +21,7 @@
 	} else {
 		$selected_id = -1;
 	}
-
-	function check_data()
-	{
+	function check_data() {
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
 			Errors::error(_("Language name, code nor encoding cannot be empty"));
 			return false;
@@ -32,9 +29,7 @@
 		return true;
 	}
 
-
-	function handle_submit()
-	{
+	function handle_submit() {
 		$installed_languages = Config::get('languages.installed');
 		if (!check_data()) {
 			return false;
@@ -46,10 +41,11 @@
 		$installed_languages[$id]['code'] = $_POST['code'];
 		$installed_languages[$id]['name'] = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
-		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];		$lang = Config::get('languages.installed');
-				$lang = $lang[$id]['code'];	$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
-
-		if (!Files::save_to_file($filename,'')) {
+		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
+		$lang = Config::get('languages.installed');
+		$lang = $lang[$id]['code'];
+		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
+		if (!Files::save_to_file($filename, '')) {
 			return false;
 		}
 		$directory = DOCROOT . "lang/" . $_POST['code'];
@@ -77,9 +73,7 @@
 		return true;
 	}
 
-
-	function handle_delete()
-	{
+	function handle_delete() {
 		$id = $_GET['id'];
 		$lang = Config::get('languages.installed');
 		$lang = $lang[$id]['code'];
@@ -89,7 +83,7 @@
 			Config::set('default_lang', $_SESSION['Language']->code);
 		}
 		Config::remove('languages.installed', $id);
-		if (!Files::save_to_file($filename,'')) {
+		if (!Files::save_to_file($filename, '')) {
 			return;
 		}
 		$filename = PATH_TO_ROOT . "/lang/$lang";
@@ -98,9 +92,7 @@
 		Display::meta_forward($_SERVER['PHP_SELF']);
 	}
 
-
-	function display_languages()
-	{
+	function display_languages() {
 		$lang = $_SESSION["language"]->code;
 		echo "
 		<script language='javascript'>
@@ -154,9 +146,7 @@
 		Errors::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-
-	function display_language_edit($selected_id)
-	{
+	function display_language_edit($selected_id) {
 		if ($selected_id != -1) {
 			$n = $selected_id;
 		} else {
@@ -197,7 +187,6 @@
 		end_form();
 	}
 
-
 	if (isset($_GET['c'])) {
 		if ($_GET['c'] == 'df') {
 			handle_delete();
@@ -208,11 +197,9 @@
 			}
 		}
 	}
-
 	display_languages();
 	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
 	display_language_edit($selected_id);
-
-	end_page();
+	Renderer::end_page();
 
 ?>

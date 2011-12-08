@@ -13,14 +13,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
-
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo Debtor_UI::select('customer_id', $_POST['customer_id'], true, true);
+	echo Debtor::select('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</div><br><br>";
@@ -41,33 +40,27 @@
 	if (isset($_POST['customer_id'])) {
 		$customer_id = $_POST['customer_id'];
 	}
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
 
-	function systype_name($dummy, $type)
-		{
-			global $systypes_array;
-			return $systypes_array[$type];
-		}
+	function trans_view($trans) {
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
 
-	function trans_view($trans)
-		{
-			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-		}
+	function alloc_link($row) {
+		return DB_Pager::link(_("Allocate"),
+		 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+	}
 
-	function alloc_link($row)
-		{
-			return DB_Pager::link(_("Allocate"),
-			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-		}
+	function amount_left($row) {
+		return Num::price_format($row["Total"] - $row["alloc"]);
+	}
 
-	function amount_left($row)
-		{
-			return Num::price_format($row["Total"] - $row["alloc"]);
-		}
-
-	function check_settled($row)
-		{
-			return $row['settled'] == 1;
-		}
+	function check_settled($row) {
+		return $row['settled'] == 1;
+	}
 
 	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
 	$cols = array(
@@ -84,5 +77,5 @@
 	$table->width = "75%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

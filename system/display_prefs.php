@@ -12,7 +12,6 @@
 	$page_security = 'SA_SETUPDISPLAY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Display Setup"));
-
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
 			Errors::error($_POST['query_size']);
@@ -110,7 +109,6 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-
-	end_page();
+	Renderer::end_page();
 
 ?>

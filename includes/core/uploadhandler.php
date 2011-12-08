@@ -34,7 +34,7 @@
 		 * @param $order_no
 		 * @param $options
 		 */
-		function __construct($order_no, $options) {
+		public function __construct($order_no, $options) {
 			$this->order_no = $order_no;
 			error_reporting(E_ALL | E_STRICT);
 			ini_set('post_max_size', '3M');

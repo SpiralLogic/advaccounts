@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//
 	//	Entry/Modify Delivery Note against Sales Order
 	//
@@ -28,7 +27,7 @@
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
 		Errors::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
-		Display::note(Debtor_UI::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
+		Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
 		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink",
 			"", 1), 1, 1);
@@ -55,7 +54,6 @@
 		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
-
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 		/*read in all the selected order into the Items cart */
@@ -84,7 +82,7 @@
 		/* This page can only be called with an order number for invoicing*/
 		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
-		end_page();
+		Renderer::end_page();
 		exit;
 	} else {
 		Sales_Order::check_edit_conflicts();
@@ -95,136 +93,125 @@
 			JS::set_focus('ChargeFreightCost');
 		}
 	}
-
-	function check_data()
-		{
-			if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
-				Errors::error(_("The entered date of delivery is invalid."));
-				JS::set_focus('DispatchDate');
-				return false;
-			}
-			if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
-				Errors::error(_("The entered date of delivery is not in fiscal year."));
-				JS::set_focus('DispatchDate');
-				return false;
-			}
-			if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-				Errors::error(_("The entered dead-line for invoice is invalid."));
-				JS::set_focus('due_date');
-				return false;
-			}
-			if ($_SESSION['Items']->trans_no == 0) {
-				if (!Ref::is_valid($_POST['ref'])) {
-					Errors::error(_("You must enter a reference."));
-					JS::set_focus('ref');
-					return false;
-				}
-				if ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
-					Errors::error(_("The entered reference is already in use."));
-					JS::set_focus('ref');
-					return false;
-				}
-			}
-			if ($_POST['ChargeFreightCost'] == "") {
-				$_POST['ChargeFreightCost'] = Num::price_format(0);
-			}
-			if (!Validation::is_num('ChargeFreightCost', 0)) {
-				Errors::error(_("The entered shipping value is not numeric."));
-				JS::set_focus('ChargeFreightCost');
-				return false;
-			}
-			if ($_SESSION['Items']->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
-				Errors::error(_("There are no item quantities on this delivery note."));
-				return false;
-			}
-			if (!check_quantities()) {
-				return false;
-			}
-			return true;
+	function check_data() {
+		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
+			Errors::error(_("The entered date of delivery is invalid."));
+			JS::set_focus('DispatchDate');
+			return false;
 		}
-
-
-	function copy_to_cart()
-		{
-			$cart = &$_SESSION['Items'];
-			$cart->ship_via = $_POST['ship_via'];
-			$cart->freight_cost = Validation::input_num('ChargeFreightCost');
-			$cart->document_date = $_POST['DispatchDate'];
-			$cart->due_date = $_POST['due_date'];
-			$cart->Location = $_POST['Location'];
-			$cart->Comments = $_POST['Comments'];
-			if ($cart->trans_no == 0) {
-				$cart->reference = $_POST['ref'];
+		if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
+			Errors::error(_("The entered date of delivery is not in fiscal year."));
+			JS::set_focus('DispatchDate');
+			return false;
+		}
+		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
+			Errors::error(_("The entered dead-line for invoice is invalid."));
+			JS::set_focus('due_date');
+			return false;
+		}
+		if ($_SESSION['Items']->trans_no == 0) {
+			if (!Ref::is_valid($_POST['ref'])) {
+				Errors::error(_("You must enter a reference."));
+				JS::set_focus('ref');
+				return false;
+			}
+			if ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
+				Errors::error(_("The entered reference is already in use."));
+				JS::set_focus('ref');
+				return false;
 			}
 		}
-
-
-	function copy_from_cart()
-		{
-			$cart = &$_SESSION['Items'];
-			$_POST['ship_via'] = $cart->ship_via;
-			$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
-			$_POST['DispatchDate'] = $cart->document_date;
-			$_POST['due_date'] = $cart->due_date;
-			$_POST['Location'] = $cart->Location;
-			$_POST['Comments'] = $cart->Comments;
-			$_POST['cart_id'] = $cart->cart_id;
-			$_POST['ref'] = $cart->reference;
+		if ($_POST['ChargeFreightCost'] == "") {
+			$_POST['ChargeFreightCost'] = Num::price_format(0);
 		}
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
+			Errors::error(_("The entered shipping value is not numeric."));
+			JS::set_focus('ChargeFreightCost');
+			return false;
+		}
+		if ($_SESSION['Items']->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
+			Errors::error(_("There are no item quantities on this delivery note."));
+			return false;
+		}
+		if (!check_quantities()) {
+			return false;
+		}
+		return true;
+	}
 
+	function copy_to_cart() {
+		$cart = &$_SESSION['Items'];
+		$cart->ship_via = $_POST['ship_via'];
+		$cart->freight_cost = Validation::input_num('ChargeFreightCost');
+		$cart->document_date = $_POST['DispatchDate'];
+		$cart->due_date = $_POST['due_date'];
+		$cart->Location = $_POST['Location'];
+		$cart->Comments = $_POST['Comments'];
+		if ($cart->trans_no == 0) {
+			$cart->reference = $_POST['ref'];
+		}
+	}
 
-	function check_quantities()
-		{
-			$ok = 1;
-			// Update cart delivery quantities/descriptions
-			foreach ($_SESSION['Items']->line_items as $line => $itm) {
-				if (isset($_POST['Line' . $line])) {
-					if ($_SESSION['Items']->trans_no) {
-						$min = $itm->qty_done;
-						$max = $itm->quantity;
-					} else {
-						$min = 0;
-						$max = $itm->quantity - $itm->qty_done;
-					}
-					if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
-						$_SESSION['Items']->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-					} elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
-						$_SESSION['Items']->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-					} else {
-						JS::set_focus('Line' . $line);
-						$ok = 0;
-					}
+	function copy_from_cart() {
+		$cart = &$_SESSION['Items'];
+		$_POST['ship_via'] = $cart->ship_via;
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
+		$_POST['DispatchDate'] = $cart->document_date;
+		$_POST['due_date'] = $cart->due_date;
+		$_POST['Location'] = $cart->Location;
+		$_POST['Comments'] = $cart->Comments;
+		$_POST['cart_id'] = $cart->cart_id;
+		$_POST['ref'] = $cart->reference;
+	}
+
+	function check_quantities() {
+		$ok = 1;
+		// Update cart delivery quantities/descriptions
+		foreach ($_SESSION['Items']->line_items as $line => $itm) {
+			if (isset($_POST['Line' . $line])) {
+				if ($_SESSION['Items']->trans_no) {
+					$min = $itm->qty_done;
+					$max = $itm->quantity;
+				} else {
+					$min = 0;
+					$max = $itm->quantity - $itm->qty_done;
 				}
-				if (isset($_POST['Line' . $line . 'Desc'])) {
-					$line_desc = $_POST['Line' . $line . 'Desc'];
-					if (strlen($line_desc) > 0) {
-						$_SESSION['Items']->line_items[$line]->description = $line_desc;
-					}
+				if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
+					$_SESSION['Items']->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
+				} elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
+					$_SESSION['Items']->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
+				} else {
+					JS::set_focus('Line' . $line);
+					$ok = 0;
 				}
 			}
-			// ...
-			//	else
-			//	 $_SESSION['Items']->freight_cost = Validation::input_num('ChargeFreightCost');
-			return $ok;
+			if (isset($_POST['Line' . $line . 'Desc'])) {
+				$line_desc = $_POST['Line' . $line . 'Desc'];
+				if (strlen($line_desc) > 0) {
+					$_SESSION['Items']->line_items[$line]->description = $line_desc;
+				}
+			}
 		}
+		// ...
+		//	else
+		//	 $_SESSION['Items']->freight_cost = Validation::input_num('ChargeFreightCost');
+		return $ok;
+	}
 
-
-	function check_qoh()
-		{
-			if (!DB_Company::get_pref('allow_negative_stock')) {
-				foreach ($_SESSION['Items']->line_items as $itm) {
-					if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
-						$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
-						if ($itm->qty_dispatched > $qoh) {
-							Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
-							return false;
-						}
+	function check_qoh() {
+		if (!DB_Company::get_pref('allow_negative_stock')) {
+			foreach ($_SESSION['Items']->line_items as $itm) {
+				if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
+					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+					if ($itm->qty_dispatched > $qoh) {
+						Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
+						return false;
 					}
 				}
 			}
-			return true;
 		}
-
+		return true;
+	}
 
 	if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 		$dn = &$_SESSION['Items'];
@@ -249,7 +236,6 @@
 	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 		$Ajax->activate('Items');
 	}
-
 	start_form();
 	hidden('cart_id');
 	start_table('tablestyle2 width90 pad5');
@@ -268,7 +254,7 @@
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='label'");
 	}
-	label_cells(_("For Sales Order"), Debtor_UI::trans_view(ST_SALESORDER, $_SESSION['Items']->order_no),
+	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $_SESSION['Items']->order_no),
 		"class='tableheader2'");
 	label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='label'");
 	end_row();
@@ -308,7 +294,7 @@
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		end_page();
+		Renderer::end_page();
 		exit();
 	}
 	Display::heading(_("Delivery Items"));
@@ -381,6 +367,6 @@
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

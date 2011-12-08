@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "Quick Entries"));
 	Page::simple_mode(true);
 	simple_page_mode2(true);
-	function simple_page_mode2($numeric_id = true)
-	{
+	function simple_page_mode2($numeric_id = true) {
 		global $Mode2, $selected_id2;
 		$Ajax = Ajax::i();
 		$default = $numeric_id ? -1 : '';
@@ -45,8 +44,7 @@
 		$Mode2 = '';
 	}
 
-	function submit_add_or_update_center2($add = true, $title = false, $async = false)
-	{
+	function submit_add_or_update_center2($add = true, $title = false, $async = false) {
 		echo "<div class='center'>";
 		if ($add) {
 			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
@@ -57,9 +55,7 @@
 		echo "</div>";
 	}
 
-
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['description']) == 0) {
 			Errors::error(_("The Quick Entry description cannot be empty."));
 			JS::set_focus('description');
@@ -72,7 +68,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
@@ -88,7 +83,8 @@
 	}
 	if ($Mode2 == 'ADD_ITEM2' || $Mode2 == 'UPDATE_ITEM2') {
 		if ($selected_id2 != -1) {
-			GL_QuickEntry::update_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], Validation::input_num('amount', 0), $_POST['dimension_id'], $_POST['dimension2_id']);
+			GL_QuickEntry::update_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], Validation::input_num('amount', 0), $_POST['dimension_id'],
+				$_POST['dimension2_id']);
 			Errors::notice(_('Selected quick entry line has been updated'));
 		} else {
 			GL_QuickEntry::add_line($selected_id, $_POST['actn'], $_POST['dest_id'], Validation::input_num('amount', 0), $_POST['dimension_id'], $_POST['dimension2_id']);
@@ -96,7 +92,6 @@
 		}
 		$Mode2 = 'RESET2';
 	}
-
 	if ($Mode == 'Delete') {
 		if (!GL_QuickEntry::has_lines($selected_id)) {
 			GL_QuickEntry::delete($selected_id);
@@ -112,7 +107,6 @@
 		Errors::notice(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		$_POST['description'] = $_POST['type'] = '';
@@ -123,7 +117,6 @@
 		$selected_id2 = -1;
 		$_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
 	}
-
 	$result = GL_QuickEntry::get_all();
 	start_form();
 	start_table('tablestyle');
@@ -141,7 +134,6 @@
 	}
 	end_table(1);
 	end_form();
-
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
@@ -265,7 +257,6 @@
 		submit_add_or_update_center2($selected_id2 == -1, '', true);
 		end_form();
 	}
-
-	end_page();
+	Renderer::end_page();
 
 ?>

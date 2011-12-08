@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "View Dimension"), true);
-
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$id = $_GET['trans_no'];
 	}
@@ -61,6 +60,6 @@
 	end_form();
 	Dimensions::display_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 	Display::br(1);
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

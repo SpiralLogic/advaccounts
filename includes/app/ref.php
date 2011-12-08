@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Ref {
-
+	class Ref
+	{
 		public static function add($type, $id, $reference) {
 			$sql = "INSERT INTO refs (type, id, reference)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", "
@@ -21,7 +21,6 @@
 			}
 		}
 
-
 		public static function find($type, $reference) {
 			$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type)
 			 . " AND reference=" . DB::escape($reference);
@@ -29,13 +28,11 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-
 		public static function save($type, $reference) {
 			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference))
 			 . " WHERE type_id = " . DB::escape($type);
 			DB::query($sql, "The next transaction ref for $type could not be updated");
 		}
-
 
 		public static function get_next($type) {
 			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
@@ -43,7 +40,6 @@
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
-
 
 		public static function get($type, $id) {
 			$sql = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
@@ -76,7 +72,6 @@
 			static::save($type, $next);
 		}
 
-
 		public static function is_valid($reference) {
 			return strlen(trim($reference)) > 0;
 		}
@@ -99,9 +94,8 @@
 			}
 		}
 
-
 		public static function is_new(&$ref, $type) {
-			$db_info = SysTypes::get_systype_db_info($type);
+			$db_info = SysTypes::get_db_info($type);
 			$db_name = $db_info[0];
 			$db_type = $db_info[1];
 			$db_ref = $db_info[3];

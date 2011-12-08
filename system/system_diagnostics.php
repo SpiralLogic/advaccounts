@@ -25,8 +25,7 @@
 		'tst_dbversion', 'tst_subdirs', 'tst_langs', 'tst_tmpdir', 'tst_sessionpath',
 		'tst_config', 'tst_extconfig'
 	);
-	function tst_mysql()
-	{
+	function tst_mysql() {
 		$test['descr'] = _('MySQL version') . ' >3.23.58';
 		$test['type'] = 3;
 		$test['test'] = DB::getAttribute(PDO::ATTR_SERVER_VERSION);
@@ -35,8 +34,7 @@
 		return $test;
 	}
 
-	function tst_php()
-	{
+	function tst_php() {
 		$test['descr'] = _('PHP version') . ' >4.3.2';
 		$test['type'] = 3;
 		$test['test'] = phpversion();
@@ -45,8 +43,7 @@
 		return $test;
 	}
 
-	function tst_system()
-	{
+	function tst_system() {
 		$test['descr'] = _('Server system');
 		$test['type'] = 0;
 		$test['test'] = PHP_OS;
@@ -54,8 +51,7 @@
 		return $test;
 	}
 
-	function tst_sessionpath()
-	{
+	function tst_sessionpath() {
 		$test['descr'] = _('Session save path');
 		$test['type'] = 0;
 		$test['test'] = session_save_path();
@@ -63,8 +59,7 @@
 		return $test;
 	}
 
-	function tst_browser()
-	{
+	function tst_browser() {
 		$test['descr'] = _('Browser type');
 		$test['type'] = 0;
 		$test['test'] = $_SERVER['HTTP_USER_AGENT'];
@@ -73,8 +68,7 @@
 		return $test;
 	}
 
-	function tst_server()
-	{
+	function tst_server() {
 		$test['descr'] = _('Http server type');
 		$test['test'] = $_SERVER['SERVER_SOFTWARE'];
 		$test['type'] = 0;
@@ -83,8 +77,7 @@
 		return $test;
 	}
 
-	function tst_gettext()
-	{
+	function tst_gettext() {
 		$test['descr'] = _('Native gettext');
 		$test['test'] = function_exists('gettext') ? _('Yes') : _('No');
 		$test['type'] = 1;
@@ -93,8 +86,7 @@
 		return $test;
 	}
 
-	function tst_debug()
-	{
+	function tst_debug() {
 		$test['descr'] = _('Debugging mode');
 		$test['type'] = 0;
 		$test['test'] = Config::get('debug') ? _("Yes") : _("No");
@@ -103,8 +95,7 @@
 		return $test;
 	}
 
-	function tst_logging()
-	{
+	function tst_logging() {
 		$test['descr'] = _('Error logging');
 		$test['type'] = 2;
 		// if error lgging is on, but log file does not exists try write
@@ -125,8 +116,7 @@
 	//
 	//	Installed ADV database structure version
 	//
-	function tst_dbversion()
-	{
+	function tst_dbversion() {
 		$test['descr'] = _('Current database version');
 		$test['type'] = 3;
 		$test['test'] = DB_Company::get_pref('version_id');
@@ -136,8 +126,7 @@
 		return $test;
 	}
 
-	function tst_subdirs()
-	{
+	function tst_subdirs() {
 		$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 		$test['descr'] = _('Company subdirectories consistency');
 		$test['type'] = 3;
@@ -187,8 +176,7 @@
 		return $test;
 	}
 
-	function tst_tmpdir()
-	{
+	function tst_tmpdir() {
 		$test['descr'] = _('Temporary directory');
 		$test['type'] = 3;
 		$test['test'] = PATH_TO_ROOT . '/tmp';
@@ -197,8 +185,7 @@
 		return $test;
 	}
 
-	function tst_langs()
-	{
+	function tst_langs() {
 		$test['descr'] = _('Language configuration consistency');
 		$test['type'] = 3;
 		$test['result'] = true;
@@ -227,8 +214,7 @@
 		return $test;
 	}
 
-	function tst_config()
-	{
+	function tst_config() {
 		$test['descr'] = _('Main config file');
 		$test['type'] = 2;
 		$test['test'] = PATH_TO_ROOT . '/config/config.php';
@@ -237,8 +223,7 @@
 		return $test;
 	}
 
-	function tst_extconfig()
-	{
+	function tst_extconfig() {
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;
 		$test['test'] = PATH_TO_ROOT . '/config/extensions.php';
@@ -262,7 +247,6 @@
 		}
 		return $test;
 	}
-
 
 	start_table('tablestyle width90');
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
@@ -298,6 +282,6 @@
 		end_row();
 	}
 	end_table();
-	end_page();
+	Renderer::end_page();
 
 ?>

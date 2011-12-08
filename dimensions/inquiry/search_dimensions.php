@@ -19,7 +19,6 @@
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Dimensions"));
 	}
-
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -41,9 +40,39 @@
 		}
 		$Ajax->activate('dim_table');
 	}
-
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
+	}
+	function view_link($row) {
+		return Dimensions::trans_view(ST_DIMENSION, $row["id"]);
+	}
+
+	function is_closed($row) {
+		return $row['closed'] ? _('Yes') : _('No');
+	}
+
+	function sum_dimension($row) {
+		$sql = "SELECT SUM(amount) FROM gl_trans WHERE tran_date >= '" .
+		 Dates::date2sql($_POST['FromDate']) . "' AND
+		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
+		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
+		$res = DB::query($sql, "Sum of transactions could not be calculated");
+		$row = DB::fetch_row($res);
+		return $row[0];
+	}
+
+	function is_overdue($row) {
+		return Dates::date_diff2(Dates::Today(), Dates::sql2date($row["due_date"]), "d") > 0;
+	}
+
+	function edit_link($row) {
+		//return $row["closed"] ? '' :
+		//	DB_Pager::link(_("Edit"),
+		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+		return DB_Pager::link(
+			_("Edit"),
+		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
+		);
 	}
 
 	start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
@@ -63,43 +92,6 @@
 	end_row();
 	end_table();
 	$dim = DB_Company::get_pref('use_dimension');
-	function view_link($row)
-	{
-		return Dimensions::trans_view(ST_DIMENSION, $row["id"]);
-	}
-
-	function is_closed($row)
-	{
-		return $row['closed'] ? _('Yes') : _('No');
-	}
-
-	function sum_dimension($row)
-	{
-		$sql = "SELECT SUM(amount) FROM gl_trans WHERE tran_date >= '" .
-		 Dates::date2sql($_POST['FromDate']) . "' AND
-		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
-		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
-		$res = DB::query($sql, "Sum of transactions could not be calculated");
-		$row = DB::fetch_row($res);
-		return $row[0];
-	}
-
-	function is_overdue($row)
-	{
-		return Dates::date_diff2(Dates::Today(), Dates::sql2date($row["due_date"]), "d") > 0;
-	}
-
-	function edit_link($row)
-	{
-		//return $row["closed"] ? '' :
-		//	DB_Pager::link(_("Edit"),
-		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
-		return DB_Pager::link(
-			_("Edit"),
-		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
-		);
-	}
-
 	$sql
 	 = "SELECT dim.id,
 	dim.reference,
@@ -110,7 +102,7 @@
 	dim.closed
 	FROM dimensions as dim WHERE id > 0";
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND reference LIKE " . DB::escape("%" . $_POST['OrderNumber'] . "%",false,false);
+		$sql .= " AND reference LIKE " . DB::escape("%" . $_POST['OrderNumber'] . "%", false, false);
 	} else {
 		if ($dim == 1) {
 			$sql .= " AND type_=1";
@@ -119,7 +111,7 @@
 			$sql .= " AND closed=0";
 		}
 		if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
-			$sql .= " AND type_=" . DB::escape($_POST['type_'],false,false);
+			$sql .= " AND type_=" . DB::escape($_POST['type_'], false, false);
 		}
 		if (isset($_POST['OverdueOnly'])) {
 			$today = Dates::date2sql(Dates::Today());
@@ -158,6 +150,6 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -15,7 +15,7 @@
 	class SysTypes
 	{
 		public static function get_next_trans_no($trans_type) {
-			$st = SysTypes::get_systype_db_info($trans_type);
+			$st = SysTypes::get_db_info($trans_type);
 			if (!($st && $st[0] && $st[2])) {
 				// this is in fact internal error condition.
 				Errors::error('Internal error: invalid type passed to SysTypes::get_next_trans_no()');
@@ -38,7 +38,7 @@
 			return $ref;
 		}
 
-		public static function get_systype_db_info($type) {
+		public static function get_db_info($type) {
 			switch ($type) {
 				case	 ST_JOURNAL		:
 					return array("gl_trans", "type", "type_no", null, "tran_date");
@@ -94,7 +94,7 @@
 			Errors::show_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
 		}
 
-		public static function get_systypes() {
+		public static function get() {
 			$sql = "SELECT * FROM sys_types";
 			$result = DB::query($sql, "could not query systypes table");
 			return $result;
@@ -108,24 +108,24 @@
 			}
 		}
 
-		public static function view($name, $value = null, $spec_opt = false, $submit_on_change = false) {
+		public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
 			global $systypes_array;
 			return array_selector($name, $value, $systypes_array, array(
 																																 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 		}
 
-		public static function view_cells($label, $name, $value = null, $submit_on_change = false) {
+		public static function cells($label, $name, $value = null, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
 			echo "<td>";
-			echo SysTypes::view($name, $value, false, $submit_on_change);
+			echo SysTypes::select($name, $value, false, $submit_on_change);
 			echo "</td>\n";
 		}
 
-		public static function view_row($label, $name, $value = null, $submit_on_change = false) {
+		public static function row($label, $name, $value = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
-			SysTypes::view_cells(null, $name, $value, $submit_on_change);
+			SysTypes::cells(null, $name, $value, $submit_on_change);
 			echo "</tr>\n";
 		}
-}
+	}
