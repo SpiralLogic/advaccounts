@@ -1056,7 +1056,7 @@
 				++$colspan;
 			}
 			start_row();
-			label_cell(_("Shipping Charge"), "colspan=$colspan style='text-align:right;'");
+			label_cell(_("Shipping Charge"), "colspan=$colspan class='right'");
 			small_amount_cells(null, 'freight_cost', Num::price_format(get_post('freight_cost', 0)));
 			label_cell('', 'colspan=2');
 			end_row();

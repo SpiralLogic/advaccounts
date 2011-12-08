@@ -359,16 +359,16 @@
 	$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format($_SESSION['Items']->freight_cost));
 	$colspan = 9;
 	start_row();
-	label_cell(_("Shipping Cost"), "colspan=$colspan style='text-align:right;'");
+	label_cell(_("Shipping Cost"), "colspan=$colspan class='right'");
 	small_amount_cells(null, 'ChargeFreightCost', $_SESSION['Items']->freight_cost);
 	end_row();
 	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right");
 	$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Amount Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
+	label_row(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class=right");
 	end_table(1);
 	if ($has_marked) {
 		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");

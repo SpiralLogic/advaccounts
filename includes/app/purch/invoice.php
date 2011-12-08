@@ -648,22 +648,22 @@
 				$dim = DB_Company::get_pref('use_dimension');
 				$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
 				start_table('tablestyle2 width90');
-				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan style='text-align:right;'", "class=right");
+				label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan class='right bold'", "class=right");
 				$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 				$tax_total = Tax::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
-				label_cell(_("Total Correction"), "colspan=$colspan style='text-align:right;' style='width:90%'");
+				label_cell(_("Total Correction"), "colspan=$colspan class='right' style='width:90%'");
 				small_amount_cells(null, 'ChgTotal', Num::price_format(get_post('ChgTotal'), 2));
 				$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
 				if ($supp_trans->is_invoice) {
 					label_row(
-						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan style='text-align:right;' style='font-weight:bold;'",
-					 "class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'"
+						_("Invoice Total:"), Num::price_format($total), "colspan=$colspan class='right bold'",
+					 "class=right id='invoiceTotal' data-total=" . $total . " class='bold'"
 					);
 				} else {
 					label_row(
 						_("Credit Note Total"), Num::price_format($total),
-						"colspan=$colspan style='text-align:right;' style='font-weight:bold;color:red;'",
-					 "nowrap class=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;color:red;'"
+						"colspan=$colspan class='bold red right'",
+					 "nowrap class=right id='invoiceTotal' data-total=" . $total . " class='bold red'"
 					);
 				}
 				end_table(1);

@@ -251,16 +251,16 @@
 			}
 			$colspan = 7;
 			start_row();
-			label_cell(_("Credit Shipping Cost"), "colspan=$colspan style='text-align:right;'");
+			label_cell(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
 			small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
 			end_row();
 			$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 			$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='text-align:right;'", "class=right");
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right");
 			$taxes = $_SESSION['Items']->get_taxes(Validation::input_num('ChargeFreightCost'));
 			$tax_total = Tax::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 			$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan style='text-align:right;'", "class=right");
+			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class=right");
 			end_table();
 			Display::div_end();
 		}
