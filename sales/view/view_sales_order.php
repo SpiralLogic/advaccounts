@@ -20,19 +20,19 @@
 	if (isset($_SESSION['View'])) {
 		unset ($_SESSION['View']);
 	}
-	$_SESSION['View'] = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
+	$_SESSION['View'] = $view = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
 	start_table('tablesstyle2 pad0 width95');
-	echo "<tr class='tableheader2 top'><th colspan=3>";
+	echo "<tr class='tableheader2 top'><th colspan=4>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	} else {
 		Display::heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
 	}
 	echo "</td></tr>";
-	echo "<tr class='top'><td colspan=3>";
+	echo "<tr class='top'><td colspan=4>";
 	start_table('tablestyle width100');
 	start_row();
-	label_cells(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'",'class="pointer customer_id_label"');
+	label_cells(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'", 'class="pointer customer_id_label"');
 	hidden("customer_id", $_SESSION['View']->customer_id);
 	label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
 	label_cells(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");
@@ -61,7 +61,7 @@
 	end_table();
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		echo "</td></tr><tr><td class='top'>";
-		start_table('tablestyle');
+		start_table('tablestyle width90');
 		Display::heading(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -84,7 +84,7 @@
 		label_row(null, Num::price_format($delivery_total), " ", "colspan=4 class=right");
 		end_table();
 		echo "</td><td class='top'>";
-		start_table('tablestyle');
+		start_table('tablestyle width90');
 		Display::heading(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -110,7 +110,32 @@
 		label_row(null, Num::price_format($invoices_total), " ", "colspan=4 class=right");
 		end_table();
 		echo "</td><td class='top'>";
-		start_table('tablestyle');
+		start_table('tablestyle width90');
+		Display::heading(_("Payments"));
+		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
+		table_header($th);
+
+		$payments_total = 0;
+		if (count($inv_numbers)) {
+			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=".ST_CUSTPAYMENT." AND a.trans_no_to=d.trans_no AND d.type=".ST_CUSTPAYMENT." AND a.trans_no_to IN(" . implode(',',
+				array_values($inv_numbers)) . ")";
+			$result = DB::query($sql, "The related payments could not be retreived");
+			$k = 0;
+			while ($payment_row = DB::fetch($result)) {
+				alt_table_row_color($k);
+				$this_total = $payment_row["amt"];
+				$payments_total += $this_total;
+				label_cell(Debtor_UI::trans_view($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
+				label_cell($payment_row["reference"]);
+				label_cell(Dates::sql2date($payment_row["date_alloc"]));
+				amount_cell($this_total);
+				end_row();
+			}
+		}
+		label_row(null, Num::price_format($payments_total), " ", "colspan=4 class=right");
+		end_table();
+		echo "</td><td class='top'>";
+		start_table('tablestyle width90');
 		Display::heading(_("Credit Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -161,13 +186,20 @@
 		qty_cell($stock_item->qty_done, false, $dec);
 		end_row();
 	}
-	$qty_remaining = array_sum(array_map(function($line)
-		{
-			return ($line->quantity - $line->qty_done);
-		}, $_SESSION['View']->line_items));
+	$qty_remaining = array_sum(array_map(function($line) {
+		return ($line->quantity - $line->qty_done);
+	}, $_SESSION['View']->line_items));
 	$items_total = $_SESSION['View']->get_items_total();
-	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
 	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", "nowrap class=right", 1);
+
+	$taxes = $view->get_taxes_for_order();
+
+	foreach ($taxes as $tax	) {
+		$display_total+=$tax['Value'];
+			label_row(_("Tax: ".$tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", "nowrap class=right", 1);
+	}
+	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
+
 	label_row(_("Total Order Value"), $display_total, "class=right colspan=6", "nowrap class=right", 1);
 	end_table(2);
 	if (Input::get('popup')) {

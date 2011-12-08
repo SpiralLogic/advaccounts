@@ -70,6 +70,11 @@
 		// $trans_no!=0 && $view==false => read for view
 		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
+		/***
+		 * @param $type
+		 * @param int $trans_no
+		 * @param bool $view
+		 */
 		function __construct($type, $trans_no = 0, $view = false) {
 			/*Constructor function initialises a new shopping cart */
 			$this->line_items = array();
@@ -432,6 +437,28 @@
 			}
 			return 0;
 		}
+		function get_taxes_for_order($shipping_cost = null) {
+			$items = array();
+			$prices = array();
+			if ($shipping_cost == null) {
+				$shipping_cost = $this->freight_cost;
+			}
+			foreach ($this->line_items as $ln_item) {
+				$items[] = $ln_itm->stock_id;
+				$prices[] = round(($ln_item->quantity * $ln_item->line_price() * (1 - $ln_item->discount_percent)),
+					User::price_dec());
+			}
+
+			$taxes = Tax::for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included,
+				$this->tax_group_array);
+			// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
+			if ($this->customer_currency == 'CHF') {
+				$val = $taxes['1']['Value'];
+				$val1 = (floatval((intval(round(($val * 20), 0))) / 20));
+				$taxes['1']['Value'] = $val1;
+			}
+			return $taxes;
+		}
 
 		function get_taxes($shipping_cost = null) {
 			$items = array();
@@ -444,6 +471,7 @@
 				$prices[] = round(($ln_itm->qty_dispatched * $ln_itm->line_price() * (1 - $ln_itm->discount_percent)),
 					User::price_dec());
 			}
+
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included,
 				$this->tax_group_array);
 			// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
