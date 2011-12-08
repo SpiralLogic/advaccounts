@@ -503,7 +503,7 @@ JS;
 			echo "</td>\n";
 		}
 
-		public static function select_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+		public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 			echo "</td>\n</tr>\n";
