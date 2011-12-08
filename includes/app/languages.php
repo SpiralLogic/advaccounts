@@ -8,7 +8,7 @@
 	 */
 	class Languages
 	{
-		function combo($name, $selected_id = null) {
+		function select($name, $selected_id = null) {
 			$items = array();
 			$langs = Config::get('languages.installed');
 			foreach ($langs as $lang) {
