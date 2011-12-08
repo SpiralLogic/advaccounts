@@ -1,4 +1,4 @@
-3<?php
+<?php
 	/**
 	 * Created by JetBrains PhpStorm.
 	 * User: Complex

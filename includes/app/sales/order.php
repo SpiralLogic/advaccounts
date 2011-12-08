@@ -71,8 +71,8 @@
 		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
 		/***
-		 * @param      $type
-		 * @param int  $trans_no
+		 * @param			$type
+		 * @param int	$trans_no
 		 * @param bool $view
 		 */
 		function __construct($type, $trans_no = 0, $view = false) {
@@ -445,7 +445,7 @@
 				$shipping_cost = $this->freight_cost;
 			}
 			foreach ($this->line_items as $ln_item) {
-				$items[] = $ln_itm->stock_id;
+				$items[] = $ln_item->stock_id;
 				$prices[] = round(($ln_item->quantity * $ln_item->line_price() * (1 - $ln_item->discount_percent)),
 					User::price_dec());
 			}
