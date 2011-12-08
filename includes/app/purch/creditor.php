@@ -120,7 +120,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function suppliers($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
 			$mode = DB_Company::get_pref('no_supplier_list');
 			if ($editkey) {
@@ -140,7 +140,7 @@
 			echo "</td>\n";
 		}
 
-		public static function suppliers_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			echo "<tr><td class='label' name='supplier_name'>$label</td><td>";
 			echo Purch_Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
 			echo "</td></tr>\n";
