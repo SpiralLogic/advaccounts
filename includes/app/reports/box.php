@@ -367,7 +367,7 @@
 					} else {
 						$tag_type = TAG_DIMENSION;
 					}
-					return Tags::combo($name, 5, $tag_type, true, _("No tags"));
+					return Tags::select($name, 5, $tag_type, true, _("No tags"));
 			}
 			return '';
 		}

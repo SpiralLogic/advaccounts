@@ -133,7 +133,7 @@
 			return DB::query($sql, "could not get tags associations for record");
 		}
 
-		public static function combo($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
+		public static function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
 			// Get tags
 			$results = Tags::get_all($type, $all);
 			while ($tag = DB::fetch($results)) {
@@ -147,18 +147,18 @@
 				'multi' => $multi, 'height' => $height, 'spec_option' => $spec_opt, 'spec_id' => -1,));
 		}
 
-		public static function combo_cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
+		public static function cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
 			echo "<td>\n";
-			echo Tags::combo($name, $height, $type, $mult, $all, $spec_opt);
+			echo Tags::select($name, $height, $type, $mult, $all, $spec_opt);
 			echo "</td>\n";
 		}
 
-		public static function combo_row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
+		public static function row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
 			echo "<tr><td class='label'>$label</td>";
-			Tags::combo_cells(null, $name, $height, $type, $mult, $all, $spec_opt);
+			Tags::cells(null, $name, $height, $type, $mult, $all, $spec_opt);
 			echo "</tr>\n";
 		}
 	}

@@ -81,6 +81,7 @@
 					);
 					$SubTotal += $Net;
 					# __ADVANCEDEDIT__ BEGIN #
+
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
 					$TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
 					# __ADVANCEDEDIT__ END #
@@ -116,6 +117,7 @@
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
 					$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
 				}
+
 				$DisplayFreight = Num::format($myrow["freight_cost"], $dec);
 				$SubTotal += $myrow["freight_cost"];
 				$TaxTotal += $myrow['freight_cost'] * .1;

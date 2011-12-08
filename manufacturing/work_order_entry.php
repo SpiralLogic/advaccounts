@@ -264,7 +264,7 @@
 	} else {
 		$_POST['units_issued'] = $_POST['released'] = 0;
 		ref_row(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
-		wo_types_list_row(_("Type:"), 'type', null);
+		WO_Types::row(_("Type:"), 'type', null);
 	}
 	if (get_post('released')) {
 		hidden('stock_id', Input::post('stock_id'));

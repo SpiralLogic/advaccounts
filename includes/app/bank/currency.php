@@ -49,6 +49,21 @@
 			return $myrow[0];
 		}
 
+				public static function for_payment_person($type, $person_id) {
+					switch ($type) {
+						case PT_MISC :
+						case PT_QUICKENTRY :
+						case PT_WORKORDER :
+							return Bank_Currency::for_company();
+						case PT_CUSTOMER :
+							return Bank_Currency::get_customer_currency($person_id);
+						case PT_SUPPLIER :
+							return Bank_Currency::get_supplier_currency($person_id);
+						default :
+							return Bank_Currency::for_company();
+					}
+				}
+
 		public static function exchange_rate_from_home($currency_code, $date_) {
 			if ($currency_code == static::for_company() || $currency_code == null) {
 				return 1.0000;

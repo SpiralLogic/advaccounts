@@ -85,7 +85,7 @@
 			}
 		}
 
-		public function payment_person_has_items($type) {
+		public static function payment_person_has_items($type) {
 			switch ($type) {
 				case PT_MISC :
 					return true;
@@ -103,22 +103,8 @@
 			}
 		}
 
-		public function payment_person_currency($type, $person_id) {
-			switch ($type) {
-				case PT_MISC :
-				case PT_QUICKENTRY :
-				case PT_WORKORDER :
-					return static::for_company();
-				case PT_CUSTOMER :
-					return static::get_customer_currency($person_id);
-				case PT_SUPPLIER :
-					return static::get_supplier_currency($person_id);
-				default :
-					return static::for_company();
-			}
-		}
 
-		public function payment_person_name($type, $person_id, $full = true, $trans_no = null) {
+		public static function payment_person_name($type, $person_id, $full = true, $trans_no = null) {
 			global $payment_person_types;
 			switch ($type) {
 				case PT_MISC :

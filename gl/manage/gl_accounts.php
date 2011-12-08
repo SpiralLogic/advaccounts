@@ -244,7 +244,7 @@
 	text_row_ex(_("Account Code 2:"), 'account_code2', 11);
 	text_row_ex(_("Account Name:"), 'account_name', 60);
 	GL_Type::row(_("Account Group:"), 'account_type', null);
-	Tags::combo_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
+	Tags::row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
 	record_status_list_row(_("Account status:"), 'inactive');
 	end_table(1);
 	if ($selected_account == "") {

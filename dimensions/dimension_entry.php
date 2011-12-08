@@ -179,7 +179,7 @@
 	number_list_row(_("Type"), 'type_', null, 1, $dim);
 	date_row(_("Start Date") . ":", 'date_');
 	date_row(_("Date Required By") . ":", 'due_date', '', null, DB_Company::get_pref('default_dim_required'));
-	Tags::combo_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
+	Tags::row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 	textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 	end_table(1);
 	if (isset($_POST['closed']) && $_POST['closed'] == 1) {
