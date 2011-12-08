@@ -109,7 +109,7 @@
 				return false;
 			}
 			//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
-			if (Validation::input_num('amount') <= 0) {
+			if (Validation::input_num('amount',0,0) <= 0) {
 				Errors::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 				JS::set_focus('discount');
 				return false;
@@ -204,7 +204,7 @@
 		if ($cust_currency != $bank_currency) {
 			GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
-		amount_row(_("Bank Charge:"), 'charge');
+		amount_row(_("Bank Charge:"), 'charge',0);
 		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
 			Display::div_start('alloc_tbl');
@@ -214,7 +214,7 @@
 		}
 		start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
-		amount_row(_("Amount of Discount:"), 'discount');
+		amount_row(_("Amount of Discount:"), 'discount',0);
 		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);

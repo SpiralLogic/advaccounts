@@ -39,9 +39,6 @@
 		static function init() {
 			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
 			spl_autoload_register(array(__CLASS__, 'includeClass'));
-			if (class_exists('Cache', false)) {
-				static::$loaded = Cache::get('autoloads');
-			}
 		}
 
 		/**
@@ -110,6 +107,9 @@
 		 */
 		public static function includeClass($class) {
 			static::$time = microtime(true);
+			if (!static::$loaded and class_exists('Cache', false)) {
+				static::$loaded = Cache::get('autoloads');
+			}
 			$filepath = '';
 			if (isset(static::$loaded[$class])) {
 				$path = static::$loaded[$class];
@@ -145,11 +145,10 @@
 					throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
 				}
 				static::$loaded[$class] = $filepath;
-				static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, 		 microtime(true) - ADV_START_TIME);
+				static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			} catch (Autoload_Exception $e) {
 				Errors::exception_handler($e);
 			}
-
 		}
 
 		/**
@@ -158,10 +157,10 @@
 		 */
 		public static function getPerf() {
 			array_walk(static::$loadperf, function(&$v) {
-					$v[1] = Files::convert_size($v[1]);
-					$v[2] = Dates::getReadableTime($v[2]);
-					$v[3] = Dates::getReadableTime($v[3]);
-				});
+				$v[1] = Files::convert_size($v[1]);
+				$v[2] = Dates::getReadableTime($v[2]);
+				$v[3] = Dates::getReadableTime($v[3]);
+			});
 			return static::$loadperf;
 		}
 

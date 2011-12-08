@@ -69,6 +69,7 @@
 		}
 
 		public function logged_in() {
+			$this->timeout();
 			return $this->logged;
 		}
 
