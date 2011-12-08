@@ -14,7 +14,7 @@
 		public function __construct() {
 		}
 
-		public static function	getNewUserMessages($userid = false) {
+		public static function	get($userid = false) {
 			if (!$userid) {
 				return false;
 			}
@@ -38,17 +38,17 @@
 			return static::$count;
 		}
 
-		public static function setNewMessage($userid, $subject, $message) {
+		public static function set($userid, $subject, $message) {
 			$sql = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1)";
 			$result = DB::query($sql, "Couldn't add message for $userid");
 			return $result;
 		}
 
-		public static function showNewMessages($user = false) {
+		public static function show($user = false) {
 			if (!$user && isset($_SESSION['current_user'])) {
 				$user = $_SESSION['current_user']->user;
 			}
-			if ($user && static::getNewUserMessages($user) > 0) {
+			if ($user && static::get($user) > 0) {
 				static::makeDialog();
 			}
 		}

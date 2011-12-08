@@ -12,9 +12,8 @@
 	$page_security = 'SA_FORMSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Forms Setup"));
-
 	if (isset($_POST['setprefs'])) {
-		$systypes = SysTypes::get_systypes();
+		$systypes = SysTypes::get();
 		DB::begin_transaction();
 		while ($type = DB::fetch($systypes))
 		{
@@ -25,7 +24,7 @@
 	}
 	start_form();
 	start_outer_table('tablestyle2');
-	$systypes = SysTypes::get_systypes();
+	$systypes = SysTypes::get();
 	table_section(1);
 	$th = array(_("Form"), _("Next Reference"));
 	table_header($th);
@@ -41,7 +40,6 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-
 	end_page();
 
 ?>

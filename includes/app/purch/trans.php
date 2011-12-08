@@ -11,7 +11,8 @@
 	 ***********************************************************************/
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
-	class Purch_Trans   {
+	class Purch_Trans
+	{
 		protected static $_instance = null;
 
 		public static function i($reset_session = false) {
@@ -54,7 +55,7 @@
 		}
 
 		public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv,
-																		 $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
+			$this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
 			$this->grn_items[$grn_item_id] = new Purch_GLItem($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
 			return 1;
 		}
@@ -135,7 +136,7 @@
 		}
 
 		public static function add($type, $supplier_id, $date_, $due_date, $reference, $supp_reference,
-															 $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
+			$amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
 			$date = Dates::date2sql($date_);
 			if ($due_date == "") {
 				$due_date = "0000-00-00";
@@ -162,7 +163,6 @@
 			DB_AuditTrail::add($type, $trans_no, $date_);
 			return $trans_no;
 		}
-
 
 		public static function get($trans_no, $trans_type = -1) {
 			$sql = "SELECT supp_trans.*, (supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
@@ -203,7 +203,6 @@
 			return DB::fetch($result);
 		}
 
-
 		public static function exists($type, $type_no) {
 			if ($type == ST_SUPPRECEIVE) {
 				return Purch_GRN::exists($type_no);
@@ -214,13 +213,11 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-
 		public static function void($type, $type_no) {
 			$sql = "UPDATE supp_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 			DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 		}
-
 
 		public static function post_void($type, $type_no) {
 			if ($type == ST_SUPPAYMENT) {
@@ -237,12 +234,11 @@
 			return false;
 		}
 
-
 		// add a supplier-related gl transaction
 		// $date_ is display date (non-sql)
 		// $amount is in SUPPLIERS'S currency
 		public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2,
-																	$amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
+			$amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
 			if ($err_msg == "") {
 				$err_msg = "The supplier GL transaction could not be inserted";
 			}
@@ -265,7 +261,6 @@
 			}
 		}
 
-
 		public static function trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
 			$tax_total = 0;
 			while ($tax_item = DB::fetch($tax_items)) {
@@ -286,8 +281,7 @@
 			}
 		}
 
-
-		public	function get_duedate_from_terms($supp_trans) {
+		public static function get_duedate_from_terms($supp_trans) {
 			if (!Dates::is_date($supp_trans->tran_date)) {
 				$supp_trans->tran_date = Dates::Today();
 			}

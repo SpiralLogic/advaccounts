@@ -36,9 +36,10 @@
 				$note = _('Selected recurrent invoice has been updated');
 			} else {
 				$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
- 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly',
-																																																																																																																																									0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'],
-																																																																																																																																																																																																							 -5)) . "')";
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days',
+					0) . ", " . Validation::input_num('monthly',
+					0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'],
+					-5)) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
 			DB::query($sql, "The recurrent invoice could not be updated or added");
@@ -59,9 +60,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-
-	function get_sales_group_name($group_no)
-	{
+	function get_sales_group_name($group_no) {
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DB::query($sql, "could not get group");
 		$row = DB::fetch($result);
@@ -82,7 +81,7 @@
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
-		label_cell(Debtor_UI::trans_view(ST_SALESORDER, $myrow["order_no"]));
+		label_cell(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
@@ -102,7 +101,6 @@
 	end_table();
 	end_form();
 	echo '<br>';
-
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
@@ -124,9 +122,9 @@
 	}
 	text_row_ex(_("Description:"), 'description', 50);
 	Sales_UI::templates_row(_("Template:"), 'order_no');
-	Debtor_UI::select_row(_("Customer:"), 'debtor_no', null, " ", true);
+	Debtor::row(_("Customer:"), 'debtor_no', null, " ", true);
 	if ($_POST['debtor_no'] > 0) {
-		Debtor_UI::branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
+		Debtor_Branch::row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
 	} else {
 		Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, " ");
 	}

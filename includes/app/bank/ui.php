@@ -50,14 +50,14 @@
 				//	workorders_list_row(_("Work Order:"), 'person_id', null);
 				//	break;
 				case PT_SUPPLIER :
-					Purch_UI::suppliers_row(_("Supplier:"), 'person_id', null, false, true, false, true);
+					Purch_Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
 					break;
 				case PT_CUSTOMER :
-					Debtor_UI::select_row(_("Customer:"), 'person_id', null, false, true, false, true);
+					Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
 					if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"),
 						$_POST['person_id'])
 					) {
-						Debtor_UI::branches_list_row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
+						Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
 					} else {
 						$_POST['PersonDetailID'] = ANY_NUMERIC;
 						hidden('PersonDetailID');
@@ -226,7 +226,7 @@
 							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL
 							GROUP BY reconciled";
 			return select_box($name, $selected_id, $sql, 'id', 'reconciled', array(
-																																						 'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'));
+																																						'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'));
 		}
 
 		public static function	reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
@@ -254,7 +254,7 @@
 			}
 			echo "<td>";
 			echo select_box($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-																																									'format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => true));
+																																								 'format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => true));
 			echo "</td></tr>\n";
 		}
 

@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"));
-
-	function exist_transaction($type, $type_no)
-	{
+	function exist_transaction($type, $type_no) {
 		$void_entry = Voiding::has($type, $type_no);
 		if ($void_entry > 0) {
 			return false;
@@ -87,11 +85,10 @@
 		return true;
 	}
 
-	function voiding_controls()
-	{
+	function voiding_controls() {
 		start_form();
 		start_table('tablestyle2');
-		SysTypes::view_row(_("Transaction Type:"), "filterType", null, true);
+		SysTypes::row(_("Transaction Type:"), "filterType", null, true);
 		text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
 		date_row(_("Voiding Date:"), 'date_');
 		textarea_row(_("Memo:"), 'memo_', null, 30, 4);
@@ -122,9 +119,7 @@
 		end_form();
 	}
 
-
-	function check_valid_entries()
-	{
+	function check_valid_entries() {
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
 			Errors::error(_("The selected transaction was closed for edition and cannot be voided."));
 			JS::set_focus('trans_no');
@@ -148,9 +143,7 @@
 		return true;
 	}
 
-
-	function handle_void_transaction()
-	{
+	function handle_void_transaction() {
 		if (check_valid_entries() == true) {
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
@@ -174,7 +167,6 @@
 		}
 	}
 
-
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::Today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
@@ -194,7 +186,6 @@
 	if (isset($_POST['CancelVoiding'])) {
 		$Ajax->activate('_page_body');
 	}
-
 	voiding_controls();
 	end_page();
 

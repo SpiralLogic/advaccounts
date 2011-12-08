@@ -8,8 +8,6 @@
 	 */
 	class Files
 	{
-		// saves the string in $fileData to the file $backupfile as gz file or not ($zip)
-		// returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
 		/**
 		 * @static
 		 *
@@ -18,6 +16,8 @@
 		 * @param bool $zip
 		 *
 		 * @return bool
+		 * saves the string in $fileData to the file $backupfile as gz file or not ($zip)
+		 * returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
 		 */
 		public static function save_to_file($backupfile, $fileData, $zip = false) {
 			if ($zip == "gzip") {

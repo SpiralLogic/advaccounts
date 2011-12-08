@@ -51,7 +51,6 @@
 			Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
-
 	if (get_post('_DeliveryNumber_changed')) {
 		$disable = get_post('DeliveryNumber') !== '';
 		$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
@@ -67,7 +66,6 @@
 		}
 		$Ajax->activate('deliveries_tbl');
 	}
-
 	start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
 	start_table('tablestyle_noborder');
 	start_row();
@@ -80,49 +78,40 @@
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 	end_row();
 	end_table();
-
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
 		unset($selected_stock_item);
 	}
+	function trans_view($trans, $trans_no) {
+		return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
+	}
 
-	function trans_view($trans, $trans_no)
-		{
-			return Debtor_UI::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
-		}
+	function batch_checkbox($row) {
+		$name = "Sel_" . $row['trans_no'];
+		return $row['Done'] ? '' :
+		 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
+			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
+	}
 
-	function batch_checkbox($row)
-		{
-			$name = "Sel_" . $row['trans_no'];
-			return $row['Done'] ? '' :
-			 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
-				. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
-		}
+	function edit_link($row) {
+		return $row["Outstanding"] == 0 ? '' :
+		 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+	}
 
-	function edit_link($row)
-		{
-			return $row["Outstanding"] == 0 ? '' :
-			 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
-		}
+	function prt_link($row) {
+		return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
+	}
 
-	function prt_link($row)
-		{
-			return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
-		}
+	function invoice_link($row) {
+		return $row["Outstanding"] == 0 ? '' :
+		 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+	}
 
-	function invoice_link($row)
-		{
-			return $row["Outstanding"] == 0 ? '' :
-			 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
-		}
-
-	function check_overdue($row)
-		{
-			return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
-		}
-
+	function check_overdue($row) {
+		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
+	}
 
 	$sql = "SELECT trans.trans_no,
 		debtor.name,
@@ -178,7 +167,6 @@
 			'insert' => true, 'fun' => 'edit_link'), array(
 			'insert' => true, 'fun' => 'invoice_link'), array(
 			'insert' => true, 'fun' => 'prt_link'));
-
 	if (isset($_SESSION['Batch'])) {
 		foreach ($_SESSION['Batch'] as $trans => $del) {
 			unset($_SESSION['Batch'][$trans]);

@@ -55,7 +55,7 @@
 			WO_Quick::costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
 			// -------------------------------------------------------------------------
 			DB_Comments::add(ST_WORKORDER, $woid, $date_, $memo_);
-			Ref::save(ST_WORKORDER,  $wo_ref);
+			Ref::save(ST_WORKORDER, $wo_ref);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Quick production."));
 			DB::commit_transaction();
 			return $woid;
@@ -128,37 +128,36 @@
 			GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"], 0, 0, null, -$total_cost);
 		}
 
-				public static	function display($woid, $suppress_view_link = false) {
-					global $wo_types_array;
-					$myrow = WO::get($woid);
-					if (strlen($myrow[0]) == 0) {
-						Display::note(_("The work order number sent is not valid."));
-						exit;
-					}
-					start_table('tablestyle width90');
-					$th = array(
-						_("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Quantity"));
-					table_header($th);
-					start_row();
-					if ($suppress_view_link) {
-						label_cell($myrow["id"]);
-					} else {
-						label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
-					}
-					label_cell($myrow["wo_ref"]);
-					label_cell($wo_types_array[$myrow["type"]]);
-					Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
-					label_cell($myrow["location_name"]);
-					label_cell(Dates::sql2date($myrow["date_"]));
-					qty_cell($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));
-					end_row();
-					DB_Comments::display_row(ST_WORKORDER, $woid);
-					end_table();
-					if ($myrow["closed"] == true) {
-						Display::note(_("This work order is closed."));
-					}
-				}
-
+		public static function display($woid, $suppress_view_link = false) {
+			global $wo_types_array;
+			$myrow = WO::get($woid);
+			if (strlen($myrow[0]) == 0) {
+				Display::note(_("The work order number sent is not valid."));
+				exit;
+			}
+			start_table('tablestyle width90');
+			$th = array(
+				_("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Quantity"));
+			table_header($th);
+			start_row();
+			if ($suppress_view_link) {
+				label_cell($myrow["id"]);
+			} else {
+				label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
+			}
+			label_cell($myrow["wo_ref"]);
+			label_cell($wo_types_array[$myrow["type"]]);
+			Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+			label_cell($myrow["location_name"]);
+			label_cell(Dates::sql2date($myrow["date_"]));
+			qty_cell($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));
+			end_row();
+			DB_Comments::display_row(ST_WORKORDER, $woid);
+			end_table();
+			if ($myrow["closed"] == true) {
+				Display::note(_("This work order is closed."));
+			}
+		}
 	}
 
 ?>

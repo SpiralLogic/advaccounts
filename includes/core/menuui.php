@@ -22,34 +22,37 @@
 		/**
 		 * @var int
 		 */
-		static $menuCount = 0;
+		public static $menuCount = 0;
 
 		/**
 		 * @param array $options
 		 */
-		function __construct($options = array()) {
+		public function __construct($options = array()) {
 			$this->options = $options;
 			ob_start();
 		}
 
 		/**
-		 * @param $title
+		 * @param				$title
 		 * @param string $tooltip
 		 * @param string $link
 		 *
 		 * @return MenuUI
-		 */function addTab($title, $tooltip = '', $link = '#') {
+		 */
+		public function addTab($title, $tooltip = '', $link = '#') {
 			$this->items[] = new MenuUi_item($title, $tooltip, $link);
 			return $this;
-	}
+		}
 
 		/**
-		 * @param $title
-		 * @param $tooltip
+		 * @param				$title
+		 * @param				$tooltip
 		 * @param string $link
 		 * @param string $style
+		 *
 		 * @return MenuUI
-		 */function startTab($title, $tooltip, $link = '#', $style = '') {
+		 */
+		public function startTab($title, $tooltip, $link = '#', $style = '') {
 			$this->addTab($title, $tooltip, $link);
 			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->items) . '" ';
 			if (!empty($style)) {
@@ -57,18 +60,20 @@
 			}
 			echo '>';
 			return $this;
-	}
+		}
 
 		/**
 		 * @return MenuUI
-		 */function endTab() {
+		 */
+		public function endTab() {
 			echo '</div>';
 			return $this;
-	}
+		}
 
 		/**
 		 *
-		 */function render() {
+		 */
+		public function render() {
 			$menu = "<div class='tabs' id='tabs" . MenuUI::$menuCount . "'><ul>";
 			foreach ($this->items as $key => $item) {
 				$num = $key + 1;
@@ -86,17 +91,20 @@
 
 	/**
 	 *
-	 */class MenuUi_item extends menu_item
-{
-	/**
-	 * @var string
-	 */public $tooltip = '';
+	 */
+	class MenuUi_item extends menu_item
+	{
+		/**
+		 * @var string
+		 */
+		public $tooltip = '';
 
-	/**
-	 * @param $label
-	 * @param string $tooltip
-	 * @param string $link
-	 */function __construct($label, $tooltip = '', $link = '') {
+		/**
+		 * @param				$label
+		 * @param string $tooltip
+		 * @param string $link
+		 */
+		public function __construct($label, $tooltip = '', $link = '') {
 			$this->label = $label;
 			$this->link = $link;
 			$this->tooltip = $tooltip;

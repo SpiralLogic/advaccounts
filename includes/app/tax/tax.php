@@ -11,10 +11,22 @@
 	 ***********************************************************************/
 	class Tax
 	{
-		// returns the price of a given item minus any included taxes
-		// for item $stock_id with line price $price,
-		// with applicable tax rates $tax_group_array or group id $tax_group
-		//
+		/***
+		 * @static
+		 *
+		 * @param			$stock_id
+		 * @param			$price
+		 * @param			$tax_group
+		 * @param			$tax_included
+		 * @param null $tax_group_array
+		 *
+		 * @return float|int
+		 *
+		 * returns the price of a given item minus any included taxes
+		 * for item $stock_id with line price $price,
+		 * with applicable tax rates $tax_group_array or group id $tax_group
+		 *
+		 */
 		public static function tax_free_price($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
 			// if price is zero, then can't be taxed !
 			if ($price == 0) {
@@ -46,10 +58,19 @@
 			return round($price / (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		//
-		//	Full price (incl. VAT) for item $stock_id with line price $price,
-		//	with tax rates $tax_group_array or applicable group $tax_group
-		//
+		/***
+		 * @static
+		 *
+		 * @param			$stock_id
+		 * @param			$price
+		 * @param bool $tax_group
+		 *
+		 * @return float|int
+		 *
+		 * Full price (incl. VAT) for item $stock_id with line price $price,
+		 * with tax rates $tax_group_array or applicable group $tax_group
+		 *
+		 */
 		public static function for_item($stock_id, $price, $tax_group = false) {
 			// if price is zero, then can't be taxed !
 			if ($price == 0) {
@@ -75,7 +96,6 @@
 			return round($price * (($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		# __ADVANCEDEDIT__ BEGIN #
 		public static function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
 			// if price is zero, then can't be taxed !
 			if ($price == 0) {
@@ -84,7 +104,7 @@
 			if ($tax_included == 1) {
 				return $price;
 			}
-			// if array get_taxes_for_itemalready read, then make a copy and use that
+			// if array get_taxes_for_item already read, then make a copy and use that
 			if ($tax_group_array) {
 				$ret_tax_array = $tax_group_array;
 			} else
@@ -107,8 +127,17 @@
 			return round($price * (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		# __ADVANCEDEDIT__ END #
-		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
+		/***
+		 * @static
+		 *
+		 * @param $stock_id
+		 * @param $tax_group_items_array
+		 *
+		 * @return array|null
+		 *
+		 * return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
+		 */
+		//
 		public static function get_all_for_item($stock_id, $tax_group_items_array) {
 			$item_tax_type = Tax_ItemType::get_for_item($stock_id);
 			// if the item is exempt from all taxes then return 0
@@ -145,7 +174,21 @@
 			return $ret_tax_array;
 		}
 
-		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value)
+		/***
+		 * @static
+		 *
+		 * @param      $items
+		 * @param      $prices
+		 * @param      $shipping_cost
+		 * @param      $tax_group
+		 * @param null $tax_included
+		 * @param null $tax_items_array
+		 *
+		 * @return array|null
+		 *
+		 * return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value)
+		 *
+		 */
 		public static function for_items($items, $prices, $shipping_cost, $tax_group, $tax_included = null,
 			$tax_items_array = null) {
 			// first create and set an array with all the tax types of the tax group
@@ -213,7 +256,6 @@
 					}
 				}
 			}
-			//print_r($ret_tax_array);
 			return $ret_tax_array;
 		}
 
@@ -231,7 +273,7 @@
 			}
 		}
 
-	public static function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false) {
+		public static function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false) {
 			$total = 0;
 			foreach (
 				$taxes as $taxitem

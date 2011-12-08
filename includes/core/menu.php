@@ -44,7 +44,7 @@
 		/**
 		 * @param $title
 		 */
-		function __construct($title) {
+		public function __construct($title) {
 			$this->title = $title;
 			$this->items;
 		}
@@ -55,7 +55,7 @@
 		 *
 		 * @return menu_item|mixed
 		 */
-		function add_item($label, $link) {
+		public function add_item($label, $link) {
 			$item = new menu_item($label, $link);
 			array_push($this->items, $item);
 			return $item;

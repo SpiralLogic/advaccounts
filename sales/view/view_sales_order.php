@@ -75,7 +75,7 @@
 			$dn_numbers[] = $del_row["trans_link"];
 			$this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
 			$delivery_total += $this_total;
-			label_cell(Debtor_UI::trans_view($del_row["type"], $del_row["trans_no"]));
+			label_cell(Debtor::trans_view($del_row["type"], $del_row["trans_no"]));
 			label_cell($del_row["reference"]);
 			label_cell(Dates::sql2date($del_row["tran_date"]));
 			amount_cell($this_total);
@@ -100,7 +100,7 @@
 				$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 				$invoices_total += $this_total;
 				$inv_numbers[] = $inv_row["trans_no"];
-				label_cell(Debtor_UI::trans_view($inv_row["type"], $inv_row["trans_no"]));
+				label_cell(Debtor::trans_view($inv_row["type"], $inv_row["trans_no"]));
 				label_cell($inv_row["reference"]);
 				label_cell(Dates::sql2date($inv_row["tran_date"]));
 				amount_cell($this_total);
@@ -114,10 +114,9 @@
 		Display::heading(_("Payments"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
-
 		$payments_total = 0;
 		if (count($inv_numbers)) {
-			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=".ST_CUSTPAYMENT." AND a.trans_no_to=d.trans_no AND d.type=".ST_CUSTPAYMENT." AND a.trans_no_to IN(" . implode(',',
+			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',',
 				array_values($inv_numbers)) . ")";
 			$result = DB::query($sql, "The related payments could not be retreived");
 			$k = 0;
@@ -125,7 +124,7 @@
 				alt_table_row_color($k);
 				$this_total = $payment_row["amt"];
 				$payments_total += $this_total;
-				label_cell(Debtor_UI::trans_view($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
+				label_cell(Debtor::trans_view($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
 				label_cell($payment_row["reference"]);
 				label_cell(Dates::sql2date($payment_row["date_alloc"]));
 				amount_cell($this_total);
@@ -151,7 +150,7 @@
 				alt_table_row_color($k);
 				$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
 				$credits_total += $this_total;
-				label_cell(Debtor_UI::trans_view($credits_row["type"], $credits_row["trans_no"]));
+				label_cell(Debtor::trans_view($credits_row["type"], $credits_row["trans_no"]));
 				label_cell($credits_row["reference"]);
 				label_cell(Dates::sql2date($credits_row["tran_date"]));
 				amount_cell(-$this_total);
@@ -191,15 +190,12 @@
 	}, $_SESSION['View']->line_items));
 	$items_total = $_SESSION['View']->get_items_total();
 	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", "nowrap class=right", 1);
-
 	$taxes = $view->get_taxes_for_order();
-
-	foreach ($taxes as $tax	) {
-		$display_total+=$tax['Value'];
-			label_row(_("Tax: ".$tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", "nowrap class=right", 1);
+	foreach ($taxes as $tax) {
+		$display_total += $tax['Value'];
+		label_row(_("Tax: " . $tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", "nowrap class=right", 1);
 	}
 	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
-
 	label_row(_("Total Order Value"), $display_total, "class=right colspan=6", "nowrap class=right", 1);
 	end_table(2);
 	if (Input::get('popup')) {

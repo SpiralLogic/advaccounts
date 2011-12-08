@@ -6,7 +6,8 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_Branch extends DB_abstract {
+	class Debtor_Branch extends DB_abstract
+	{
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -52,7 +53,6 @@
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
 		}
-
 
 		public function getAddress() {
 			$address = $this->br_address . "\n";
@@ -168,13 +168,40 @@
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
 			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')
 			 ->where(array('b.debtor_no=c.debtor_no', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'));
-
 			foreach ($params as $key => $value) {
 				$sql->where("b.$key=", $value);
 			}
 			DB::fetch()->intoClass($this);
-
 			return $this->branch_code;
+		}
+
+		// BRANCHES
+		public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+			$sql = "SELECT branch_code, branch_ref FROM cust_branch
+			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
+			if ($editkey) {
+				Display::set_editor('branch', $name, $editkey);
+			}
+			$where = $enabled ? array("disable_trans = 0") : array();
+			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
+																																									'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
+				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
+		}
+
+		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false,
+			$editkey = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>";
+			echo Debtor_Branch::select($customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
+			echo "</td>\n";
+		}
+
+		public static function branches_list_row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+			echo "<tr><td class='label'>$label</td>";
+			Debtor_Branch::cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
+			echo "</tr>";
 		}
 	}
 

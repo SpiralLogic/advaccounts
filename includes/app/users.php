@@ -20,14 +20,12 @@
 			DB::query($sql, "could not add user for $user_id");
 		}
 
-
 		public static function	update_password($id, $user_id, $password) {
 			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not update user password for $user_id");
 			session_regenerate_id();
 		}
-
 
 		public static function	update(
 			$id, $user_id, $real_name, $phone, $email, $role_id,
@@ -46,7 +44,6 @@
 			DB::query($sql, "could not update user for $user_id");
 			session_regenerate_id();
 		}
-
 
 		public static function	update_display_prefs(
 			$id, $price_dec, $qty_dec, $exrate_dec,
@@ -81,7 +78,6 @@
 			session_regenerate_id();
 		}
 
-
 		public static function	get_all($all = false) {
 			$sql
 			 = "SELECT u.*, r.role FROM users u, security_roles r
@@ -92,13 +88,11 @@
 			return DB::query($sql, "could not get users");
 		}
 
-
 		public static function	get($id) {
 			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get user $id");
 			return DB::fetch($result);
 		}
-
 
 		//	This public static function is necessary for admin prefs update after upgrade from 2.1
 		//
@@ -108,12 +102,10 @@
 			return DB::fetch($result);
 		}
 
-
 		public static function	delete($id) {
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete user $id");
 		}
-
 
 		public static function	get_for_login($user_id, $password) {
 			// do not exclude inactive records or you lost access after source upgrade
@@ -134,13 +126,11 @@
 			return $result ? : false;
 		}
 
-
 		public static function	update_visitdate($user_id) {
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
 				WHERE user_id=" . DB::escape($user_id);
 			DB::query($sql, "could not update last visit date for user $user_id");
 		}
-
 
 		public static function	check_activity($id) {
 			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
@@ -149,7 +139,6 @@
 			$ret = DB::fetch($result);
 			return $ret[0];
 		}
-
 
 		public static function	show_online() {
 			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
@@ -208,58 +197,57 @@
 			return $users;
 		}
 
-				public static function themes_row($label, $name, $value = null) {
-					$themes = array();
-					$themedir = opendir(THEME_PATH);
-					while (false !== ($fname = readdir($themedir))) {
-						if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
-							$themes[$fname] = $fname;
-						}
+		public static function themes_row($label, $name, $value = null) {
+			$themes = array();
+			$themedir = opendir(THEME_PATH);
+			while (false !== ($fname = readdir($themedir))) {
+				if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
+					$themes[$fname] = $fname;
+				}
+			}
+			ksort($themes);
+			echo "<tr><td class='label'>$label</td>\n<td>";
+			echo array_selector($name, $value, $themes);
+			echo "</td></tr>\n";
+		}
+
+		public static function tabs_row($label, $name, $selected_id = null, $all = false) {
+			global $installed_extensions;
+			$tabs = array();
+			foreach (Session::i()->App->applications as $app) {
+				$tabs[$app->id] = Display::access_string($app->name, true);
+			}
+			if ($all) { // add also not active ext. modules
+				foreach ($installed_extensions as $ext) {
+					if ($ext['type'] == 'module' && !$ext['active']) {
+						$tabs[$ext['tab']] = Display::access_string($ext['title'], true);
 					}
-					ksort($themes);
-					echo "<tr><td class='label'>$label</td>\n<td>";
-					echo array_selector($name, $value, $themes);
-					echo "</td></tr>\n";
 				}
+			}
+			echo "<tr>\n";
+			echo "<td class='label'>$label</td><td>\n";
+			echo array_selector($name, $selected_id, $tabs);
+			echo "</td></tr>\n";
+		}
 
-				public static function tabs_row($label, $name, $selected_id = null, $all = false) {
-					global $installed_extensions;
-					$tabs = array();
-					foreach (Session::i()->App->applications as $app) {
-						$tabs[$app->id] = Display::access_string($app->name, true);
-					}
-					if ($all) { // add also not active ext. modules
-						foreach ($installed_extensions as $ext) {
-							if ($ext['type'] == 'module' && !$ext['active']) {
-								$tabs[$ext['tab']] = Display::access_string($ext['title'], true);
-							}
-						}
-					}
-					echo "<tr>\n";
-					echo "<td class='label'>$label</td><td>\n";
-					echo array_selector($name, $selected_id, $tabs);
-					echo "</td></tr>\n";
-				}
+		public static function select($name, $selected_id = null, $spec_opt = false) {
+			$sql = "SELECT id, real_name, inactive FROM users";
+			return select_box($name, $selected_id, $sql, 'id', 'real_name', array(
+																																					 'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+		}
 
-				public static function select($name, $selected_id = null, $spec_opt = false) {
-					$sql = "SELECT id, real_name, inactive FROM users";
-					return select_box($name, $selected_id, $sql, 'id', 'real_name', array(
-																																								'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
-				}
+		public static function cells($label, $name, $selected_id = null, $spec_opt = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td>\n";
+			echo Users::select($name, $selected_id, $spec_opt);
+			echo "</td>\n";
+		}
 
-				public static function cells($label, $name, $selected_id = null, $spec_opt = false) {
-					if ($label != null) {
-						echo "<td>$label</td>\n";
-					}
-					echo "<td>\n";
-					echo Users::select($name, $selected_id, $spec_opt);
-					echo "</td>\n";
-				}
-
-				public static function row($label, $name, $selected_id = null, $spec_opt = false) {
-					echo "<tr><td class='label'>$label</td>";
-					Users::cells(null, $name, $selected_id, $spec_opt);
-					echo "</tr>\n";
-				}
-
+		public static function row($label, $name, $selected_id = null, $spec_opt = false) {
+			echo "<tr><td class='label'>$label</td>";
+			Users::cells(null, $name, $selected_id, $spec_opt);
+			echo "</tr>\n";
+		}
 	}

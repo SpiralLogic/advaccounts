@@ -13,14 +13,11 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "View or Print Transactions"));
-
-	function view_link($trans)
-	{
+	function view_link($trans) {
 		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
-	function prt_link($row)
-	{
+	function prt_link($row) {
 		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND
 		 && $row['type'] != ST_BANKDEPOSIT
 		) // customer payment or bank deposit printout not defined yet.
@@ -29,17 +26,15 @@
 		}
 	}
 
-	function gl_view($row)
-	{
+	function gl_view($row) {
 		return GL_UI::view($row["type"], $row["trans_no"]);
 	}
 
-	function viewing_controls()
-	{
+	function viewing_controls() {
 		Errors::warning(_("Only documents can be printed."));
 		start_table('tablestyle_noborder');
 		start_row();
-		SysTypes::view_cells(_("Type:"), 'filterType', null, true);
+		SysTypes::cells(_("Type:"), 'filterType', null, true);
 		if (!isset($_POST['FromTransNo'])) {
 			$_POST['FromTransNo'] = "1";
 		}
@@ -53,9 +48,7 @@
 		end_table(1);
 	}
 
-
-	function check_valid_entries()
-	{
+	function check_valid_entries() {
 		if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
 			Errors::error(_("The starting transaction number is expected to be numeric and greater than zero."));
 			return false;
@@ -67,11 +60,9 @@
 		return true;
 	}
 
-
-	function handle_search()
-	{
+	function handle_search() {
 		if (check_valid_entries() == true) {
-			$db_info = SysTypes::get_systype_db_info($_POST['filterType']);
+			$db_info = SysTypes::get_db_info($_POST['filterType']);
 			if ($db_info == null) {
 				return;
 			}
@@ -84,10 +75,10 @@
 				$sql .= " ,$trans_ref ";
 			}
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
-			WHERE $trans_no_name >= " . DB::escape($_POST['FromTransNo'],false,false) . "
-			AND $trans_no_name <= " . DB::escape($_POST['ToTransNo'],false,false);
+			WHERE $trans_no_name >= " . DB::escape($_POST['FromTransNo'], false, false) . "
+			AND $trans_no_name <= " . DB::escape($_POST['ToTransNo'], false, false);
 			if ($type_name != null) {
-				$sql .= " AND `$type_name` = " . DB::escape($_POST['filterType'],false,false);
+				$sql .= " AND `$type_name` = " . DB::escape($_POST['filterType'], false, false);
 			}
 			$sql .= " ORDER BY $trans_no_name";
 			$print_type = $_POST['filterType'];
@@ -123,14 +114,12 @@
 		}
 	}
 
-
 	if (isset($_POST['ProcessSearch'])) {
 		if (!check_valid_entries()) {
 			unset($_POST['ProcessSearch']);
 		}
 		$Ajax->activate('transactions');
 	}
-
 	start_form(false);
 	viewing_controls();
 	handle_search();

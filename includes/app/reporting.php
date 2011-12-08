@@ -15,6 +15,21 @@
 	// You only need full parameter list for invoices/credit notes
 	class Reporting
 	{
+		/**
+		 * @static
+		 *
+		 * @param				$doc_no
+		 * @param				$link_text
+		 * @param bool	 $link
+		 * @param				$type_no
+		 * @param bool	 $icon
+		 * @param string $class
+		 * @param string $id
+		 * @param int		$email
+		 * @param int		$extra
+		 *
+		 * @return string
+		 */
 		public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
 			$id = '', $email = 0, $extra = 0) {
 			$url = '/reporting/prn_redirect.php?';

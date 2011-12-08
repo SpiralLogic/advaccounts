@@ -38,12 +38,12 @@
 		public $is_locale_file;
 
 		/**
-		 * @param $name
-		 * @param $code
-		 * @param $encoding
+		 * @param        $name
+		 * @param        $code
+		 * @param        $encoding
 		 * @param string $dir
 		 */
-		function __construct($name, $code, $encoding, $dir = 'ltr') {
+		public function __construct($name, $code, $encoding, $dir = 'ltr') {
 			$this->name = $name;
 			$this->code = $code ? $code : 'en_GB';
 			$this->encoding = $encoding;
@@ -53,7 +53,7 @@
 		/**
 		 * @param $code
 		 */
-		function set_language($code) {
+		public function set_language($code) {
 			$changed = $this->code != $code;
 			$lang = Arr::search_value($code, Config::get('languages.installed'), 'code');
 			if ($lang && $changed) {
@@ -82,7 +82,8 @@
 		 * @param $text
 		 *
 		 * @return mixed
-		 */function _($text) {
+		 */
+		function _($text) {
 			$retVal = $_SESSION['get_text']->gettext($text);
 			if ($retVal == "") {
 				return $text;

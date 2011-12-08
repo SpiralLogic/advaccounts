@@ -6,14 +6,14 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company {
-
+	class Debtor extends Contacts_Company
+	{
 		public static function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
 			$customerBox->show();
 			$js = <<<JS
 						var val = $("#customer_id").val();
@@ -364,8 +364,8 @@ JS;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
-		public static function get_details($customer_id, $to = null)
-		{
+
+		public static function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
 			}
@@ -376,10 +376,10 @@ JS;
 			$past2 = 2 * $past1;
 			// removed - debtor_trans.alloc from all summations
 			$value
-					 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
-		-1, 1) *" .		 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "		 . "debtor_trans.ov_discount)";
+			 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+		-1, 1) *" . "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
 			$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-			$sql						= "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
+			$sql = "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
 			Sum(" . $value . ") AS Balance,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
@@ -434,23 +434,20 @@ JS;
 			return $customer_record;
 		}
 
-		public static function get($customer_id)
-		{
+		public static function get($customer_id) {
 			$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			return DB::fetch($result);
 		}
 
-		public static function get_name($customer_id)
-		{
+		public static function get_name($customer_id) {
 			$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function get_habit($customer_id)
-		{
+		public static function get_habit($customer_id) {
 			$sql
 			 = "SELECT debtors_master.pymt_discount,
 				 credit_status.dissallow_invoices
@@ -461,31 +458,98 @@ JS;
 			return DB::fetch($result);
 		}
 
-		public static function get_area($id)
-		{
+		public static function get_area($id) {
 			$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function get_salesman_name($id)
-		{
+		public static function get_salesman_name($id) {
 			$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function get_credit($customer_id)
-		{
+		public static function get_credit($customer_id) {
 			$custdet = Debtor::get_details($customer_id);
 			return ($customer_id > 0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 		}
 
-		public static function is_new($id)
-		{
+		public static function is_new($id) {
 			$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
+		}
+
+		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors_master ";
+			$mode = DB_Company::get_pref('no_customer_list');
+			if ($editkey) {
+				Display::set_editor('customer', $name, $editkey);
+			}
+			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
+																																						 'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
+				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
+				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
+		}
+
+		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+			if ($label != null) {
+				echo "<td>$label</td>\n";
+			}
+			echo "<td nowrap>";
+			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
+			echo "</td>\n";
+		}
+
+		public static function select_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
+			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
+			echo "</td>\n</tr>\n";
+		}
+
+		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+			$viewer = "sales/view/";
+			switch ($type) {
+				case ST_SALESINVOICE:
+					$viewer .= "view_invoice.php";
+					break;
+				case ST_CUSTCREDIT:
+					$viewer .= "view_credit.php";
+					break;
+				case ST_CUSTPAYMENT:
+					$viewer .= "view_receipt.php";
+					break;
+				case ST_CUSTREFUND:
+					$viewer .= "view_receipt.php";
+					break;
+				case ST_CUSTDELIVERY:
+					$viewer .= "view_dispatch.php";
+					break;
+				case ST_SALESORDER:
+				case ST_SALESQUOTE:
+					$viewer .= "view_sales_order.php";
+					break;
+				default:
+					return null;
+			}
+			if (!is_array($trans_no)) {
+				$trans_no = array($trans_no);
+			}
+			$lbl = $label;
+			$preview_str = '';
+			foreach (
+				$trans_no as $trans
+			) {
+				if ($label == "") {
+					$lbl = $trans;
+				}
+				if ($preview_str != '') {
+					$preview_str .= ',';
+				}
+				$preview_str .= Display::viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type", $class, $id, $icon);
+			}
+			return $preview_str;
 		}
 	}

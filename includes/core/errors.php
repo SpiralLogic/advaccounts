@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -35,8 +36,6 @@
 		 */
 		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 
-		// Error handler - collects all php/user messages for
-		// display in message box.
 		/**
 		 * @static
 		 *
@@ -123,14 +122,11 @@
 		 *
 		 * @param Exception $e
 		 */
-		static function exception_handler(Exception $e) {
+		static function exception_handler(\Exception $e) {
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e, static::$fatal);
-
 		}
 
-		//	Formats system messages before insert them into message <div>
-		// FIX center is unused now
 		/**
 		 * @static
 		 * @return string
@@ -161,8 +157,6 @@
 			return $content;
 		}
 
-		// Error box <div> element.
-		//
 		/**
 		 * @static
 		 *
@@ -183,7 +177,7 @@
 		 *
 		 * @throws DB_Exception
 		 */
-		static function show_db_error($msg, $sql_statement = null, $exit = true) {
+		static function show_db_error($msg, $sql_statement = null) {
 			$warning = $msg == null;
 			$db_error = DB::error_no();
 			if ($warning) {

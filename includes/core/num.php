@@ -117,15 +117,15 @@
 			return $price;
 		}
 
-		//
-		//	Simple English version of number to words conversion.
-		//
 		/**
 		 * @static
 		 *
 		 * @param $number
 		 *
 		 * @return string
+		 *
+		 * Simple English version of number to words conversion.
+		 *
 		 */
 		public static function to_words($number) {
 			$Bn = floor($number / 1000000000); /* Billions (giga) */

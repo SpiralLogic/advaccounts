@@ -15,9 +15,7 @@
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
 		STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (Input::request('frame')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -65,7 +63,6 @@
 			$Mode = 'RESET';
 		}
 	}
-
 	if ($Mode == 'Delete') {
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -86,7 +83,6 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('price_table');
 	}
-
 	if (Input::request('frame')) {
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
@@ -150,7 +146,6 @@
 		}
 		Display::div_end();
 	}
-
 	$dec2 = 6;
 	if ($Mode == 'Edit') {
 		$sql
@@ -173,7 +168,7 @@
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
 	} else {
-		Purch_UI::suppliers_row(_("Supplier:"), 'supplier_id', null, false, true);
+		Purch_Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
 	amount_row(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);

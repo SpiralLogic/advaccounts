@@ -16,7 +16,6 @@
 	if (isset($_GET['order_number'])) {
 		$_POST['order_number'] = $_GET['order_number'];
 	}
-
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -35,11 +34,10 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-
 	start_form();
 	start_table('tablestyle_noborder');
 	start_row();
-	Purch_UI::suppliers_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
+	Purch_Creditor::cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
@@ -48,32 +46,25 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
+	function trans_view($trans) {
+		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
+	}
 
-	function trans_view($trans)
-		{
-			return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
-		}
+	function edit_link($row) {
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	}
 
-	function edit_link($row)
-		{
-			return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-		}
+	function prt_link($row) {
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+	}
 
-	function prt_link($row)
-		{
-			return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-		}
+	function receive_link($row) {
+		return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+	}
 
-	function receive_link($row)
-		{
-			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-		}
-
-	function check_overdue($row)
-		{
-			return $row['OverDue'] == 1;
-		}
-
+	function check_overdue($row) {
+		return $row['OverDue'] == 1;
+	}
 
 	if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
 		$order_number = $_POST['order_number'];

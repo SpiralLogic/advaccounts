@@ -43,10 +43,9 @@
 		if ($params == "") {
 			echo "<td class='label'>$label</td>";
 			$label = null;
-		} elseif (stristr($params,'class')) {
+		} elseif (stristr($params, 'class')) {
 			echo "<td $params>$label</td>";
-					$label = null;
-
+			$label = null;
 		}
 		label_cells($label, $value, $params, $params2, $id);
 		if ($leftfill != 0) {
@@ -61,7 +60,6 @@
 
 	function label_cell($label, $params = "", $id = null) {
 		$Ajax = Ajax::i();
-
 		if (!empty($id)) {
 			$params .= " id='$id'";
 			$Ajax->addUpdate($id, $id, $label);
@@ -159,7 +157,6 @@
 	}
 
 	function start_outer_table($class = "") {
-
 		start_table($class);
 		echo "<tr class='top'><td>\n"; // outer table
 	}
@@ -174,9 +171,7 @@
 		echo "<table class='tablestyle_inner $class'>\n";
 	}
 
-	function
-
-	end_outer_table($breaks = 0, $close_table = true) {
+	function end_outer_table($breaks = 0, $close_table = true) {
 		if ($close_table) {
 			echo "</table>\n";
 		}

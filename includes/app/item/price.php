@@ -164,11 +164,21 @@
 			}
 		}
 
-		//
-		//	Get price for given item or kit.
-		// When $std==true price is calculated as a sum of all included stock items,
-		//	otherwise all prices set for kits and items are accepted.
-		//
+		/***
+		 *
+		 *	Get price for given item or kit.
+		 * When $std==true price is calculated as a sum of all included stock items,
+		 *	otherwise all prices set for kits and items are accepted.
+		 *
+		 * @param			$item_code
+		 * @param			$currency
+		 * @param			$sales_type_id
+		 * @param null $factor
+		 * @param null $date
+		 * @param bool $std
+		 *
+		 * @return float|int
+		 */
 		public static function get_kit($item_code, $currency, $sales_type_id, $factor = null, $date = null, $std = false) {
 			$kit_price = 0.00;
 			if (!$std) {

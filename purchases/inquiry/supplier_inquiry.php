@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Inquiry"));
@@ -23,17 +22,16 @@
 	if (isset($_GET['ToDate'])) {
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
-
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	start_table('tablestyle_noborder');
 	start_row();
-	Purch_UI::suppliers_cells(_("Select a supplier:"), 'supplier_id', null, true);
+	Purch_Creditor::cells(_("Select a supplier:"), 'supplier_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate');
-	Purch_UI::allocation_row("filterType", null);
+	Purch_Allocation::row("filterType", null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
@@ -70,7 +68,6 @@
 	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
-
 	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
@@ -156,7 +153,7 @@
 	 AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id')) {
-		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'],false,false);
+		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'], false, false);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1')) {
@@ -192,7 +189,6 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-
 	/*show a table of the transactions returned by the sql */
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));

@@ -13,14 +13,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocations"));
-
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-	echo Purch_UI::suppliers('supplier_id', $_POST['supplier_id'], true, true);
+	echo Purch_Creditor::select('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</div><br><br>";
@@ -36,38 +35,31 @@
 	if (isset($_POST['supplier_id'])) {
 		$supplier_id = $_POST['supplier_id'];
 	}
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
 
-	function systype_name($dummy, $type)
-		{
-			global $systypes_array;
-			return $systypes_array[$type];
-		}
+	function trans_view($trans) {
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
 
-	function trans_view($trans)
-		{
-			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-		}
+	function alloc_link($row) {
+		return DB_Pager::link(_("Allocate"),
+		 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+	}
 
-	function alloc_link($row)
-		{
-			return DB_Pager::link(_("Allocate"),
-			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-		}
+	function amount_left($row) {
+		return Num::price_format(-$row["Total"] - $row["alloc"]);
+	}
 
-	function amount_left($row)
-		{
-			return Num::price_format(-$row["Total"] - $row["alloc"]);
-		}
+	function amount_total($row) {
+		return Num::price_format(-$row["Total"]);
+	}
 
-	function amount_total($row)
-		{
-			return Num::price_format(-$row["Total"]);
-		}
-
-	function check_settled($row)
-		{
-			return $row['settled'] == 1;
-		}
+	function check_settled($row) {
+		return $row['settled'] == 1;
+	}
 
 	$sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
 	$cols = array(

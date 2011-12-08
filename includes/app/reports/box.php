@@ -6,7 +6,8 @@
 	 * Time: 8:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Reports_Box extends Report {
+	class Reports_Box extends Report
+	{
 		public $ar_classes;
 		public $ctrl_handlers = array();
 
@@ -46,7 +47,8 @@
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden(
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '',
+							Config::get('debug_pdf') ? false : 'default process') . hidden(
 							'REP_ID',
 							$report->id,
 							false
@@ -139,10 +141,10 @@
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 					return select_box(
 						$name, '', $sql, 'curr_abrev', 'name', array(
-							'spec_option' => _("No Currency Filter"),
-							'spec_id' => ALL_TEXT,
-							'order' => false
-						)
+																												'spec_option' => _("No Currency Filter"),
+																												'spec_id' => ALL_TEXT,
+																												'order' => false
+																									 )
 					);
 				case 'DATE':
 				case 'DATEBEGIN':
@@ -201,7 +203,7 @@
 				case 'SYS_TYPES':
 					return $this->gl_systypes_list($name, null, _("No Type Filter"));
 				case 'SYS_TYPES_ALL':
-					return SysTypes::view($name, null, _("No Type Filter"));
+					return SysTypes::select($name, null, _("No Type Filter"));
 				case 'TEXT':
 					return "<input type='text' name='$name'>";
 				case 'TEXTBOX':
@@ -234,32 +236,32 @@
 					if ($type == 'CUSTOMERS_NO_FILTER') {
 						return select_box(
 							$name, '', $sql, 'debtor_no', 'name', array(
-								'spec_option' => _("No Customer Filter"),
-								'spec_id' => ALL_NUMERIC
-							)
+																												 'spec_option' => _("No Customer Filter"),
+																												 'spec_id' => ALL_NUMERIC
+																										)
 						);
 					} // FIX allitems numeric!
-						//						return Debtor_UI::select($name, null, _("No Customer Filter"));
+					//						return Debtor::select($name, null, _("No Customer Filter"));
 					else {
 						return select_box($name, '', $sql, 'debtor_no', 'name', null);
 					}
-				//						return Debtor_UI::select($name);
+				//						return Debtor::select($name);
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER') {
 						return select_box(
 							$name, '', $sql, 'supplier_id', 'supp_name', array(
-								'spec_option' => _("No Supplier Filter"),
-								'spec_id' => ALL_NUMERIC
-							)
+																																'spec_option' => _("No Supplier Filter"),
+																																'spec_id' => ALL_NUMERIC
+																													 )
 						);
 					} // FIX allitems numeric!
-						//						return Purch_UI::suppliers($name, null, _("No Supplier Filter"));
+					//						return Purch_Creditor::select($name, null, _("No Supplier Filter"));
 					else {
 						return select_box($name, '', $sql, 'supplier_id', 'supp_name', null);
 					}
-				//						return Purch_UI::suppliers($name);
+				//						return Purch_Creditor::select($name);
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
@@ -356,9 +358,9 @@
 					$sql = "SELECT id, user_id FROM users";
 					return select_box(
 						$name, '', $sql, 'id', 'user_id', array(
-							'spec_option' => _("No Users Filter"),
-							'spec_id' => ALL_NUMERIC
-						)
+																									 'spec_option' => _("No Users Filter"),
+																									 'spec_id' => ALL_NUMERIC
+																							)
 					);
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
@@ -372,8 +374,7 @@
 			return '';
 		}
 
-
-		 protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
+		protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
 			global $systypes_array;
 			$types = $systypes_array;
 			foreach (
@@ -383,10 +384,10 @@
 			}
 			return array_selector(
 				$name, $value, $types, array(
-					'spec_option' => $spec_opt,
-					'spec_id' => ALL_NUMERIC,
-					'async' => false,
-				)
+																		'spec_option' => $spec_opt,
+																		'spec_id' => ALL_NUMERIC,
+																		'async' => false,
+															 )
 			);
 		}
 	}

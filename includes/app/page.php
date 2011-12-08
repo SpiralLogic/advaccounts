@@ -149,7 +149,7 @@
 			if ($rend->has_header) {
 				Sidemenu::render();
 			}
-			Messages::showNewMessages();
+			Messages::show();
 			JS::render();
 			if (AJAX_REFERRER) {
 				return;

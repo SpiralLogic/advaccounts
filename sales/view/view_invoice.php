@@ -39,7 +39,7 @@
 	start_row();
 	label_cells(_("Reference"), $myrow["reference"], "class='label'");
 	label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
-	label_cells(_("Our Order No"), Debtor_UI::trans_view(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
+	label_cells(_("Our Order No"), Debtor::trans_view(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
 	end_row();
 	start_row();
 	label_cells(_("PO #"), $sales_order["customer_ref"], "class='label'");
@@ -50,7 +50,7 @@
 	label_cells(_("Invoice Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
 	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
 	label_cells(_("Deliveries"),
-		Debtor_UI::trans_view(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
+		Debtor::trans_view(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
 	DB_Comments::display_row(ST_SALESINVOICE, $trans_id);
 	end_table();

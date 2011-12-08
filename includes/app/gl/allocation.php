@@ -13,8 +13,8 @@
 		 Class for supplier/customer payment/credit allocations edition
 		 and related helpers.
 	 */
-
-	class Gl_Allocation {
+	class Gl_Allocation
+	{
 		public $trans_no;
 		public $type;
 		public $person_id = '';
@@ -30,10 +30,7 @@
 			$this->read(); // read payment or credit
 		}
 
-		public function add_item(
-			$type, $type_no, $date_, $due_date, $amount, $amount_allocated,
-			$current_allocated
-		) {
+		public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -43,10 +40,7 @@
 			}
 		}
 
-		public function update_item(
-			$index, $type, $type_no, $date_, $due_date,
-			$amount, $amount_allocated, $current_allocated
-		) {
+		public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[$index] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -56,10 +50,7 @@
 			}
 		}
 
-		public function add_or_update_item(
-			$type, $type_no, $date_, $due_date,
-			$amount, $amount_allocated, $current_allocated
-		) {
+		public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			for (
 				$i = 0; $i < count($this->allocs); $i++
 			)
@@ -342,7 +333,6 @@
 				0, $amount);
 		}
 
-
 		public static function display($alloc_result, $total) {
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
@@ -379,7 +369,6 @@
 			end_table(1);
 		}
 
-
 		public static function from($person_type, $person_id, $type, $type_no, $total) {
 			switch ($person_type) {
 				case PT_CUSTOMER :
@@ -394,8 +383,8 @@
 		}
 	}
 
-
-	class allocation_item {
+	class allocation_item
+	{
 		public $type;
 		public $type_no;
 		public $date_;

@@ -12,7 +12,7 @@
 		public static function	persons($name, $selected_id = null, $spec_opt = false) {
 			$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
 			return select_box($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
-																																													 'order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+																																													'order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 		}
 
 		public static function	persons_cells($label, $name, $selected_id = null, $spec_opt = false) {
@@ -54,8 +54,8 @@
 		public static function	groups($name, $selected_id = null, $special_option = false) {
 			$sql = "SELECT id, description, inactive FROM groups";
 			return select_box($name, $selected_id, $sql, 'id', 'description', array(
-																																							'spec_option' => $special_option === true ? ' ' :
-																																							 $special_option, 'order' => 'description', 'spec_id' => 0,));
+																																						 'spec_option' => $special_option === true ? ' ' :
+																																							$special_option, 'order' => 'description', 'spec_id' => 0,));
 		}
 
 		public static function	groups_cells($label, $name, $selected_id = null, $special_option = false) {
@@ -72,7 +72,6 @@
 			Sales_UI::groups_cells(null, $name, $selected_id, $special_option);
 			echo "</tr>\n";
 		}
-
 
 		public static function	shippers($name, $selected_id = null) {
 			$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
@@ -110,15 +109,12 @@
 			echo "</tr>\n";
 		}
 
-	// TEMPLATES
-
-
 		public static function templates($name, $selected_id = null, $special_option = false) {
 			$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
 				FROM sales_orders as sorder, sales_order_details as line
 				WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
 			return select_box($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
-																																									 'format' => '_format_template_items', 'spec_option' => $special_option === true ?
+																																									'format' => '_format_template_items', 'spec_option' => $special_option === true ?
 				 ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,));
 		}
 
@@ -136,6 +132,7 @@
 			Sales_UI::templates_cells(null, $name, $selected_id, $special_option);
 			echo "</tr>\n";
 		}
+
 		/**
 		 *	Select item via foreign code.
 		 *
@@ -164,7 +161,7 @@
 					FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
 					WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
 			return select_box($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
-																																																		 'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
+																																																		'format' => '_format_stock_items', 'spec_option' => $all_option === true ?
 					 _("All Items") :
 					 $all_option, 'spec_id' => ALL_TEXT, 'search_box' => true, 'search' => array("i.item_code", "c.description", "i.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 15, 'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'i.item_code'), 'editable' => 30, 'max' => 50),
 				$opts));
@@ -175,7 +172,7 @@
 				echo "<td>$label</td>\n";
 			}
 			echo Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array(
-																																																			'cells' => true, 'description' => ''), $opts));
+																																																		 'cells' => true, 'description' => ''), $opts));
 		}
 
 		public static function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
@@ -191,12 +188,12 @@
 			echo "</td></tr>";
 		}
 
-		public static 	function payment_cells($label, $name, $selected_id = null, $submit_on_change = false) {
-					if ($label != null) {
-						echo "<td class='label'>$label</td>\n";
-					}
-					echo "<td>";
-					echo yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
-					echo "</td>\n";
-				}
+		public static function payment_cells($label, $name, $selected_id = null, $submit_on_change = false) {
+			if ($label != null) {
+				echo "<td class='label'>$label</td>\n";
+			}
+			echo "<td>";
+			echo yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+			echo "</td>\n";
+		}
 	}

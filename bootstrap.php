@@ -23,9 +23,9 @@
 	require DOCROOT . 'base.php';
 	require COREPATH . 'autoloader.php';
 	Autoloader::add_core_classes(array(
-																		'Adv_Exception', 'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB', 'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert', 'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where', 'Dialog', 'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS', 'Language', 'Menu', 'MenuUi', 'Num', 'Session', 'Status', 'UploadHandler'));
+																		'Adv_Exception', 'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB', 'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert', 'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where', 'Dialog', 'Errors', 'Files', 'HTML', 'Input', 'JS', 'Language', 'Menu', 'MenuUi', 'Num', 'Session', 'Status', 'UploadHandler'));
 	Autoloader::add_vendor_classes(array(
-																			'Crypt_AES', 'Crypt_DES', 'Crypt_Hash', 'Crypt_Random', 'Crypt_RC4', 'Crypt_Rijndael', 'Crypt_RSA', 'Crypt_TripleDES', 'FB', 'PHPQuickProfiler', 'Console', 'PHPMailer', 'SMTP', 'OLEwriter', 'JsHttpRequest', 'TCPDF', 'Cpdf'));
+																			'Crypt_AES', 'Crypt_DES', 'Crypt_Hash', 'Crypt_Random', 'Crypt_RC4', 'Crypt_Rijndael', 'Crypt_RSA', 'Crypt_TripleDES', 'FB', 'PHPQuickProfiler', 'gettextNativeSupport', 'Console', 'PHPMailer', 'SMTP', 'OLEwriter', 'JsHttpRequest', 'TCPDF', 'Cpdf'));
 	Session::init();
 	Config::init();
 	/***
@@ -36,6 +36,6 @@
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, function(&$v) {
-			$v = is_string($v) ? trim($v) : $v;
-		});
+		$v = is_string($v) ? trim($v) : $v;
+	});
 	advaccounting::init();

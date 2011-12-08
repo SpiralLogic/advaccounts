@@ -67,8 +67,16 @@
 			Errors::show_db_error("could not retreive the location name for $loc_code", $sql, true);
 		}
 
-		// find inventory location for given transaction
-		//
+		/***
+		 * @static
+		 *
+		 * @param $cart
+		 *
+		 * @return DB_Query_Result|null
+		 *
+		 * find inventory location for given transaction
+		 *
+		 */
 		public static function get_for_trans($cart) {
 			$sql = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($cart->trans_type) . " AND trans_no=" . key($cart->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
 			$result = DB::query($sql, 'Retreiving inventory location');
@@ -81,9 +89,9 @@
 		public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
 			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name', array(
-																																											'spec_option' => $all_option === true ?
-																																											 _("All Locations") :
-																																											 $all_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change));
+																																										 'spec_option' => $all_option === true ?
+																																											_("All Locations") :
+																																											$all_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change));
 		}
 
 		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {

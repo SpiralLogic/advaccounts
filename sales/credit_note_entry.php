@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//
 	//	Entry/Modify free hand Credit Note
 	//
@@ -27,11 +26,9 @@
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
 	Page::start($_SESSION['page_title']);
-
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::BRANCHES_ACTIVE,
 		_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
@@ -42,7 +39,7 @@
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
-		Display::note(Debtor_UI::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),
 			0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT,
@@ -54,87 +51,76 @@
 	} else {
 		Sales_Order::check_edit_conflicts();
 	}
+	function line_start_focus() {
+		$Ajax = Ajax::i();
+		$Ajax->activate('items_table');
+		JS::set_focus('_stock_id_edit');
+	}
 
-	function line_start_focus()
-		{
-			$Ajax = Ajax::i();
-			$Ajax->activate('items_table');
-			JS::set_focus('_stock_id_edit');
+	function copy_to_cn() {
+		$cart = &$_SESSION['Items'];
+		$cart->Comments = $_POST['CreditText'];
+		$cart->document_date = $_POST['OrderDate'];
+		$cart->freight_cost = Validation::input_num('ChargeFreightCost');
+		$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
+		$cart->sales_type = $_POST['sales_type_id'];
+		if ($cart->trans_no == 0) {
+			$cart->reference = $_POST['ref'];
 		}
+		$cart->ship_via = $_POST['ShipperID'];
+		$cart->dimension_id = $_POST['dimension_id'];
+		$cart->dimension2_id = $_POST['dimension2_id'];
+	}
 
-
-	function copy_to_cn()
-		{
-			$cart = &$_SESSION['Items'];
-			$cart->Comments = $_POST['CreditText'];
-			$cart->document_date = $_POST['OrderDate'];
-			$cart->freight_cost = Validation::input_num('ChargeFreightCost');
-			$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
-			$cart->sales_type = $_POST['sales_type_id'];
-			if ($cart->trans_no == 0) {
-				$cart->reference = $_POST['ref'];
-			}
-			$cart->ship_via = $_POST['ShipperID'];
-			$cart->dimension_id = $_POST['dimension_id'];
-			$cart->dimension2_id = $_POST['dimension2_id'];
+	function copy_from_cn() {
+		$cart = &$_SESSION['Items'];
+		$_POST['CreditText'] = $cart->Comments;
+		$_POST['OrderDate'] = $cart->document_date;
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
+		$_POST['Location'] = $cart->Location;
+		$_POST['sales_type_id'] = $cart->sales_type;
+		if ($cart->trans_no == 0) {
+			$_POST['ref'] = $cart->reference;
 		}
+		$_POST['ShipperID'] = $cart->ship_via;
+		$_POST['dimension_id'] = $cart->dimension_id;
+		$_POST['dimension2_id'] = $cart->dimension2_id;
+		$_POST['cart_id'] = $cart->cart_id;
+	}
 
+	function handle_new_credit($trans_no) {
+		Sales_Order::start();
+		$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
+		copy_from_cn();
+	}
 
-	function copy_from_cn()
-		{
-			$cart = &$_SESSION['Items'];
-			$_POST['CreditText'] = $cart->Comments;
-			$_POST['OrderDate'] = $cart->document_date;
-			$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
-			$_POST['Location'] = $cart->Location;
-			$_POST['sales_type_id'] = $cart->sales_type;
-			if ($cart->trans_no == 0) {
-				$_POST['ref'] = $cart->reference;
-			}
-			$_POST['ShipperID'] = $cart->ship_via;
-			$_POST['dimension_id'] = $cart->dimension_id;
-			$_POST['dimension2_id'] = $cart->dimension2_id;
-			$_POST['cart_id'] = $cart->cart_id;
+	function can_process() {
+		$input_error = 0;
+		if ($_SESSION['Items']->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
+			return false;
 		}
-
-
-	function handle_new_credit($trans_no)
-		{
-			Sales_Order::start();
-			$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
-			copy_from_cn();
-		}
-
-
-	function can_process()
-		{
-			$input_error = 0;
-			if ($_SESSION['Items']->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
-				return false;
-			}
-			if ($_SESSION['Items']->trans_no == 0) {
-				if (!Ref::is_valid($_POST['ref'])) {
-					Errors::error(_("You must enter a reference."));
-					JS::set_focus('ref');
-					$input_error = 1;
-				} elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
-					Errors::error(_("The entered reference is already in use."));
-					JS::set_focus('ref');
-					$input_error = 1;
-				}
-			}
-			if (!Dates::is_date($_POST['OrderDate'])) {
-				Errors::error(_("The entered date for the credit note is invalid."));
-				JS::set_focus('OrderDate');
+		if ($_SESSION['Items']->trans_no == 0) {
+			if (!Ref::is_valid($_POST['ref'])) {
+				Errors::error(_("You must enter a reference."));
+				JS::set_focus('ref');
 				$input_error = 1;
-			} elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-				Errors::error(_("The entered date is not in fiscal year."));
-				JS::set_focus('OrderDate');
+			} elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
+				Errors::error(_("The entered reference is already in use."));
+				JS::set_focus('ref');
 				$input_error = 1;
 			}
-			return ($input_error == 0);
 		}
-
+		if (!Dates::is_date($_POST['OrderDate'])) {
+			Errors::error(_("The entered date for the credit note is invalid."));
+			JS::set_focus('OrderDate');
+			$input_error = 1;
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+			Errors::error(_("The entered date is not in fiscal year."));
+			JS::set_focus('OrderDate');
+			$input_error = 1;
+		}
+		return ($input_error == 0);
+	}
 
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		copy_to_cn();
@@ -154,54 +140,45 @@
 		Sales_Order::finish();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
-
-	function check_item_data()
-		{
-			if (!Validation::is_num('qty', 0)) {
-				Errors::error(_("The quantity must be greater than zero."));
-				JS::set_focus('qty');
-				return false;
-			}
-			if (!Validation::is_num('price', 0)) {
-				Errors::error(_("The entered price is negative or invalid."));
-				JS::set_focus('price');
-				return false;
-			}
-			if (!Validation::is_num('Disc', 0, 100)) {
-				Errors::error(_("The entered discount percent is negative, greater than 100 or invalid."));
-				JS::set_focus('Disc');
-				return false;
-			}
-			return true;
+	function check_item_data() {
+		if (!Validation::is_num('qty', 0)) {
+			Errors::error(_("The quantity must be greater than zero."));
+			JS::set_focus('qty');
+			return false;
 		}
-
-
-	function handle_update_item()
-		{
-			if ($_POST['UpdateItem'] != "" && check_item_data()) {
-				$_SESSION['Items']->update_cart_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
-			}
-			line_start_focus();
+		if (!Validation::is_num('price', 0)) {
+			Errors::error(_("The entered price is negative or invalid."));
+			JS::set_focus('price');
+			return false;
 		}
-
-
-	function handle_delete_item($line_no)
-		{
-			$_SESSION['Items']->remove_from_cart($line_no);
-			line_start_focus();
+		if (!Validation::is_num('Disc', 0, 100)) {
+			Errors::error(_("The entered discount percent is negative, greater than 100 or invalid."));
+			JS::set_focus('Disc');
+			return false;
 		}
+		return true;
+	}
 
-
-	function handle_new_item()
-		{
-			if (!check_item_data()) {
-				return;
-			}
-			Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'),
-			 Validation::input_num('Disc') / 100);
-			line_start_focus();
+	function handle_update_item() {
+		if ($_POST['UpdateItem'] != "" && check_item_data()) {
+			$_SESSION['Items']->update_cart_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		}
+		line_start_focus();
+	}
 
+	function handle_delete_item($line_no) {
+		$_SESSION['Items']->remove_from_cart($line_no);
+		line_start_focus();
+	}
+
+	function handle_new_item() {
+		if (!check_item_data()) {
+			return;
+		}
+		Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'),
+		 Validation::input_num('Disc') / 100);
+		line_start_focus();
+	}
 
 	$id = find_submit('Delete');
 	if ($id != -1) {
@@ -216,11 +193,9 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-
 	if (!Sales_Order::active()) {
 		handle_new_credit(0);
 	}
-
 	start_form();
 	hidden('cart_id');
 	$customer_error = Sales_Credit::header($_SESSION['Items']);
