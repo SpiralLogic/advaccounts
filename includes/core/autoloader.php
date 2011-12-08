@@ -31,14 +31,23 @@
 		 * @var array
 		 */
 		protected static $classes = array();
+		protected static $class = array();
 
 		/**
 		 * @static
 		 *
 		 */
 		static function init() {
-			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
-			spl_autoload_register(array(__CLASS__, 'includeClass'));
+			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
+			spl_autoload_register('Autoloader::load');
+			static::$classes = Cache::get('autoload');
+			if (!static::$classes) {
+				$core = include(DOCROOT . 'config' . DS . 'core.php');
+				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
+				static::add_core_classes($core);
+				static::add_vendor_classes($vendor);
+				Cache::set('autoload', static::$classes);
+			}
 		}
 
 		/**
@@ -105,47 +114,62 @@
 		 *
 		 * @throws Autoload_Exception
 		 */
-		public static function includeClass($class) {
+		public static function load($class) {
 			static::$time = microtime(true);
+			static::$class = $class;
 			if (!static::$loaded and class_exists('Cache', false)) {
 				static::$loaded = Cache::get('autoloads');
 			}
-			$filepath = '';
 			if (isset(static::$loaded[$class])) {
 				$path = static::$loaded[$class];
 				$filepath = static::tryPath($path);
+				if ($filepath) {
+					return static::includeFile($filepath);
+				}
 			}
-			if (!$filepath && isset(static::$classes[$class])) {
+			if (isset(static::$classes[$class])) {
 				$path = static::$classes[$class];
 				$filepath = static::tryPath($path);
+				if ($filepath) {
+					return static::includeFile($filepath);
+				}
 			}
 			$class = str_replace('_', DS, $class);
-			if (!$filepath && (substr($class, 0, 1) == 'I')) {
+			if (substr($class, 0, 1) == 'I') {
 				$path = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
 				$filepath = static::tryPath($path);
+				if ($filepath) {
+					return static::includeFile($filepath);
+				}
 			}
-			if (!$filepath) {
-				$path = APPPATH . $class . '.php';
-				$filepath = static::tryPath($path);
+			$path = APPPATH . $class . '.php';
+			$filepath = static::tryPath($path);
+			if ($filepath) {
+				return static::includeFile($filepath);
 			}
-			if (!$filepath) {
-				$path = APPPATH . $class . DS . $class . '.php';
-				$filepath = static::tryPath($path, $class);
+			$path = APPPATH . $class . DS . $class . '.php';
+			$filepath = static::tryPath($path, $class);
+			if ($filepath) {
+				return static::includeFile($filepath);
 			}
-			if (!$filepath) {
-				$path = COREPATH . $class . '.php';
-				$filepath = static::tryPath($path);
+			$path = COREPATH . $class . '.php';
+			$filepath = static::tryPath($path);
+			if ($filepath) {
+				return static::includeFile($filepath);
 			}
+		}
+
+		protected static function includeFile($filepath) {
 			try {
 				if (empty($filepath)) {
-					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $filepath);
+					throw new Autoload_Exception('File for class ' . static::$class . ' does not exist here: ' . $filepath);
 				}
 				/** @noinspection PhpIncludeInspection */
 				if (!include($filepath)) {
-					throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
+					throw new Autoload_Exception('File for class ' . static::$class . ' cannot be	loaded from : ' . $filepath);
 				}
-				static::$loaded[$class] = $filepath;
-				static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
+				static::$loaded[static::$class] = $filepath;
+				static::$loadperf[static::$class] = array(static::$class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			} catch (Autoload_Exception $e) {
 				Errors::exception_handler($e);
 			}

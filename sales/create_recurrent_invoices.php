@@ -137,5 +137,5 @@
 		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
-	end_page();
+	Renderer::end_page();
 ?>

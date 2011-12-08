@@ -14,9 +14,7 @@
 	$js = "";
 	Page::start(_($help_context = "Exchange Rates"));
 	Page::simple_mode(false);
-
-	function check_data()
-	{
+	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
@@ -35,9 +33,7 @@
 		return true;
 	}
 
-
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id;
 		if (!check_data()) {
 			return false;
@@ -57,9 +53,7 @@
 		clear_data();
 	}
 
-
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id;
 		if ($selected_id == "") {
 			return;
@@ -69,24 +63,18 @@
 		clear_data();
 	}
 
-
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
 	}
 
-	function del_link($row)
-	{
+	function del_link($row) {
 		return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
 	}
 
-	function display_rates($curr_code)
-	{
+	function display_rates($curr_code) {
 	}
 
-
-	function display_rate_edit()
-	{
+	function display_rate_edit() {
 		global $selected_id;
 		$Ajax = Ajax::i();
 		start_table('tablestyle2');
@@ -118,23 +106,18 @@
 		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
-
-	function clear_data()
-	{
+	function clear_data() {
 		unset($_POST['selected_id']);
 		unset($_POST['date_']);
 		unset($_POST['BuyRate']);
 	}
 
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-
 	if ($Mode == 'Delete') {
 		handle_delete();
 	}
-
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;
@@ -150,7 +133,7 @@
 	}
 	Session::i()->global_curr_code = $_POST['curr_abrev'];
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev'],false,false) . "
+	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev'], false, false) . "
 	 ORDER BY date_ DESC";
 	$cols = array(
 		_("Date to Use From") => 'date',
@@ -179,6 +162,6 @@
 		display_rate_edit();
 	}
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

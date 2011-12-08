@@ -82,7 +82,7 @@
 		/* This page can only be called with an order number for invoicing*/
 		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
-		end_page();
+		Renderer::end_page();
 		exit;
 	} else {
 		Sales_Order::check_edit_conflicts();
@@ -294,7 +294,7 @@
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		end_page();
+		Renderer::end_page();
 		exit();
 	}
 	Display::heading(_("Delivery Items"));
@@ -367,6 +367,6 @@
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

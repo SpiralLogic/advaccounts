@@ -12,11 +12,9 @@
 	$page_security = 'SA_SALESPRICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
-
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Validation::check(Validation::SALES_TYPES,		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
 	Page::simple_mode(true);
-
 	$input_error = 0;
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
@@ -27,7 +25,6 @@
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Bank_Currency::for_company();
 	}
-
 	if (Input::request('frame')) {
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
@@ -42,7 +39,6 @@
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
@@ -62,7 +58,6 @@
 			$Mode = 'RESET';
 		}
 	}
-
 	if ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked
 		Item_Price::delete($selected_id);
@@ -83,7 +78,6 @@
 		unset($_POST['price']);
 		$Ajax->activate('price_details');
 	}
-
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
 	Display::div_start('price_table');
 	if (Input::request('frame')) {
@@ -112,7 +106,6 @@
 		Errors::warning(_("There are no prices set up for this part."), 1);
 	}
 	Display::div_end();
-
 	echo "<br>";
 	if ($Mode == 'Edit') {
 		$myrow = Item_Price::get($selected_id);
@@ -139,7 +132,7 @@
 	Display::div_end();
 	end_form();
 	if (Input::request('frame')) {
-		end_page(true, true, true);
+		Renderer::end_page(true, true, true);
 	} else {
-		end_page();
+		Renderer::end_page();
 	}

@@ -90,7 +90,7 @@
 	);
 	HTML::td()->tr->table->div;
 	start_outer_table('tablestyle2');
-		table_section(1);
+	table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
@@ -101,10 +101,9 @@
 	);
 	UI::select(
 		'branchList', array_map(
-			function($v)
-				{
-					return $v->br_name;
-				}, $customer->branches
+			function($v) {
+				return $v->br_name;
+			}, $customer->branches
 		), array('name' => 'branchList')
 	);
 	UI::button(
@@ -122,7 +121,7 @@
 	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 	Contacts_Postcode::render(array('br_city', $currentBranch->city),
-		array('br_state', $currentBranch->state),array('br_postcode', $currentBranch->postcode));
+		array('br_state', $currentBranch->state), array('br_postcode', $currentBranch->postcode));
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -141,7 +140,7 @@
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	Contacts_Postcode::render(array('acc_city', $customer->accounts->city),
-		array('acc_state', $customer->accounts->state),array('acc_postcode', $customer->accounts->postcode));
+		array('acc_state', $customer->accounts->state), array('acc_postcode', $customer->accounts->postcode));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
 	start_outer_table('tablestyle2');
@@ -292,4 +291,4 @@
 		/** @noinspection PhpUndefinedMethodInspection */
 	}
 	HTML::_div();
-	end_page(false, true);
+	Renderer::end_page(false, true);

@@ -344,5 +344,5 @@
 	DB_Pager::display($table);
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

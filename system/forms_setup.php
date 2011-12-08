@@ -40,6 +40,6 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -16,7 +16,6 @@
 	if (isset($_GET['order_number'])) {
 		$order_number = $_GET['order_number'];
 	}
-
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -36,7 +35,6 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-
 	start_form();
 	if (Input::request('frame')) {
 		start_table('tablestyle_noborder hidden');
@@ -52,7 +50,6 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
 	}
@@ -62,37 +59,31 @@
 	} else {
 		unset($selected_stock_item);
 	}
-
-	function trans_view($trans)
-	{
+	function trans_view($trans) {
 		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
 	}
 
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 	}
 
-	function prt_link($row)
-	{
+	function prt_link($row) {
 		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
 	}
 
-	function email_link($row)
-	{
+	function email_link($row) {
 		HTML::setReturn(true);
 		UI::button(
 			false, 'Email',
 			array(
-				'class'				=> 'button email-button',
-				'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
+					 'class' => 'button email-button',
+					 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
 			)
 		);
 		return HTML::setReturn(false);
 	}
 
-	function receive_link($row)
-	{
+	function receive_link($row) {
 		if ($row['Received'] > 0) {
 			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 		} elseif ($row['Invoiced'] > 0) {
@@ -103,7 +94,6 @@
 		}
 		//advaccounts/purchases/supplier_invoice.php?New=1
 	}
-
 
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
@@ -159,51 +149,50 @@
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
-		_("#")					 => array(
+		_("#") => array(
 			'fun' => 'trans_view',
 			'ord' => ''
 		),
 		_("Reference"),
-		_("Supplier")		=> array(
-			'ord'	=> '',
+		_("Supplier") => array(
+			'ord' => '',
 			'type' => 'id'
 		),
 		_("Supplier ID") => 'skip',
 		_("Location"),
 		_("Supplier's Reference"),
-		_("Order Date")	=> array(
+		_("Order Date") => array(
 			'name' => 'ord_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Currency")		=> array('align' => 'center'),
+		_("Currency") => array('align' => 'center'),
 		_("Order Total") => 'amount',
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'email_link'
+			'fun' => 'email_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'prt_link'
+			'fun' => 'prt_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'receive_link'
+			'fun' => 'receive_link'
 		)
 	);
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
-
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

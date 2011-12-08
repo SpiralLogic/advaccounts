@@ -51,6 +51,6 @@
 		GL_Allocation::display(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no,
 			-($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

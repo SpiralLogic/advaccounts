@@ -121,7 +121,8 @@
 		}
 
 		public static function	type($name, $selected_id = null) {
-			return array_selector($name, $selected_id, unserialize(TYPE_BANK_ACCOUNTS));
+			global $bank_account_types;
+			return array_selector($name, $selected_id, $bank_account_types);
 		}
 
 		public static function	type_cells($label, $name, $selected_id = null) {

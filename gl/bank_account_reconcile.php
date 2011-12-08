@@ -244,6 +244,6 @@
 	})
 JS;
 	JS::onload($js);
-	end_page();
+	Renderer::end_page();
 
 ?>

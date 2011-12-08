@@ -216,5 +216,5 @@
 	}
 	Display::br();
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

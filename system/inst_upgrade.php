@@ -19,8 +19,7 @@
 	// $properties - optional properties of field defined by MySQL:
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
-	function check_table($pref, $table, $field = null, $properties = null)
-	{
+	function check_table($pref, $table, $field = null, $properties = null) {
 		$tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
 		if (!DB::num_rows($tables)) {
 			return 1;
@@ -52,8 +51,7 @@
 	//
 	//	Creates table of installer objects sorted by version.
 	//
-	function get_installers()
-	{
+	function get_installers() {
 		$patchdir = DOCROOT . "sql/";
 		$upgrades = array();
 		$datadir = @opendir($patchdir);
@@ -80,8 +78,7 @@
 	//
 	//	Apply one differential data set.
 	//
-	function upgrade_step($index, $conn)
-	{
+	function upgrade_step($index, $conn) {
 		global $installers;
 		$inst = $installers[$index];
 		$ret = true;
@@ -105,8 +102,7 @@
 		return $ret;
 	}
 
-	function db_open($conn)
-	{
+	function db_open($conn) {
 		$db = mysql_connect($conn["host"], $conn["dbuser"], $conn["dbpassword"]);
 		if (!$db) {
 			return false;
@@ -213,6 +209,6 @@ You have to clean database manually to enable them, or try to perform forced upg
 	}
 	submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

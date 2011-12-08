@@ -14,7 +14,6 @@
 	Page::start(_($help_context = "Reorder Levels"));
 	Validation::check(Validation::COST_ITEMS,
 		_("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
-
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
@@ -22,7 +21,6 @@
 		$Ajax->activate('show_heading');
 		$Ajax->activate('reorders');
 	}
-
 	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -66,6 +64,6 @@
 	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

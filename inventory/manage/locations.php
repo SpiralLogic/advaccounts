@@ -50,8 +50,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query stock moves");
 		$myrow = DB::fetch_row($result);
@@ -110,7 +109,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
@@ -185,6 +183,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

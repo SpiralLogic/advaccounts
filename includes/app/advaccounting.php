@@ -10,6 +10,9 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
+	include(DOCROOT . 'config' . DS . 'defines.php');
+	include(DOCROOT . 'config' . DS . 'types.php');
+	include(DOCROOT . 'config' . DS . 'access_levels.php');
 	class advaccounting
 	{
 		public $user;
@@ -68,7 +71,7 @@
 		}
 
 		public function display() {
-			$rend = Renderer::get();
+			$rend = Renderer::i();
 			$rend->header();
 			//$rend->menu_header($this->menu);
 			$rend->display_applications($this);

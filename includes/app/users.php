@@ -193,7 +193,7 @@
 			} else {
 				$users = 1;
 			}
-			Cache::set('users_online', $users, time() + 300);
+			Cache::set('users_online', $users, 300);
 			return $users;
 		}
 

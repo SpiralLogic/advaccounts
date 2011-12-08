@@ -108,7 +108,7 @@
 			}
 		}
 
-		public static function view($name, $value = null, $spec_opt = false, $submit_on_change = false) {
+		public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
 			global $systypes_array;
 			return array_selector($name, $value, $systypes_array, array(
 																																 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));

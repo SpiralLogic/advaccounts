@@ -66,7 +66,7 @@
 		public static function header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 			// titles and screen header
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
-				Renderer::get()->has_header = false;
+				Renderer::i()->has_header = false;
 				return; // just for speed up
 			}
 			User::theme();
@@ -107,7 +107,7 @@
 				echo "body onload='$onload'";
 			}
 			echo	($no_menu) ? ' class="lite">' : '>';
-			Renderer::get()->menu_header($title, $no_menu, $is_index);
+			Renderer::i()->menu_header($title, $no_menu, $is_index);
 			Errors::error_box();
 		}
 
@@ -140,7 +140,7 @@
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false) {
 			$Validate = array();
 			$Ajax = Ajax::i();
-			$rend = Renderer::get();
+			$rend = Renderer::i();
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(Display::set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
@@ -172,7 +172,7 @@
 
 		public static function footer_exit() {
 			Display::br(2);
-			end_page(false, false, true);
+			Renderer::end_page(false, false, true);
 			exit;
 		}
 	}

@@ -13,20 +13,17 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Access setup"));
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
-
 	// Following compare function is used for sorting areas
 	// in such a way that security areas defined by module/plugin
 	// is properly placed under related section regardless of
 	// unique extension number, with order inside sections preserved.
 	//
-	function comp_areas($area1, $area2)
-	{
+	function comp_areas($area1, $area2) {
 		$sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
 		return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
 	}
 
-	function sort_areas($areas)
-	{
+	function sort_areas($areas) {
 		$old_order = 0;
 		foreach (
 			$areas as $key => $area
@@ -37,13 +34,11 @@
 		return $areas;
 	}
 
-
 	if (list_updated('role')) {
 		$Ajax->activate('details');
 		$Ajax->activate('controls');
 	}
-	function clear_data()
-	{
+	function clear_data() {
 		unset($_POST);
 	}
 
@@ -112,7 +107,6 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-
 	if (get_post('delete')) {
 		if (check_role_used(get_post('role'))) {
 			Errors::error(_("This role is currently assigned to some users and cannot be deleted"));
@@ -164,7 +158,6 @@
 			$_POST['role'] = $id;
 		}
 	}
-
 	start_form();
 	start_table('tablestyle_noborder');
 	start_row();
@@ -181,7 +174,6 @@
 	if (find_submit('_Section')) {
 		$Ajax->activate('details');
 	}
-
 	Display::div_start('details');
 	start_table('tablestyle2');
 	text_row(_("Role name:"), 'name', null, 20, 22);
@@ -242,6 +234,6 @@
 	}
 	Display::div_end();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -29,7 +29,7 @@
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
 		UI::search('item', array(
-			'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
+														'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 		HTML::div();
 		$id = 0;
 	} else {
@@ -75,4 +75,4 @@ HTML;
 	}
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	end_page(true, true);
+	Renderer::end_page(true, true);

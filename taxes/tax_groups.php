@@ -14,7 +14,6 @@
 	Page::start(_($help_context = "Tax Groups"));
 	Page::simple_mode(true);
 	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -71,9 +70,7 @@
 			$Mode = 'RESET';
 		}
 	}
-
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -94,7 +91,6 @@
 		return true;
 	}
 
-
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Tax_Groups::delete($selected_id);
@@ -108,7 +104,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$result = Tax_Groups::get_all(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle');
@@ -136,7 +131,6 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//editing an existing status code
@@ -190,7 +184,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

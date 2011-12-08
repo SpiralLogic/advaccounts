@@ -13,12 +13,10 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Item Stocktake Note"));
-
 	Validation::check(Validation::COST_ITEMS,
 		_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES,
 		_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
@@ -28,61 +26,54 @@
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 		Page::footer_exit();
 	}
+	function line_start_focus() {
+		$Ajax = Ajax::i();
+		$Ajax->activate('items_table');
+		JS::set_focus('_stock_id_edit');
+	}
 
-	function line_start_focus()
-		{
-			$Ajax = Ajax::i();
-			$Ajax->activate('items_table');
-			JS::set_focus('_stock_id_edit');
+	function handle_new_order() {
+		if (isset($_SESSION['adj_items'])) {
+			$_SESSION['adj_items']->clear_items();
+			unset ($_SESSION['adj_items']);
 		}
-
-
-	function handle_new_order()
-		{
-			if (isset($_SESSION['adj_items'])) {
-				$_SESSION['adj_items']->clear_items();
-				unset ($_SESSION['adj_items']);
-			}
-			//session_register("adj_items");
-			$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
-			$_POST['AdjDate'] = Dates::new_doc_date();
-			if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-				$_POST['AdjDate'] = Dates::end_fiscalyear();
-			}
-			$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
+		//session_register("adj_items");
+		$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
+		$_POST['AdjDate'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		}
+		$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
+	}
 
-
-	function can_process()
-		{
-			$adj = &$_SESSION['adj_items'];
-			if (count($adj->line_items) == 0) {
-				Errors::error(_("You must enter at least one non empty item line."));
-				JS::set_focus('stock_id');
-				return false;
-			}
-			if (!Ref::is_valid($_POST['ref'])) {
-				Errors::error(_("You must enter a reference."));
-				JS::set_focus('ref');
-				return false;
-			}
-			if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('ref');
-				return false;
-			}
-			if (!Dates::is_date($_POST['AdjDate'])) {
-				Errors::error(_("The entered date for the adjustment is invalid."));
-				JS::set_focus('AdjDate');
-				return false;
-			} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-				Errors::error(_("The entered date is not in fiscal year."));
-				JS::set_focus('AdjDate');
-				return false;
-			}
-			return true;
+	function can_process() {
+		$adj = &$_SESSION['adj_items'];
+		if (count($adj->line_items) == 0) {
+			Errors::error(_("You must enter at least one non empty item line."));
+			JS::set_focus('stock_id');
+			return false;
 		}
-
+		if (!Ref::is_valid($_POST['ref'])) {
+			Errors::error(_("You must enter a reference."));
+			JS::set_focus('ref');
+			return false;
+		}
+		if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
+			Errors::error(_("The entered reference is already in use."));
+			JS::set_focus('ref');
+			return false;
+		}
+		if (!Dates::is_date($_POST['AdjDate'])) {
+			Errors::error(_("The entered date for the adjustment is invalid."));
+			JS::set_focus('AdjDate');
+			return false;
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+			Errors::error(_("The entered date is not in fiscal year."));
+			JS::set_focus('AdjDate');
+			return false;
+		}
+		return true;
+	}
 
 	if (isset($_POST['Process']) && can_process()) {
 		foreach ($_SESSION['adj_items']->line_items as $line) {
@@ -97,49 +88,40 @@
 		unset($_SESSION['adj_items']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
-
-	function check_item_data()
-		{
-			if (!Validation::is_num('qty', 0)) {
-				Errors::error(_("The quantity entered is negative or invalid."));
-				JS::set_focus('qty');
-				return false;
-			}
-			if (!Validation::is_num('std_cost', 0)) {
-				Errors::error(_("The entered standard cost is negative or invalid."));
-				JS::set_focus('std_cost');
-				return false;
-			}
-			return true;
+	function check_item_data() {
+		if (!Validation::is_num('qty', 0)) {
+			Errors::error(_("The quantity entered is negative or invalid."));
+			JS::set_focus('qty');
+			return false;
 		}
-
-
-	function handle_update_item()
-		{
-			if ($_POST['UpdateItem'] != "" && check_item_data()) {
-				$id = $_POST['LineNo'];
-				$_SESSION['adj_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
-			}
-			line_start_focus();
+		if (!Validation::is_num('std_cost', 0)) {
+			Errors::error(_("The entered standard cost is negative or invalid."));
+			JS::set_focus('std_cost');
+			return false;
 		}
+		return true;
+	}
 
-
-	function handle_delete_item($id)
-		{
-			$_SESSION['adj_items']->remove_from_cart($id);
-			line_start_focus();
+	function handle_update_item() {
+		if ($_POST['UpdateItem'] != "" && check_item_data()) {
+			$id = $_POST['LineNo'];
+			$_SESSION['adj_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
 		}
+		line_start_focus();
+	}
 
+	function handle_delete_item($id) {
+		$_SESSION['adj_items']->remove_from_cart($id);
+		line_start_focus();
+	}
 
-	function handle_new_item()
-		{
-			if (!check_item_data()) {
-				return;
-			}
-			Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
-			line_start_focus();
+	function handle_new_item() {
+		if (!check_item_data()) {
+			return;
 		}
-
+		Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
+		line_start_focus();
+	}
 
 	$id = find_submit('Delete');
 	if ($id != -1) {
@@ -154,11 +136,9 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-
 	if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
 		handle_new_order();
 	}
-
 	start_form();
 	Inv_Adjustment::header($_SESSION['adj_items']);
 	start_outer_table('tablestyle width80 pad10');
@@ -168,6 +148,6 @@
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last('Process', _("Process Adjustment"), '', 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

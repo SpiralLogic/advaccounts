@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Validation {
+	class Validation
+	{
 		const CUSTOMERS = "debtors_master";
 		const CURRENCIES = "currencies";
 		const SALES_TYPES = "sales_types";
@@ -61,7 +62,7 @@
 			$myrow = DB::fetch_row($result);
 			if (!($myrow[0] > 0)) {
 				throw new Adv_Exception($msg);
-				end_page();
+				Renderer::end_page();
 				exit;
 			} else {
 				return $myrow[0];
@@ -73,7 +74,9 @@
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
 		public static function is_int($postname, $min = null, $max = null) {
-			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
+			if (!isset($_POST) || !isset($_POST[$postname])) {
+				return 0;
+			}
 			$options = array();
 			if ($min !== null) {
 				$options['min_range'] = $min;
@@ -91,15 +94,16 @@
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
 		public static function is_num($postname, $min = null, $max = null, $default = 0) {
-			if (!isset($_POST) || !isset($_POST[$postname])) $_POST[$postname]=$default;
-			$result = filter_var($_POST[$postname],FILTER_VALIDATE_FLOAT ,FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
+			if (!isset($_POST) || !isset($_POST[$postname])) {
+				$_POST[$postname] = $default;
+			}
+			$result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
 			if ($min !== null && $result < $min) {
-							$result = false;
-						}
-						if ($max !== null && $result > $max) {
-							$result = false;
-						}
-
+				$result = false;
+			}
+			if ($max !== null && $result > $max) {
+				$result = false;
+			}
 			return ($result === false || $result === null) ? $default : 1;
 		}
 
@@ -115,14 +119,16 @@
 		 * @return bool|float|int|mixed|string
 		 */
 		public static function input_num($postname = null, $default = 0, $min = null, $max = null) {
-			if (!isset($_POST) || !isset($_POST[$postname])) $_POST[$postname]=$default;
-			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
+			if (!isset($_POST) || !isset($_POST[$postname])) {
+				$_POST[$postname] = $default;
+			}
+			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
 			if ($min !== null && $result < $min) {
-							$result = false;
-						}
-						if ($max !== null && $result > $max) {
-							$result = false;
-						}
+				$result = false;
+			}
+			if ($max !== null && $result > $max) {
+				$result = false;
+			}
 			return ($result === false || $result === null) ? 0 : User::numeric($result);
 		}
 	}

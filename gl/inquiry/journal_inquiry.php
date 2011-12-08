@@ -13,13 +13,11 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Journal Inquiry"));
-
 	// Ajax updates
 	//
 	if (get_post('Search')) {
 		$Ajax->activate('journal_tbl');
 	}
-
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = -1;
 	}
@@ -37,24 +35,20 @@
 	ref_cells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
 	end_row();
 	end_table();
-	function journal_pos($row)
-	{
+	function journal_pos($row) {
 		return $row['gl_seq'] ? $row['gl_seq'] : '-';
 	}
 
-	function systype_name($dummy, $type)
-	{
+	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
 	}
 
-	function view_link($row)
-	{
+	function view_link($row) {
 		return GL_UI::trans_view($row["type"], $row["type_no"]);
 	}
 
-	function gl_link($row)
-	{
+	function gl_link($row) {
 		return GL_UI::view($row["type"], $row["type_no"]);
 	}
 
@@ -81,8 +75,7 @@
 // 29=> Work Order Production",
 // 35=> Cost Update,
 	);
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		global $editors;
 		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
 		 DB_Pager::link(
@@ -199,6 +192,6 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

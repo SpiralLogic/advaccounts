@@ -14,7 +14,6 @@
 	JS::set_focus('account');
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Tax Inquiry"));
-
 	// Ajax updates
 	//
 	if (get_post('Show')) {
@@ -30,9 +29,7 @@
 		$_POST["TransFromDate"] = $bdate;
 		$_POST["TransToDate"] = $edate;
 	}
-
-	function tax_inquiry_controls()
-	{
+	function tax_inquiry_controls() {
 		start_form();
 		//start_table('tablestyle2');
 		start_table('tablestyle_noborder');
@@ -45,9 +42,7 @@
 		end_form();
 	}
 
-
-	function show_results()
-	{
+	function show_results() {
 		/*Now get the transactions */
 		Display::div_start('trans_tbl');
 		start_table('tablestyle');
@@ -93,10 +88,8 @@
 		Display::div_end();
 	}
 
-
 	tax_inquiry_controls();
 	show_results();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

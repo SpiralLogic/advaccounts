@@ -14,17 +14,14 @@
 	$js = "";
 	Page::start(_($help_context = "Fiscal Years"));
 	Page::simple_mode(true);
-
-	function is_date_in_fiscalyears($date)
-	{
+	function is_date_in_fiscalyears($date) {
 		$date = Dates::date2sql($date);
 		$sql = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
 		$result = DB::query($sql, "could not get all fiscal years");
 		return DB::fetch($result) !== false;
 	}
 
-	function is_bad_begin_date($date)
-	{
+	function is_bad_begin_date($date) {
 		$bdate = Dates::date2sql($date);
 		$sql = "SELECT MAX(end) FROM fiscal_year WHERE begin < '$bdate'";
 		$result = DB::query($sql, "could not retrieve last fiscal years");
@@ -36,8 +33,7 @@
 		return ($max !== $date);
 	}
 
-	function check_years_before($date, $closed = false)
-	{
+	function check_years_before($date, $closed = false) {
 		$date = Dates::date2sql($date);
 		$sql = "SELECT COUNT(*) FROM fiscal_year WHERE begin < '$date'";
 		if (!$closed) {
@@ -48,8 +44,7 @@
 		return ($row[0] > 0);
 	}
 
-	function check_data()
-	{
+	function check_data() {
 		if (!Dates::is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date'])
 		 || is_bad_begin_date(
 			 $_POST['from_date']
@@ -72,9 +67,7 @@
 		return true;
 	}
 
-
-	function close_year($year)
-	{
+	function close_year($year) {
 		$co = DB_Company::get_prefs();
 		if (GL_Account::get($co['retained_earnings_act']) == false || GL_Account::get($co['profit_loss_year_act']) == false) {
 			Errors::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
@@ -109,8 +102,7 @@
 		return true;
 	}
 
-	function open_year($year)
-	{
+	function open_year($year) {
 		$myrow = DB_Company::get_fiscalyear($year);
 		$from = Dates::sql2date($myrow['begin']);
 		DB::begin_transaction();
@@ -118,8 +110,7 @@
 		DB::commit_transaction();
 	}
 
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id, $Mode;
 		$ok = true;
 		if ($selected_id != -1) {
@@ -147,9 +138,7 @@
 		$Mode = 'RESET';
 	}
 
-
-	function check_can_delete($selected_id)
-	{
+	function check_can_delete($selected_id) {
 		$myrow = DB_Company::get_fiscalyear($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 		if (check_years_before(Dates::sql2date($myrow['begin']), true)) {
@@ -163,9 +152,7 @@
 		return true;
 	}
 
-
-	function delete_attachments_and_comments($type_no, $trans_no)
-	{
+	function delete_attachments_and_comments($type_no, $trans_no) {
 		$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 		$result = DB::query($sql, "Could not retrieve attachments");
 		while ($row = DB::fetch($result))
@@ -183,8 +170,7 @@
 		DB::query($sql, "Could not delete refs");
 	}
 
-	function delete_this_fiscalyear($selected_id)
-	{
+	function delete_this_fiscalyear($selected_id) {
 		DB_Utils::backup(Config::get('db.' . User::get()->company), 'Security backup before Fiscal Year Removal');
 		DB::begin_transaction();
 		$ref = _("Open Balance");
@@ -373,8 +359,7 @@
 		DB::commit_transaction();
 	}
 
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id, $Mode;
 		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -384,9 +369,7 @@
 		$Mode = 'RESET';
 	}
 
-
-	function display_fiscalyears()
-	{
+	function display_fiscalyears() {
 		$company_year = DB_Company::get_pref('f_year');
 		$result = DB_Company::get_all_fiscalyears();
 		start_form();
@@ -423,7 +406,8 @@
 				delete_button_cell("Delete" . $myrow['id'], _("Delete"));
 				submit_js_confirm(
 					"Delete" . $myrow['id'],
-					sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to)
+					sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"),
+						$from, $to)
 				);
 			} else
 			{
@@ -436,9 +420,7 @@
 		Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-
-	function display_fiscalyear_edit($selected_id)
-	{
+	function display_fiscalyear_edit($selected_id) {
 		global $Mode;
 		start_form();
 		start_table('tablestyle2');
@@ -464,11 +446,9 @@
 		end_form();
 	}
 
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-
 	if ($Mode == 'Delete') {
 		global $selected_id;
 		handle_delete($selected_id);
@@ -476,11 +456,9 @@
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 	}
-
 	display_fiscalyears();
 	echo '<br>';
 	display_fiscalyear_edit($selected_id);
-
-	end_page();
+	Renderer::end_page();
 
 ?>

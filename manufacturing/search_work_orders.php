@@ -20,7 +20,6 @@
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}
-
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -40,11 +39,9 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
-
 	start_form(false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
 	start_table('tablestyle_noborder');
 	start_row();
@@ -58,98 +55,87 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
+	function check_overdue($row) {
+		return (!$row["closed"]
+		 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
+	}
 
-	function check_overdue($row)
-		{
-			return (!$row["closed"]
-			 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
-		}
+	function view_link($dummy, $order_no) {
+		return GL_UI::trans_view(ST_WORKORDER, $order_no);
+	}
 
-	function view_link($dummy, $order_no)
-		{
-			return GL_UI::trans_view(ST_WORKORDER, $order_no);
-		}
+	function view_stock($row) {
+		return Item_UI::status($row["stock_id"], $row["description"], false);
+	}
 
-	function view_stock($row)
-		{
-			return Item_UI::status($row["stock_id"], $row["description"], false);
-		}
+	function wo_type_name($dummy, $type) {
+		global $wo_types_array;
+		return $wo_types_array[$type];
+	}
 
-	function wo_type_name($dummy, $type)
-		{
-			global $wo_types_array;
-			return $wo_types_array[$type];
-		}
+	function edit_link($row) {
+		return $row['closed']
+		 ? '<i>' . _('Closed') . '</i>'
+		 :
+		 DB_Pager::link(
+			 _("Edit"),
+			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
+		 );
+	}
 
-	function edit_link($row)
-		{
-			return $row['closed']
-			 ? '<i>' . _('Closed') . '</i>'
-			 :
-			 DB_Pager::link(
-				 _("Edit"),
-				"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
-			 );
-		}
+	function release_link($row) {
+		return $row["closed"]
+		 ? ''
+		 :
+		 ($row["released"] == 0
+			?
+			DB_Pager::link(
+				_('Release'),
+			 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
+			)
+			:
+			DB_Pager::link(
+				_('Issue'),
+			 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
+			));
+	}
 
-	function release_link($row)
-		{
-			return $row["closed"]
-			 ? ''
-			 :
-			 ($row["released"] == 0
-				?
-				DB_Pager::link(
-					_('Release'),
-				 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
-				)
-				:
-				DB_Pager::link(
-					_('Issue'),
-				 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
-				));
-		}
+	function produce_link($row) {
+		return $row["closed"] || !$row["released"]
+		 ? ''
+		 :
+		 DB_Pager::link(
+			 _('Produce'),
+			"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
+		 );
+	}
 
-	function produce_link($row)
-		{
-			return $row["closed"] || !$row["released"]
-			 ? ''
-			 :
-			 DB_Pager::link(
-				 _('Produce'),
-				"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
-			 );
-		}
+	function costs_link($row) {
+		/*
+											 return $row["closed"] || !$row["released"] ? '' :
+												 DB_Pager::link(_('Costs'),
+													 "/gl/gl_bank.php?NewPayment=1&PayType="
+													 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
+										 */
+		return $row["closed"] || !$row["released"]
+		 ? ''
+		 :
+		 DB_Pager::link(
+			 _('Costs'),
+			"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
+		 );
+	}
 
-	function costs_link($row)
-		{
-			/*
-									 return $row["closed"] || !$row["released"] ? '' :
-										 DB_Pager::link(_('Costs'),
-											 "/gl/gl_bank.php?NewPayment=1&PayType="
-											 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
-								 */
-			return $row["closed"] || !$row["released"]
-			 ? ''
-			 :
-			 DB_Pager::link(
-				 _('Costs'),
-				"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
-			 );
+	function view_gl_link($row) {
+		if ($row['closed'] == 0) {
+			return '';
 		}
+		return GL_UI::view(ST_WORKORDER, $row['id']);
+	}
 
-	function view_gl_link($row)
-		{
-			if ($row['closed'] == 0) {
-				return '';
-			}
-			return GL_UI::view(ST_WORKORDER, $row['id']);
-		}
-
-	function dec_amount($row, $amount)
-		{
-			return Num::format($amount, $row['decimals']);
-		}
+	function dec_amount($row, $amount) {
+		return Num::format($amount, $row['decimals']);
+	}
 
 	$sql
 	 = "SELECT
@@ -235,5 +221,5 @@
 	$table->width = "90%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

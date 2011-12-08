@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Tax Types"));
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
@@ -43,9 +42,7 @@
 			$Mode = 'RESET';
 		}
 	}
-
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query stock master");
 		$myrow = DB::fetch_row($result);
@@ -55,7 +52,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
@@ -70,7 +66,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$result2 = $result = Tax_ItemType::get_all(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle width30');
@@ -95,7 +90,6 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -135,7 +129,6 @@
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

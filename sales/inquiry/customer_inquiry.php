@@ -268,7 +268,8 @@
 			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
 			'fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'), _("Reference") => array('ord' => ''), _("Date") => array(
 			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
-			'type' => 'date', 'fun' => 'due_date'), _("Customer") => array('ord' => ''), _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Debit") => array(
+			'type' => 'date', 'fun' => 'due_date'), _("Customer") => array('ord' => 'Asc'), _("Branch") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'), _("Debit") => array(
 			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
 			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), _("RB") => array(
 			'align' => 'right', 'type' => 'amount'), array(
@@ -290,6 +291,6 @@
 	DB_Pager::display($table);
 	UI::emailDialogue('c');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

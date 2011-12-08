@@ -13,11 +13,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Printing Profiles"));
 	$selected_id = get_post('profile_id', '');
-
 	// Returns array of defined reports
 	//
-	function get_reports()
-	{
+	function get_reports() {
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
 			$paths = array(
@@ -58,8 +56,7 @@
 		return $_SESSION['reports'];
 	}
 
-	function clear_form()
-	{
+	function clear_form() {
 		global $selected_id;
 		$Ajax = Ajax::i();
 		$selected_id = '';
@@ -67,8 +64,7 @@
 		$Ajax->activate('_page_body');
 	}
 
-	function check_delete($name)
-	{
+	function check_delete($name) {
 		// check if selected profile is used by any user
 		if ($name == '') {
 			return 0;
@@ -77,7 +73,6 @@
 		$res = DB::query($sql, 'cannot check printing profile usage');
 		return DB::num_rows($res);
 	}
-
 
 	if (get_post('submit')) {
 		$error = 0;
@@ -127,7 +122,7 @@
 	start_table();
 	if (get_post('profile_id') == '') {
 		text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
-} else {
+	} else {
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
 	}
 	end_table(1);
@@ -163,7 +158,7 @@
 	end_table();
 	if ($unkn) {
 		Errors::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
-} else {
+	} else {
 		echo '<br>';
 	}
 	Display::div_start('controls');
@@ -181,6 +176,6 @@
 	}
 	Display::div_end();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

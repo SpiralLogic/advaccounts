@@ -218,6 +218,6 @@
 	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

@@ -6,7 +6,6 @@
 	 * Time: 1:53 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include(DOCROOT . "config/defines.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 	/***
@@ -43,7 +42,6 @@
 			}
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
-
 				static::load();
 			}
 			static::$_initialised = true;
@@ -57,7 +55,8 @@
 		 *
 		 * @return mixed
 		 * @throws Config_Exception
-		 */protected static function load($group = 'config') {
+		 */
+		protected static function load($group = 'config') {
 			$file = DOCROOT . "config" . DS . $group . '.php';
 			$group_name = $group;
 			if (is_array($group)) {
@@ -74,15 +73,18 @@
 			}
 			/** @noinspection PhpIncludeInspection */
 			static::$_vars[$group_name] = include($file);
-	}
+		}
 
 		/**
 		 * @static
-		 * @param $var
-		 * @param $value
+		 *
+		 * @param        $var
+		 * @param        $value
 		 * @param string $group
+		 *
 		 * @return mixed
-		 */public static function set($var, $value, $group = 'config') {
+		 */
+		public static function set($var, $value, $group = 'config') {
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
@@ -90,7 +92,7 @@
 		/***
 		 * @static
 		 *
-		 * @param $var
+		 * @param      $var
 		 * @param null $array_key
 		 * @param null $group
 		 *
@@ -122,37 +124,44 @@
 
 		/**
 		 * @static
-		 * @param $var
+		 *
+		 * @param        $var
 		 * @param string $group
-		 */public static function remove($var, $group = 'config') {
+		 */
+		public static function remove($var, $group = 'config') {
 			if (array_key_exists($var, static::$_vars[$group])) {
 				unset(static::$_vars[$group][$var]);
 			}
-	}
+		}
 
 		/**
 		 * @static
 		 *
-		 */public static function store() {
+		 */
+		public static function store() {
 			$_SESSION['config'] = static::$_vars;
-	}
+		}
 
 		/**
 		 * @static
+		 *
 		 * @param string $group
+		 *
 		 * @return mixed
-		 */public static function get_all($group = 'config') {
+		 */
+		public static function get_all($group = 'config') {
 			static::init();
 			if (!isset(static::$_vars[$group])) {
 				static::load($group);
 			}
 			return static::$_vars[$group];
-	}
+		}
 
 		/**
 		 * @static
 		 *
-		 */protected static function js() {
+		 */
+		protected static function js() {
 			JS::headerFile(static::get('assets.header'));
 			JS::footerFile(static::get('assets.footer'));
 		}

@@ -147,7 +147,7 @@
 		/*First off check for valid inputs */
 		if (check_inputs() == true) {
 			handle_add_payment();
-			end_page();
+			Renderer::end_page();
 			exit;
 		}
 	}
@@ -187,5 +187,5 @@
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

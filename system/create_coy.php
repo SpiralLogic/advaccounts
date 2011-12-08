@@ -12,7 +12,6 @@
 	$page_security = 'SA_CREATECOMPANY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Create/Update Company"));
-
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
@@ -22,9 +21,7 @@
 	} else {
 		$selected_id = -1;
 	}
-
-	function check_data()
-	{
+	function check_data() {
 		global $selected_id;
 		if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
 			return false;
@@ -45,11 +42,7 @@
 		return true;
 	}
 
-
-
-	function handle_submit()
-	{
-
+	function handle_submit() {
 		$comp_subdirs = Config::get('company_subdirs');
 		$error = false;
 		if (!check_data()) {
@@ -90,7 +83,6 @@
 					$error = true;
 				}
 			}
-
 			if ($error) {
 				remove_connection($id);
 				return false;
@@ -118,9 +110,7 @@
 		return true;
 	}
 
-
-	function handle_delete()
-	{
+	function handle_delete() {
 		$id = $_GET['id'];
 		// First make sure all company directories from the one under removal are writable.
 		// Without this after operation we end up with changed per-company owners!
@@ -167,9 +157,7 @@
 		Errors::notice(_("Selected company as been deleted"));
 	}
 
-
-	function display_companies()
-	{
+	function display_companies() {
 		$coyno = User::get()->company;
 		echo "
 		<script language='javascript'>
@@ -226,9 +214,7 @@
 		Errors::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-
-	function display_company_edit($selected_id)
-	{
+	function display_company_edit($selected_id) {
 		if ($selected_id != -1) {
 			$n = $selected_id;
 		} else {
@@ -280,7 +266,6 @@
 		end_form();
 	}
 
-
 	if (isset($_GET['c']) && $_GET['c'] == 'df') {
 		handle_delete();
 		$selected_id = -1;
@@ -290,11 +275,9 @@
 			$selected_id = -1;
 		}
 	}
-
 	display_companies();
 	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
-
-	end_page();
+	Renderer::end_page();
 
 ?>

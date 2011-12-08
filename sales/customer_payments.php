@@ -224,7 +224,7 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
-	(Input::request('frame')) ? end_page() : end_page(true, true, true);
+	(Input::request('frame')) ? Renderer::end_page() : Renderer::end_page(true, true, true);
 
 
 ?>

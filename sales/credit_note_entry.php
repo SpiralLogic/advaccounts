@@ -214,6 +214,6 @@
 	submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 	echo "</tr></table></div>";
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

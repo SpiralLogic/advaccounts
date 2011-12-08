@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Balance Sheet Drilldown"));
-
 	// Ajax updates
 	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
@@ -27,9 +26,7 @@
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
-
-	function display_type($type, $typename, $from, $to, $convert, $drilldown)
-	{
+	function display_type($type, $typename, $from, $to, $convert, $drilldown) {
 		global $levelptr, $k;
 		$dimension = $dimension2 = 0;
 		$acctstotal = 0;
@@ -92,8 +89,7 @@
 		return ($acctstotal + $typestotal);
 	}
 
-	function inquiry_controls()
-	{
+	function inquiry_controls() {
 		start_table('tablestyle_noborder');
 		date_cells(_("As at:"), 'TransToDate');
 		submit_cells('Show', _("Show"), '', '', 'default');
@@ -102,8 +98,7 @@
 		hidden('AccGrp');
 	}
 
-	function display_balance_sheet()
-	{
+	function display_balance_sheet() {
 		$from = Dates::begin_fiscalyear();
 		$to = $_POST['TransToDate'];
 		$dim = DB_Company::get_pref('use_dimension');
@@ -199,12 +194,11 @@
 		Display::div_end();
 	}
 
-
 	start_form();
 	inquiry_controls();
 	display_balance_sheet();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>
 

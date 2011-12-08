@@ -286,6 +286,6 @@
 	submit('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 	echo "</div>";
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

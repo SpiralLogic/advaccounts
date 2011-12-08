@@ -130,5 +130,5 @@
 	DB_Pager::display($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

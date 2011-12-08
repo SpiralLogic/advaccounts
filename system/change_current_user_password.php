@@ -12,25 +12,24 @@
 	$page_security = 'SA_CHGPASSWD';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Change password"));
-	function can_process()
-		{
-			if (strlen($_POST['password']) < 4) {
-				Errors::error(_("The password entered must be at least 4 characters long."));
-				JS::set_focus('password');
-				return false;
-			}
-			if (strstr($_POST['password'], User::get()->username) != false) {
-				Errors::error(_("The password cannot contain the user login."));
-				JS::set_focus('password');
-				return false;
-			}
-			if ($_POST['password'] != $_POST['passwordConfirm']) {
-				Errors::error(_("The passwords entered are not the same."));
-				JS::set_focus('password');
-				return false;
-			}
-			return true;
+	function can_process() {
+		if (strlen($_POST['password']) < 4) {
+			Errors::error(_("The password entered must be at least 4 characters long."));
+			JS::set_focus('password');
+			return false;
 		}
+		if (strstr($_POST['password'], User::get()->username) != false) {
+			Errors::error(_("The password cannot contain the user login."));
+			JS::set_focus('password');
+			return false;
+		}
+		if ($_POST['password'] != $_POST['passwordConfirm']) {
+			Errors::error(_("The passwords entered are not the same."));
+			JS::set_focus('password');
+			return false;
+		}
+		return true;
+	}
 
 	if (isset($_POST['UPDATE_ITEM'])) {
 		if (can_process()) {
@@ -69,5 +68,5 @@
 	end_table(1);
 	submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

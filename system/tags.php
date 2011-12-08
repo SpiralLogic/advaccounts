@@ -32,19 +32,17 @@
 	}
 	// Set up page based on what type of tags we're working with
 	switch (Input::post('type')) {
-	case TAG_ACCOUNT:
-		// Account tags
-		$_SESSION['page_title'] = _($help_context = "Account Tags");
-		break;
-	case TAG_DIMENSION:
-		// Dimension tags
-		$_SESSION['page_title'] = _($help_context = "Dimension Tags");
+		case TAG_ACCOUNT:
+			// Account tags
+			$_SESSION['page_title'] = _($help_context = "Account Tags");
+			break;
+		case TAG_DIMENSION:
+			// Dimension tags
+			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 	Page::start($_SESSION['page_title']);
 	Page::simple_mode(true);
-
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['name']) == 0) {
 			Errors::error(_("The tag name cannot be empty."));
 			JS::set_focus('name');
@@ -52,7 +50,6 @@
 		}
 		return true;
 	}
-
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
@@ -70,9 +67,7 @@
 			}
 		}
 	}
-
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -84,7 +79,6 @@
 		return true;
 	}
 
-
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Tags::delete($selected_id);
@@ -92,12 +86,10 @@
 		}
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		$_POST['name'] = $_POST['description'] = '';
 	}
-
 	$result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle');
@@ -117,7 +109,6 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) // We've selected a tag
 	{
@@ -136,7 +127,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

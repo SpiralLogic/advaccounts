@@ -108,6 +108,6 @@
 	}
 	/* end of check to see that there was an invoice record to print */
 	Display::submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

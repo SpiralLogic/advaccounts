@@ -77,5 +77,5 @@
 	$table->width = "75%";
 	DB_Pager::display($table);
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

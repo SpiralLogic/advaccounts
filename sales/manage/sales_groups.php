@@ -58,7 +58,6 @@
 			$_POST['show_inactive'] = 1;
 		}
 	}
-
 	$sql = "SELECT * FROM groups";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -82,7 +81,6 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -98,5 +96,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

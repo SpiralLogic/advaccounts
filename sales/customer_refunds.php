@@ -200,7 +200,7 @@
 	Display::br();
 	end_form();
 	if (Input::request('frame')) {
-		end_page(true, true, true);
+		Renderer::end_page(true, true, true);
 	} else {
-		end_page();
+		Renderer::end_page();
 	}

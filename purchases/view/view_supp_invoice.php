@@ -53,6 +53,6 @@
 	if (Input::get('popup')) {
 		return;
 	}
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

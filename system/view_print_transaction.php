@@ -124,6 +124,6 @@
 	viewing_controls();
 	handle_search();
 	end_form(2);
-	end_page();
+	Renderer::end_page();
 
 ?>

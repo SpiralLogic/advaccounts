@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Inventory Item Movement"));
-
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	if (get_post('ShowMoves')) {
 		$Ajax->activate('doc_tbl');
@@ -139,6 +138,6 @@
 	end_row();
 	end_table(1);
 	Display::div_end();
-	end_page();
+	Renderer::end_page();
 
 ?>

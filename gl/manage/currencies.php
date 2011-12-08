@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Currencies"));
 	Page::simple_mode(false);
-
-	function check_data()
-	{
+	function check_data() {
 		if (strlen($_POST['Abbreviation']) == 0) {
 			Errors::error(_("The currency abbreviation must be entered."));
 			JS::set_focus('Abbreviation');
@@ -42,9 +40,7 @@
 		return true;
 	}
 
-
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id, $Mode;
 		if (!check_data()) {
 			return false;
@@ -65,9 +61,7 @@
 		$Mode = 'RESET';
 	}
 
-
-	function check_can_delete()
-	{
+	function check_can_delete() {
 		global $selected_id;
 		if ($selected_id == "") {
 			return false;
@@ -106,9 +100,7 @@
 		return true;
 	}
 
-
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id, $Mode;
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -118,9 +110,7 @@
 		$Mode = 'RESET';
 	}
 
-
-	function display_currencies()
-	{
+	function display_currencies() {
 		$company_currency = Bank_Currency::for_company();
 		$result = GL_Currency::get_all(check_value('show_inactive'));
 		start_table('tablestyle');
@@ -163,9 +153,7 @@
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-
-	function display_currency_edit($selected_id)
-	{
+	function display_currency_edit($selected_id) {
 		global $Mode;
 		start_table('tablestyle2');
 		if ($selected_id != '') {
@@ -195,15 +183,12 @@
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
 
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-
 	if ($Mode == 'Delete') {
 		handle_delete();
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = '';
 		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
@@ -214,7 +199,6 @@
 	display_currencies();
 	display_currency_edit($selected_id);
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

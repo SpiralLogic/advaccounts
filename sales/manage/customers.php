@@ -237,5 +237,5 @@
 	Display::div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

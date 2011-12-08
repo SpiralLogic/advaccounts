@@ -103,4 +103,4 @@
 		return;
 	}
 	Display::submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
-	end_page(true);
+	Renderer::end_page(true);

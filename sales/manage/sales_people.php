@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Persons"));
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -81,7 +80,6 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$sql = "SELECT * FROM salesman";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -110,7 +108,6 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-
 	$_POST['salesman_email'] = "";
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -143,6 +140,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

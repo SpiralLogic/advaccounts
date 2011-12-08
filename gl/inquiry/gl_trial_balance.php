@@ -13,14 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Trial Balance"));
-
 	// Ajax updates
 	//
 	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
-	function gl_inquiry_controls()
-	{
+	function gl_inquiry_controls() {
 		start_form();
 		start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
@@ -32,9 +30,7 @@
 		end_form();
 	}
 
-
-	function display_trial_balance()
-	{
+	function display_trial_balance() {
 		Display::div_start('balance_tbl');
 		start_table('tablestyle');
 		$tableheader
@@ -79,7 +75,7 @@
 				debit_or_credit_cells($prev['balance']);
 				debit_or_credit_cells($curr['balance']);
 				debit_or_credit_cells($tot['balance']);
-} else {
+			} else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
 				amount_cell($curr['debit']);
@@ -122,11 +118,9 @@
 		Display::div_end();
 	}
 
-
 	gl_inquiry_controls();
 	display_trial_balance();
-
-	end_page();
+	Renderer::end_page();
 
 ?>
 

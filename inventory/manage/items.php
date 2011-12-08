@@ -14,7 +14,6 @@
 	Page::start(_($help_context = "Items"), Input::request('popup'));
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
-
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 	} elseif (isset($_POST['stock_id'])) {
@@ -76,8 +75,7 @@
 	}
 	Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
 	Validation::check(Validation::ITEM_TAX_TYPES, _("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
-	function clear_data()
-	{
+	function clear_data() {
 		unset($_POST['long_description']);
 		unset($_POST['description']);
 		unset($_POST['category_id']);
@@ -89,7 +87,6 @@
 		unset($_POST['dimension2_id']);
 		unset($_POST['no_sale']);
 	}
-
 
 	if (isset($_POST['addupdate']) || isset($_POST['addupdatenew'])) {
 		$input_error = 0;
@@ -105,9 +102,9 @@
 			Errors::error(_('The item code cannot be empty'));
 			JS::set_focus('NewStockID');
 		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+")
-							|| strstr($_POST['NewStockID'], "\"")
-							|| strstr($_POST['NewStockID'], "&")
-							|| strstr($_POST['NewStockID'], "\t")
+		 || strstr($_POST['NewStockID'], "\"")
+		 || strstr($_POST['NewStockID'], "&")
+		 || strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
 			Errors::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
@@ -170,9 +167,7 @@
 		JS::set_focus('NewStockID');
 		$Ajax->activate('_page_body');
 	}
-
-	function check_usage($stock_id, $dispmsg = true)
-	{
+	function check_usage($stock_id, $dispmsg = true) {
 		$sqls = array(
 			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" => _('Cannot delete this item because there are stock movements that refer to this item.'),
 			"SELECT COUNT(*) FROM bom WHERE component=" => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
@@ -183,7 +178,6 @@
 		foreach (
 			$sqls as $sql => $err
 		) {
-
 			$result = DB::query($sql . DB::escape($stock_id), "could not query stock usage");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
@@ -214,7 +208,6 @@
 		return true;
 	}
 
-
 	if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) {
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
@@ -230,7 +223,6 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-
 	start_form(true);
 	if (Validation::check(Validation::STOCK_ITEMS)) {
 		start_table('tablestyle_noborder');
@@ -253,7 +245,6 @@
 	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Item"));
-
 	if ($new_item) {
 		text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 		$_POST['inactive'] = 0;
@@ -348,7 +339,7 @@
 	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "/$user_comp/images/"
-											 . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
+		 . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");
@@ -383,6 +374,5 @@
 	Display::div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 ?>

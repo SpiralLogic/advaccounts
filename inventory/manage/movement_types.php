@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Movement Types"));
 	Page::simple_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -24,18 +23,16 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				Inv_Movement::update_type( $selected_id, $_POST['name']);
+				Inv_Movement::update_type($selected_id, $_POST['name']);
 				Errors::notice(_('Selected movement type has been updated'));
 			} else {
-				Inv_Movement::add_type( $_POST['name']);
+				Inv_Movement::add_type($_POST['name']);
 				Errors::notice(_('New movement type has been added'));
 			}
 			$Mode = 'RESET';
 		}
 	}
-
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		$sql
 		 = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
@@ -48,10 +45,9 @@
 		return true;
 	}
 
-
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			Inv_Movement::delete( $selected_id);
+			Inv_Movement::delete($selected_id);
 			Errors::notice(_('Selected movement type has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -62,8 +58,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-
-	$result = Inv_Movement::get_all_types( check_value('show_inactive'));
+	$result = Inv_Movement::get_all_types(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle width30');
 	$th = array(_("Description"), "", "");
@@ -81,12 +76,11 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = Inv_Movement::get_type( $selected_id);
+			$myrow = Inv_Movement::get_type($selected_id);
 			$_POST['name'] = $myrow["name"];
 		}
 		hidden('selected_id', $selected_id);
@@ -95,7 +89,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-
-	end_page();
+	Renderer::end_page();
 
 ?>

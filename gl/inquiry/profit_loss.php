@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Profit & Loss Drilldown"));
-
 	// Ajax updates
 	if (get_post('Show')) {
 		$Ajax->activate('pl_tbl');
@@ -30,12 +29,10 @@
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
-
 	function display_type(
 		$type, $typename, $from, $to, $begin, $end, $compare, $convert,
 		&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT
-	)
-	{
+	) {
 		global $levelptr, $k;
 		$code_per_balance = 0;
 		$code_acc_balance = 0;
@@ -116,8 +113,7 @@
 		return $totals_arr;
 	}
 
-	function Achieve($d1, $d2)
-	{
+	function Achieve($d1, $d2) {
 		if ($d1 == 0 && $d2 == 0) {
 			return 0;
 		}
@@ -132,8 +128,7 @@
 		return $ret;
 	}
 
-	function inquiry_controls()
-	{
+	function inquiry_controls() {
 		start_table('tablestyle_noborder');
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
@@ -149,9 +144,7 @@
 		hidden('AccGrp');
 	}
 
-
-	function display_profit_and_loss()
-	{
+	function display_profit_and_loss() {
 		global $sel;
 		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
@@ -261,11 +254,10 @@
 		Display::div_end();
 	}
 
-
 	start_form();
 	inquiry_controls();
 	display_profit_and_loss();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

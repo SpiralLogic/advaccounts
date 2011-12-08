@@ -104,6 +104,7 @@
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 			} else {
 				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+				$_SESSION['voiding'] = $_POST['trans_no'] . $_POST['filterType'];
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
 					$view_str = GL_UI::view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
@@ -144,7 +145,13 @@
 	}
 
 	function handle_void_transaction() {
+		if ($_SESSION['voiding'] != $_POST['trans_no'] . $_POST['filterType']) {
+			Errors::error(_("The transaction number has changed."));
+			JS::set_focus('trans_no');
+			return false;
+		}
 		if (check_valid_entries() == true) {
+			unset($_SESSION['voiding']);
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
 				Errors::error(_("The selected transaction has already been voided."), true);
@@ -187,6 +194,6 @@
 		$Ajax->activate('_page_body');
 	}
 	voiding_controls();
-	end_page();
+	Renderer::end_page();
 
 ?>

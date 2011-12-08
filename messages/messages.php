@@ -22,5 +22,5 @@
 																																																					 'cols' => 35, 'rows' => 5, 'title' => 'Message to send:'))->textarea->label->br;
 	UI::button('btnSend', 'Send Message');
 	HTML::_div();
-	end_page(true, true);
+	Renderer::end_page(true, true);
 ?>

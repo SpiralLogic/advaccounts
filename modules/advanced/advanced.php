@@ -7,4 +7,4 @@
 	//ini_set("display_errors", "on");
 	// Begin the UI
 	Page::start("Advanced");
-	end_page();
+	Renderer::end_page();

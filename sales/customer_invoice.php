@@ -115,7 +115,7 @@
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
 		Errors::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
-		end_page();
+		Renderer::end_page();
 		exit;
 	} elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
@@ -330,7 +330,7 @@
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		end_page();
+		Renderer::end_page();
 		exit();
 	}
 	Display::heading(_("Invoice Items"));
@@ -445,5 +445,5 @@
 		'center');
 	end_table();
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

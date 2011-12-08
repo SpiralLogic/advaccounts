@@ -35,21 +35,19 @@
 	}
 	Page::start(_($help_context = "Backup and Restore Database"), false, false, '', '');
 	check_paths();
-	function check_paths()
-	{
+	function check_paths() {
 		if (!file_exists(BACKUP_PATH)) {
 			Errors::error(
 				_("Backup paths have not been set correctly.")
 				 . _("Please contact System Administrator.") . "<br>"
 				 . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>"
 			);
-			end_page();
+			Renderer::end_page();
 			exit;
 		}
 	}
 
-	function generate_backup($conn, $ext = 'no', $comm = '')
-	{
+	function generate_backup($conn, $ext = 'no', $comm = '') {
 		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename) {
 			Errors::notice(
@@ -62,8 +60,7 @@
 		return $filename;
 	}
 
-	function get_backup_file_combo()
-	{
+	function get_backup_file_combo() {
 		$Ajax = Ajax::i();
 		$ar_files = array();
 		JS::default_focus('backups');
@@ -89,8 +86,7 @@
 		return $selector;
 	}
 
-	function compress_list_row($label, $name, $value = null)
-	{
+	function compress_list_row($label, $name, $value = null) {
 		$ar_comps = array('no' => _("No"));
 		if (function_exists("gzcompress")) {
 			$ar_comps['zip'] = "zip";
@@ -103,8 +99,7 @@
 		echo "</td></tr>";
 	}
 
-	function download_file($filename)
-	{
+	function download_file($filename) {
 		if (empty($filename) || !file_exists($filename)) {
 			Errors::error(_('Select backup file first.'));
 			return false;
@@ -157,7 +152,6 @@
 			Errors::error(_("File was not uploaded into the system."));
 		}
 	}
-
 	start_form(true);
 	start_outer_table('tablestyle2');
 	table_section(1);
@@ -187,5 +181,5 @@
 	end_row();
 	end_outer_table();
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>
