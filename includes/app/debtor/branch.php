@@ -198,7 +198,7 @@
 			echo "</td>\n";
 		}
 
-		public static function branches_list_row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		public static function row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Debtor_Branch::cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
 			echo "</tr>";
