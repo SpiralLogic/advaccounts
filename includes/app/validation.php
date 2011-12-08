@@ -91,15 +91,15 @@
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
 		public static function is_num($postname, $min = null, $max = null, $default = 0) {
-			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
-			$result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT,FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
+			if (!isset($_POST) || !isset($_POST[$postname])) $_POST[$postname]=$default;
+			$result = filter_var($_POST[$postname],FILTER_VALIDATE_FLOAT ,FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
 			if ($min !== null && $result < $min) {
-				$result = false;
-			}
-			if ($max !== null && $result > $max) {
-				$result = false;
-			}
-			FB::info($result);
+							$result = false;
+						}
+						if ($max !== null && $result > $max) {
+							$result = false;
+						}
+
 			return ($result === false || $result === null) ? $default : 1;
 		}
 
@@ -114,10 +114,15 @@
 		 *
 		 * @return bool|float|int|mixed|string
 		 */
-		public static function input_num($postname = null, $default = 0) {
-			if (!isset($_POST) || !isset($_POST[$postname])) return 0;
-			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
-			return ($result === false || $result === null) ? $default : User::numeric($result);
+		public static function input_num($postname = null, $default = 0, $min = null, $max = null) {
+			if (!isset($_POST) || !isset($_POST[$postname])) $_POST[$postname]=$default;
+			$result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION|FILTER_FLAG_ALLOW_THOUSAND);
+			if ($min !== null && $result < $min) {
+							$result = false;
+						}
+						if ($max !== null && $result > $max) {
+							$result = false;
+						}
+			return ($result === false || $result === null) ? 0 : User::numeric($result);
 		}
 	}
