@@ -19,7 +19,7 @@
 		if (isset($_GET['term'])) {
 			$data = Debtor::search($_GET['term']);
 		}
-		echo json_encode($data, JSON_NUMERIC_CHECK);
+		echo json_encode($data);
 		exit();
 	}
 	JS::footerFile("js/customers.js");

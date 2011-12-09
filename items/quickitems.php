@@ -55,8 +55,8 @@ JS;
 <tr><td ><label for="uom">Units of Mesasure:</label><br></td><td><input id="uom" type="text" value="\${uom}" maxlength="10"></td></tr>
 </table></div><div class="center">
 <table id="stockLevels" class="marginauto grid" style="width:80%">
-<thead><th>Location</th><th>QOH</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></thead><tbody>
-<script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script></tbody>
+<thead><th>Location</th><th>QOH</th><th>Shelf Primary</th><th>Shelf Secondary</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></thead><tbody>
+<script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${shelf_primary}</td><td>\${shelf_secondary}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script></tbody>
 </table>
 </div>
 HTML;
@@ -67,6 +67,9 @@ HTML;
 	$menu->startTab("Purchasing", "Purchasing Prices");
 	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
+	$menu->startTab("Locations", "Stock Locations");
+		echo "<iframe id='locationFrame' src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+		$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
 	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
