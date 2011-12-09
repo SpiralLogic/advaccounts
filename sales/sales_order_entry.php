@@ -37,7 +37,7 @@
 		$_SESSION['Items']->store();
 		exit();
 	}
-	if (Input::get('customer_id', Input::NUMERIC)>-1) {
+	if (Input::get('customer_id', Input::NUMERIC)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		$Ajax->activate('customer_id');
 	}

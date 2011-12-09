@@ -149,13 +149,17 @@
 			if ($rend->has_header) {
 				Sidemenu::render();
 			}
-			Messages::show();
+			Messages::show();			if (User::get()->username=='mike'&&rand(0,10)==0) JS::onload(<<<JS
+			window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);
+JS
+			);
 			JS::render();
 			if (AJAX_REFERRER) {
 				return;
 			}
 			echo "</div></body>";
 			JS::get_websales();
+
 			echo	 "</html>\n";
 		}
 

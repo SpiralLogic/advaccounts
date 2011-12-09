@@ -49,6 +49,11 @@
 			DB::query($sql, "an item reorder could not be set");
 		}
 
+				public static function set_shelves($stock_id, $loc_code, $primary_location, $secondary_location) {
+					$sql = "UPDATE loc_stock SET shelf_primary =  " . DB::escape($primary_location) . " ,  shelf_secondary =  " . DB::escape($secondary_location) . "   WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
+					DB::query($sql, "an item reorder could not be set");
+				}
+
 		public static function get_details($stock_id) {
 			$sql = "SELECT loc_stock.*, locations.location_name
 		FROM loc_stock, locations

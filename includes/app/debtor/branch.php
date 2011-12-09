@@ -146,9 +146,28 @@
 			 = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . DB::escape($this->debtor_no) . "," . DB::escape($this->name) . ", " . DB::escape($this->branch_ref) . ", " . DB::escape($this->address) . ", " . DB::escape($this->city) . ", " . DB::escape($this->state) . ", " . DB::escape($this->postcode) . ", " . DB::escape($this->salesman)
-			 . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . "," . DB::escape($this->contact_name) . ", " . DB::escape($this->area) . ", " . DB::escape($this->email) . ", " . DB::escape($this->tax_group_id) . ", " . DB::escape($this->sales_account)
-			 . ", " . DB::escape($this->sales_discount_account) . ", " . DB::escape($this->receivables_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . "," . DB::escape($this->disable_trans) . ", "
+				VALUES ("
+			 . DB::escape($this->debtor_no) . ","
+			 . DB::escape($this->name) . ", "
+			 . DB::escape($this->branch_ref) . ", "
+			 . DB::escape($this->address) . ", "
+			 . DB::escape($this->city) . ", "
+			 . DB::escape($this->state) . ", "
+			 . DB::escape($this->postcode) . ", "
+			 . DB::escape($this->salesman)			 . ", "
+			 . DB::escape($this->phone) . ", "
+			 . DB::escape($this->phone2) . ", "
+			 . DB::escape($this->fax) . ","
+			 . DB::escape($this->contact_name) . ", "
+			 . DB::escape($this->area) . ", "
+			 . DB::escape($this->email) . ", "
+			 . DB::escape($this->tax_group_id) . ", "
+			 . DB::escape($this->sales_account) . ", "
+			 . DB::escape($this->sales_discount_account) . ", "
+			 . DB::escape($this->receivables_account) . ", "
+			 . DB::escape($this->payment_discount_account) . ", "
+			 . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . ",
+			 " . DB::escape($this->disable_trans) . ", "
 			 . DB::escape($this->group_no) . ", " . DB::escape($this->default_ship_via) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->inactive) . ")";
 			DB::query($sql, "The branch could not be added");
 			$this->branch_code = DB::insert_id();

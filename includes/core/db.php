@@ -140,22 +140,19 @@
 		 */
 		public static function escape($value, $null = false, $paramaterized = true) {
 			$value = trim($value);
+
 			//check for null/unset/empty strings
-			$type = null;
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
-			} elseif (is_numeric($value)) {
-				$value = $value + 0;
-				if (is_int($value)) {
-					$type = PDO::PARAM_INT;
-				}
+			} elseif (is_int($value)) {
+				$type= PDO::PARAM_INT;
 			} elseif (is_bool($value)) {
-				$value = (bool)$value;
-				$type = PDO::PARAM_BOOL;
-			} elseif (is_string($value)) {
-				$value = (string)$value;
-				$type = PDO::PARAM_STR;
+				$type= PDO::PARAM_BOOL;
+			}  elseif (is_string($value)) {
+				$type= PDO::PARAM_STR;
+			} else {
+				$type= FALSE;
 			}
 			if ($paramaterized) {
 				static::$data[] = array($value, $type);
