@@ -6,8 +6,7 @@
 	 * Time: 6:57 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Page
-	{
+	class Page {
 		static $css = array();
 
 		//
@@ -132,9 +131,9 @@
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '',
-																																												 '/' => '',
-																																												 '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+				' ' => '',
+				'/' => '',
+				'&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
 		}
 
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false) {
@@ -149,10 +148,8 @@
 			if ($rend->has_header) {
 				Sidemenu::render();
 			}
-			Messages::show();			if (User::get()->username=='mike'&&rand(0,10)==0) JS::onload(<<<JS
-			window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);
-JS
-			);
+			Messages::show();
+			if (User::get()->username == 'mike'&&rand(0,50)==0) JS::onload('window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);');
 			JS::render();
 			if (AJAX_REFERRER) {
 				return;
