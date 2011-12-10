@@ -36,4 +36,3 @@ include 'bootstrap.php';
 	}*/
 
 $c=new Debtor(array("id"=>4689,'name'=>'testy'));
-man
