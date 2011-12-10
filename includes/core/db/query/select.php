@@ -99,7 +99,7 @@
 		 * @param null $quantity
 		 * @return DB_Query_Select
 		 */
-		public function limit($start, $quantity = null) {
+		public function limit($start=0, $quantity = null) {
 			$this->limit = ($quantity == null) ? $start : "$start, $quantity";
 			return $this;
 		}

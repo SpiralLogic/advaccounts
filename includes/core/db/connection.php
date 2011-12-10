@@ -6,8 +6,7 @@
 	 * Time: 11:15 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Connection
-	{
+	class DB_Connection {
 		/**
 		 * @var array
 		 */
@@ -121,7 +120,13 @@
 		 * @return DB_Connection
 		 */
 		public function begin() {
-			$this->conn->beginTransaction();
+			try {
+				$this->conn->beginTransaction();
+			}
+			catch (PDOException $e) {
+				return static::_error($e);
+			}
+			$this->intransaction = true;
 			return $this;
 		}
 
@@ -136,7 +141,12 @@
 		 * @return DB_Connection
 		 */
 		public function commit() {
-			$this->conn->commit();
+			try {
+				$this->conn->commit();
+			}
+			catch (PDOException $e) {
+				return static::_error($e);
+			}
 			$this->intransaction = false;
 			return $this;
 		}
@@ -145,8 +155,14 @@
 		 * @return DB_Connection
 		 */
 		public function cancel() {
+			try {
+				$this->conn->rollBack();
+			}
+			catch (PDOException $e) {
+				return static::_error($e);
+			}
 			$this->intransaction = false;
-			$this->conn->rollBack();
+
 			return $this;
 		}
 
@@ -228,14 +244,14 @@
 				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
 			} else {
 				$error = $e->errorInfo[2];
-				//	Errors::show_db_error(' <pre>' . '</pre></p>');
+				Errors::show_db_error(' <pre>' . $error . '</pre></p>');
 			}
 			if ($this->intransaction) {
 				$this->conn->rollBack();
 			}
 			trigger_error($error, E_USER_ERROR);
 			if ($exit) {
-				//		throw new DB_Exception($error);
+				throw new DB_Exception($error);
 			}
 			return false;
 		}

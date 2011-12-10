@@ -6,14 +6,13 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company
-	{
+	class Debtor extends Contacts_Company {
 		public static function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
 			$customerBox->show();
 			$js = <<<JS
 						var val = $("#customer_id").val();
@@ -77,10 +76,14 @@ JS;
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
+		public $webid;
+		protected $_table = 'debtors_master';
+		protected $_id_column = 'debtor_no';
 
 		public function __construct($id = null) {
+$this->id = &$this->debtor_no;
 			$this->debtor_no = $id;
-			$this->id = &$this->debtor_no;
+
 			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
@@ -160,40 +163,35 @@ JS;
 		}
 
 		public function save($changes = null) {
-			if (is_array($changes)) {
-				$this->setFromArray($changes);
-			}
-			if (!$this->_canProcess()) {
+			$data['debtor_ref'] = substr($this->name, 0, 29);
+			$data['discount'] = User::numeric($this->discount) / 100;
+			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+			$data['credit_limit'] = User::numeric($this->credit_limit);
+			DB::begin_transaction(true);
+
+			if (!parent::save($changes)) {
+				DB::cancel_transaction();
 				return false;
 			}
-			if ($this->id == 0) {
-				$status = $this->_saveNew();
-			} else {
-				DB::begin_transaction();
-				$data = (array)$this;
-				$data['debtor_ref'] = substr($this->name, 0, 29);
-				$data['discount'] = User::numeric($this->discount) / 100;
-				$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
-				$data['credit_limit'] = User::numeric($this->credit_limit);
-				DB::update('debtors_master')->values($data)->where('debtor_no=', $this->id)->exec();
-				DB::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
-				DB::commit_transaction();
-				$status = "Customer has been updated.";
-			}
-			$this->accounts->save(array('debtor_no' => $this->id));
+
+			$result = $this->accounts->save(array('debtor_no' => $this->id));
+			$this->_status->append($result);
+
 			foreach ($this->branches as $branch_code => $branch) {
-				$branch->save(array('debtor_no' => $this->id));
+				$result = $branch->save(array('debtor_no' => $this->id));
+				$this->_status->append($result);
 				if ($branch_code == 0) {
 					$this->branches[$branch->branch_code] = $branch;
 					unset($this->branches[0]);
 				}
 			}
 			foreach ($this->contacts as $id => &$contact) {
-				$contact->save(array('parent_id' => $this->id));
+				$result = $contact->save(array('parent_id' => $this->id));
+				$this->_status->append($result);
 				$this->contacts[$contact->id] = $contact;
 			}
-			$this->_setDefaults();
-			return $this->_status(true, 'Processing', $status);
+			DB::commit_transaction(true);
+			return $this->_setDefaults();
 		}
 
 		protected function setFromArray($changes = NULL) {
@@ -214,36 +212,30 @@ JS;
 		}
 
 		protected function _canProcess() {
-			if (strlen($_POST['name']) == 0) {
-				$this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
-				return false;
+			if (strlen($this->name) == 0) {
+				return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
 			}
-			if (strlen($_POST['debtor_ref']) == 0) {
-				$this->_status(false, 'Processing', "The customer short name cannot be empty.", 'debtor_ref');
-				return false;
+			if (strlen($this->debtor_ref) == 0) {
+				$data['debtor_ref'] = substr($this->name, 0, 29);
 			}
-			if (!Validation::is_num('credit_limit', 0)) {
-				$this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
-				return false;
+			if (!is_numeric($this->credit_limit)) {
+				return $this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
 			}
-			if (!Validation::is_num('pymt_discount', 0, 100)) {
-				$this->_status(false, 'Processing',
+			if (!is_numeric($this->pymt_discount)) {
+				return $this->_status(false, 'Processing',
 					"The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
 					'pymt_discount');
-				return false;
 			}
-			if (!Validation::is_num('discount', 0, 100)) {
-				$this->_status(false, 'Processing',
+			if (!is_numeric($this->discount)) {
+				return $this->_status(false, 'Processing',
 					"The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
 					'discount');
-				return false;
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
 				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
-					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
-					return false;
+					return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 				}
 			}
 			return true;
@@ -325,12 +317,7 @@ JS;
 		}
 
 		protected function _read($id = false) {
-			if ($id === false) {
-				return $this->_status(false, 'read', 'No customer ID to read');
-			}
-			$this->_defaults();
-			DB::select()->from('debtors_master')->where('debtor_no=', $id);
-			DB::fetch()->intoClass($this);
+			parent::_read($id);
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -340,23 +327,23 @@ JS;
 		}
 
 		protected function _saveNew() {
-			DB::begin_transaction();
-			$sql
-			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
-							curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-							sales_type, notes) VALUES (" . DB::escape($this->name) . ", " . DB::escape(substr($this->name, 0,
-				29)) . ", " . DB::escape($this->address) . ", " . DB::escape($this->tax_id) . ",
-							" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . User::numeric($this->discount) / 100 . "," .
-			 User::numeric($this->pymt_discount) / 100 . ", " . User::numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
-			DB::query($sql, "The customer could not be added");
-			$this->id = DB::insert_id();
-			DB::commit_transaction();
+
+			$this->debtor_ref = substr($this->name, 0, 29);
+			$this->discount = User::numeric($this->discount) / 100;
+			$this->pymt_discount = User::numeric($this->pymt_discount) / 100;
+			$this->credit_limit = User::numeric($this->credit_limit);
+			DB::begin_transaction(true);
+			if (!parent::_saveNew()) {
+				DB::cancel_transaction();
+				return false;
+			}
 			foreach ($this->branches as $branch) {
 				if ($branch->name == 'New Address') {
 					$branch->name = $this->name;
 				}
+				$branch->save();
 			}
-			return "A Customer has been added.";
+			DB::commit_transaction(true);
 		}
 
 		protected function _setDefaults() {
@@ -368,8 +355,7 @@ JS;
 		public static function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
-			}
-			else {
+			} else {
 				$todate = Dates::date2sql($to);
 			}
 			$past1 = DB_Company::get_pref('past_due_days');
@@ -384,7 +370,6 @@ JS;
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
-
 			FROM debtors_master,
 				 payment_terms,
 				 credit_status,
@@ -489,7 +474,7 @@ JS;
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-																																						 'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
+				'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
 				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}

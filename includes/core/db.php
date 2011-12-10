@@ -44,7 +44,7 @@
 		 */
 		protected static $prepared = null;
 		protected static $debug = null;
-
+protected static $nested=false;
 		/**
 		 *
 		 */
@@ -146,13 +146,13 @@
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
 			} elseif (is_int($value)) {
-				$type= PDO::PARAM_INT;
+				$type = PDO::PARAM_INT;
 			} elseif (is_bool($value)) {
-				$type= PDO::PARAM_BOOL;
-			}  elseif (is_string($value)) {
-				$type= PDO::PARAM_STR;
+				$type = PDO::PARAM_BOOL;
+			} elseif (is_string($value)) {
+				$type = PDO::PARAM_STR;
 			} else {
-				$type= FALSE;
+				$type = FALSE;
 			}
 			if ($paramaterized) {
 				static::$data[] = array($value, $type);
@@ -413,16 +413,18 @@
 		 * @static
 		 *
 		 */
-		public static function begin_transaction() {
-			DB::begin("could not start a transaction");
+		public static function begin_transaction($nested = false) {
+			if ($nested) static::$nested = true;
+			if (!static::$nested) DB::begin("could not start a transaction");
 		}
 
 		/**
 		 * @static
 		 *
 		 */
-		public static function commit_transaction() {
-			DB::commit("could not commit a transaction");
+		public static function commit_transaction($nested = false) {
+			if ($nested) static::$nested = false;
+			if (!static::$nested) DB::commit("could not commit a transaction");
 		}
 
 		/**
@@ -430,6 +432,7 @@
 		 *
 		 */
 		public static function cancel_transaction() {
+			static::$nested = false;
 			DB::cancel("could not commit a transaction");
 		}
 

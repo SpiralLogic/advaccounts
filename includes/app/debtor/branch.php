@@ -6,8 +6,7 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_Branch extends DB_abstract
-	{
+	class Debtor_Branch extends DB_abstract {
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -37,6 +36,8 @@
 		public $sales_discount_account;
 		public $salesman;
 		public $tax_group_id = DEFAULT_TAX_GROUP;
+		protected $_table = 'cust_branch';
+		protected $_id_column = 'branch_code';
 
 		public function __construct($id = null) {
 			$this->branch_code = $id;
@@ -44,6 +45,7 @@
 			parent::__construct($id);
 			$this->name = &$this->br_name;
 			$this->address = &$this->br_address;
+			$this->post_address = &$this->br_post_address;
 		}
 
 		public function delete() {
@@ -68,56 +70,6 @@
 			return $address;
 		}
 
-		public function save($changes = null) {
-			if (is_array($changes)) {
-				$this->setFromArray($changes);
-			}
-			if ((int)$this->branch_code == 0) {
-				$this->_saveNew();
-			}
-			if (!$this->_canProcess()) {
-				return false;
-			}
-			if (!empty($this->city)) {
-				$this->br_name = $this->city . " " . strtoupper($this->state);
-			}
-			if ($this->branch_ref != 'accounts') {
-				$this->branch_ref = substr($this->br_name, 0, 30);
-			}
-			DB::begin_transaction();
-			$sql
-			 = "UPDATE cust_branch SET
-					br_name=" . DB::escape($this->name) . ",
-					br_address=" . DB::escape($this->address) . ",
-					city=" . DB::escape($this->city) . ",
-					state=" . DB::escape($this->state) . ",
-					postcode=" . DB::escape($this->postcode) . ",
-					br_post_address=" . DB::escape($this->post_address) . ",
-					area=" . DB::escape($this->area) . ",
-					salesman=" . DB::escape($this->salesman) . ",
-					phone=" . DB::escape($this->phone) . ",
-					phone2=" . DB::escape($this->phone2) . ",
-					fax=" . DB::escape($this->fax) . ",
-					contact_name=" . DB::escape($this->contact_name) . ",
-					email=" . DB::escape($this->email) . ",
-					default_location=" . DB::escape($this->default_location) . ",
-					tax_group_id=" . DB::escape($this->tax_group_id) . ",
-					sales_account=" . DB::escape($this->sales_account) . ",
-					sales_discount_account=" . DB::escape($this->sales_discount_account) . ",
-					receivables_account=" . DB::escape($this->receivables_account) . ",
-					payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
-					default_ship_via=" . DB::escape($this->default_ship_via) . ",
-					disable_trans=" . DB::escape($this->disable_trans) . ",
-		 group_no=" . DB::escape($this->group_no) . ",
-		 notes=" . DB::escape($this->notes) . ",
-		 inactive=" . DB::escape($this->inactive) . ",
-		 branch_ref=" . DB::escape($this->branch_ref) . "
-		 WHERE branch_code =" . DB::escape($this->branch_code) . "
-		 	 AND debtor_no=" . DB::escape($this->debtor_no);
-			DB::query($sql, "The customer could not be updated");
-			DB::commit_transaction();
-			return $this->_status(true, 'Processing', "Branch has been updated.");
-		}
 
 		protected function _canProcess() {
 			return true;
@@ -140,39 +92,14 @@
 			return $this->_status(true, 'Initialize new Branch', 'Now working with a new Branch');
 		}
 
-		protected function _saveNew() {
-			DB::begin_transaction();
-			$sql
-			 = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
-				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
-				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES ("
-			 . DB::escape($this->debtor_no) . ","
-			 . DB::escape($this->name) . ", "
-			 . DB::escape($this->branch_ref) . ", "
-			 . DB::escape($this->address) . ", "
-			 . DB::escape($this->city) . ", "
-			 . DB::escape($this->state) . ", "
-			 . DB::escape($this->postcode) . ", "
-			 . DB::escape($this->salesman)			 . ", "
-			 . DB::escape($this->phone) . ", "
-			 . DB::escape($this->phone2) . ", "
-			 . DB::escape($this->fax) . ","
-			 . DB::escape($this->contact_name) . ", "
-			 . DB::escape($this->area) . ", "
-			 . DB::escape($this->email) . ", "
-			 . DB::escape($this->tax_group_id) . ", "
-			 . DB::escape($this->sales_account) . ", "
-			 . DB::escape($this->sales_discount_account) . ", "
-			 . DB::escape($this->receivables_account) . ", "
-			 . DB::escape($this->payment_discount_account) . ", "
-			 . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . ",
-			 " . DB::escape($this->disable_trans) . ", "
-			 . DB::escape($this->group_no) . ", " . DB::escape($this->default_ship_via) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->inactive) . ")";
-			DB::query($sql, "The branch could not be added");
-			$this->branch_code = DB::insert_id();
-			DB::commit_transaction();
-			$this->_status(true, 'Saving', "New branch has been added");
+		protected function setFromArray($changes = null) {
+			parent::setFromArray($changes);
+			if (!empty($this->city)) {
+				$this->br_name = $this->city . " " . strtoupper($this->state);
+			}
+			if ($this->branch_ref != 'accounts') {
+				$this->branch_ref = substr($this->br_name, 0, 30);
+			}
 		}
 
 		protected function _read($params = false) {
@@ -203,12 +130,12 @@
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
 			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
-																																									'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
+				'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
 				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
 
 		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false,
-			$editkey = false) {
+																 $editkey = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}

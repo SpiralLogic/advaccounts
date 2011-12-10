@@ -9,6 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
 	class Errors
 	{
 		/**
@@ -98,6 +99,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
+
 			foreach ($excluded_warnings as $ref) {
 				if (strpos($message, $ref) !== false) {
 					return true;
@@ -124,6 +126,7 @@
 		 */
 		static function exception_handler(\Exception $e) {
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+
 			static::prepare_exception($e, static::$fatal);
 		}
 
@@ -132,17 +135,19 @@
 		 * @return string
 		 */
 		static function format() {
+
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg'));
+
 			$content = '';
-			if (count(static::$messages) == 0) {
-				return '';
-			}
-			foreach (static::$messages as $msg) {
+
+			while ($msg = static::$messages) {
 				$type = $msg['type'];
 				$str = $msg['message'];
+
 				if ($type < E_USER_ERROR && $type != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					$str .= (!isset($msg['backtrace']))?:var_export($msg['backtrace']);
 					$type = E_USER_ERROR;
 				}
 				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
@@ -152,7 +157,7 @@
 				if (class_exists('FB', false)) {
 					FB::log($msg, $class[0]);
 				}
-				$content .= "<div class='$class[1]'>$str</div>";
+				$content .= "<div test='$class[1]'>$str</div>\n\n";
 			}
 			return $content;
 		}
@@ -245,6 +250,7 @@
 		protected static function prepare_exception(\Exception $e) {
 			$data = array(
 				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace());
+
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);

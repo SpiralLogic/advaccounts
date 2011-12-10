@@ -33,18 +33,7 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
-	register_shutdown_function(function () {
-		$Ajax = Ajax::i();
-		if (isset($Ajax)) {
-			$Ajax->run();
-		}
-		// flush all output buffers (works also with exit inside any div levels)
-		while (ob_get_level()) {
-			ob_end_flush();
-		}
-		Config::store();
-		Cache::set('autoloads', Autoloader::getLoaded());
-	});
+
 	set_exception_handler(function (\Exception $e) {
 		Errors::init();
 		return \Errors::exception_handler($e);
@@ -53,6 +42,19 @@
 		Errors::init();
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
+	require COREPATH . 'autoloader.php';
+	register_shutdown_function(function () {
+			$Ajax = Ajax::i();
+			if (isset($Ajax)) {
+				$Ajax->run();
+			}
+			// flush all output buffers (works also with exit inside any div levels)
+			while (ob_get_level()) {
+				ob_end_flush();
+			}
+			Config::store();
+			Cache::set('autoloads', Autoloader::getLoaded());
+		});
 	if (!function_exists('adv_ob_flush_handler')) {
 		function adv_ob_flush_handler($text) {
 			$Ajax = Ajax::i();
@@ -63,10 +65,9 @@
 				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
-			return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+				return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-	require COREPATH . 'autoloader.php';
 	Session::init();
 	Config::init();
 	/***

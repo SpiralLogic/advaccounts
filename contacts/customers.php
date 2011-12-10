@@ -14,6 +14,7 @@
 	} else {
 		$data['customer'] = $customer = new Debtor();
 	}
+
 	$data['status'] = $customer->getStatus();
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
