@@ -6,16 +6,16 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_Branch extends DB_abstract {
-		public $post_address = '';
+	class Debtor_Branch extends DB_abstract
+	{
 		public $branch_code = 0;
 		public $br_name = "New Address";
 		public $br_address = '';
 		public $city = '';
 		public $state = '';
 		public $postcode = '';
-		public $area = DEFAULT_AREA;
 		public $br_post_address = "";
+		public $area = DEFAULT_AREA;
 		public $debtor_no;
 		public $branch_ref = "New";
 		public $contact_name = "";
@@ -40,12 +40,11 @@
 		protected $_id_column = 'branch_code';
 
 		public function __construct($id = null) {
-			$this->branch_code = $id;
 			$this->id = &$this->branch_code;
-			parent::__construct($id);
 			$this->name = &$this->br_name;
 			$this->address = &$this->br_address;
 			$this->post_address = &$this->br_post_address;
+			return parent::__construct($id);
 		}
 
 		public function delete() {
@@ -69,7 +68,6 @@
 			}
 			return $address;
 		}
-
 
 		protected function _canProcess() {
 			return true;
@@ -104,8 +102,7 @@
 
 		protected function _read($params = false) {
 			if (!$params) {
-				$this->_status(false, 'Retrieving branch', 'No parameters provided');
-				return false;
+				return $this->_status(false, 'Retrieving branch', 'No parameters provided');
 			}
 			$this->_defaults();
 			if (!is_array($params)) {
@@ -130,12 +127,12 @@
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
 			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
-				'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
+																																									'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
 				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
 
 		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false,
-																 $editkey = false) {
+			$editkey = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}

@@ -87,7 +87,6 @@
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 					$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
-
 					static::showLogin();
 				}
 			}

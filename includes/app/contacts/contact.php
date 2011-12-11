@@ -3,8 +3,8 @@
 	 * User: Sorijen
 	 * Date: 15/04/11 - 4:08 PM
 	 */
-	class Contacts_Contact extends DB_abstract {
-		public $id = 0;
+	class Contacts_Contact extends DB_abstract
+	{
 		public $parent_id = 0;
 		public $name = "New Contact";
 		public $phone1 = '';
@@ -18,6 +18,9 @@
 			// TODO: Implement delete() method.
 		}
 
+		public function __construct($id = null) {
+			return parent::__construct($id);
+		}
 
 		protected function _canProcess() {
 			$temp = new Contacts_Contact();

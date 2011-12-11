@@ -6,7 +6,8 @@
 	 * Time: 3:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-include 'bootstrap.php';
+	include 'bootstrap.php';
+	phpinfo();
 /*		$result = DB::select()->from('WebCustomers')->where('extid=',0)->limit(0,10)->fetch()->assoc()->all();
 	echo '<pre>';
 	foreach ($result as $row) {
@@ -33,6 +34,7 @@ include 'bootstrap.php';
 		if ($c->id > 0) DB::update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
 
 		var_dump($c);
-	}*/
+	}
 
 $c=new Debtor(array("id"=>4689,'name'=>'testy'));
+var_dump($c);*/

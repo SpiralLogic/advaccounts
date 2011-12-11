@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	class Errors
 	{
 		/**
@@ -24,6 +23,8 @@
 		 * @var bool
 		 */
 		public static $fatal = false; // container for system messages
+		protected static $initialised = false; // container for system messages
+		protected static $count = 0;
 		/**
 		 * @var string
 		 */
@@ -42,6 +43,9 @@
 		 *
 		 */
 		static function init() {
+			if (static::$initialised === true) {
+				return;
+			}
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
@@ -53,6 +57,7 @@
 					/** @noinspection PhpIncludeInspection */
 					include(realpath(VENDORPATH . 'FirePHP/fb.php'));
 				}
+				return static::$initialised = true;
 			} else {
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
@@ -98,8 +103,15 @@
 		static function handler($type, $message, $file, $line) {
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
+			static::$count++;
+			if (static::$count > 10) {
+				var_dump(static::$messages);
+				while (ob_get_level()) {
+					ob_end_flush();
+				}
+				exit();
+			}
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
-
 			foreach ($excluded_warnings as $ref) {
 				if (strpos($message, $ref) !== false) {
 					return true;
@@ -126,7 +138,6 @@
 		 */
 		static function exception_handler(\Exception $e) {
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
-
 			static::prepare_exception($e, static::$fatal);
 		}
 
@@ -135,19 +146,15 @@
 		 * @return string
 		 */
 		static function format() {
-
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg'));
-
 			$content = '';
-
 			while ($msg = static::$messages) {
 				$type = $msg['type'];
 				$str = $msg['message'];
-
 				if ($type < E_USER_ERROR && $type != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					$str .= (!isset($msg['backtrace']))?:var_export($msg['backtrace']);
+					$str .= (!isset($msg['backtrace'])) ? : var_export($msg['backtrace']);
 					$type = E_USER_ERROR;
 				}
 				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
@@ -250,7 +257,6 @@
 		protected static function prepare_exception(\Exception $e) {
 			$data = array(
 				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace());
-
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);

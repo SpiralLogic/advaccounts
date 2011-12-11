@@ -7,7 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'debug' => false, 'debug_sql' => false, 'debug_pdf' => false, 'debug_query_log' => false, 'debug_select_log' => false, 'errors_throttling' => 10, // Log file for error/warning messages. Should be set to any location
+		'debug' => true, 'debug_sql' => false, 'debug_pdf' => false, 'debug_query_log' => false, 'debug_select_log' => false, 'errors_throttling' => 10,
+		// Log file for error/warning messages. Should be set to any location
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
 		//$error_logfile = '';

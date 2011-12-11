@@ -78,11 +78,16 @@
 		final protected function __construct() {
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			if (!class_exists('Memcached', false) || !session_start()) {
+			if (!class_exists('Memcached', false)) {
+				ini_set('session.save_handler', 'files');
+			}
+			if (!session_start()) {
 				ini_set('session.save_handler', 'files');
 				session_start();
 			}
-			;
+			if (!session_start()) {
+				die();
+			}
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 				}
@@ -94,7 +99,7 @@
 			$this->setLanguage();
 			$this->_session = &$_SESSION;
 			// Ajax communication object
-			if (class_exists('Ajax')) {
+			if (class_exists('Ajax', false)) {
 				$GLOBALS['Ajax'] = Ajax::i();
 			}
 		}

@@ -6,14 +6,14 @@
 	 * Time: 4:21 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class status {
+	class status
+	{
 		/**
 		 * @var array
 		 */
 		protected $_status = array();
 
 		public function __construct($status = null, $process = null, $message = '', $var = null) {
-
 			$this->set($status, $process, $message, $var);
 		}
 
@@ -27,7 +27,6 @@
 		 */
 		public function set($status = null, $process = null, $message = '', $var = null) {
 			if ($status === null || $process === null) {
-
 				$newstatus['status'] = false;
 				$newstatus['process'] = 'status';
 				$newstatus['message'] = 'Not enough parameters passed for status update.';
@@ -40,7 +39,7 @@
 				}
 			}
 			$this->_status[] = $newstatus;
-			return $this->_status;
+			return $newstatus;
 		}
 
 		public function append(array $status) {
