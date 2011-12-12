@@ -6,7 +6,6 @@
 	 * Time: 3:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include 'bootstrap.php';
 	phpinfo();
 /*		$result = DB::select()->from('WebCustomers')->where('extid=',0)->limit(0,10)->fetch()->assoc()->all();
 	echo '<pre>';
