@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	function start_form($multi = false, $action = "", $name = "") {
 		if ($name != "") {
 			$name = "name='$name'";
@@ -105,6 +104,7 @@
 			// special option parameters
 			'spec_option' => false, // option text or false
 			'spec_id' => 0, // option id
+			'cache' => false, // option id
 			// submit on select parameters
 			'default' => '', // default value when $_POST is not set
 			'multi' => false, // multiple select
@@ -614,12 +614,12 @@
 				$icon = ICON_DELETE;
 			}
 			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-				'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='1'" . ($title ?
+																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='1'" . ($title ?
 			 " title='$title'" : " title='$value'") . ($aspect ? " aspect='$aspect'" :
 			 '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		} else {
 			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-				'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='$value'" . ($title ?
+																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'))) . "' value='$value'" . ($title ?
 			 " title='$title'" : '') . ($aspect ? " aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
@@ -833,7 +833,7 @@
 		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
 		DatePicker::add($name, array(
-			'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
+																'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
@@ -1043,7 +1043,8 @@
 	 * @param $th
 	 */
 	function inactive_control_row($th) {
-		echo	"<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
+		echo	"<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null,
+			true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
 	}
 
 	/**
@@ -1067,7 +1068,7 @@
 		$items['0'] = strlen($name_no) ? $name_no : _("No");
 		$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 		return array_selector($name, $selected_id, $items, array(
-			'select_submit' => $submit_on_change, 'async' => false)); // FIX?
+																														'select_submit' => $submit_on_change, 'async' => false)); // FIX?
 	}
 
 	function yesno_list_cells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
@@ -1095,7 +1096,7 @@
 			$items[$i] = "$i";
 		}
 		return array_selector($name, $selected, $items, array(
-			'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC));
+																												 'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC));
 	}
 
 	function number_list_cells($label, $name, $selected, $from, $to, $no_option = false) {

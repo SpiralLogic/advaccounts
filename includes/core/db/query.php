@@ -35,7 +35,6 @@
 		 * @param $conn
 		 */
 		protected function __construct($conn) {
-
 			$this->conn = $conn;
 			static::$query = $this;
 		}
@@ -46,7 +45,6 @@
 		 * @return bool
 		 */
 		protected function getQuery($data) {
-
 			if (!$this->compiled_query) {
 				$this->compiled_query = $this->execute($data);
 			}
@@ -59,15 +57,18 @@
 		 * @return DB_Query_Result
 		 */
 		public function exec($data = null) {
-
-			return $this->conn->exec($this->getQuery($data), $this->type, $this->data);
+			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
+			/*	$sql=$this->compiled_query;
+			foreach($this->data as $k=>$v) {
+				$sql = str_replace(':'.$k,DB::quote($v),$sql);
+			}*/
+			return $result;
 		}
 
 		/***
 		 * @return DB_Query_Result
 		 */
 		public function fetch() {
-
 			return $this->exec(null);
 		}
 

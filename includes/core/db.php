@@ -6,7 +6,8 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB {
+	class DB
+	{
 		/**
 		 *
 		 */
@@ -68,9 +69,7 @@
 				$config = $config ? : Config::get('db_default');
 				$conn = $config['name'];
 			}
-
 			if (!isset(static::$connections[$conn])) {
-
 				static::$connections[$conn] = static::$current = DB_Connection::i($conn, $config);
 			}
 			return static::$current;
@@ -137,7 +136,6 @@
 		 */
 		public static function escape($value, $null = false, $paramaterized = true) {
 			$value = trim($value);
-
 			//check for null/unset/empty strings
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
 				$value = ($null) ? 'NULL' : '';
@@ -180,7 +178,6 @@
 				}
 				return static::$prepared;
 			}
-
 			catch (PDOException $e) {
 				foreach (static::$data as $k => $v) {
 					if ($debug || Config::get('debug_sql')) {
@@ -403,8 +400,12 @@
 		 *
 		 */
 		public static function begin_transaction($nested = false) {
-			if (!static::$nested) static::_get()->begin("could not start a transaction");
-			if ($nested) static::$nested = true;
+			if (!static::$nested) {
+				static::_get()->begin("could not start a transaction");
+			}
+			if ($nested) {
+				static::$nested = true;
+			}
 		}
 
 		/**
@@ -412,8 +413,12 @@
 		 *
 		 */
 		public static function commit_transaction($nested = false) {
-			if ($nested) static::$nested = false;
-			if (!static::$nested) static::_get()->commit("could not commit a transaction");
+			if ($nested) {
+				static::$nested = false;
+			}
+			if (!static::$nested) {
+				static::_get()->commit("could not commit a transaction");
+			}
 		}
 
 		/**
@@ -438,5 +443,6 @@
 		public static function update_record_status($id, $status, $table, $key) {
 			$sql = "UPDATE " . $table . " SET inactive = " . DB::escape($status) . " WHERE $key=" . DB::escape($id);
 			DB::query($sql, "Can't update record status");
+			return DB::num_rows();
 		}
 	}

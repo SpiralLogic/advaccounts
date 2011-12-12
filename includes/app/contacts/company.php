@@ -11,9 +11,9 @@
 		// Current status of class, status as current state, process status error occurred, message for current state and if related variable if it applies
 		public $discount = '0';
 		public $name = '';
-		public $address = '';
+		public $address;
 		public $post_address = '';
-		public $tax_id = '';
+		public $tax_id;
 		public $contact_name;
 		public $credit_limit = 0;
 		public $dimension_id = 0;

@@ -12,7 +12,7 @@
 	/**
 	 *
 	 */
-	error_reporting(-1);
+	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	define('DS', DIRECTORY_SEPARATOR);
 	define('DOCROOT', realpath(__DIR__) . DS);
@@ -33,23 +33,10 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
-
 	set_exception_handler(function (\Exception $e) {
-
-		//if (count(static::$messages) > 3) {
-		var_dump(func_get_args());
-		exit();
-		//		}
-		Errors::init();
 		return \Errors::exception_handler($e);
 	});
-	set_error_handler(function ($severity, $message, $filepath, $line) {
-
-		//if (count(static::$messages) > 3) {
-		var_dump(func_get_args());
-		exit();
-		//		}
-		Errors::init();
+	set_error_handler(function ($severity, $message, $filepath = null, $line = null) {
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
 	require COREPATH . 'autoloader.php';
@@ -78,7 +65,6 @@
 			return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-
 	Session::init();
 	Config::init();
 	/***
@@ -88,9 +74,7 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
-
 	array_walk($_POST, function(&$v) {
-
 		$v = is_string($v) ? trim($v) : $v;
 	});
 	advaccounting::init();

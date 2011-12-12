@@ -6,13 +6,14 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company {
+	class Debtor extends Contacts_Company
+	{
 		public static function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
 			$customerBox->show();
 			$js = <<<JS
 						var val = $("#customer_id").val();
@@ -69,21 +70,21 @@ JS;
 		public $sales_type;
 		public $debtor_ref = '';
 		public $credit_status;
-		public $payment_discount = '0';
+		public $payment_discount = 0;
+		public $pymt_discount = 0;
 		public $defaultBranch = 0;
 		public $defaultContact = 0;
 		public $branches = array();
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
-		public $webid = NULL;
+		public $webid = '';
 		protected $_table = 'debtors_master';
 		protected $_id_column = 'debtor_no';
 
 		public function __construct($id = null) {
 			$this->id = &$this->debtor_no;
 			$this->pymt_discount =& $this->payment_discount;
-
 			parent::__construct($id);
 			$this->debtor_ref = substr($this->name, 0, 60);
 		}
@@ -162,17 +163,18 @@ JS;
 		}
 
 		public function getStatus() {
-
-			if ($this->accounts->_status->hasError())
+			if ($this->accounts->_status->hasError()) {
 				$this->_status->append($this->accounts->_status->get());
-
+			}
 			foreach ($this->branches as $branch) {
-				if ($branch->_status->hasError())
+				if ($branch->_status->hasError()) {
 					$this->_status->append($branch->_status->get());
+				}
 			}
 			foreach ($this->contacts as $contact) {
-				if ($contact->_status->hasError())
+				if ($contact->_status->hasError()) {
 					$this->_status->append($contact->_status->get());
+				}
 			}
 			return $this->_status->get();
 		}
@@ -184,7 +186,6 @@ JS;
 			$data['credit_limit'] = User::numeric($this->credit_limit);
 			parent::save($changes);
 			$this->accounts->save(array('debtor_no' => $this->id));
-
 			foreach ($this->branches as $branch_code => $branch) {
 				$branch->save(array('debtor_no' => $this->id));
 				if ($branch_code == 0) {
@@ -196,7 +197,6 @@ JS;
 				$contact->save(array('parent_id' => $this->id));
 				$this->contacts[$contact->id] = $contact;
 			}
-
 			return $this->_setDefaults();
 		}
 
@@ -325,7 +325,8 @@ JS;
 		protected function _read($id = false) {
 			if (!parent::_read($id)) {
 				return false;
-			};
+			}
+			;
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -335,7 +336,6 @@ JS;
 		}
 
 		protected function _saveNew() {
-
 			$this->debtor_ref = substr($this->name, 0, 29);
 			$this->discount = User::numeric($this->discount) / 100;
 			$this->pymt_discount = User::numeric($this->pymt_discount) / 100;
@@ -352,7 +352,6 @@ JS;
 				$branch->save();
 			}
 			DB::commit_transaction(true);
-
 			return true;
 		}
 
@@ -484,7 +483,7 @@ JS;
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-				'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
+																																						 'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
 				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}

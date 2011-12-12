@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -20,9 +20,15 @@
 		 */
 		public static $messages = array(); // container for system messages
 		/**
+		 * @var array
+		 */
+		public static $errors = array(); // container for system messages
+		public static $dberrors = array(); // container for system messages
+		/**
 		 * @var bool
 		 */
 		public static $fatal = false; // container for system messages
+		public static $count = 0; // container for system messages
 		/**
 		 * @var string
 		 */
@@ -30,7 +36,7 @@
 		/**
 		 * @var array
 		 */
-		public static $fatal_levels = array(E_PARSE, E_ERROR, E_USER_ERROR, E_COMPILE_ERROR);
+		public static $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
 		/**
 		 * @var array
 		 */
@@ -41,7 +47,6 @@
 		 *
 		 */
 		static function init() {
-
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
@@ -95,30 +100,20 @@
 		 *
 		 * @return bool
 		 */
-		static function handler($type, $message, $file, $line) {
-
+		static function handler($type, $message, $file = null, $line = null) {
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
-
-			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
-
-			foreach ($excluded_warnings as $ref) {
-				if (strpos($message, $ref) !== false) {
-					return true;
-				}
-			}
 			// error_reporting==0 when messages are set off with @
-			$last_error = error_get_last();
-			if (!empty($last_error)) {
-				extract($last_error);
+			if (static::$count > 5) {
+				exit();
 			}
-			if ($type & error_reporting()) {
-				static::$messages[] = array(
-					'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line);
-			} else if ($type & ~E_NOTICE) { // log all not displayed messages
-				error_log(User::get()->loginname . ':' . basename($file) . ":$line: $message");
+			static::$count++;
+			$error = array(
+				'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line);
+			static::$messages[] = $error;
+			if (in_array($type, static::$fatal_levels) || $type == E_USER_ERROR) {
+				static::$errors[] = $error;
 			}
-
 			return true;
 		}
 
@@ -128,10 +123,12 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
-
+			if (static::$count > 5) {
+				exit();
+			}
+			static::$count++;
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
-
-			static::prepare_exception($e, static::$fatal);
+			static::prepare_exception($e);
 		}
 
 		/**
@@ -139,16 +136,12 @@
 		 * @return string
 		 */
 		static function format() {
-
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg'));
-
 			$content = '';
-
-			while ($msg = static::$messages) {
+			foreach (static::$messages as $msg) {
 				$type = $msg['type'];
 				$str = $msg['message'];
-
 				if ($type < E_USER_ERROR && $type != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$str .= (!isset($msg['backtrace'])) ? : var_export($msg['backtrace']);
@@ -161,7 +154,7 @@
 				if (class_exists('FB', false)) {
 					FB::log($msg, $class[0]);
 				}
-				$content .= "<div test='$class[1]'>$str</div>\n\n";
+				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
 			return $content;
 		}
@@ -188,21 +181,19 @@
 		 */
 		static function show_db_error($msg, $sql_statement = null) {
 			$db_error = DB::error_no();
+			if ($db_error == 0) {
+				return;
+			}
 			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
-				Errors::error(_("The entered information is a duplicate. Please go back and enter different values."));
-				return true;
+				$msg = _("The entered information is a duplicate. Please go back and enter different values.");
 			}
-
-			if ($db_error == 0) return;
-			$str = "<span class='bold'>" . _("DATABASE ERROR $db_error:") . "</span> $msg<br>";
-
+			$str = _("DATABASE ERROR $db_error:") . $msg;
 			if ($sql_statement && Config::get('debug')) {
-				$str .= "sql that failed was : " . $sql_statement . "<br>with error<br>" . DB::error_msg();
+				$str .= "<br>sql that failed was : " . $sql_statement . "<br>with error: " . DB::error_msg();
 			}
-			$str .= "<br>";
-			Errors::error($str);
+			static::$dberrors[$str];
+			static::error($str);
 		}
-
 
 		/**
 		 * @static
@@ -210,14 +201,12 @@
 		 * @param Exception $e
 		 */
 		protected static function prepare_exception(\Exception $e) {
-
 			$data = array(
 				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace());
-
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
-				} elseif ($trace['file'] == COREPATH . 'errors.php') {
+				} elseif ($trace['file'] == __FILE__) {
 					unset($data['backtrace'][$key]);
 				}
 			}

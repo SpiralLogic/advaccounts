@@ -185,6 +185,7 @@
 		qty_cell($stock_item->qty_done, false, $dec);
 		end_row();
 	}
+	$display_total = 0;
 	$qty_remaining = array_sum(array_map(function($line) {
 		return ($line->quantity - $line->qty_done);
 	}, $_SESSION['View']->line_items));

@@ -20,7 +20,7 @@
 		if (isset($_GET['page'])) {
 			$data['page'] = $_GET['page'];
 		}
-		 JS::renderJSON($data, JSON_NUMERIC_CHECK);
+		JS::renderJSON($data, JSON_NUMERIC_CHECK);
 	}
 	JS::footerFile("js/quickitems.js");
 	Page::start(_($help_context = "Items"), true);
@@ -42,6 +42,9 @@
 JS;
 	JS::onload($js);
 	$menu = new MenuUI();
+	if (isset($_GET['page'])) {
+		$menu->firstPage = $_GET['page'];
+	}
 	$menu->startTab("Items", "Items");
 	echo <<<HTML
 <div id="Items" class="center">
@@ -67,14 +70,11 @@ HTML;
 	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->startTab("Locations", "Stock Locations");
-		echo "<iframe id='locationFrame' src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
-		$menu->endTab();
+	echo "<iframe id='locationFrame' src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
 	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
-	if (isset($_GET['page'])) {
-		$menu->firstPage = $_GET['page'];
-	}
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
 	Renderer::end_page(true, true);

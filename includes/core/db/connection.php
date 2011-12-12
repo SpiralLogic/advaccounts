@@ -6,7 +6,8 @@
 	 * Time: 11:15 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Connection {
+	class DB_Connection
+	{
 		/**
 		 * @var array
 		 */
@@ -86,23 +87,20 @@
 		 */
 		public function prepare($sql) {
 			try {
-				return	$this->conn->prepare($sql);
-
-			}	catch (PDOException $e) {
-							$this->_error($e);
-						}
-
-			 		}
+				return $this->conn->prepare($sql);
+			} catch (PDOException $e) {
+				$this->_error($e);
+			}
+		}
 
 		/***
-		 * @param $sql
-		 * @param $type
+		 * @param      $sql
+		 * @param      $type
 		 * @param null $data
 		 *
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
-
 			try {
 				$prepared = $this->prepare($sql);
 				switch ($type) {
@@ -126,13 +124,14 @@
 		 * @return DB_Connection
 		 */
 		public function begin() {
-			if ($this->intransaction == true) return $this;
-
+			if ($this->intransaction == true) {
+				return $this;
+			}
 			try {
 				$this->conn->beginTransaction();
 			}
 			catch (PDOException $e) {
-				 static::_error($e);
+				static::_error($e);
 			}
 			$this->intransaction = true;
 			return $this;
@@ -149,13 +148,14 @@
 		 * @return DB_Connection
 		 */
 		public function commit() {
-			if ($this->intransaction == false) return $this;
-
+			if ($this->intransaction == false) {
+				return $this;
+			}
 			try {
 				$this->conn->commit();
 			}
 			catch (PDOException $e) {
-				 static::_error($e);
+				static::_error($e);
 			}
 			$this->intransaction = false;
 			return $this;
@@ -165,16 +165,16 @@
 		 * @return DB_Connection
 		 */
 		public function cancel() {
-			if ($this->intransaction == false) return $this;
-
+			if ($this->intransaction == false) {
+				return $this;
+			}
 			try {
 				$this->conn->rollBack();
 			}
 			catch (PDOException $e) {
-				 static::_error($e);
+				static::_error($e);
 			}
 			$this->intransaction = false;
-
 			return $this;
 		}
 
@@ -211,13 +211,12 @@
 		 *
 		 */
 		protected function _connect() {
-
 			try {
-				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
+				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch (PDOException $e) {
-				return		$this->_error($e, true);
+				return $this->_error($e, true);
 			}
 		}
 
@@ -256,7 +255,7 @@
 				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
 			} else {
 				$error = $e->errorInfo;
-				$error =(!isset($error[2])) ?$e->getMessage() :$error[2];
+				$error = (!isset($error[2])) ? $e->getMessage() : $error[2];
 			}
 			if ($this->conn->inTransaction()) {
 				$this->conn->rollBack();
