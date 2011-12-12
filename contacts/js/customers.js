@@ -18,7 +18,7 @@ Adv.extend({
 	resetState:function () {
 		$("#tabs0 input, #tabs0 textarea").empty();
 		$("#customer").val('');
-		Customer.fetch(0);
+		Customer.fetch(0)
 	},
 	stateModified:function (feild) {
 		if (feild.prop('disabled')) return;

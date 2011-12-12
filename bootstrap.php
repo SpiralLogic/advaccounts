@@ -12,7 +12,7 @@
 	/**
 	 *
 	 */
-	error_reporting(-1);
+	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	define('DS', DIRECTORY_SEPARATOR);
 	define('DOCROOT', realpath(__DIR__) . DS);
@@ -33,6 +33,13 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
+	set_exception_handler(function (\Exception $e) {
+		return \Errors::exception_handler($e);
+	});
+	set_error_handler(function ($severity, $message, $filepath = null, $line = null) {
+		return \Errors::handler($severity, $message, $filepath, $line);
+	});
+	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
 		$Ajax = Ajax::i();
 		if (isset($Ajax)) {
@@ -43,15 +50,7 @@
 			ob_end_flush();
 		}
 		Config::store();
-		Cache::set('autoloads', Autoloader::getLoaded());
-	});
-	set_exception_handler(function (\Exception $e) {
-		Errors::init();
-		return \Errors::exception_handler($e);
-	});
-	set_error_handler(function ($severity, $message, $filepath, $line) {
-		Errors::init();
-		return \Errors::handler($severity, $message, $filepath, $line);
+		Cache::set('autoload.paths', Autoloader::getLoaded());
 	});
 	if (!function_exists('adv_ob_flush_handler')) {
 		function adv_ob_flush_handler($text) {
@@ -63,10 +62,9 @@
 				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
-			return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+			return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-	require COREPATH . 'autoloader.php';
 	Session::init();
 	Config::init();
 	/***
@@ -76,9 +74,7 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
-
 	array_walk($_POST, function(&$v) {
-
 		$v = is_string($v) ? trim($v) : $v;
 	});
 	advaccounting::init();

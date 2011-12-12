@@ -48,6 +48,9 @@
 			if ($extra === false) {
 				return 0;
 			}
+			if (Cache::get('Validation' . $validate)) {
+				return 1;
+			}
 			if ($extra !== null) {
 				if (empty($extra)) {
 					throw new Adv_Exception("Extra information not provided for " . $validate);
@@ -65,6 +68,7 @@
 				Renderer::end_page();
 				exit;
 			} else {
+				Cache::set('Validation' . $validate, true);
 				return $myrow[0];
 			}
 		}

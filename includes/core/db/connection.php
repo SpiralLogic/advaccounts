@@ -86,18 +86,21 @@
 		 *
 		 */
 		public function prepare($sql) {
-			return $this->conn->prepare($sql);
+			try {
+				return $this->conn->prepare($sql);
+			} catch (PDOException $e) {
+				$this->_error($e);
+			}
 		}
 
 		/***
-		 * @param $sql
-		 * @param $type
+		 * @param      $sql
+		 * @param      $type
 		 * @param null $data
 		 *
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
-
 			try {
 				$prepared = $this->prepare($sql);
 				switch ($type) {
@@ -121,7 +124,16 @@
 		 * @return DB_Connection
 		 */
 		public function begin() {
-			$this->conn->beginTransaction();
+			if ($this->intransaction == true) {
+				return $this;
+			}
+			try {
+				$this->conn->beginTransaction();
+			}
+			catch (PDOException $e) {
+				static::_error($e);
+			}
+			$this->intransaction = true;
 			return $this;
 		}
 
@@ -136,7 +148,15 @@
 		 * @return DB_Connection
 		 */
 		public function commit() {
-			$this->conn->commit();
+			if ($this->intransaction == false) {
+				return $this;
+			}
+			try {
+				$this->conn->commit();
+			}
+			catch (PDOException $e) {
+				static::_error($e);
+			}
 			$this->intransaction = false;
 			return $this;
 		}
@@ -145,8 +165,16 @@
 		 * @return DB_Connection
 		 */
 		public function cancel() {
+			if ($this->intransaction == false) {
+				return $this;
+			}
+			try {
+				$this->conn->rollBack();
+			}
+			catch (PDOException $e) {
+				static::_error($e);
+			}
 			$this->intransaction = false;
-			$this->conn->rollBack();
 			return $this;
 		}
 
@@ -183,13 +211,12 @@
 		 *
 		 */
 		protected function _connect() {
-
 			try {
-				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
+				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch (PDOException $e) {
-				$this->_error($e, true);
+				return $this->_error($e, true);
 			}
 		}
 
@@ -227,16 +254,16 @@
 			if (Config::get('debug_sql')) {
 				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
 			} else {
-				$error = $e->errorInfo[2];
-				//	Errors::show_db_error(' <pre>' . '</pre></p>');
+				$error = $e->errorInfo;
+				$error = (!isset($error[2])) ? $e->getMessage() : $error[2];
 			}
-			if ($this->intransaction) {
+			if ($this->conn->inTransaction()) {
 				$this->conn->rollBack();
+				$this->intransaction = false;
 			}
-			trigger_error($error, E_USER_ERROR);
 			if ($exit) {
-				//		throw new DB_Exception($error);
+				throw new DB_Exception($error);
 			}
-			return false;
+			Errors::show_db_error($error);
 		}
 	}

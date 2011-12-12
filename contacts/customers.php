@@ -4,8 +4,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Session::i()->App->selected_application = 'Contacts';
 	if (isset($_POST['name'])) {
-		$data['customer'] = $customer = new Debtor($_POST);
-		$data['customer']->save();
+		$data['customer'] = $customer = new Debtor();
+		$data['customer']->save($_POST);
 	} elseif (Input::request('id', Input::NUMERIC) > 0) {
 		$data['customer'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
@@ -19,8 +19,7 @@
 		if (isset($_GET['term'])) {
 			$data = Debtor::search($_GET['term']);
 		}
-		echo json_encode($data);
-		exit();
+		JS::renderJSON($data);
 	}
 	JS::footerFile("js/customers.js");
 	Page::start(_($help_context = "Customers"), Input::request('popup'));

@@ -70,19 +70,22 @@ JS;
 		public $sales_type;
 		public $debtor_ref = '';
 		public $credit_status;
-		public $payment_discount = '0';
+		public $payment_discount = 0;
+		public $pymt_discount = 0;
 		public $defaultBranch = 0;
 		public $defaultContact = 0;
 		public $branches = array();
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
+		public $webid = '';
+		protected $_table = 'debtors_master';
+		protected $_id_column = 'debtor_no';
 
 		public function __construct($id = null) {
-			$this->debtor_no = $id;
 			$this->id = &$this->debtor_no;
-			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
+			parent::__construct($id);
 			$this->debtor_ref = substr($this->name, 0, 60);
 		}
 
@@ -159,27 +162,29 @@ JS;
 			return $results;
 		}
 
+		public function getStatus() {
+			if ($this->accounts->_status->hasError()) {
+				$this->_status->append($this->accounts->_status->get());
+			}
+			foreach ($this->branches as $branch) {
+				if ($branch->_status->hasError()) {
+					$this->_status->append($branch->_status->get());
+				}
+			}
+			foreach ($this->contacts as $contact) {
+				if ($contact->_status->hasError()) {
+					$this->_status->append($contact->_status->get());
+				}
+			}
+			return $this->_status->get();
+		}
+
 		public function save($changes = null) {
-			if (is_array($changes)) {
-				$this->setFromArray($changes);
-			}
-			if (!$this->_canProcess()) {
-				return false;
-			}
-			if ($this->id == 0) {
-				$status = $this->_saveNew();
-			} else {
-				DB::begin_transaction();
-				$data = (array)$this;
-				$data['debtor_ref'] = substr($this->name, 0, 29);
-				$data['discount'] = User::numeric($this->discount) / 100;
-				$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
-				$data['credit_limit'] = User::numeric($this->credit_limit);
-				DB::update('debtors_master')->values($data)->where('debtor_no=', $this->id)->exec();
-				DB::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
-				DB::commit_transaction();
-				$status = "Customer has been updated.";
-			}
+			$data['debtor_ref'] = substr($this->name, 0, 29);
+			$data['discount'] = User::numeric($this->discount) / 100;
+			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+			$data['credit_limit'] = User::numeric($this->credit_limit);
+			parent::save($changes);
 			$this->accounts->save(array('debtor_no' => $this->id));
 			foreach ($this->branches as $branch_code => $branch) {
 				$branch->save(array('debtor_no' => $this->id));
@@ -188,12 +193,11 @@ JS;
 					unset($this->branches[0]);
 				}
 			}
-			foreach ($this->contacts as $id => &$contact) {
+			foreach ($this->contacts as $id => $contact) {
 				$contact->save(array('parent_id' => $this->id));
 				$this->contacts[$contact->id] = $contact;
 			}
-			$this->_setDefaults();
-			return $this->_status(true, 'Processing', $status);
+			return $this->_setDefaults();
 		}
 
 		protected function setFromArray($changes = NULL) {
@@ -214,36 +218,30 @@ JS;
 		}
 
 		protected function _canProcess() {
-			if (strlen($_POST['name']) == 0) {
-				$this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
-				return false;
+			if (strlen($this->name) == 0) {
+				return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
 			}
-			if (strlen($_POST['debtor_ref']) == 0) {
-				$this->_status(false, 'Processing', "The customer short name cannot be empty.", 'debtor_ref');
-				return false;
+			if (strlen($this->debtor_ref) == 0) {
+				$data['debtor_ref'] = substr($this->name, 0, 29);
 			}
-			if (!Validation::is_num('credit_limit', 0)) {
-				$this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
-				return false;
+			if (!is_numeric($this->credit_limit)) {
+				return $this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
 			}
-			if (!Validation::is_num('pymt_discount', 0, 100)) {
-				$this->_status(false, 'Processing',
+			if (!is_numeric($this->pymt_discount)) {
+				return $this->_status(false, 'Processing',
 					"The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
 					'pymt_discount');
-				return false;
 			}
-			if (!Validation::is_num('discount', 0, 100)) {
-				$this->_status(false, 'Processing',
+			if (!is_numeric($this->discount)) {
+				return $this->_status(false, 'Processing',
 					"The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
 					'discount');
-				return false;
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
 				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
-					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
-					return false;
+					return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 				}
 			}
 			return true;
@@ -311,7 +309,7 @@ JS;
 				}
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contacts_Contact();
 		}
 
 		protected function _new() {
@@ -325,12 +323,10 @@ JS;
 		}
 
 		protected function _read($id = false) {
-			if ($id === false) {
-				return $this->_status(false, 'read', 'No customer ID to read');
+			if (!parent::_read($id)) {
+				return false;
 			}
-			$this->_defaults();
-			DB::select()->from('debtors_master')->where('debtor_no=', $id);
-			DB::fetch()->intoClass($this);
+			;
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -340,36 +336,35 @@ JS;
 		}
 
 		protected function _saveNew() {
-			DB::begin_transaction();
-			$sql
-			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
-							curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-							sales_type, notes) VALUES (" . DB::escape($this->name) . ", " . DB::escape(substr($this->name, 0,
-				29)) . ", " . DB::escape($this->address) . ", " . DB::escape($this->tax_id) . ",
-							" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . User::numeric($this->discount) / 100 . "," .
-			 User::numeric($this->pymt_discount) / 100 . ", " . User::numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
-			DB::query($sql, "The customer could not be added");
-			$this->id = DB::insert_id();
-			DB::commit_transaction();
+			$this->debtor_ref = substr($this->name, 0, 29);
+			$this->discount = User::numeric($this->discount) / 100;
+			$this->pymt_discount = User::numeric($this->pymt_discount) / 100;
+			$this->credit_limit = User::numeric($this->credit_limit);
+			DB::begin_transaction(true);
+			if (!parent::_saveNew()) {
+				DB::cancel_transaction();
+				return false;
+			}
 			foreach ($this->branches as $branch) {
 				if ($branch->name == 'New Address') {
 					$branch->name = $this->name;
 				}
+				$branch->save();
 			}
-			return "A Customer has been added.";
+			DB::commit_transaction(true);
+			return true;
 		}
 
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contacts_Contact();
 		}
 
 		public static function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
-			}
-			else {
+			} else {
 				$todate = Dates::date2sql($to);
 			}
 			$past1 = DB_Company::get_pref('past_due_days');
@@ -384,7 +379,6 @@ JS;
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
-
 			FROM debtors_master,
 				 payment_terms,
 				 credit_status,

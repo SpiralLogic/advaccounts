@@ -18,7 +18,6 @@
 		if (isset($_GET['page'])) {
 			$data['page'] = $_GET['page'];
 		}
-		echo json_encode($data, JSON_NUMERIC_CHECK);
-		exit();
+		 JS::renderJSON($data, JSON_NUMERIC_CHECK);
 	}
 

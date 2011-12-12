@@ -17,7 +17,7 @@
 	}
 	$result = Bank_Trans::get(ST_BANKTRANSFER, $trans_no);
 	if (DB::num_rows($result) != 2) {
-		Errors::show_db_error("Bank transfer does not contain two records");
+		Errors::error("Bank transfer does not contain two records");
 	}
 	$trans1 = DB::fetch($result);
 	$trans2 = DB::fetch($result);

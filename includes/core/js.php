@@ -33,6 +33,7 @@
 		 * @var bool
 		 */
 		private static $_focus = false;
+		public static $outputted = false;
 		/**
 		 * @var bool
 		 */
@@ -175,7 +176,8 @@ JS;
 				echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
-$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
+$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body');
+$('<iframe\>').attr({'id':'customerGet',src:'//{$_SERVER['SERVER_NAME']}/modules/advanced/web.php'}).css({width:0,height:0}).appendTo('body')});
 JS;
 				echo "</script>";
 				$inserted = true;
@@ -278,6 +280,29 @@ JS;
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 			HTML::script(array('content' => $content))->script;
+		}
+
+		/**
+		 * @static
+		 *
+		 */
+		public static function renderJSON($data) {
+			if (!isset($data['status']) && count(Errors::$messages) > 0) {
+				$data = (array)$data;
+				$message = array_pop(Errors::$messages);
+				$status['status'] = false;
+				$status['message'] = $message['message'];
+				$status['var'] = basename($message['file']) . $message['line'];
+				$status['process'] = '';
+				$data['status'] = $status;
+			} elseif (isset($data['status']) && $data['status']['status'] == false && count(Errors::$dberrors) > 0) {
+				$message = array_pop(Errors::$dberrors);
+				$status['status'] = false;
+				$status['message'] = $message['message'];
+			}
+			echo	 json_encode($data);
+			JS::$outputted = true;
+			exit();
 		}
 
 		/**
@@ -438,7 +463,7 @@ JS;
 		 *
 		 * @param bool $message
 		 */
-		static function onUnload($message = false) {
+		public static function onUnload($message = false) {
 			if ($message) {
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);

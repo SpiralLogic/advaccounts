@@ -18,7 +18,7 @@
 		/**
 		 * @var bool
 		 */
-		public $firstPage = false;
+		public $firstPage = 0;
 		/**
 		 * @var int
 		 */
@@ -53,8 +53,12 @@
 		 * @return MenuUI
 		 */
 		public function startTab($title, $tooltip, $link = '#', $style = '') {
+			$count = count($this->items);
 			$this->addTab($title, $tooltip, $link);
-			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->items) . '" ';
+			echo '<div id="tabs' . MenuUI::$menuCount . '-' . $count . '" ';
+			if ($count > 0 || $this->firstPage != $count) {
+				echo 'class="ui-tabs-hide"';
+			}
 			if (!empty($style)) {
 				echo ' style="' . $style . '" ';
 			}
@@ -74,10 +78,10 @@
 		 *
 		 */
 		public function render() {
-			$menu = "<div class='tabs' id='tabs" . MenuUI::$menuCount . "'><ul>";
+			$menu = "<div class='ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>";
 			foreach ($this->items as $key => $item) {
-				$num = $key + 1;
-				$menu .= "<li><a title='{$item->label}'";
+				$num = $key;
+				$menu .= "<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";
 				$menu .= ($item->link != "#") ? ' href="' . $item->link . '" ' : " href='#tabs" . MenuUI::$menuCount . "-{$num}'";
 				$menu .= "><span>{$item->label}</span></a></li>";
 			}

@@ -6,15 +6,13 @@
 	 * Time: 7:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Autoload_Exception extends Exception
-	{
+	class Autoload_Exception extends Exception {
 	}
 
 	/**
 	 *
 	 */
-	class Autoloader
-	{
+	class Autoloader {
 		/**
 		 * @var array
 		 */
@@ -31,7 +29,6 @@
 		 * @var array
 		 */
 		protected static $classes = array();
-		protected static $class = array();
 
 		/**
 		 * @static
@@ -40,13 +37,23 @@
 		static function init() {
 			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
 			spl_autoload_register('Autoloader::load');
-			static::$classes = Cache::get('autoload');
+			static::$classes = Cache::get('autoload.classes');
 			if (!static::$classes) {
 				$core = include(DOCROOT . 'config' . DS . 'core.php');
 				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
 				static::add_core_classes($core);
 				static::add_vendor_classes($vendor);
-				Cache::set('autoload', static::$classes);
+				Cache::set('autoload.classes', static::$classes);
+			}
+			static::$loaded = Cache::get('autoload.paths');
+
+			if (!static::$loaded) {
+				static::$loaded = array();
+			}
+			static::$loaded = Cache::get('autoload.paths');
+
+			if (!static::$loaded) {
+				static::$loaded = array();
 			}
 		}
 
@@ -104,6 +111,7 @@
 			if (empty($filepath)) {
 				$filepath = realpath($path);
 			}
+
 			return $filepath;
 		}
 
@@ -114,24 +122,21 @@
 		 *
 		 * @throws Autoload_Exception
 		 */
-		public static function load($class) {
+		public static function load($classname) {
 			static::$time = microtime(true);
-			static::$class = $class;
-			if (!static::$loaded and class_exists('Cache', false)) {
-				static::$loaded = Cache::get('autoloads');
-			}
+			$class=$classname;
 			if (isset(static::$loaded[$class])) {
 				$path = static::$loaded[$class];
 				$filepath = static::tryPath($path);
 				if ($filepath) {
-					return static::includeFile($filepath);
+					return static::includeFile($filepath,$classname);
 				}
 			}
 			if (isset(static::$classes[$class])) {
 				$path = static::$classes[$class];
 				$filepath = static::tryPath($path);
 				if ($filepath) {
-					return static::includeFile($filepath);
+					return static::includeFile($filepath,$classname);
 				}
 			}
 			$class = str_replace('_', DS, $class);
@@ -139,38 +144,41 @@
 				$path = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
 				$filepath = static::tryPath($path);
 				if ($filepath) {
-					return static::includeFile($filepath);
+					return static::includeFile($filepath,$classname);
 				}
 			}
 			$path = APPPATH . $class . '.php';
 			$filepath = static::tryPath($path);
 			if ($filepath) {
-				return static::includeFile($filepath);
+				return static::includeFile($filepath,$classname);
 			}
 			$path = APPPATH . $class . DS . $class . '.php';
 			$filepath = static::tryPath($path, $class);
 			if ($filepath) {
-				return static::includeFile($filepath);
+				return static::includeFile($filepath,$classname);
 			}
 			$path = COREPATH . $class . '.php';
 			$filepath = static::tryPath($path);
 			if ($filepath) {
-				return static::includeFile($filepath);
+				return static::includeFile($filepath,$classname);
 			}
 		}
 
-		protected static function includeFile($filepath) {
+		protected static function includeFile($filepath,$class) {
 			try {
+
 				if (empty($filepath)) {
-					throw new Autoload_Exception('File for class ' . static::$class . ' does not exist here: ' . $filepath);
+					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $filepath);
 				}
 				/** @noinspection PhpIncludeInspection */
 				if (!include($filepath)) {
-					throw new Autoload_Exception('File for class ' . static::$class . ' cannot be	loaded from : ' . $filepath);
+					throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
 				}
-				static::$loaded[static::$class] = $filepath;
-				static::$loadperf[static::$class] = array(static::$class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
-			} catch (Autoload_Exception $e) {
+
+				static::$loaded[$class] = $filepath;
+				static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
+			}
+			catch (Autoload_Exception $e) {
 				Errors::exception_handler($e);
 			}
 		}

@@ -13,8 +13,8 @@
 		} elseif (isset($_GET['city']) && isset($_GET['term'])) {
 			$data = Contacts_Postcode::searchByCity($_GET['term']);
 		}
-		echo json_encode($data, JSON_NUMERIC_CHECK);
-		exit();
+		 JS::renderJSON($data, JSON_NUMERIC_CHECK);
+
 	} else {
 		include('../index.php');
 	}

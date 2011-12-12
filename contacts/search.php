@@ -17,8 +17,8 @@
 				$data = new Debtor_Branch(array('debtor_no' => $_POST['id']));
 			}
 		}
-		echo json_encode($data, JSON_NUMERIC_CHECK);
-		exit();
+		 JS::renderJSON($data, JSON_NUMERIC_CHECK);
+
 	}
 	Page::start(_($help_context = "Items"), Input::request('popup'));
 	Debtor::addSearchBox('customer_id', array('cell' => false, 'description' => ''));

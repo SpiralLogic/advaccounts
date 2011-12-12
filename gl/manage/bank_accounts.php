@@ -85,7 +85,6 @@
 	}
 	$sql .= " ORDER BY account_code, bank_curr_code";
 	$result = DB::query($sql, "could not get bank accounts");
-	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 	start_form();
 	start_table('tablestyle width80');
 	$th = array(

@@ -26,8 +26,7 @@
 		elseif (isset ($_POST['id'])) {
 			$data = new Item($_POST['id']);
 		}
-		echo json_encode($data);
-		exit();
+		 JS::renderJSON($data);
 	}
 	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
