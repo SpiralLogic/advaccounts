@@ -17,6 +17,11 @@
 			$this->type = DB::UPDATE;
 		}
 
+		protected function execute($data = null) {
+			$this->hasFeilds = array_diff($this->hasFeilds, $this->where);
+			return parent::execute($data);
+		}
+
 		/**
 		 * @return string
 		 */

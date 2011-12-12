@@ -6,10 +6,10 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class Contacts_Company extends DB_abstract {
+	abstract class Contacts_Company extends DB_abstract
+	{
 		// Current status of class, status as current state, process status error occurred, message for current state and if related variable if it applies
 		public $discount = '0';
-		public $id = 0;
 		public $name = '';
 		public $address = '';
 		public $post_address = '';
@@ -25,7 +25,7 @@
 		abstract protected function _countTransactions();
 
 		protected function addEmailGroup($name, $emails, $trans, $type) {
-	}
+		}
 
 		public static function addInfoDialog($selector, $id = false) {
 			if ($id) {

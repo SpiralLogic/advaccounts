@@ -28,7 +28,7 @@
 			DB::begin_transaction();
 			$result = DB::update('company')->values((array)$this)->where('coy_code=', $this->id)->exec();
 			DB::commit_transaction();
-			$_SESSION['config']['company']=$this;
+			$_SESSION['config']['company'] = $this;
 			return $this->_status(true, 'Processing', "Company has been updated.");
 		}
 
@@ -56,7 +56,8 @@
 		protected function _saveNew() {
 			// TODO: Implement _saveNew() method.
 		}
-		public $id=0;
+
+		public $id = 0;
 
 		public $coy_code;
 		public $coy_name;
@@ -113,16 +114,17 @@
 		public $round_to;
 		public $login_tout;
 		protected static $i = null;
-/***
- * @static
- * @param null $id
- * @return DB_Company
- */
+
+		/***
+		 * @static
+		 * @param null $id
+		 * @return DB_Company
+		 */
 		public static function i($id = null) {
 			$id = $id ? : User::get()->company;
 
 			if (static::$i === null) {
-				static::$i= isset($_SESSION['config']['company'])?$_SESSION['config']['company']:new static($id);
+				static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
 			}
 			return static::$i;
 		}
@@ -158,8 +160,7 @@
 		}
 
 		public static function delete_payment_terms($selected_id) {
-			$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
-			DB::query($sql, "could not delete a payment terms");
+			DB::query("DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id) . " could not delete a payment terms");
 		}
 
 		public static function get_all_fiscalyears() {
@@ -278,8 +279,8 @@
 		}
 
 		public static function update_gl_setup(array $data = null) {
-			static::i()->save($data);			var_dump(	static::i());
-
+			static::i()->save($data);
+			var_dump(static::i());
 		}
 
 		public static function update_setup(array $data = null) {
