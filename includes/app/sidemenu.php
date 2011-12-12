@@ -50,13 +50,13 @@ HTML;
 
 		static function render() {
 			$sidemenu = new static;
-			return $sidemenu->display;
+			echo $sidemenu->display;
 		}
 
 		protected function __construct() {
-			echo $this->start . $this->search . $this->sales;
+			$this->display = $this->start . $this->search . $this->sales;
 
-			if (User::get()->can_access(SS_GL)) echo $this->bank;
-			echo $this->customer . $this->end;
+			if (User::get()->can_access(SS_GL)) $this->display .= $this->bank;
+			$this->display .= $this->customer . $this->end;
 		}
 	}

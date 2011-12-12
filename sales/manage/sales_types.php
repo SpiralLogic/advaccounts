@@ -40,15 +40,13 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
-		$result = DB::query($sql, "check failed");
-		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
+		$result = DB::query($sql, "The number of transactions using this Sales type record could not be retrieved");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		} else {
 			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DB::escape($selected_id);
-			$result = DB::query($sql, "check failed");
-			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
+			$result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));

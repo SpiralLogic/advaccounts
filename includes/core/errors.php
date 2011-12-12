@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+
+	class Errors {
 		/**
 		 *
 		 */
@@ -41,6 +41,7 @@
 		 *
 		 */
 		static function init() {
+
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
@@ -95,9 +96,12 @@
 		 * @return bool
 		 */
 		static function handler($type, $message, $file, $line) {
+
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
+
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
+
 			foreach ($excluded_warnings as $ref) {
 				if (strpos($message, $ref) !== false) {
 					return true;
@@ -114,6 +118,7 @@
 			} else if ($type & ~E_NOTICE) { // log all not displayed messages
 				error_log(User::get()->loginname . ':' . basename($file) . ":$line: $message");
 			}
+
 			return true;
 		}
 
@@ -123,7 +128,9 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
+
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+
 			static::prepare_exception($e, static::$fatal);
 		}
 
@@ -132,17 +139,19 @@
 		 * @return string
 		 */
 		static function format() {
+
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg'));
+
 			$content = '';
-			if (count(static::$messages) == 0) {
-				return '';
-			}
-			foreach (static::$messages as $msg) {
+
+			while ($msg = static::$messages) {
 				$type = $msg['type'];
 				$str = $msg['message'];
+
 				if ($type < E_USER_ERROR && $type != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					$str .= (!isset($msg['backtrace'])) ? : var_export($msg['backtrace']);
 					$type = E_USER_ERROR;
 				}
 				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
@@ -152,7 +161,7 @@
 				if (class_exists('FB', false)) {
 					FB::log($msg, $class[0]);
 				}
-				$content .= "<div class='$class[1]'>$str</div>";
+				$content .= "<div test='$class[1]'>$str</div>\n\n";
 			}
 			return $content;
 		}
@@ -178,64 +187,22 @@
 		 * @throws DB_Exception
 		 */
 		static function show_db_error($msg, $sql_statement = null) {
-			$warning = $msg == null;
 			$db_error = DB::error_no();
-			if ($warning) {
-				$str = "<span class='bold'>" . _("Debug mode database warning:") . "</span><br>";
-			} else {
-				$str = "<span class='bold'>" . _("DATABASE ERROR :") . "</span> $msg<br>";
-			}
-			if ($db_error != 0) {
-				$str .= "error code : " . $db_error . "<br>";
-				$str .= "error message : " . DB::error_msg() . "<br>";
-			}
-			if ($sql_statement && Config::get('debug')) {
-				$str .= "sql that failed was : " . $sql_statement . "<br>";
-			}
-			$str .= "<br><br>";
-		}
-
-		/**
-		 * @static
-		 *
-		 * @param $db_error
-		 *
-		 * @return bool
-		 */
-		static function nice_db_error($db_error) {
 			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
 				Errors::error(_("The entered information is a duplicate. Please go back and enter different values."));
 				return true;
 			}
-			return false;
+
+			if ($db_error == 0) return;
+			$str = "<span class='bold'>" . _("DATABASE ERROR $db_error:") . "</span> $msg<br>";
+
+			if ($sql_statement && Config::get('debug')) {
+				$str .= "sql that failed was : " . $sql_statement . "<br>with error<br>" . DB::error_msg();
+			}
+			$str .= "<br>";
+			Errors::error($str);
 		}
 
-		/**
-		 * @static
-		 *
-		 * @param			$msg
-		 * @param			$sql_statement
-		 * @param bool $exit_if_error
-		 * @param bool $rollback_if_error
-		 *
-		 * @return mixed
-		 * @throws DB_Exception
-		 */
-		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true) {
-			$db_error = DB::error_no();
-			if ($db_error != 0) {
-				if (User::get()->user == 1 && (Config::get('debug') || !Errors::nice_db_error($db_error))) {
-					Errors::show_db_error($msg, $sql_statement, false);
-				}
-				if ($rollback_if_error) {
-					DB::query("rollback", "could not rollback");
-				}
-				if ($exit_if_error) {
-					throw new DB_Exception($db_error);
-				}
-			}
-			return $db_error;
-		}
 
 		/**
 		 * @static
@@ -243,8 +210,10 @@
 		 * @param Exception $e
 		 */
 		protected static function prepare_exception(\Exception $e) {
+
 			$data = array(
 				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace());
+
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);

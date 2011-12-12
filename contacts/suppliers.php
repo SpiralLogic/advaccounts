@@ -33,8 +33,7 @@
 		} else {
 			$data['supplier'] = new Contacts_Supplier(0);
 		}
-		echo json_encode($data);
-		exit();
+		 JS::renderJSON($data);
 	}
 	JS::footerFile("js/suppliers.js");
 	Page::start(_($help_context = "Suppliers"), Input::request('popup'));

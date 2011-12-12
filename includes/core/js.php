@@ -3,8 +3,7 @@
 	/**
 	 *
 	 */
-	class JS
-	{
+	class JS {
 		/**
 		 * @var array
 		 */
@@ -33,6 +32,7 @@
 		 * @var bool
 		 */
 		private static $_focus = false;
+		public static $outputted = false;
 		/**
 		 * @var bool
 		 */
@@ -284,6 +284,31 @@ JS;
 		/**
 		 * @static
 		 *
+		 */
+		public static function renderJSON( $data) {
+			$data = (array)$data;
+			if (!isset($data['status'])) {
+				if (count(Errors::$messages) > 0) {
+					$message = array_pop(Errors::$messages);
+					$status['status'] = false;
+					$status['message'] = $message['message'];
+					$status['var'] = basename($message['file']) . $message['line'];
+				} else {
+					$status['status'] = true;
+					$status['message'] = 'Successfull';
+				}
+				$status['process'] = '';
+
+				$data['status'] = $status;
+			}
+			echo	 json_encode($data);
+			JS::$outputted = true;
+			exit();
+		}
+
+		/**
+		 * @static
+		 *
 		 * @param			$selector
 		 * @param bool $cached
 		 */
@@ -439,7 +464,7 @@ JS;
 		 *
 		 * @param bool $message
 		 */
-		static function onUnload($message = false) {
+		public static function onUnload($message = false) {
 			if ($message) {
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);

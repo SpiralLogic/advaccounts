@@ -6,8 +6,7 @@
 	 * Time: 11:15 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Connection
-	{
+	class DB_Connection {
 		/**
 		 * @var array
 		 */
@@ -86,8 +85,14 @@
 		 *
 		 */
 		public function prepare($sql) {
-			return $this->conn->prepare($sql);
-		}
+			try {
+				return	$this->conn->prepare($sql);
+
+			}	catch (PDOException $e) {
+							$this->_error($e);
+						}
+
+			 		}
 
 		/***
 		 * @param $sql
@@ -121,7 +126,15 @@
 		 * @return DB_Connection
 		 */
 		public function begin() {
-			$this->conn->beginTransaction();
+			if ($this->intransaction == true) return $this;
+
+			try {
+				$this->conn->beginTransaction();
+			}
+			catch (PDOException $e) {
+				 static::_error($e);
+			}
+			$this->intransaction = true;
 			return $this;
 		}
 
@@ -136,7 +149,14 @@
 		 * @return DB_Connection
 		 */
 		public function commit() {
-			$this->conn->commit();
+			if ($this->intransaction == false) return $this;
+
+			try {
+				$this->conn->commit();
+			}
+			catch (PDOException $e) {
+				 static::_error($e);
+			}
 			$this->intransaction = false;
 			return $this;
 		}
@@ -145,8 +165,16 @@
 		 * @return DB_Connection
 		 */
 		public function cancel() {
+			if ($this->intransaction == false) return $this;
+
+			try {
+				$this->conn->rollBack();
+			}
+			catch (PDOException $e) {
+				 static::_error($e);
+			}
 			$this->intransaction = false;
-			$this->conn->rollBack();
+
 			return $this;
 		}
 
@@ -189,7 +217,7 @@
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch (PDOException $e) {
-				$this->_error($e, true);
+				return		$this->_error($e, true);
 			}
 		}
 
@@ -227,16 +255,16 @@
 			if (Config::get('debug_sql')) {
 				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
 			} else {
-				$error = $e->errorInfo[2];
-				//	Errors::show_db_error(' <pre>' . '</pre></p>');
+				$error = $e->errorInfo;
+				$error =(!isset($error[2])) ?$e->getMessage() :$error[2];
 			}
-			if ($this->intransaction) {
+			if ($this->conn->inTransaction()) {
 				$this->conn->rollBack();
+				$this->intransaction = false;
 			}
-			trigger_error($error, E_USER_ERROR);
 			if ($exit) {
-				//		throw new DB_Exception($error);
+				throw new DB_Exception($error);
 			}
-			return false;
+			Errors::show_db_error($error);
 		}
 	}

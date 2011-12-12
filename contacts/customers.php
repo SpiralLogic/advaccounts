@@ -19,8 +19,8 @@
 		if (isset($_GET['term'])) {
 			$data = Debtor::search($_GET['term']);
 		}
-		echo json_encode($data);
-		exit();
+		 JS::renderJSON($data);
+
 	}
 	JS::footerFile("js/customers.js");
 	Page::start(_($help_context = "Customers"), Input::request('popup'));

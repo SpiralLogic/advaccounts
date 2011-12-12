@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class User
-	{
+	class User {
 		protected static $_instance = null;
 
 		/***
@@ -35,6 +34,7 @@
 		public $pos;
 		public $salesmanid = false;
 		public $access;
+		protected $access_sections;
 		public $timeout;
 		public $last_act;
 		public $role_set = false;
@@ -90,6 +90,7 @@
 					if (!$role) {
 						return false;
 					}
+					$this->access_sections = $role['sections'];
 					foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
 					{
 						if (in_array($code & ~0xff, $role['sections'])) {
@@ -110,7 +111,7 @@
 				$this->logged = true;
 				$this->last_act = time();
 				$this->timeout = DB_Company::get_pref('login_tout');
-				$_SESSION['HTTP_USER_AGENT']=sha1($_SERVER['HTTP_USER_AGENT']);
+				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 				$this->set_salesman();
 			}
 			return $this->logged;
@@ -135,9 +136,15 @@
 			if ($page_level === 'SA_DENIED' || $page_level === '') {
 				return false;
 			}
-			$code = $security_areas[$page_level][0];
+			$access = false;
+			if (isset($security_areas[$page_level])) {
+				$code = $security_areas[$page_level][0];
+				$access = $code && in_array($code, $this->role_set);
+			} elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
+				$access = in_array($page_level, $this->access_sections);
+			}
 			// only first registered company has site admin privileges
-			return $code && in_array($code, $this->role_set) && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
+			return $access && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
 		}
 
 		public function can_access_page($page_level) {

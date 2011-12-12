@@ -38,9 +38,13 @@
 				$this->into($table);
 			}
 			$this->type = DB::INSERT;
+			$this->hasFeilds = Cache::get('INFORMATION_SCHEMA.COLUMNS.'.$table);
+			if (!$this->hasFeilds){
 			$query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), false);
 			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 				$this->hasFeilds[] = $row['COLUMN_NAME'];
+			}
+				Cache::set('INFORMATION_SCHEMA.COLUMNS.'.$table,$this->hasFeilds);
 			}
 			return $this;
 		}

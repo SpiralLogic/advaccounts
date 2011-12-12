@@ -81,8 +81,7 @@
 		FROM purch_order_details
 		WHERE order_no=" . DB::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
 		$result = DB::query($sql, "could not query purch order details");
-		Errors::check_db_error("Could not check that the details of the purchase order had not been changed by another user ",
-			$sql);
+
 		$line_no = 1;
 		while ($myrow = DB::fetch($result)) {
 			$ln_item = $_SESSION['PO']->line_items[$line_no];

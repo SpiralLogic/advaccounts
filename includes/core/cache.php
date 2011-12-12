@@ -6,8 +6,7 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache
-	{
+	class Cache {
 		/**
 		 * @var Memcached
 		 */
@@ -67,8 +66,8 @@
 				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
 			}
 			elseif (class_exists('Session', false)) {
-				if (!isset($_SESSION['cache'])) $_SESSION['cache']=array();
-				$result = $_SESSION['cache'][$key] ;
+				if (!isset($_SESSION['cache'])) $_SESSION['cache'] = array();
+				$result = $_SESSION['cache'][$key];
 			} else {
 				$result = false;
 			}

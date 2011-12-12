@@ -15,5 +15,5 @@
 	}
 	if (Input::has_post('contact_id', 'type')) {
 		$contact_log = Contacts_Log::read($_POST['contact_id'], $_POST['type']);
-		echo json_encode($contact_log);
+		echo JS::renderJSON($contact_log);
 	}

@@ -101,7 +101,6 @@
 			quantity= " . Validation::input_num('quantity') . "
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
-			Errors::check_db_error("Could not update this bom component", $sql);
 			DB::query($sql, "could not update bom");
 			Errors::notice(_('Selected component has been updated'));
 			$Mode = 'RESET';

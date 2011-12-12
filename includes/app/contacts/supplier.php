@@ -64,7 +64,6 @@
 			if ($this->id == 0) {
 				$this->_saveNew();
 			}
-			DB::begin_transaction();
 			$sql = "UPDATE suppliers SET name=" . DB::escape($this->name) . ",
 							supp_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
 							address=" . DB::escape($this->address) . ",
@@ -90,7 +89,6 @@
 				 notes=" . DB::escape($this->notes) . "
 				 WHERE debtor_no = " . DB::escape($this->id);
 			DB::query($sql, "The supplier could not be updated");
-			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Supplier has been updated.");
 		}
 
@@ -143,7 +141,6 @@
 		}
 
 		protected function _saveNew() {
-			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,

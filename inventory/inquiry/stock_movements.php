@@ -43,7 +43,6 @@
 	AND tran_date <= '" . $before_date . "'
 	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
 	$result = DB::query($sql, "could not query stock moves");
-	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	Display::div_start('doc_tbl');
 	start_table('tablestyle');
 	$th = array(

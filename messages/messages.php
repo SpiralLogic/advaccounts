@@ -8,8 +8,8 @@
 		if (isset($_POST['user_id'])) {
 			$data['result'] = Messages::set($_POST['user_id'], $_POST['subject'], $_POST['message']);
 		}
-		echo json_encode($data);
-		exit();
+		 JS::renderJSON($data);
+
 	}
 	JS::footerFile("js/messages.js");
 	Page::start(_($help_context = "Messages"), Input::request('popup'));

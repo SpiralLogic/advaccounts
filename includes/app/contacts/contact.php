@@ -11,6 +11,8 @@
 		public $phone2 = '';
 		public $email = '';
 		public $department = '';
+		protected $_table = 'contacts';
+		protected $_id_column = 'id';
 
 		public function __construct($id = null) {
 			if (is_numeric($id)) {
@@ -22,29 +24,6 @@
 			// TODO: Implement delete() method.
 		}
 
-		public function save($changes = null) {
-			if (is_array($changes)) {
-				$this->setFromArray($changes);
-			}
-			if (!$this->_canProcess()) {
-				return false;
-			}
-			if ((int)$this->id == 0) {
-				$this->_saveNew();
-			}
-			DB::begin_transaction();
-			$sql = "UPDATE contacts SET
-					name=" . DB::escape($this->name) . ",
-					phone1=" . DB::escape($this->phone1) . ",
-					phone2=" . DB::escape($this->phone2) . ",
-					email=" . DB::escape($this->email) . ",
-					department=" . DB::escape($this->department)
-			 . " WHERE parent_id =" . DB::escape($this->parent_id) . "
-		 	 AND id=" . DB::escape($this->id);
-			DB::query($sql, "The customer could not be updated");
-			DB::commit_transaction();
-			return $this->_status(true, 'Processing', "Contact has been updated.");
-		}
 
 		protected function _canProcess() {
 			$temp = new Contacts_Contact();
@@ -71,19 +50,7 @@
 			return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
 		}
 
-		protected function _read($id = false) {
-			if (!$id) {
-				return false;
-			}
-			DB::select()->from('contacts')->where('id=', $id);
-			DB::fetch()
-			 ->intoClass($this);
-			return true;
-		}
 
-		protected function _saveNew() {
-			$this->id = DB::insert('contacts')->exec($this);
-			$this->_status(true, 'Saving', "New contact has been added");
-		}
+
 
 	}
