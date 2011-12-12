@@ -51,8 +51,7 @@
 			return false;
 		}
 		$type = DB::escape($selected_id);
-		$sql
-		 = "SELECT COUNT(*) FROM chart_master
+		$sql = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 		$result = DB::query($sql, "could not query chart master");
 		$myrow = DB::fetch_row($result);
@@ -60,8 +59,7 @@
 			Errors::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
-		$sql
-		 = "SELECT COUNT(*) FROM chart_types
+		$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
 		$result = DB::query($sql, "could not query chart types");
 		$myrow = DB::fetch_row($result);
@@ -92,8 +90,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		$bs_text = GL_Class::get_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
@@ -130,7 +127,7 @@
 	}
 	text_row_ex(_("Name:"), 'name', 50);
 	GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
-	GL_Class::select_row(_("Class Type:"), 'class_id', null);
+	GL_Class::row(_("Class Type:"), 'class_id', null);
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
