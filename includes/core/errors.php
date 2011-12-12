@@ -108,7 +108,7 @@
 				return;
 			}
 			if (static::$count > 5) {
-				exit();
+				Page::footer_exit();
 			}
 			static::$count++;
 			$error = array(
@@ -128,7 +128,7 @@
 		 */
 		static function exception_handler(\Exception $e) {
 			if (static::$count > 5) {
-				exit();
+				Page::footer_exit();
 			}
 			static::$count++;
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));

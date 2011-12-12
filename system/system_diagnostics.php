@@ -14,16 +14,24 @@
 	Page::start(_($help_context = "System Diagnostics"));
 	// Type of requirement for positive test result
 	$test_level = array(
-		0 => _('Info'),
-		1 => _('Optional'),
-		2 => _('Recomended'),
-		3 => _('Required ')
+		0 => _('Info'), 1 => _('Optional'), 2 => _('Recomended'), 3 => _('Required ')
 	);
 	$system_tests = array(
-		'tst_mysql', 'tst_php', 'tst_server', 'tst_system', 'tst_browser',
-		'tst_gettext', 'tst_debug', 'tst_logging',
-		'tst_dbversion', 'tst_subdirs', 'tst_langs', 'tst_tmpdir', 'tst_sessionpath',
-		'tst_config', 'tst_extconfig'
+		'tst_mysql',
+		'tst_php',
+		'tst_server',
+		'tst_system',
+		'tst_browser',
+		'tst_gettext',
+		'tst_debug',
+		'tst_logging',
+		'tst_dbversion',
+		'tst_subdirs',
+		'tst_langs',
+		'tst_tmpdir',
+		'tst_sessionpath',
+		'tst_config',
+		'tst_extconfig'
 	);
 	function tst_mysql() {
 		$test['descr'] = _('MySQL version') . ' >3.23.58';
@@ -106,9 +114,10 @@
 		$test['test'] = Config::get('logs_error_file') == '' ? _("Disabled") : Config::get('logs_error_file');
 		if (Config::get('logs_error_file') == '') {
 			$test['comments'] = _('To switch error logging set $error_logging in config.php file');
-		}
-		else if (!is_writable(Config::get('logs_error_file'))) {
-			$test['comments'] = _('Log file is not writeable');
+		} else {
+			if (!is_writable(Config::get('logs_error_file'))) {
+				$test['comments'] = _('Log file is not writeable');
+			}
 		}
 		return $test;
 	}
@@ -121,8 +130,7 @@
 		$test['type'] = 3;
 		$test['test'] = DB_Company::get_pref('version_id');
 		$test['result'] = $test['test'] == '2.2';
-		$test['comments'] = _('Database structure seems to be not upgraded to current version')
-		 . ' (2.2)';
+		$test['comments'] = _('Database structure seems to be not upgraded to current version') . ' (2.2)';
 		return $test;
 	}
 
@@ -131,9 +139,7 @@
 		$test['descr'] = _('Company subdirectories consistency');
 		$test['type'] = 3;
 		$test['test'] = array(COMPANY_PATH . '/*');
-		foreach (
-			$comp_subdirs as $sub
-		) {
+		foreach ($comp_subdirs as $sub) {
 			$test['test'][] = COMPANY_PATH . '/*/' . $sub;
 		}
 		$test['result'] = true;
@@ -143,9 +149,7 @@
 			return $test;
 		}
 		;
-		foreach (
-			Config::get_all('db') as $n => $comp
-		) {
+		foreach (Config::get_all('db') as $n => $comp) {
 			$path = COMPANY_PATH . "/";
 			if (!is_dir($path) || !is_writable($path)) {
 				$test['result'] = false;
@@ -153,9 +157,7 @@
 				continue;
 			}
 			;
-			foreach (
-				$comp_subdirs as $sub
-			) {
+			foreach ($comp_subdirs as $sub) {
 				$spath = $path . '/' . $sub;
 				if (!is_dir($spath) || !is_writable($spath)) {
 					$test['result'] = false;
@@ -230,9 +232,7 @@
 		$test['result'] = is_file($test['test']) && is_writable($test['test']);
 		$test['test'] . ',' . COMPANY_PATH . '/*/extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
-		foreach (
-			Config::get_all('db') as $n => $comp
-		) {
+		foreach (Config::get_all('db') as $n => $comp) {
 			$path = COMPANY_PATH . "/$n";
 			if (!is_dir($path)) {
 				continue;
@@ -252,10 +252,7 @@
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 	table_header($th);
 	$k = 0; //row colour counter
-	foreach (
-		$system_tests as $test
-	)
-	{
+	foreach ($system_tests as $test) {
 		alt_table_row_color($k);
 		$result = call_user_func($test);
 		if (!$result) {
@@ -263,22 +260,11 @@
 		}
 		label_cell($result['descr']);
 		label_cell($test_level[$result['type']]);
-		$res = is_array(@$result['test']) ? implode('<br>', $result['test'])
-		 : $result['test'];
+		$res = isset($result['test']) ? implode('<br>', (array)$result['test']) : $result['test'];
 		label_cell($res);
-		$comm = is_array(@$result['comments']) ? implode('<br>', $result['comments'])
-		 : @$result['comments'];
-		$color = ($result['result']
-		 ? 'green'
-		 :
-		 ($result['type'] == 3
-			? 'red'
-			:
-			($result['type'] == 2 ? 'orange' : 'green')));
-		label_cell(
-			"<span style='color:$color'>" .
-			 ($result['result'] ? _('Ok') : '<span class="bold">' . $comm . '</span>') . '</span>'
-		);
+		$comm = isset($result['comments']) ? implode('<br>', (array)$result['comments']) : '';
+		$color = ($result['result'] ? 'green' : ($result['type'] == 3 ? 'red' : ($result['type'] == 2 ? 'orange' : 'green')));
+		label_cell("<span style='color:$color'>" . ($result['result'] ? _('Ok') : '<span class="bold">' . $comm . '</span>') . '</span>');
 		end_row();
 	}
 	end_table();
