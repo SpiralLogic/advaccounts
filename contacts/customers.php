@@ -50,8 +50,8 @@
 			'customer', array(
 											 'label' => 'Search Customer:',
 											 'size' => 80,
-											 'callback' => 'Customer.fetch'
-									), array('focus' => true)
+											 'callback' => 'Customer.fetch',
+									'focus' => true)
 		);
 		HTML::td()->tr->table->div;
 	}

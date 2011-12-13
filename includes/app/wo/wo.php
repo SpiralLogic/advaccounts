@@ -47,8 +47,7 @@
 			if ($qty <= $stock_qty) {
 				return $demand;
 			}
-			$bom = @static::$bom_list[$stock_id];
-			if ($bom == NULL) {
+			if (!isset(static::$bom_list[$stock_id])) {
 				$sql = "SELECT parent, component, quantity FROM "
 				 . "bom WHERE parent = " . DB::escape($stock_id);
 				if ($location != "") {
@@ -63,6 +62,9 @@
 				}
 				DB::free_result($result);
 				static::$bom_list[$stock_id] = $bom;
+			}else{
+				$bom =static::$bom_list[$stock_id];
+
 			}
 			$len = count($bom);
 			$i = 0;

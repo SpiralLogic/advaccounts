@@ -98,29 +98,14 @@ JS;
 		 * @param array $options
 		 */
 		public static function autocomplete($id, $callback, $url = false, $options = array()) {
-			$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
 			self::$_onload[] = <<<JS
- var \${$id};
- Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
- autoFocus:true,
-	 source: function(request, response) {
-		 var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
-			 	if (xhr === lastXhr) {
-				 	response(data);
-				 	{$afterSource}
-				 }
-			 });
-		 },
-		 select: function(event, ui) {
-	 	 if ({$callback}(ui.item,event,this)===false) return false;
- 	 }
- }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
+Adv.Forms.autocomplete('$id','$url',$callback);
 JS;
 			if (isset($options['focus'])) {
-				self::setFocus("autocomplete{$id}", true);
+				self::setFocus("autocomplete.$id", true);
 			}
 		}
 
