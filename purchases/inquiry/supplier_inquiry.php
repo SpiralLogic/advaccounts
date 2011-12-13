@@ -142,10 +142,10 @@
 			}
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
-			$sql .= " supplier.supp_name LIKE " . DB::escape($ajaxsearch, false, false)
-			 . " OR trans.trans_no LIKE " . DB::escape($ajaxsearch, false, false)
-			 . " OR trans.reference LIKE " . DB::escape($ajaxsearch, false, false)
-			 . " OR trans.supp_reference LIKE " . DB::escape($ajaxsearch, false, false)
+			$sql .= " supplier.supp_name LIKE " . DB::quote($ajaxsearch)
+			 . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch)
+			 . " OR trans.reference LIKE " . DB::quote($ajaxsearch)
+			 . " OR trans.supp_reference LIKE " . DB::quote($ajaxsearch)
 			 . ")";
 		}
 	} else {
@@ -153,7 +153,7 @@
 	 AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id')) {
-		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'], false, false);
+		$sql .= " AND trans.supplier_id = " . DB::quote($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1')) {

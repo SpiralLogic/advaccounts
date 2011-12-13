@@ -261,7 +261,7 @@
 				return WO_Quick::add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
 					$cr_lab_acc);
 			}
-			DB::begin_transaction();
+			DB::begin();
 			WO_Cost::add_material($stock_id, $units_reqd, $date_);
 			$date = Dates::date2sql($date_);
 			$required = Dates::date2sql($required_by);
@@ -274,12 +274,12 @@
 			DB_Comments::add(ST_WORKORDER, $woid, $required_by, $memo_);
 			Ref::save(ST_WORKORDER, $wo_ref);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $woid;
 		}
 
 		public static function update($woid, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			WO_Cost::add_material($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
 			WO_Cost::add_material($stock_id, $units_reqd, $date_);
 			$date = Dates::date2sql($date_);
@@ -292,11 +292,11 @@
 			DB::query($sql, "could not update work order");
 			DB_Comments::update(ST_WORKORDER, $woid, null, $memo_);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Updated."));
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function delete($woid) {
-			DB::begin_transaction();
+			DB::begin();
 			WO_Cost::add_material($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
 			// delete the work order requirements
 			WO_Requirements::delete($woid);
@@ -305,7 +305,7 @@
 			DB::query($sql, "The work order could not be deleted");
 			DB_Comments::delete(ST_WORKORDER, $woid);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $_POST['date_'], _("Canceled."));
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get($woid, $allow_null = false) {
@@ -343,7 +343,7 @@
 		}
 
 		public static function release($woid, $releaseDate, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$myrow = WO::get($woid);
 			$stock_id = $myrow["stock_id"];
 			$date = Dates::date2sql($releaseDate);
@@ -354,7 +354,7 @@
 			WO_Requirements::add($woid, $stock_id);
 			DB_Comments::add(ST_WORKORDER, $woid, $releaseDate, $memo_);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $releaseDate, _("Released."));
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function close($woid) {
@@ -377,7 +377,7 @@
 		}
 
 		public static function void($woid) {
-			DB::begin_transaction();
+			DB::begin();
 			$work_order = WO::get($woid);
 			if (!($work_order["type"] == WO_ADVANCED)) {
 				$date = Dates::sql2date($work_order['date_']);
@@ -449,7 +449,7 @@
 				// clear the requirements units received
 				WO_Requirements::void($woid);
 			}
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get_gl($woid, $cost_type) {

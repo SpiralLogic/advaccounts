@@ -57,7 +57,7 @@
 		//	$to_account -	target bank account id
 		//
 		public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
-			DB::begin_transaction();
+			DB::begin();
 			$trans_type = ST_BANKTRANSFER;
 			$currency = Bank_Currency::for_company($from_account);
 			$trans_no = SysTypes::get_next_trans_no($trans_type);
@@ -83,7 +83,7 @@
 			DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 			Ref::save($trans_type, $ref);
 			DB_AuditTrail::add($trans_type, $trans_no, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $trans_no;
 		}
 
@@ -103,7 +103,7 @@
 			}
 			$do_exchange_variance = false;
 			if ($use_transaction) {
-				DB::begin_transaction();
+				DB::begin();
 			}
 			$currency = Bank_Currency::for_company($from_account);
 			$bank_gl_account = Bank_Account::get_gl($from_account);
@@ -158,7 +158,7 @@
 			Ref::save($trans_type, $ref);
 			DB_AuditTrail::add($trans_type, $trans_no, $date_);
 			if ($use_transaction) {
-				DB::commit_transaction();
+				DB::commit();
 			}
 			return array($trans_type, $trans_no);
 		}

@@ -92,7 +92,7 @@
 		}
 
 		protected function _saveNew() {
-			//	DB::begin_transaction();
+			//	DB::begin();
 			$data = (array)$this;
 			unset($data['id']);
 			$this->id = DB::insert('stock_master')->values($data)->exec();
@@ -100,7 +100,7 @@
 			$result = DB::query($sql, "The item locstock could not be added");
 			DB::fetch($result);
 			Item_Code::add($this->stock_id, $this->stock_id, $this->description, $this->category_id, 1, 0);
-			//	DB::commit_transaction();
+			//	DB::commit();
 			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
 
@@ -118,9 +118,9 @@
 			if ($this->id == 0) {
 				return $this->_saveNew();
 			}
-			DB::begin_transaction();
+			DB::begin();
 			$result = DB::update('stock_master')->values((array)$this)->where('id=', $this->id)->exec();
-			DB::commit_transaction();
+			DB::commit();
 			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
 

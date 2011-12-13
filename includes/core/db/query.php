@@ -20,7 +20,7 @@
 		 */
 		protected $type;
 		/**
-		 * @var DB_Connection
+		 * @var DB
 		 */
 		protected $conn;
 
@@ -74,17 +74,5 @@
 			return $this->exec(null);
 		}
 
-		/***
-		 * @static
-		 *
-		 * @param $db
-		 *
-		 * @return DB_Query_Result
-		 */
-		public static function _fetch($db) {
-			static::$query->conn = $db;
-			$result = static::$query->fetch();
-			static::$query = null;
-			return $result;
-		}
+
 	}

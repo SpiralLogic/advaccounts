@@ -269,7 +269,7 @@
 	if (User::get()->can_access('SA_GRNDELETE')) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
-			DB::begin_transaction();
+			DB::begin();
 			$myrow = Purch_GRN::get_item($id2);
 			$grn = Purch_GRN::get_batch($myrow['grn_batch_id']);
 			$sql = "UPDATE purch_order_details
@@ -283,7 +283,7 @@
 			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'],
 				Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1,
 				$myrow['unit_price']);
-			DB::commit_transaction();
+			DB::commit();
 			Errors::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
 	}

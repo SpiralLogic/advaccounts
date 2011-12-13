@@ -14,12 +14,12 @@
 	Page::start(_($help_context = "Forms Setup"));
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get();
-		DB::begin_transaction();
+		DB::begin();
 		while ($type = DB::fetch($systypes))
 		{
 			Ref::save($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
-		DB::commit_transaction();
+		DB::commit();
 		Errors::notice(_("Forms settings have been updated."));
 	}
 	start_form();

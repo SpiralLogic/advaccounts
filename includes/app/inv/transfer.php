@@ -12,7 +12,7 @@
 	class Inv_Transfer
 	{
 		public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
 			foreach ($Items as $line_item) {
 				Inv_Transfer::add_item($transfer_id, $line_item->stock_id, $location_from, $location_to, $date_, $type, $reference,
@@ -21,7 +21,7 @@
 			DB_Comments::add(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
 			Ref::save(ST_LOCTRANSFER, $reference);
 			DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $transfer_id;
 		}
 

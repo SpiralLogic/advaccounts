@@ -28,13 +28,14 @@ JS;
 
 		public static function search($terms) {
 			$data = array();
-			DB::select('debtor_no as id', 'name as label', 'name as value')
+			$results = DB::select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
 			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
-			$results = DB::fetch();
+			$results = $results->fetch();
+
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);
 			}
@@ -78,7 +79,7 @@ JS;
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
-	//	public $webid = '';
+		public $webid = '';
 		protected $_table = 'debtors_master';
 		protected $_id_column = 'debtor_no';
 
@@ -340,19 +341,19 @@ JS;
 			$this->discount = User::numeric($this->discount) / 100;
 			$this->pymt_discount = User::numeric($this->pymt_discount) / 100;
 			$this->credit_limit = User::numeric($this->credit_limit);
-			DB::begin_transaction(true);
+			DB::begin(true);
 			if (!parent::_saveNew()) {
-				DB::cancel_transaction();
+				DB::cancel();
 				return false;
 			}
 			foreach ($this->branches as $branch) {
 				$branch->debtor_no=$this->id;
 				if ($branch->name == 'New Address') {
-					$branch->name = $this->name;
+					$branch->name = $branch->city.' '.$branch->state;
 				}
 				$branch->save();
 			}
-			DB::commit_transaction(true);
+			DB::commit(true);
 			return true;
 		}
 

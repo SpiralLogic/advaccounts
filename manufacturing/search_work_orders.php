@@ -164,13 +164,13 @@
 		$sql .= " AND workorder.closed=0";
 	}
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-		$sql .= " AND workorder.loc_code=" . DB::escape($_POST['StockLocation'], false, false);
+		$sql .= " AND workorder.loc_code=" . DB::quote($_POST['StockLocation']);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND workorder.wo_ref LIKE " . DB::escape('%' . $_POST['OrderNumber'] . '%', false, false);
+		$sql .= " AND workorder.wo_ref LIKE " . DB::quote('%' . $_POST['OrderNumber'] . '%');
 	}
 	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
-		$sql .= " AND workorder.stock_id=" . DB::escape($_POST['SelectedStockItem'], false, false);
+		$sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
 	}
 	if (check_value('OverdueOnly')) {
 		$Today = Dates::date2sql(Dates::Today());

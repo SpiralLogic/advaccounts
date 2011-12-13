@@ -18,7 +18,7 @@
 			if (is_array($trans_no)) {
 				$trans_no = key($trans_no);
 			}
-			DB::begin_transaction();
+			DB::begin();
 			$customer = Debtor::get($delivery->customer_id);
 			$delivery_items_total = $delivery->get_items_total_dispatch();
 			$freight_tax = $delivery->get_shipping_tax();
@@ -123,12 +123,12 @@
 			if ($trans_no == 0) {
 				Ref::save(ST_CUSTDELIVERY, $delivery->reference);
 			}
-			DB::commit_transaction();
+			DB::commit();
 			return $delivery_no;
 		}
 
 		function void($type, $type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			GL_Trans::void($type, $type_no, true);
 			// reverse all the changes in the sales order
 			$items_result = Debtor_Trans::get($type, $type_no);
@@ -147,6 +147,6 @@
 			// do this last because other voidings can depend on it
 			// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 			Sales_Trans::void($type, $type_no);
-			DB::commit_transaction();
+			DB::commit();
 		}
 	}

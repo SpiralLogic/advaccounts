@@ -133,7 +133,7 @@
 	}
 	Session::i()->global_curr_code = $_POST['curr_abrev'];
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev'], false, false) . "
+	 . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 	$cols = array(
 		_("Date to Use From") => 'date',

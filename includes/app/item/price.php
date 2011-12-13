@@ -221,7 +221,7 @@
 				Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
 			}
 			$update_no = -1;
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "UPDATE stock_master SET material_cost=" . DB::escape($material_cost) . ",
 						labour_cost=" . DB::escape($labour_cost) . ",
 						overhead_cost=" . DB::escape($overhead_cost) . ",
@@ -245,7 +245,7 @@
 					$value_of_change);
 			}
 			DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $update_no;
 		}
 

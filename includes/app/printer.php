@@ -51,7 +51,7 @@
 		//
 		public static function get_report($profile, $report) {
 			$sql = "SELECT printer FROM print_profiles WHERE profile=" . DB::escape($profile, false,
-				false) . " AND report=" . DB::escape($report, false, false);
+				false) . " AND report=" . DB::quote($report);
 			$result = DB::query($sql, 'report printer lookup failed');
 			if (!$result) {
 				return false;

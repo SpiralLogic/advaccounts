@@ -280,7 +280,7 @@
 			} else {
 				$file->error = $error;
 			}
-			/* DB::begin_transaction();
+			/* DB::begin();
 				 $sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', '{$content}')";
 				 DB::query($sql, 'Could not insert file into database');
 				 $upload_id = DB::insert_id();

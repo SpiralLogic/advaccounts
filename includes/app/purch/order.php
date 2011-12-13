@@ -123,12 +123,12 @@
 		public static function delete($po) {
 			$sql = "DELETE FROM purch_orders WHERE order_no=" . DB::escape($po);
 			DB::query($sql, "The order header could not be deleted");
-			$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::escape($po, false, false);
+			$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::quote($po);
 			DB::query($sql, "The order detail lines could not be deleted");
 		}
 
 		public static function add(&$po_obj) {
-			DB::begin_transaction();
+			DB::begin();
 			/*Insert to purchase order header record */
 			$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
 			$sql .= DB::escape($po_obj->supplier_id) . "," .
@@ -160,12 +160,12 @@
 			Ref::save(ST_PURCHORDER, $po_obj->reference);
 			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 			DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
-			DB::commit_transaction();
+			DB::commit();
 			return $po_obj->order_no;
 		}
 
 		public static function update(&$po_obj) {
-			DB::begin_transaction();
+			DB::begin();
 			/*Update the purchase order header with any changes */
 			$sql = "UPDATE purch_orders SET Comments=" . DB::escape($po_obj->Comments) . ",
 			requisition_no= " . DB::escape($po_obj->requisition_no) . ",
@@ -209,7 +209,7 @@
 				DB::query($sql, "One of the purchase order detail records could not be updated");
 			}
 			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
-			DB::commit_transaction();
+			DB::commit();
 			return $po_obj->order_no;
 		}
 

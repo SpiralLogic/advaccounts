@@ -12,7 +12,7 @@
 	class WO_Produce
 	{
 		public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
-			DB::begin_transaction();
+			DB::begin();
 			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
 				echo _("The order number sent is not valid.");
@@ -20,7 +20,7 @@
 			}
 			if (WO::is_closed($woid)) {
 				Errors::error("UNEXPECTED : Producing Items for a closed Work Order");
-				DB::cancel_transaction();
+				DB::cancel();
 				exit;
 			}
 			$date = Dates::date2sql($date_);
@@ -41,7 +41,7 @@
 			}
 			Ref::save(ST_MANURECEIVE,  $ref);
 			DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get($id) {
@@ -66,7 +66,7 @@
 		}
 
 		public static function void($type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			$row = WO_Produce::get($type_no);
 			// deduct the quantity of this production from the parent work order
 			WO::update_finished_quantity($row["workorder_id"], -$row["quantity"]);
@@ -78,7 +78,7 @@
 			Inv_Movement::void(ST_MANURECEIVE, $type_no);
 			// void any related gl trans
 			GL_Trans::void(ST_MANURECEIVE, $type_no, true);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function display($woid) {

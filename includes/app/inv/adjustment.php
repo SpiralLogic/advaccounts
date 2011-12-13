@@ -12,7 +12,7 @@
 	class Inv_Adjustment
 	{
 		public static function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
 			foreach ($items as $line_item) {
 				if (!$increase) {
@@ -24,7 +24,7 @@
 			DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
 			Ref::save(ST_INVADJUST, $reference);
 			DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $adj_id;
 		}
 

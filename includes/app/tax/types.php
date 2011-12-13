@@ -66,13 +66,13 @@
 		}
 
 		public static function delete($type_id) {
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not delete tax type");
 			// also delete any item tax exemptions associated with this type
 			$sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
 			DB::query($sql, "could not delete item tax type exemptions");
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		/**

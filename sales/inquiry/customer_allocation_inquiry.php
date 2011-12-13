@@ -107,7 +107,7 @@
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
+		$sql .= " AND trans.debtor_no = " . DB::quote($_POST['customer_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {

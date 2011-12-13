@@ -97,7 +97,7 @@
 		{
 			//$company_currency = Bank_Currency::for_company();
 			/*Start an sql transaction */
-			DB::begin_transaction();
+			DB::begin();
 			$tax_total = 0;
 			$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 			;
@@ -328,7 +328,7 @@
 					}
 				}
 			}
-			DB::commit_transaction();
+			DB::commit();
 			return $invoice_id;
 		}
 
@@ -406,7 +406,7 @@
 		}
 
 		public static function void($type, $type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			$trans = Purch_Trans::get($type_no, $type);
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
@@ -491,7 +491,7 @@
 			}
 			Purch_Line::void_for_invoice($type, $type_no);
 			GL_Trans::void_tax_details($type, $type_no);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function copy_from_trans($supp_trans) {

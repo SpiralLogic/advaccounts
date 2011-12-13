@@ -18,7 +18,7 @@
 																 $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0)
 	{
 		$amount = $amount * -1;
-		DB::begin_transaction();
+		DB::begin();
 		$company_record = DB_Company::get_prefs();
 		$refund_no = Sales_Trans::write(ST_CUSTREFUND, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
@@ -64,19 +64,19 @@
 			Bank_Currency::for_debtor($customer_id), "", $rate);
 		DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
 		Ref::save(ST_CUSTREFUND, $refund_no, $ref);
-		DB::commit_transaction();
+		DB::commit();
 		return $refund_no;
 	}
 
 
 	public static function void($type, $type_no)
 	{
-		DB::begin_transaction();
+		DB::begin();
 		Bank_Trans::void($type, $type_no, true);
 		GL_Trans::void($type, $type_no, true);
 		Sales_Allocation::void($type, $type_no);
 		Sales_Trans::void($type, $type_no);
-		DB::commit_transaction();
+		DB::commit();
 	}
 
 	}

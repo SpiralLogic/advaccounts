@@ -37,7 +37,7 @@
 		WHERE bom.parent = parent.stock_id 
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code
-			AND bom.component=" . DB::escape($_POST['stock_id'], false, false);
+			AND bom.component=" . DB::quote($_POST['stock_id']);
 	$cols = array(
 		_("Parent Item") => array('fun' => 'select_link'),
 		_("Work Centre"),

@@ -74,7 +74,7 @@
 			$Ajax->activate('customer_id'); // in case of status change
 			Errors::notice(_("Customer has been updated."));
 		} else { //it is a new customer
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
@@ -83,7 +83,7 @@
 			DB::query($sql, "The customer could not be added");
 			$_POST['customer_id'] = DB::insert_id();
 			$new_customer = false;
-			DB::commit_transaction();
+			DB::commit();
 			Errors::notice(_("A new customer has been added."));
 			$Ajax->activate('_page_body');
 		}

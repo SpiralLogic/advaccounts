@@ -34,6 +34,7 @@
 	 * Register all the error/shutdown handlers
 	 */
 	set_exception_handler(function (\Exception $e) {
+
 		return \Errors::exception_handler($e);
 	});
 	set_error_handler(function ($severity, $message, $filepath = null, $line = null) {

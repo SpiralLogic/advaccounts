@@ -93,7 +93,7 @@
 			$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
-		WHERE bank_trans.bank_act = " . DB::escape($bank_account, false, false) . "
+		WHERE bank_trans.bank_act = " . DB::quote($bank_account) . "
 			AND undeposited = 0 AND trans_date <= '" . Dates::date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . Dates::date2sql($date) . "')
 		ORDER BY trans_date,bank_trans.id";
 			// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";

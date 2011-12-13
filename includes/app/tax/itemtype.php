@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Tax_ItemType {
 		public static function add($name, $exempt, $exempt_from) {
-			DB::begin_transaction();
+			DB::begin();
 
 			$sql = "INSERT INTO item_tax_types (name, exempt)
 		VALUES (" . DB::escape($name) . "," . DB::escape($exempt) . ")";
@@ -23,11 +23,11 @@
 			// add the exemptions
 			static::add_exemptions($id, $exempt_from);
 
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function update($id, $name, $exempt, $exempt_from) {
-			DB::begin_transaction();
+			DB::begin();
 
 			$sql = "UPDATE item_tax_types SET name=" . DB::escape($name) .
 			 ",	exempt=" . DB::escape($exempt) . " WHERE id=" . DB::escape($id);
@@ -38,7 +38,7 @@
 			static::delete_exemptions($id);
 			static::add_exemptions($id, $exempt_from);
 
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get_all() {
@@ -66,7 +66,7 @@
 		}
 
 		public static function delete($id) {
-			DB::begin_transaction();
+			DB::begin();
 
 			$sql = "DELETE FROM item_tax_types WHERE id=" . DB::escape($id);
 
@@ -74,7 +74,7 @@
 			// also delete all exemptions
 			static::delete_exemptions($id);
 
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function add_exemptions($id, $exemptions) {
