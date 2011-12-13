@@ -45,7 +45,14 @@
 			}
 			$Mode = 'RESET';
 		}
-	}
+	}	function edit_link($row) {
+	return	button("Edit" . $row["category_id"], _("Edit"));
+
+		}
+
+		function delete_link($row) {
+			return		button("Delete" . $row["category_id"], _("Delete"));
+		}
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
@@ -72,15 +79,19 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !c.inactive";
 	}
-	$result = DB::query($sql, "could not get stock categories");
+	/*$result = DB::query($sql, "could not get stock categories");
 	start_form();
-	start_table('tablestyle width90');
+	start_table('tablestyle width90');*/
 	$th = array(
-		_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
+		array('type' => 'skip'),	_("Name"),															array('type' => 'skip'),
+		 _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
-		_("Assembly Account"), "", ""
+		_("Assembly Account"), array(
+
+					 'fun' => 'edit_link'), array(
+			'insert' => true,		'fun' => 'delete_link')
 	);
-	inactive_control_column($th);
+/*	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
@@ -100,8 +111,10 @@
 		delete_button_cell("Delete" . $myrow["category_id"], _("Delete"));
 		end_row();
 	}
-	inactive_control_row($th);
-	end_table();
+	inactive_control_row($th);*/
+	$table =& db_pager::new_db_pager('cat_tbl', $sql, $th);
+	//$table->width = "92%";
+	DB_Pager::display($table);
 	echo '<br>';
 	Display::div_start('details');
 	start_table('tablestyle2');

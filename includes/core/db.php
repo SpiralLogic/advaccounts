@@ -348,7 +348,7 @@
 		 */
 		public static function error_msg() {
 			$info = static::_get()->errorInfo();
-			return $info[2];
+return $info;
 		}
 
 		/**
@@ -441,8 +441,16 @@
 		 * @param $key
 		 */
 		public static function update_record_status($id, $status, $table, $key) {
-			$sql = "UPDATE " . $table . " SET inactive = " . DB::escape($status) . " WHERE $key=" . DB::escape($id);
-			DB::query($sql, "Can't update record status");
-			return DB::num_rows();
+		$reuslt = 	DB::update($table)->value('inactive',$status)->where($key.'=',$id)->exec();
+			if (!$reuslt) {
+				static::insert_record_status($id, $status, $table, $key);
+			}
+			return $reuslt;
 		}
+		public static function insert_record_status($id, $status, $table, $key) {
+
+			$reuslt = DB::insert($table)->values(array('inactive'=>$status,$key=>$id))->exec();
+
+				return $reuslt;
+			}
 	}

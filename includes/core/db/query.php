@@ -6,8 +6,7 @@
 	 * Time: 12:24 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class DB_Query extends DB_Query_Where
-	{
+	abstract class DB_Query extends DB_Query_Where {
 		/**
 		 * @var DB_Query
 		 */
@@ -58,10 +57,13 @@
 		 */
 		public function exec($data = null) {
 			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
-			/*	$sql=$this->compiled_query;
-			foreach($this->data as $k=>$v) {
-				$sql = str_replace(':'.$k,DB::quote($v),$sql);
-			}*/
+			if (!$result) {
+				$sql = $this->compiled_query;
+				foreach ($this->data as $k => $v) {
+					$sql = str_replace(':' . $k, DB::quote($v), $sql);
+				}
+				Errors::show_db_error($sql);
+			}
 			return $result;
 		}
 

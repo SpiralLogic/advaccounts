@@ -39,25 +39,25 @@
 			return static::$_instance;
 		}
 
-		static function search($id = false, $attr = array(), $options = array()) {
-			if ($id) {
-				$attr['id'] = $id;
-			}
+		static function search($id, $attr = array(), $options = array()) {
+
 			$url = (!empty($attr['url'])) ? $attr['url'] : false;
 			if (!isset($attr['nodiv'])) {
 				HTML::div(array('class' => 'ui-widget'));
 			}
-			if ($id && isset($attr['label'])) {
+			if ( isset($attr['label'])) {
 				HTML::label(array('for' => $id), $attr['label'], false);
 			}
-			if ($id && isset($attr['size'])) {
+			if ( isset($attr['size'])) {
 				$input_attr['size'] = $attr['size'];
 			}
-			if ($id && isset($attr['name'])) {
+			if ( isset($attr['name'])) {
 				$input_attr['name'] = $attr['name'];
 			}
-			if ($id && isset($attr['set'])) {
+			if ( isset($attr['set'])) {
 				$input_attr['data-set'] = $attr['set'];
+			}	if ( isset($attr['focus'])) {
+				$options['focus'] = $attr['focus'];
 			}
 			HTML::input($id, $input_attr);
 			if (!isset($attr['nodiv'])) {

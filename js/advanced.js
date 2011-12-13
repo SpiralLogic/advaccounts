@@ -44,6 +44,7 @@ jQuery.fn.quickEach = (function () {
 	(function () {
 		var extender = jQuery.extend;
 		this.o.wrapper = $("#wrapper");
+		this.o.autocomplete = {};
 		this.loader.prependTo(Adv.$content).hide()
 		 .ajaxStart(function () {
 			 if (!Adv.loader.disabled) $(this).show();
@@ -84,7 +85,7 @@ Adv.extend({
 				 (data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
 			 }
 		 catch (e)
-			 {}
+			 { Adv.hideStatus()}
 	 }),
 	showStatus:function (status) {
 		Adv.msgbox.empty();
@@ -136,7 +137,27 @@ Adv.extend({Forms:(function () {
 				 $(el).data('init', value);
 			 }
 			)
+		},
+		autocomplete:function (id, url, callback) {
+			Adv.o.autocomplete[id] = $('#'+id).autocomplete({
+				autoFocus:true,
+				source:function (request, response) {
+					var lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+						if (xhr === lastXhr)
+							{
+								response(data);
+							}
+					});
+				},
+				select:function (event, ui) {
+					if (callback(ui.item, event, this) === false) return false;
+				}
+			}).css({'z-index':'2'}).bind('paste', function () {
+				 console.log(id.val());
+				 id.autocomplete('search', id.val())
+			 });
 		}
+
 	}
 })()});
 Adv.extend({

@@ -78,7 +78,7 @@ JS;
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
-		public $webid = '';
+	//	public $webid = '';
 		protected $_table = 'debtors_master';
 		protected $_id_column = 'debtor_no';
 
@@ -180,10 +180,10 @@ JS;
 		}
 
 		public function save($changes = null) {
-			$data['debtor_ref'] = substr($this->name, 0, 29);
-			$data['discount'] = User::numeric($this->discount) / 100;
-			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
-			$data['credit_limit'] = User::numeric($this->credit_limit);
+			$changes['debtor_ref'] = substr($this->name, 0, 29);
+			$changes['discount'] = User::numeric($this->discount) / 100;
+			$changes['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+			$changes['credit_limit'] = User::numeric($this->credit_limit);
 			parent::save($changes);
 			$this->accounts->save(array('debtor_no' => $this->id));
 			foreach ($this->branches as $branch_code => $branch) {
@@ -346,6 +346,7 @@ JS;
 				return false;
 			}
 			foreach ($this->branches as $branch) {
+				$branch->debtor_no=$this->id;
 				if ($branch->name == 'New Address') {
 					$branch->name = $this->name;
 				}

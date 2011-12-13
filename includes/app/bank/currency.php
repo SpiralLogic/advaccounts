@@ -56,9 +56,9 @@
 						case PT_WORKORDER :
 							return Bank_Currency::for_company();
 						case PT_CUSTOMER :
-							return Bank_Currency::get_customer_currency($person_id);
+							return Bank_Currency::for_debtor($person_id);
 						case PT_SUPPLIER :
-							return Bank_Currency::get_supplier_currency($person_id);
+							return Bank_Currency::for_creditor($person_id);
 						default :
 							return Bank_Currency::for_company();
 					}
