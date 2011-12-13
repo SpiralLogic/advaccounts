@@ -185,9 +185,7 @@
 		 */
 		static function show_db_error($msg, $sql_statement = null) {
 			$db_error = DB::error_no();
-			if ($db_error == 0) {
-				return;
-			}
+
 			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
 				$msg = _("The entered information is a duplicate. Please go back and enter different values.");
 			}
@@ -195,8 +193,7 @@
 			if ($sql_statement && Config::get('debug')) {
 				$str .= "<br>sql that failed was : " . $sql_statement . "<br>with error: " . DB::error_msg();
 			}
-			static::$dberrors[$str];
-			static::error($str);
+			static::$dberrors[]=$str;
 		}
 
 		/**

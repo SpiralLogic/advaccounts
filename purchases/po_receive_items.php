@@ -150,7 +150,7 @@
 	}
 
 	function process_receive_po() {
-		$Ajax = Ajax::i();
+
 		if (!can_process()) {
 			return;
 		}
@@ -164,7 +164,7 @@
 			unset($_SESSION['PO']->line_items);
 			unset($_SESSION['PO']);
 			unset($_POST['ProcessGoodsReceived']);
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
 		$_SESSION['supplier_id'] = $_SESSION['PO']->supplier_id;
@@ -199,7 +199,7 @@
 				}
 			}
 		}
-		$Ajax->activate('grn_items');
+		Ajax::i()->activate('grn_items');
 	}
 	if (isset($_POST['ProcessGoodsReceived'])) {
 		process_receive_po();

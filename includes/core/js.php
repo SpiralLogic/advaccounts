@@ -285,6 +285,7 @@ JS;
 				$status['status'] = false;
 				$status['message'] = $message['message'];
 			}
+ob_end_clean();
 			echo	 json_encode($data);
 			JS::$outputted = true;
 			exit();

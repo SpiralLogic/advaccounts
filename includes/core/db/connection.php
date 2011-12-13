@@ -108,10 +108,10 @@
 						return new DB_Query_Result($prepared, $data);
 					case DB::INSERT:
 						$prepared->execute($data);
-						return $this->lastInsertId();
+						return $this->conn->lastInsertId();
 					case DB::UPDATE or DB::DELETE:
 						$prepared->execute($data);
-						return $prepared->rowCount();
+						return true;
 				}
 			}
 			catch (PDOException $e) {

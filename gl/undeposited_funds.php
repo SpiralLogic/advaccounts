@@ -183,7 +183,7 @@
 		}
 	}
 	$_POST['deposited'] = $_POST['to_deposit'];
-	$Ajax->activate('summary');
+	Ajax::i()->activate('summary');
 	start_form();
 	echo "<hr>";
 	Display::div_start('summary');
