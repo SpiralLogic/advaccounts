@@ -29,9 +29,12 @@
 		'tst_subdirs',
 		'tst_langs',
 		'tst_tmpdir',
-		'tst_sessionpath',
+		'tst_sessionhandler',
+			'tst_sessionpath',
 		'tst_config',
 		'tst_extconfig'
+
+
 	);
 	function tst_mysql() {
 		$test['descr'] = _('MySQL version') . ' >3.23.58';
@@ -62,10 +65,19 @@
 	function tst_sessionpath() {
 		$test['descr'] = _('Session save path');
 		$test['type'] = 0;
-		$test['test'] = session_save_path();
+		$test['test'] = 			session_save_path();
+
 		$test['result'] = true;
 		return $test;
 	}
+
+		function tst_sessionhandler() {
+			$test['descr'] = _('Session handler');
+			$test['type'] = 0;
+			$test['test'] = session_module_name();
+			$test['result'] = true;
+			return $test;
+		}
 
 	function tst_browser() {
 		$test['descr'] = _('Browser type');

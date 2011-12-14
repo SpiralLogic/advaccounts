@@ -22,17 +22,17 @@
 	if (list_updated('stock_id')) {
 		$_POST['NewStockID'] = get_post('stock_id');
 		clear_data();
-		$Ajax->activate('details');
-		$Ajax->activate('controls');
+		Ajax::i()->activate('details');
+		Ajax::i()->activate('controls');
 	}
 	if (get_post('cancel')) {
 		$_POST['NewStockID'] = $_POST['stock_id'] = '';
 		clear_data();
 		JS::set_focus('stock_id');
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (list_updated('category_id') || list_updated('mb_flag')) {
-		$Ajax->activate('details');
+		Ajax::i()->activate('details');
 	}
 	$upload_file = "";
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
@@ -70,7 +70,7 @@
 		if ($upload_file == 'Yes') {
 			$result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 		}
-		$Ajax->activate('details');
+		Ajax::i()->activate('details');
 		/* EOF Add Image upload for New Item - by Ori */
 	}
 	Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
@@ -134,7 +134,7 @@
 				);
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
-				$Ajax->activate('stock_id'); // in case of status change
+				Ajax::i()->activate('stock_id'); // in case of status change
 				Errors::notice(_("Item has been updated."));
 			} else { //it is a NEW part
 				Item::add(
@@ -158,14 +158,14 @@
 				Session::i()->global_stock_id = $_POST['NewStockID'];
 				$_POST['stock_id'] = $_POST['NewStockID'];
 			}
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 	if (get_post('clone')) {
 		unset($_POST['stock_id']);
 		unset($_POST['inactive']);
 		JS::set_focus('NewStockID');
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	function check_usage($stock_id, $dispmsg = true) {
 		$sqls = array(
@@ -220,7 +220,7 @@
 			$_POST['stock_id'] = '';
 			clear_data();
 			$new_item = true;
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 	start_form(true);
@@ -238,7 +238,7 @@
 		end_table();
 		if (get_post('_show_inactive_update')) {
 			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
-			$Ajax->activate('stock_id');
+			Ajax::i()->activate('stock_id');
 		}
 	}
 	Display::div_start('details');

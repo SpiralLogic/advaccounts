@@ -131,7 +131,7 @@
 				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST);
 			require(DOCROOT . "access/login.php");
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
-				$Ajax->activate('_page_body');
+				Ajax::i()->activate('_page_body');
 			}
 			exit();
 		}

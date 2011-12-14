@@ -36,4 +36,7 @@ include 'bootstrap.php';
 	}
 
 $c=new Debtor(array("id"=>4689,'name'=>'testy'));
-var_dump($c);*/
+var_dump($c);*/;
+
+
+

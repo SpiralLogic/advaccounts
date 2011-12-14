@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Inventory Item Movement"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	if (get_post('ShowMoves')) {
-		$Ajax->activate('doc_tbl');
+		Ajax::i()->activate('doc_tbl');
 	}
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];

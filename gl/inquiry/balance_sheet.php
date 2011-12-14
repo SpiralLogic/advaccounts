@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Balance Sheet Drilldown"));
 	// Ajax updates
 	if (get_post('Show')) {
-		$Ajax->activate('balance_tbl');
+		Ajax::i()->activate('balance_tbl');
 	}
 	if (isset($_GET["TransFromDate"])) {
 		$_POST["TransFromDate"] = $_GET["TransFromDate"];

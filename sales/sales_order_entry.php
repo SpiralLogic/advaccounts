@@ -39,7 +39,7 @@
 	}
 	if (Input::get('customer_id', Input::NUMERIC)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
-		$Ajax->activate('customer_id');
+		Ajax::i()->activate('customer_id');
 	}
 	if (Input::get('NewDelivery') > -1) {
 		$page_title = _($help_context = "Direct Sales Delivery");
@@ -84,7 +84,7 @@
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
-		$Ajax->activate('customer_id');
+		Ajax::i()->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
 		page_complete($_GET['AddedID'], ST_SALESORDER, "Order", true);
@@ -233,7 +233,7 @@
 
 	function line_start_focus() {
 		$Ajax = Ajax::i();
-		$Ajax->activate('items_table');
+		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
@@ -332,7 +332,7 @@
 		$so_type = $_SESSION['Items']->so_type;
 		$_SESSION['Items']->write(1);
 		if (Errors::$fatal) { // abort on failure or error messages are lost
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
@@ -358,7 +358,7 @@
 		}
 	}
 	if (isset($_POST['update'])) {
-		$Ajax->activate('items_table');
+		Ajax::i()->activate('items_table');
 	}
 	function check_item_data() {
 		if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
@@ -442,7 +442,7 @@
 				Display::meta_forward('/index.php', 'application=sales');
 			}
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 		Sales_Order::finish();
 		Page::footer_exit();
 	}
@@ -518,7 +518,7 @@
 		} else {
 			$_SESSION['Items']->discount_all($_POST['_discountall'] / 100);
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (isset($_POST['AddItem'])) {
 		handle_new_item();

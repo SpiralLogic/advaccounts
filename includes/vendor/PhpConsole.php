@@ -300,6 +300,9 @@ class PhpConsole {
 			self::$instance->handle($event);
 		}
 	}
+	public static function shutdown() {
+		static::$instance->checkFatalError();
+	}
 }
 
 class PhpConsoleEvent {

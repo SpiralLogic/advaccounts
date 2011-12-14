@@ -16,7 +16,7 @@
 	// Ajax updates
 	//
 	if (get_post('Show')) {
-		$Ajax->activate('balance_tbl');
+		Ajax::i()->activate('balance_tbl');
 	}
 	function gl_inquiry_controls() {
 		start_form();

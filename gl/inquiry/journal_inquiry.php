@@ -16,7 +16,7 @@
 	// Ajax updates
 	//
 	if (get_post('Search')) {
-		$Ajax->activate('journal_tbl');
+		Ajax::i()->activate('journal_tbl');
 	}
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = -1;

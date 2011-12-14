@@ -22,7 +22,7 @@
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
-		$Ajax->activate('dim_table');
+		Ajax::i()->activate('dim_table');
 	} elseif (get_post('_OrderNumber_changed'))
 	{
 		$disable = get_post('OrderNumber') !== '';
@@ -38,7 +38,7 @@
 		{
 			JS::set_focus('type_');
 		}
-		$Ajax->activate('dim_table');
+		Ajax::i()->activate('dim_table');
 	}
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];

@@ -79,7 +79,7 @@
 	function update_data() {
 		global $update_pager;
 		$Ajax = Ajax::i();
-		$Ajax->activate('summary');
+		Ajax::i()->activate('summary');
 		$update_pager = true;
 	}
 
@@ -93,7 +93,7 @@
 		}
 		if (get_post('bank_date') == '') // new reconciliation
 		{
-			$Ajax->activate('bank_date');
+			Ajax::i()->activate('bank_date');
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"

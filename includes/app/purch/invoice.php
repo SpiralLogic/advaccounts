@@ -560,13 +560,13 @@
 			table_header(_("Date") . ":");
 			date_cells(null, 'tran_date', '', true, 0, 0, 0, "", true);
 			if (isset($_POST['_tran_date_changed'])) {
-				$Ajax->activate('_ex_rate');
+				Ajax::i()->activate('_ex_rate');
 				$supp_trans->tran_date = $_POST['tran_date'];
 				end_row();
 				start_row();
 				Purch_Trans::get_duedate_from_terms($supp_trans);
 				$_POST['due_date'] = $supp_trans->due_date;
-				$Ajax->activate('due_date');
+				Ajax::i()->activate('due_date');
 			}
 			end_row();
 			start_row();

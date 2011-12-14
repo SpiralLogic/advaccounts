@@ -51,7 +51,7 @@
 					Errors::notice(_("Password Changed"));
 				}
 			}
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	} elseif (Input::session('change_password')) {
 		Errors::warning('You are required to change your password!');

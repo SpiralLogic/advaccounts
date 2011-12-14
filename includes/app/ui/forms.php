@@ -171,16 +171,16 @@
 				$txt = $_POST[$name];
 			}
 			if (!$opts['async']) {
-				$Ajax->activate('_page_body');
+				Ajax::i()->activate('_page_body');
 			} else {
-				$Ajax->activate($name);
+				Ajax::i()->activate($name);
 			}
 		}
 		if (isset($_POST[$search_button])) {
 			if (!$opts['async']) {
-				$Ajax->activate('_page_body');
+				Ajax::i()->activate('_page_body');
 			} else {
-				$Ajax->activate($name);
+				Ajax::i()->activate($name);
 			}
 		}
 		if ($search_box) {
@@ -190,9 +190,9 @@
 				if (isset($_POST[$search_button])) {
 					$selected_id = array(); // ignore selected_id while search
 					if (!$opts['async']) {
-						$Ajax->activate('_page_body');
+						Ajax::i()->activate('_page_body');
 					} else {
-						$Ajax->activate($name);
+						Ajax::i()->activate($name);
 					}
 				}
 				if ($txt == '') {
@@ -386,9 +386,9 @@
 		} // code is generalized for multiple selection support
 		if (isset($_POST['_' . $name . '_update'])) {
 			if (!$opts['async']) {
-				$Ajax->activate('_page_body');
+				Ajax::i()->activate('_page_body');
 			} else {
-				$Ajax->activate($name);
+				Ajax::i()->activate($name);
 			}
 		}
 		// ------ make selector ----------
@@ -820,17 +820,14 @@
 			label_cell($label, $params);
 		}
 		echo "<td>";
-		$class = $submit_on_change ? 'class="searchbox"' : '';
+		$class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
 		$aspect = $check ? 'aspect="cdate"' : '';
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
-		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
+		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
 		 '') . " > $post_label";
 		echo "</td>\n";
-		DatePicker::add($name, array(
-																'numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'
-													 ), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
@@ -1055,7 +1052,7 @@
 			Arr::insert($th, count($th) - 2, _("Inactive"));
 		}
 		if (get_post('_show_inactive_update')) {
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 

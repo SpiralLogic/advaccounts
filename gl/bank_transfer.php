@@ -23,7 +23,7 @@
 		Page::footer_exit();
 	}
 	if (isset($_POST['_DatePaid_changed'])) {
-		$Ajax->activate('_ex_rate');
+		Ajax::i()->activate('_ex_rate');
 	}
 	function gl_payment_controls() {
 		$home_currency = Bank_Currency::for_company();

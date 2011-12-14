@@ -117,7 +117,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $inact;
 		$_POST['customer_id'] = $cust_id;
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	function branch_email($row) {
 		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';

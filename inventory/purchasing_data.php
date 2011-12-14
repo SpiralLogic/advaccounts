@@ -78,10 +78,10 @@
 	}
 	if (isset($_POST['_selected_id_update'])) {
 		$selected_id = $_POST['selected_id'];
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (list_updated('stock_id')) {
-		$Ajax->activate('price_table');
+		Ajax::i()->activate('price_table');
 	}
 	if (Input::request('frame')) {
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');

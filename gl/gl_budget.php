@@ -84,10 +84,10 @@
 			Errors::notice(_("The Budget has been deleted."));
 		}
 		//Display::meta_forward($_SERVER['PHP_SELF']);
-		$Ajax->activate('budget_tbl');
+		Ajax::i()->activate('budget_tbl');
 	}
 	if (isset($_POST['submit']) || isset($_POST['update'])) {
-		$Ajax->activate('budget_tbl');
+		Ajax::i()->activate('budget_tbl');
 	}
 	start_form();
 	if (Validation::check(Validation::GL_ACCOUNTS)) {

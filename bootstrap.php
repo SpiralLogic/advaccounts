@@ -35,15 +35,16 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
-
-	set_exception_handler(function (\Exception $e) {
-if (!class_exists('Errors',false))include(COREPATH.'errors.php');
-		return \Errors::exception_handler($e);
-	});
+	include VENDORPATH . 'PhpConsole.php';
 	set_error_handler(function ($severity, $message, $filepath, $line) {
-		if (!class_exists('Errors',false))include(COREPATH.'errors.php');
+		if (!class_exists('Errors', false)) include(COREPATH . 'errors.php');
 
 		return \Errors::handler($severity, $message, $filepath, $line);
+	});
+
+	set_exception_handler(function (\Exception $e) {
+		if (!class_exists('Errors', false)) include(COREPATH . 'errors.php');
+		return \Errors::exception_handler($e);
 	});
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {

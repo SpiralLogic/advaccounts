@@ -66,7 +66,7 @@
 	}
 	Display::div_end();
 	if (get_post('RefreshInquiry')) {
-		$Ajax->activate('totals_tbl');
+		Ajax::i()->activate('totals_tbl');
 	}
 	function systype_name($dummy, $type) {
 		global $systypes_array;

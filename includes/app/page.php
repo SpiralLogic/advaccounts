@@ -19,7 +19,7 @@
 			$selected_id = get_post('selected_id', $default);
 			foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
 				if (isset($_POST[$m])) {
-					$Ajax->activate('_page_body');
+					Ajax::i()->activate('_page_body');
 					if ($m == 'RESET' || $m == 'CLONE') {
 						$selected_id = $default;
 					}
@@ -34,7 +34,7 @@
 						//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
 						unset($_POST['_focus']); // focus on first form entry
 						$selected_id = quoted_printable_decode(substr($p, strlen($m)));
-						$Ajax->activate('_page_body');
+						Ajax::i()->activate('_page_body');
 						$Mode = $m;
 						return;
 					}

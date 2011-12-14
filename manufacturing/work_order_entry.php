@@ -203,7 +203,7 @@
 		Display::meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
 	if (get_post('_type_update')) {
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	start_form();
 	start_table('tablestyle2');
@@ -259,7 +259,7 @@
 	} else {
 		Item_UI::manufactured_row(_("Item:"), 'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
-			$Ajax->activate('quantity');
+			Ajax::i()->activate('quantity');
 		}
 		Inv_Location::row(_("Destination Location:"), 'StockLocation', null);
 	}

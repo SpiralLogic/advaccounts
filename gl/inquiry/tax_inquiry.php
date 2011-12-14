@@ -17,7 +17,7 @@
 	// Ajax updates
 	//
 	if (get_post('Show')) {
-		$Ajax->activate('trans_tbl');
+		Ajax::i()->activate('trans_tbl');
 	}
 	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
 		$date = Dates::Today();

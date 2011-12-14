@@ -21,7 +21,7 @@
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
-		$Ajax->activate('customer_id');
+		Ajax::i()->activate('customer_id');
 	}
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
@@ -123,14 +123,14 @@
 	}
 	if (isset($_POST['_customer_id_button'])) {
 		//	unset($_POST['branch_id']);
-		$Ajax->activate('BranchID');
+		Ajax::i()->activate('BranchID');
 	}
 	if (isset($_POST['_DateBanked_changed'])) {
-		$Ajax->activate('_ex_rate');
+		Ajax::i()->activate('_ex_rate');
 	}
 	if (list_updated('customer_id') || list_updated('bank_account')) {
 		$_SESSION['alloc']->read();
-		$Ajax->activate('alloc_tbl');
+		Ajax::i()->activate('alloc_tbl');
 	}
 	if (isset($_POST['AddPaymentItem'])) {
 		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);

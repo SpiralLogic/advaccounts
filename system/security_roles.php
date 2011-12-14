@@ -35,8 +35,8 @@
 	}
 
 	if (list_updated('role')) {
-		$Ajax->activate('details');
-		$Ajax->activate('controls');
+		Ajax::i()->activate('details');
+		Ajax::i()->activate('controls');
 	}
 	function clear_data() {
 		unset($_POST);
@@ -104,7 +104,7 @@
 			}
 			$new_role = true;
 			clear_data();
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 	if (get_post('delete')) {
@@ -115,11 +115,11 @@
 			Errors::notice(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (get_post('cancel')) {
 		unset($_POST['role']);
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 		$id = get_post('role');
@@ -152,7 +152,7 @@
 		}
 		if ($clone) {
 			JS::set_focus('name');
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		} else
 		{
 			$_POST['role'] = $id;
@@ -168,11 +168,11 @@
 	end_table();
 	echo "<hr>";
 	if (get_post('_show_inactive_update')) {
-		$Ajax->activate('role');
+		Ajax::i()->activate('role');
 		JS::set_focus('role');
 	}
 	if (find_submit('_Section')) {
-		$Ajax->activate('details');
+		Ajax::i()->activate('details');
 	}
 	Display::div_start('details');
 	start_table('tablestyle2');

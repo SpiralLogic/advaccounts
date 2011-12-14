@@ -139,12 +139,12 @@
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
 				label_cell($order->line_items[$id]->description);
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			} else {
 				Item_UI::costable_cells(null, 'stock_id', null, false, true);
 				if (list_updated('stock_id')) {
-					$Ajax->activate('units');
-					$Ajax->activate('qty');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('qty');
 				}
 				$item_info = Item::get_edit_info(Input::post('stock_id'));
 				$dec = $item_info['decimals'];

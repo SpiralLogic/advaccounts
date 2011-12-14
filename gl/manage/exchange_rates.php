@@ -94,7 +94,7 @@
 		if (isset($_POST['get_rate'])) {
 			$_POST['BuyRate']
 			 = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
-			$Ajax->activate('BuyRate');
+			Ajax::i()->activate('BuyRate');
 		}
 		small_amount_row(
 			_("Exchange Rate:"), 'BuyRate', null, '',

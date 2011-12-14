@@ -61,7 +61,7 @@
 		$Ajax = Ajax::i();
 		$selected_id = '';
 		$_POST['name'] = '';
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 
 	function check_delete($name) {
@@ -109,7 +109,7 @@
 		}
 	}
 	if (get_post('_profile_id_update')) {
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	start_form();
 	start_table();

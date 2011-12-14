@@ -100,8 +100,12 @@ Adv.extend({
 		return window.open(url, title,
 		 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 	}
+
 })
 Adv.extend({Forms:(function () {
+	if (document.getElementsByClassName('datepicker')>0) {
+		Adv.o.wrapper.on('focus',".datepicker",function() { $(this).datepicker({numberOfMonths:3,showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus();$(this).unbind(event) });
+	}
 	return {
 		setFormValue:function (id, value, disabled) {
 			var els = document.getElementsByName(id);
@@ -155,7 +159,8 @@ Adv.extend({Forms:(function () {
 				 console.log(id.val());
 				 id.autocomplete('search', id.val())
 			 });
-		}
+		},
+
 
 	}
 })()});

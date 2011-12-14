@@ -113,7 +113,7 @@
 						$qid = GL_QuickEntry::get(get_post('qid'));
 						if (list_updated('qid')) {
 							unset($_POST['totamount']); // enable default
-							$Ajax->activate('totamount');
+							Ajax::i()->activate('totamount');
 						}
 						echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
 						$amount = Validation::input_num('totamount', $qid['base_amount']);

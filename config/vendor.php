@@ -24,5 +24,6 @@
 		'OLEwriter',
 		'JsHttpRequest',
 		'TCPDF',
-		'Cpdf'
+		'Cpdf',
+		'PhpConsole'
 	);

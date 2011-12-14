@@ -39,7 +39,7 @@
 		unset($_POST['amount']);
 		unset($_POST['memo_']);
 		unset($_POST['AddGLCodeToTrans']);
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		JS::set_focus('gl_code');
 	}
 
@@ -50,7 +50,7 @@
 		clear_fields();
 	}
 	if (isset($_POST['AddGLCodeToTrans'])) {
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		$input_error = false;
 		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
 		$result = DB::query($sql, "get account information");
@@ -181,26 +181,26 @@
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
 		Purch_Trans::i()->remove_grn_from_trans($id3);
-		$Ajax->activate('grn_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('grn_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	$id4 = find_submit('Delete2');
 	if ($id4 != -1) {
 		Purch_Trans::i()->remove_gl_codes_from_trans($id4);
 		clear_fields();
-		$Ajax->activate('gl_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('gl_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	if (isset($_POST['RefreshInquiry'])) {
-		$Ajax->activate('grn_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('grn_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	if (isset($_POST['go'])) {
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], Validation::input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
-		$Ajax->activate('totamount');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('totamount');
+		Ajax::i()->activate('inv_tot');
 	}
 	start_form();
 	Purch_Invoice::header(Purch_Trans::i());
@@ -214,11 +214,11 @@
 		Display::div_end();
 	}
 	if ($id != -1) {
-		$Ajax->activate('grn_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('grn_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	if (get_post('AddGLCodeToTrans')) {
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('inv_tot');
 	}
 	Display::br();
 	submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
