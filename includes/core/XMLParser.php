@@ -9,22 +9,68 @@
 
 		class XMLParser {
 
-			var $rawXML;
-			var $valueArray = array();
-			var $keyArray = array();
-			var $parsed = array();
-			var $index = 0;
-			var $attribKey = 'attributes';
-			var $valueKey = 'value';
-			var $cdataKey = 'cdata';
-			var $isError = false;
-			var $error = '';
+			/**
+			 * @public null
+			 */
+			public $rawXML;
+			/**
+			 * @public null
+			 */
+			public $parser;
 
+			/**
+			 * @public array
+			 */
+			public $valueArray = array();
+			/**
+			 * @public array
+			 */
+			public $keyArray = array();
+			/**
+			 * @public array
+			 */
+			public $parsed = array();
+			/**
+			 * @public int
+			 */
+			public $index = 0;
+			/**
+			 * @public string
+			 */
+			public $attribKey = 'attributes';
+			/**
+			 * @public string
+			 */
+			public $valueKey = 'value';
+			/**
+			 * @public string
+			 */
+			public $cdataKey = 'cdata';
+			/**
+			 * @public bool
+			 */
+			public $isError = false;
+			/**
+			 * @public string
+			 */
+			public $error = '';
+			/**
+						 * @public string
+						 */
+						public $status = '';
+
+			/**
+			 * @param null $xml
+			 */
 			function __construct($xml = NULL) {
 
 				$this->rawXML = $xml;
 			}
 
+			/**
+			 * @param null $xml
+			 * @return array|bool
+			 */
 			function parse($xml = NULL) {
 				if (!is_null($xml)) {
 					$this->rawXML = $xml;
@@ -43,6 +89,9 @@
 				return $this->parsed;
 			}
 
+			/**
+			 * @return array
+			 */
 			function parse_recurse() {
 				$found = array();
 				$tagCount = array();
@@ -108,6 +157,9 @@
 				return $found;
 			}
 
+			/**
+			 * @return bool
+			 */
 			function parse_init() {
 				$this->parser = xml_parser_create();
 
@@ -122,10 +174,17 @@
 
 				return $res;
 			}
-		static	function XMLtoArray($data) {
+
+			/**
+			 * @static
+			 * @param $data
+			 * @return array|mixed
+			 */
+			static	function XMLtoArray($data) {
 					$XML = new XMLParser($data);
 					$array = $XML->parse();
-					foreach ($array['xmldata'] as $key => $value) {
+				$result='';
+				foreach ($array['xmldata'] as $key => $value) {
 						$result[$key] = $value;
 					}
 					if (count($result) == 1) {

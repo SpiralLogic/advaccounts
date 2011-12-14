@@ -89,7 +89,7 @@
 					$this->_new();
 				}
 				$this->setFromArray($id);
-				return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
+				return $this->_status(true, 'initalise', get_class($this) . " details constructed!");
 			}
 			if (!$id || empty($id)) {
 				return $this->_new();

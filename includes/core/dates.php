@@ -159,7 +159,7 @@
 		}
 
 		/**
-		 *	Retrieve and optionaly set default date for new document.
+		 *	Retrieve and optionally set default date for new document.
 		 *
 		 * @param null $date
 		 *
@@ -541,7 +541,7 @@
 			return (int)($a / $b);
 		}
 
-		/* Based on convertor to and from Gregorian and Jalali calendars.
+		/* Based on converter to and from Gregorian and Jalali calendars.
 						Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
 						Released under GNU General Public License */
 		/**

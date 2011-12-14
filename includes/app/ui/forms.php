@@ -208,11 +208,11 @@
 							if (empty($text)) {
 								continue;
 							}
-							$search_feilds = $opts['search'];
-							foreach ($search_feilds as $i => $s) {
-								$search_feilds[$i] = $s . " LIKE '%{$text}%'";
+							$search_fields = $opts['search'];
+							foreach ($search_fields as $i => $s) {
+								$search_fields[$i] = $s . " LIKE '%{$text}%'";
 							}
-							$opts['where'][] = '(' . implode($search_feilds, ' OR ') . ')';
+							$opts['where'][] = '(' . implode($search_fields, ' OR ') . ')';
 						}
 					}
 				}

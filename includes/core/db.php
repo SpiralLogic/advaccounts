@@ -42,9 +42,18 @@
 		 * @var PDOStatement
 		 */
 		protected static $prepared = null;
+		/**
+		 * @var null
+		 */
 		protected static $debug = null;
+		/**
+		 * @var bool
+		 */
 		protected static $nested = false;
-		protected static $query= false;
+		/**
+		 * @var DB_Query
+		 */
+		protected static $query = false;
 		/**
 		 * @var
 		 */
@@ -65,6 +74,10 @@
 		 * @var
 		 */
 		protected $port;
+
+		protected $intransaction = false;
+
+
 		/***
 		 * @var PDO
 		 */
@@ -77,9 +90,9 @@
 		/***
 		 * @static
 		 *
-		 * @param null	$conn
 		 * @param array $config
 		 *
+		 * @internal PDO $conn
 		 * @return DB
 		 */
 		protected static function i($config = array()) {
@@ -90,6 +103,9 @@
 			return static::$i;
 		}
 
+		/**
+		 * @param $config
+		 */
 		protected function __construct($config) {
 			$this->name = $config['name'];
 			$this->user = $config['user'];
@@ -102,11 +118,13 @@
 
 		/**
 		 *
+		 * @return bool
 		 */
 		protected function _connect() {
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				return true;
 			}
 			catch (PDOException $e) {
 				return $this->_error($e, true);
@@ -122,13 +140,13 @@
 		 * @return null|PDOStatement
 		 */
 		public static function query($sql, $err_msg = null) {
-			static::$prepared=null;
+			static::$prepared = null;
 			try {
 				static::$prepared = static::i()->_prepare($sql);
 				static::$prepared->execute();
 			}
 			catch (PDOException $e) {
-				static::i()->_error($e);
+				static::i()->_error($e, $err_msg);
 			}
 			static::$data = array();
 			return static::$prepared;
@@ -151,7 +169,7 @@
 		 *
 		 * @param			$value
 		 * @param bool $null
-		 * @param bool $paramaterized
+		 * @internal param bool $paramaterized
 		 *
 		 * @return bool|mixed|string
 		 */
@@ -179,7 +197,8 @@
 		 *
 		 * @param $sql
 		 *
-		 * @return bool|null|PDOStatement
+		 * @param bool $debug
+		 * @return bool|PDOStatement
 		 * @throws DB_Exception
 		 */
 		protected function _prepare($sql, $debug = false) {
@@ -198,8 +217,15 @@
 			catch (PDOException $e) {
 				$this->_error($e);
 			}
+			return false;
 		}
 
+		/**
+		 * @static
+		 * @param $sql
+		 * @param bool $debug
+		 * @return null|PDOStatement
+		 */
 		public static function prepare($sql, $debug = false) {
 			static::$prepared = static::i()->_prepare($sql, $debug);
 			return static::$prepared;
@@ -221,9 +247,8 @@
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
 			catch (PDOException $e) {
-				return static::$i()->_error($e);
+				return static::i()->_error($e);
 			}
-
 		}
 
 		/**
@@ -240,9 +265,9 @@
 		 * @return DB_Query_Select
 		 */
 		public static function select($columns = null) {
-			static::$prepared=null;
+			static::$prepared = null;
 			$columns = (is_string($columns)) ? func_get_args() : array();
-			static::$query =new DB_Query_Select($columns, static::i());
+			static::$query = new DB_Query_Select($columns, static::i());
 			return static::$query;
 		}
 
@@ -267,10 +292,10 @@
 		 * @return DB_Query_Insert
 		 */
 		public static function insert($into) {
-			static::$prepared=null;
+			static::$prepared = null;
 			static::$query = new DB_Query_Insert($into, static::i());
 			return static::$query;
-			}
+		}
 
 		/**
 		 * @static
@@ -280,7 +305,7 @@
 		 * @return DB_Query_Delete
 		 */
 		public static function delete($into) {
-			static::$prepared=null;
+			static::$prepared = null;
 			static::$query = new DB_Query_Delete($into, static::i());
 			return static::$query;
 		}
@@ -296,7 +321,7 @@
 			if ($result !== null) {
 				return $result->fetch();
 			}
-			if (static::$prepared === null ) {
+			if (static::$prepared === null) {
 				return static::$query->fetch();
 			}
 			return static::$prepared->fetch(PDO::FETCH_BOTH);
@@ -345,6 +370,10 @@
 			return static::i()->conn->errorInfo();
 		}
 
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		public static function error_msg() {
 			$info = static::errorInfo();
 			return $info[2];
@@ -353,7 +382,7 @@
 		/**
 		 * @static
 		 *
-		 * @param PDO $value
+		 * @param int|PDO $value
 		 *
 		 * @return mixed
 		 */
@@ -395,7 +424,7 @@
 			if (!static::i()->conn->inTransaction() && !static::i()->intransaction) {
 				try {
 					static::i()->conn->beginTransaction();
-					static::i()->intransaciton = true;
+					static::i()->intransaction = true;
 				}
 				catch (PDOException $e) {
 					static::i()->_error($e);
@@ -409,7 +438,7 @@
 		 */
 		public static function commit() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
-				static::i()->intransaciton = false;
+				static::i()->intransaction = false;
 				try {
 					static::i()->conn->commit();
 				}
@@ -426,7 +455,7 @@
 		public static function cancel() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
 				try {
-					static::i()->intransaciton = false;
+					static::i()->intransaction = false;
 					static::i()->conn->rollBack();
 				}
 				catch (PDOException $e) {
@@ -435,7 +464,7 @@
 			}
 		}
 
-		//	Update record activity status.
+		//
 		//
 		/**
 		 * @static
@@ -444,29 +473,29 @@
 		 * @param $status
 		 * @param $table
 		 * @param $key
+		 * Update record activity status.
+		 * @return \DB_Query_Result
 		 */
 		public static function update_record_status($id, $status, $table, $key) {
 			$result = static::update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
 			if (!$result) {
-				$reuslt = static::insert_record_status($id, $status, $table, $key);
+				$result = static::insert_record_status($id, $status, $table, $key);
 			}
-			return $result;
-		}
-
-		public static function insert_record_status($id, $status, $table, $key) {
-			$reuslt = static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
 			return $result;
 		}
 
 		/**
 		 * @static
-		 *
-		 * @param $name
-		 * @param $config
-		 *
-		 * @return mixed
+		 * @param $id
+		 * @param $status
+		 * @param $table
+		 * @param $key
+		 * @return DB_Query_Result
 		 */
-		protected $intransaction = false;
+		public static function insert_record_status($id, $status, $table, $key) {
+			$result = static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
+			return $result;
+		}
 
 
 		/***
@@ -499,23 +528,29 @@
 
 		/**
 		 * @param PDOException $e
-		 * @param bool				 $exit
+		 * @param bool $msg
+		 * @param string|bool				 $exit
 		 *
 		 * @return bool
 		 * @throws DB_Exception
 		 */
-		protected function _error(PDOException $e, $exit = false) {
+		protected function _error(PDOException $e, $msg = false, $exit = false) {
 
 			if (static::$data && static::$queryString) {
 				$sql = static::$queryString;
-				foreach ($data as $k => $v) {
+				foreach (static::$data as $k => $v) {
+					$sql = preg_replace(':' . $k, " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+				}
+				foreach (static::$data as $v) {
 					$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 				}
 			}
 			if (Config::get('debug_sql')) {
-				$error = '<p>DATABASE ERROR: <pre>' . '</pre></p><p><pre></pre></p>';
-			} else {
 				$error = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
+			} elseif ($msg!=false) {
+				$error = '<p>DATABASE ERROR: <pre>' . $msg . '</pre></p><p><pre></pre></p>';
+			}else {
+				$error = "Unknown Database Error";
 			}
 			if ($this->conn->inTransaction() || $this->intransaction) {
 				$this->conn->rollBack();

@@ -43,13 +43,6 @@
 			session_regenerate_id();
 		}
 
-		/**
-		 * @static
-		 *
-		 */
-		public static function hasLogin() {
-			static::i()->checkLogin();
-		}
 
 		/**
 		 * @var Session

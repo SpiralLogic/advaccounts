@@ -3,11 +3,11 @@
 		window.AdvAcc = {};
 	}
 	var AdvAcc = function() {
-		var btnCancel, btnSupplier, feildsChanged = 0, tabs, resetHighlights = function() {
+		var btnCancel, btnSupplier, fieldsChanged = 0, tabs, resetHighlights = function() {
 			$(".ui-state-highlight").removeClass("ui-state-highlight");
 			btnSupplier.hide();
 			btnCancel.button('option', 'label', 'New');
-			feildsChanged = 0;
+			fieldsChanged = 0;
 			window.onbeforeunload = function() {
 				return null
 			};
@@ -184,7 +184,7 @@ $(function() {
 	tabs = $("#tabs");
 	loader = $("<div></div>").hide().attr('id', 'loader').prependTo('#content');
 	btnCancel = $("#btnCancel").button().click(function() {
-		(	!feildsChanged > 0) ? resetState() : revertState();
+		(	!fieldsChanged > 0) ? resetState() : revertState();
 		return false;
 	});
 	btnSupplier = $("#btnSupplier").button().click(function(event) {
@@ -200,11 +200,11 @@ $(function() {
 			return;
 		}
 		event.stopImmediatePropagation();
-		feildsChanged++;
+		fieldsChanged++;
 		if ($(this).data('init') == $(this).val()) {
 			$(this).removeClass("ui-state-highlight");
-			feildsChanged--;
-			if (feildsChanged == 0) {
+			fieldsChanged--;
+			if (fieldsChanged == 0) {
 				resetHighlights();
 			}
 			return;
@@ -212,7 +212,7 @@ $(function() {
 		stateModified($(this));
 	});
 	tabs.delegate(".tablestyle_inner td :nth-child(1)", "keydown", function(event) {
-		if (feildsChanged > 0) {
+		if (fieldsChanged > 0) {
 			return;
 		}
 		$(this).trigger('change');

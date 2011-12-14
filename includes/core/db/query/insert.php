@@ -18,11 +18,11 @@
 		/**
 		 * @var array
 		 */
-		protected $feilds = array();
+		protected $fields = array();
 		/**
 		 * @var array
 		 */
-		protected $hasFeilds = array();
+		protected $hasfields = array();
 		/**
 		 * @var array
 		 */
@@ -38,13 +38,14 @@
 				$this->into($table);
 			}
 			$this->type = DB::INSERT;
-			$this->hasFeilds = Cache::get('INFORMATION_SCHEMA.COLUMNS.'.$table);
-			if (!$this->hasFeilds){
+			$this->hasfields = Cache::get('INFORMATION_SCHEMA.COLUMNS.'.$table);
+			if (!$this->hasfields){
 			$query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), false);
-			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-				$this->hasFeilds[] = $row['COLUMN_NAME'];
+				/** @noinspection PhpAssignmentInConditionInspection */
+				while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+				$this->hasfields[] = $row['COLUMN_NAME'];
 			}
-				Cache::set('INFORMATION_SCHEMA.COLUMNS.'.$table,$this->hasFeilds);
+				Cache::set('INFORMATION_SCHEMA.COLUMNS.'.$table,$this->hasfields);
 			}
 			return $this;
 		}
@@ -100,9 +101,9 @@
 			if ($this->data !== null) {
 				$this->values((array)$data);
 			}
-			$this->data = array_intersect_key($this->data, array_flip($this->hasFeilds));
+			$this->data = array_intersect_key($this->data, array_flip($this->hasfields));
 
-			$this->feilds = array_keys($this->data);
+			$this->fields = array_keys($this->data);
 
 			return $this->_buildQuery();
 		}
@@ -112,8 +113,8 @@
 		 */
 		protected function _buildQuery() {
 			$sql = "INSERT INTO " . $this->table . " (";
-			$sql .= implode(', ', $this->feilds) . ") VALUES (";
-			$sql .= ':' . implode(', :', str_replace('-', '_', $this->feilds));
+			$sql .= implode(', ', $this->fields) . ") VALUES (";
+			$sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));
 			$sql .= ') ';
 			return $sql;
 		}

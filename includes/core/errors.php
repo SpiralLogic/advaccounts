@@ -105,7 +105,7 @@
 			// Please use restrainedly to not risk loss of important messages
 			// error_reporting==0 when messages are set off with @
 			if ($type > E_USER_NOTICE || $type==E_STRICT) {
-				return;
+				return true;
 			}
 			if (static::$count > 5) {
 				Page::footer_exit();
@@ -181,7 +181,7 @@
 		 *
 		 * @param			$msg
 		 * @param null $sql_statement
-		 * @param bool $exit
+		 * @internal param bool $exit
 		 *
 		 * @throws DB_Exception
 		 */

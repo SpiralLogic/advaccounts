@@ -82,6 +82,7 @@
 				$fileData = $fr . $cdrec . $eof_ctrl_dir;
 				// total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
 				$fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
+				/** @noinspection PhpAssignmentInConditionInspection */
 				if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
 					fwrite($zp, $fileData);
 					fclose($zp);
@@ -91,6 +92,7 @@
 				}
 				// uncompressed
 			} else {
+				/** @noinspection PhpAssignmentInConditionInspection */
 				if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
 					fwrite($zp, $fileData);
 					fclose($zp);
