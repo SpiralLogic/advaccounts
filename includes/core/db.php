@@ -497,7 +497,6 @@
 			return false;
 		}
 
-
 		/**
 		 * @param PDOException $e
 		 * @param bool				 $exit

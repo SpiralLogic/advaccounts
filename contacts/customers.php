@@ -4,8 +4,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Session::i()->App->selected_application = 'Contacts';
 	if (isset($_POST['name'])) {
-		$data['customer'] = $customer = new Debtor();
-		$data['customer']->save($_POST);
+		$data['customer'] = $customer = new Debtor($_POST);
+		$data['customer']->save();
 	} elseif (Input::request('id', Input::NUMERIC) > 0) {
 		$data['customer'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);

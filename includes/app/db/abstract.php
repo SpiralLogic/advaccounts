@@ -85,6 +85,8 @@
 				$this->_defaults();
 				if (isset($id['id']) && $id['id']) {
 					$this->_read($id['id']);
+				}else {
+					$this->_new();
 				}
 				$this->setFromArray($id);
 				return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
@@ -98,21 +100,17 @@
 			if (!is_array($changes) || count($changes) == 0) {
 				return $this->_status(false, 'setFromArray', 'Variable array was either not passed, empty or is not an array');
 			}
-			$remainder = array();
 			foreach ($changes as $key => $value) {
-				if (!is_array($value)) {
+				if (!is_array($value))
 					$value = (trim($value) == null) ? '' : trim($value);
-				}
+
 
 				if (property_exists($this, $key)) {
 					if ($this->$key == null && ($value === '' || $value === 'null')) {
 						$value = null;
 					}
 					$this->$key = $value;
-				} else {
-					$remainder[$key] = $value;
 				}
-				return $remainder;
 			}
 		}
 
