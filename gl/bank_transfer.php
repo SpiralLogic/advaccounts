@@ -82,10 +82,9 @@
 			JS::set_focus('ref');
 			return false;
 		}
+
 		if (!Ref::is_new($_POST['ref'], ST_BANKTRANSFER)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
+			$_POST['ref'] = Ref::get_next(ST_BANKTRANSFER);
 		}
 		if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
 			Errors::error(_("The source and destination bank accouts cannot be the same ."));

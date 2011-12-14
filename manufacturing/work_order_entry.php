@@ -75,9 +75,8 @@
 				return false;
 			}
 			if (!Ref::is_new($_POST['wo_ref'], ST_WORKORDER)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('wo_ref');
-				return false;
+				$_POST['ref'] = Ref::get_next(ST_WORKORDER);
+
 			}
 		}
 		if (!Validation::is_num('quantity', 0)) {

@@ -69,10 +69,8 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_CUSTPAYMENT)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
-		}
+			$_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
+								}
 		if (!Validation::is_num('amount', 0)) {
 			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::set_focus('amount');

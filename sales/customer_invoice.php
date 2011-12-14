@@ -216,10 +216,8 @@
 				return false;
 			}
 			if (!Ref::is_new($_POST['ref'], ST_SALESINVOICE)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('ref');
-				return false;
-			}
+				$_POST['ref'] = Ref::get_next(ST_SALESINVOICE);
+								}
 		}
 		if ($_POST['ChargeFreightCost'] == "") {
 			$_POST['ChargeFreightCost'] = Num::price_format(0);

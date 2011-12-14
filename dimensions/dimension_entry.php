@@ -61,10 +61,8 @@
 				return false;
 			}
 			if (!Ref::is_new($_POST['ref'], ST_DIMENSION)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('ref');
-				return false;
-			}
+						$_POST['ref'] = Ref::get_next(ST_DIMENSION);
+					}
 		}
 		if (strlen($_POST['name']) == 0) {
 			Errors::error(_("The dimension name must be entered."));

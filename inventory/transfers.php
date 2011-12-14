@@ -58,9 +58,7 @@
 			JS::set_focus('ref');
 			$input_error = 1;
 		} elseif (!Ref::is_new($_POST['ref'], ST_LOCTRANSFER)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			$input_error = 1;
+			$_POST['ref'] = Ref::get_next(ST_LOCTRANSFER);
 		} elseif (!Dates::is_date($_POST['AdjDate'])) {
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');

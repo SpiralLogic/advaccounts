@@ -105,10 +105,8 @@
 				JS::set_focus('ref');
 				$input_error = 1;
 			} elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('ref');
-				$input_error = 1;
-			}
+				$_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
+				}
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
 			Errors::error(_("The entered date for the credit note is invalid."));
