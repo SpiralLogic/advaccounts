@@ -69,7 +69,6 @@
 	Session::init();
 	Config::init();
 	$_GLOBALS['Ajax']=Ajax::i();
-Errors::init();
 	/***
 	 *
 	 */
