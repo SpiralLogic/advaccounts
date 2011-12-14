@@ -37,9 +37,12 @@
 	 */
 
 	set_exception_handler(function (\Exception $e) {
+if (!class_exists('Errors',false))include(COREPATH.'errors.php');
 		return \Errors::exception_handler($e);
 	});
 	set_error_handler(function ($severity, $message, $filepath, $line) {
+		if (!class_exists('Errors',false))include(COREPATH.'errors.php');
+
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
 	require COREPATH . 'autoloader.php';

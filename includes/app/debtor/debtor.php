@@ -6,8 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company
-	{
+	class Debtor extends Contacts_Company {
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
@@ -21,7 +20,7 @@
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
-		public $webid;
+		public $webid = null;
 		protected $_table = 'debtors_master';
 		protected $_id_column = 'debtor_no';
 
@@ -106,23 +105,25 @@
 		}
 
 		public function save($changes = null) {
+
 			$data['debtor_ref'] = substr($this->name, 0, 29);
 			$data['discount'] = User::numeric($this->discount) / 100;
 			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
 			$data['credit_limit'] = User::numeric($this->credit_limit);
 			parent::save($changes);
-		$this->accounts->save(array('parent_id' => $this->id));
-			/*	foreach ($this->branches as $branch_code => $branch) {
-			$branch->save(array('debtor_no' => $this->id));
+
+			$this->accounts->save(array('debtor_no' => $this->id));
+			foreach ($this->branches as $branch_code => $branch) {
+				$branch->save(array('debtor_no' => $this->id));
 				if ($branch_code == 0) {
 					$this->branches[$branch->branch_code] = $branch;
 					unset($this->branches[0]);
 				}
 			}
 			foreach ($this->contacts as &$contact) {
-			$contact->save(array('parent_id' => $this->id));
+				$contact->save(array('parent_id' => $this->id));
 				$this->contacts[$contact->id] = $contact;
-			}*/
+			}
 			return $this->_setDefaults();
 		}
 
@@ -162,6 +163,9 @@
 				return $this->_status(false, 'Processing',
 					"The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
 					'discount');
+			}
+			if (!is_numeric($this->webid)) {
+				$this->webid = null;
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
@@ -271,7 +275,7 @@
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
 			$customerBox->show();
 			$js = <<<JS
 							var val = $("#customer_id").val();
@@ -430,7 +434,7 @@ JS;
 
 		public static function get_credit($customer_id) {
 			$custdet = Debtor::get_details($customer_id);
-			return ($customer_id > 0 &&isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
+			return ($customer_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 		}
 
 		public static function is_new($id) {
@@ -445,7 +449,7 @@ JS;
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-																																						 'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
+				'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
 				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
 				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 		}

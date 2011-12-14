@@ -280,10 +280,12 @@ JS;
 				$status['var'] = basename($message['file']) . $message['line'];
 				$status['process'] = '';
 				$data['status'] = $status;
-			} elseif (isset($data['status']) && $data['status']['status'] == false && count(Errors::$dberrors) > 0) {
+			} elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
 				$message = array_pop(Errors::$dberrors);
 				$status['status'] = false;
-				$status['message'] = $message['message'];
+				$status['message'] = $message;
+				$data['status'] = $status;
+
 			}
 ob_end_clean();
 			echo	 json_encode($data);
