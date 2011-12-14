@@ -9,11 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Ref {
+	class Ref
+	{
 		public static function add($type, $id, $reference) {
 			$sql = "INSERT INTO refs (type, id, reference)
-			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", "
-			 . DB::escape(trim($reference)) . ")";
+			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", " . DB::escape(trim($reference)) . ")";
 			DB::query($sql, "could not add reference entry");
 			if ($reference != 'auto') {
 				static::save_last($type);
@@ -21,15 +21,13 @@
 		}
 
 		public static function find($type, $reference) {
-			$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type)
-			 . " AND reference=" . DB::escape($reference);
+			$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type) . " AND reference=" . DB::escape($reference);
 			$result = DB::query($sql, "could not query reference table");
 			return (DB::num_rows($result) > 0);
 		}
 
 		public static function save($type, $reference) {
-			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference))
-			 . " WHERE type_id = " . DB::escape($type);
+			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference)) . " WHERE type_id = " . DB::escape($type);
 			DB::query($sql, "The next transaction ref for $type could not be updated");
 		}
 
@@ -38,9 +36,9 @@
 			$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
 			$row = DB::fetch_row($result);
 			$ref = $row[0];
-			$oldref='auto';
-			while (!static::is_new($ref,$type) && ($oldref=!$ref)) {
-				$ref = $oldref;
+			$oldref = 'auto';
+			while (!static::is_new($ref, $type) && ($oldref != $ref)) {
+				$oldref = $ref;
 				$ref = static::increment($ref);
 			}
 			return $ref;
@@ -60,8 +58,7 @@
 		}
 
 		public static function update($type, $id, $reference) {
-			$sql = "UPDATE refs SET reference=" . DB::escape($reference)
-			 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
+			$sql = "UPDATE refs SET reference=" . DB::escape($reference) . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
 			DB::query($sql, "could not update reference entry");
 			if ($reference != 'auto') {
 				static::save_last($type);
