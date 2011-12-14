@@ -141,7 +141,7 @@
 		$Ajax = Ajax::i();
 		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 		DB::query($sql, "Can't change sales order type");
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	}
 
 	$id = find_submit('_chgtpl');
@@ -171,7 +171,7 @@
 		} else {
 			$Ajax->addFocus(true, 'OrdersAfterDate');
 		}
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	}
 	start_form();
 	start_table('tablestyle_noborder');

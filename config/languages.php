@@ -15,7 +15,7 @@
 			'encoding' => 'utf-8'
 		),
 		array(
-			'code' => 'en_GB',
+			'code' => 'en_US',
 			'name' => 'English',
 			'encoding' => 'utf-8'
 		)

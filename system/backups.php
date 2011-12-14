@@ -117,7 +117,7 @@
 	$conn = $connections[$db_name];
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
-		$Ajax->activate('backups');
+		Ajax::i()->activate('backups');
 	}
 	;
 	if (get_post('restore')) {
@@ -131,7 +131,7 @@
 				_("File successfully deleted.") . " "
 				 . _("Filename") . ": " . get_post('backups')
 			);
-			$Ajax->activate('backups');
+			Ajax::i()->activate('backups');
 		} else {
 			Errors::error(_("Can't delete backup file."));
 		}
@@ -146,7 +146,7 @@
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, BACKUP_PATH . $fname);
 			Errors::notice("File uploaded to backup directory");
-			$Ajax->activate('backups');
+			Ajax::i()->activate('backups');
 		} else
 		{
 			Errors::error(_("File was not uploaded into the system."));

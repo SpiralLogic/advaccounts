@@ -121,11 +121,11 @@
 		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 	}
 	if (isset($_POST['Update'])) {
-		$Ajax->activate('Items');
+		Ajax::i()->activate('Items');
 	}
 	if (isset($_POST['_InvoiceDate_changed'])) {
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
-		$Ajax->activate('due_date');
+		Ajax::i()->activate('due_date');
 	}
 	function check_quantities() {
 		$ok = 1;

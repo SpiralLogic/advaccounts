@@ -64,7 +64,7 @@
 		} else {
 			$Ajax->addFocus(true, 'DeliveryAfterDate');
 		}
-		$Ajax->activate('deliveries_tbl');
+		Ajax::i()->activate('deliveries_tbl');
 	}
 	start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
 	start_table('tablestyle_noborder');

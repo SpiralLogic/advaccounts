@@ -392,7 +392,7 @@
 					$line->quantity = $line->quantity / Purch_Trans::get_conversion_factor($old_supp,
 						$line->stock_id) * Purch_Trans::get_conversion_factor($order->supplier_id, $line->stock_id);
 				}
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			}
 			Session::i()->supplier_id = $_POST['supplier_id'];
 			if (!Bank_Currency::is_company($order->curr_code)) {
@@ -409,7 +409,7 @@
 			table_section(2);
 			date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 			if (isset($_POST['_OrderDate_changed'])) {
-				$Ajax->activate('_ex_rate');
+				Ajax::i()->activate('_ex_rate');
 			}
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 			Inv_Location::row(_("Receive Into:"), 'StkLocation', null, false, true);
@@ -421,7 +421,7 @@
 				if (DB::num_rows($result) == 1) {
 					$loc_row = DB::fetch($result);
 					$_POST['delivery_address'] = $loc_row["delivery_address"];
-					$Ajax->activate('delivery_address');
+					Ajax::i()->activate('delivery_address');
 					$_SESSION['PO']->Location = $_POST['StkLocation'];
 					$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 				} else { /* The default location of the user is crook */
@@ -541,19 +541,19 @@
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
 				textarea_cells(null, 'description', null, 50, 5);
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 				$qty_rcvd = $order->line_items[$id]->qty_received;
 			} else {
 				hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 				Item_Purchase::cells(null, 'stock_id', null, false, true, true);
 				if (list_updated('stock_id')) {
-					$Ajax->activate('price');
-					$Ajax->activate('units');
-					$Ajax->activate('description');
-					$Ajax->activate('qty');
-					$Ajax->activate('discount');
-					$Ajax->activate('req_del_date');
-					$Ajax->activate('line_total');
+					Ajax::i()->activate('price');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('description');
+					Ajax::i()->activate('qty');
+					Ajax::i()->activate('discount');
+					Ajax::i()->activate('req_del_date');
+					Ajax::i()->activate('line_total');
 				}
 				$item_info = Item::get_edit_info(Input::post('stock_id'));
 				$_POST['units'] = $item_info["units"];

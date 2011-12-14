@@ -19,7 +19,7 @@
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	} elseif (get_post('_order_number_changed')) {
 		$disable = get_post('order_number') !== '';
 		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
@@ -32,7 +32,7 @@
 		} else {
 			$Ajax->addFocus(true, 'OrdersAfterDate');
 		}
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	}
 	start_form();
 	start_table('tablestyle_noborder');

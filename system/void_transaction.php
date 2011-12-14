@@ -184,14 +184,14 @@
 		if (!check_valid_entries()) {
 			unset($_POST['ProcessVoiding']);
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (isset($_POST['ConfirmVoiding'])) {
 		handle_void_transaction();
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	if (isset($_POST['CancelVoiding'])) {
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	voiding_controls();
 	Renderer::end_page();

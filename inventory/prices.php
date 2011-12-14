@@ -68,15 +68,15 @@
 		$selected_id = -1;
 	}
 	if (list_updated('stock_id')) {
-		$Ajax->activate('price_table');
-		$Ajax->activate('price_details');
+		Ajax::i()->activate('price_table');
+		Ajax::i()->activate('price_details');
 	}
 	if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
 		// after change of stock, currency or salestype selector
 		// display default calculated price for new settings.
 		// If we have this price already in db it is overwritten later.
 		unset($_POST['price']);
-		$Ajax->activate('price_details');
+		Ajax::i()->activate('price_details');
 	}
 	$prices_list = Item_Price::get_all($_POST['stock_id']);
 	Display::div_start('price_table');

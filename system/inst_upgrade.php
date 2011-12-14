@@ -157,7 +157,7 @@
 			User::get()->prefs = new userPrefs($user);
 			Errors::notice(_('All companies data has been successfully updated'));
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	start_form();
 	start_table('tablestyle');

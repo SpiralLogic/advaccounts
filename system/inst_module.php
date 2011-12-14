@@ -312,7 +312,7 @@
 	}
 	start_form(true);
 	if (list_updated('extset')) {
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
 	echo Extensions::view('extset', null, true);

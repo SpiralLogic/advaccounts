@@ -948,7 +948,7 @@
 			$Ajax = Ajax::i();
 			if (Input::post('cart_id') && Input::Session($cartname) && Input::post('cart_id') != Input::session($cartname)->cart_id) {
 				Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
-				$Ajax->activate('_page_body');
+				Ajax::i()->activate('_page_body');
 				Page::footer_exit();
 			}
 		}
@@ -1144,7 +1144,7 @@ JS;
 				Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
 				if ($order->customer_id != get_post('customer_id', -1)) {
 					// customer has changed
-					$Ajax->activate('branch_id');
+					Ajax::i()->activate('branch_id');
 				}
 				Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 				if (($order->customer_id != get_post('customer_id', -1)) || ($order->Branch != get_post('branch_id',
@@ -1169,18 +1169,18 @@ JS;
 						$_POST['phone'] = $order->phone;
 						if (get_post('cash') !== $order->cash) {
 							$_POST['cash'] = $order->cash;
-							$Ajax->activate('delivery');
-							$Ajax->activate('cash');
+							Ajax::i()->activate('delivery');
+							Ajax::i()->activate('cash');
 						} else {
 							if ($order->trans_type == ST_SALESINVOICE) {
 								$_POST['delivery_date'] = $order->due_date;
-								$Ajax->activate('delivery_date');
+								Ajax::i()->activate('delivery_date');
 							}
-							$Ajax->activate('Location');
-							$Ajax->activate('deliver_to');
-							$Ajax->activate('name');
-							$Ajax->activate('phone');
-							$Ajax->activate('delivery_address');
+							Ajax::i()->activate('Location');
+							Ajax::i()->activate('deliver_to');
+							Ajax::i()->activate('name');
+							Ajax::i()->activate('phone');
+							Ajax::i()->activate('delivery_address');
 						}
 						// change prices if necessary
 						// what about discount in template case?
@@ -1190,16 +1190,16 @@ JS;
 						if ($old_order->sales_type != $order->sales_type) {
 							// || $old_order->default_discount!=$order->default_discount
 							$_POST['sales_type'] = $order->sales_type;
-							$Ajax->activate('sales_type');
+							Ajax::i()->activate('sales_type');
 							$change_prices = 1;
 						}
 						if ($old_order->dimension_id != $order->dimension_id) {
 							$_POST['dimension_id'] = $order->dimension_id;
-							$Ajax->activate('dimension_id');
+							Ajax::i()->activate('dimension_id');
 						}
 						if ($old_order->dimension2_id != $order->dimension2_id) {
 							$_POST['dimension2_id'] = $order->dimension2_id;
-							$Ajax->activate('dimension2_id');
+							Ajax::i()->activate('dimension2_id');
 						}
 						unset($old_order);
 					}
@@ -1229,7 +1229,7 @@ JS;
 			if ($order->sales_type != $_POST['sales_type']) {
 				$myrow = Sales_Type::get($_POST['sales_type']);
 				$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
-				$Ajax->activate('sales_type');
+				Ajax::i()->activate('sales_type');
 				$change_prices = 1;
 			}
 			label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
@@ -1243,14 +1243,14 @@ JS;
 					if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)) {
 						$change_prices = 1;
 					}
-					$Ajax->activate('_ex_rate');
+					Ajax::i()->activate('_ex_rate');
 					if ($order->trans_type == ST_SALESINVOICE) {
 						$_POST['delivery_date'] = Sales_Order::get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 					} else {
 						$_POST['delivery_date'] = Dates::add_days(get_post('OrderDate'), DB_Company::get_pref('default_delivery_required'));
 					}
-					$Ajax->activate('items_table');
-					$Ajax->activate('delivery_date');
+					Ajax::i()->activate('items_table');
+					Ajax::i()->activate('delivery_date');
 				}
 				if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
 					$dim = DB_Company::get_pref('use_dimension');
@@ -1284,7 +1284,7 @@ JS;
 						get_post('OrderDate'));
 					//		$line->discount_percent = $order->default_discount;
 				}
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			}
 			return $customer_error;
 		}
@@ -1305,16 +1305,16 @@ JS;
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id'], 'class="stock"');
 				textarea_cells(null, 'description', null, 50, 5);
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			} else // prepare new line
 			{
 				Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
 				if (list_updated('stock_id')) {
-					$Ajax->activate('price');
-					$Ajax->activate('description');
-					$Ajax->activate('units');
-					$Ajax->activate('qty');
-					$Ajax->activate('line_total');
+					Ajax::i()->activate('price');
+					Ajax::i()->activate('description');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('qty');
+					Ajax::i()->activate('line_total');
 				}
 				$item_info = Item::get_edit_info(Input::post('stock_id'));
 				$units = $item_info["units"];
@@ -1350,7 +1350,7 @@ JS;
 			$Ajax = Ajax::i();
 			Display::div_start('delivery');
 			if (get_post('cash', 0)) { // Direct payment sale
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 				Display::heading(_('Cash payment'));
 				start_table('tablestyle2 width60');
 				label_row(_("Deliver from Location:"), $order->location_name);
@@ -1377,7 +1377,7 @@ JS;
 				table_section(1);
 				Inv_Location::row(_("Deliver from Location:"), 'Location', null, false, true);
 				if (list_updated('Location')) {
-					$Ajax->activate('items_table');
+					Ajax::i()->activate('items_table');
 				}
 				date_row($delname, 'delivery_date', $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
 				 $order->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');

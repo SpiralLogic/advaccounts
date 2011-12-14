@@ -178,14 +178,14 @@
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
 				label_cell($order->line_items[$id]->description);
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			} else {
 				$wo_details = WO::get($_SESSION['issue_items']->order_id);
 				Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
 				if (list_updated('stock_id')) {
-					$Ajax->activate('units');
-					$Ajax->activate('qty');
-					$Ajax->activate('std_cost');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('qty');
+					Ajax::i()->activate('std_cost');
 				}
 				$item_info = Item::get_edit_info($_POST['stock_id']);
 				$dec = $item_info["decimals"];

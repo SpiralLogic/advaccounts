@@ -66,7 +66,7 @@
 						TAG_ACCOUNT, $_POST['account_code'],
 						$_POST['account_tags']
 					);
-					$Ajax->activate('account_code'); // in case of status change
+					Ajax::i()->activate('account_code'); // in case of status change
 					Errors::notice(_("Account data has been updated."));
 				}
 			} else {
@@ -80,7 +80,7 @@
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
 			}
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 	function can_delete($selected_account) {
@@ -187,7 +187,7 @@
 			$selected_account = $_POST['AccountList'] = '';
 			Errors::notice(_("Selected account has been deleted"));
 			unset($_POST['account_code']);
-			$Ajax->activate('_page_body');
+			Ajax::i()->activate('_page_body');
 		}
 	}
 	start_form();
@@ -202,7 +202,7 @@
 		end_row();
 		end_table();
 		if (get_post('_show_inactive_update')) {
-			$Ajax->activate('AccountList');
+			Ajax::i()->activate('AccountList');
 			JS::set_focus('AccountList');
 		}
 	}

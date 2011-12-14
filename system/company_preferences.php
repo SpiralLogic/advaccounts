@@ -90,7 +90,7 @@
 			Errors::notice(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	} /* end of if submit */
 	start_form(true);
 	$myrow = DB_Company::get_prefs();

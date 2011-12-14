@@ -232,7 +232,7 @@
 		}
 	}
 	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
-		$Ajax->activate('Items');
+		Ajax::i()->activate('Items');
 	}
 	start_form();
 	hidden('cart_id');

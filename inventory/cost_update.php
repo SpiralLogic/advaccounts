@@ -48,7 +48,7 @@
 		}
 	}
 	if (list_updated('stock_id')) {
-		$Ajax->activate('cost_table');
+		Ajax::i()->activate('cost_table');
 	}
 	start_form();
 	if (!Input::post('stock_id')) {

@@ -127,13 +127,13 @@
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
 				label_cell($order->line_items[$id]->description, 'nowrap');
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			} else {
 				Item_UI::costable_cells(null, 'stock_id', null, false, true);
 				if (list_updated('stock_id')) {
-					$Ajax->activate('units');
-					$Ajax->activate('qty');
-					$Ajax->activate('std_cost');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('qty');
+					Ajax::i()->activate('std_cost');
 				}
 				$item_info = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
 				$dec = $item_info['decimals'];

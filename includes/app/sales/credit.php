@@ -227,7 +227,7 @@
 			Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
 			if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
 				// customer has changed
-				$Ajax->activate('branch_id');
+				Ajax::i()->activate('branch_id');
 			}
 			Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 			//if (($_SESSION['credit_items']->order_no == 0) ||
@@ -243,11 +243,11 @@
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['name'] = $order->name;
 				$_POST['phone'] = $order->phone;
-				$Ajax->activate('Location');
-				$Ajax->activate('deliver_to');
-				$Ajax->activate('name');
-				$Ajax->activate('phone');
-				$Ajax->activate('delivery_address');
+				Ajax::i()->activate('Location');
+				Ajax::i()->activate('deliver_to');
+				Ajax::i()->activate('name');
+				Ajax::i()->activate('phone');
+				Ajax::i()->activate('delivery_address');
 				// change prices if necessary
 				// what about discount in template case?
 				if ($old_order->customer_currency != $order->customer_currency) {
@@ -256,16 +256,16 @@
 				if ($old_order->sales_type != $order->sales_type) {
 					// || $old_order->default_discount!=$order->default_discount
 					$_POST['sales_type_id'] = $order->sales_type;
-					$Ajax->activate('sales_type_id');
+					Ajax::i()->activate('sales_type_id');
 					$change_prices = 1;
 				}
 				if ($old_order->dimension_id != $order->dimension_id) {
 					$_POST['dimension_id'] = $order->dimension_id;
-					$Ajax->activate('dimension_id');
+					Ajax::i()->activate('dimension_id');
 				}
 				if ($old_order->dimension2_id != $order->dimension2_id) {
 					$_POST['dimension2_id'] = $order->dimension2_id;
-					$Ajax->activate('dimension2_id');
+					Ajax::i()->activate('dimension2_id');
 				}
 				unset($old_order);
 			}
@@ -291,7 +291,7 @@
 			if ($order->sales_type != $_POST['sales_type_id']) {
 				$myrow = Sales_Type::get($_POST['sales_type_id']);
 				$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
-				$Ajax->activate('sales_type_id');
+				Ajax::i()->activate('sales_type_id');
 				$change_prices = 1;
 			}
 			Sales_UI::shippers_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
@@ -306,7 +306,7 @@
 				) {
 					$change_prices = 1;
 				}
-				$Ajax->activate('_ex_rate');
+				Ajax::i()->activate('_ex_rate');
 			}
 			// 2008-11-12 Joe Hunt added dimensions
 			$dim = DB_Company::get_pref('use_dimension');
@@ -328,7 +328,7 @@
 						$order->price_factor, get_post('OrderDate'));
 					//		$line->discount_percent = $order->default_discount;
 				}
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			}
 			return $customer_error;
 		}
@@ -400,14 +400,14 @@
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
 				label_cell($order->line_items[$id]->description, "nowrap");
-				$Ajax->activate('items_table');
+				Ajax::i()->activate('items_table');
 			} else {
 				Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
 				if (list_updated('stock_id')) {
-					$Ajax->activate('price');
-					$Ajax->activate('qty');
-					$Ajax->activate('units');
-					$Ajax->activate('line_total');
+					Ajax::i()->activate('price');
+					Ajax::i()->activate('qty');
+					Ajax::i()->activate('units');
+					Ajax::i()->activate('line_total');
 				}
 				$item_info = Item::get_edit_info(Input::post('stock_id'));
 				$dec = $item_info['decimals'];
@@ -438,7 +438,7 @@
 			$Ajax = Ajax::i();
 			echo "<br>";
 			if (isset($_POST['_CreditType_update'])) {
-				$Ajax->activate('options');
+				Ajax::i()->activate('options');
 			}
 			Display::div_start('options');
 			start_table('tablestyle2');

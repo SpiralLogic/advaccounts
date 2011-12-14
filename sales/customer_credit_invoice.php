@@ -252,7 +252,7 @@
 		$Ajax = Ajax::i();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {
-			$Ajax->activate('options');
+			Ajax::i()->activate('options');
 		}
 		Display::div_start('options');
 		start_table('tablestyle2');
@@ -273,7 +273,7 @@
 	}
 
 	if (get_post('Update')) {
-		$Ajax->activate('credit_items');
+		Ajax::i()->activate('credit_items');
 	}
 	display_credit_items();
 	display_credit_options();

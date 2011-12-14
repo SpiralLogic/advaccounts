@@ -22,7 +22,7 @@
 	Page::start($_SESSION['page_title']);
 	function line_start_focus() {
 		$Ajax = Ajax::i();
-		$Ajax->activate('items_table');
+		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
 
@@ -227,7 +227,7 @@
 	if (isset($_POST['go'])) {
 		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('totamount'), QE_JOURNAL);
 		$_POST['totamount'] = Num::price_format(0);
-		$Ajax->activate('totamount');
+		Ajax::i()->activate('totamount');
 		line_start_focus();
 	}
 	start_form();

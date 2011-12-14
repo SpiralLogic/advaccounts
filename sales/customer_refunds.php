@@ -113,7 +113,7 @@
 	}
 	if (list_updated('customer_id') || list_updated('bank_account')) {
 		$_SESSION['alloc']->read();
-		$Ajax->activate('alloc_tbl');
+		Ajax::i()->activate('alloc_tbl');
 	}
 	if (isset($_POST['AddRefundItem'])) {
 		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);

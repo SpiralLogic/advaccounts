@@ -70,7 +70,7 @@
 		unset($_POST);
 	}
 	if (list_updated('stock_id')) {
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	start_form();
 	if (!Input::post('stock_id')) {

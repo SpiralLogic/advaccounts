@@ -33,7 +33,7 @@
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
-		$Ajax->activate('customer_id');
+		Ajax::i()->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
@@ -53,7 +53,7 @@
 	}
 	function line_start_focus() {
 		$Ajax = Ajax::i();
-		$Ajax->activate('items_table');
+		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 

@@ -28,7 +28,7 @@
 	if (!$login_timeout) {
 		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . User::get()->company . "].selected = true;})()";
 	}
-	JS::onLoad($js);
+	JS::beforeload($js);
 	echo "<!DOCTYPE HTML>\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";

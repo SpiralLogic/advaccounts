@@ -23,7 +23,7 @@
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	} elseif (get_post('_OrderNumber_changed'))
 	{
 		$disable = get_post('OrderNumber') !== '';
@@ -37,7 +37,7 @@
 		{
 			JS::set_focus('StockLocation');
 		}
-		$Ajax->activate('orders_tbl');
+		Ajax::i()->activate('orders_tbl');
 	}
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];

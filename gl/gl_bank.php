@@ -25,11 +25,11 @@
 	if (list_updated('PersonDetailID')) {
 		$br = Sales_Branch::get(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
-		$Ajax->activate('person_id');
+		Ajax::i()->activate('person_id');
 	}
 	function line_start_focus() {
 		$Ajax = Ajax::i();
-		$Ajax->activate('items_table');
+		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
 
@@ -52,7 +52,7 @@
 		Page::footer_exit();
 	}
 	if (isset($_POST['_date__changed'])) {
-		$Ajax->activate('_ex_rate');
+		Ajax::i()->activate('_ex_rate');
 	}
 	function handle_new_order($type) {
 		if (isset($_SESSION['pay_items'])) {
@@ -191,7 +191,7 @@
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
 		$_POST['totamount'] = Num::price_format(0);
-		$Ajax->activate('totamount');
+		Ajax::i()->activate('totamount');
 		line_start_focus();
 	}
 	start_form();

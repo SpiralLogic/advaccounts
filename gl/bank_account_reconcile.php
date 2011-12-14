@@ -76,7 +76,7 @@
 		$Ajax = Ajax::i();
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
-		$Ajax->activate('summary');
+		Ajax::i()->activate('summary');
 		$update_pager = true;
 	}
 
@@ -90,13 +90,13 @@
 		}
 		if (get_post('bank_date') == '') // new reconciliation
 		{
-			$Ajax->activate('bank_date');
+			Ajax::i()->activate('bank_date');
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
 		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
-		$Ajax->activate('reconciled');
-		$Ajax->activate('difference');
+		Ajax::i()->activate('reconciled');
+		Ajax::i()->activate('difference');
 		return true;
 	}
 
@@ -130,7 +130,7 @@
 		//	$_POST['bank_date'] = Dates::date2sql(Dates::Today());
 	}
 	if (list_updated('bank_account')) {
-		$Ajax->activate('bank_date');
+		Ajax::i()->activate('bank_date');
 		update_data();
 	}
 	if (list_updated('bank_date')) {
@@ -139,7 +139,7 @@
 	}
 	if (get_post('_reconcile_date_changed')) {
 		$_POST['bank_date'] = check_date() ? Dates::date2sql(get_post('reconcile_date')) : '';
-		$Ajax->activate('bank_date');
+		Ajax::i()->activate('bank_date');
 		update_data();
 	}
 	$id = find_submit('_rec_');
@@ -155,7 +155,7 @@
 				}
 			}
 		}
-		$Ajax->activate('_page_body');
+		Ajax::i()->activate('_page_body');
 	}
 	start_form();
 	start_table();
