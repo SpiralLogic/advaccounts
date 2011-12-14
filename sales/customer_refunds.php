@@ -61,9 +61,7 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_CUSTREFUND)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::setfocus('[name="ref"]');
-			return false;
+			$_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
 		}
 		if (!Validation::is_num('amount', 0, null)) {
 			Errors::error(_("The entered amount is invalid or positive and cannot be processed."));

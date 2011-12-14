@@ -101,12 +101,10 @@
 			JS::set_focus('reference');
 			return false;
 		}
-		while (!Ref::is_new(Purch_Trans::i()->reference, ST_SUPPINVOICE)) {
-			//Errors::error(_("The entered reference is already in use."));
-			//JS::set_focus('reference');
-			//return false;
-			Purch_Trans::i()->reference = Ref::get_next(ST_SUPPINVOICE);
-		}
+			if (!Ref::is_new(Purch_Trans::i()->reference, ST_SUPPINVOICE)) {
+						Purch_Trans::i()->reference = Ref::get_next(ST_SUPPINVOICE);
+
+								}
 		if (!Ref::is_valid(Purch_Trans::i()->supp_reference)) {
 			Errors::error(_("You must enter a supplier's invoice reference."));
 			JS::set_focus('supp_reference');

@@ -51,9 +51,8 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_MANUISSUE)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
+			$_POST['ref'] = Ref::get_next(ST_MANUISSUE);
+
 		}
 		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {

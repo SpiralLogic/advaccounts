@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Ref
-	{
+	class Ref {
 		public static function add($type, $id, $reference) {
 			$sql = "INSERT INTO refs (type, id, reference)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", "
@@ -38,7 +37,13 @@
 			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
 			$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
 			$row = DB::fetch_row($result);
-			return $row[0];
+			$ref = $row[0];
+			$oldref='auto';
+			while (!static::is_new($ref,$type) && ($oldref=!$ref)) {
+				$ref = $oldref;
+				$ref = static::increment($ref);
+			}
+			return $ref;
 		}
 
 		public static function get($type, $id) {
@@ -94,19 +99,17 @@
 			}
 		}
 
-		public static function is_new(&$ref, $type) {
+		public static function is_new($ref, $type) {
 			$db_info = SysTypes::get_db_info($type);
 			$db_name = $db_info[0];
 			$db_type = $db_info[1];
 			$db_ref = $db_info[3];
 			if ($db_ref != null) {
-				do {
-					$sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
-					if ($db_type != null) {
-						$sql .= " AND $db_type=$type";
-					}
-					$result = DB::query($sql, "could not test for unique reference");
-				} while (DB::num_rows($result) != 0 && ($ref = Ref::increment($ref)));
+				$sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
+				if ($db_type != null) {
+					$sql .= " AND $db_type=$type";
+				}
+				$result = DB::query($sql, "could not test for unique reference");
 				return (DB::num_rows($result) == 0);
 			}
 			// it's a type that doesn't use references - shouldn't be calling here, but say yes anyways

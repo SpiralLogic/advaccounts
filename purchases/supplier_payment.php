@@ -106,9 +106,7 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_SUPPAYMENT)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
+			$_POST['ref'] = Ref::get_next(ST_SUPPAYMENT);
 		}
 		$_SESSION['alloc']->amount = -Validation::input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {

@@ -84,12 +84,9 @@
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
-		elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type))
-		{
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			$input_error = 1;
-		}
+		elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
+			$_POST['ref'] = Ref::get_next($_SESSION['pay_items']->trans_type);
+					}
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date for the payment is invalid."));
 			JS::set_focus('date_');

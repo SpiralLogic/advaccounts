@@ -118,12 +118,10 @@
 			JS::set_focus('ref');
 			return false;
 		}
-		while (!Ref::is_new($_POST['ref'], ST_SUPPRECEIVE)) {
-			//		Errors::error(_("The entered reference is already in use."));
-			//		JS::set_focus('ref');
-			//		return false;
-			$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
-		}
+			if (!Ref::is_new($_POST['ref'], ST_SUPPRECEIVE)) {
+				$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
+
+			}
 		$something_received = 0;
 		foreach ($_SESSION['PO']->line_items as $order_line) {
 			if ($order_line->receive_qty > 0) {

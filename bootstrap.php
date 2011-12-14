@@ -12,6 +12,7 @@
 	/**
 	 *
 	 */
+
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	define('DS', DIRECTORY_SEPARATOR);
@@ -19,6 +20,7 @@
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
+
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
@@ -40,19 +42,21 @@
 	set_error_handler(function ($severity, $message, $filepath, $line) {
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
+	require_once(VENDORPATH . 'PhpConsole.php');
+	PhpConsole::start(true, true, dirname(__FILE__));
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-			$Ajax = Ajax::i();
-			if (isset($Ajax)) {
-				$Ajax->run();
-			}
-			// flush all output buffers (works also with exit inside any div levels)
-			while (ob_get_level()) {
-				ob_end_flush();
-			}
-			Config::store();
-			Cache::set('autoloads', Autoloader::getLoaded());
-		});
+		$Ajax = Ajax::i();
+		if (isset($Ajax)) {
+			$Ajax->run();
+		}
+		// flush all output buffers (works also with exit inside any div levels)
+		while (ob_get_level()) {
+			ob_end_flush();
+		}
+		Config::store();
+		Cache::set('autoloads', Autoloader::getLoaded());
+	});
 	if (!function_exists('adv_ob_flush_handler')) {
 		function adv_ob_flush_handler($text) {
 			$Ajax = Ajax::i();
@@ -63,12 +67,12 @@
 				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
-				return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
 	Session::init();
 	Config::init();
-	$_GLOBALS['Ajax']=Ajax::i();
+	$_GLOBALS['Ajax'] = Ajax::i();
 	/***
 	 *
 	 */

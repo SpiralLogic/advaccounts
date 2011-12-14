@@ -79,12 +79,13 @@
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
 			if (!class_exists('Memcached', false)) {
-				ini_set('session.save_handler', 'files');
+				ini_set('session.save_handler', 'Memcached');
+				ini_set('session.save_path', '127.0.0.1:11211');
 			}
 			if (!session_start()) {
 				ini_set('session.save_handler', 'files');
 				if (!session_start()) {
-					die();
+					die('sessions fucked out');
 				}
 			}
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {

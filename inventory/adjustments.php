@@ -59,10 +59,8 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
-		}
+			$_POST['ref'] = Ref::get_next(ST_INVADJUST);
+							}
 		if (!Dates::is_date($_POST['AdjDate'])) {
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');

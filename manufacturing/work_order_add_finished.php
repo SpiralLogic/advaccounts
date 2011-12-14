@@ -42,9 +42,8 @@
 			return false;
 		}
 		if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
+			$_POST['ref'] = Ref::get_next(ST_MANURECEIVE);
+
 		}
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered is not a valid number or less then zero."));

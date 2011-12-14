@@ -20,17 +20,17 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(
-				 ST_SALESORDER => 'SA_SALESORDER',
-				 ST_SALESQUOTE => 'SA_SALESQUOTE',
-				 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-				 ST_SALESINVOICE => 'SA_SALESINVOICE'),
+			ST_SALESORDER => 'SA_SALESORDER',
+			ST_SALESQUOTE => 'SA_SALESQUOTE',
+			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+			ST_SALESINVOICE => 'SA_SALESINVOICE'),
 		array(
-				 'NewOrder' => 'SA_SALESORDER',
-				 'ModifySalesOrder' => 'SA_SALESORDER',
-				 'NewQuotation' => 'SA_SALESQUOTE',
-				 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-				 'NewDelivery' => 'SA_SALESDELIVERY',
-				 'NewInvoice' => 'SA_SALESINVOICE'));
+			'NewOrder' => 'SA_SALESORDER',
+			'ModifySalesOrder' => 'SA_SALESORDER',
+			'NewQuotation' => 'SA_SALESQUOTE',
+			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewDelivery' => 'SA_SALESDELIVERY',
+			'NewInvoice' => 'SA_SALESINVOICE'));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::post('saveorder')) {
@@ -41,11 +41,11 @@
 		$_POST['customer_id'] = $_GET['customer_id'];
 		$Ajax->activate('customer_id');
 	}
-	if (Input::get('NewDelivery')>-1) {
+	if (Input::get('NewDelivery') > -1) {
 		$page_title = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
-	if (Input::get('NewInvoice')>-1) {
+	if (Input::get('NewInvoice') > -1) {
 		$page_title = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	} elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
@@ -165,7 +165,7 @@
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-			if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
+			if ($_GET['AddedDI'] && isset($_SESSION['global_customer_id']) && $row == false) {
 				echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}
@@ -319,10 +319,7 @@
 			JS::set_focus('ref');
 			return false;
 		}
-		while ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], $_SESSION['Items']->trans_type)) {
-			//Errors::error(_("The entered reference is already in use."));
-			//JS::set_focus('ref');
-			//return false;
+		if ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], $_SESSION['Items']->trans_type)) {
 			$_POST['ref'] = Ref::get_next($_SESSION['Items']->trans_type);
 		}
 		return true;
@@ -341,7 +338,7 @@
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
 		Dates::new_doc_date($_SESSION['Items']->document_date);
-		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
+		$_SESSION['global_customer_id'] = $_SESSION['Items']->customer_id;
 		Sales_Order::finish();
 		$_SESSION['Jobsboard'] = new Sales_Order($trans_type, $_SESSION['order_no']);
 		if ($modified) {

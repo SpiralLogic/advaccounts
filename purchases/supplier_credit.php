@@ -91,16 +91,16 @@
 			JS::set_focus('reference');
 			return false;
 		}
-		if (!Ref::is_new(Purch_Trans::i()->reference, ST_SUPPCREDIT)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('reference');
-			return false;
-		}
+	if (!Ref::is_new(Purch_Trans::i()->reference, ST_SUPPCREDIT)) {
+			Purch_Trans::i()->reference = Ref::get_next(ST_SUPPCREDIT);
+
+					}
 		if (!Ref::is_valid(Purch_Trans::i()->supp_reference)) {
 			Errors::error(_("You must enter a supplier's credit note reference."));
 			JS::set_focus('supp_reference');
 			return false;
 		}
+
 		if (!Dates::is_date(Purch_Trans::i()->tran_date)) {
 			Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			JS::set_focus('tran_date');
