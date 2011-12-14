@@ -87,7 +87,7 @@
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
-			$this->cart_id = uniqid('');
+			$this->cart_id = md5($type . $trans_no);
 		}
 
 		// Reading document into cart
@@ -996,7 +996,7 @@
 		public static function summary($title, &$order, $editable_items = false) {
 			Display::heading($title);
 			Display::div_start('items_table');
-			if (count($_SESSION['Items']->line_items) > 0) {
+			if (count($order->line_items) > 0) {
 				start_outer_table('center width90');
 				table_section(1);
 				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
@@ -1200,7 +1200,7 @@ JS;
 				table_section(2);
 				label_row(_("Customer Currency:"), $order->customer_currency);
 				GL_ExchangeRate::display($order->customer_currency, Bank_Currency::for_company(), ($editable && Input::post('OrderDate') ? $_POST['OrderDate'] :
-					 $order->document_date));
+				 $order->document_date));
 			}
 			table_section(3);
 			Debtor_Payment::credit_row($_POST['customer_id'], $order->credit);

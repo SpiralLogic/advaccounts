@@ -27,8 +27,7 @@
 	}
 	Page::start($_SESSION['page_title']);
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Validation::check(Validation::BRANCHES_ACTIVE,
-		_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
@@ -40,10 +39,8 @@
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
-		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),
-			0, 1);
-		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT,
-			false, "printlink", "", 1), 0, 1);
+		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
@@ -58,7 +55,7 @@
 	}
 
 	function copy_to_cn() {
-		$cart = &$_SESSION['Items'];
+		$cart = &$_SESSION[$_POST['cart_id']];
 		$cart->Comments = $_POST['CreditText'];
 		$cart->document_date = $_POST['OrderDate'];
 		$cart->freight_cost = Validation::input_num('ChargeFreightCost');
@@ -72,8 +69,8 @@
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}
 
-	function copy_from_cn() {
-		$cart = &$_SESSION['Items'];
+	function copy_from_cn($id) {
+		$cart = &$_SESSION[$id];
 		$_POST['CreditText'] = $cart->Comments;
 		$_POST['OrderDate'] = $cart->document_date;
 		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
@@ -90,23 +87,23 @@
 
 	function handle_new_credit($trans_no) {
 		Sales_Order::start();
-		$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
-		copy_from_cn();
+		$cart = new Sales_Order(ST_CUSTCREDIT, $trans_no);
+		copy_from_cn($cart->cart_id);
 	}
 
 	function can_process() {
 		$input_error = 0;
-		if ($_SESSION['Items']->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
+		if ($_SESSION[$_POST['cart_id']]->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
 			return false;
 		}
-		if ($_SESSION['Items']->trans_no == 0) {
+		if ($_SESSION[$_POST['cart_id']]->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				$input_error = 1;
 			} elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
 				$_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
-				}
+			}
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
 			Errors::error(_("The entered date for the credit note is invalid."));
@@ -124,8 +121,7 @@
 		copy_to_cn();
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')
 		) {
-			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."),
-				1, 0);
+			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
 		}
@@ -133,8 +129,8 @@
 			$_POST['WriteOffGLCode'] = 0;
 		}
 		copy_to_cn();
-		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
-		Dates::new_doc_date($_SESSION['Items']->document_date);
+		$credit_no = $_SESSION[$_POST['cart_id']]->write($_POST['WriteOffGLCode']);
+		Dates::new_doc_date($_SESSION[$_POST['cart_id']]->document_date);
 		Sales_Order::finish();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
@@ -159,13 +155,13 @@
 
 	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
-			$_SESSION['Items']->update_cart_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+			$_SESSION[$_POST['cart_id']]->update_cart_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		}
 		line_start_focus();
 	}
 
 	function handle_delete_item($line_no) {
-		$_SESSION['Items']->remove_from_cart($line_no);
+		$_SESSION[$_POST['cart_id']]->remove_from_cart($line_no);
 		line_start_focus();
 	}
 
@@ -173,8 +169,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'),
-		 Validation::input_num('Disc') / 100);
+		Sales_Order::add_line($_SESSION[$_POST['cart_id']], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		line_start_focus();
 	}
 
@@ -196,12 +191,12 @@
 	}
 	start_form();
 	hidden('cart_id');
-	$customer_error = Sales_Credit::header($_SESSION['Items']);
+	$customer_error = Sales_Credit::header($_SESSION[$_POST['cart_id']]);
 	if ($customer_error == "") {
 		start_table('tables_style2 width90 pad10');
 		echo "<tr><td>";
-		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
-		Sales_Credit::option_controls($_SESSION['Items']);
+		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION[$_POST['cart_id']]);
+		Sales_Credit::option_controls($_SESSION[$_POST['cart_id']]);
 		echo "</td></tr>";
 		end_table();
 	} else {
