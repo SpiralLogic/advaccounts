@@ -42,8 +42,6 @@
 	set_error_handler(function ($severity, $message, $filepath, $line) {
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
-	require_once(VENDORPATH . 'PhpConsole.php');
-	PhpConsole::start(true, true, dirname(__FILE__));
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
 		$Ajax = Ajax::i();
@@ -72,7 +70,7 @@
 	}
 	Session::init();
 	Config::init();
-	$_GLOBALS['Ajax'] = Ajax::i();
+	Ajax::i();
 	/***
 	 *
 	 */
