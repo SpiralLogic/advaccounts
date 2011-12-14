@@ -120,7 +120,7 @@
 					unset($this->branches[0]);
 				}
 			}
-			foreach ($this->contacts as &$contact) {
+			foreach ($this->contacts as $contact) {
 				$contact->save(array('parent_id' => $this->id));
 				$this->contacts[$contact->id] = $contact;
 			}

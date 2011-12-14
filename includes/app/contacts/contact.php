@@ -30,21 +30,13 @@
 		protected function _saveNew() {
 			$temp = new Contacts_Contact();
 			foreach ($this as $key => $value) {
-				if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key !== $value) {
-					parent::_saveNew();
+				if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key != $value) {
+					return parent::_saveNew();
 				}
 			}
 			return false;
 		}
-		public function save() {
-			$temp = new Contacts_Contact();
-			foreach ($this as $key => $value) {
-				if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key !== $value) {
-					parent::save();
-				}
-			}
-			return false;
-		}
+
 
 		protected function _countTransactions() {
 			// TODO: Implement _countTransactions() method.

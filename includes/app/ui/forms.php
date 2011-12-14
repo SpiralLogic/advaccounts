@@ -996,7 +996,7 @@
 		if ($value === null) {
 			$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 		}
-		echo "<td><textarea name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
+		echo "<td><textarea id='$name' name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
 		$Ajax->addUpdate($name, $name, $value);
 	}
 

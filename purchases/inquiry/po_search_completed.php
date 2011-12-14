@@ -136,7 +136,7 @@
 	} else {
 		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY'])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= ($_GET['NFY'] == 1) ? "'NFY'" : DB::quote($_POST['StockLocation']);
+			$sql .= (Input::get('NFY') == 1) ? "'NFY'" : DB::quote($_POST['StockLocation']);
 		} else {
 			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 			$date_before = Dates::date2sql($_POST['OrdersToDate']);
