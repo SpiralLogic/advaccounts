@@ -15,7 +15,7 @@
 		public $state = '';
 		public $postcode = '';
 		public $area = DEFAULT_AREA;
-		public $br_post_address = "";
+		public $br_post_address;
 		public $debtor_no;
 		public $branch_ref = "New";
 		public $contact_name = "";
@@ -42,10 +42,10 @@
 		public function __construct($id = null) {
 
 			$this->id = &$this->branch_code;
+			parent::__construct($id);
 			$this->name = &$this->br_name;
 			$this->address = &$this->br_address;
 			$this->post_address = &$this->br_post_address;
-			parent::__construct($id);
 		}
 
 		public function delete() {
@@ -70,8 +70,8 @@
 			return $address;
 		}
 
-
 		protected function _canProcess() {
+
 			return true;
 		}
 
@@ -104,8 +104,7 @@
 
 		protected function _read($params = false) {
 			if (!$params) {
-				return	$this->_status(false, 'read', 'No Branch parameters provided');
-
+				return $this->_status(false, 'read', 'No Branch parameters provided');
 			}
 			$this->_defaults();
 			if (!is_array($params)) {
@@ -118,7 +117,7 @@
 				$sql->where("b.$key=", $value);
 			}
 			DB::fetch()->intoClass($this);
-			return	$this->_status(true, 'read', 'Read Branch from Database');
+			return $this->_status(true, 'read', 'Read Branch from Database');
 		}
 
 		// BRANCHES

@@ -367,7 +367,6 @@ $(function () {
 	 });
 
 	Adv.tabs.delegate(":input", "change keypress", function (event) {
-		console.log(event);
 		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList')
 			{
 				return;

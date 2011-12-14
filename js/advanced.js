@@ -78,7 +78,8 @@ Adv.extend({
 		 };
 		 Adv.showStatus(status);
 	 }).ajaxComplete(function (event, request) {
-		 try
+															Behaviour.apply();
+															try
 			 {
 				 var data = $.parseJSON(request.responseText);
 				 (data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
@@ -103,9 +104,9 @@ Adv.extend({
 
 })
 Adv.extend({Forms:(function () {
-	if (document.getElementsByClassName('datepicker')>0) {
-		Adv.o.wrapper.on('focus',".datepicker",function() { $(this).datepicker({numberOfMonths:3,showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus();$(this).unbind(event) });
-	}
+	if (document.getElementsByClassName('datepicker').length>0) {
+		Adv.o.wrapper.on('focus',".datepicker",function(event) { $(this).datepicker({numberOfMonths:3,showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+		}
 	return {
 		setFormValue:function (id, value, disabled) {
 			var els = document.getElementsByName(id);
@@ -156,7 +157,6 @@ Adv.extend({Forms:(function () {
 					if (callback(ui.item, event, this) === false) return false;
 				}
 			}).css({'z-index':'2'}).bind('paste', function () {
-				 console.log(id.val());
 				 id.autocomplete('search', id.val())
 			 });
 		},
