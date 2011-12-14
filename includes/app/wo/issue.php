@@ -12,16 +12,16 @@
 	class WO_Issue
 	{
 		public static function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
 				echo _("The order number sent is not valid.");
-				DB::cancel_transaction();
+				DB::cancel();
 				exit;
 			}
 			if (WO::is_closed($woid)) {
 				Errors::error("UNEXPECTED : Issuing items for a closed Work Order");
-				DB::cancel_transaction();
+				DB::cancel();
 				exit;
 			}
 			// insert the actual issue
@@ -44,7 +44,7 @@
 			}
 			Ref::save(ST_MANUISSUE,  $ref);
 			DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get_all($woid) {
@@ -109,7 +109,7 @@
 		}
 
 		public static function void($type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			// void the actual issue items and their quantities
 			$sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id=" . DB::escape($type_no);
 			DB::query($sql, "A work order issue item could not be voided");
@@ -117,7 +117,7 @@
 			Inv_Movement::void(ST_MANUISSUE, $type_no);
 			// void any related gl trans
 			GL_Trans::void(ST_MANUISSUE, $type_no, true);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function add_to($order, $new_item, $new_item_qty, $standard_cost) {

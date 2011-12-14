@@ -114,7 +114,7 @@
 		}
 		$cust_sql = "";
 		if ($customer_id != null) {
-			$cust_sql = " AND trans.debtor_no = " . DB::escape($customer_id,false,false);
+			$cust_sql = " AND trans.debtor_no = " . DB::quote($customer_id);
 		}
 		$sql = Sales_Allocation::get_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
 		 "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);

@@ -69,7 +69,7 @@
 
 
 		public static function add(&$po, $date_, $reference, $location) {
-			DB::begin_transaction();
+			DB::begin();
 			$grn = static::add_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
 			foreach ($po->line_items as $order_line) {
 				if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty)) {
@@ -99,7 +99,7 @@
 				$po->freight, 0);
 			Ref::save(ST_SUPPRECEIVE, $reference);
 			DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
-			DB::commit_transaction();
+			DB::commit();
 			return $grn;
 		}
 
@@ -305,7 +305,7 @@
 			if (static::exists_on_invoices($grn_batch)) {
 				return false;
 			}
-			DB::begin_transaction();
+			DB::begin();
 			Bank_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 			GL_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 			// clear the quantities of the grn items in the POs and invoices
@@ -326,7 +326,7 @@
 			DB::query($sql, "A grn detail item could not be voided.");
 			// clear the stock move items
 			Inv_Movement::void(ST_SUPPRECEIVE, $grn_batch);
-			DB::commit_transaction();
+			DB::commit();
 			return true;
 		}
 

@@ -16,7 +16,7 @@
 		}
 
 		public static function add($name, $tax_shipping, $taxes, $rates) {
-			DB::begin_transaction();
+			DB::begin();
 			if ($tax_shipping) // only one tax group for shipping
 			{
 				static::clear_shipping_tax_group();
@@ -25,11 +25,11 @@
 			DB::query($sql, "could not add tax group");
 			$id = DB::insert_id();
 			static::add_items($id, $taxes, $rates);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function update($id, $name, $tax_shipping, $taxes, $rates) {
-			DB::begin_transaction();
+			DB::begin();
 			if ($tax_shipping) // only one tax group for shipping
 			{
 				static::clear_shipping_tax_group();
@@ -38,7 +38,7 @@
 			DB::query($sql, "could not update tax group");
 			static::delete_items($id);
 			static::add_items($id, $taxes, $rates);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get_all($all = false) {
@@ -56,11 +56,11 @@
 		}
 
 		public static function delete($id) {
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete tax group");
 			static::delete_items($id);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function add_items($id, $items, $rates) {

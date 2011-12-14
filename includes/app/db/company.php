@@ -25,9 +25,9 @@
 			if ($this->id == 0) {
 				$this->_saveNew();
 			}
-			DB::begin_transaction();
+			DB::begin();
 			$result = DB::update('company')->values((array)$this)->where('coy_code=', $this->id)->exec();
-			DB::commit_transaction();
+			DB::commit();
 			$_SESSION['config']['company'] = $this;
 			return $this->_status(true, 'Processing', "Company has been updated.");
 		}
@@ -153,10 +153,10 @@
 		}
 
 		public static function delete_fiscalyear($id) {
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "DELETE FROM fiscal_year WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete fiscal year");
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function delete_payment_terms($selected_id) {
@@ -280,7 +280,6 @@
 
 		public static function update_gl_setup(array $data = null) {
 			static::i()->save($data);
-			var_dump(static::i());
 		}
 
 		public static function update_setup(array $data = null) {

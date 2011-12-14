@@ -23,7 +23,7 @@
 				$trans_no = key($trans_no);
 			}
 			$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
-			DB::begin_transaction();
+			DB::begin();
 			$company_data = DB_Company::get_prefs();
 			$branch_data = Sales_Branch::get_accounts($credit_note->Branch);
 			$credit_note_total = $credit_note->get_items_total_dispatch();
@@ -134,7 +134,7 @@
 			if ($trans_no == 0) {
 				Ref::save(ST_CUSTCREDIT, $credit_note->reference);
 			}
-			DB::commit_transaction();
+			DB::commit();
 			return $credit_no;
 		}
 

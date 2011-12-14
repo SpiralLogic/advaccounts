@@ -57,7 +57,7 @@
 	}
 
 	if (isset($_POST['process']) && can_process() == true) {
-		DB::begin_transaction();
+		DB::begin();
 		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0,
 			$wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		$is_bank_to = Bank_Account::is($_POST['cr_acc']);
@@ -67,7 +67,7 @@
 		}
 		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
-		DB::commit_transaction();
+		DB::commit();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
 	WO_Cost::display($_POST['selected_id']);

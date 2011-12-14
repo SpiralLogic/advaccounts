@@ -29,6 +29,8 @@
 		public $phone = "";
 		public $phone2 = "";
 		public $fax = "";
+		public $notes = "";
+		public $inactive = 0;
 		public $website;
 		public $email = "";
 		public $account_no = '', $supp_account_no = ''; //
@@ -151,7 +153,7 @@
 			 . ", " . DB::escape($this->tax_group_id) . ")";
 			DB::query($sql, "The supplier could not be added");
 			$this->id = DB::insert_id();
-			DB::commit_transaction();
+			DB::commit();
 			$this->_status(true, 'Saving', "A Supplier has been added.");
 		}
 	}

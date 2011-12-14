@@ -227,7 +227,7 @@
 					}
 					$trans_id = $cart->order_id;
 					if ($use_transaction) {
-						DB::begin_transaction();
+						DB::begin();
 					}
 					if (!$new) {
 						static::void_journal_trans($trans_type, $trans_id, false);
@@ -269,7 +269,7 @@
 						DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
 					}
 					if ($use_transaction) {
-						DB::commit_transaction();
+						DB::commit();
 					}
 					return $trans_id;
 				}
@@ -277,13 +277,13 @@
 				public static function void($type, $type_no, $use_transaction = true)
 				{
 					if ($use_transaction) {
-						DB::begin_transaction();
+						DB::begin();
 					}
 					Bank_Trans::void($type, $type_no, true);
 					//	static::void($type, $type_no, true);	 // this is done above
 					//	static::void_tax_details($type, $type_no); // ditto
 					if ($use_transaction) {
-						DB::commit_transaction();
+						DB::commit();
 					}
 				}
 

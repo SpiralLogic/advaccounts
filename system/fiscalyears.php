@@ -73,7 +73,7 @@
 			Errors::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 			return false;
 		}
-		DB::begin_transaction();
+		DB::begin();
 		$myrow = DB_Company::get_fiscalyear($year);
 		$to = $myrow['end'];
 		// retrieve total balances from balance sheet accounts
@@ -98,16 +98,16 @@
 			);
 		}
 		DB_AuditTrail::close_transactions($to);
-		DB::commit_transaction();
+		DB::commit();
 		return true;
 	}
 
 	function open_year($year) {
 		$myrow = DB_Company::get_fiscalyear($year);
 		$from = Dates::sql2date($myrow['begin']);
-		DB::begin_transaction();
+		DB::begin();
 		DB_AuditTrail::open_transactions($from);
-		DB::commit_transaction();
+		DB::commit();
 	}
 
 	function handle_submit() {
@@ -172,7 +172,7 @@
 
 	function delete_this_fiscalyear($selected_id) {
 		DB_Utils::backup(Config::get('db.' . User::get()->company), 'Security backup before Fiscal Year Removal');
-		DB::begin_transaction();
+		DB::begin();
 		$ref = _("Open Balance");
 		$myrow = DB_Company::get_fiscalyear($selected_id);
 		$to = $myrow['end'];
@@ -356,7 +356,7 @@
 			}
 		}
 		DB_Company::delete_fiscalyear($selected_id);
-		DB::commit_transaction();
+		DB::commit();
 	}
 
 	function handle_delete() {

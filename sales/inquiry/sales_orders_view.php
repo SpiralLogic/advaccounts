@@ -226,22 +226,22 @@
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND sorder.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
+		$sql .= " AND sorder.debtor_no = " . DB::quote($_POST['customer_id']);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 		// search orders with number like
 		$number_like = "%" . $_POST['OrderNumber'];
-		$sql .= " AND sorder.order_no LIKE " . DB::escape($number_like, false, false) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
 	} elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
 		// search orders with reference like
 		$number_like = "%" . $_POST['OrderReference'] . "%";
-		$sql .= " AND sorder.reference LIKE " . DB::escape($number_like, false, false) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
 	} elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		foreach ($searchArray as $ajaxsearch) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = DB::escape("%" . trim($ajaxsearch) . "%", false, false);
+			$ajaxsearch = DB::quote("%" . trim($ajaxsearch) . "%");
 			$sql .= " AND ( debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
@@ -264,13 +264,13 @@
 			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::Today()) . "'";
 		}
 		if ($selected_customer != -1) {
-			$sql .= " AND sorder.debtor_no=" . DB::escape($selected_customer, false, false);
+			$sql .= " AND sorder.debtor_no=" . DB::quote($selected_customer);
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stk_code=" . DB::escape($selected_stock_item, false, false);
+			$sql .= " AND line.stk_code=" . DB::quote($selected_stock_item);
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'], false, false);
+			$sql .= " AND sorder.from_stk_loc = " . DB::quote($_POST['StockLocation']);
 		}
 		if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			$sql .= " AND line.qty_sent < line.quantity";

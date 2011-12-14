@@ -20,7 +20,7 @@
 			}
 			$date_ = $invoice->document_date;
 			$charge_shipping = $invoice->freight_cost;
-			DB::begin_transaction();
+			DB::begin();
 			$company_data = DB_Company::get_prefs();
 			$branch_data = Sales_Branch::get_accounts($invoice->Branch);
 			$customer = Debtor::get($invoice->customer_id);
@@ -152,12 +152,12 @@
 			if ($trans_no == 0) {
 				Ref::save(ST_SALESINVOICE, $invoice->reference);
 			}
-			DB::commit_transaction();
+			DB::commit();
 			return $invoice_no;
 		}
 
 		public static function void($type, $type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
 			// reverse all the changes in parent document(s)
@@ -177,6 +177,6 @@
 			// do this last because other voidings can depend on it - especially voiding
 			// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 			Sales_Trans::void($type, $type_no);
-			DB::commit_transaction();
+			DB::commit();
 		}
 	}

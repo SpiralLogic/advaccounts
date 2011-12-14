@@ -13,7 +13,7 @@
 	{
 		public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
 			$cr_lab_acc) {
-			DB::begin_transaction();
+			DB::begin();
 			// if unassembling, reverse the stock movements
 			if ($type == WO_UNASSEMBLY) {
 				$units_reqd = -$units_reqd;
@@ -57,7 +57,7 @@
 			DB_Comments::add(ST_WORKORDER, $woid, $date_, $memo_);
 			Ref::save(ST_WORKORDER, $wo_ref);
 			DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Quick production."));
-			DB::commit_transaction();
+			DB::commit();
 			return $woid;
 		}
 

@@ -6,8 +6,7 @@
 	 * Time: 2:53 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class DB_abstract
-	{
+	abstract class DB_abstract {
 		protected $_table;
 		protected $_id_column;
 		/***
@@ -60,20 +59,20 @@
 				return $this->_saveNew();
 			}
 			$data = (array)$this;
-			DB::begin_transaction();
+			DB::begin();
 			$result = DB::update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
 			if (!$result) {
-				DB::cancel_transaction();
+				DB::cancel();
 				return $this->_status(false, 'write', "Could not update " . get_class($this));
 			}
 			if ($result && property_exists($this, 'inactive')) {
 				$result = DB::update_record_status($this->id, $this->inactive, $this->_table, $this->_id_column);
 				if (!$result) {
-					DB::cancel_transaction();
+					DB::cancel();
 					return $this->_status(false, 'write', "Could not update active status of " . get_class($this));
 				}
 			}
-			DB::commit_transaction();
+			DB::commit();
 			$this->_status(true, 'write', get_class($this) . ' changes saved to database.');
 		}
 
@@ -104,15 +103,21 @@
 				if (!is_array($value)) {
 					$value = (trim($value) == null) ? '' : trim($value);
 				}
-				if ($this->$key == null && ($value === '' || $value === 'null')) {
-					$value = null;
+
+				if (property_exists($this, $key)) {
+					if ($this->$key == null && ($value === '' || $value === 'null')) {
+						$value = null;
+					}
+					$this->$key = $value;
+				} else {
+					$remainder[$key] = $value;
 				}
-				(property_exists($this, $key)) ? $this->$key = $value : $remainder[$key] = $value;
+				return $remainder;
 			}
-			return $remainder;
 		}
 
-		protected function _status($status = null, $process = null, $message = '', $var = null) {
+		protected
+		function _status($status = null, $process = null, $message = '', $var = null) {
 			if ($var === null) {
 				$var = $this->id;
 			}

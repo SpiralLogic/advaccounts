@@ -148,7 +148,7 @@
 		//	Update allocations in database.
 		//
 		public function write() {
-			DB::begin_transaction();
+			DB::begin();
 			if ($this->person_type) {
 				Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			} else {
@@ -205,7 +205,7 @@
 					$total_allocated
 				);
 			}
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function show_allocatable($show_totals) {

@@ -21,12 +21,6 @@
 		 *
 		 * @return mixed
 		 */
-		static function i($name, $config) {
-			if (!isset(static::$instances[$name])) {
-				new static($name, $config);
-			}
-			return static::$instances[$name];
-		}
 
 		/**
 		 * @var

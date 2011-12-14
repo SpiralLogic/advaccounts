@@ -13,7 +13,7 @@
 	{
 		public static function add($supplier_id, $date_, $bank_account,
 			$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
-			DB::begin_transaction();
+			DB::begin();
 			$supplier_currency = Bank_Currency::for_creditor($supplier_id);
 			$bank_account_currency = Bank_Currency::for_company($bank_account);
 			$bank_gl_account = Bank_Account::get_gl($bank_account);
@@ -60,16 +60,16 @@
 				"Could not add the supplier payment bank transaction");
 			DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
 			Ref::save($trans_type, $ref);
-			DB::commit_transaction();
+			DB::commit();
 			return $payment_id;
 		}
 
 		public static function void($type, $type_no) {
-			DB::begin_transaction();
+			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
 			Purch_Allocation::void($type, $type_no);
 			Purch_Trans::void($type, $type_no);
-			DB::commit_transaction();
+			DB::commit();
 		}
 	}

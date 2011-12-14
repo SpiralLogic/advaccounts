@@ -525,7 +525,7 @@
 		}
 
 		public static function add($order) {
-			DB::begin_transaction();
+			DB::begin();
 			$order_no = SysTypes::get_next_trans_no($order->trans_type);
 			$del_date = Dates::date2sql($order->due_date);
 			$order_type = 0; // this is default on new order
@@ -571,7 +571,7 @@
 			} /* inserted line items into sales order details */
 			DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date);
 			Ref::save($order->trans_type, $order->reference);
-			DB::commit_transaction();
+			DB::commit();
 			if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 				require_once(DOCROOT . "/reporting/includes/email.php");
 				$company = DB_Company::get_prefs();
@@ -594,14 +594,14 @@
 		}
 
 		public static function delete($order_no, $trans_type) {
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
 			DB::query($sql, "order Header Delete");
 			$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
 			DB::query($sql, "order Detail Delete");
 			Ref::delete($trans_type, $order_no);
 			DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		// Mark changes in sales_order_details
@@ -618,7 +618,7 @@
 			$ord_date = Dates::date2sql($order->document_date);
 			$order_no = key($order->trans_no);
 			$version = current($order->trans_no);
-			DB::begin_transaction();
+			DB::begin();
 			$sql = "UPDATE sales_orders SET type =" . DB::escape($order->so_type) . " ,
 			debtor_no = " . DB::escape($order->customer_id) . ",
 			branch_code = " . DB::escape($order->Branch) . ",
@@ -682,7 +682,7 @@
 			DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
 			Ref::delete($order->trans_type, $order_no);
 			Ref::save($order->trans_type, $order->reference);
-			DB::commit_transaction();
+			DB::commit();
 			if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 				require_once(DOCROOT . "/reporting/includes/class.mail.php");
 				$company = DB_Company::get_prefs();

@@ -348,12 +348,12 @@
 
 		public static function void($type, $trans_id, $nested = false) {
 			if (!$nested) {
-				DB::begin_transaction();
+				DB::begin();
 			}
 			$sql = "UPDATE gl_trans SET amount=0 WHERE type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_id);
 			DB::query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
 			if (!$nested) {
-				DB::commit_transaction();
+				DB::commit();
 			}
 		}
 

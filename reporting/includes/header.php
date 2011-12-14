@@ -187,9 +187,9 @@
 	$this->Text($mcol + 60, $doc_Delivered_To . ':');
 	$this->Font('');
 	//		$this->fontSize += 4;
-	$this->row = $this->row - $this->lineHeight - 5;
+	$this->row = $this->row - $this->lineHeight - 5 ;
 	$temp = $this->row;
-	$name = @$myrow['DebtorName'];
+	$name = !isset($myrow['DebtorName'])?:$myrow['DebtorName'];
 	if (isset($customer)) {
 		$addr = $customer->accounts->getAddress();
 	}

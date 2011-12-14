@@ -12,7 +12,7 @@
 	class Dimensions
 	{
 		public static function add($reference, $name, $type_, $date_, $due_date, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$date = Dates::date2sql($date_);
 			$duedate = Dates::date2sql($due_date);
 			$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
@@ -21,12 +21,12 @@
 			$id = DB::insert_id();
 			DB_Comments::add(ST_DIMENSION, $id, $date_, $memo_);
 			Ref::save(ST_DIMENSION, $id, $reference);
-			DB::commit_transaction();
+			DB::commit();
 			return $id;
 		}
 
 		public static function update($id, $name, $type_, $date_, $due_date, $memo_) {
-			DB::begin_transaction();
+			DB::begin();
 			$date = Dates::date2sql($date_);
 			$duedate = Dates::date2sql($due_date);
 			$sql = "UPDATE dimensions SET name=" . DB::escape($name) . ",
@@ -36,17 +36,17 @@
 		WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not update dimension");
 			DB_Comments::update(ST_DIMENSION, $id, null, $memo_);
-			DB::commit_transaction();
+			DB::commit();
 			return $id;
 		}
 
 		public static function delete($id) {
-			DB::begin_transaction();
+			DB::begin();
 			// delete the actual dimension
 			$sql = "DELETE FROM dimensions WHERE id=" . DB::escape($id);
 			DB::query($sql, "The dimension could not be deleted");
 			DB_Comments::delete(ST_DIMENSION, $id);
-			DB::commit_transaction();
+			DB::commit();
 		}
 
 		public static function get($id, $allow_null = false) {

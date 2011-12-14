@@ -64,7 +64,7 @@
 	}
 
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
-		DB::begin_transaction();
+		DB::begin();
 		for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++)
 		{
 			if (isset($_POST['add'])) {
@@ -77,7 +77,7 @@
 			}
 			$da = Dates::add_months($da, 1);
 		}
-		DB::commit_transaction();
+		DB::commit();
 		if (isset($_POST['add'])) {
 			Errors::notice(_("The Budget has been saved."));
 		} else {

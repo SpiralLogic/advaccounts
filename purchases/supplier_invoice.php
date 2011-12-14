@@ -35,14 +35,13 @@
 		}
 	}
 	function clear_fields() {
-		$Ajax = Ajax::i();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
 		unset($_POST['dimension2_id']);
 		unset($_POST['amount']);
 		unset($_POST['memo_']);
 		unset($_POST['AddGLCodeToTrans']);
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		JS::set_focus('gl_code');
 	}
 
@@ -53,7 +52,7 @@
 		clear_fields();
 	}
 	if (isset($_POST['AddGLCodeToTrans'])) {
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		$input_error = false;
 		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
 		$result = DB::query($sql, "get account information");
@@ -243,8 +242,8 @@
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
 		Purch_Trans::i()->remove_grn_from_trans($id3);
-		$Ajax->activate('grn_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('grn_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	$id4 = find_submit('Delete2');
 	if ($id4 != -1) {
@@ -263,14 +262,14 @@
 			Purch_Trans::i()->gl_codes[$taxrecord]->amount = $taxtotal * .1;
 		}
 		clear_fields();
-		$Ajax->activate('gl_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('gl_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	$id2 = -1;
 	if (User::get()->can_access('SA_GRNDELETE')) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
-			DB::begin_transaction();
+			DB::begin();
 			$myrow = Purch_GRN::get_item($id2);
 			$grn = Purch_GRN::get_batch($myrow['grn_batch_id']);
 			$sql = "UPDATE purch_order_details
@@ -284,16 +283,16 @@
 			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'],
 				Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1,
 				$myrow['unit_price']);
-			DB::commit_transaction();
+			DB::commit();
 			Errors::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
 	}
 	if (isset($_POST['go'])) {
-		$Ajax->activate('gl_items');
+		Ajax::i()->activate('gl_items');
 		GL_QuickEntry::show_menu(Purch_Trans::i(), $_POST['qid'], Validation::input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
-		$Ajax->activate('totamount');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('totamount');
+		Ajax::i()->activate('inv_tot');
 	}
 	start_form();
 	Purch_Invoice::header(Purch_Trans::i());
@@ -314,11 +313,11 @@
 		Display::div_end();
 	}
 	if ($id != -1 || $id2 != -1) {
-		$Ajax->activate('grn_items');
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('grn_items');
+		Ajax::i()->activate('inv_tot');
 	}
 	if (get_post('AddGLCodeToTrans')) {
-		$Ajax->activate('inv_tot');
+		Ajax::i()->activate('inv_tot');
 	}
 	Display::br();
 	submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
