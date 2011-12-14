@@ -8,78 +8,20 @@
 	 */
 	class Debtor extends Contacts_Company
 	{
-		public static function addEditDialog() {
-			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
-			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
-			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
-			$customerBox->setOptions(array(
-																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
-			$customerBox->show();
-			$js = <<<JS
-						var val = $("#customer_id").val();
-						$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
-JS;
-			JS::addLiveEvent('.customer_id_label', 'click', $js);
-		}
-
-		public static function addSearchBox($id, $options = array()) {
-			echo UI::searchLine($id, '/contacts/search.php', $options);
-		}
-
-		public static function search($terms) {
-			$data = array();
-			$results = DB::select('debtor_no as id', 'name as label', 'name as value')
-			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
-			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
-			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
-			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
-			$results = $results->fetch();
-
-			foreach ($results as $result) {
-				$data[] = @array_map('htmlspecialchars_decode', $result);
-			}
-			return $data;
-		}
-
-		public static function searchOrder($term, $options = array()) {
-			$defaults = array('inactive' => false, 'selected' => '');
-			$o = array_merge($defaults, $options);
-			$term = explode(' ', $term);
-			$term1 = DB::escape(trim($term[0]) . '%');
-			$term2 = DB::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
-				return trim($v);
-			}, $term)) . '%');
-			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
-			$sql
-			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
-								UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
-								WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
-			$result = DB::query($sql, 'Couldn\'t Get Customers');
-			$data = '';
-			while ($row = DB::fetch_assoc($result)) {
-				foreach ($row as &$value) {
-					$value = htmlspecialchars_decode($value);
-				}
-				$data[] = $row;
-			}
-			return $data;
-		}
-
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
 		public $debtor_ref = '';
 		public $credit_status;
 		public $payment_discount = 0;
-		public $pymt_discount = 0;
+		public $pymt_discount;
 		public $defaultBranch = 0;
 		public $defaultContact = 0;
 		public $branches = array();
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
-		public $webid = '';
+		public $webid;
 		protected $_table = 'debtors_master';
 		protected $_id_column = 'debtor_no';
 
@@ -163,41 +105,24 @@ JS;
 			return $results;
 		}
 
-		public function getStatus() {
-			if ($this->accounts->_status->hasError()) {
-				$this->_status->append($this->accounts->_status->get());
-			}
-			foreach ($this->branches as $branch) {
-				if ($branch->_status->hasError()) {
-					$this->_status->append($branch->_status->get());
-				}
-			}
-			foreach ($this->contacts as $contact) {
-				if ($contact->_status->hasError()) {
-					$this->_status->append($contact->_status->get());
-				}
-			}
-			return $this->_status->get();
-		}
-
 		public function save($changes = null) {
-			$changes['debtor_ref'] = substr($this->name, 0, 29);
-			$changes['discount'] = User::numeric($this->discount) / 100;
-			$changes['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
-			$changes['credit_limit'] = User::numeric($this->credit_limit);
+			$data['debtor_ref'] = substr($this->name, 0, 29);
+			$data['discount'] = User::numeric($this->discount) / 100;
+			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+			$data['credit_limit'] = User::numeric($this->credit_limit);
 			parent::save($changes);
-			$this->accounts->save(array('debtor_no' => $this->id));
-			foreach ($this->branches as $branch_code => $branch) {
-				$branch->save(array('debtor_no' => $this->id));
+		$this->accounts->save(array('parent_id' => $this->id));
+			/*	foreach ($this->branches as $branch_code => $branch) {
+			$branch->save(array('debtor_no' => $this->id));
 				if ($branch_code == 0) {
 					$this->branches[$branch->branch_code] = $branch;
 					unset($this->branches[0]);
 				}
 			}
-			foreach ($this->contacts as $id => $contact) {
-				$contact->save(array('parent_id' => $this->id));
+			foreach ($this->contacts as &$contact) {
+			$contact->save(array('parent_id' => $this->id));
 				$this->contacts[$contact->id] = $contact;
-			}
+			}*/
 			return $this->_setDefaults();
 		}
 
@@ -310,7 +235,7 @@ JS;
 				}
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contacts_Contact();
+			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
 
 		protected function _new() {
@@ -320,14 +245,13 @@ JS;
 			$this->contacts[0] = new Contacts_Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
-			return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
+			return $this->_status(true, 'Initialize', 'Now working with a new customer');
 		}
 
 		protected function _read($id = false) {
 			if (!parent::_read($id)) {
-				return false;
+				return $this->_status->get();
 			}
-			;
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -336,31 +260,67 @@ JS;
 			$this->credit_limit = Num::price_format($this->credit_limit);
 		}
 
-		protected function _saveNew() {
-			$this->debtor_ref = substr($this->name, 0, 29);
-			$this->discount = User::numeric($this->discount) / 100;
-			$this->pymt_discount = User::numeric($this->pymt_discount) / 100;
-			$this->credit_limit = User::numeric($this->credit_limit);
-			DB::begin(true);
-			if (!parent::_saveNew()) {
-				DB::cancel();
-				return false;
-			}
-			foreach ($this->branches as $branch) {
-				$branch->debtor_no=$this->id;
-				if ($branch->name == 'New Address') {
-					$branch->name = $branch->city.' '.$branch->state;
-				}
-				$branch->save();
-			}
-			DB::commit(true);
-			return true;
-		}
-
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contacts_Contact();
+			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+		}
+
+		public static function addEditDialog() {
+			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
+			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
+			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
+			$customerBox->setOptions(array(
+																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+			$customerBox->show();
+			$js = <<<JS
+							var val = $("#customer_id").val();
+							$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+JS;
+			JS::addLiveEvent('.customer_id_label', 'click', $js);
+		}
+
+		public static function addSearchBox($id, $options = array()) {
+			echo UI::searchLine($id, '/contacts/search.php', $options);
+		}
+
+		public static function search($terms) {
+			$data = array();
+			DB::select('debtor_no as id', 'name as label', 'name as value')
+			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
+			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
+			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
+			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+			$results = DB::fetch();
+			foreach ($results as $result) {
+				$data[] = @array_map('htmlspecialchars_decode', $result);
+			}
+			return $data;
+		}
+
+		public static function searchOrder($term, $options = array()) {
+			$defaults = array('inactive' => false, 'selected' => '');
+			$o = array_merge($defaults, $options);
+			$term = explode(' ', $term);
+			$term1 = DB::escape(trim($term[0]) . '%');
+			$term2 = DB::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
+				return trim($v);
+			}, $term)) . '%');
+			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
+			$sql
+			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+									UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
+									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
+			$result = DB::query($sql, 'Couldn\'t Get Customers');
+			$data = '';
+			while ($row = DB::fetch_assoc($result)) {
+				foreach ($row as &$value) {
+					$value = htmlspecialchars_decode($value);
+				}
+				$data[] = $row;
+			}
+			return $data;
 		}
 
 		public static function get_details($customer_id, $to = null) {
@@ -470,7 +430,7 @@ JS;
 
 		public static function get_credit($customer_id) {
 			$custdet = Debtor::get_details($customer_id);
-			return ($customer_id > 0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
+			return ($customer_id > 0 &&isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 		}
 
 		public static function is_new($id) {

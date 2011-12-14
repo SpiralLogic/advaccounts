@@ -104,7 +104,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			// error_reporting==0 when messages are set off with @
-			if ($type > E_USER_NOTICE) {
+			if ($type > E_USER_NOTICE || $type==E_STRICT) {
 				return;
 			}
 			if (static::$count > 5) {
@@ -141,7 +141,9 @@
 		 */
 		static function format() {
 			$msg_class = array(
-				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg')
+				E_USER_ERROR => array('ERROR', 'err_msg'),
+				E_USER_WARNING => array('WARNING', 'warn_msg'),
+				E_USER_NOTICE => array('USER', 'note_msg')
 			);
 			$content = '';
 			foreach (static::$messages as $msg) {
