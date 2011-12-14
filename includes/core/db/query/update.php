@@ -6,8 +6,7 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-	Class DB_Query_Update extends DB_Query_Insert
-	{
+	Class DB_Query_Update extends DB_Query_Insert {
 		/**
 		 * @param bool $table
 		 * @param			$db
@@ -17,20 +16,16 @@
 			$this->type = DB::UPDATE;
 		}
 
-		protected function execute($data = null) {
-			$this->hasFeilds = array_diff($this->hasFeilds, $this->where);
-			return parent::execute($data);
-		}
 
 		/**
 		 * @return string
 		 */
 		protected function _buildQuery() {
 			$sql = "UPDATE " . $this->table . " SET ";
-			foreach ($this->feilds as &$feild) {
+			foreach ($this->fields as &$feild) {
 				$feild = " $feild = :$feild";
 			}
-			$sql .= implode(', ', $this->feilds);
+			$sql .= implode(', ', $this->fields);
 			$sql .= $this->_buildWhere();
 			return $sql;
 		}

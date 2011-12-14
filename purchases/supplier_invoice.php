@@ -324,14 +324,14 @@
 	Item::addEditDialog();
 	$js = <<<JS
 		 $("#wrapper").delegate('.amount','change',function() {
-	 var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), feilds = $(this).parent().parent(), fv = {}, nodes = {
-	 qty: $('[name^="this_quantity"]',feilds),
-	 price: $('[name^="ChgPrice"]',feilds),
-	 discount: $('[name^="ChgDiscount"]',feilds),
-	 total: $('[id^="ChgTotal"]',feilds),
-						eachprice: $('[id^="Ea"]',feilds)
+	 var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
+	 qty: $('[name^="this_quantity"]',fields),
+	 price: $('[name^="ChgPrice"]',fields),
+	 discount: $('[name^="ChgDiscount"]',fields),
+	 total: $('[id^="ChgTotal"]',fields),
+						eachprice: $('[id^="Ea"]',fields)
 	 };
-	 if (feilds.hasClass('grid')) {
+	 if (fields.hasClass('grid')) {
 	 $.each(nodes,function(k,v) {
 	 if (v && v.val()) fv[k] = Number(v.val().replace(',',''));
 	 });

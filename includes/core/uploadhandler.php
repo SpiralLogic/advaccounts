@@ -2,16 +2,6 @@
 
 
 
-	/*
-	 * jQuery File Upload Plugin PHP Example 5.2.7
-	 * https://github.com/blueimp/jQuery-File-Upload
-	 *
-	 * Copyright 2010, Sebastian Tschan
-	 * https://blueimp.net
-	 *
-	 * Licensed under the MIT license:
-	 * http://creativecommons.org/licenses/MIT/
-	 */
 	/**
 	 *
 	 */
@@ -309,6 +299,7 @@
 				if (DB::num_rows($result) < 1) {
 					return;
 				} else {
+					/** @noinspection PhpAssignmentInConditionInspection */
 					while ($row = DB::fetch_assoc($result)) {
 						$info[] = $row;
 					}

@@ -161,7 +161,7 @@
 		/***
 		 * @static
 		 *
-		 * @param mixed $vars Test for existance of either $_POST or $_GET variable
+		 * @param mixed $vars Test for existence of either $_POST or $_GET variable
 		 *
 		 * @return bool
 		 */

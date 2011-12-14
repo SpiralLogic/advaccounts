@@ -118,8 +118,10 @@
 		/**
 		 * @static
 		 *
-		 * @param $class
+		 * @param $classname
+		 * @internal param $class
 		 *
+		 * @return bool|void
 		 * @throws Autoload_Exception
 		 */
 		public static function load($classname) {
@@ -162,8 +164,16 @@
 			if ($filepath) {
 				return static::includeFile($filepath,$classname);
 			}
+			throw new Autoload_Exception('Could not find and load $classname');
+
 		}
 
+		/**
+		 * @static
+		 * @param $filepath
+		 * @param $class
+		 * @throws Autoload_Exception
+		 */
 		protected static function includeFile($filepath,$class) {
 			try {
 

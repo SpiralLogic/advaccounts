@@ -6,8 +6,7 @@
 	 * Time: 11:15 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Connection
-	{
+	class DB_Connection {
 		/**
 		 * @var array
 		 */
@@ -82,14 +81,16 @@
 		public function prepare($sql) {
 			try {
 				return $this->conn->prepare($sql);
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				$this->_error($e);
+				return false;
 			}
 		}
 
 		/***
-		 * @param      $sql
-		 * @param      $type
+		 * @param			$sql
+		 * @param			$type
 		 * @param null $data
 		 *
 		 * @return DB_Query_Result|int
@@ -203,11 +204,13 @@
 
 		/**
 		 *
+		 * @return bool
 		 */
 		protected function _connect() {
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				return true;
 			}
 			catch (PDOException $e) {
 				return $this->_error($e, true);

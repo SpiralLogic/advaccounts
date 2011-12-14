@@ -269,7 +269,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+		 * @param $data
 		 */
 		public static function renderJSON($data) {
 			if (!isset($data['status']) && count(Errors::$messages) > 0) {

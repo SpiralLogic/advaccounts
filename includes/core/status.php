@@ -11,7 +11,17 @@
 		 * @var array
 		 */
 		protected $_status = array();
+		/**
+		 * @var array
+		 */
 		protected $_errors = array();
+
+		/**
+		 * @param null $status
+		 * @param null $process
+		 * @param string $message
+		 * @param null $var
+		 */
 		public function __construct($status = null, $process = null, $message = '', $var = null) {
 
 			$this->set($status, $process, $message, $var);
@@ -44,6 +54,10 @@
 			return $status;
 		}
 
+		/**
+		 * @param array $status
+		 * @return mixed
+		 */
 		public function append(array $status) {
 			$this->_status[] = $status;
 			return $status['status'];
@@ -57,11 +71,18 @@
 			if (!empty($this->_status)) return end($this->_status);
 			return false;
 		}
+
+		/**
+		 * @return bool|mixed
+		 */
 		public function hasError() {
 					if (!empty($this->_errors)) return end($this->_errors);
 					return false;
 				}
 
+		/**
+		 * @return array
+		 */
 		public function getAll() {
 			return $this->_status;
 		}

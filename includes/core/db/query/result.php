@@ -96,21 +96,21 @@
 
 		/**
 		 * @param $class
-		 * @param array $contruct
+		 * @param array $construct
 		 * @return DB_Query_Result
 		 */
-		public function asClassLate($class, $contruct = array()) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class, $contruct);
+		public function asClassLate($class, $construct = array()) {
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class, $construct);
 			return $this;
 		}
 
 		/**
 		 * @param $class
-		 * @param array $contruct
+		 * @param array $construct
 		 * @return DB_Query_Result
 		 */
-		public function asClass($class, $contruct = array()) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $class, $contruct);
+		public function asClass($class, $construct = array()) {
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $class, $construct);
 			return $this;
 		}
 
