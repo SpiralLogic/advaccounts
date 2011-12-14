@@ -12,7 +12,7 @@
 	/**
 	 *
 	 */
-	error_reporting(E_ALL);
+	error_reporting(-1);
 	ini_set('display_errors', 1);
 	define('DS', DIRECTORY_SEPARATOR);
 	define('DOCROOT', realpath(__DIR__) . DS);
@@ -33,26 +33,26 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
-	set_exception_handler(function (\Exception $e) {
 
+	set_exception_handler(function (\Exception $e) {
 		return \Errors::exception_handler($e);
 	});
-	set_error_handler(function ($severity, $message, $filepath = null, $line = null) {
+	set_error_handler(function ($severity, $message, $filepath, $line) {
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-		$Ajax = Ajax::i();
-		if (isset($Ajax)) {
-			$Ajax->run();
-		}
-		// flush all output buffers (works also with exit inside any div levels)
-		while (ob_get_level()) {
-			ob_end_flush();
-		}
-		Config::store();
-		Cache::set('autoload.paths', Autoloader::getLoaded());
-	});
+			$Ajax = Ajax::i();
+			if (isset($Ajax)) {
+				$Ajax->run();
+			}
+			// flush all output buffers (works also with exit inside any div levels)
+			while (ob_get_level()) {
+				ob_end_flush();
+			}
+			Config::store();
+			Cache::set('autoloads', Autoloader::getLoaded());
+		});
 	if (!function_exists('adv_ob_flush_handler')) {
 		function adv_ob_flush_handler($text) {
 			$Ajax = Ajax::i();
@@ -63,11 +63,12 @@
 				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
-			return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+				return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
 	Session::init();
 	Config::init();
+	$_GLOBALS['Ajax']=Ajax::i();
 	/***
 	 *
 	 */
@@ -75,7 +76,9 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
+
 	array_walk($_POST, function(&$v) {
+
 		$v = is_string($v) ? trim($v) : $v;
 	});
 	advaccounting::init();
