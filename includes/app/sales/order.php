@@ -87,7 +87,7 @@
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
-			$this->cart_id = md5($type . $trans_no);
+			$this->cart_id = uniqid();
 		}
 
 		// Reading document into cart

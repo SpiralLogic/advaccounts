@@ -33,8 +33,8 @@
 		 * @param $password
 		 */
 		public function update_password($id, $password) {
-			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)
-			 ->value('change_password', 0)->where('id=', $id)->exec();
+			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)->value('change_password', 0)->where('id=', $id)
+			 ->exec();
 			session_regenerate_id();
 		}
 
@@ -57,6 +57,21 @@
 			return $this->hasher;
 		}
 
+		public function check_user_password($user_id, $password) {
+			$result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
+			$hashed_password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
+			if ($result['change_password']) {
+				$_SESSION['change_password'] = true;
+			}
+			if ($result['password'] == $hashed_password) {
+				return $result;
+			} elseif ((substr($result['password'], 0, 1) != '$' && $result['password'] == $this->hash_password($password)) || (strlen($result['password']) == 32 && $result['password'] == md5($password))) {
+				DB::update('users')->value('password', $hashed_password)->value('change_password', 0)->where('user_id=', $user_id)->exec();
+				return $result;
+			}
+			return false;
+		}
+
 		/**
 		 * @static
 		 *
@@ -67,9 +82,7 @@
 		 */
 		public static function checkPasswordStrength($password, $username = false) {
 			$returns = array(
-				'strength' => 0,
-				'error' => 0,
-				'text' => ''
+				'strength' => 0, 'error' => 0, 'text' => ''
 			);
 			$length = strlen($password);
 			if ($length < 8) {
@@ -104,18 +117,22 @@
 						//very strong
 						$returns['strength'] = 4;
 						$returns['text'] = 'Very Strong';
-					} else if ($uppers > 0 || $numbers > 2 || $length > 9) {
-						//strong
-						$returns['strength'] = 3;
-						$returns['text'] = 'Strong';
-					} else if ($numbers > 1) {
-						//fair
-						$returns['strength'] = 2;
-						$returns['text'] = 'Fair';
 					} else {
-						//weak
-						$returns['strength'] = 1;
-						$returns['text'] = 'Weak';
+						if ($uppers > 0 || $numbers > 2 || $length > 9) {
+							//strong
+							$returns['strength'] = 3;
+							$returns['text'] = 'Strong';
+						} else {
+							if ($numbers > 1) {
+								//fair
+								$returns['strength'] = 2;
+								$returns['text'] = 'Fair';
+							} else {
+								//weak
+								$returns['strength'] = 1;
+								$returns['text'] = 'Weak';
+							}
+						}
 					}
 				}
 			}
