@@ -101,6 +101,14 @@
 
 		/**
 		 * @static
+		 * @return mixed
+		 */
+		public static function getServerList() {
+			return (static::$connected) ? static::i()->getServerList() : false;
+		}
+
+		/**
+		 * @static
 		 *
 		 * @param int $time
 		 */

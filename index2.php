@@ -7,6 +7,4 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include('bootstrap.php');
-	echo '<pre>';
-	var_dump(Cache::getStats());
-	var_dump(Cache::getVersion());
+	var_dump(Session::i('current_user'));

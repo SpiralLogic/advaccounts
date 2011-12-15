@@ -12,7 +12,6 @@
 	/**
 	 *
 	 */
-
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	define('DS', DIRECTORY_SEPARATOR);
@@ -20,7 +19,6 @@
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
-
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
@@ -37,13 +35,15 @@
 	 */
 	include VENDORPATH . 'PhpConsole.php';
 	set_error_handler(function ($severity, $message, $filepath, $line) {
-		if (!class_exists('Errors', false)) include(COREPATH . 'errors.php');
-
+		if (!class_exists('Errors', false)) {
+			include(COREPATH . 'errors.php');
+		}
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
-
 	set_exception_handler(function (\Exception $e) {
-		if (!class_exists('Errors', false)) include(COREPATH . 'errors.php');
+		if (!class_exists('Errors', false)) {
+			include(COREPATH . 'errors.php');
+		}
 		return \Errors::exception_handler($e);
 	});
 	require COREPATH . 'autoloader.php';
@@ -72,7 +72,7 @@
 			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-	Session::init();
+	Session::i();
 	Config::init();
 	Ajax::i();
 	/***
@@ -82,9 +82,7 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
-
 	array_walk($_POST, function(&$v) {
-
 		$v = is_string($v) ? trim($v) : $v;
 	});
 	advaccounting::init();
