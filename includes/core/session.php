@@ -13,21 +13,13 @@
 	{
 		/**
 		 * @static
-		 * @return Session
-		 */
-		public static function init() {
-			return static::i();
-		}
-
-		/**
-		 * @static
 		 * @return Session|mixed
 		 */
 		public static function i() {
-			if (static::$_i === null) {
-				static::$_i = new static;
+			if (static::$i === null) {
+				static::$i = new static;
 			}
-			return static::$_i;
+			return static::$i;
 		}
 
 		/**
@@ -43,11 +35,10 @@
 			session_regenerate_id();
 		}
 
-
 		/**
 		 * @var Session
 		 */
-		private static $_i = null;
+		private static $i = null;
 		/**
 		 * @var Language
 		 */
@@ -72,14 +63,17 @@
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
 			if (class_exists('Memcached', false)) {
-								ini_set('session.save_handler', 'Memcached');
-								ini_set('session.save_path', '127.0.0.1:11211');
-							}
-							if (!session_start()) {
-								ini_set('session.save_handler', 'files');
-								if (!session_start()) {
-									die('sessions fucked out');
-								}
+				ini_set('session.save_handler', 'Memcached');
+				ini_set('session.save_path', '127.0.0.1:11211');
+				if (Memcached::HAVE_IGBINARY) {
+					ini_set('session.serialize_handler', 'igbinary');
+				}
+			}
+			if (!session_start()) {
+				ini_set('session.save_handler', 'files');
+				if (!session_start()) {
+					die('sessions fucked out');
+				}
 			}
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {

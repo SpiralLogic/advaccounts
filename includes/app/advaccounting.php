@@ -81,16 +81,16 @@
 
 		public static function init() {
 			require_once APPPATH . "main.php";
-			if (!isset($_SESSION["App"])) {
-				Session::i()->App = new advaccounting();
-			}
+			static::checkLogin();
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 					$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 					static::showLogin();
 				}
 			}
-			static::checkLogin();
+			if (!isset($_SESSION["App"])) {
+				Session::i()->App = new advaccounting();
+			}
 		}
 
 		/**
@@ -102,8 +102,7 @@
 			$currentUser = User::get();
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				if (Input::post("user_name_entry_field")) {
-					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"],
-						$_POST["password"]);
+					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
 					// select full vs fallback ui mode on login
 					$currentUser->ui_mode = $_POST['ui_mode'];
 					if (!$succeed) {
@@ -128,7 +127,8 @@
 			$Ajax = Ajax::i();
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array(
-				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST);
+				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST
+			);
 			require(DOCROOT . "access/login.php");
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
 				Ajax::i()->activate('_page_body');

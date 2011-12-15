@@ -269,6 +269,7 @@ JS;
 
 		/**
 		 * @static
+		 *
 		 * @param $data
 		 */
 		public static function renderJSON($data) {
@@ -285,9 +286,8 @@ JS;
 				$status['status'] = false;
 				$status['message'] = $message;
 				$data['status'] = $status;
-
 			}
-ob_end_clean();
+			ob_end_clean();
 			echo	 json_encode($data);
 			JS::$outputted = true;
 			exit();
