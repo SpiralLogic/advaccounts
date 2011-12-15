@@ -6,8 +6,6 @@
 	 * Time: 1:53 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	ini_set("ignore_repeated_errors", "On");
-	ini_set("log_errors", "On");
 	/***
 	 *
 	 */
@@ -38,7 +36,7 @@
 				return;
 			}
 			if (static::$_vars === null) {
-				static::$_vars = Input::session('config');
+				static::$_vars = Cache::get('config');
 			}
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();

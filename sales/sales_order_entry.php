@@ -109,8 +109,6 @@
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
 		Page::footer_exit();
-	} else {
-		Sales_Order::check_edit_conflicts($_POST['cart_id']);
 	}
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
@@ -126,7 +124,7 @@
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
 			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-				 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
+			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
 		if ($trans_type == ST_SALESORDER) {
 			Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -225,7 +223,6 @@
 	}
 
 	function line_start_focus() {
-		$Ajax = Ajax::i();
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
@@ -439,7 +436,6 @@
 	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no) {
 		Sales_Order::start();
-		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no = $_GET['NewQuoteToSalesOrder'];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
@@ -448,18 +444,16 @@
 			$doc->reference = Ref::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
-			$_SESSION[$doc->cart_id] = $doc;
 		} elseif (isset($_Get['CloneOrder'])) {
 			$trans_no = $_GET['CloneOrder'];
-			$doc = new Sales_Order(ST_SALESORDER, $trans_no);
+			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = Ref::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			foreach ($doc->line_items as $line_no => $line) {
+			foreach ($doc->line_items as $line) {
 				$line->qty_done = $line->qty_dispatched = 0;
 			}
-			$_SESSION[$doc->cart_id] = $doc;
 		} elseif (isset($_GET['NewRemoteToSalesOrder'])) {
 			$_SESSION[$_POST['cart_id']] = $_SESSION['remote_order'];
 			unset($_SESSION['remote_order']);
@@ -477,15 +471,13 @@
 				$doc->due_date = $doc->document_date;
 			}
 			$doc->reference = Ref::get_next($doc->trans_type);
-			//$doc->Comments='';
-			foreach ($doc->line_items as $line_no => $line) {
+			foreach ($doc->line_items as $line) {
 				$doc->line_items[$line]->qty_done = 0;
 			}
-			$_SESSION[$doc->cart_id] = $doc;
 		} else {
 			$doc = new Sales_Order($type, array($trans_no));
-			$_SESSION[$doc->cart_id] = $doc;
 		}
+		$_SESSION[$doc->cart_id] = Sales_Order::check_edit_conflicts($doc);
 		copy_from_cart($doc->cart_id);
 	}
 

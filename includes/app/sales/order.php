@@ -64,6 +64,7 @@
 		public $payment;
 		public $payment_terms; // cached payment terms
 		public $credit;
+		protected $uniqueid;
 
 		//
 		// $trans_no==0 => open new/direct document
@@ -71,9 +72,9 @@
 		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
 		/***
-		 * @param			$type
-		 * @param int	$trans_no
-		 * @param bool $view
+		 * @param						$type
+		 * @param int|array	$trans_no
+		 * @param bool			 $view
 		 */
 		function __construct($type, $trans_no = 0, $view = false) {
 			/*Constructor function initialises a new shopping cart */
@@ -87,7 +88,8 @@
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
-			$this->cart_id = uniqid();
+			$this->uniqueid = uniqid();
+			$this->cart_id = sha1($this->trans_type . serialize($this->trans_no));
 		}
 
 		// Reading document into cart
@@ -932,13 +934,12 @@
 							 Check if the cart was not destroyed during opening the edition page in
 							 another browser tab.
 						 */
-		public static function check_edit_conflicts($cartname = 'Items') {
-			$Ajax = Ajax::i();
-			if (Input::post('cart_id') && Input::Session($cartname) && Input::post('cart_id') != Input::session($cartname)->cart_id) {
-				Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
-				Ajax::i()->activate('_page_body');
-				Page::footer_exit();
+		public static function check_edit_conflicts($order = 'Items') {
+			if (Input::Session($order->cart_id) && Input::Session($order->cart_id)->uniqueid != $order->uniqueid) {
+				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				return $_SESSION[$order->cart_id];
 			}
+			return $order;
 		}
 
 		public static function customer_to_order($order, $customer_id, $branch_id) {

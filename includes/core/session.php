@@ -66,7 +66,7 @@
 				ini_set('session.save_handler', 'Memcached');
 				ini_set('session.save_path', '127.0.0.1:11211');
 				if (Memcached::HAVE_IGBINARY) {
-					ini_set('session.serialize_handler', 'igbinary');
+					//		ini_set('session.serialize_handler', 'igbinary');
 				}
 			}
 			if (!session_start()) {
