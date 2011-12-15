@@ -73,7 +73,7 @@
 		}
 	}
 	Session::i();
-	Config::init();
+	Config::i();
 	Ajax::i();
 	/***
 	 *

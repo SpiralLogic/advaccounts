@@ -6,7 +6,8 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_Branch extends DB_abstract {
+	class Debtor_Branch extends DB_abstract
+	{
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -14,13 +15,13 @@
 		public $city = '';
 		public $state = '';
 		public $postcode = '';
-		public $area = DEFAULT_AREA;
+		public $area;
 		public $br_post_address;
 		public $debtor_no;
 		public $branch_ref = "New";
 		public $contact_name = "";
-		public $default_location = DEFAULT_LOCATION;
-		public $default_ship_via = DEFAULT_SHIP_VIA;
+		public $default_location;
+		public $default_ship_via;
 		public $disable_trans = 0;
 		public $phone = '';
 		public $phone2 = '';
@@ -35,12 +36,11 @@
 		public $sales_account = "";
 		public $sales_discount_account;
 		public $salesman;
-		public $tax_group_id = DEFAULT_TAX_GROUP;
+		public $tax_group_id;
 		protected $_table = 'cust_branch';
 		protected $_id_column = 'branch_code';
 
 		public function __construct($id = null) {
-
 			$this->id = &$this->branch_code;
 			parent::__construct($id);
 			$this->name = &$this->br_name;
@@ -71,7 +71,6 @@
 		}
 
 		protected function _canProcess() {
-
 			return true;
 		}
 
@@ -81,6 +80,10 @@
 		protected function _defaults() {
 			$company_record = DB_Company::get_prefs();
 			$this->branch_code = 0;
+			$this->tax_group_id = Config::get('defaults.tax_group');
+			$this->default_location = Config::get('defaults.location');
+			$this->default_ship_via = Config::get('defaults.ship_via');
+			$this->area = Config::get('defaults.area');
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];
@@ -111,8 +114,12 @@
 				$params = array('branch_code' => $params);
 			}
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
-			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')
-			 ->where(array('b.debtor_no=c.debtor_no', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'));
+			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')->where(array(
+																																																'b.debtor_no=c.debtor_no',
+																																																'b.tax_group_id=t.id',
+																																																'b.area=a.area_code',
+																																																'b.salesman=s.salesman_code'
+																																													 ));
 			foreach ($params as $key => $value) {
 				$sql->where("b.$key=", $value);
 			}
@@ -129,12 +136,16 @@
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
 			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
-				'where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ?
-				 _('All branches') : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
+																																									'where' => $where,
+																																									'order' => array('branch_ref'),
+																																									'spec_option' => $spec_option === true ? _('All branches') : $spec_option,
+																																									'spec_id' => ALL_TEXT,
+																																									'select_submit' => $submit_on_change,
+																																									'sel_hint' => _('Select customer branch')
+																																						 ));
 		}
 
-		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false,
-																 $editkey = false) {
+		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}

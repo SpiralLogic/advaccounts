@@ -39,7 +39,7 @@
 				$this->tho_sep = 0;
 				$this->dec_sep = 0;
 				$this->price_dec = 2;
-				$this->language = Config::get('default_lang');
+				$this->language = Config::get('defaults.lang');
 				$this->theme = 'default';
 			} else {
 				$this->language = $user["language"];

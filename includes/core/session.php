@@ -60,7 +60,7 @@
 		 *
 		 */
 		final protected function __construct() {
-			ini_set('session.gc_maxlifetime', 36000); // 10hrs
+			ini_set('session.gc_maxlifetime', 3200); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
 			if (class_exists('Memcached', false)) {
 				ini_set('session.save_handler', 'Memcached');
@@ -96,7 +96,7 @@
 		 */
 		protected function setLanguage() {
 			if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
-				$l = Arr::search_value(Config::get('default_lang'), Config::get('languages.installed'), 'code');
+				$l = Arr::search_value(Config::get('defaults.lang'), Config::get('languages.installed'), 'code');
 				static::$lang = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 				static::$lang->set_language(static::$lang->code);
 				if (file_exists(DOCROOT . "lang/" . static::$lang->code . "/locale.php")) {
