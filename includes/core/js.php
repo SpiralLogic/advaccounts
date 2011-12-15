@@ -466,8 +466,7 @@ JS;
 		 * If $form<0 $name is element id.
 		 */
 		public static function set_focus($name) {
-			$Ajax = Ajax::i();
-			$Ajax->addFocus(true, $name);
+			Ajax::i()->addFocus(true, $name);
 			$_POST['_focus'] = $name;
 		}
 	}

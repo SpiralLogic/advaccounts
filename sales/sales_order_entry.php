@@ -223,7 +223,6 @@
 	}
 
 	function line_start_focus() {
-		$Ajax = Ajax::i();
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
@@ -436,7 +435,7 @@
 
 	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no) {
-		//Sales_Order::start();
+		Sales_Order::start();
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no = $_GET['NewQuoteToSalesOrder'];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
@@ -447,12 +446,12 @@
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
 		} elseif (isset($_Get['CloneOrder'])) {
 			$trans_no = $_GET['CloneOrder'];
-			$doc = new Sales_Order(ST_SALESORDER, $trans_no);
+			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = Ref::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			foreach ($doc->line_items as $line_no => $line) {
+			foreach ($doc->line_items as $line) {
 				$line->qty_done = $line->qty_dispatched = 0;
 			}
 		} elseif (isset($_GET['NewRemoteToSalesOrder'])) {
@@ -472,14 +471,13 @@
 				$doc->due_date = $doc->document_date;
 			}
 			$doc->reference = Ref::get_next($doc->trans_type);
-			foreach ($doc->line_items as $line_no => $line) {
+			foreach ($doc->line_items as $line) {
 				$doc->line_items[$line]->qty_done = 0;
 			}
 		} else {
 			$doc = new Sales_Order($type, array($trans_no));
 		}
-		Sales_Order::check_edit_conflicts($doc);
-		$_SESSION[$doc->cart_id] = $doc;
+		$_SESSION[$doc->cart_id] = Sales_Order::check_edit_conflicts($doc);
 		copy_from_cart($doc->cart_id);
 	}
 

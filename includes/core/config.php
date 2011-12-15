@@ -6,8 +6,6 @@
 	 * Time: 1:53 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	ini_set("ignore_repeated_errors", "On");
-	ini_set("log_errors", "On");
 	/***
 	 *
 	 */
@@ -27,24 +25,24 @@
 		/**
 		 * @var bool
 		 */
-		protected static $_initialised = false;
+		protected static $i = false;
 
 		/**
 		 * @static
 		 * @return mixed
 		 */
-		public static function init() {
-			if (static::$_initialised === true) {
+		public static function i() {
+			if (static::$i === true) {
 				return;
 			}
 			if (static::$_vars === null) {
-				static::$_vars = Input::session('config');
+				static::$_vars = Cache::get('config');
 			}
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
 				static::load();
 			}
-			static::$_initialised = true;
+			static::$i = true;
 			static::js();
 		}
 
@@ -78,8 +76,8 @@
 		/**
 		 * @static
 		 *
-		 * @param        $var
-		 * @param        $value
+		 * @param				$var
+		 * @param				$value
 		 * @param string $group
 		 *
 		 * @return mixed
@@ -92,14 +90,14 @@
 		/***
 		 * @static
 		 *
-		 * @param      $var
+		 * @param			$var
 		 * @param null $array_key
 		 * @param null $group
 		 *
 		 * @return mixed
 		 */
 		public static function get($var, $array_key = null, $group = null) {
-			static::init();
+			static::i();
 			if (!strstr($var, '.')) {
 				$group = 'config';
 			}
@@ -118,14 +116,13 @@
 			if (!isset(static::$_vars[$group][$var])) {
 				return false;
 			}
-			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] :
-			 static::$_vars[$group][$var];
+			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
 		}
 
 		/**
 		 * @static
 		 *
-		 * @param        $var
+		 * @param				$var
 		 * @param string $group
 		 */
 		public static function remove($var, $group = 'config') {
@@ -139,7 +136,7 @@
 		 *
 		 */
 		public static function store() {
-			$_SESSION['config'] = static::$_vars;
+			Cache::set('config', static::$_vars);
 		}
 
 		/**
@@ -150,7 +147,7 @@
 		 * @return mixed
 		 */
 		public static function get_all($group = 'config') {
-			static::init();
+			static::i();
 			if (!isset(static::$_vars[$group])) {
 				static::load($group);
 			}

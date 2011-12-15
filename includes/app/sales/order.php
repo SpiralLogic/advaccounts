@@ -72,9 +72,9 @@
 		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
 		/***
-		 * @param			$type
-		 * @param int	$trans_no
-		 * @param bool $view
+		 * @param						$type
+		 * @param int|array	$trans_no
+		 * @param bool			 $view
 		 */
 		function __construct($type, $trans_no = 0, $view = false) {
 			/*Constructor function initialises a new shopping cart */
@@ -934,11 +934,12 @@
 							 Check if the cart was not destroyed during opening the edition page in
 							 another browser tab.
 						 */
-		public static function check_edit_conflicts($cartname = 'Items') {
-			if (Input::Session($cartname->cart_id) && Input::Session($cartname->cart_id)->uniqueid != $cartname->uniqueid) {
-				$cartname = $_SESSION[$cartname->cart_id];
+		public static function check_edit_conflicts($order = 'Items') {
+			if (Input::Session($order->cart_id) && Input::Session($order->cart_id)->uniqueid != $order->uniqueid) {
 				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				return $_SESSION[$order->cart_id];
 			}
+			return $order;
 		}
 
 		public static function customer_to_order($order, $customer_id, $branch_id) {
