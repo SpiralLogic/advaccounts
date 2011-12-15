@@ -64,6 +64,7 @@
 		public $payment;
 		public $payment_terms; // cached payment terms
 		public $credit;
+		protected $uniqueid;
 
 		//
 		// $trans_no==0 => open new/direct document
@@ -87,7 +88,8 @@
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
-			$this->cart_id = uniqid();
+			$this->uniqueid = uniqid();
+			$this->cart_id = sha1($this->trans_type . serialize($this->trans_no));
 		}
 
 		// Reading document into cart
@@ -933,11 +935,9 @@
 							 another browser tab.
 						 */
 		public static function check_edit_conflicts($cartname = 'Items') {
-			$Ajax = Ajax::i();
-			if (Input::post('cart_id') && Input::Session($cartname) && Input::post('cart_id') != Input::session($cartname)->cart_id) {
-				Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
-				Ajax::i()->activate('_page_body');
-				Page::footer_exit();
+			if (Input::Session($cartname->cart_id) && Input::Session($cartname->cart_id)->uniqueid != $cartname->uniqueid) {
+				$cartname = $_SESSION[$cartname->cart_id];
+				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
 			}
 		}
 
