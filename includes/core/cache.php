@@ -24,14 +24,14 @@
 		protected static function i() {
 			if (static::$i === null) {
 				if (class_exists('Memcached', false)) {
-					$i = new Memcached(Config::get('cache.pool_id'));
+					$i = new Memcached($_SERVER['SERVER_NAME']);
 					if (!count($i->getServerList())) {
 						$i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
 						$i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-						$i->setOption(Memcached::OPT_PREFIX_KEY, Config::get('cache.pool_id'));
-						$i->addServers(Config::get('cache.servers'));
+						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER['SERVER_NAME']);
+						$i->addServer('127.0.0.1', 11211);
 					}
 					static::$connected = ($i->getVersion() !== false);
 					if (static::$connected && isset($_GET['reload_cache'])) {
@@ -52,10 +52,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function set($key, $value, $expires = null) {
-			if (!is_int($expires) || $expires == null) {
-				$expires = ini_get('session.gc_maxlifetime');
-			}
+		public static function set($key, $value, $expires = 86400) {
 			if (static::i() !== false) {
 				static::i()->set($key, $value, time() + $expires);
 			} elseif (class_exists('Session', false)) {
