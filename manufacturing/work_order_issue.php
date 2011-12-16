@@ -31,7 +31,7 @@
 			unset ($_SESSION['issue_items']);
 		}
 		Session_register("issue_items");
-		$_SESSION['issue_items'] = new Item_Cart(28);
+		$_SESSION['issue_items'] = new Item_Order(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 
@@ -89,13 +89,13 @@
 	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
-			$_SESSION['issue_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
+			$_SESSION['issue_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
 		}
 		line_start_focus();
 	}
 
 	function handle_delete_item($id) {
-		$_SESSION['issue_items']->remove_from_cart($id);
+		$_SESSION['issue_items']->remove_from_order($id);
 		line_start_focus();
 	}
 

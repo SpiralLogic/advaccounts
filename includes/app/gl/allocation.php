@@ -70,7 +70,7 @@
 		}
 
 		//
-		//	Read payment or credit current/available allocations to cart.
+		//	Read payment or credit current/available allocations to order.
 		//
 		public function read($type = null, $trans_no = 0) {
 			if ($type == null) { // re-read
@@ -324,7 +324,7 @@
 			$doc->Location = 'MEL';
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
-			$doc->add_to_cart(0, 'MiscSale', '1',
+			$doc->add_to_order(0, 'MiscSale', '1',
 				Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
 			 'Order: ' . $memo);
 			$doc->write(1);
@@ -407,24 +407,24 @@
 		}
 	}
 
-	if (!function_exists('copy_from_cart')) {
-		function copy_from_cart($cart) {
-			$_POST['Comments'] = $cart->Comments;
-			$_POST['OrderDate'] = $cart->document_date;
-			$_POST['delivery_date'] = $cart->due_date;
-			$_POST['cust_ref'] = $cart->cust_ref;
-			$_POST['freight_cost'] = Num::price_format($cart->freight_cost);
-			$_POST['deliver_to'] = $cart->deliver_to;
-			$_POST['delivery_address'] = $cart->delivery_address;
-			$_POST['name'] = $cart->name;
-			$_POST['phone'] = $cart->phone;
-			$_POST['Location'] = $cart->Location;
-			$_POST['ship_via'] = $cart->ship_via;
-			$_POST['sales_type'] = $cart->sales_type;
-			$_POST['salesman'] = $cart->salesman;
-			$_POST['dimension_id'] = $cart->dimension_id;
-			$_POST['dimension2_id'] = $cart->dimension2_id;
-			$_POST['cart_id'] = $cart->cart_id;
+	if (!function_exists('copy_from_order')) {
+		function copy_from_order($order) {
+			$_POST['Comments'] = $order->Comments;
+			$_POST['OrderDate'] = $order->document_date;
+			$_POST['delivery_date'] = $order->due_date;
+			$_POST['cust_ref'] = $order->cust_ref;
+			$_POST['freight_cost'] = Num::price_format($order->freight_cost);
+			$_POST['deliver_to'] = $order->deliver_to;
+			$_POST['delivery_address'] = $order->delivery_address;
+			$_POST['name'] = $order->name;
+			$_POST['phone'] = $order->phone;
+			$_POST['Location'] = $order->Location;
+			$_POST['ship_via'] = $order->ship_via;
+			$_POST['sales_type'] = $order->sales_type;
+			$_POST['salesman'] = $order->salesman;
+			$_POST['dimension_id'] = $order->dimension_id;
+			$_POST['dimension2_id'] = $order->dimension2_id;
+			$_POST['order_id'] = $order->order_id;
 		}
 	}
 ?>

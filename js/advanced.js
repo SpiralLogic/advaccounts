@@ -192,6 +192,7 @@ Adv.extend({
 				$.each(events, function (k, v) {
 					firstBind(v.s, v.t, v.a);
 				});
+				if (Adv.msgbox.children().length) toFocus.pos = [0, Adv.msgbox.position().top];
 				if (toFocus.el) $(toFocus.el).focus();
 				if (toFocus.pos) scrollTo(toFocus.pos[0], toFocus.pos[1]);
 				toFocus = {el:false, pos:false};

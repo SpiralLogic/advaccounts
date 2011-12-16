@@ -28,7 +28,8 @@
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
 		UI::search('item', array(
-														'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
+														'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'
+											 ));
 		HTML::div();
 		$id = 0;
 	} else {
@@ -73,7 +74,7 @@ HTML;
 	echo "<iframe id='locationFrame' src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+	echo "<iframe id='webFrame' src='" . Config::get('store_product_url') . $item->stock_id . Config::get('store_url_extension') . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));

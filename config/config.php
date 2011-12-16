@@ -84,7 +84,9 @@
 		'separators_decimal' => array(".", ","),
 		'separators_date' => array('/', ".", "-", " "),
 		'formats_paper_size' => array("Letter", "A4"),
-		'default_lang' => 'en_AU',
+		'store_product_url' => 'http://www.advancedroadsigns.com.au/-p/',
+		'store_url_extension' => '.htm',
+		'session_lifetime' => 3600,
 	);
 /* Whether to display the demo login and password or not */
 /* for uploaded item pictures */

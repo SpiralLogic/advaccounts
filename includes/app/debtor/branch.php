@@ -6,8 +6,7 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor_Branch extends DB_abstract
-	{
+	class Debtor_Branch extends DB_abstract {
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -15,13 +14,13 @@
 		public $city = '';
 		public $state = '';
 		public $postcode = '';
-		public $area = DEFAULT_AREA;
+		public $area;
 		public $br_post_address;
 		public $debtor_no;
 		public $branch_ref = "New";
 		public $contact_name = "";
-		public $default_location = DEFAULT_LOCATION;
-		public $default_ship_via = DEFAULT_SHIP_VIA;
+		public $default_location;
+		public $default_ship_via;
 		public $disable_trans = 0;
 		public $phone = '';
 		public $phone2 = '';
@@ -36,7 +35,7 @@
 		public $sales_account = "";
 		public $sales_discount_account;
 		public $salesman;
-		public $tax_group_id = DEFAULT_TAX_GROUP;
+		public $tax_group_id;
 		protected $_table = 'cust_branch';
 		protected $_id_column = 'branch_code';
 
@@ -83,6 +82,10 @@
 		protected function _defaults() {
 			$company_record = DB_Company::get_prefs();
 			$this->branch_code = 0;
+			$this->tax_group_id = Config::get('defaults.tax_group');
+			$this->default_location = Config::get('defaults.location');
+			$this->default_ship_via = Config::get('defaults.ship_via');
+			$this->area = Config::get('defaults.area');
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];

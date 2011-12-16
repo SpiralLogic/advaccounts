@@ -78,8 +78,7 @@
 			 . " WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($trans_no)
 			 . " AND gl_seq>0";
-			$res = DB::query($sql, "Cannot check transaction");
-			return DB::num_rows($res);
+			return DB::num_rows($sql);
 		}
 
 		/*
