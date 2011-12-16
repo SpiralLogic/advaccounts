@@ -7,23 +7,23 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'Crypt_AES',
-		'Crypt_DES',
-		'Crypt_Hash',
-		'Crypt_Random',
-		'Crypt_RC4',
-		'Crypt_Rijndael',
-		'Crypt_RSA',
-		'Crypt_TripleDES',
-		'FB',
-		'PHPQuickProfiler',
-		'gettextNativeSupport',
-		'Console',
-		'PHPMailer',
-		'SMTP',
-		'OLEwriter',
-		'JsHttpRequest',
-		'TCPDF',
-		'Cpdf',
+		'Crypt_AES', //
+		'Crypt_DES', //
+		'Crypt_Hash', //
+		'Crypt_Random', //
+		'Crypt_RC4', //
+		'Crypt_Rijndael', //
+		'Crypt_RSA', //
+		'Crypt_TripleDES', //
+		'FB', //
+		'PHPQuickProfiler', //
+		'gettextNativeSupport', //
+		'Console', //
+		'PHPMailer', //
+		'SMTP', //
+		'OLEwriter', //
+		'JsHttpRequest', //
+		'TCPDF', //
+		'Cpdf', //
 		'PhpConsole'
 	);

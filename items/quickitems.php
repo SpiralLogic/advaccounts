@@ -23,13 +23,11 @@
 		JS::renderJSON($data, JSON_NUMERIC_CHECK);
 	}
 	JS::footerFile("js/quickitems.js");
-	Page::start(_($help_context = "Items"), true);
+	Page::start(_($help_context = "Items"), isset($_GET['frame']));
 	$stock_cats = Item_Category::select('category_id');
 	if (!isset($_GET['stock_id'])) {
-		HTML::div('itemSearch');
-		UI::search('item', array(
-														'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'
-											 ));
+		HTML::div('itemSearch', array('class' => 'bold pad10 center'));
+		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 		HTML::div();
 		$id = 0;
 	} else {
@@ -50,7 +48,7 @@ JS;
 	echo <<<HTML
 <div id="Items" class="center">
 <input type="hidden" value="\${id}" id="id">
-<table class="tableinfo marginauto" style="width:80%">
+<table class="tablestyle2 marginauto" style="width:80%">
 <tr><td><label for="stock_id">Code:</label></td><td><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
 <tr><td ><label for="long_description">Description:</label></td><td><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></td></tr>
@@ -78,4 +76,4 @@ HTML;
 	$menu->endTab();
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	Renderer::end_page(true, true);
+	Renderer::end_page(isset($_GET['frame']));

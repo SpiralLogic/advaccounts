@@ -194,7 +194,7 @@
 		/**
 		 * @static
 		 *
-		 * @param      $sql
+		 * @param			$sql
 		 *
 		 * @param bool $debug
 		 *
@@ -224,7 +224,7 @@
 		/**
 		 * @static
 		 *
-		 * @param      $sql
+		 * @param			$sql
 		 * @param bool $debug
 		 *
 		 * @return null|PDOStatement
@@ -247,6 +247,11 @@
 			}
 			try {
 				static::$prepared->execute($data);
+				$sql = static::$prepared->queryString;
+				foreach ($data as $v) {
+					$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+				}
+				FB::info($sql);
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
 				return static::i()->_error($e);
@@ -538,8 +543,8 @@
 		}
 
 		/**
-		 * @param PDOException        $e
-		 * @param bool                $msg
+		 * @param PDOException				$e
+		 * @param bool								$msg
 		 * @param string|bool				 $exit
 		 *
 		 * @return bool

@@ -8,17 +8,18 @@
  -- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew
 
  */
-	return array('installed' => array(
-		0 => array(
-			'code' => 'en_AU',
-			'name' => 'Australia',
-			'encoding' => 'utf-8'
-		),
-		array(
-			'code' => 'en_US',
-			'name' => 'English',
-			'encoding' => 'utf-8'
+	return array(
+		'installed' => array(
+			0 => array(
+				'code' => 'en_AU', //
+				'name' => 'Australia', //
+				'encoding' => 'utf-8' //
+			),
+			array(
+				'code' => 'en_US', //
+				'name' => 'English', //
+				'encoding' => 'utf-8' //
+			)
 		)
-	)
 	);
 

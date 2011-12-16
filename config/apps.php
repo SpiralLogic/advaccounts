@@ -8,6 +8,15 @@
 	 */
 	return array(
 		'active' => array(
-			'sales', 'contacts', 'purchases', 'inventory', 'manufacturing', 'dimensions', 'gl', 'advanced', 'system',
-		), 'default' => 'sales'
+			'sales', //
+			'contacts', //
+			'purchases', //
+			'inventory', //
+			'manufacturing', //
+			'dimensions', //
+			'gl', //
+			'advanced', //
+			'system'
+		), //
+		'default' => 'sales'
 	);

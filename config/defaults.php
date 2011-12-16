@@ -7,5 +7,9 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'location' => 'MEL', 'tax_group' => 1, 'area' => 1, 'ship_via' => 1, 'lang' => 'en_AU',
+		'location' => 'MEL', //
+		'tax_group' => 1, //
+		'area' => 1, //
+		'ship_via' => 1, //
+		'lang' => 'en_AU',
 	);

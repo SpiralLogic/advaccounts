@@ -17,17 +17,20 @@
  */
 	$GLOBALS['next_id'] = 2; // unique id for next installed extension
 	$GLOBALS['installed_extensions'] = array(
-		1 => array('tab' => 'system',
-							 'name' => 'Advanced',
-							 'path' => 'advanced',
-							 'title' => 'Advanced',
-							 'active' => '1',
-							 'type' => 'plugin',
-							 'filename' => 'advanced.php',
-							 'acc_file' => 'acc_levels.php',
-							 'access' => 'SA_ADVANCED',
+		1 => array(
+			'tab' => 'system', //
+			'name' => 'Advanced', //
+			'path' => 'advanced', //
+			'title' => 'Advanced', //
+			'active' => '1', //
+			'type' => 'plugin', //
+			'filename' => 'advanced.php', //
+			'acc_file' => 'acc_levels.php', //
+			'access' => 'SA_ADVANCED', //
 		),
 	);
-	return array('next_id' => $GLOBALS['next_id'],
-							 'installed' => $GLOBALS['installed_extensions']);
+	return array(
+		'next_id' => $GLOBALS['next_id'],
+		'installed' => $GLOBALS['installed_extensions']
+	);
 ?>
