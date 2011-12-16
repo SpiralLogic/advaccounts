@@ -404,8 +404,20 @@
 		 * @static
 		 * @return int
 		 */
-		public static function num_rows() {
-			return static::$prepared->rowCount();
+		public static function num_rows($sql = null) {
+			if ($sql === null) {
+				return static::$prepared->rowCount();
+			}
+			if (is_object($sql)) {
+				return $sql->rowCount();
+			}
+			$rows = Cache::get('sql.rowcount.' . md5($sql));
+			if ($rows !== false) {
+				return $rows;
+			}
+			$rows = static::query($sql)->rowCount();
+			Cache::set('sql.rowcount.' . md5($sql), $rows);
+			return $rows;
 		}
 
 		/**
@@ -547,9 +559,9 @@
 			}
 			if (Config::get('debug_sql')) {
 				$error = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-			} elseif ($msg!=false) {
+			} elseif ($msg != false) {
 				$error = '<p>DATABASE ERROR: <pre>' . $msg . '</pre></p><p><pre></pre></p>';
-			}else {
+			} else {
 				$error = "Unknown Database Error";
 			}
 			if ($this->conn->inTransaction() || $this->intransaction) {

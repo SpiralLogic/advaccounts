@@ -18,7 +18,7 @@
 	//
 	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::set_page((!Input::post('order_id') ? : Orders::session_get($_POST['order_id'])->trans_type), array(
+	Security::set_page((!isset($_POST['order_id']) || !Orders::session_get($_POST['order_id'])) ? : Orders::session_get($_POST['order_id'])->trans_type, array(
 		ST_SALESORDER => 'SA_SALESORDER',
 		ST_SALESQUOTE => 'SA_SALESQUOTE',
 		ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
@@ -318,35 +318,35 @@
 
 	//--------------- --------------------------------------------------------------
 	if (isset($_POST['ProcessOrder']) && can_process()) {
+		$_SESSION['Jobsboard'] = clone (Orders::session_get($_POST['order_id']));
 		copy_to_order();
 		$modified = (Orders::session_get($_POST['order_id'])->trans_no != 0);
 		$so_type = Orders::session_get($_POST['order_id'])->so_type;
+		$trans_no = key(Orders::session_get($_POST['order_id'])->trans_no);
+		$trans_type = Orders::session_get($_POST['order_id'])->trans_type;
+		Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
+		$_SESSION['global_customer_id'] = Orders::session_get($_POST['order_id'])->customer_id;
 		Orders::session_get($_POST['order_id'])->write(1);
 		if (Errors::$fatal) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
-		$trans_no = key(Orders::session_get($_POST['order_id'])->trans_no);
-		$trans_type = Orders::session_get($_POST['order_id'])->trans_type;
-		Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
-		$_SESSION['global_customer_id'] = Orders::session_get($_POST['order_id'])->customer_id;
-		$_SESSION['Jobsboard'] = new Sales_Order($trans_type, $trans_no);
-		Sales_Order::finish(Orders::session_get($_POST['order_id']));
+		Sales_Order::finish($_POST['order_id']);
 
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
 				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
 			} else {
-				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$so_type", "");
+				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$trans_type", "");
 			}
 		} elseif ($trans_type == ST_SALESORDER) {
-			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$so_type", "");
+			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$trans_type", "");
 		} elseif ($trans_type == ST_SALESQUOTE) {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
 		} elseif ($trans_type == ST_SALESINVOICE) {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=" . ST_SALESINVOICE);
 		} else {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$trans_type");
 		}
 	}
 	if (isset($_POST['update'])) {
@@ -485,9 +485,7 @@
 		$order_no = key($order->trans_no);
 
 		Orders::session_delete($_POST['order_id']);
-	create_order($type,$order_no);
-
-
+		create_order($type, $order_no);
 	}
 	if (isset($_POST['CancelOrder'])) {
 		handle_cancel_order();

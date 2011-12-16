@@ -89,6 +89,7 @@
 			$this->read($type, $trans_no, $view);
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
+
 		}
 
 		// Reading document into order
@@ -212,7 +213,7 @@
 				// this is direct document - first add parent
 				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this order
 				$src->trans_type = Sales_Trans::get_parent_type($src->trans_type);
-				$src->reference = 'auto';
+				$src->reference = Ref::get_next($src->trans_type);
 				$src->write(1);
 				$type = $this->trans_type;
 				$ref = $this->reference;
@@ -231,7 +232,8 @@
 			foreach ($this->line_items as $lineno => $line) {
 				$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);
 				$this->line_items[$lineno]->description = @html_entity_decode($line->description, ENT_QUOTES);
-			}
+			}			Orders::session_delete($this->order_id);
+
 			switch ($this->trans_type) {
 				case ST_SALESINVOICE:
 					return Sales_Invoice::add($this);
@@ -919,8 +921,7 @@
 		}
 
 		public static function finish($order) {
-			Orders::session_stop($order);
-			if (Orders::session_exists($order->order_id)) {
+			if (is_object($order) && Orders::session_exists($order->order_id)) {
 				Orders::session_delete($order->order_id);
 			}
 		}
@@ -1195,6 +1196,7 @@ JS;
 			if ($editable) {
 				ref_row(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), null, '');
 			} else {
+				hidden('ref',$order->reference);
 				label_row(_("Reference:"), $order->reference);
 			}
 			if (!Bank_Currency::is_company($order->customer_currency)) {

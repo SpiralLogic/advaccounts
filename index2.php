@@ -6,4 +6,6 @@
 	 * Time: 3:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include('bootstrap.php');
+include 'bootstrap.php';
+Page::start('test');
+Renderer::end_page();
