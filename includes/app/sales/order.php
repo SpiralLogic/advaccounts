@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	/* Definition of the cart class
+	/* Definition of the order class
 		this class can hold all the information for:
 
 		i) a sales order
@@ -17,12 +17,11 @@
 		iii) a credit note
 		iv) a delivery note
 		*/
-	class Sales_Order
-	{
+	class Sales_Order {
 		public $trans_type; // invoice, order, quotation, delivery note ...
 		public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
 		public $so_type = 0; // for sales order: simple=0 template=1
-		public $cart_id; // used to detect multi-tab edition conflits
+		public $order_id; // used to detect multi-tab edition conflits
 		public $line_items; //array of objects of class Sales_Line
 		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
 		public $src_date; // src document date (for info only)
@@ -77,7 +76,7 @@
 		 * @param bool			 $view
 		 */
 		function __construct($type, $trans_no = 0, $view = false) {
-			/*Constructor function initialises a new shopping cart */
+			/*Constructor function initialises a new shopping order */
 			$this->line_items = array();
 			$this->sales_type = "";
 			if ($type == ST_SALESQUOTE) {
@@ -89,10 +88,10 @@
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
 			$this->uniqueid = uniqid();
-			$this->cart_id = sha1($this->trans_type . serialize($this->trans_no));
+			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
 		}
 
-		// Reading document into cart
+		// Reading document into order
 		//
 		function read($type, $trans_no = 0, $view = false) {
 			if (!is_array($trans_no)) {
@@ -211,7 +210,7 @@
 		function write($policy = 0) {
 			if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 				// this is direct document - first add parent
-				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this cart
+				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this order
 				$src->trans_type = Sales_Trans::get_parent_type($src->trans_type);
 				$src->reference = 'auto';
 				$src->write(1);
@@ -250,6 +249,7 @@
 						return Sales_Order::update($this);
 					}
 			}
+
 		}
 
 		function check_cust_ref($cust_ref) {
@@ -321,7 +321,7 @@
 			}
 		}
 
-		function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done = 0, $standard_cost = 0, $description = null, $id = 0, $src_no = 0) {
+		function add_to_order($line_no, $stock_id, $qty, $price, $disc, $qty_done = 0, $standard_cost = 0, $description = null, $id = 0, $src_no = 0) {
 			if (isset($stock_id) && $stock_id != "" && isset($qty) /* && $qty > 0*/) {
 				$this->line_items[$line_no] = new Sales_Line($stock_id, $qty, $price, $disc, $qty_done, $standard_cost, $description, $id, $src_no);
 				return 1;
@@ -332,7 +332,7 @@
 			return 0;
 		}
 
-		function update_cart_item($line_no, $qty, $price, $disc, $description = "") {
+		function update_order_item($line_no, $qty, $price, $disc, $description = "") {
 			if ($description != "") {
 				$this->line_items[$line_no]->description = $description;
 			}
@@ -368,11 +368,11 @@
 			}
 		}
 
-		function update_add_cart_item_qty($line_no, $qty) {
+		function update_add_order_item_qty($line_no, $qty) {
 			$this->line_items[$line_no]->quantity += $qty;
 		}
 
-		function remove_from_cart($line_no) {
+		function remove_from_order($line_no) {
 			array_splice($this->line_items, $line_no, 1);
 		}
 
@@ -587,6 +587,7 @@
 				$mail->text($msg);
 				$ret = $mail->send();
 			}
+			Orders::session_delete($order->order_id);
 			return $order_no;
 		}
 
@@ -673,7 +674,7 @@
 			 discount_percent, qty_sent)
 			 VALUES (";
 				$sql .= DB::escape($line->id ? $line->id :
-														0) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
+				 0) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
 				DB::query($sql, "Old order Cannot be Inserted");
 			} /* inserted line items into sales order details */
 			DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
@@ -774,7 +775,7 @@
 			if (DB::num_rows($result) > 0) {
 				$line_no = 0;
 				while ($myrow = DB::fetch($result)) {
-					$order->add_to_cart($line_no, $myrow["stk_code"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"]);
+					$order->add_to_order($line_no, $myrow["stk_code"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"]);
 					$line_no++;
 				}
 			}
@@ -870,7 +871,7 @@
 							break;
 						}
 					}
-					$order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount, 0, 0, $description);
+					$order->add_to_order(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount, 0, 0, $description);
 					return;
 				}
 			}
@@ -906,38 +907,37 @@
 							break;
 						}
 					}
-					$order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount);
+					$order->add_to_order(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount);
 				}
 			}
 		}
 
 		// helper functions for script execution control
 		//
-		public static function start() {
-			Sales_Order::finish();
-			$_SESSION['Processing'] = $_SERVER['PHP_SELF'];
+		public static function start($order) {
+			Orders::session_start($order);
 		}
 
-		public static function finish() {
-			unset($_SESSION['Processing']);
-			if (isset($_SESSION['Items'])) {
-				unset($_SESSION['Items']->line_items);
-				unset($_SESSION['Items']);
+		public static function finish($order) {
+			Orders::session_stop($order);
+			if (Orders::session_exists($order->order_id)) {
+				Orders::session_delete($order->order_id);
 			}
 		}
 
-		public static function active() {
-			return (isset($_SESSION['Processing']) && $_SESSION['Processing'] == $_SERVER['PHP_SELF']);
+		public static function active($order) {
+			return Orders::session_exists($order->order_id);
 		}
 
 		/*
-							 Check if the cart was not destroyed during opening the edition page in
+							 Check if the order was not destroyed during opening the edition page in
 							 another browser tab.
 						 */
-		public static function check_edit_conflicts($order = 'Items') {
-			if (Input::Session($order->cart_id) && Input::Session($order->cart_id)->uniqueid != $order->uniqueid) {
+		public static function check_edit_conflicts($order) {
+			$session_order = Orders::session_get($order->order_id);
+			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
 				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
-				return $_SESSION[$order->cart_id];
+				return $session_order;
 			}
 			return $order;
 		}
@@ -1375,5 +1375,7 @@ JS;
 			}
 			Display::div_end();
 		}
-	} /* end of class defintion */
+	}
+
+	/* end of class defintion */
 ?>

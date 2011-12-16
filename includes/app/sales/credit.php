@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	// if ($writeoff_acc==0) return goods into $cart->Location
+	// if ($writeoff_acc==0) return goods into $order->Location
 	// if src_docs!=0 => credit invoice else credit note
 	//
 	class Sales_Credit
@@ -216,7 +216,7 @@
 
 		// ------------------------------------------------------------------------------
 		public static function header($order) {
-			$Ajax = Ajax::i();
+
 			start_outer_table('tablestyle width90');
 			table_section(1);
 			$customer_error = "";
@@ -248,8 +248,6 @@
 				Ajax::i()->activate('name');
 				Ajax::i()->activate('phone');
 				Ajax::i()->activate('delivery_address');
-				// change prices if necessary
-				// what about discount in template case?
 				if ($old_order->customer_currency != $order->customer_currency) {
 					$change_prices = 1;
 				}

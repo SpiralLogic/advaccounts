@@ -33,11 +33,11 @@
 			$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type,
 				$doc->price_factor, $doc->document_date);
 		}
-		$cart = $doc;
-		$cart->trans_type = ST_SALESINVOICE;
-		$cart->reference = Ref::get_next($cart->trans_type);
-		$invno = $cart->write(1);
-		set_last_sent($tmpl_no, $cart->document_date);
+		$order = $doc;
+		$order->trans_type = ST_SALESINVOICE;
+		$order->reference = Ref::get_next($order->trans_type);
+		$invno = $order->write(1);
+		set_last_sent($tmpl_no, $order->document_date);
 		return $invno;
 	}
 

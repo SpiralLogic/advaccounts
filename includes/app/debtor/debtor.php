@@ -294,7 +294,7 @@ JS;
 			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
 			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 			$results = DB::fetch();
 			foreach ($results as $result) {
