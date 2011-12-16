@@ -36,7 +36,7 @@ remote_order = (function ($) {
           'text-align':'center',
           'padding-top':'50px',
           'z-index':'1000'
-        }).attr('id', 'remotetocart');
+        }).attr('id', 'remotetoorder');
       }
       if (message === undefined) {
         message = $('<p/>').css({'font-size':'18px','font-weight':'bold'}).prependTo(remote);

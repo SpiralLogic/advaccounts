@@ -215,24 +215,24 @@
 
 		// Write/update journal entries.
 				//
-				public static function write($cart, $reverse, $use_transaction = true)
+				public static function write($order, $reverse, $use_transaction = true)
 				{
-					$date_ = $cart->tran_date;
-					$ref = $cart->reference;
-					$memo_ = $cart->memo_;
-					$trans_type = $cart->trans_type;
-					$new = $cart->order_id == 0;
+					$date_ = $order->tran_date;
+					$ref = $order->reference;
+					$memo_ = $order->memo_;
+					$trans_type = $order->trans_type;
+					$new = $order->order_id == 0;
 					if ($new) {
-						$cart->order_id = SysTypes::get_next_trans_no($trans_type);
+						$order->order_id = SysTypes::get_next_trans_no($trans_type);
 					}
-					$trans_id = $cart->order_id;
+					$trans_id = $order->order_id;
 					if ($use_transaction) {
 						DB::begin();
 					}
 					if (!$new) {
 						static::void_journal_trans($trans_type, $trans_id, false);
 					}
-					foreach ($cart->gl_items as $journal_item) {
+					foreach ($order->gl_items as $journal_item) {
 						// post to first found bank account using given gl acount code.
 						$is_bank_to = Bank_Account::is($journal_item->code_id);
 						static::add($trans_type, $trans_id, $date_, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, $journal_item->amount);
@@ -255,7 +255,7 @@
 						//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
 						$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
 						$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
-						foreach ($cart->gl_items as $journal_item) {
+						foreach ($order->gl_items as $journal_item) {
 							$is_bank_to = Bank_Account::is($journal_item->code_id);
 							static::add($trans_type, $trans_id_reverse, $reversingDate, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, -$journal_item->amount);
 							if ($is_bank_to) {

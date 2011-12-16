@@ -511,7 +511,11 @@
 		submit($name, $value, true, $title, $async, $icon);
 		echo "&nbsp;";
 	}
+	function submit_center_middle($name, $value, $title = false, $async = false, $icon = false) {
 
+			submit($name, $value, true, $title, $async, $icon);
+			echo "&nbsp;";
+		}
 	function submit_center_last($name, $value, $title = false, $async = false, $icon = false) {
 		echo "&nbsp;";
 		submit($name, $value, true, $title, $async, $icon);
@@ -945,11 +949,13 @@
 		echo "</tr>\n";
 	}
 
-	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$leftfill=0) {
 		echo "<tr>";
 		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
-		echo "</tr>\n";
-	}
+		if ($leftfill != 0) {
+			echo "<td colspan=$leftfill></td>";
+		}
+		echo "</tr>\n";	}
 
 	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
 		if (!isset($dec)) {

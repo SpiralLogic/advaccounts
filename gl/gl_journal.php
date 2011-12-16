@@ -43,21 +43,21 @@
 		Page::footer_exit();
 	}
 	if (isset($_GET['NewJournal'])) {
-		create_cart(0, 0);
+		create_order(0, 0);
 	} elseif (isset($_GET['ModifyGL'])) {
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
 			Display::link_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 			Page::footer_exit();
 		}
-		create_cart($_GET['trans_type'], $_GET['trans_no']);
+		create_order($_GET['trans_type'], $_GET['trans_no']);
 	}
-	function create_cart($type = 0, $trans_no = 0) {
+	function create_order($type = 0, $trans_no = 0) {
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
-		$cart = new Item_Cart($type);
-		$cart->order_id = $trans_no;
+		$order = new Item_Order($type);
+		$order->order_id = $trans_no;
 		if ($trans_no) {
 			$result = GL_Trans::get_many($type, $trans_no);
 			if ($result) {
@@ -66,25 +66,25 @@
 						continue;
 					}
 					$date = $row['tran_date'];
-					$cart->add_gl_item($row['account'], $row['dimension_id'], $row['dimension2_id'], $row['amount'], $row['memo_']);
+					$order->add_gl_item($row['account'], $row['dimension_id'], $row['dimension2_id'], $row['amount'], $row['memo_']);
 				}
 			}
-			$cart->memo_ = DB_Comments::get_string($type, $trans_no);
-			$cart->tran_date = Dates::sql2date($date);
-			$cart->reference = Ref::get($type, $trans_no);
-			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
+			$order->memo_ = DB_Comments::get_string($type, $trans_no);
+			$order->tran_date = Dates::sql2date($date);
+			$order->reference = Ref::get($type, $trans_no);
+			$_POST['ref_original'] = $order->reference; // Store for comparison when updating
 		} else {
-			$cart->reference = Ref::get_next(0);
-			$cart->tran_date = Dates::new_doc_date();
-			if (!Dates::is_date_in_fiscalyear($cart->tran_date)) {
-				$cart->tran_date = Dates::end_fiscalyear();
+			$order->reference = Ref::get_next(0);
+			$order->tran_date = Dates::new_doc_date();
+			if (!Dates::is_date_in_fiscalyear($order->tran_date)) {
+				$order->tran_date = Dates::end_fiscalyear();
 			}
 			$_POST['ref_original'] = -1;
 		}
-		$_POST['memo_'] = $cart->memo_;
-		$_POST['ref'] = $cart->reference;
-		$_POST['date_'] = $cart->tran_date;
-		$_SESSION['journal_items'] = &$cart;
+		$_POST['memo_'] = $order->memo_;
+		$_POST['ref'] = $order->reference;
+		$_POST['date_'] = $order->tran_date;
+		$_SESSION['journal_items'] = &$order;
 	}
 
 	if (isset($_POST['Process'])) {
@@ -125,13 +125,13 @@
 		}
 	}
 	if (isset($_POST['Process'])) {
-		$cart = $_SESSION['journal_items'];
-		$new = $cart->order_id == 0;
-		$cart->reference = $_POST['ref'];
-		$cart->memo_ = $_POST['memo_'];
-		$cart->tran_date = $_POST['date_'];
-		$trans_no = GL_Journal::write($cart, check_value('Reverse'));
-		$cart->clear_items();
+		$order = $_SESSION['journal_items'];
+		$new = $order->order_id == 0;
+		$order->reference = $_POST['ref'];
+		$order->memo_ = $_POST['memo_'];
+		$order->tran_date = $_POST['date_'];
+		$trans_no = GL_Journal::write($order, check_value('Reverse'));
+		$order->clear_items();
 		Dates::new_doc_date($_POST['date_']);
 		unset($_SESSION['journal_items']);
 		if ($new) {

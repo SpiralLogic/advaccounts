@@ -59,7 +59,7 @@
 			unset ($_SESSION['pay_items']);
 		}
 		//session_register("pay_items");
-		$_SESSION['pay_items'] = new Item_Cart($type);
+		$_SESSION['pay_items'] = new Item_Order($type);
 		$_POST['date_'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			$_POST['date_'] = Dates::end_fiscalyear();

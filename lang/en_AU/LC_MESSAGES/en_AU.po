@@ -10101,24 +10101,24 @@ msgstr ""
 msgid " for item "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/ui/allocation_cart.inc:260
+#: c:\Apache2\htdocs\account226/includes/ui/allocation_order.inc:260
 msgid "Other Allocations"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/ui/allocation_cart.inc:260
+#: c:\Apache2\htdocs\account226/includes/ui/allocation_order.inc:260
 #: c:\Apache2\htdocs\account226/includes/ui/ui_view.inc:453
 msgid "This Allocation"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/ui/allocation_cart.inc:289
+#: c:\Apache2\htdocs\account226/includes/ui/allocation_order.inc:289
 msgid "Total Allocated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/ui/allocation_cart.inc:326
+#: c:\Apache2\htdocs\account226/includes/ui/allocation_order.inc:326
 msgid "The entry for one or more amounts is invalid or negative."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/includes/ui/allocation_cart.inc:351
+#: c:\Apache2\htdocs\account226/includes/ui/allocation_order.inc:351
 msgid "These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."
 msgstr ""
 

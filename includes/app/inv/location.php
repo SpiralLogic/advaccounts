@@ -75,15 +75,15 @@
 		/***
 		 * @static
 		 *
-		 * @param $cart
+		 * @param $order
 		 *
 		 * @return DB_Query_Result|null
 		 *
 		 * find inventory location for given transaction
 		 *
 		 */
-		public static function get_for_trans($cart) {
-			$sql = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($cart->trans_type) . " AND trans_no=" . key($cart->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
+		public static function get_for_trans($order) {
+			$sql = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
 			$result = DB::query($sql, 'Retreiving inventory location');
 			if (DB::num_rows($result)) {
 				return DB::fetch($result);
