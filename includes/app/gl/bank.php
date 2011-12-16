@@ -90,7 +90,7 @@
 		//	Add bank payment or deposit to database.
 		//
 		//	$from_account - bank account id
-		// $item - transaction cart (line item's amounts in bank account's currency)
+		// $item - transaction order (line item's amounts in bank account's currency)
 		// $person_type_id - defines type of $person_id identifiers
 		// $person_id	- supplier/customer/other id
 		// $person_detail_id - customer branch id or not used

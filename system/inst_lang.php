@@ -14,9 +14,7 @@
 	Page::start(_($help_context = "Install/Update Languages"));
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
-	}
-	elseif (isset($_POST['selected_id']))
-	{
+	} elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	} else {
 		$selected_id = -1;
@@ -36,7 +34,7 @@
 		}
 		$id = $_GET['id'];
 		if ($_POST['dflt']) {
-			Config::set('default_lang', $_POST['code']);
+			Config::set('default.lang', $_POST['code']);
 		}
 		$installed_languages[$id]['code'] = $_POST['code'];
 		$installed_languages[$id]['name'] = $_POST['name'];
@@ -78,9 +76,9 @@
 		$lang = Config::get('languages.installed');
 		$lang = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
-		if ($lang == Config::get('default_lang')) {
+		if ($lang == Config::get('defaults.lang')) {
 			// on delete set default to current.
-			Config::set('default_lang', $_SESSION['Language']->code);
+			Config::set('default.lang', $_SESSION['Language']->code);
 		}
 		Config::remove('languages.installed', $id);
 		if (!Files::save_to_file($filename, '')) {
@@ -108,10 +106,7 @@
 		$k = 0;
 		$conn = Config::get('languages.installed');
 		$n = count($conn);
-		for (
-			$i = 0; $i < $n; $i++
-		)
-		{
+		for ($i = 0; $i < $n; $i++) {
 			if ($conn[$i]['code'] == $lang) {
 				start_row("class='stockmankobg'");
 			} else {
@@ -126,7 +121,7 @@
 				$rtl = _("No");
 			}
 			label_cell($rtl);
-			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
+			label_cell(Config::get('defaults.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
 			$edit = _("Edit");
 			$delete = _("Delete");
 			if (User::graphic_links()) {
@@ -134,12 +129,7 @@
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
-			label_cell(
-				$conn[$i]['code'] == $lang
-				 ? ''
-				 :
-				 "<a href=''>$delete</a>"
-			);
+			label_cell($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
 			end_row();
 		}
 		end_table();
@@ -171,7 +161,7 @@
 			} else {
 				$_POST['rtl'] = false;
 			}
-			$_POST['dflt'] = Config::set('default_lang', $conn['code']);
+			$_POST['dflt'] = Config::set('default.lang', $conn['code']);
 			hidden('selected_id', $selected_id);
 		}
 		text_row_ex(_("Language Code"), 'code', 20);

@@ -130,10 +130,10 @@
 
 
 				//
-				//	Expands selected quick entry $id into GL posings and adds to cart.
+				//	Expands selected quick entry $id into GL posings and adds to order.
 				//		returns calculated amount posted to bank GL account.
 				//
-				public static function show_menu(&$cart, $id, $base, $type, $descr = '')
+				public static function show_menu(&$order, $id, $base, $type, $descr = '')
 				{
 					$bank_amount = 0;
 					if (!isset($id) || $id == null || $id == "") {
@@ -146,7 +146,7 @@
 						}
 						if ($type != QE_SUPPINV) // only one quick entry on journal/bank transaction
 						{
-							$cart->clear_items();
+							$order->clear_items();
 						}
 						$qe = GL_QuickEntry::get($id);
 						if ($descr != '') {
@@ -212,9 +212,9 @@
 								$item_tax = Tax_Types::get($qe_line['dest_id']);
 								//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 								if ($type == QE_SUPPINV) {
-									$taxgroup = $cart->tax_group_id;
+									$taxgroup = $order->tax_group_id;
 									$rates = 0;
-									$res = Tax_Groups::get_for_item($cart->tax_group_id);
+									$res = Tax_Groups::get_for_item($order->tax_group_id);
 									while ($row = DB::fetch($res)) {
 										$rates += $row['rate'];
 									}
@@ -232,11 +232,11 @@
 									break 2;
 								}
 								if ($type != QE_SUPPINV) {
-									$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+									$order->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
 								}
 								else {
 									$acc_name = GL_Account::get_name($gl_code);
-									$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+									$order->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
 								}
 								if (strpos($qe_line['action'], '+')) {
 									$base += $tax;
@@ -247,11 +247,11 @@
 								continue 2;
 							}
 							if ($type != QE_SUPPINV) {
-								$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
+								$order->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
 							}
 							else {
 								$acc_name = GL_Account::get_name($qe_line['dest_id']);
-								$cart->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
+								$order->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
 							}
 						}
 					}

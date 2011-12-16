@@ -14,6 +14,8 @@
 	 */
 	error_reporting(-1);
 	ini_set('display_errors', 1);
+	ini_set("ignore_repeated_errors", "On");
+	ini_set("log_errors", "On");
 	define('DS', DIRECTORY_SEPARATOR);
 	define('DOCROOT', realpath(__DIR__) . DS);
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
@@ -23,7 +25,7 @@
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	define('CRLF', chr(13) . chr(10));
-	$path = substr(str_repeat('../', substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
+	$path = substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
 	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
 	/**
 	 * Do we have access to mbstring?
@@ -33,7 +35,6 @@
 	/**
 	 * Register all the error/shutdown handlers
 	 */
-	include VENDORPATH . 'PhpConsole.php';
 	set_error_handler(function ($severity, $message, $filepath, $line) {
 		if (!class_exists('Errors', false)) {
 			include(COREPATH . 'errors.php');
@@ -73,7 +74,7 @@
 		}
 	}
 	Session::i();
-	Config::init();
+	Config::i();
 	Ajax::i();
 	/***
 	 *

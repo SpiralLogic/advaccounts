@@ -11,8 +11,7 @@
 	 ***********************************************************************/
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
  */
-	class Purch_Order
-	{
+	class Purch_Order {
 		public $supplier_id;
 		public $supplier_details;
 		public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
@@ -23,17 +22,33 @@
 		public $Location;
 		public $supplier_name;
 		public $orig_order_date;
+		public $trans_no;
 		public $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
+		protected $uniqueid;
 		public $lines_on_order;
+		public $order_id;
 		public $freight;
 		public $salesman;
 		public $reference;
 
-		public function __construct() {
+		function __construct($trans_no = 0, $view = false) {
 			/*Constructor function initialises a new purchase order object */
 			$this->line_items = array();
 			$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 			$this->set_salesman();
+			$this->trans_no=$trans_no;
+			$this->read($trans_no, $view);
+			$_POST['OrderDate'] = Dates::new_doc_date();
+			if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+				$_POST['OrderDate'] = Dates::end_fiscalyear();
+			}
+			$this->orig_order_date = $_POST['OrderDate'];
+			$this->uniqueid = uniqid();
+			$this->order_id = ST_PURCHORDER . '.' . sha1(ST_PURCHORDER . serialize($this->order_no));
+		}
+
+		public function read($order_no, $view = false) {
+			static::get($order_no, $this, $view);
 		}
 
 		public function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
@@ -125,30 +140,32 @@
 			DB::query($sql, "The order header could not be deleted");
 			$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::quote($po);
 			DB::query($sql, "The order detail lines could not be deleted");
+			Orders::session_delete($po);
+
 		}
 
-		public static function add(&$po_obj) {
+		public static function add(&$order) {
 			DB::begin();
 			/*Insert to purchase order header record */
 			$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
-			$sql .= DB::escape($po_obj->supplier_id) . "," .
-			 DB::escape($po_obj->Comments) . ",'" .
-			 Dates::date2sql($po_obj->orig_order_date) . "', " .
-			 DB::escape($po_obj->reference) . ", " .
-			 DB::escape($po_obj->requisition_no) . ", " .
-			 DB::escape($po_obj->Location) . ", " .
-			 DB::escape($po_obj->delivery_address) . ", " .
-			 DB::escape($po_obj->freight) . ", " .
-			 DB::escape($po_obj->salesman) . ")";
+			$sql .= DB::escape($order->supplier_id) . "," .
+			 DB::escape($order->Comments) . ",'" .
+			 Dates::date2sql($order->orig_order_date) . "', " .
+			 DB::escape($order->reference) . ", " .
+			 DB::escape($order->requisition_no) . ", " .
+			 DB::escape($order->Location) . ", " .
+			 DB::escape($order->delivery_address) . ", " .
+			 DB::escape($order->freight) . ", " .
+			 DB::escape($order->salesman) . ")";
 			DB::query($sql, "The purchase order header record could not be inserted");
 			/*Get the auto increment value of the order number created from the sql above */
-			$po_obj->order_no = DB::insert_id();
+			$order->order_no = DB::insert_id();
 			/*Insert the purchase order detail records */
-			foreach ($po_obj->line_items as $po_line)
+			foreach ($order->line_items as $po_line)
 			{
 				if ($po_line->Deleted == false) {
 					$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
-					$sql .= $po_obj->order_no . ", " . DB::escape($po_line->stock_id) . "," .
+					$sql .= $order->order_no . ", " . DB::escape($po_line->stock_id) . "," .
 					 DB::escape($po_line->description) . ",'" .
 					 Dates::date2sql($po_line->req_del_date) . "'," .
 					 DB::escape($po_line->price) . ", " .
@@ -157,27 +174,28 @@
 					DB::query($sql, "One of the purchase order detail records could not be inserted");
 				}
 			}
-			Ref::save(ST_PURCHORDER, $po_obj->reference);
-			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
-			DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
+			Ref::save(ST_PURCHORDER, $order->reference);
+			//DB_Comments::add(ST_PURCHORDER, $order->order_no, $order->orig_order_date, $order->Comments);
+			DB_AuditTrail::add(ST_PURCHORDER, $order->order_no, $order->orig_order_date);
 			DB::commit();
-			return $po_obj->order_no;
+			Orders::session_delete($order->order_id);
+			return $order->order_no;
 		}
 
-		public static function update(&$po_obj) {
+		public static function update(&$order) {
 			DB::begin();
 			/*Update the purchase order header with any changes */
-			$sql = "UPDATE purch_orders SET Comments=" . DB::escape($po_obj->Comments) . ",
-			requisition_no= " . DB::escape($po_obj->requisition_no) . ",
-			into_stock_location=" . DB::escape($po_obj->Location) . ",
-			ord_date='" . Dates::date2sql($po_obj->orig_order_date) . "',
-			delivery_address=" . DB::escape($po_obj->delivery_address) . ",
-			freight=" . DB::escape($po_obj->freight) . ",
-			salesman=" . DB::escape($po_obj->salesman);
-			$sql .= " WHERE order_no = " . $po_obj->order_no;
+			$sql = "UPDATE purch_orders SET Comments=" . DB::escape($order->Comments) . ",
+			requisition_no= " . DB::escape($order->requisition_no) . ",
+			into_stock_location=" . DB::escape($order->Location) . ",
+			ord_date='" . Dates::date2sql($order->orig_order_date) . "',
+			delivery_address=" . DB::escape($order->delivery_address) . ",
+			freight=" . DB::escape($order->freight) . ",
+			salesman=" . DB::escape($order->salesman);
+			$sql .= " WHERE order_no = " . $order->order_no;
 			DB::query($sql, "The purchase order could not be updated");
 			/*Now Update the purchase order detail records */
-			foreach ($po_obj->line_items as $po_line)
+			foreach ($order->line_items as $po_line)
 			{
 				if ($po_line->Deleted == True) {
 					// Sherifoz 21.06.03 Handle deleting existing lines
@@ -189,7 +207,7 @@
 				else if ($po_line->po_detail_rec == '') {
 					// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
 					$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
-					$sql .= $po_obj->order_no . "," .
+					$sql .= $order->order_no . "," .
 					 DB::escape($po_line->stock_id) . "," .
 					 DB::escape($po_line->description) . ",'" .
 					 Dates::date2sql($po_line->req_del_date) . "'," .
@@ -208,9 +226,10 @@
 				}
 				DB::query($sql, "One of the purchase order detail records could not be updated");
 			}
-			//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+			//DB_Comments::add(ST_PURCHORDER, $order->order_no, $order->orig_order_date, $order->Comments);
 			DB::commit();
-			return $po_obj->order_no;
+			Orders::session_delete($order->order_id);
+			return $order->order_no;
 		}
 
 		public static function get_header($order_no, &$order) {
@@ -350,19 +369,26 @@
 			$order->supplier_id = $_POST['supplier_id'] = $supplier_id;
 		}
 
-		public static function create() {
-			if (isset($_SESSION['PO'])) {
-				unset($_SESSION['PO']->line_items);
-				$_SESSION['PO']->lines_on_order = 0;
-				unset($_SESSION['PO']);
+		public static function create($order=null) {
+			if (isset($order)) {
+				unset($order->line_items);
+				$order->lines_on_order = 0;
+				unset($order);
 			}
-			//session_register("PO");
-			$_SESSION['PO'] = new Purch_Order;
-			$_POST['OrderDate'] = Dates::new_doc_date();
-			if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-				$_POST['OrderDate'] = Dates::end_fiscalyear();
+			return $order;
+		}
+
+		/*
+									 Check if the order was not destroyed during opening the edition page in
+									 another browser tab.
+								 */
+		public static function check_edit_conflicts($order) {
+			$session_order = Orders::session_get($order->order_id);
+			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
+				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				return $session_order;
 			}
-			$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
+			return $order;
 		}
 
 		public static function header($order) {
@@ -475,13 +501,12 @@
 			if ($id == -1 && $editable) {
 				Purch_Order::item_controls($order);
 			}
-			label_cell(_("Freight"), "colspan=8 class=right");
-			small_amount_cells(null, 'freight', Num::price_format(get_post('freight', 0)));
+
+			small_amount_row(_("Freight"), 'freight', Num::price_format(get_post('freight', 0)),"colspan=8 class='bold right'",null,null,3);
 			$display_total = Num::price_format($total + Validation::input_num('freight'));
-			start_row();
-			label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class=right",
-				"nowrap class=right _nofreight='$total'", 2);
-			end_row();
+
+			label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
+
 			end_table(1);
 			Display::div_end();
 		}
@@ -523,7 +548,6 @@
 		}
 
 		public static function item_controls($order, $stock_id = null) {
-			$Ajax = Ajax::i();
 			start_row();
 			$dec2 = 0;
 			$id = find_submit('Edit');
@@ -544,7 +568,7 @@
 				Ajax::i()->activate('items_table');
 				$qty_rcvd = $order->line_items[$id]->qty_received;
 			} else {
-				hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
+				hidden('line_no', ($order->lines_on_order + 1));
 				Item_Purchase::cells(null, 'stock_id', null, false, true, true);
 				if (list_updated('stock_id')) {
 					Ajax::i()->activate('price');
@@ -571,7 +595,6 @@
 			date_cells(null, 'req_del_date', '', null, 0, 0, 0);
 			amount_cells(null, 'price', null, null, null, $dec2);
 			small_amount_cells(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
-			//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 			$line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
 			amount_cell($line_total, false, '', 'line_total');
 			if ($id != -1) {

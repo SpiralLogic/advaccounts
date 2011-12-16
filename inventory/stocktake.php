@@ -38,7 +38,7 @@
 			unset ($_SESSION['adj_items']);
 		}
 		//session_register("adj_items");
-		$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
+		$_SESSION['adj_items'] = new Item_Order(ST_INVADJUST);
 		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
@@ -103,13 +103,13 @@
 	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
-			$_SESSION['adj_items']->update_cart_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
+			$_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
 		}
 		line_start_focus();
 	}
 
 	function handle_delete_item($id) {
-		$_SESSION['adj_items']->remove_from_cart($id);
+		$_SESSION['adj_items']->remove_from_order($id);
 		line_start_focus();
 	}
 
@@ -117,7 +117,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
+		Item_Order::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
 		line_start_focus();
 	}
 

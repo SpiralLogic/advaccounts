@@ -7,4 +7,3 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include('bootstrap.php');
-	var_dump(Session::i('current_user'));

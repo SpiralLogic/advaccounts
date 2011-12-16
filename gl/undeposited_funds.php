@@ -210,7 +210,7 @@
 	$cols = array(
 		_("Type") => array(
 			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => array('date', 'ord' => ''), _("Debit") => array(
+			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => array('date', 'ord' => 'desc'), _("Debit") => array(
 			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
 			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), _("Person/Item") => array('fun' => 'fmt_person'), array(
 			'insert' => true, 'fun' => 'gl_view'), "X" => array(

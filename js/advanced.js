@@ -78,8 +78,8 @@ Adv.extend({
 		 };
 		 Adv.showStatus(status);
 	 }).ajaxComplete(function (event, request) {
-															Behaviour.apply();
-															try
+		 Behaviour.apply();
+		 try
 			 {
 				 var data = $.parseJSON(request.responseText);
 				 (data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
@@ -90,7 +90,7 @@ Adv.extend({
 	showStatus:function (status) {
 		Adv.msgbox.empty();
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
-		Adv.msgbox.html('<div class="'+status.class+'">'+status.message+'</div').show();
+		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div').show();
 	},
 	hideStatus:function () {
 		Adv.msgbox.empty();
@@ -104,8 +104,10 @@ Adv.extend({
 
 })
 Adv.extend({Forms:(function () {
-	if (document.getElementsByClassName('datepicker').length>0) {
-		Adv.o.wrapper.on('focus',".datepicker",function(event) { $(this).datepicker({numberOfMonths:3,showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+	if (document.getElementsByClassName('datepicker').length > 0)
+		{
+			Adv.o.wrapper.on('focus', ".datepicker",
+			 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 		}
 	return {
 		setFormValue:function (id, value, disabled) {
@@ -143,7 +145,7 @@ Adv.extend({Forms:(function () {
 			)
 		},
 		autocomplete:function (id, url, callback) {
-			Adv.o.autocomplete[id] = $('#'+id).autocomplete({
+			Adv.o.autocomplete[id] = $('#' + id).autocomplete({
 				autoFocus:true,
 				source:function (request, response) {
 					var lastXhr = $.getJSON(url, request, function (data, status, xhr) {
@@ -190,6 +192,7 @@ Adv.extend({
 				$.each(events, function (k, v) {
 					firstBind(v.s, v.t, v.a);
 				});
+				if (Adv.msgbox.children().length) toFocus.pos = [0, Adv.msgbox.position().top];
 				if (toFocus.el) $(toFocus.el).focus();
 				if (toFocus.pos) scrollTo(toFocus.pos[0], toFocus.pos[1]);
 				toFocus = {el:false, pos:false};
