@@ -13,13 +13,10 @@
 			0 => array(
 				'code' => 'en_AU', //
 				'name' => 'Australia', //
-				'encoding' => 'utf-8' //
-			),
-			array(
+				'encoding' => 'UTF-8' //
+			), array(
 				'code' => 'en_US', //
 				'name' => 'English', //
 				'encoding' => 'utf-8' //
-			)
-		)
-	);
+			)));
 

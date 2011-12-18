@@ -24,13 +24,13 @@
 		protected static function i() {
 			if (static::$i === null) {
 				if (class_exists('Memcached', false)) {
-					$i = new Memcached($_SERVER['SERVER_NAME']);
+					$i = new Memcached(__DIR__);
 					if (!count($i->getServerList())) {
 						$i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
 						$i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER['SERVER_NAME']);
+						$i->setOption(Memcached::OPT_PREFIX_KEY, __DIR__);
 						$i->addServer('127.0.0.1', 11211);
 					}
 					static::$connected = ($i->getVersion() !== false);
@@ -55,7 +55,8 @@
 		public static function set($key, $value, $expires = 86400) {
 			if (static::i() !== false) {
 				static::i()->set($key, $value, time() + $expires);
-			} elseif (class_exists('Session', false)) {
+			}
+			elseif (class_exists('Session', false)) {
 				$_SESSION['cache'][$key] = $value;
 			}
 			return $value;
@@ -72,12 +73,14 @@
 			if (static::i() !== false) {
 				$result = static::i()->get($key);
 				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
-			} elseif (class_exists('Session', false)) {
+			}
+			elseif (class_exists('Session', false)) {
 				if (!isset($_SESSION['cache'])) {
 					$_SESSION['cache'] = array();
 				}
 				$result = (!isset($_SESSION['cache'][$key])) ? false : $_SESSION['cache'][$key];
-			} else {
+			}
+			else {
 				$result = false;
 			}
 			return $result;
@@ -115,7 +118,8 @@
 		public static function flush($time = 0) {
 			if (static::i()) {
 				static::i()->flush($time);
-			} else {
+			}
+			else {
 				$_SESSION['cache'] = array();
 			}
 		}

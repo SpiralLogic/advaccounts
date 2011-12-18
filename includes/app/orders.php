@@ -53,9 +53,12 @@
 				$_SESSION['orders'][$type] = array();
 			}
 		}
+
 		/**
 		 * @static
+		 *
 		 * @param string $post_id
+		 *
 		 * @internal param $id
 		 * @return Sales_Order|Purch_Order
 		 */
@@ -71,9 +74,12 @@
 			}
 			return false;
 		}
+
 		/**
 		 * @static
+		 *
 		 * @param $order
+		 *
 		 * @return Sales_Order|Purch_Order
 		 */
 		public static function session_set($order) {
@@ -82,6 +88,7 @@
 			$_SESSION['orders'][$type][$id] = $order;
 			return $order;
 		}
+
 		/**
 		 * @static
 		 *
@@ -89,6 +96,7 @@
 		 */
 		public static function session_start($order) {
 		}
+
 		/**
 		 * @static
 		 *
@@ -101,10 +109,11 @@
 			static::setup($type);
 			return isset($_SESSION['orders'][$type][$id]);
 		}
+
 		/**
 		 * @static
 		 *
-		 * @param $id
+		 * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
 		 */
 		public static function session_delete($id) {
 			if (is_object($id)) {

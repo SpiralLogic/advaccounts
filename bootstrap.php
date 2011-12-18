@@ -23,7 +23,7 @@
 	/**
 	 *
 	 */
-	define('DOCROOT', realpath(__DIR__) . DS);
+	define('DOCROOT', __DIR__ . DS);
 	/**
 	 *
 	 */
@@ -62,9 +62,6 @@
 	 * We need this in order to work with UTF-8 strings
 	 */
 	define('MBSTRING', function_exists('mb_get_info'));
-	/**
-	 * Register all the error/shutdown handlers
-	 */
 	set_error_handler(/**
 	 * @param $severity
 	 * @param $message
@@ -72,24 +69,27 @@
 	 * @param $line
 	 *
 	 * @return bool
-	 */function ($severity, $message, $filepath, $line) {
-		if (!class_exists('Errors', false)) {
-			include(COREPATH . 'errors.php');
-		}
-		return \Errors::handler($severity, $message, $filepath, $line);
-	});
+	 */
+		function ($severity, $message, $filepath, $line) {
+			if (!class_exists('Errors', false)) {
+				/** @noinspection PhpIncludeInspection */
+				include(COREPATH . 'errors.php');
+			}
+			return \Errors::handler($severity, $message, $filepath, $line);
+		});
 	set_exception_handler(/**
 	 * @param Exception $e
-	 */function (\Exception $e) {
-		if (!class_exists('Errors', false)) {
-			include(COREPATH . 'errors.php');
-		}
-		return \Errors::exception_handler($e);
-	});
+	 */
+		function (\Exception $e) {
+			if (!class_exists('Errors', false)) {
+				/** @noinspection PhpIncludeInspection */
+				include(COREPATH . 'errors.php');
+			}
+			return \Errors::exception_handler($e);
+		});
+	/** @noinspection PhpIncludeInspection */
 	require COREPATH . 'autoloader.php';
-
-	register_shutdown_function(
-	function () {
+	register_shutdown_function(function () {
 		$Ajax = Ajax::i();
 		if (isset($Ajax)) {
 			$Ajax->run();
@@ -104,6 +104,7 @@
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**
 		 * @param $text
+		 *
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
@@ -118,14 +119,9 @@
 			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-
 	Session::i();
-
 	Config::i();
-
 	Ajax::i();
-
-
 	/***
 	 *
 	 */
@@ -135,7 +131,8 @@
 	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, /**
 	 * @param $v
-	 */function(&$v) {
-		$v = is_string($v) ? trim($v) : $v;
-	});
+	 */
+		function(&$v) {
+			$v = is_string($v) ? trim($v) : $v;
+		});
 	advaccounting::init();

@@ -125,7 +125,8 @@
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				return true;
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				return $this->_error($e, true);
 			}
 		}
@@ -143,7 +144,8 @@
 			try {
 				static::$prepared = static::i()->_prepare($sql);
 				static::$prepared->execute();
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				static::i()->_error($e, $err_msg);
 			}
 			static::$data = array();
@@ -178,13 +180,17 @@
 			if (!isset($value) || is_null($value) || $value === "") {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
-			} elseif (is_int($value)) {
+			}
+			elseif (is_int($value)) {
 				$type = PDO::PARAM_INT;
-			} elseif (is_bool($value)) {
+			}
+			elseif (is_bool($value)) {
 				$type = PDO::PARAM_BOOL;
-			} elseif (is_string($value)) {
+			}
+			elseif (is_string($value)) {
 				$type = PDO::PARAM_STR;
-			} else {
+			}
+			else {
 				$type = FALSE;
 			}
 			static::$data[] = array($value, $type);
@@ -214,7 +220,8 @@
 					$prepared->bindValue($k + 1, $v[0], $v[1]);
 				}
 				return $prepared;
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				static::$errorInfo = $prepared->errorInfo();
 				$this->_error($e);
 			}
@@ -253,7 +260,8 @@
 				}
 				FB::info($sql);
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				return static::i()->_error($e);
 			}
 		}
@@ -322,7 +330,7 @@
 		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
 		 *
-		 * @return DB_Query_Result This is something
+		 * @return DB_Query_Result|Array This is something
 		 */
 		public static function fetch($result = null) {
 			if ($result !== null) {
@@ -436,7 +444,8 @@
 				try {
 					static::i()->conn->beginTransaction();
 					static::i()->intransaction = true;
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -451,7 +460,8 @@
 				static::i()->intransaction = false;
 				try {
 					static::i()->conn->commit();
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -466,7 +476,8 @@
 				try {
 					static::i()->intransaction = false;
 					static::i()->conn->rollBack();
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -529,7 +540,8 @@
 						$prepared->execute($data);
 						return true;
 				}
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				if (!is_null($data)) {
 					foreach ($data as $k => $v) {
 						$sql = str_replace(':' . $k, DB::quote($v), $sql);
@@ -563,9 +575,11 @@
 			$error = static::$errorInfo;
 			if (Config::get('debug_sql')) {
 				$error = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-			} elseif ($msg != false) {
+			}
+			elseif ($msg != false) {
 				$error = '<pre>' . $msg . '</pre>';
-			} else {
+			}
+			else {
 				$error = $e->getMessage();
 			}
 			if ($this->conn->inTransaction() || $this->intransaction) {

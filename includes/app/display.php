@@ -30,6 +30,7 @@
 			$label = str_replace('&&', '&', $label);
 			return $clean ? $label : array($label, $access);
 		}
+
 		/**
 		 * @static
 		 *
@@ -81,6 +82,7 @@
 				Errors::error($str);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -91,6 +93,7 @@
 				echo "<br>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -110,6 +113,7 @@
 				ob_start();
 			}
 		}
+
 		/**
 		 * @static
 		 */
@@ -123,6 +127,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -131,6 +136,7 @@
 		public static function heading($msg) {
 			echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
 		}
+
 		/**
 		 * @static
 		 *
@@ -155,6 +161,7 @@
 			end_table(1);
 			return true;
 		}
+
 		/**
 		 * @static
 		 *
@@ -169,6 +176,7 @@
 				static::heading(_("in units of : ") . $units);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -183,6 +191,7 @@
 			$pars = Display::access_string($label);
 			return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 		}
+
 		/**
 		 * @static
 		 *
@@ -197,6 +206,7 @@
 			$pars = Display::access_string($label);
 			return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
 		}
+
 		/**
 		 * @static
 		 *
@@ -213,6 +223,7 @@
 			Ajax::i()->redirect($forward_to . $params);
 			exit;
 		}
+
 		/**
 		 * @static
 		 *
@@ -235,6 +246,7 @@
 				echo "<br>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -251,6 +263,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -276,6 +289,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -287,6 +301,7 @@
 			Display::link_no_params($target, $label);
 			echo "</td>\n";
 		}
+
 		/**
 		 * @static
 		 *
@@ -310,6 +325,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -333,6 +349,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -346,6 +363,7 @@
 			Display::link_params($target, $label, $link_params, false, $params);
 			echo "</td>\n";
 		}
+
 		/**
 		 * @static
 		 *
@@ -369,6 +387,7 @@
 				echo "</div>";
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -381,6 +400,7 @@
 			Display::link_params_separate($target, $label, $params);
 			echo "</td>\n";
 		}
+
 		/**
 		 * Bind editors for various selectors.
 		 *
@@ -402,21 +422,17 @@
 			}
 			$popup_editors = array(
 				'customer' => array(
-					'/sales/manage/customers.php?debtor_no=', 113, _("Customers")
-				), 'branch' => array(
-					'/sales/manage/customer_branches.php?SelectedBranch=', 114, _("Branches")
-				), 'supplier' => array(
-					'/purchases/manage/suppliers.php?supplier_id=', 113, _("Suppliers")
-				), 'item' => array(
-					'/inventory/manage/items.php?stock_id=', 115, _("Items")
-				)
-			);
+					'/sales/manage/customers.php?debtor_no=', 113, _("Customers")), 'branch' => array(
+					'/sales/manage/customer_branches.php?SelectedBranch=', 114, _("Branches")), 'supplier' => array(
+					'/purchases/manage/suppliers.php?supplier_id=', 113, _("Suppliers")), 'item' => array(
+					'/inventory/manage/items.php?stock_id=', 115, _("Items")));
 			$key = $caller === true ? $popup_editors[$type][1] : $caller;
 			$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
 			/*	$help = 'F' . ($key - 111) . ' - ';
 									$help .= $popup_editors[$type][2];
 									$Pagehelp[] = $help;*/
 		}
+
 		/**
 		 * @static
 		 *
@@ -427,15 +443,17 @@
 		public static function submenu_option($title, $url, $id = null) {
 			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 		}
+
 		/**
 		 * @static
 		 *
 		 * @param			$title
 		 * @param			$url
-		 * @param null $id
-		ublic static function submenu_button($title, $url, $id = null) {
-		Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		 * @param null $id*/
+		public static function submenu_button($title, $url, $id = null) {
+			Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 		}
+
 		/**
 		 *
 		 * @static
@@ -448,19 +466,21 @@
 		public static function submenu_view($title, $type, $number, $id = null) {
 			Display::note(GL_UI::trans_view($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
 		}
+
 		/**
 		 * @static
 		 *
-		 * @param           $title
-		 * @param           $type
-		 * @param           $number
-		 * @param null      $id
+		 * @param					 $title
+		 * @param					 $type
+		 * @param					 $number
+		 * @param null			$id
 		 * @param int|null	$email
-		 * @param int       $extra
+		 * @param int			 $extra
 		 */
 		public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
 			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
 		}
+
 		/**
 		 * @static
 		 *

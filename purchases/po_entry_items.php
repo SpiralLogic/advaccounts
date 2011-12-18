@@ -11,39 +11,116 @@
 	 ***********************************************************************/
 	$page_security = 'SA_PURCHASEORDER';
 	$js = '';
+	/** @noinspection PhpIncludeInspection */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	if (isset($_GET['ModifyOrderNumber'])) {
 		Page::start(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber']);
-	} else {
+	}
+	else {
 		Page::start(_($help_context = "Purchase Order Entry"));
 	}
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
-		STOCK_PURCHASED);
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
 	if (isset($_GET['AddedID'])) {
 		$order_no = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
 		$supplier = new Contacts_Supplier(Session::i()->supplier_id);
-
 		if (!isset($_GET['Updated'])) {
 			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
-		} else {
+		}
+		else {
 			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
 		}
 		Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 		Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
-		Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(),
-			1);
+		Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);
 		Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		Display::link_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
 		Page::footer_exit();
 	}
+	$order = Orders::session_get() ? : null;
+	if (isset($_POST['CancelChanges'])) {
+		$order_no = $order->trans_no;
+		Orders::session_delete($_POST['order_id']);
+		$order = create_order($order_no);
+	}
+	$id = find_submit('Delete');
+	if ($id != -1) {
+		handle_delete_item($order, $id);
+	}
+	if (isset($_POST['Commit'])) {
+		handle_commit_order($order);
+	}
+	if (isset($_POST['UpdateLine'])) {
+		handle_update_item($order);
+	}
+	if (isset($_POST['EnterLine'])) {
+		handle_add_new_item($order);
+	}
+	if (isset($_POST['CancelOrder'])) {
+		handle_cancel_po($order);
+	}
+	if (isset($_POST['CancelUpdate'])) {
+		unset_form_variables();
+	}
+	if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
+		$order = new Purch_Order($_GET['ModifyOrderNumber']);
+		copy_from_order($order);
+	}
+	if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
+		line_start_focus();
+	}
+	if (isset($_GET['NewOrder'])) {
+		$order = create_order();
+	}
+	start_form();
+	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
+		echo "
+<div class='center'>
+ <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe>
+</div>";
+	}
+	$order->header();
+	echo "<br>";
+	hidden('order_id', $order->order_id);
+	$order->display_items();
+	start_table('tablestyle2');
+	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
+	end_table(1);
+	Display::div_start('controls', 'items_table');
+	if ($order->order_has_items()) {
+		submit_center_first('CancelOrder', _("Delete This Order"));
+		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		if ($order->order_no) {
+			submit_center_last('Commit', _("Update Order"), '', 'default');
+		}
+		else {
+			submit_center_last('Commit', _("Place Order"), '', 'default');
+		}
+	}
+	else {
+		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
+		submit_center_first('CancelOrder', _("Delete This Order"), true, false, 'cancel');
+		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+	}
+	Display::div_end();
+	end_form();
+	JS::onUnload('Are you sure you want to leave without commiting changes?');
+	Item::addEditDialog();
+	if (isset($order->supplier_id)) {
+		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
+	}
+	Renderer::end_page();
+	/**
+	 * @param $order
+	 *
+	 * @return \Purch_Order|\Sales_Order
+	 */
 	function copy_from_order($order) {
 		$order = Purch_Order::check_edit_conflicts($order);
-
 		$_POST['supplier_id'] = $order->supplier_id;
 		$_POST['OrderDate'] = $order->orig_order_date;
 		$_POST['Requisition'] = $order->requisition_no;
@@ -54,11 +131,10 @@
 		$_POST['freight'] = $order->freight;
 		$_POST['salesman'] = $order->salesman;
 		$_POST['order_id'] = $order->order_id;
-		Orders::session_set($order);
+		return Orders::session_set($order);
 	}
 
-	function copy_to_order() {
-		$order = Orders::session_get($_POST['order_id']);
+	function copy_to_order($order) {
 		$order->supplier_id = $_POST['supplier_id'];
 		$order->orig_order_date = $_POST['OrderDate'];
 		$order->reference = $_POST['ref'];
@@ -82,29 +158,35 @@
 		unset($_POST['req_del_date']);
 	}
 
-	function handle_delete_item($line_no) {
-		if (Orders::session_get($_POST['order_id'])->some_already_received($line_no) == 0) {
-			Orders::session_get($_POST['order_id'])->remove_from_order($line_no);
+	/**
+	 * @param Purch_Order $order
+	 * @param             $line_no
+	 */
+	function handle_delete_item($order, $line_no) {
+		if ($order->some_already_received($line_no) == 0) {
+			$order->remove_from_order($line_no);
 			unset_form_variables();
-		} else {
+		}
+		else {
 			Errors::error(_("This item cannot be deleted because some of it has already been received."));
 		}
 		line_start_focus();
 	}
 
-	function handle_cancel_po() {
+	function handle_cancel_po($order) {
 		//need to check that not already dispatched or invoiced by the supplier
-		if ((Orders::session_get($_POST['order_id'])->order_no != 0) && Orders::session_get($_POST['order_id'])->any_already_received() == 1) {
+		if (($order->order_no != 0) && $order->any_already_received() == 1) {
 			Errors::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 			return;
 		}
-		if (Orders::session_get($_POST['order_id'])->order_no != 0) {
-			Purch_Order::delete(Orders::session_get($_POST['order_id'])->order_no);
-		} else {
+		if ($order->order_no != 0) {
+			$order->delete();
+		}
+		else {
 			Orders::session_delete($_POST['order_id']);
 			Display::meta_forward('/index.php', 'application=Purchases');
 		}
-		Orders::session_get($_POST['order_id'])->clear_items();
+		$order->clear_items();
 		$order = new Purch_Order();
 		Orders::session_set($order);
 		Errors::notice(_("This purchase order has been cancelled."));
@@ -113,54 +195,63 @@
 		Renderer::end_page();
 		exit;
 	}
-function create_order($order_no=0) {
-	$order = (isset($_GET['UseOrder'])) ? new Purch_Order: new Purch_Order($order_no);
-			if (isset($_GET['UseOrder']) && $_GET['UseOrder'] && isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
-				$sales_order = Orders::session_get($_GET['UseOrder']);
-				foreach ($sales_order->line_items as $line_no => $line_item) {
-					$sql = "SELECT purch_data.price,purch_data.supplier_id
+
+	/**
+	 * @param int $order_no
+	 *
+	 * @return \Purch_Order|\Sales_Order
+	 */
+	function create_order($order_no = 0) {
+		$order = (isset($_GET['UseOrder'])) ? new Purch_Order : new Purch_Order($order_no);
+		if (isset($_GET['UseOrder']) && $_GET['UseOrder'] && isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
+			$sales_order = Orders::session_get($_GET['UseOrder']);
+			foreach ($sales_order->line_items as $line_no => $line_item) {
+				$sql
+				 = "SELECT purch_data.price,purch_data.supplier_id
 			FROM purch_data INNER JOIN suppliers
 			ON purch_data.supplier_id=suppliers.supplier_id
 			WHERE stock_id = " . DB::escape($line_item->stock_id) . ' ORDER BY price';
-					$result = DB::query($sql);
-					$myrow = array();
-					if (DB::num_rows($result) > 0) {
-						if (DB::num_rows($result) == 1) {
-							$myrow[] = DB::fetch($result, 'pricing');
-						} else {
-							$myrow = DB::fetch($result, 'pricing');
-						}
-						if (isset($po_lines[$myrow[0]['supplier_id']])) {
-							$po_lines[$myrow[0]['supplier_id']]++;
-						} else {
-							$po_lines[$myrow[0]['supplier_id']] = 1;
-						}
+				$result = DB::query($sql);
+				$myrow = array();
+				if (DB::num_rows($result) > 0) {
+					if (DB::num_rows($result) == 1) {
+						$myrow[] = DB::fetch($result, 'pricing');
 					}
-					$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description,
-						Num::price_decimal($myrow[0]['price'], $dec2), $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+					else {
+						$myrow = DB::fetch($result, 'pricing');
+					}
+					if (isset($po_lines[$myrow[0]['supplier_id']])) {
+						$po_lines[$myrow[0]['supplier_id']]++;
+					}
+					else {
+						$po_lines[$myrow[0]['supplier_id']] = 1;
+					}
 				}
-				arsort($po_lines);
-				$_SESSION['supplier_id'] = key($po_lines);
-				if ($_GET['DS']) {
-					$item_info = Item::get('DS');
-					$_POST['StkLocation'] = 'DRP';
-					$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '',
-						Dates::add_days(Dates::Today(), 10), 0, 0, 0);
-					$address = $sales_order->customer_name . "\n";
-					if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
-						$address .= $sales_order->name . "\n";
-					} elseif ($sales_order->deliver_to != $sales_order->customer_name) {
-						$address .= $sales_order->deliver_to . "\n";
-					}
-					if (!empty($sales_order->phone)) {
-						$address .= 'Ph:' . $sales_order->phone . "\n";
-					}
-					$address .= $sales_order->delivery_address;
-					$_POST['delivery_address'] = $order->delivery_address = $address;
-				}
+				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, Num::price_decimal($myrow[0]['price'], $dec2), $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 			}
-			copy_from_order($order);
-}
+			arsort($po_lines);
+			$_SESSION['supplier_id'] = key($po_lines);
+			if ($_GET['DS']) {
+				$item_info = Item::get('DS');
+				$_POST['StkLocation'] = 'DRP';
+				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$address = $sales_order->customer_name . "\n";
+				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
+					$address .= $sales_order->name . "\n";
+				}
+				elseif ($sales_order->deliver_to != $sales_order->customer_name) {
+					$address .= $sales_order->deliver_to . "\n";
+				}
+				if (!empty($sales_order->phone)) {
+					$address .= 'Ph:' . $sales_order->phone . "\n";
+				}
+				$address .= $sales_order->delivery_address;
+				$_POST['delivery_address'] = $order->delivery_address = $address;
+			}
+		}
+		return copy_from_order($order);
+	}
+
 	function check_data() {
 		$dec = Item::qty_dec($_POST['stock_id']);
 		$min = 1 / pow(10, $dec);
@@ -188,26 +279,35 @@ function create_order($order_no=0) {
 		return true;
 	}
 
-	function handle_update_item() {
+	/**
+	 * @param Purch_Order $order
+	 *
+	 * @return mixed
+	 */
+	function handle_update_item($order) {
 		$allow_update = check_data();
 		if ($allow_update) {
-			if (Orders::session_get($_POST['order_id'])->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || Orders::session_get($_POST['order_id'])->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
+			if ($order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
 				Errors::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 				JS::set_focus('qty');
 				return;
 			}
-			Orders::session_get($_POST['order_id'])->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'],
-				$_POST['description'], $_POST['discount'] / 100);
+			$order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100);
 			unset_form_variables();
 		}
 		line_start_focus();
+		return;
 	}
 
-	function handle_add_new_item() {
+	/**
+	 * @param Purch_Order $order
+	 */
+	function handle_add_new_item($order) {
 		$allow_update = check_data();
 		if ($allow_update == true) {
 			if ($allow_update == true) {
-				$sql = "SELECT long_description as description , units, mb_flag
+				$sql
+				 = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
 				$result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 				if (DB::num_rows($result) == 0) {
@@ -215,11 +315,11 @@ function create_order($order_no=0) {
 				}
 				if ($allow_update) {
 					$myrow = DB::fetch($result);
-					Orders::session_get($_POST['order_id'])->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'],
-						Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+					$order->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 					unset_form_variables();
 					$_POST['stock_id'] = "";
-				} else {
+				}
+				else {
 					Errors::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
 				}
 			} /* end of if not already on the order and allow input was true*/
@@ -227,7 +327,12 @@ function create_order($order_no=0) {
 		line_start_focus();
 	}
 
-	function can_commit() {
+	/**
+	 * @param Purch_Order $order
+	 *
+	 * @return bool
+	 */
+	function can_commit($order) {
 		if (!get_post('supplier_id')) {
 			Errors::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
@@ -253,11 +358,11 @@ function create_order($order_no=0) {
 			JS::set_focus('StkLocation');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->order_has_items() == false) {
+		if ($order->order_has_items() == false) {
 			Errors::error(_("The order cannot be placed because there are no lines entered on this order."));
 			return false;
 		}
-		if (!Orders::session_get($_POST['order_id'])->order_no) {
+		if (!$order->order_no) {
 			if (!Ref::is_valid(get_post('ref'))) {
 				Errors::error(_("There is no reference entered for this purchase order."));
 				JS::set_focus('ref');
@@ -270,99 +375,25 @@ function create_order($order_no=0) {
 		return true;
 	}
 
-	function handle_commit_order() {
-		if (can_commit()) {
+	function handle_commit_order($order) {
+		if (can_commit($order)) {
 			copy_to_order();
-			if (Orders::session_get($_POST['order_id'])->order_no == 0) {
+			if ($order->order_no == 0) {
 				/*its a new order to be inserted */
-				$_SESSION['history'][ST_PURCHORDER] = Orders::session_get($_POST['order_id'])->reference;
-
-				$order_no = Purch_Order::add(Orders::session_get($_POST['order_id']));
-				Dates::new_doc_date(Orders::session_get($_POST['order_id'])->orig_order_date);
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
+				$order_no = $order->add();
+				Dates::new_doc_date($order->orig_order_date);
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
-			} else {
+			}
+			else {
 				/*its an existing order need to update the old order info */
-				$_SESSION['history'][ST_PURCHORDER] = Orders::session_get($_POST['order_id'])->reference;
-
-				$order_no = Purch_Order::update(Orders::session_get($_POST['order_id']));
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
+				$order_no = $order->update();
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}
 		}
 	}
-
-	if (isset($_POST['CancelChanges'])) {
-		$order = Orders::session_get($_POST['order_id']);
-		$order_no = $order->trans_no;
-		Orders::session_delete($_POST['order_id']);
-		create_order($order_no);
-	}
-	$id = find_submit('Delete');
-	if ($id != -1) {
-		handle_delete_item($id);
-	}
-	if (isset($_POST['Commit'])) {
-		handle_commit_order();
-	}
-	if (isset($_POST['UpdateLine'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['EnterLine'])) {
-		handle_add_new_item();
-	}
-	if (isset($_POST['CancelOrder'])) {
-		handle_cancel_po();
-	}
-	if (isset($_POST['CancelUpdate'])) {
-		unset_form_variables();
-	}
-	if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
-		$order = new Purch_Order($_GET['ModifyOrderNumber']);
-		copy_from_order($order);
-	}
-	if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
-		line_start_focus();
-	}
-	if (isset($_GET['NewOrder'])) {
-		create_order();
-	}
-	start_form();
-	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
-		echo "
-<div class='center'>
- <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe>
-</div>";
-	}
-	Purch_Order::header(Orders::session_get($_POST['order_id']));
-	echo "<br>";
-	hidden('order_id', Orders::session_get($_POST['order_id'])->order_id);
-	Purch_Order::display_items(Orders::session_get($_POST['order_id']));
-	start_table('tablestyle2');
-	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
-	end_table(1);
-	Display::div_start('controls', 'items_table');
-	if (Orders::session_get($_POST['order_id'])->order_has_items()) {
-		submit_center_first('CancelOrder', _("Delete This Order"));
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-
-		if (Orders::session_get($_POST['order_id'])->order_no) {
-			submit_center_last('Commit', _("Update Order"), '', 'default');
-		} else {
-			submit_center_last('Commit', _("Place Order"), '', 'default');
-		}
-	} else {
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-		submit_center_first('CancelOrder', _("Delete This Order"), true, false, 'cancel');		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-
-	}
-	Display::div_end();
-	end_form();
-	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Item::addEditDialog();
-	if (isset(Orders::session_get($_POST['order_id'])->supplier_id)) {
-		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", Orders::session_get($_POST['order_id'])->supplier_details['supplier_id']);
-	}
-	Renderer::end_page();
 
 ?>
