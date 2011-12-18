@@ -414,7 +414,7 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 #_tabs2 ul a {
-	background-image:                   -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
+	background-image:                   -webkit-gradient(linear, 100% 0%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
 	background-image:                   -moz-linear-gradient(19% 100% 90deg, rgba(133, 133, 133, 1), rgba(158, 158, 158, 1), rgba(199, 199, 199, 1) 71%);
 	background:                         transparent;
 	-moz-transition-duration:           0.5s;
@@ -447,7 +447,7 @@ div.banner a + a { border-top: 2px groove #999 }
 
 .Purchases #_tabs2 {
 
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	border-top: 2px solid #939393;
 	position:   relative;
@@ -462,7 +462,7 @@ div.banner a + a { border-top: 2px groove #999 }
 
 .Purchases #_tabs2 ul a {
 
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 }
 
@@ -497,7 +497,7 @@ div.banner a + a { border-top: 2px groove #999 }
 
 .orders #_tabs2 {
 	background:       #464646;
-	background:       -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
+	background:       -webkit-gradient(linear, 100% 0%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
 	background-image: -moz-linear-gradient(19% 100% 90deg, rgba(133, 133, 133, 1), rgba(158, 158, 158, 1), rgba(199, 199, 199, 1) 71%);
 	border-top:       2px solid #939393;
 	position:         relative;
@@ -509,7 +509,7 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 .orders #_tabs2 ul a {
-	background-image: -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
+	background-image: -webkit-gradient(linear, 100% 0%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
 	background-image: -moz-linear-gradient(19% 100% 90deg, rgba(133, 133, 133, 1), rgba(158, 158, 158, 1), rgba(199, 199, 199, 1) 71%);
 
 }
@@ -529,7 +529,7 @@ div.banner a + a { border-top: 2px groove #999 }
 .Inventory #_tabs2 {
 
 	background: #464646;
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	border-top: 2px solid #939393;
 	position:   relative;
@@ -546,7 +546,7 @@ div.banner a + a { border-top: 2px groove #999 }
 
 .Inventory #_tabs2 ul a {
 
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	text-align: center;
 
@@ -583,7 +583,7 @@ div.banner a + a { border-top: 2px groove #999 }
 .GL #_tabs2 {
 
 	background: #464646;
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	border-top: 2px solid #939393;
 	position:   relative;
@@ -609,7 +609,7 @@ div.banner a + a { border-top: 2px groove #999 }
 
 .GL #_tabs2 ul a {
 
-	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -webkit-gradient(linear, 100% 0%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	text-align: center;
 
@@ -1214,9 +1214,11 @@ div.note_msg {
 .font7 {
 	font-size: 7;
 }
+
 .font6 {
 	font-size: 6;
 }
+
 .font5 {
 	font-size: 5;
 }
