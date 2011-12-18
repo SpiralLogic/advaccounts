@@ -47,8 +47,7 @@
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
 		Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
 		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
-		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"),
-												 "OutstandingOnly=1");
+		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
@@ -90,8 +89,7 @@
 		$dn = new Sales_Order(ST_CUSTDELIVERY, $src, true);
 		$dn->start();
 		if ($dn->count_items() == 0) {
-			Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"),
-													 "OutstandingOnly=1");
+			Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
 		}
 		$dn->trans_type = ST_SALESINVOICE;
@@ -191,8 +189,7 @@
 	else {
 		label_cells(_("Reference"), $order->reference, "class='tableheader2'");
 	}
-	label_cells(_("Delivery Notes:"),
-							Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tableheader2'");
+	label_cells(_("Delivery Notes:"), Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tableheader2'");
 	label_cells(_("Sales Type"), $order->sales_type_name, "class='tableheader2'");
 	end_row();
 	start_row();
@@ -240,17 +237,8 @@
 	Display::div_start('Items');
 	start_table('tablestyle width90');
 	$th = array(
-		_("Item Code"),
-		_("Item Description"),
-		_("Delivered"),
-		_("Units"),
-		_("Invoiced"),
-		_("This Invoice"),
-		_("Price"),
-		_("Tax Type"),
-		_("Discount"),
-		_("Total")
-	);
+		_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"),
+		_("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
 		$th[] = "";
@@ -263,48 +251,47 @@
 	$has_marked = false;
 	$show_qoh = true;
 	$dn_line_cnt = 0;
-	foreach ($order->line_items as $line => $ln_itm) {
-		if (!$viewing && $ln_itm->quantity == $ln_itm->qty_done) {
+	foreach ($order->line_items as $line => $line) {
+		if (!$viewing && $line->quantity == $line->qty_done) {
 			continue; // this line was fully invoiced
 		}
 		alt_table_row_color($k);
-		Item_UI::status_cell($ln_itm->stock_id);
+		Item_UI::status_cell($line->stock_id);
 		if (!$viewing) {
-			textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3);
+			textarea_cells(null, 'Line' . $line . 'Desc', $line->description, 30, 3);
 		}
 		else {
-			label_cell($ln_itm->description);
+			label_cell($line->description);
 		}
-		$dec = Item::qty_dec($ln_itm->stock_id);
-		qty_cell($ln_itm->quantity, false, $dec);
-		label_cell($ln_itm->units);
-		qty_cell($ln_itm->qty_done, false, $dec);
+		$dec = Item::qty_dec($line->stock_id);
+		qty_cell($line->quantity, false, $dec);
+		label_cell($line->units);
+		qty_cell($line->qty_done, false, $dec);
 		if ($is_batch_invoice) {
 			// for batch invoices we can only remove whole deliveries
 			echo '<td class="right no wrap">';
-			hidden('Line' . $line, $ln_itm->qty_dispatched);
-			echo Num::format($ln_itm->qty_dispatched, $dec) . '</td>';
+			hidden('Line' . $line, $line->qty_dispatched);
+			echo Num::format($line->qty_dispatched, $dec) . '</td>';
 		}
 		elseif ($viewing) {
 			hidden('viewing');
-			qty_cell($ln_itm->quantity, false, $dec);
+			qty_cell($line->quantity, false, $dec);
 		}
 		else {
-			small_qty_cells(null, 'Line' . $line, Item::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+			small_qty_cells(null, 'Line' . $line, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
 		}
-		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . " %";
-		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
-		amount_cell($ln_itm->price);
-		label_cell($ln_itm->tax_type_name);
+		$display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
+		$line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
+		amount_cell($line->price);
+		label_cell($line->tax_type_name);
 		label_cell($display_discount_percent, "nowrap class=right");
 		amount_cell($line_total);
 		if ($is_batch_invoice) {
 			if ($dn_line_cnt == 0) {
 				$dn_line_cnt = $dspans[0];
 				$dspans = array_slice($dspans, 1);
-				label_cell($ln_itm->src_no, "rowspan=$dn_line_cnt class=oddrow");
-				label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?RemoveDN=" . $ln_itm->src_no . "'>" . _("Remove") . "</a>",
-									 "rowspan=$dn_line_cnt class=oddrow");
+				label_cell($line->src_no, "rowspan=$dn_line_cnt class=oddrow");
+				label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?RemoveDN=" . $line->src_no . "'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class=oddrow");
 			}
 			$dn_line_cnt--;
 		}
@@ -360,8 +347,7 @@
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
 	start_table('center red bold');
-	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"),
-						 'center');
+	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
 	end_table();
 	end_form();
 	Renderer::end_page();
@@ -450,6 +436,7 @@
 
 	/**
 	 * @param Sales_Order $order
+	 *
 	 * @return bool
 	 */
 	function check_data($order) {

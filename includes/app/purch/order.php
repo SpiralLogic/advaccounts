@@ -474,20 +474,20 @@
 				$_POST['stock_id'] = $this->line_items[$id]->stock_id;
 				$dec = Item::qty_dec($_POST['stock_id']);
 				$_POST['qty'] = Item::qty_format($this->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-				//$_POST['price'] = Num::price_format($order->line_items[$id]->price);
-				$_POST['price'] = Num::price_decimal($order->line_items[$id]->price, $dec2);
-				$_POST['discount'] = Num::percent_format($order->line_items[$id]->discount * 100);
-				$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
-				$_POST['description'] = $order->line_items[$id]->description;
-				$_POST['units'] = $order->line_items[$id]->units;
+				//$_POST['price'] = Num::price_format($this->line_items[$id]->price);
+				$_POST['price'] = Num::price_decimal($this->line_items[$id]->price, $dec2);
+				$_POST['discount'] = Num::percent_format($this->line_items[$id]->discount * 100);
+				$_POST['req_del_date'] = $this->line_items[$id]->req_del_date;
+				$_POST['description'] = $this->line_items[$id]->description;
+				$_POST['units'] = $this->line_items[$id]->units;
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
 				textarea_cells(null, 'description', null, 50, 5);
 				Ajax::i()->activate('items_table');
-				$qty_rcvd = $order->line_items[$id]->qty_received;
+				$qty_rcvd = $this->line_items[$id]->qty_received;
 			}
 			else {
-				hidden('line_no', ($order->lines_on_order + 1));
+				hidden('line_no', ($this->lines_on_order + 1));
 				Item_Purchase::cells(null, 'stock_id', null, false, true, true);
 				if (list_updated('stock_id')) {
 					Ajax::i()->activate('price');
@@ -502,8 +502,8 @@
 				$_POST['units'] = $item_info["units"];
 				$_POST['description'] = '';
 				$dec = $item_info["decimals"];
-				$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
-				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($order->supplier_id, Input::post('stock_id')), $dec2);
+				$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
+				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
 				$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 				$_POST['discount'] = Num::percent_format(0);
 				$qty_rcvd = '';

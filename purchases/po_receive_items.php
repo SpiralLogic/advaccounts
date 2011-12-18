@@ -39,34 +39,34 @@
 		$total = 0;
 		$k = 0; //row colour counter
 		if (count($order->line_items) > 0) {
-			foreach ($order->line_items as $ln_itm) {
+			foreach ($order->line_items as $line) {
 				alt_table_row_color($k);
-				$qty_outstanding = $ln_itm->quantity - $ln_itm->qty_received;
-				if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $ln_itm->receive_qty == 0) { //If no quantites yet input default the balance to be received
-					$ln_itm->receive_qty = $qty_outstanding;
+				$qty_outstanding = $line->quantity - $line->qty_received;
+				if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $line->receive_qty == 0) { //If no quantites yet input default the balance to be received
+					$line->receive_qty = $qty_outstanding;
 				}
-				$line_total = ($ln_itm->receive_qty * $ln_itm->price * (1 - $ln_itm->discount));
+				$line_total = ($line->receive_qty * $line->price * (1 - $line->discount));
 				$total += $line_total;
-				label_cell($ln_itm->stock_id);
+				label_cell($line->stock_id);
 				if ($qty_outstanding > 0) {
-					text_cells(null, $ln_itm->stock_id . "Desc", $ln_itm->description, 30, 50);
+					text_cells(null, $line->stock_id . "Desc", $line->description, 30, 50);
 				}
 				else {
-					label_cell($ln_itm->description);
+					label_cell($line->description);
 				}
-				$dec = Item::qty_dec($ln_itm->stock_id);
-				qty_cell($ln_itm->quantity, false, $dec);
-				label_cell($ln_itm->units);
-				qty_cell($ln_itm->qty_received, false, $dec);
+				$dec = Item::qty_dec($line->stock_id);
+				qty_cell($line->quantity, false, $dec);
+				label_cell($line->units);
+				qty_cell($line->qty_received, false, $dec);
 				qty_cell($qty_outstanding, false, $dec);
 				if ($qty_outstanding > 0) {
-					qty_cells(null, $ln_itm->line_no, Num::format($ln_itm->receive_qty, $dec), "class=right", null, $dec);
+					qty_cells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class=right", null, $dec);
 				}
 				else {
-					label_cell(Num::format($ln_itm->receive_qty, $dec), "class=right");
+					label_cell(Num::format($line->receive_qty, $dec), "class=right");
 				}
-				amount_decimal_cell($ln_itm->price);
-				percent_cell($ln_itm->discount * 100);
+				amount_decimal_cell($line->price);
+				percent_cell($line->discount * 100);
 				amount_cell($line_total);
 				end_row();
 			}

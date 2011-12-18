@@ -457,10 +457,10 @@
 		 */
 		public function get_items_total() {
 			$total = 0;
-			foreach ($this->line_items as $ln_itm) {
-				/* @var Sales_Line $ln_itm */
-				$price = $ln_itm->line_price();
-				$total += round($ln_itm->quantity * $price * (1 - $ln_itm->discount_percent), User::price_dec());
+			foreach ($this->line_items as $line) {
+				/* @var Sales_Line $line */
+				$price = $line->line_price();
+				$total += round($line->quantity * $price * (1 - $line->discount_percent), User::price_dec());
 			}
 			return $total;
 		}
@@ -471,10 +471,10 @@
 		 */
 		public function get_items_total_dispatch() {
 			$total = 0;
-			foreach ($this->line_items as $ln_itm) {
-				/* @var Sales_Line $ln_itm */
-				$price = $ln_itm->line_price();
-				$total += round(($ln_itm->qty_dispatched * $price * (1 - $ln_itm->discount_percent)), User::price_dec());
+			foreach ($this->line_items as $line) {
+				/* @var Sales_Line $line */
+				$price = $line->line_price();
+				$total += round(($line->qty_dispatched * $price * (1 - $line->discount_percent)), User::price_dec());
 			}
 			return $total;
 		}
@@ -483,8 +483,8 @@
 		 * @return bool
 		 */
 		public function has_items_dispatch() {
-			foreach ($this->line_items as $ln_itm) {
-				if ($ln_itm->qty_dispatched > 0) {
+			foreach ($this->line_items as $line) {
+				if ($line->qty_dispatched > 0) {
 					return true;
 				}
 			}
@@ -554,10 +554,10 @@
 			if ($shipping_cost == null) {
 				$shipping_cost = $this->freight_cost;
 			}
-			foreach ($this->line_items as $ln_itm) {
-				/* @var Sales_Line $ln_itm */
-				$items[] = $ln_itm->stock_id;
-				$prices[] = round(($ln_itm->qty_dispatched * $ln_itm->line_price() * (1 - $ln_itm->discount_percent)), User::price_dec());
+			foreach ($this->line_items as $line) {
+				/* @var Sales_Line $line */
+				$items[] = $line->stock_id;
+				$prices[] = round(($line->qty_dispatched * $line->line_price() * (1 - $line->discount_percent)), User::price_dec());
 			}
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included, $this->tax_group_array);
 			// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
