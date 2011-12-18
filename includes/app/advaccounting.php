@@ -13,14 +13,34 @@
 	include(DOCROOT . 'config' . DS . 'defines.php');
 	include(DOCROOT . 'config' . DS . 'types.php');
 	include(DOCROOT . 'config' . DS . 'access_levels.php');
+	/**
+	 *
+	 */
 	class advaccounting
 	{
+		/**
+		 * @var
+		 */
 		public $user;
+		/**
+		 * @var
+		 */
 		public $settings;
+		/**
+		 * @var array
+		 */
 		public $applications;
+		/**
+		 * @var
+		 */
 		public $selected_application;
+		/**
+		 * @var \Menu
+		 */
 		public $menu;
-
+		/**
+		 *
+		 */
 		public function __construct() {
 			$installed_extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main Menu"));
@@ -41,25 +61,33 @@
 					$ext = 'Apps_' . $ext['name'];
 					$this->add_application(new $ext());
 				}
-				Session::$get_text->add_domain(Session::$lang->code, PATH_TO_ROOT . "/lang");
+				Session::$get_text->add_domain(Language::i()->code, PATH_TO_ROOT . "/lang");
 			}
 			$this->add_application(new Apps_System());
 		}
-
+		/**
+		 * @param $app
+		 */
 		public function add_application(&$app) {
 			if ($app->enabled) // skip inactive modules
 			{
 				$this->applications[$app->id] = &$app;
 			}
 		}
-
+		/**
+		 * @param $id
+		 *
+		 * @return null
+		 */
 		public function get_application($id) {
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
 			}
 			return null;
 		}
-
+		/**
+		 * @return null
+		 */
 		public function get_selected_application() {
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
@@ -69,7 +97,9 @@
 			}
 			return null;
 		}
-
+		/**
+		 *
+		 */
 		public function display() {
 			$rend = Renderer::i();
 			$rend->header();
@@ -78,7 +108,10 @@
 			//$rend->menu_footer($this->menu);
 			$rend->footer();
 		}
-
+		/**
+		 * @static
+		 *
+		 */
 		public static function init() {
 			require_once APPPATH . "main.php";
 			static::checkLogin();
@@ -92,7 +125,6 @@
 				Session::i()->App = new advaccounting();
 			}
 		}
-
 		/**
 		 *
 		 */
@@ -110,7 +142,7 @@
 						static::loginFail();
 					}
 					Session::regenerate();
-					Session::$lang->set_language($_SESSION['Language']->code);
+					Language::i()->set_language($_SESSION['Language']->code);
 				} elseif (!$currentUser->logged_in()) {
 					static::showLogin();
 				}
@@ -119,12 +151,10 @@
 				}
 			}
 		}
-
 		/**
 		 *
 		 */
 		protected static function showLogin() {
-			$Ajax = Ajax::i();
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array(
 				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST
@@ -135,7 +165,6 @@
 			}
 			exit();
 		}
-
 		/**
 		 *
 		 */
@@ -149,7 +178,14 @@
 			Session::kill();
 			die();
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param null $extensions
+		 * @param			$company
+		 *
+		 * @return bool
+		 */
 		public static function write_extensions($extensions = null, $company = -1) {
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
@@ -214,4 +250,3 @@
 		}
 	}
 
-?>

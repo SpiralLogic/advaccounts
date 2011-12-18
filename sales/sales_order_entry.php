@@ -1,5 +1,4 @@
 <?php
-
 	/* * ********************************************************************
 				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
@@ -10,74 +9,75 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	//
-	//	Entry/Modify Sales Quotations
-	//	Entry/Modify Sales Order
-	//	Entry Direct Delivery
-	//	Entry Direct Invoice
-	//
 	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::set_page((!isset($_POST['order_id']) || !Orders::session_get($_POST['order_id'])) ? : Orders::session_get($_POST['order_id'])->trans_type, array(
-		ST_SALESORDER => 'SA_SALESORDER',
-		ST_SALESQUOTE => 'SA_SALESQUOTE',
-		ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-		ST_SALESINVOICE => 'SA_SALESINVOICE'
-	), array(
-		'NewOrder' => 'SA_SALESORDER',
-		'ModifySalesOrder' => 'SA_SALESORDER',
-		'NewQuotation' => 'SA_SALESQUOTE',
-		'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-		'NewDelivery' => 'SA_SALESDELIVERY',
-		'NewInvoice' => 'SA_SALESINVOICE'
-	));
+	$order = Orders::session_get() ? : null;
+	Security::set_page((!$order) ? : $order->trans_type, array(
+																														ST_SALESORDER => 'SA_SALESORDER',
+																														ST_SALESQUOTE => 'SA_SALESQUOTE',
+																														ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+																														ST_SALESINVOICE => 'SA_SALESINVOICE'
+																											 ), array(
+																															 'NewOrder' => 'SA_SALESORDER',
+																															 'ModifySalesOrder' => 'SA_SALESORDER',
+																															 'NewQuotation' => 'SA_SALESQUOTE',
+																															 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+																															 'NewDelivery' => 'SA_SALESDELIVERY',
+																															 'NewInvoice' => 'SA_SALESINVOICE'
+																													));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
-	if (Input::post('saveorder')) {
-		Orders::session_get($_POST['order_id'])->store();
-		exit();
-	}
 	if (Input::get('customer_id', Input::NUMERIC)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		Ajax::i()->activate('customer_id');
 	}
 	if (Input::get('NewDelivery') > -1) {
 		$page_title = _($help_context = "Direct Sales Delivery");
-		create_order(ST_CUSTDELIVERY, $_GET['NewDelivery']);
+		$order = create_order(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
 	if (Input::get('NewInvoice') > -1) {
 		$page_title = _($help_context = "Direct Sales Invoice");
-		create_order(ST_SALESINVOICE, $_GET['NewInvoice']);
-	} elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
+		$order = create_order(ST_SALESINVOICE, $_GET['NewInvoice']);
+	}
+	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Order';
 		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 		create_order(ST_SALESORDER, $_GET['ModifyOrderNumber']);
-	} elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
+	}
+	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Quotation';
 		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
 		create_order(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
-	} elseif (Input::get('NewOrder')) {
+	}
+	elseif (Input::get('NewOrder')) {
 		create_order(ST_SALESORDER, 0);
-	} elseif (Input::get('NewQuotation')) {
+	}
+	elseif (Input::get('NewQuotation')) {
 		$page_title = _($help_context = "New Sales Quotation Entry");
 		create_order(ST_SALESQUOTE, 0);
-	} elseif (Input::get('NewQuoteToSalesOrder')) {
+	}
+	elseif (Input::get('NewQuoteToSalesOrder')) {
 		create_order(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
-	} elseif (Input::get('CloneOrder')) {
+	}
+	elseif (Input::get('CloneOrder')) {
 		create_order(ST_SALESORDER, Input::get('CloneOrder'));
-	} elseif (Input::get('remotecombine')) {
-		if (Orders::session_get($_POST['order_id'])) {
+	}
+	elseif (Input::get('remotecombine')) {
+		if ($order) {
 			foreach ($_SESSION['remote_order']->line_items as $item) {
-				Sales_Order::add_line(Orders::session_get($_POST['order_id']), $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
+				$order->add_line($item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
 			}
 			unset($_SESSION['remote_order']);
 		}
-	} elseif (Input::get('NewRemoteToSalesOrder')) {
+	}
+	elseif (Input::get('NewRemoteToSalesOrder')) {
 		create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
-	} elseif (isset($_GET['restoreorder'])) {
+	}
+	elseif (isset($_GET['restoreorder'])) {
 		$serial = Sales_Order::restore();
 		create_order($serial, 0);
 	}
+	$order = Orders::session_get() ? : null;
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -87,29 +87,185 @@
 	}
 	if (isset($_GET['AddedID'])) {
 		page_complete($_GET['AddedID'], ST_SALESORDER, "Order", true);
-	} elseif (isset($_GET['UpdatedID'])) {
+	}
+	elseif (isset($_GET['UpdatedID'])) {
 		page_complete($_GET['UpdatedID'], ST_SALESORDER, "Order", true, true);
-	} elseif (isset($_GET['AddedQU'])) {
+	}
+	elseif (isset($_GET['AddedQU'])) {
 		page_complete($_GET['AddedQU'], ST_SALESQUOTE, "Quotation", true);
-	} elseif (isset($_GET['UpdatedQU'])) {
+	}
+	elseif (isset($_GET['UpdatedQU'])) {
 		page_complete($_GET['UpdatedQU'], ST_SALESQUOTE, "Quotation", true, true);
-	} elseif (isset($_GET['AddedDN'])) {
+	}
+	elseif (isset($_GET['AddedDN'])) {
 		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
-	} elseif (isset($_GET['AddedDI'])) {
+	}
+	elseif (isset($_GET['AddedDI'])) {
 		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
-	} elseif (isset($_GET['RemovedID'])) {
+	}
+	elseif (isset($_GET['RemovedID'])) {
 		Display::submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			Errors::notice(_("This sales quotation has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
-		} else {
+		}
+		else {
 			Errors::notice(_("This sales order has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
 		Page::footer_exit();
 	}
+	//--------------- --------------------------------------------------------------
+	if (isset($_POST['ProcessOrder']) && can_process($order)) {
+		$_SESSION['Jobsboard'] = clone ($order);
+		copy_to_order($order);
+		$modified = ($order->trans_no != 0);
+		$so_type = $order->so_type;
+		$trans_no = key($order->trans_no);
+		$trans_type = $order->trans_type;
+		Dates::new_doc_date($order->document_date);
+		$_SESSION['global_customer_id'] = $order->customer_id;
+		$order->write(1);
+		if (Errors::$fatal) { // abort on failure or error messages are lost
+			Ajax::i()->activate('_page_body');
+			Page::footer_exit();
+		}
+		$order->finish();
+		if ($modified) {
+			if ($trans_type == ST_SALESQUOTE) {
+				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+			}
+			else {
+				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$trans_type", "");
+			}
+		}
+		elseif ($trans_type == ST_SALESORDER) {
+			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$trans_type", "");
+		}
+		elseif ($trans_type == ST_SALESQUOTE) {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
+		}
+		elseif ($trans_type == ST_SALESINVOICE) {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=" . ST_SALESINVOICE);
+		}
+		else {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$trans_type");
+		}
+	}
+	if (isset($_POST['update'])) {
+		Ajax::i()->activate('items_table');
+	}
+	if (isset($_POST['CancelChanges'])) {
+		$type = $order->trans_type;
+		$order_no = key($order->trans_no);
+		Orders::session_delete($_POST['order_id']);
+		create_order($type, $order_no);
+	}
+	if (isset($_POST['CancelOrder'])) {
+		handle_cancel_order($order);
+	}
+	$id = find_submit('Delete');
+	if ($id != -1) {
+		handle_delete_item($order, $id);
+	}
+	if (isset($_POST['UpdateItem'])) {
+		handle_update_item($order);
+	}
+	if (isset($_POST['discountall'])) {
+		if (!is_numeric($_POST['_discountall'])) {
+			Errors::error(_("Discount must be a number"));
+		}
+		elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
+			Errors::error(_("Discount percentage must be between 0-100"));
+		}
+		else {
+			$order->discount_all($_POST['_discountall'] / 100);
+		}
+		Ajax::i()->activate('_page_body');
+	}
+	if (isset($_POST['AddItem'])) {
+		handle_new_item($order);
+	}
+	if (isset($_POST['CancelItemChanges'])) {
+		line_start_focus();
+	}
+	Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
+	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+	if ($order && $order->trans_type == ST_SALESINVOICE) {
+		$idate = _("Invoice Date:");
+		$orderitems = _("Sales Invoice Items");
+		$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
+		$cancelorder = _("Delete Invoice");
+		$corder = '';
+		$porder = _("Place Invoice");
+	}
+	elseif ($order && $order->trans_type == ST_CUSTDELIVERY) {
+		$idate = _("Delivery Date:");
+		$orderitems = _("Delivery Note Items");
+		$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
+		$cancelorder = _("Delete Delivery");
+		$corder = '';
+		$porder = _("Place Delivery");
+	}
+	elseif ($order && $order->trans_type == ST_SALESQUOTE) {
+		$idate = _("Quotation Date:");
+		$orderitems = _("Sales Quotation Items");
+		$deliverydetails = _("Enter Delivery Details and Confirm Quotation");
+		$cancelorder = _("Delete Quotation");
+		$porder = _("Place Quotation");
+		$corder = _("Commit Quotations Changes");
+	}
+	else {
+		$idate = _("Order Date:");
+		$orderitems = _("Sales Order Items");
+		$deliverydetails = _("Enter Delivery Details and Confirm Order");
+		$cancelorder = _("Delete Order");
+		$porder = _("Place Order");
+		$corder = _("Commit Order Changes");
+	}
+	start_form();
+	hidden('order_id', $_POST['order_id']);
+	$customer_error = (!$order) ? _("There is no order currently being edited") :
+	 $order->header($idate);
+	if ($customer_error == "") {
+		start_table('tablesstyle center width90 pad10');
+		echo "<tr><td>";
+		$order->summary($orderitems, true);
+		echo "</td></tr><tr><td>";
+		$order->display_delivery_details();
+		echo "</td></tr>";
+		end_table(1);
+		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
+		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
+		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		if ($order->trans_no == 0) {
+			submit_center_last('ProcessOrder', $corder, _('Check entered data and save document'), 'default');
+		}
+		else {
+			submit_center_last('ProcessOrder', $porder, _('Validate changes and update document'), 'default');
+		}
+		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
+			//UploadHandler::insert($_GET['ModifyOrderNumber']);
+		}
+	}
+	else {
+		Errors::warning($customer_error);
+	}
+	end_form();
+	JS::onUnload('Are you sure you want to leave without commiting changes?');
+	Debtor::addEditDialog();
+	Item::addEditDialog();
+	Renderer::end_page();
+	unset($_SESSION['order_no']);
+	/**
+	 * @param				$order_no
+	 * @param				$trans_type
+	 * @param string $trans_name
+	 * @param bool	 $edit
+	 * @param bool	 $update
+	 */
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
@@ -130,11 +286,13 @@
 			Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 			Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
-		} elseif ($trans_type == ST_SALESQUOTE) {
+		}
+		elseif ($trans_type == ST_SALESQUOTE) {
 			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
 			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
-		} elseif ($trans_type == ST_CUSTDELIVERY) {
+		}
+		elseif ($trans_type == ST_CUSTDELIVERY) {
 			Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
 			Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
 			Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
@@ -142,7 +300,8 @@
 			((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
 			 Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
 			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
-		} elseif ($trans_type == ST_SALESINVOICE) {
+		}
+		elseif ($trans_type == ST_SALESINVOICE) {
 			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
 			$result = DB::query($sql, "could not retrieve customer allocation");
 			$row = DB::fetch($result);
@@ -152,7 +311,8 @@
 			Display::note(GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
 			if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
 				Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
-			} else {
+			}
+			else {
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
@@ -165,8 +325,10 @@
 		Page::footer_exit();
 	}
 
-	function copy_to_order() {
-		$order = Orders::session_get($_POST['order_id']);
+	/**
+	 * @param $order
+	 */
+	function copy_to_order($order) {
 		$order->reference = $_POST['ref'];
 		$order->Comments = $_POST['Comments'];
 		$order->document_date = $_POST['OrderDate'];
@@ -181,7 +343,8 @@
 		$order->ship_via = $_POST['ship_via'];
 		if (isset($_POST['email'])) {
 			$order->email = $_POST['email'];
-		} else {
+		}
+		else {
 			$order->email = '';
 		}
 		if (isset($_POST['salesman'])) {
@@ -197,6 +360,11 @@
 		}
 	}
 
+	/**
+	 * @param $order
+	 *
+	 * @return \Purch_Order|\Sales_Order
+	 */
 	function copy_from_order($order) {
 		$order = Sales_Order::check_edit_conflicts($order);
 		$_POST['ref'] = $order->reference;
@@ -220,15 +388,23 @@
 			$_POST['dimension2_id'] = $order->dimension2_id;
 		}
 		$_POST['order_id'] = $order->order_id;
-		Orders::session_set($order);
+		return Orders::session_set($order);
 	}
 
+	/**
+	 *
+	 */
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
-	function can_process() {
+	/**
+	 * @param Sales_Order $order
+	 *
+	 * @return bool
+	 */
+	function can_process($order) {
 		if (!get_post('customer_id')) {
 			Errors::error(_("There is no customer selected."));
 			JS::set_focus('customer_id');
@@ -244,21 +420,22 @@
 			JS::set_focus('OrderDate');
 			return false;
 		}
-		if (!Orders::session_get($_POST['order_id'])) {
+		if (!$order) {
 			Errors::error(_("You are not currently editing an order! (Using the browser back button after committing an order does not go back to editing)"));
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_type != ST_SALESORDER && Orders::session_get($_POST['order_id'])->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			Errors::error(_("The entered date is not in fiscal year"));
 			JS::set_focus('OrderDate');
 			return false;
 		}
-		if (count(Orders::session_get($_POST['order_id'])->line_items) == 0) {
+		if (count($order->line_items) == 0) {
 			Errors::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('AddItem');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_no == 0 && !empty($_POST['cust_ref']) && !Orders::session_get($_POST['order_id'])->check_cust_ref($_POST['cust_ref'])) {
+		if ($order->trans_no == 0 && !empty($_POST['cust_ref']) && !$order->check_cust_ref($_POST['cust_ref'])
+		) {
 			Errors::error(_("This customer already has a purchase order with this number."));
 			JS::set_focus('cust_ref');
 			return false;
@@ -282,25 +459,27 @@
 			return false;
 		}
 		if (!Dates::is_date($_POST['delivery_date'])) {
-			if (Orders::session_get($_POST['order_id'])->trans_type == ST_SALESQUOTE) {
+			if ($order->trans_type == ST_SALESQUOTE) {
 				Errors::error(_("The Valid date is invalid."));
-			} else {
+			}
+			else {
 				Errors::error(_("The delivery date is invalid."));
 			}
 			JS::set_focus('delivery_date');
 			return false;
 		}
-		//if (Dates::date1_greater_date2(Orders::session_get($_POST['order_id'])->document_date, $_POST['delivery_date'])) {
+		//if (Dates::date1_greater_date2($order->document_date, $_POST['delivery_date'])) {
 		if (Dates::date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
-			if (Orders::session_get($_POST['order_id'])->trans_type == ST_SALESQUOTE) {
+			if ($order->trans_type == ST_SALESQUOTE) {
 				Errors::error(_("The requested valid date is before the date of the quotation."));
-			} else {
+			}
+			else {
 				Errors::error(_("The requested delivery date is before the date of the order."));
 			}
 			JS::set_focus('delivery_date');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
+		if ($order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
 			Errors::error(_("You must enter a Person Ordering name."));
 			JS::set_focus('name');
 			return false;
@@ -310,65 +489,36 @@
 			JS::set_focus('ref');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_no == 0 && !Ref::is_new($_POST['ref'], Orders::session_get($_POST['order_id'])->trans_type)) {
-			$_POST['ref'] = Ref::get_next(Orders::session_get($_POST['order_id'])->trans_type);
+		if ($order->trans_no == 0 && !Ref::is_new($_POST['ref'], $order->trans_type)) {
+			$_POST['ref'] = Ref::get_next($order->trans_type);
 		}
 		return true;
 	}
 
-	//--------------- --------------------------------------------------------------
-	if (isset($_POST['ProcessOrder']) && can_process()) {
-		$_SESSION['Jobsboard'] = clone (Orders::session_get($_POST['order_id']));
-		copy_to_order();
-		$modified = (Orders::session_get($_POST['order_id'])->trans_no != 0);
-		$so_type = Orders::session_get($_POST['order_id'])->so_type;
-		$trans_no = key(Orders::session_get($_POST['order_id'])->trans_no);
-		$trans_type = Orders::session_get($_POST['order_id'])->trans_type;
-		Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
-		$_SESSION['global_customer_id'] = Orders::session_get($_POST['order_id'])->customer_id;
-		Orders::session_get($_POST['order_id'])->write(1);
-		if (Errors::$fatal) { // abort on failure or error messages are lost
-			Ajax::i()->activate('_page_body');
-			Page::footer_exit();
-		}
-		Sales_Order::finish($_POST['order_id']);
-
-		if ($modified) {
-			if ($trans_type == ST_SALESQUOTE) {
-				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
-			} else {
-				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$trans_type", "");
-			}
-		} elseif ($trans_type == ST_SALESORDER) {
-			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$trans_type", "");
-		} elseif ($trans_type == ST_SALESQUOTE) {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
-		} elseif ($trans_type == ST_SALESINVOICE) {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=" . ST_SALESINVOICE);
-		} else {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$trans_type");
-		}
-	}
-	if (isset($_POST['update'])) {
-		Ajax::i()->activate('items_table');
-	}
-	function check_item_data() {
+	/**
+	 * @param $order
+	 *
+	 * @return bool
+	 */
+	function check_item_data($order) {
 		if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
-		} elseif (!Validation::is_num('price', 0)) {
+		}
+		elseif (!Validation::is_num('price', 0)) {
 			Errors::error(_("Price for item must be entered and can not be less than 0"));
 			JS::set_focus('price');
 			return false;
-		} elseif (!User::get()
-		 ->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset(Orders::session_get($_POST['order_id'])->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', Orders::session_get($_POST['order_id'])->line_items[$_POST['LineNo']]->qty_done)
+		}
+		elseif (!User::get()
+		 ->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST['LineNo']]->qty_done)
 		) {
 			JS::set_focus('qty');
 			Errors::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
-		elseif (Orders::session_get($_POST['order_id'])->trans_type != ST_SALESORDER && Orders::session_get($_POST['order_id'])->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
+		elseif ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
 			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (Validation::input_num('qty') > $qoh) {
 				$stock = Item::get($_POST['stock_id']);
@@ -380,63 +530,87 @@
 		return true;
 	}
 
-	function handle_update_item() {
-		if ($_POST['UpdateItem'] != '' && check_item_data()) {
-			Orders::session_get($_POST['order_id'])->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+	/**
+	 * @param Sales_Order $order
+	 */
+	function handle_update_item($order) {
+		if ($_POST['UpdateItem'] != '' && check_item_data($order)) {
+			$order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
 		}
 		line_start_focus();
 	}
 
-	function handle_delete_item($line_no) {
-		if (Orders::session_get($_POST['order_id'])->some_already_delivered($line_no) == 0) {
-			Orders::session_get($_POST['order_id'])->remove_from_order($line_no);
-		} else {
+	/**
+	 * @param Sales_Order $order
+	 * @param						 $line_no
+	 */
+	function handle_delete_item($order, $line_no) {
+		if ($order->some_already_delivered($line_no) == 0) {
+			$order->remove_from_order($line_no);
+		}
+		else {
 			Errors::error(_("This item cannot be deleted because some of it has already been delivered."));
 		}
 		line_start_focus();
 	}
 
-	function handle_new_item() {
-		if (!check_item_data()) {
+	/**
+	 * @param Sales_Order $order
+	 *
+	 * @return mixed
+	 */
+	function handle_new_item($order) {
+		if (!check_item_data($order)) {
 			return;
 		}
-		Sales_Order::add_line(Orders::session_get($_POST['order_id']), $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,
+										 $_POST['description']);
 		$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 		line_start_focus();
 	}
 
-	function handle_cancel_order() {
-		if (Orders::session_get($_POST['order_id'])->trans_type == ST_CUSTDELIVERY) {
+	/**
+	 ** @param Sales_Order $order
+	 */
+	function handle_cancel_order($order) {
+		if ($order->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
-		} elseif (Orders::session_get($_POST['order_id'])->trans_type == ST_SALESINVOICE) {
+		}
+		elseif ($order->trans_type == ST_SALESINVOICE) {
 			Errors::notice(_("Direct invoice entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
-		} else {
-			if (Orders::session_get($_POST['order_id'])->trans_no != 0) {
-				if (Orders::session_get($_POST['order_id'])->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key(Orders::session_get($_POST['order_id'])->trans_no))) {
+		}
+		else {
+			if ($order->trans_no != 0) {
+				if ($order->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key($order->trans_no))) {
 					Errors::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-				} else {
-					$trans_no = key(Orders::session_get($_POST['order_id'])->trans_no);
-					$trans_type = Orders::session_get($_POST['order_id'])->trans_type;
+				}
+				else {
+					$trans_no = key($order->trans_no);
+					$trans_type = $order->trans_type;
 					if (!isset($_GET['RemovedID'])) {
 						Sales_Order::delete($trans_no, $trans_type);
 						Display::meta_forward("/jobsboard/jobsboard/removejob/RemovedID/$trans_no/$trans_type", "");
 					}
 				}
-			} else {
-
+			}
+			else {
 				Display::meta_forward('/index.php', 'application=sales');
 			}
 		}
 		Ajax::i()->activate('_page_body');
-		Sales_Order::finish($_POST['order_id']);
+		$order->finish($_POST['order_id']);
 		Page::footer_exit();
 	}
 
-	//------------------------------------------------------- -------------------------
+	/**
+	 * @param $type
+	 * @param $trans_no
+	 *
+	 * @return \Purch_Order|\Sales_Order
+	 */
 	function create_order($type, $trans_no) {
-
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no = $_GET['NewQuoteToSalesOrder'];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
@@ -445,7 +619,8 @@
 			$doc->reference = Ref::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
-		} elseif (isset($_Get['CloneOrder'])) {
+		}
+		elseif (isset($_Get['CloneOrder'])) {
 			$trans_no = $_GET['CloneOrder'];
 			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_no = 0;
@@ -455,7 +630,8 @@
 			foreach ($doc->line_items as $line) {
 				$line->qty_done = $line->qty_dispatched = 0;
 			}
-		} elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
+		}
+		elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
 			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_type = $type;
 			$doc->trans_no = 0;
@@ -463,119 +639,20 @@
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = User::pos();
+
 				$pos = Sales_Point::get($doc->pos);
 				$doc->pos = -1;
-			} else {
+			}
+			else {
 				$doc->due_date = $doc->document_date;
 			}
 			$doc->reference = Ref::get_next($doc->trans_type);
 			foreach ($doc->line_items as $line) {
 				$doc->line_items[$line]->qty_done = 0;
 			}
-		} else {
+		}
+		else {
 			$doc = new Sales_Order($type, array($trans_no));
 		}
-
-		copy_from_order($doc);
+		return copy_from_order($doc);
 	}
-
-	if (isset($_POST['CancelChanges'])) {
-		$order = Orders::session_get($_POST['order_id']);
-		$type = $order->trans_type;
-		$order_no = key($order->trans_no);
-
-		Orders::session_delete($_POST['order_id']);
-		create_order($type, $order_no);
-	}
-	if (isset($_POST['CancelOrder'])) {
-		handle_cancel_order();
-	}
-
-	$id = find_submit('Delete');
-	if ($id != -1) {
-		handle_delete_item($id);
-	}
-	if (isset($_POST['UpdateItem'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['discountall'])) {
-		if (!is_numeric($_POST['_discountall'])) {
-			Errors::error(_("Discount must be a number"));
-		} elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
-			Errors::error(_("Discount percentage must be between 0-100"));
-		} else {
-			Orders::session_get($_POST['order_id'])->discount_all($_POST['_discountall'] / 100);
-		}
-		Ajax::i()->activate('_page_body');
-	}
-	if (isset($_POST['AddItem'])) {
-		handle_new_item();
-	}
-	if (isset($_POST['CancelItemChanges'])) {
-		line_start_focus();
-	}
-	Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
-	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-	if (Input::session($_POST['order_id'], Input::OBJECT) && Orders::session_get($_POST['order_id'])->trans_type == ST_SALESINVOICE) {
-		$idate = _("Invoice Date:");
-		$orderitems = _("Sales Invoice Items");
-		$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-		$cancelorder = _("Delete Invoice");
-		$porder = _("Place Invoice");
-	} elseif (Input::session($_POST['order_id'], Input::OBJECT) && Orders::session_get($_POST['order_id'])->trans_type == ST_CUSTDELIVERY) {
-		$idate = _("Delivery Date:");
-		$orderitems = _("Delivery Note Items");
-		$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-		$cancelorder = _("Delete Delivery");
-		$porder = _("Place Delivery");
-	} elseif (Input::session($_POST['order_id'], Input::OBJECT) && Orders::session_get($_POST['order_id'])->trans_type == ST_SALESQUOTE) {
-		$idate = _("Quotation Date:");
-		$orderitems = _("Sales Quotation Items");
-		$deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-		$cancelorder = _("Delete Quotation");
-		$porder = _("Place Quotation");
-		$corder = _("Commit Quotations Changes");
-	} else {
-		$idate = _("Order Date:");
-		$orderitems = _("Sales Order Items");
-		$deliverydetails = _("Enter Delivery Details and Confirm Order");
-		$cancelorder = _("Delete Order");
-		$porder = _("Place Order");
-		$corder = _("Commit Order Changes");
-	}
-	start_form();
-	hidden('order_id', $_POST['order_id']);
-	$customer_error = (!Orders::session_get($_POST['order_id'])) ? _("There is no order currently being edited") :
-	 Sales_Order::header(Orders::session_get($_POST['order_id']), (Orders::session_get($_POST['order_id'])->any_already_delivered() == 0), $idate);
-	if ($customer_error == "") {
-		start_table('tablesstyle center width90 pad10');
-		echo "<tr><td>";
-		Sales_Order::summary($orderitems, Orders::session_get($_POST['order_id']), true);
-		echo "</td></tr>";
-		echo "<tr><td>";
-		Sales_Order::display_delivery_details(Orders::session_get($_POST['order_id']));
-		echo "</td></tr>";
-		end_table(1);
-
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-		if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
-		} else {
-			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
-		}
-
-		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
-			//UploadHandler::insert($_GET['ModifyOrderNumber']);
-		}
-	} else {
-		Errors::warning($customer_error);
-	}
-	end_form();
-	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Debtor::addEditDialog();
-	Item::addEditDialog();
-	Renderer::end_page();
-	unset($_SESSION['order_no']);
-

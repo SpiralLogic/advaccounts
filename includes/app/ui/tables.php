@@ -59,10 +59,10 @@
 	}
 
 	function label_cell($label, $params = "", $id = null) {
-		$Ajax = Ajax::i();
+
 		if (!empty($id)) {
 			$params .= " id='$id'";
-			$Ajax->addUpdate($id, $id, $label);
+			Ajax::i()->addUpdate($id, $id, $label);
 		}
 		echo "<td $params >$label</td>\n";
 		return $label;

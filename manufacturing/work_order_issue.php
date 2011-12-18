@@ -20,7 +20,7 @@
 		Page::footer_exit();
 	}
 	function line_start_focus() {
-		$Ajax = Ajax::i();
+
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}

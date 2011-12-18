@@ -21,7 +21,7 @@
 
 	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no) {
 		$doc = new Sales_Order(ST_SALESORDER, array($order_no));
-		Sales_Order::customer_to_order($doc, $customer_id, $branch_id);
+		$doc->customer_to_order($customer_id, $branch_id);
 		$doc->trans_type = ST_SALESORDER;
 		$doc->trans_no = 0;
 		$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day

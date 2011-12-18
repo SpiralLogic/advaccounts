@@ -535,7 +535,7 @@
 		}
 
 		public static function header($supp_trans) {
-			$Ajax = Ajax::i();
+
 			// if vars have been lost, recopy
 			if (!isset($_POST['tran_date'])) {
 				Purch_Invoice::copy_from_trans($supp_trans);

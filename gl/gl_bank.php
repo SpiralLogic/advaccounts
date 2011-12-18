@@ -28,7 +28,7 @@
 		Ajax::i()->activate('person_id');
 	}
 	function line_start_focus() {
-		$Ajax = Ajax::i();
+
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
@@ -187,11 +187,11 @@
 	}
 	if (isset($_POST['go'])) {
 		GL_QuickEntry::show_menu(
-			$_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('totamount'),
+			$_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
-		$_POST['totamount'] = Num::price_format(0);
-		Ajax::i()->activate('totamount');
+		$_POST['total_amount'] = Num::price_format(0);
+		Ajax::i()->activate('total_amount');
 		line_start_focus();
 	}
 	start_form();

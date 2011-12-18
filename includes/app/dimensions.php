@@ -11,6 +11,18 @@
 	 ***********************************************************************/
 	class Dimensions
 	{
+		/**
+		 * @static
+		 *
+		 * @param $reference
+		 * @param $name
+		 * @param $type_
+		 * @param $date_
+		 * @param $due_date
+		 * @param $memo_
+		 *
+		 * @return mixed
+		 */
 		public static function add($reference, $name, $type_, $date_, $due_date, $memo_) {
 			DB::begin();
 			$date = Dates::date2sql($date_);
@@ -25,6 +37,18 @@
 			return $id;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 * @param $name
+		 * @param $type_
+		 * @param $date_
+		 * @param $due_date
+		 * @param $memo_
+		 *
+		 * @return mixed
+		 */
 		public static function update($id, $name, $type_, $date_, $due_date, $memo_) {
 			DB::begin();
 			$date = Dates::date2sql($date_);
@@ -40,6 +64,11 @@
 			return $id;
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 */
 		public static function delete($id) {
 			DB::begin();
 			// delete the actual dimension
@@ -49,6 +78,14 @@
 			DB::commit();
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$id
+		 * @param bool $allow_null
+		 *
+		 * @return DB_Query_Result
+		 */
 		public static function get($id, $allow_null = false) {
 			$sql = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "The dimension could not be retrieved");
@@ -58,6 +95,15 @@
 			return DB::fetch($result);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param				$id
+		 * @param bool	 $html
+		 * @param string $space
+		 *
+		 * @return string
+		 */
 		public static function get_string($id, $html = false, $space = ' ') {
 			if ($id <= 0) {
 				if ($html) {
@@ -72,15 +118,33 @@
 			return $dim;
 		}
 
+		/**
+		 * @static
+		 * @return null|PDOStatement
+		 */
 		public static function get_all() {
 			$sql = "SELECT * FROM dimensions ORDER BY date_";
 			return DB::query($sql, "The dimensions could not be retrieved");
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return bool
+		 */
 		public static function has_deposits($id) {
 			return Dimensions::has_payments($id);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return bool
+		 */
 		public static function has_payments($id) {
 			$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
 			$res = DB::query($sql, "Transactions could not be calculated");
@@ -88,21 +152,45 @@
 			return ($row[0] != 0.0);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return bool
+		 */
 		public static function is_closed($id) {
 			$result = Dimensions::get($id);
 			return ($result['closed'] == '1');
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 */
 		public static function close($id) {
 			$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not close dimension");
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 */
 		public static function reopen($id) {
 			$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
 			DB::query($sql, "could not reopen dimension");
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 * @param $from
+		 * @param $to
+		 */
 		public static function display_balance($id, $from, $to) {
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
@@ -145,11 +233,25 @@
 		}
 
 		// DIMENSIONS
+		/**
+		 * @static
+		 *
+		 * @param				$name
+		 * @param null	 $selected_id
+		 * @param bool	 $no_option
+		 * @param string $showname
+		 * @param bool	 $submit_on_change
+		 * @param bool	 $showclosed
+		 * @param int		$showtype
+		 *
+		 * @return string
+		 */
 		public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
 			$sql = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
 			$options = array(
 				'order' => 'reference', 'spec_option' => $no_option ? $showname :
-				 false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false);
+				 false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false
+			);
 			if (!$showclosed) {
 				$options['where'][] = "closed=0";
 			}
@@ -159,6 +261,18 @@
 			return select_box($name, $selected_id, $sql, 'id', 'ref', $options);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$label
+		 * @param			$name
+		 * @param null $selected_id
+		 * @param bool $no_option
+		 * @param null $showname
+		 * @param bool $showclosed
+		 * @param int	$showtype
+		 * @param bool $submit_on_change
+		 */
 		public static function cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
@@ -168,12 +282,36 @@
 			echo "</td>\n";
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$label
+		 * @param			$name
+		 * @param null $selected_id
+		 * @param bool $no_option
+		 * @param null $showname
+		 * @param bool $showclosed
+		 * @param int	$showtype
+		 * @param bool $submit_on_change
+		 */
 		public static function select_row($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Dimensions::cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
 			echo "</tr>\n";
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param				$type
+		 * @param				$trans_no
+		 * @param string $label
+		 * @param bool	 $icon
+		 * @param string $class
+		 * @param string $id
+		 *
+		 * @return null|string
+		 */
 		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			if ($type == ST_DIMENSION) {
 				$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";

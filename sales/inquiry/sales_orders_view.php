@@ -138,7 +138,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($id) {
-		$Ajax = Ajax::i();
+
 		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 		DB::query($sql, "Can't change sales order type");
 		Ajax::i()->activate('orders_tbl');
@@ -160,16 +160,16 @@
 	if (get_post('_OrderNumber_changed')) { // enable/disable selection controls
 		$disable = get_post('OrderNumber') !== '';
 		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
-			$Ajax->addDisable(true, 'OrdersToDate', $disable);
+			Ajax::i()->addDisable(true, 'OrdersAfterDate', $disable);
+			Ajax::i()->addDisable(true, 'OrdersToDate', $disable);
 		}
-		$Ajax->addDisable(true, 'StockLocation', $disable);
-		$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
-		$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+		Ajax::i()->addDisable(true, 'StockLocation', $disable);
+		Ajax::i()->addDisable(true, '_SelectStockFromList_edit', $disable);
+		Ajax::i()->addDisable(true, 'SelectStockFromList', $disable);
 		if ($disable) {
-			$Ajax->addFocus(true, 'OrderNumber');
+			Ajax::i()->addFocus(true, 'OrderNumber');
 		} else {
-			$Ajax->addFocus(true, 'OrdersAfterDate');
+			Ajax::i()->addFocus(true, 'OrdersAfterDate');
 		}
 		Ajax::i()->activate('orders_tbl');
 	}

@@ -392,7 +392,7 @@
 		}
 
 		public static function header($order) {
-			$Ajax = Ajax::i();
+
 			$editable = ($order->order_no == 0);
 			start_outer_table('tablestyle2 width90');
 			table_section(1);
@@ -459,7 +459,7 @@
 		}
 
 		public static function display_items($order, $editable = true) {
-			$Ajax = Ajax::i();
+
 			Display::heading(_("Order Items"));
 			Display::div_start('items_table');
 			start_table('tablestyle width90');

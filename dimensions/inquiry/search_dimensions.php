@@ -26,13 +26,13 @@
 	} elseif (get_post('_OrderNumber_changed'))
 	{
 		$disable = get_post('OrderNumber') !== '';
-		$Ajax->addDisable(true, 'FromDate', $disable);
-		$Ajax->addDisable(true, 'ToDate', $disable);
-		$Ajax->addDisable(true, 'type_', $disable);
-		$Ajax->addDisable(true, 'OverdueOnly', $disable);
-		$Ajax->addDisable(true, 'OpenOnly', $disable);
+		Ajax::i()->addDisable(true, 'FromDate', $disable);
+		Ajax::i()->addDisable(true, 'ToDate', $disable);
+		Ajax::i()->addDisable(true, 'type_', $disable);
+		Ajax::i()->addDisable(true, 'OverdueOnly', $disable);
+		Ajax::i()->addDisable(true, 'OpenOnly', $disable);
 		if ($disable) {
-			//		$Ajax->addFocus(true, 'OrderNumber');
+			//		Ajax::i()->addFocus(true, 'OrderNumber');
 			JS::set_focus('OrderNumber');
 		} else
 		{

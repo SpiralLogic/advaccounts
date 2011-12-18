@@ -16,7 +16,7 @@
 	simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true) {
 		global $Mode2, $selected_id2;
-		$Ajax = Ajax::i();
+
 		$default = $numeric_id ? -1 : '';
 		$selected_id2 = get_post('selected_id2', $default);
 		foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {

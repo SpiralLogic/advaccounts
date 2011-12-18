@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	// Prevent register_globals vulnerability
 	/**
 	 *
 	 */
@@ -21,35 +20,50 @@
 		public $name;
 		/**
 		 * @var string
+		 * ar_EG, en_GB
 		 */
-		public $code; // eg. ar_EG, en_GB
+		public $code;
+		/**
+		 * @var
+		 * eg. UTF-8, CP1256, ISO8859-1
+		 */
+		public $encoding;
+		/**
+		 * @var string
+		 * Currently support for Left-to-Right (ltr) and Right-To-Left (rtl)
+		 */
+		public $dir;
 		/**
 		 * @var
 		 */
-		public $encoding; // eg. UTF-8, CP1256, ISO8859-1
+		protected $installed_languages;
 		/**
-		 * @var string
+		 * @var Language
 		 */
-		public $dir; // Currently support for Left-to-Right (ltr) and
-		// Right-To-Left (rtl)
+		protected static $i = null;
 		/**
 		 * @var
 		 */
 		public $is_locale_file;
-
 		/**
-		 * @param        $name
-		 * @param        $code
-		 * @param        $encoding
+		 * @param				$name
+		 * @param				$code
+		 * @param				$encoding
 		 * @param string $dir
 		 */
 		public function __construct($name, $code, $encoding, $dir = 'ltr') {
 			$this->name = $name;
-			$this->code = $code ? $code : 'en_GB';
+			$this->code = $code ? $code : 'en_US';
 			$this->encoding = $encoding;
 			$this->dir = $dir;
 		}
-
+		/**
+		 * @static
+		 * @return Language|null
+		 */
+		public static function i() {
+			return static::$i;
+		}
 		/**
 		 * @param $code
 		 */
@@ -75,6 +89,23 @@
 				Session::i()->App->init();
 			} // refresh menu
 		}
+		/**
+		 *
+		 */
+		public static function set() {
+			if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
+				$l = Arr::search_value(Config::get('defaults.lang'), Config::get('languages.installed'), 'code');
+				static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
+				static::$i->set_language(static::$i->code);
+				if (file_exists(DOCROOT . "lang/" . static::$i->code . "/locale.php")) {
+					/** @noinspection PhpIncludeInspection */
+					include(DOCROOT . "lang/" . static::$i->code . "/locale.php");
+				}
+				$_SESSION['Language'] = static::$i;
+			} else {
+				static::$i = $_SESSION['Language'];
+			}
+		}
 	}
 
 	if (!function_exists("_")) {
@@ -91,4 +122,3 @@
 			return $retVal;
 		}
 	}
-?>

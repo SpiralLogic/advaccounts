@@ -12,7 +12,7 @@
 	class Bank_UI
 	{
 		public static function header($order) {
-			$Ajax = Ajax::i();
+
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			Display::div_start('pmt_header');
 			start_outer_table('tablestyle2 width90'); // outer table
@@ -67,10 +67,10 @@
 					GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
 					$qid = GL_QuickEntry::get(get_post('person_id'));
 					if (list_updated('person_id')) {
-						unset($_POST['totamount']); // enable default
-						Ajax::i()->activate('totamount');
+						unset($_POST['total_amount']); // enable default
+						Ajax::i()->activate('total_amount');
 					}
-					amount_row($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']), null,
+					amount_row($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null,
 					 "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
 					break;
 				//case payment_person_types::Project() :
@@ -149,7 +149,7 @@
 		}
 
 		public static function item_controls($order, $dim, $Index = null) {
-			$Ajax = Ajax::i();
+
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			start_row();
 			$id = find_submit('Edit');

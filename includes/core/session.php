@@ -1,4 +1,5 @@
 <?php
+
 	/**********************************************************************
 	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
@@ -11,17 +12,18 @@
 	 ***********************************************************************/
 	class Session extends Input
 	{
+
 		/**
 		 * @static
 		 * @return Session|mixed
 		 */
 		public static function i() {
-			if (static::$i === null) {
+
+				if (static::$i === null) {
 				static::$i = new static;
 			}
 			return static::$i;
 		}
-
 		/**
 		 * @static
 		 *
@@ -30,19 +32,17 @@
 			session_unset();
 			session_destroy();
 		}
-
+		/**
+		 * @static
+		 *
+		 */
 		public static function regenerate() {
 			session_regenerate_id();
 		}
-
 		/**
 		 * @var Session
 		 */
 		private static $i = null;
-		/**
-		 * @var Language
-		 */
-		public static $lang;
 		/***
 		 * @var gettextNativeSupport|gettext_php_support
 		 */
@@ -50,12 +50,7 @@
 		/**
 		 * @var array
 		 */
-		protected $installed_languages;
-		/**
-		 * @var array
-		 */
 		protected $_session = array();
-
 		/**
 		 *
 		 */
@@ -66,10 +61,10 @@
 				ini_set('session.save_handler', 'Memcached');
 				ini_set('session.save_path', '127.0.0.1:11211');
 				if (Memcached::HAVE_IGBINARY) {
-							ini_set('session.serialize_handler', 'igbinary');
+					ini_set('session.serialize_handler', 'igbinary');
 				}
 			}
-			if (!session_start()) {
+				if (!session_start()) {
 				ini_set('session.save_handler', 'files');
 				if (!session_start()) {
 					die('sessions fucked out');
@@ -82,44 +77,27 @@
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 			}
 			header("Cache-control: private");
-			$this->setText();
-			$this->setLanguage();
+
+			$this->setTextSupport();
+						Language::set();
+
 			$this->_session = &$_SESSION;
 			// Ajax communication object
+
 			if (class_exists('Ajax', false)) {
-				$GLOBALS['Ajax'] = Ajax::i();
+				Ajax::i();
 			}
 		}
-
-		/**
-		 *
-		 */
-		protected function setLanguage() {
-			if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
-				$l = Arr::search_value(Config::get('defaults.lang'), Config::get('languages.installed'), 'code');
-				static::$lang = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
-				static::$lang->set_language(static::$lang->code);
-				if (file_exists(DOCROOT . "lang/" . static::$lang->code . "/locale.php")) {
-					/** @noinspection PhpIncludeInspection */
-					include(DOCROOT . "lang/" . static::$lang->code . "/locale.php");
-				}
-				$_SESSION['Language'] = static::$lang;
-			} else {
-				static::$lang = $_SESSION['Language'];
-			}
-		}
-
 		/**
 		 * @return mixed
 		 */
-		protected function setText() {
+		protected function setTextSupport() {
 			if (isset($_SESSION['get_text'])) {
 				static::$get_text = $_SESSION['get_text'];
 				return;
 			}
 			static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::init();
 		}
-
 		/**
 		 * @param $var
 		 *
@@ -128,7 +106,6 @@
 		public function __get($var) {
 			return isset($this->_session[$var]) ? $this->_session[$var] : null;
 		}
-
 		/**
 		 * @param $var
 		 * @param $value

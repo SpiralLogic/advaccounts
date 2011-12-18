@@ -68,12 +68,12 @@
 	}
 
 	function hidden($name, $value = null, $echo = true) {
-		$Ajax = Ajax::i();
+
 		if ($value === null) {
 			$value = get_post($name);
 		}
 		$ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
-		$Ajax->addUpdate($name, $name, $value);
+		Ajax::i()->addUpdate($name, $name, $value);
 		if ($echo) {
 			echo $ret . "\n";
 		} else {
@@ -97,7 +97,7 @@
 	 * @return string
 	 */
 	function select_box($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
-		$Ajax = Ajax::i();
+
 		$opts = array( // default options
 			'where' => array(), // additional constraints
 			'order' => $namefield, // list sort order
@@ -314,9 +314,9 @@
 			if (!$opts['editable']) {
 				$txt = $found;
 			}
-			$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
+			Ajax::i()->addUpdate($name, $search_box, $txt ? $txt : '');
 		}
-		$Ajax->addUpdate($name, "_{$name}_sel", $selector);
+		Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
 		// span for select list/input field update
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		// if selectable or editable list is used - add select button
@@ -357,7 +357,7 @@
 	 * @return string
 	 */
 	function array_selector($name, $selected_id, $items, $options = null) {
-		$Ajax = Ajax::i();
+
 		$opts = array( // default options
 			'spec_option' => false, // option text or false
 			'spec_id' => 0, // option id
@@ -421,7 +421,7 @@
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 		$selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ?
 		 '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-		$Ajax->addUpdate($name, "_{$name}_sel", $selector);
+		Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		if ($select_submit != false) { // if submit on change is used - add select button
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
@@ -653,7 +653,7 @@
 	}
 
 	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
-		$Ajax = Ajax::i();
+
 		$str = '';
 		if ($label) {
 			$str .= $label . " ";
@@ -668,7 +668,7 @@
 		}
 		$str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
 		 '') . ($title ? " title='$title'" : '') . " >\n";
-		$Ajax->addUpdate($name, $name, $value);
+		Ajax::i()->addUpdate($name, $name, $value);
 		return $str;
 	}
 
@@ -692,7 +692,7 @@
 	}
 
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
-		$Ajax = Ajax::i();
+
 		JS::default_focus($name);
 		if ($label != null) {
 			label_cell($label, $labparams);
@@ -706,11 +706,11 @@
 			echo " " . $post_label;
 		}
 		echo "</td>\n";
-		$Ajax->addUpdate($name, $name, $value);
+		Ajax::i()->addUpdate($name, $name, $value);
 	}
 
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null, $submit_on_change = false) {
-		$Ajax = Ajax::i();
+
 		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
@@ -732,7 +732,7 @@
 			echo " " . $post_label;
 		}
 		echo "</td>\n";
-		$Ajax->addUpdate($name, $name, $_POST[$name]);
+		Ajax::i()->addUpdate($name, $name, $_POST[$name]);
 	}
 
 	function text_row($label, $name, $value, $size = false, $max, $title = null, $params = "", $post_label = "") {
@@ -801,7 +801,7 @@
 	 * @param array $options
 	 */
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
-		$Ajax = Ajax::i();
+
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001) {
 				$_POST[$name] = null;
@@ -832,7 +832,7 @@
 		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
 		 '') . " > $post_label";
 		echo "</td>\n";
-		$Ajax->addUpdate($name, $name, $_POST[$name]);
+		Ajax::i()->addUpdate($name, $name, $_POST[$name]);
 	}
 
 	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
@@ -878,7 +878,7 @@
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
-		$Ajax = Ajax::i();
+
 		if (!isset($dec)) {
 			$dec = User::price_dec();
 		}
@@ -915,11 +915,11 @@
 		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
-			$Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
+			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
 		}
 		echo "</td>\n";
-		$Ajax->addUpdate($name, $name, $_POST[$name]);
-		$Ajax->addAssign($name, $name, 'dec', $dec);
+		Ajax::i()->addUpdate($name, $name, $_POST[$name]);
+		Ajax::i()->addAssign($name, $name, 'dec', $dec);
 	}
 
 	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
@@ -994,7 +994,7 @@
 	}
 
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-		$Ajax = Ajax::i();
+
 		JS::default_focus($name);
 		if ($label != null) {
 			echo "<td $params>$label</td>\n";
@@ -1003,7 +1003,7 @@
 			$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 		}
 		echo "<td><textarea id='$name' name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
-		$Ajax->addUpdate($name, $name, $value);
+		Ajax::i()->addUpdate($name, $name, $value);
 	}
 
 	function textarea_row($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
@@ -1024,7 +1024,7 @@
 	 * @param $key
 	 */
 	function inactive_control_cell($id, $value, $table, $key) {
-		$Ajax = Ajax::i();
+
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
 		if (check_value('show_inactive')) {
@@ -1053,7 +1053,7 @@
 	 * @param $th
 	 */
 	function inactive_control_column(&$th) {
-		$Ajax = Ajax::i();
+
 		if (check_value('show_inactive')) {
 			Arr::insert($th, count($th) - 2, _("Inactive"));
 		}

@@ -17,7 +17,7 @@
 		} else {
 			$filename = BACKUP_PATH . get_post('backups');
 			if (Ajax::in_ajax()) {
-				$Ajax->popup($filename);
+				Ajax::i()->popup($filename);
 			}
 			else {
 				header('Content-type: application/octet-stream');
@@ -61,7 +61,7 @@
 	}
 
 	function get_backup_file_combo() {
-		$Ajax = Ajax::i();
+
 		$ar_files = array();
 		JS::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);
@@ -81,7 +81,7 @@
 			}
 		}
 		$selector = "<select name='backups' size=2 style='height:160px;min-width:230px'>$opt_files</select>";
-		$Ajax->addUpdate('backups', "_backups_sel", $selector);
+		Ajax::i()->addUpdate('backups', "_backups_sel", $selector);
 		$selector = "<span id='_backups_sel'>" . $selector . "</span>\n";
 		return $selector;
 	}

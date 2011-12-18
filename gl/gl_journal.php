@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_JOURNALENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$js = '';
+
 	JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
@@ -21,7 +21,6 @@
 	}
 	Page::start($_SESSION['page_title']);
 	function line_start_focus() {
-		$Ajax = Ajax::i();
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
@@ -39,11 +38,11 @@
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
-		Display::link_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+		Display::link_no_params(DOCROOT. "gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();
 	}
 	if (isset($_GET['NewJournal'])) {
-		create_order(0, 0);
+		create_order(ST_JOURNAL, 0);
 	} elseif (isset($_GET['ModifyGL'])) {
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
@@ -52,7 +51,7 @@
 		}
 		create_order($_GET['trans_type'], $_GET['trans_no']);
 	}
-	function create_order($type = 0, $trans_no = 0) {
+	function create_order($type = ST_JOURNAL, $trans_no = 0) {
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
@@ -74,7 +73,7 @@
 			$order->reference = Ref::get($type, $trans_no);
 			$_POST['ref_original'] = $order->reference; // Store for comparison when updating
 		} else {
-			$order->reference = Ref::get_next(0);
+			$order->reference = Ref::get_next(ST_JOURNAL);
 			$order->tran_date = Dates::new_doc_date();
 			if (!Dates::is_date_in_fiscalyear($order->tran_date)) {
 				$order->tran_date = Dates::end_fiscalyear();
@@ -225,9 +224,9 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('totamount'), QE_JOURNAL);
-		$_POST['totamount'] = Num::price_format(0);
-		Ajax::i()->activate('totamount');
+		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('total_amount'), QE_JOURNAL);
+		$_POST['total_amount'] = Num::price_format(0);
+		Ajax::i()->activate('total_amount');
 		line_start_focus();
 	}
 	start_form();

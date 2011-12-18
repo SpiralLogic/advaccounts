@@ -311,9 +311,10 @@
 		}
 
 		public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
-			Sales_Order::start();
+
 			$type = ST_SALESINVOICE;
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
+			$doc->start();
 			$doc->trans_type = ST_SALESINVOICE;
 			$doc->due_date = $doc->document_date = Dates::new_doc_date($date);
 			$doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
@@ -328,7 +329,7 @@
 				Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
 			 'Order: ' . $memo);
 			$doc->write(1);
-			Sales_Order::finish();
+			$doc->finish();
 			$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount,
 				0, $amount);
 		}

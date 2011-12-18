@@ -8,6 +8,13 @@
 	 */
 	class Extensions
 	{
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return array
+		 */
 		public static function get_access($id) {
 			global $installed_extensions;
 			$ext = $installed_extensions[$id];
@@ -18,7 +25,10 @@
 			}
 			return array($security_areas, $security_sections);
 		}
-
+		/**
+		 * @static
+		 *
+		 */
 		public static function add_access() {
 			global $security_areas, $security_sections;
 			$installed_extensions = Config::get('extensions.installed');
@@ -53,7 +63,6 @@
 				}
 			}
 		}
-
 		/**
 		 * List of sets of active extensions
 		 *
@@ -69,6 +78,10 @@
 				$items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 			}
 			return array_selector($name, $value, $items, array(
-																												'spec_option' => _("Installed on system"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
+																												'spec_option' => _("Installed on system"),
+																												'spec_id' => -1,
+																												'select_submit' => $submit_on_change,
+																												'async' => true
+																									 ));
 		}
 	}

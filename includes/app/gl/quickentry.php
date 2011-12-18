@@ -138,7 +138,7 @@
 					$bank_amount = 0;
 					if (!isset($id) || $id == null || $id == "") {
 						Errors::error(_("No Quick Entries are defined."));
-						JS::set_focus('totamount');
+						JS::set_focus('total_amount');
 					}
 					else {
 						if ($type == QE_DEPOSIT) {
