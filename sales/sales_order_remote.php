@@ -9,17 +9,17 @@
 	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (!isset($_SESSION['remote_order'])) {
-		Sales_Order::start();
-		$_SESSION['remote_order'] = new Sales_Order(ST_SALESORDER, array(0));
-		copy_from_order($_SESSION['remote_order']);
+		$order->start();
+		$order = new Sales_Order(ST_SALESORDER, array(0));
+		copy_from_order($order);
 	}
 	if (isset($_GET['item']) && isset($_GET['new'])) {
-		handle_new_remote();
+		handle_new_remote($order);
 	}
-	function handle_new_remote()
+	function handle_new_remote($order)
 		{
 			$current_count = count($_SESSION['remote_order']->line_items);
-			Sales_Order::add_line($_SESSION['remote_order'], $_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
+			$order->add_line($_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
 			if ($current_count == count($_SESSION['remote_order']->line_items)) {
 				$data['message'] = 'No item with this code.';
 			} else {

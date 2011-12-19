@@ -7,5 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'servers' => array(array('127.0.0.1', 11211, 1)), 'pool_id' => $_SERVER['SERVER_NAME']
+		'pool_id' => $_SERVER['SERVER_NAME'],
+		'servers' => array( //
+			array('127.0.0.1', 11211, 1) //
+		)
 	); 

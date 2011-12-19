@@ -245,7 +245,7 @@
 		 * @param bool				 $exit
 		 *
 		 * @return bool
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		protected function _error(PDOException $e, $exit = false) {
 			if (Config::get('debug_sql')) {
@@ -259,7 +259,7 @@
 				$this->intransaction = false;
 			}
 			if ($exit) {
-				throw new DB_Exception($error);
+				throw new DBException($error);
 			}
 			Errors::show_db_error($error);
 		}

@@ -77,7 +77,13 @@
 		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'),
 		'graphs_skin' => 1,
 		'db_default' => array(
-			'name' => 'fa', 'user' => 'fa', 'pass' => '1willenberg', 'host' => 'localhost', 'port' => 3306, 'debug' => false
+			'name' => 'fa', //
+			'user' => 'fa', //
+			'pass' => //
+			'1willenberg', //
+			'host' => 'localhost', //
+			'port' => 3306, //
+			'debug' => false
 		),
 		'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
 		'separators_thousands' => array(",", ".", " "),

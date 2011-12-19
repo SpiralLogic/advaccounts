@@ -71,6 +71,9 @@
 		}
 
 		protected function _canProcess() {
+			if (strlen($this->br_name) < 1) {
+				return $this->_status(false, 'write', 'Branch name can not be empty');
+			}
 			return true;
 		}
 

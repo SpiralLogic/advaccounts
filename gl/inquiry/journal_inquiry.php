@@ -35,22 +35,6 @@
 	ref_cells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
 	end_row();
 	end_table();
-	function journal_pos($row) {
-		return $row['gl_seq'] ? $row['gl_seq'] : '-';
-	}
-
-	function systype_name($dummy, $type) {
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
-
-	function view_link($row) {
-		return GL_UI::trans_view($row["type"], $row["type_no"]);
-	}
-
-	function gl_link($row) {
-		return GL_UI::view($row["type"], $row["type_no"]);
-	}
 
 	$editors = array(
 		0 => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
@@ -75,15 +59,6 @@
 // 29=> Work Order Production",
 // 35=> Cost Update,
 	);
-	function edit_link($row) {
-		global $editors;
-		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
-		 DB_Pager::link(
-			 _("Edit"),
-			 sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
-			 ICON_EDIT
-		 ) : '';
-	}
 
 	/*
 	 // Tom Hallman 11 Nov 2009
@@ -193,5 +168,53 @@
 	DB_Pager::display($table);
 	end_form();
 	Renderer::end_page();
+
+	/**
+	 * @param $row
+	 * @return string
+	 */
+	function journal_pos($row) {
+		return $row['gl_seq'] ? $row['gl_seq'] : '-';
+	}
+
+	/**
+	 * @param $dummy
+	 * @param $type
+	 * @return mixed
+	 */
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
+
+	/**
+	 * @param $row
+	 * @return null|string
+	 */
+	function view_link($row) {
+		return GL_UI::trans_view($row["type"], $row["type_no"]);
+	}
+
+	/**
+	 * @param $row
+	 * @return string
+	 */
+	function gl_link($row) {
+		return GL_UI::view($row["type"], $row["type_no"]);
+	}
+
+	/**
+	 * @param $row
+	 * @return string
+	 */
+	function edit_link($row) {
+		global $editors;
+		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
+		 DB_Pager::link(
+			 _("Edit"),
+			 sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
+			 ICON_EDIT
+		 ) : '';
+	}
 
 ?>

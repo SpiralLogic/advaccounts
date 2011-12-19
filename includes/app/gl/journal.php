@@ -12,7 +12,7 @@
 
 	class GL_Journal {
 		public static function header($order) {
-			$Ajax = Ajax::i();
+
 			$qes = GL_QuickEntry::has(QE_JOURNAL);
 			$new = $order->order_id == 0;
 			start_outer_table('tablestyle2 width90');
@@ -35,10 +35,10 @@
 				GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
 				$qid = GL_QuickEntry::get(get_post('person_id'));
 				if (list_updated('person_id')) {
-					unset($_POST['totamount']); // enable default
-					Ajax::i()->activate('totamount');
+					unset($_POST['total_amount']); // enable default
+					Ajax::i()->activate('total_amount');
 				}
-				amount_cells($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']), null,
+				amount_cells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null,
 				 "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
 				end_row();
 			}
@@ -110,7 +110,7 @@
 
 
 		public static function item_controls($order, $dim, $Index = null) {
-			$Ajax = Ajax::i();
+
 			start_row();
 			$id = find_submit('Edit');
 			if ($Index != -1 && $Index == $id) {

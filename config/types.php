@@ -9,24 +9,53 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	global $bank_account_types, $bank_transfer_types, $class_types, $payment_person_types, $quick_actions, $quick_entry_types, $stock_types, $systypes_array, $tag_types, $wo_cost_types, $wo_types_array;
+	global $bank_account_types, //
+				 $bank_transfer_types, //
+				 $class_types, //
+				 $payment_person_types, //
+				 $quick_actions, //
+				 $quick_entry_types, //
+				 $stock_types, //
+				 $systypes_array, //
+				 $tag_types, //
+				 $wo_cost_types, //
+				 $wo_types_array;
+	//
 	$bank_account_types = array(
-		BT_TRANSFER => "Savings Account", "Chequing Account", "Credit Account", "Cash Account"
+		BT_TRANSFER => "Savings Account", //
+		"Chequing Account", //
+		" Credit Account", //
+		" Cash Account"
 	);
 	$bank_transfer_types = array(
-		BT_TRANSFER => "Transfer", "Cheque", "Credit", "Cash"
+		BT_TRANSFER => "Transfer", //
+		"Cheque", //
+		"Credit", //
+		"Cash"
 	);
 	$payment_person_types = array(
-		PT_MISC => "Miscellaneous", "Work Order", "Customer", "Supplier", "Quick Entry"
+		PT_MISC => "Miscellaneous", //
+		"Work Order", //
+		"Customer", //
+		"Supplier", //
+		"Quick Entry"
 	);
 	$wo_types_array = array(
-		WO_ASSEMBLY => "Assemble", WO_UNASSEMBLY => "Unassemble", WO_ADVANCED => "Advanced Manufacture"
+		WO_ASSEMBLY => "Assemble", //
+		WO_UNASSEMBLY => "Unassemble", //
+		WO_ADVANCED => "Advanced Manufacture"
 	);
 	$wo_cost_types = array(
-		WO_LABOUR => "Labour Cost", WO_OVERHEAD => "Overhead Cost",
+		WO_LABOUR => "Labour Cost", //
+		WO_OVERHEAD => "Overhead Cost", ////
 	);
 	$class_types = array(
-		CL_ASSETS => "Assets", CL_LIABILITIES => "Liabilities", CL_EQUITY => "Equity", CL_INCOME => "Income", CL_COGS => "Cost of Goods Sold", CL_EXPENSE => "Expense",
+		CL_ASSETS => "Assets", //
+		CL_LIABILITIES => "Liabilities", //
+		CL_EQUITY => "Equity", //
+		CL_INCOME => "Income", //
+		CL_COGS => "Cost of Goods Sold", //
+		CL_EXPENSE => "Expense",
 	);
 	$quick_actions = array(
 		'=' => 'Remainder', // post current base amount to GL account
@@ -44,10 +73,16 @@
 		't-' => 'Taxes included, reduce base' // ditto & reduce base amount
 	);
 	$quick_entry_types = array(
-		QE_DEPOSIT => "Bank Deposit", QE_PAYMENT => "Bank Payment", QE_JOURNAL => "Journal Entry", QE_SUPPINV => "Supplier Invoice/Credit"
+		QE_DEPOSIT => "Bank Deposit", //
+		QE_PAYMENT => "Bank Payment", //
+		QE_JOURNAL => "Journal Entry", //
+		QE_SUPPINV => "Supplier Invoice/Credit"
 	);
 	$stock_types = array(
-		STOCK_MANUFACTURE => "Manufactured", STOCK_PURCHASED => "Purchased", STOCK_SERVICE => "Service", STOCK_INFO => "Information"
+		STOCK_MANUFACTURE => "Manufactured", //
+		STOCK_PURCHASED => "Purchased", //
+		STOCK_SERVICE => "Service", //
+		STOCK_INFO => "Information"
 	);
 	$systypes_array = array(
 		ST_JOURNAL => "Journal Entry",
@@ -77,11 +112,15 @@
 		ST_DIMENSION => "Dimension"
 	);
 	$tag_types = array(
-		TAG_ACCOUNT => "Account", TAG_DIMENSION => "Dimension"
+		TAG_ACCOUNT => "Account", //
+		TAG_DIMENSION => "Dimension"
 	);
 	$wo_cost_types = array(
-		WO_LABOUR => "Labour Cost", WO_OVERHEAD => "Overhead Cost",
+		WO_LABOUR => "Labour Cost", //
+		WO_OVERHEAD => "Overhead Cost",
 	);
 	$wo_types_array = array(
-		WO_ASSEMBLY => "Assemble", WO_UNASSEMBLY => "Unassemble", WO_ADVANCED => "Advanced Manufacture"
+		WO_ASSEMBLY => "Assemble", //
+		WO_UNASSEMBLY => "Unassemble", //
+		WO_ADVANCED => "Advanced Manufacture"
 	);

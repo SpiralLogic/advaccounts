@@ -28,7 +28,7 @@
 		}
 
 		public function getDisplay($class = null) {
-			$Ajax = Ajax::i();
+
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
 			$class_counter = 0;
@@ -56,7 +56,7 @@
 						$st_params .= $this->getOptions($report->get_controls());
 						$st_params .= "\n</form></td></tr></table>\n";
 						JS::set_focus('Rep' . $report->id);
-						$Ajax->addUpdate(true, 'rep_form', $st_params);
+
 					}
 				}
 				$st_reports .= "</table>";

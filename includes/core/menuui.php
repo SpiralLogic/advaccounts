@@ -78,7 +78,8 @@
 		 *
 		 */
 		public function render() {
-			$menu = "<div class='ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>";
+			$menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
+			ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>";
 			foreach ($this->items as $key => $item) {
 				$num = $key;
 				$menu .= "<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";

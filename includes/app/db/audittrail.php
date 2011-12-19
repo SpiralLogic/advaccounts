@@ -10,6 +10,13 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	class DB_AuditTrail {
+		/**
+		 * @static
+		 * @param $trans_type
+		 * @param $trans_no
+		 * @param $trans_date
+		 * @param string $descr
+		 */
 		public static function add($trans_type, $trans_no, $trans_date, $descr = '') {
 			$insertid = DB::insert('audit_trail')
 			 ->values(array(
@@ -30,6 +37,10 @@
 		/*
 		 * Confirm and close for edition all transactions up to date $todate,
 							 and reindex	journal. */
+		/**
+		 * @static
+		 * @param $todate
+		 */
 		public static function close_transactions($todate) {
 			$errors = 0;
 			$sql = "SELECT DISTINCT a.id, a.gl_date, a.fiscal_year"
@@ -61,29 +72,50 @@
 
 		/* Closed transactions have gl_seq number assigned. */
 
+		/**
+		 * @static
+		 * @param $trans_type
+		 * @param $trans_no
+		 * @return array
+		 */
 		public static function get_all($trans_type, $trans_no) {
 			$result = DB::select()->from('audit_trail')->where('type=', $trans_type)->and_where('trans_no-', $trans_no)->fetch()
 			 ->all();
 			return $result;
 		}
 
+		/**
+		 * @static
+		 * @param $trans_type
+		 * @param $trans_no
+		 * @return mixed
+		 */
 		public static function get_last($trans_type, $trans_no) {
 			$result = DB::select()->from('audit_trail')->where('type=', $trans_type)->and_where('trans_no-', $trans_no)
 			 ->and_where("NOT ISNULL(gl_seq)")->fetch()->one();
 			return $result;
 		}
 
+		/**
+		 * @static
+		 * @param $type
+		 * @param $trans_no
+		 * @return int
+		 */
 		public static function is_closed_trans($type, $trans_no) {
 			$sql = "SELECT	gl_seq FROM audit_trail"
 			 . " WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($trans_no)
 			 . " AND gl_seq>0";
-			$res = DB::query($sql, "Cannot check transaction");
-			return DB::num_rows($res);
+			return DB::num_rows($sql);
 		}
 
 		/*
 			 Reopen all transactions for edition up from date $fromdate
+		 */
+		/**
+		 * @static
+		 * @param $fromdate
 		 */
 		public static function open_transactions($fromdate) {
 			$sql = "SELECT a.id, a.gl_date, a.fiscal_year"

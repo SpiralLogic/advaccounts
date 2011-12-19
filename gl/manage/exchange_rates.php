@@ -76,7 +76,7 @@
 
 	function display_rate_edit() {
 		global $selected_id;
-		$Ajax = Ajax::i();
+
 		start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate

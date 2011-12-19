@@ -78,7 +78,7 @@
 	$update_pager = false;
 	function update_data() {
 		global $update_pager;
-		$Ajax = Ajax::i();
+
 		Ajax::i()->activate('summary');
 		$update_pager = true;
 	}
@@ -86,7 +86,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($deposit_id) {
-		$Ajax = Ajax::i();
+
 		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
 		{
 			return false;

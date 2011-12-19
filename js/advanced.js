@@ -90,7 +90,7 @@ Adv.extend({
 	showStatus:function (status) {
 		Adv.msgbox.empty();
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
-		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div').show();
+		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
 	},
 	hideStatus:function () {
 		Adv.msgbox.empty();

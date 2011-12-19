@@ -40,20 +40,16 @@
 
 		public function delete() {
 			if ($this->_countTransactions() > 0) {
-				return $this->_status(false, 'delete',
-					"This customer cannot be deleted because there are transactions that refer to it.");
+				return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
 			}
 			if ($this->_countOrders() > 0) {
-				return $this->_status(false, 'delete',
-					"Cannot delete the customer record because orders have been created against it.");
+				return $this->_status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
 			}
 			if ($this->_countBranches() > 0) {
-				return $this->_status(false, 'delete',
-					"Cannot delete this customer because there are branch records set up against it.");
+				return $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
 			}
 			if ($this->_countContacts() > 0) {
-				return $this->_status(false, 'delete',
-					"Cannot delete this customer because there are contact records set up against it.");
+				return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 			}
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=" . $this->id;
 			DB::query($sql, "cannot delete customer");
@@ -84,8 +80,7 @@
 			if ($this->id == 0) {
 				return;
 			}
-			$sql
-			 = "SELECT debtor_trans.*, sales_orders.customer_ref,
+			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
@@ -110,8 +105,10 @@
 			$data['discount'] = User::numeric($this->discount) / 100;
 			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
 			$data['credit_limit'] = User::numeric($this->credit_limit);
-			parent::save($changes);
-
+			if (!parent::save($changes)) {
+				return $this->_setDefaults();
+				return false;
+			}
 			$this->accounts->save(array('debtor_no' => $this->id));
 			foreach ($this->branches as $branch_code => $branch) {
 				$branch->save(array('debtor_no' => $this->id));
@@ -155,14 +152,10 @@
 				return $this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
 			}
 			if (!is_numeric($this->pymt_discount)) {
-				return $this->_status(false, 'Processing',
-					"The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
-					'pymt_discount');
+				return $this->_status(false, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'pymt_discount');
 			}
 			if (!is_numeric($this->discount)) {
-				return $this->_status(false, 'Processing',
-					"The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
-					'discount');
+				return $this->_status(false, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount');
 			}
 			if (!is_numeric($this->webid)) {
 				$this->webid = null;
@@ -294,7 +287,7 @@ JS;
 			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
 			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%", trim($terms)) . "%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 			$results = DB::fetch();
 			foreach ($results as $result) {
@@ -499,9 +492,7 @@ JS;
 			}
 			$lbl = $label;
 			$preview_str = '';
-			foreach (
-				$trans_no as $trans
-			) {
+			foreach ($trans_no as $trans) {
 				if ($label == "") {
 					$lbl = $trans;
 				}

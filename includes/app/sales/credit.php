@@ -9,11 +9,19 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	// if ($writeoff_acc==0) return goods into $order->Location
-	// if src_docs!=0 => credit invoice else credit note
-	//
-	class Sales_Credit
-	{
+	/**
+	 * if ($writeoff_acc==0) return goods into $order->Location
+	 * if src_docs!=0 => credit invoice else credit note
+	 */
+	class Sales_Credit {
+		/**
+		 * @static
+		 *
+		 * @param Sales_Order $credit_note
+		 * @param						 $write_off_acc
+		 *
+		 * @return int
+		 */
 		public static function add($credit_note, $write_off_acc) {
 			$credit_invoice = is_array($credit_note->src_docs) ? reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 			$credit_date = $credit_note->document_date;
@@ -37,7 +45,8 @@
 			if ($credit_note->tax_included == 0) {
 				$items_added_tax = $tax_total - $freight_tax;
 				$freight_added_tax = $freight_tax;
-			} else {
+			}
+			else {
 				$items_added_tax = 0;
 				$freight_added_tax = 0;
 			}
@@ -45,7 +54,8 @@
 			// the transaction will be settled at once.
 			if (Bank_Account::is($branch_data['receivables_account'])) {
 				$alloc = $credit_note_total + $items_added_tax + $credit_note->freight_cost + $freight_added_tax;
-			} else {
+			}
+			else {
 				$alloc = 0;
 			}
 			//	$sales_order=$invoice->order_no;	//?
@@ -63,7 +73,8 @@
 			if ($trans_no == 0) {
 				$credit_note->trans_no = array($credit_no => 0);
 				Sales_Trans::set_parent($credit_note);
-			} else {
+			}
+			else {
 				DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
 				Sales_Allocation::void(ST_CUSTCREDIT, $credit_no, $credit_date);
 				GL_Trans::void(ST_CUSTCREDIT, $credit_no, true);
@@ -138,16 +149,26 @@
 			return $credit_no;
 		}
 
-		// Insert a stock movement coming back in to show the credit note and
-		// 	a reversing stock movement to show the write off
-		//
-		public static function add_movements(&$credit_note, &$credit_line, $credit_type, $price, $credited_invoice = 0) {
+		/**
+		 * @static
+		 *
+		 * @param		 $credit_note
+		 * @param		 $credit_line
+		 * @param		 $credit_type
+		 * @param		 $price
+		 * @param int $credited_invoice
+		 * Insert a stock movement coming back in to show the credit note and
+		 * a reversing stock movement to show the write off
+		 *
+		 */
+		public static function add_movements($credit_note, $credit_line, $credit_type, $price, $credited_invoice = 0) {
 			if ($credit_type == "Return") {
 				$reference = "Return ";
 				if ($credited_invoice) {
 					$reference .= "Ex Inv: " . $credited_invoice;
 				}
-			} elseif ($credit_type == "WriteOff") {
+			}
+			elseif ($credit_type == "WriteOff") {
 				$reference = "WriteOff ";
 				if ($credited_invoice) {
 					$reference .= "Ex Inv: " . $credited_invoice;
@@ -161,6 +182,19 @@
 				$credit_line->discount_percent);
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $order
+		 * @param Sales_Line $order_line
+		 * @param $credit_no
+		 * @param $date_
+		 * @param $credit_type
+		 * @param $write_off_gl_code
+		 * @param $branch_data
+		 *
+		 * @return float|int
+		 */
 		public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
 			$stock_gl_codes = Item::get_gl_code($order_line->stock_id);
 			$customer = Debtor::get($order->customer_id);
@@ -181,7 +215,8 @@
 				/*now the stock entry*/
 				if ($credit_type == "WriteOff") {
 					$stock_entry_account = $write_off_gl_code;
-				} else {
+				}
+				else {
 					$stock_gl_code = Item::get_gl_code($order_line->stock_id);
 					$stock_entry_account = $stock_gl_code["inventory_account"];
 				}
@@ -199,7 +234,8 @@
 				// else take the Item Sales Account
 				if ($branch_data['sales_account'] != "") {
 					$sales_account = $branch_data['sales_account'];
-				} else {
+				}
+				else {
 					$sales_account = $stock_gl_codes['sales_account'];
 				}
 				$total += Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2,
@@ -214,9 +250,14 @@
 			return $total;
 		}
 
-		// ------------------------------------------------------------------------------
+		/**
+		 * @static
+		 *
+		 * @param $order
+		 *
+		 * @return mixed|string
+		 */
 		public static function header($order) {
-
 			start_outer_table('tablestyle width90');
 			table_section(1);
 			$customer_error = "";
@@ -233,11 +274,11 @@
 			//if (($_SESSION['credit_items']->order_no == 0) ||
 			//	($order->customer_id != $_POST['customer_id']) ||
 			//	($order->Branch != $_POST['branch_id']))
-			//	$customer_error = Sales_Order::customer_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+			//	$customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
 			if (($order->customer_id != $_POST['customer_id']) || ($order->Branch != $_POST['branch_id'])
 			) {
 				$old_order = (PHP_VERSION < 5) ? $order : clone($order);
-				$customer_error = Sales_Order::customer_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+				$customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
 				$_POST['Location'] = $order->Location;
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
@@ -273,7 +314,8 @@
 			}
 			if ($order->trans_no == 0) {
 				ref_row(_("Reference") . ':', 'ref');
-			} else {
+			}
+			else {
 				label_row(_("Reference") . ':', $order->reference);
 			}
 			if (!Bank_Currency::is_company($order->customer_currency)) {
@@ -310,18 +352,19 @@
 			$dim = DB_Company::get_pref('use_dimension');
 			if ($dim > 0) {
 				Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
-			} else {
+			}
+			else {
 				hidden('dimension_id', 0);
 			}
 			if ($dim > 1) {
 				Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
-			} else {
+			}
+			else {
 				hidden('dimension2_id', 0);
 			}
 			end_outer_table(1); // outer table
 			if ($change_prices != 0) {
-				foreach ($order->line_items as $line_no => $item) {
-					$line = &$order->line_items[$line_no];
+				foreach ($order->line_items as $line) {
 					$line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type,
 						$order->price_factor, get_post('OrderDate'));
 					//		$line->discount_percent = $order->default_discount;
@@ -331,12 +374,19 @@
 			return $customer_error;
 		}
 
-		public static function display_items($title, &$order) {
+		/**
+		 * @static
+		 *
+		 * @param $title
+		 * @param Sales_Order $order
+		 */
+		public static function display_items($title, $order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
 			$th = array(
-				_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"), '');
+				_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"), ''
+			);
 			if (count($order->line_items)) {
 				$th[] = '';
 			}
@@ -358,7 +408,8 @@
 					edit_button_cell("Edit$line_no", _('Edit'), _('Edit document line'));
 					delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
 					end_row();
-				} else {
+				}
+				else {
 					Sales_Credit::item_controls($order, $k, $line_no);
 				}
 				$subtotal += $line_total;
@@ -385,8 +436,14 @@
 			Display::div_end();
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $order
+		 * @param $rowcounter
+		 * @param $line_no
+		 */
 		public static function item_controls($order, $rowcounter, $line_no = -1) {
-			$Ajax = Ajax::i();
 			alt_table_row_color($rowcounter);
 			$id = find_submit('Edit');
 			if ($line_no != -1 && $line_no == $id) {
@@ -399,7 +456,8 @@
 				label_cell($_POST['stock_id']);
 				label_cell($order->line_items[$id]->description, "nowrap");
 				Ajax::i()->activate('items_table');
-			} else {
+			}
+			else {
 				Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
 				if (list_updated('stock_id')) {
 					Ajax::i()->activate('price');
@@ -426,14 +484,19 @@
 				button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 				hidden('line_no', $line_no);
 				JS::set_focus('qty');
-			} else {
+			}
+			else {
 				submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 			}
 			end_row();
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $credit
+		 */
 		public static function option_controls($credit) {
-			$Ajax = Ajax::i();
 			echo "<br>";
 			if (isset($_POST['_CreditType_update'])) {
 				Ajax::i()->activate('options');
@@ -447,7 +510,8 @@
 					$_POST['Location'] = $credit->Location;
 				}
 				Inv_Location::row(_("Items Returned to Location"), 'Location', $_POST['Location']);
-			} else {
+			}
+			else {
 				/* the goods are to be written off to somewhere */
 				GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
 			}
@@ -456,17 +520,34 @@
 			Display::div_end();
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$label
+		 * @param			$name
+		 * @param null $selected
+		 * @param bool $submit_on_change
+		 */
 		public static function cells($label, $name, $selected = null, $submit_on_change = false) {
 			if ($label != null) {
 				label_cell($label);
 			}
 			echo "<td>\n";
 			echo array_selector($name, $selected, array(
-																								 'Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")),
+					'Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")
+				),
 				array('select_submit' => $submit_on_change));
 			echo "</td>\n";
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param			$label
+		 * @param			$name
+		 * @param null $selected
+		 * @param bool $submit_on_change
+		 */
 		public static function row($label, $name, $selected = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_Credit::cells(null, $name, $selected, $submit_on_change);

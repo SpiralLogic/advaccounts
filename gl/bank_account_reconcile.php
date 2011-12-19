@@ -73,7 +73,7 @@
 	$update_pager = false;
 	function update_data() {
 		global $update_pager;
-		$Ajax = Ajax::i();
+
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
 		Ajax::i()->activate('summary');
@@ -83,7 +83,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($reconcile_id) {
-		$Ajax = Ajax::i();
+
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
 			return false;

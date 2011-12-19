@@ -6,6 +6,18 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
+
+	class DBException extends Exception {}
+
+
+
+
+	/**
+	 *
+	 */
+	class DBDuplicateException extends DBException {
+	}
+
 	class DB {
 		/**
 		 *
@@ -54,6 +66,8 @@
 		 * @var DB_Query
 		 */
 		protected static $query = false;
+		protected static $errorSql = false;
+		protected static $errorInfo = false;
 		/**
 		 * @var
 		 */
@@ -74,10 +88,7 @@
 		 * @var
 		 */
 		protected $port;
-
 		protected $intransaction = false;
-
-
 		/***
 		 * @var PDO
 		 */
@@ -169,6 +180,7 @@
 		 *
 		 * @param			$value
 		 * @param bool $null
+		 *
 		 * @internal param bool $paramaterized
 		 *
 		 * @return bool|mixed|string
@@ -179,13 +191,17 @@
 			if (!isset($value) || is_null($value) || $value === "") {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
-			} elseif (is_int($value)) {
+			}
+			elseif (is_int($value)) {
 				$type = PDO::PARAM_INT;
-			} elseif (is_bool($value)) {
+			}
+			elseif (is_bool($value)) {
 				$type = PDO::PARAM_BOOL;
-			} elseif (is_string($value)) {
+			}
+			elseif (is_string($value)) {
 				$type = PDO::PARAM_STR;
-			} else {
+			}
+			else {
 				$type = FALSE;
 			}
 			static::$data[] = array($value, $type);
@@ -195,19 +211,21 @@
 		/**
 		 * @static
 		 *
-		 * @param $sql
+		 * @param			$sql
 		 *
 		 * @param bool $debug
+		 *
 		 * @return bool|PDOStatement
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		protected function _prepare($sql, $debug = false) {
 			static::$debug = $debug;
+			static::$errorSql = static::$errorInfo = false;
 			try {
 				$prepared = $this->conn->prepare($sql);
 				$sql = $prepared->queryString;
 				if (static::$data && substr_count($sql, '?') > count(static::$data)) {
-					throw new DB_Exception('There are more escaped values than there are placeholders!!');
+					throw new DBException('There are more escaped values than there are placeholders!!');
 				}
 				foreach (static::$data as $k => $v) {
 					$prepared->bindValue($k + 1, $v[0], $v[1]);
@@ -215,6 +233,7 @@
 				return $prepared;
 			}
 			catch (PDOException $e) {
+				static::$errorInfo = $prepared->errorInfo();
 				$this->_error($e);
 			}
 			return false;
@@ -222,8 +241,10 @@
 
 		/**
 		 * @static
-		 * @param $sql
+		 *
+		 * @param			$sql
 		 * @param bool $debug
+		 *
 		 * @return null|PDOStatement
 		 */
 		public static function prepare($sql, $debug = false) {
@@ -244,6 +265,11 @@
 			}
 			try {
 				static::$prepared->execute($data);
+				$sql = static::$prepared->queryString;
+				foreach ($data as $v) {
+					$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+				}
+				FB::info($sql);
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
 			catch (PDOException $e) {
@@ -253,7 +279,7 @@
 
 		/**
 		 * @static
-		 * @return mixed
+		 * @return string
 		 */
 		public static function insert_id() {
 			return static::i()->conn->lastInsertId();
@@ -315,7 +341,7 @@
 		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
 		 *
-		 * @return DB_Query_Result This is something
+		 * @return DB_Query_Result|Array This is something
 		 */
 		public static function fetch($result = null) {
 			if ($result !== null) {
@@ -351,7 +377,6 @@
 			return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 		}
 
-
 		/**
 		 * @static
 		 * @return mixed
@@ -366,7 +391,12 @@
 		 * @return mixed
 		 */
 		public static function errorInfo() {
-			if (static::$prepared) return static::$prepared->errorInfo();
+			if (static::$errorInfo) {
+				return static::$errorInfo;
+			}
+			if (static::$prepared) {
+				return static::$prepared->errorInfo();
+			}
 			return static::i()->conn->errorInfo();
 		}
 
@@ -402,6 +432,7 @@
 
 		/**
 		 * @static
+		 * @param PDOStatement|string $sql
 		 * @return int
 		 */
 		public static function num_rows() {
@@ -474,6 +505,7 @@
 		 * @param $table
 		 * @param $key
 		 * Update record activity status.
+		 *
 		 * @return \DB_Query_Result
 		 */
 		public static function update_record_status($id, $status, $table, $key) {
@@ -486,17 +518,18 @@
 
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $status
 		 * @param $table
 		 * @param $key
+		 *
 		 * @return DB_Query_Result
 		 */
 		public static function insert_record_status($id, $status, $table, $key) {
 			$result = static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
 			return $result;
 		}
-
 
 		/***
 		 * @param			$sql
@@ -506,6 +539,7 @@
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
+			static::$errorSql = static::$errorInfo = false;
 			try {
 				$prepared = $this->_prepare($sql);
 				switch ($type) {
@@ -518,24 +552,28 @@
 						$prepared->execute($data);
 						return true;
 				}
-				return false;
 			}
 			catch (PDOException $e) {
+				if (!is_null($data)) {
+					foreach ($data as $k => $v) {
+						$sql = str_replace(':' . $k, DB::quote($v), $sql);
+					}
+				}
+				static::$errorSql = $sql;
 				$this->_error($e);
 			}
 			return false;
 		}
 
 		/**
-		 * @param PDOException $e
-		 * @param bool $msg
+		 * @param PDOException				$e
+		 * @param bool								$msg
 		 * @param string|bool				 $exit
 		 *
 		 * @return bool
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		protected function _error(PDOException $e, $msg = false, $exit = false) {
-
 			if (static::$data && static::$queryString) {
 				$sql = static::$queryString;
 				foreach (static::$data as $k => $v) {
@@ -545,19 +583,25 @@
 					$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 				}
 			}
+			static::$errorInfo = $error = $e->errorInfo;
 			if (Config::get('debug_sql')) {
 				$error = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-			} elseif ($msg!=false) {
-				$error = '<p>DATABASE ERROR: <pre>' . $msg . '</pre></p><p><pre></pre></p>';
-			}else {
-				$error = "Unknown Database Error";
+			}
+			elseif ($msg != false) {
+				$error = '<pre>' . $msg . '</pre>';
+			}
+			else {
+				$error = $e->getMessage();
 			}
 			if ($this->conn->inTransaction() || $this->intransaction) {
 				$this->conn->rollBack();
 				$this->intransaction = false;
 			}
 			if ($exit) {
-				throw new DB_Exception($error);
+				throw new DBException($error);
+			}
+			if (static::$errorInfo[1] == 1062) {
+				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
 			Errors::show_db_error($error);
 		}

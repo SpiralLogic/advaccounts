@@ -19,9 +19,6 @@
 	if (isset($_GET['ModifyDelivery'])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
-		Sales_Order::start();
-	} elseif (isset($_GET['OrderNumber'])) {
-		Sales_Order::start();
 	}
 	Page::start($page_title);
 	if (isset($_GET['AddedID'])) {
@@ -29,70 +26,68 @@
 		Errors::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 		Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 1), 1, 1);
-		Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 0, 1));
-		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 1, 1), 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 		Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
 		Display::link_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 		Page::footer_exit();
-	} elseif (isset($_GET['UpdatedID'])) {
+	}
+	elseif (isset($_GET['UpdatedID'])) {
 		$delivery_no = $_GET['UpdatedID'];
 		Errors::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 		Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 		Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 1), 1, 1);
-		Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 0, 1));
-		Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink",
-			"", 1, 1), 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 		Display::link_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
+	$order = Orders::session_get() ? : null;
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
-		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
+		$order = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 		/*read in all the selected order into the Items order */
-		if ($ord->count_items() == 0) {
-			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"),
-				"OutstandingOnly=1");
+		if ($order->count_items() == 0) {
+			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"), "OutstandingOnly=1");
 			die ("<br><span class='bold'>" . _("This order has no items. There is nothing to delivery.") . "</span>");
 		}
-		$ord->trans_type = ST_CUSTDELIVERY;
-		$ord->src_docs = $ord->trans_no;
-		$ord->order_no = key($ord->trans_no);
-		$ord->trans_no = 0;
-		$ord->reference = Ref::get_next(ST_CUSTDELIVERY);
-		$ord->document_date = Dates::new_doc_date();
-		copy_from_order($ord);
-	} elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
-
+		$order->trans_type = ST_CUSTDELIVERY;
+		$order->src_docs = $order->trans_no;
+		$order->order_no = key($order->trans_no);
+		$order->trans_no = 0;
+		$order->reference = Ref::get_next(ST_CUSTDELIVERY);
+		$order->document_date = Dates::new_doc_date();
+		copy_from_order($order);
+	}
+	elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 		$order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
-		copy_from_order($ord);
-		if (Orders::session_get($_POST['order_id'])->count_items() == 0) {
+		copy_from_order($order);
+		if ($order->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
 			echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
 			Page::footer_exit();
 		}
-	} elseif (!Sales_Order::active()) {
+	}
+	elseif (!Orders::session_exists($order)) {
 		/* This page can only be called with an order number for invoicing*/
 		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 		Renderer::end_page();
 		exit;
-	} else {
-		if (!check_quantities()) {
+	}
+	else {
+		if (!check_quantities($order)) {
 			Errors::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
-		} elseif (!Validation::is_num('ChargeFreightCost', 0)) {
+		}
+		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
 			Errors::error(_("Freight cost cannot be less than zero"));
 			JS::set_focus('ChargeFreightCost');
 		}
 	}
-	function check_data() {
+	function check_data($order) {
 		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 			Errors::error(_("The entered date of delivery is invalid."));
 			JS::set_focus('DispatchDate');
@@ -108,13 +103,13 @@
 			JS::set_focus('due_date');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
+		if ($order->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (Orders::session_get($_POST['order_id'])->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
+			if ($order->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
 				$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
 			}
 		}
@@ -126,18 +121,17 @@
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
+		if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
 			Errors::error(_("There are no item quantities on this delivery note."));
 			return false;
 		}
-		if (!check_quantities()) {
+		if (!check_quantities($order)) {
 			return false;
 		}
 		return true;
 	}
 
-	function copy_to_order() {
-		$order = &Orders::session_get($_POST['order_id']);
+	function copy_to_order($order) {
 		$order->ship_via = $_POST['ship_via'];
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
 		$order->document_date = $_POST['DispatchDate'];
@@ -162,23 +156,26 @@
 		Orders::session_set($order);
 	}
 
-	function check_quantities() {
+	function check_quantities($order) {
 		$ok = 1;
 		// Update order delivery quantities/descriptions
-		foreach (Orders::session_get($_POST['order_id'])->line_items as $line => $itm) {
+		foreach ($order->line_items as $line => $itm) {
 			if (isset($_POST['Line' . $line])) {
-				if (Orders::session_get($_POST['order_id'])->trans_no) {
+				if ($order->trans_no) {
 					$min = $itm->qty_done;
 					$max = $itm->quantity;
-				} else {
+				}
+				else {
 					$min = 0;
 					$max = $itm->quantity - $itm->qty_done;
 				}
 				if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
-					Orders::session_get($_POST['order_id'])->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-				} elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
-					Orders::session_get($_POST['order_id'])->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-				} else {
+					$order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
+				}
+				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
+					$order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
+				}
+				else {
 					JS::set_focus('Line' . $line);
 					$ok = 0;
 				}
@@ -186,19 +183,19 @@
 			if (isset($_POST['Line' . $line . 'Desc'])) {
 				$line_desc = $_POST['Line' . $line . 'Desc'];
 				if (strlen($line_desc) > 0) {
-					Orders::session_get($_POST['order_id'])->line_items[$line]->description = $line_desc;
+					$order->line_items[$line]->description = $line_desc;
 				}
 			}
 		}
 		// ...
 		//	else
-		//	 Orders::session_get($_POST['order_id'])->freight_cost = Validation::input_num('ChargeFreightCost');
+		//	 $order->freight_cost = Validation::input_num('ChargeFreightCost');
 		return $ok;
 	}
 
-	function check_qoh() {
+	function check_qoh($order) {
 		if (!DB_Company::get_pref('allow_negative_stock')) {
-			foreach (Orders::session_get($_POST['order_id'])->line_items as $itm) {
+			foreach ($order->line_items as $itm) {
 				if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
 					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 					if ($itm->qty_dispatched > $qoh) {
@@ -211,23 +208,25 @@
 		return true;
 	}
 
-	if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
-		$dn = &Orders::session_get($_POST['order_id']);
+	if (isset($_POST['process_delivery']) && check_data($order) && check_qoh($order)) {
+		$dn = $order;
 		if ($_POST['bo_policy']) {
 			$bo_policy = 0;
-		} else {
+		}
+		else {
 			$bo_policy = 1;
 		}
 		$newdelivery = ($dn->trans_no == 0);
-		copy_to_order();
+		copy_to_order($order);
 		if ($newdelivery) {
 			Dates::new_doc_date($dn->document_date);
 		}
 		$delivery_no = $dn->write($bo_policy);
-		Sales_Order::finish();
+		$dn->finish();
 		if ($newdelivery) {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
-		} else {
+		}
+		else {
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
 		}
 	}
@@ -240,30 +239,30 @@
 	echo "<tr><td>"; // outer table
 	start_table('tablestyle width100');
 	start_row();
-	label_cells(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='label'");
-	label_cells(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='label'");
-	label_cells(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='label'");
+	label_cells(_("Customer"), $order->customer_name, "class='label'");
+	label_cells(_("Branch"), Sales_Branch::get_name($order->Branch), "class='label'");
+	label_cells(_("Currency"), $order->customer_currency, "class='label'");
 	end_row();
 	start_row();
 	//if (!isset($_POST['ref']))
 	//	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
-	if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
+	if ($order->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='label'");
-	} else {
-		label_cells(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='label'");
 	}
-	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, Orders::session_get($_POST['order_id'])->order_no),
-		"class='tableheader2'");
-	label_cells(_("Sales Type"), Orders::session_get($_POST['order_id'])->sales_type_name, "class='label'");
+	else {
+		label_cells(_("Reference"), $order->reference, "class='label'");
+	}
+	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tableheader2'");
+	label_cells(_("Sales Type"), $order->sales_type_name, "class='label'");
 	end_row();
 	start_row();
 	if (!isset($_POST['Location'])) {
-		$_POST['Location'] = Orders::session_get($_POST['order_id'])->Location;
+		$_POST['Location'] = $order->Location;
 	}
 	label_cell(_("Delivery From"), "class='label'");
 	Inv_Location::cells(null, 'Location', null, false, true);
 	if (!isset($_POST['ship_via'])) {
-		$_POST['ship_via'] = Orders::session_get($_POST['order_id'])->ship_via;
+		$_POST['ship_via'] = $order->ship_via;
 	}
 	label_cell(_("Shipping Company"), "class='label'");
 	Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
@@ -274,13 +273,13 @@
 			$_POST['DispatchDate'] = Dates::end_fiscalyear();
 		}
 	}
-	date_cells(_("Date"), 'DispatchDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='label'");
+	date_cells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
 	end_row();
 	end_table();
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width90');
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-		$_POST['due_date'] = Sales_Order::get_invoice_duedate(Orders::session_get($_POST['order_id'])->customer_id, $_POST['DispatchDate']);
+		$_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
 	}
 	start_row();
 	date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
@@ -288,7 +287,7 @@
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
-	$row = Sales_Order::get_customer(Orders::session_get($_POST['order_id'])->customer_id);
+	$row = Sales_Order::get_customer($order->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
@@ -298,59 +297,60 @@
 	Display::heading(_("Delivery Items"));
 	Display::div_start('Items');
 	start_table('tablestyle width90');
-	$new = Orders::session_get($_POST['order_id'])->trans_no == 0;
+	$new = $order->trans_no == 0;
 	$th = array(
-		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") :
-		 _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
+		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"),
+		$new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	table_header($th);
 	$k = 0;
 	$has_marked = false;
-	foreach (Orders::session_get($_POST['order_id'])->line_items as $line => $ln_itm) {
-		if ($ln_itm->quantity == $ln_itm->qty_done) {
+	foreach ($order->line_items as $line_no => $line) {
+		if ($line->quantity == $line->qty_done) {
 			continue; //this line is fully delivered
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if (DB_Company::get_pref('allow_negative_stock') || !WO::has_stock_holding($ln_itm->mb_flag) || $ln_itm->qty_dispatched == 0
+		if (DB_Company::get_pref('allow_negative_stock') || !WO::has_stock_holding($line->mb_flag) || $line->qty_dispatched == 0
 		) {
 			$show_qoh = false;
 		}
 		if ($show_qoh) {
-			$qoh = Item::get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+			$qoh = Item::get_qoh_on_date($line->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 		}
-		if ($show_qoh && ($ln_itm->qty_dispatched > $qoh)) {
+		if ($show_qoh && ($line->qty_dispatched > $qoh)) {
 			// oops, we don't have enough of one of the component items
 			start_row("class='stockmankobg'");
 			$has_marked = true;
-		} else {
+		}
+		else {
 			alt_table_row_color($k);
 		}
-		Item_UI::status_cell($ln_itm->stock_id);
-		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
-		$dec = Item::qty_dec($ln_itm->stock_id);
-		qty_cell($ln_itm->quantity, false, $dec);
-		label_cell($ln_itm->units);
-		qty_cell($ln_itm->qty_done, false, $dec);
-		small_qty_cells(null, 'Line' . $line, Item::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
-		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . "%";
-		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
-		amount_cell($ln_itm->price);
-		label_cell($ln_itm->tax_type_name);
+		Item_UI::status_cell($line->stock_id);
+		text_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+		$dec = Item::qty_dec($line->stock_id);
+		qty_cell($line->quantity, false, $dec);
+		label_cell($line->units);
+		qty_cell($line->qty_done, false, $dec);
+		small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+		$display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
+		$line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
+		amount_cell($line->price);
+		label_cell($line->tax_type_name);
 		label_cell($display_discount_percent, "nowrap class=right");
 		amount_cell($line_total);
 		end_row();
 	}
-	$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format(Orders::session_get($_POST['order_id'])->freight_cost));
+	$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format($order->freight_cost));
 	$colspan = 9;
 	start_row();
 	label_cell(_("Shipping Cost"), "colspan=$colspan class='right'");
-	small_amount_cells(null, 'ChargeFreightCost', Orders::session_get($_POST['order_id'])->freight_cost);
+	small_amount_cells(null, 'ChargeFreightCost', $order->freight_cost);
 	end_row();
-	$inv_items_total = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
+	$inv_items_total = $order->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right");
-	$taxes = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
-	$tax_total = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
+	$taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
+	$tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class=right");
 	end_table(1);

@@ -86,4 +86,11 @@
 		public function getAll() {
 			return $this->_status;
 		}
+public function __toString() {
+$last = $this->get();
+	$str = ucwords($last['process']);
+	$str .= ($last['status'])?' Succeeded: ':' Failed: ';
+	$str .= $last['message'];
+	return $str;
+}
 	}

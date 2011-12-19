@@ -17,10 +17,10 @@
 	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
-		handle_new_credit(0);
+		$order = handle_new_credit(0);
 	} elseif (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
-		handle_new_credit($_GET['ModifyCredit']);
+		$order = handle_new_credit($_GET['ModifyCredit']);
 		$help_context = "Modifying Customer Credit Note";
 	} else {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -46,14 +46,50 @@
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	}
+	if (isset($_POST['CancelChanges'])) {
+		$type = $order->trans_type;
+		$order_no = key($order->trans_no);
+		Orders::session_delete($_POST['order_id']);
+		$order = create_order($type, $order_no);
+	}
+	$id = find_submit('Delete');
+	if ($id != -1) {
+		handle_delete_item($order, $id);
+	}
+	if (isset($_POST['AddItem'])) {
+		handle_new_item($order);
+	}
+	if (isset($_POST['UpdateItem'])) {
+		handle_update_item($order);
+	}
+	if (isset($_POST['CancelItemChanges'])) {
+		line_start_focus();
+	}
+	start_form();
+	hidden('order_id', $_POST['order_id']);
+	$customer_error = Sales_Credit::header($order);
+	if ($customer_error == "") {
+		start_table('tables_style2 width90 pad10');
+		echo "<tr><td>";
+		Sales_Credit::display_items(_("Credit Note Items"), $order);
+		Sales_Credit::option_controls($order);
+		echo "</td></tr>";
+		end_table();
+	} else {
+		Errors::error($customer_error);
+	}
+	submit_center_first('Update', _("Update"));
+	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+	submit_center_last('ProcessCredit', _("Process Credit Note"), '', false, 'default');
+	echo "</tr></table></div>";
+	end_form();
+	Renderer::end_page();
 	function line_start_focus() {
-		$Ajax = Ajax::i();
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
-	function copy_to_cn() {
-		$order = &Orders::session_get($_POST['order_id']);
+	function copy_to_cn($order) {
 		$order->Comments = $_POST['CreditText'];
 		$order->document_date = $_POST['OrderDate'];
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
@@ -65,12 +101,14 @@
 		$order->ship_via = $_POST['ShipperID'];
 		$order->dimension_id = $_POST['dimension_id'];
 		$order->dimension2_id = $_POST['dimension2_id'];
+		return $order;
 	}
 
 	function copy_from_cn($order) {
 		$order = Sales_Order::check_edit_conflicts($order);
-
 		$_POST['CreditText'] = $order->Comments;
+		$_POST['customer_id'] = $order->customer_id;
+		$_POST['branch_id'] = $order->Branch;
 		$_POST['OrderDate'] = $order->document_date;
 		$_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
 		$_POST['Location'] = $order->Location;
@@ -82,21 +120,23 @@
 		$_POST['dimension_id'] = $order->dimension_id;
 		$_POST['dimension2_id'] = $order->dimension2_id;
 		$_POST['order_id'] = $order->order_id;
-			Orders::session_set($order);
+		Orders::session_set($order);
 	}
 
 	function handle_new_credit($trans_no) {
 		$order = new Sales_Order(ST_CUSTCREDIT, $trans_no);
-		Sales_Order::start($order);
+		Orders::session_delete($order->order_id);
+		$order->start();
 		copy_from_cn($order);
+		return $order;
 	}
 
-	function can_process() {
+	function can_process($order) {
 		$input_error = 0;
-		if (Orders::session_get($_POST['order_id'])->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
+		if ($order->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
 			return false;
 		}
-		if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
+		if ($order->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
@@ -118,9 +158,7 @@
 	}
 
 	if (isset($_POST['ProcessCredit']) && can_process()) {
-		copy_to_cn();
-		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')
-		) {
+		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
 			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
@@ -128,11 +166,9 @@
 		if (!isset($_POST['WriteOffGLCode'])) {
 			$_POST['WriteOffGLCode'] = 0;
 		}
-		copy_to_cn();
-		$credit = Orders::session_get($_POST['order_id']);
+		$credit = copy_to_cn($order);
 		$credit_no = $credit->write($_POST['WriteOffGLCode']);
 		Dates::new_doc_date($credit->document_date);
-		Sales_Order::finish($credit_no);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
 	function check_item_data() {
@@ -154,69 +190,24 @@
 		return true;
 	}
 
-	function handle_update_item() {
+	function handle_update_item($order) {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
-			Orders::session_get($_POST['order_id'])->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+			$order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		}
 		line_start_focus();
 	}
 
-	function handle_delete_item($line_no) {
-		Orders::session_get($_POST['order_id'])->remove_from_order($line_no);
+	function handle_delete_item($order, $line_no) {
+		$order->remove_from_order($line_no);
 		line_start_focus();
 	}
 
-	function handle_new_item() {
+	function handle_new_item($order) {
 		if (!check_item_data()) {
 			return;
 		}
-		Sales_Order::add_line(Orders::session_get($_POST['order_id']), $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		line_start_focus();
 	}
-
-		if (isset($_POST['CancelChanges'])) {
-			$order = Orders::session_get($_POST['order_id']);
-			$type = $order->trans_type;
-			$order_no = key($order->trans_no);
-
-			Orders::session_delete($_POST['order_id']);
-		create_order($type,$order_no);
-
-
-		}
-	$id = find_submit('Delete');
-	if ($id != -1) {
-		handle_delete_item($id);
-	}
-	if (isset($_POST['AddItem'])) {
-		handle_new_item();
-	}
-	if (isset($_POST['UpdateItem'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['CancelItemChanges'])) {
-		line_start_focus();
-	}
-
-		handle_new_credit(0);
-	start_form();
-	hidden('order_id');
-	$customer_error = Sales_Credit::header(Orders::session_get($_POST['order_id']));
-	if ($customer_error == "") {
-		start_table('tables_style2 width90 pad10');
-		echo "<tr><td>";
-		Sales_Credit::display_items(_("Credit Note Items"), Orders::session_get($_POST['order_id']));
-		Sales_Credit::option_controls(Orders::session_get($_POST['order_id']));
-		echo "</td></tr>";
-		end_table();
-	} else {
-		Errors::error($customer_error);
-	}
-	submit_center_first('Update', _("Update"));
-	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-	submit_center_last('ProcessCredit', _("Process Credit Note"), '', false, 'default');
-	echo "</tr></table></div>";
-	end_form();
-	Renderer::end_page();
 
 ?>

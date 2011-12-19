@@ -35,20 +35,32 @@
 			return $this->_status(true, 'read', 'Successfully read ' . get_class($this), $id);
 		}
 
+		/**
+		 * @return mixed
+		 */
 		protected function _saveNew() {
-			$this->id = DB::insert($this->_table)->values((array)$this)->exec();
-			if ($this->id !== false) {
-				return $this->_status(true, 'write', 'Added to databse: ' . get_class($this));
-			} else {
-				return $this->_status(false, 'write', 'Could not add to databse: ' . get_class($this));
+			try {
+				$this->id = DB::insert($this->_table)->values((array)$this)->exec();
+				if ($this->id !== false) {
+					return $this->_status(true, 'write', 'Added to databse: ' . get_class($this));
+				} else {
+					return $this->_status(false, 'write', 'Could not add to databse: ' . get_class($this));
+				}
+			}
+			catch (DBDuplicateException $e) {
+				return $this->_status(false, 'write', $e->getMessage(). '. The entered information is a duplicate. Please modify the existing record or use different values.');
 			}
 		}
 
-		public function getStatus() {
+		public function getStatus($string=false) {
+			if ($string) {
+				return $this->_status;
+			}
 			return $this->_status->get();
 		}
 
-		public function save($changes = null) {
+		public
+		function save($changes = null) {
 			if (is_array($changes)) {
 				$this->setFromArray($changes);
 			}
@@ -76,7 +88,8 @@
 			$this->_status(true, 'write', get_class($this) . ' changes saved to database.');
 		}
 
-		protected function __construct($id = 0) {
+		protected
+		function __construct($id = 0) {
 			if (is_numeric($id) && $id > 0) {
 				$this->id = $id;
 				$this->_read($id);
@@ -85,7 +98,7 @@
 				$this->_defaults();
 				if (isset($id['id']) && $id['id']) {
 					$this->_read($id['id']);
-				}else {
+				} else {
 					$this->_new();
 				}
 				$this->setFromArray($id);
@@ -96,14 +109,14 @@
 			}
 		}
 
-		protected function setFromArray($changes = NULL) {
+		protected
+		function setFromArray($changes = NULL) {
 			if (!is_array($changes) || count($changes) == 0) {
 				return $this->_status(false, 'setFromArray', 'Variable array was either not passed, empty or is not an array');
 			}
 			foreach ($changes as $key => $value) {
 				if (!is_array($value))
 					$value = (trim($value) == null) ? '' : trim($value);
-
 
 				if (property_exists($this, $key)) {
 					if ($this->$key == null && ($value === '' || $value === 'null')) {

@@ -93,7 +93,7 @@
 		//		 = 3 display on view credit
 		public	static function display_items($supp_trans, $mode = 0)
 			{
-				$Ajax = Ajax::i();
+
 				// if displaying in form, and no items, exit
 				if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
 					return 0;
@@ -112,13 +112,13 @@
 						echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
 						$qid = GL_QuickEntry::get(get_post('qid'));
 						if (list_updated('qid')) {
-							unset($_POST['totamount']); // enable default
-							Ajax::i()->activate('totamount');
+							unset($_POST['total_amount']); // enable default
+							Ajax::i()->activate('total_amount');
 						}
 						echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
-						$amount = Validation::input_num('totamount', $qid['base_amount']);
+						$amount = Validation::input_num('total_amount', $qid['base_amount']);
 						$dec = User::price_dec();
-						echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
+						echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 						submit('go', _("Go"), true, false, true);
 						echo "</div>";
 					}
