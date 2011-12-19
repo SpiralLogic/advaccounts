@@ -166,7 +166,12 @@
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
 				$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
-				$text .= "<h3>Backtrace: </h3>" . var_export(debug_backtrace(),true) . "\n\n</pre></div>";
+				$text .= "<h3>POST: </h3>" . var_export($_POST,true) . "\n\n";
+				$text .= "<h3>GET: </h3>" . var_export($_GET,true) . "\n\n";
+				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER,true) . "\n\n";
+				$text .= "<h3>Backtrace: </h3>" . var_export(debug_backtrace(),true) . "\n\n";
+				$text .= "<h3>Session: </h3>" . var_export($_SESSION,true) . "\n\n</pre></div>";
+
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
