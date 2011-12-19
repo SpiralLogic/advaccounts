@@ -252,7 +252,7 @@
 		$result = DB::query($sql, "could not get sales person");
 		$row = DB::fetch($result);
 		$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-		$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
+		//$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
 	} # __ADVANCEDEDIT__ END #
 	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 		$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');

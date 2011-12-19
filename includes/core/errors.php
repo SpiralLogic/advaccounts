@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -104,7 +103,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			// error_reporting==0 when messages are set off with @
-			if ($type > E_USER_NOTICE || $type==E_STRICT) {
+			if ($type > E_USER_NOTICE || $type == E_STRICT) {
 				return true;
 			}
 			if (static::$count > 5) {
@@ -132,6 +131,7 @@
 			}
 			static::$count++;
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+
 			static::prepare_exception($e);
 		}
 
@@ -162,6 +162,19 @@
 				}
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
+			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
+				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
+				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
+				$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
+				$text .= "<h3>Backtrace: </h3>" . var_export(debug_backtrace(),true) . "\n\n</pre></div>";
+				$mail = new Reports_Email(false);
+				$mail->to('errors@advancedgroup.com.au');
+				$mail->mail->FromName = "Accounts Errors";
+				$mail->subject('Error log');
+				$mail->html($text);
+				$mail->send();
+			}
+
 			return $content;
 		}
 
@@ -195,7 +208,7 @@
 			if ($sql_statement && Config::get('debug')) {
 				$str .= "<br>sql that failed was : " . $sql_statement . "<br>with error: " . DB::error_msg();
 			}
-			static::$dberrors[]=$str;
+			static::$dberrors[] = $str;
 		}
 
 		/**
@@ -215,6 +228,9 @@
 				}
 			}
 			static::$messages[] = $data;
+			if (static::$fatal) {
+				static::$errors[] = $data;
+			}
 		}
 	}
 

@@ -432,13 +432,24 @@
 
 		/**
 		 * @static
-		 * @param PDOStatement|string $sql
+		 * @param null|PDOStatement $sql
 		 * @return int
 		 */
-		public static function num_rows() {
-			return static::$prepared->rowCount();
+		public static function num_rows($sql = null) {
+			if ($sql === null) {
+				return static::$prepared->rowCount();
+			}
+			if (is_object($sql)) {
+				return $sql->rowCount();
+			}
+			$rows = Cache::get('sql.rowcount.' . md5($sql));
+			if ($rows !== false) {
+				return $rows;
+			}
+			$rows = static::query($sql)->rowCount();
+			Cache::set('sql.rowcount.' . md5($sql), $rows);
+			return $rows;
 		}
-
 		/**
 		 * @static
 		 * @return int

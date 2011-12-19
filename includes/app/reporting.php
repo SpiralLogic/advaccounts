@@ -142,7 +142,8 @@
 
 			var email = $("#EmailSelect$type_no").val();
 			$.get($(this).data('url') + "&Email="+email,function(response) {
-				Adv.msgbox.html(response);
+				var status = {message:response};
+				Adv.showStatus(status);
 			});
 			\$emailBox.dialog("close");
 		});

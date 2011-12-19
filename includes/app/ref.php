@@ -36,6 +36,22 @@
 			$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
 			$row = DB::fetch_row($result);
 			$ref = $row[0];
+			if (!static::is_valid($ref)) {
+				$db_info = SysTypes::get_db_info($type);
+				$db_name = $db_info[0];
+				$db_type = $db_info[1];
+				$db_ref = $db_info[3];
+				if ($db_ref != null) {
+					$sql = "SELECT $db_ref FROM $db_name ";
+					if ($db_type != null) {
+						$sql .= " AND $db_type=$type";
+					}
+					$sql .= " ORDER BY $db_ref DESC LIMIT 1";
+					$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
+					$result = DB::fetch($result);
+					$ref = $result[0];
+				}
+			}
 			$oldref = 'auto';
 			while (!static::is_new($ref, $type) && ($oldref != $ref)) {
 				$oldref = $ref;

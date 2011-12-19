@@ -298,9 +298,9 @@
 		}
 
 		/*
-																 Check if the order was not destroyed during opening the edition page in
-																 another browser tab.
-															 */
+	Check if the order was not destroyed during opening the edition page in
+	another browser tab.
+	*/
 		public static function check_edit_conflicts($order) {
 			if (!isset($_POST['order_id'])) {
 				$_POST['order_id'] = $order->order_id;

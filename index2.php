@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 include 'bootstrap.php';
-	$result = DB::select()->from('WebCustomers')->where('extid=',0)->limit(0,100)->fetch()->assoc()->all();
+/*	$result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
 	echo '<pre>';
 	foreach ($result as $row) {
 		if (empty($row["CompanyName"])) continue;
@@ -30,9 +30,22 @@ include 'bootstrap.php';
 		$c->webid = $row["CustomerID"];
 		$c->contact_name = $row["FirstName"];
 		$c->save();
-		if ($c->id > 0) DB::update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
-		echo $c->getStatus(true)."\n<br>";
+		$status = $c->getStatus();
+
+		$dup = ((substr($status['message'], 0, 9) == "Duplicate"));
+		if ($dup) {
+			$result2 = DB::select('debtor_no')->from('debtors_master')->where('name LIKE', $c->name)->fetch()->assoc()->one();
+			$c->id = $result2['debtor_no'];
+			$d = new Debtor((array)$c);
+			$d->save();
+
+			if ($d->id > 0) DB::update('WebCustomers')->value('extid', $d->id)->where('CustomerID=', $row['CustomerID'])->exec();
+			echo $d->name.': '.$d->getStatus(true)."\n";
+		}
+
+		echo $c->name.': '.$c->getStatus(true)."\n";
+
+		$d=$c=null;
 	}
 
-
-
+*/
