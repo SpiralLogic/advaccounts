@@ -310,7 +310,7 @@
 				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
 					Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
 				} elseif ($session_order->trans_no) {
-					Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+					Errors::warning(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
 				}
 				return $session_order;
 			}
