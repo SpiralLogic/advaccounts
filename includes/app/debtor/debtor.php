@@ -274,7 +274,7 @@
 							var val = $("#customer_id").val();
 							$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-			JS::addLiveEvent('.customer_id_label', 'click', $js);
+			JS::addLiveEvent('#customer_id_label', 'click', $js);
 		}
 
 		public static function addSearchBox($id, $options = array()) {
