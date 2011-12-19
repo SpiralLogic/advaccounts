@@ -6,8 +6,19 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB
-	{
+
+	class DBException extends Exception {}
+
+
+
+
+	/**
+	 *
+	 */
+	class DBDuplicateException extends DBException {
+	}
+
+	class DB {
 		/**
 		 *
 		 */
@@ -205,7 +216,7 @@
 		 * @param bool $debug
 		 *
 		 * @return bool|PDOStatement
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		protected function _prepare($sql, $debug = false) {
 			static::$debug = $debug;
@@ -214,7 +225,7 @@
 				$prepared = $this->conn->prepare($sql);
 				$sql = $prepared->queryString;
 				if (static::$data && substr_count($sql, '?') > count(static::$data)) {
-					throw new DB_Exception('There are more escaped values than there are placeholders!!');
+					throw new DBException('There are more escaped values than there are placeholders!!');
 				}
 				foreach (static::$data as $k => $v) {
 					$prepared->bindValue($k + 1, $v[0], $v[1]);
@@ -268,7 +279,7 @@
 
 		/**
 		 * @static
-		 * @return mixed
+		 * @return string
 		 */
 		public static function insert_id() {
 			return static::i()->conn->lastInsertId();
@@ -421,6 +432,7 @@
 
 		/**
 		 * @static
+		 * @param PDOStatement|string $sql
 		 * @return int
 		 */
 		public static function num_rows() {
@@ -548,7 +560,6 @@
 					}
 				}
 				static::$errorSql = $sql;
-				static::$errorInfo = $this->conn->errorInfo();
 				$this->_error($e);
 			}
 			return false;
@@ -560,7 +571,7 @@
 		 * @param string|bool				 $exit
 		 *
 		 * @return bool
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		protected function _error(PDOException $e, $msg = false, $exit = false) {
 			if (static::$data && static::$queryString) {
@@ -572,7 +583,7 @@
 					$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 				}
 			}
-			$error = static::$errorInfo;
+			static::$errorInfo = $error = $e->errorInfo;
 			if (Config::get('debug_sql')) {
 				$error = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			}
@@ -587,7 +598,10 @@
 				$this->intransaction = false;
 			}
 			if ($exit) {
-				throw new DB_Exception($error);
+				throw new DBException($error);
+			}
+			if (static::$errorInfo[1] == 1062) {
+				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
 			Errors::show_db_error($error);
 		}

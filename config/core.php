@@ -18,7 +18,6 @@
 		'Dates', //
 		'DB', //
 		'DB_Connection', //
-		'DB_Exception', //
 		'DB_Query', //
 		'DB_Query_Delete', //
 		'DB_Query_Insert', //

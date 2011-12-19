@@ -517,7 +517,7 @@
 					if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 						//	if (!@($this->columns[$c]['type']=='skip'))
 						$this->columns[$c]['name'] = $dbfeild_names[$c];
-						if (!@($this->columns[$c]['type'] == 'insert')) {
+						if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
 							$i++;
 						}
 					}

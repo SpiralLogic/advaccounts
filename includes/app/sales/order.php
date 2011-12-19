@@ -1069,7 +1069,7 @@
 			HTML::td();
 			$action
 			 = "var discount = prompt('Discount Percent?',''); if (!discount) return false;
-				$(\'[name='_discountall']\').val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
+				$(\"[name='_discountall']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
 			JS::addLiveEvent('#discountall', 'click', $action);
 			end_row();
 			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right", 2);
@@ -1427,7 +1427,7 @@
 		 * @param $trans_type
 		 *
 		 * @return DB_Query_Result|void
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		public static function get_header($order_no, $trans_type) {
 			$sql
@@ -1462,7 +1462,7 @@
 			$result = DB::query($sql, "order Retreival");
 			$num = DB::num_rows($result);
 			if ($num > 1) {
-				throw new DB_Exception("FATAL : sales order query returned a duplicate - " . DB::num_rows($result), E_ERROR);
+				throw new DBException("FATAL : sales order query returned a duplicate - " . DB::num_rows($result), E_ERROR);
 			}
 			if ($num == 1) {
 				return DB::fetch($result);
@@ -1608,10 +1608,16 @@
 		 * @return false|Purch_Order|Sales_Order
 		 */
 		public static function check_edit_conflicts($order) {
-			$session_order = Orders::session_get($order->order_id);
+			if (!isset($_POST['order_id'])){
+				$_POST['order_id']=$order->order_id;
+			}
+			$session_order = Orders::session_get();
 			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
-				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
-				return $session_order;
+				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
+				Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
+			}elseif($session_order->trans_no){
+					Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				}return $session_order;
 			}
 			return $order;
 		}

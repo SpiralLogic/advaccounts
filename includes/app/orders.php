@@ -125,4 +125,5 @@
 				unset($_SESSION['orders'][$type][$id]);
 			}
 		}
+
 	}

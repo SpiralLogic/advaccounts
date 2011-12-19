@@ -42,25 +42,25 @@
 	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Order';
 		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
-		create_order(ST_SALESORDER, $_GET['ModifyOrderNumber']);
+		$order = create_order(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 	}
 	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Quotation';
 		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
-		create_order(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
+		$order = create_order(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 	}
 	elseif (Input::get('NewOrder')) {
-		create_order(ST_SALESORDER, 0);
+		$order = create_order(ST_SALESORDER, 0);
 	}
 	elseif (Input::get('NewQuotation')) {
 		$page_title = _($help_context = "New Sales Quotation Entry");
-		create_order(ST_SALESQUOTE, 0);
+		$order = create_order(ST_SALESQUOTE, 0);
 	}
 	elseif (Input::get('NewQuoteToSalesOrder')) {
-		create_order(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
+		$order = create_order(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
 	elseif (Input::get('CloneOrder')) {
-		create_order(ST_SALESORDER, Input::get('CloneOrder'));
+		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
 	}
 	elseif (Input::get('remotecombine')) {
 		if ($order) {
@@ -71,13 +71,12 @@
 		}
 	}
 	elseif (Input::get('NewRemoteToSalesOrder')) {
-		create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+		$order = create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
 	}
 	elseif (isset($_GET['restoreorder'])) {
 		$serial = Sales_Order::restore();
-		create_order($serial, 0);
+		$order = create_order($serial, 0);
 	}
-	$order = Orders::session_get() ? : null;
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -159,9 +158,9 @@
 	}
 	if (isset($_POST['CancelChanges'])) {
 		$type = $order->trans_type;
-		$order_no = key($order->trans_no);
+		$order_no = (is_array($order->trans_no)) ? key($order->trans_no) : $order->trans_no;
 		Orders::session_delete($_POST['order_id']);
-		create_order($type, $order_no);
+		$order = create_order($type, $order_no);
 	}
 	if (isset($_POST['CancelOrder'])) {
 		handle_cancel_order($order);

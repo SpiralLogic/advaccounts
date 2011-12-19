@@ -77,7 +77,6 @@
 		unset($sources[$_GET['RemoveDN']]);
 	}
 	if ((isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0)) || isset($_GET['BatchInvoice'])) {
-		$order->start();
 		if (isset($_GET['BatchInvoice'])) {
 			$src = $_SESSION['DeliveryBatch'];
 			unset($_SESSION['DeliveryBatch']);
@@ -86,18 +85,18 @@
 			$src = array($_GET['DeliveryNumber']);
 		}
 		/* read in all the selected deliveries into the Items order */
-		$dn = new Sales_Order(ST_CUSTDELIVERY, $src, true);
-		$dn->start();
-		if ($dn->count_items() == 0) {
+		$order = new Sales_Order(ST_CUSTDELIVERY, $src, true);
+
+		if ($order->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
 		}
-		$dn->trans_type = ST_SALESINVOICE;
-		$dn->src_docs = $dn->trans_no;
-		$dn->trans_no = 0;
-		$dn->reference = Ref::get_next(ST_SALESINVOICE);
-		$dn->due_date = Sales_Order::get_invoice_duedate($dn->customer_id, $dn->document_date);
-		copy_from_order($dn);
+		$order->trans_type = ST_SALESINVOICE;
+		$order->src_docs = $order->trans_no;
+		$order->trans_no = 0;
+		$order->reference = Ref::get_next(ST_SALESINVOICE);
+		$order->due_date = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
+		copy_from_order($order);
 	}
 	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
@@ -106,26 +105,26 @@
 		and therefore can not be modified.") . "</span></div>";
 			Page::footer_exit();
 		}
-		$dn = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
-		$dn->start();
-		copy_from_order($dn);
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
+		$order->start();
+		copy_from_order($order);
 		if ($order->count_items() == 0) {
 			echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</span></div>";
 		}
 	}
 	elseif (isset($_GET['ViewInvoice']) && $_GET['ViewInvoice'] > 0) {
-		$dn = new Sales_Order(ST_SALESINVOICE, $_GET['ViewInvoice']);
-		$dn->start();
-		copy_from_order($dn);
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET['ViewInvoice']);
+		$order->start();
+		copy_from_order($order);
 	}
-	elseif (!isset($_GET['order_id'])) {
+	elseif (!$order && !isset($_GET['order_id'])) {
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
 		Errors::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 		Renderer::end_page();
 		exit;
 	}
-	elseif (!check_quantities($order)) {
+	elseif ($order && !check_quantities($order)) {
 		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 	}
 	if (isset($_POST['Update'])) {
@@ -144,10 +143,10 @@
 		$invoice_no = $order->write();
 		$order->finish();
 		if ($newinvoice) {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 		else {
-			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
+		//	Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
 		}
 	}
 	// find delivery spans for batch invoice display
@@ -251,14 +250,14 @@
 	$has_marked = false;
 	$show_qoh = true;
 	$dn_line_cnt = 0;
-	foreach ($order->line_items as $line => $line) {
+	foreach ($order->line_items as $line_no => $line) {
 		if (!$viewing && $line->quantity == $line->qty_done) {
 			continue; // this line was fully invoiced
 		}
 		alt_table_row_color($k);
 		Item_UI::status_cell($line->stock_id);
 		if (!$viewing) {
-			textarea_cells(null, 'Line' . $line . 'Desc', $line->description, 30, 3);
+			textarea_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
 		}
 		else {
 			label_cell($line->description);
@@ -270,7 +269,7 @@
 		if ($is_batch_invoice) {
 			// for batch invoices we can only remove whole deliveries
 			echo '<td class="right no wrap">';
-			hidden('Line' . $line, $line->qty_dispatched);
+			hidden('Line' . $line_no, $line->qty_dispatched);
 			echo Num::format($line->qty_dispatched, $dec) . '</td>';
 		}
 		elseif ($viewing) {
@@ -278,7 +277,7 @@
 			qty_cell($line->quantity, false, $dec);
 		}
 		else {
-			small_qty_cells(null, 'Line' . $line, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+			small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
 		}
 		$display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
 		$line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
@@ -431,7 +430,7 @@
 		}
 		$_POST['order_id'] = $order->order_id;
 		$_POST['Comments'] = $order->Comments;
-		Orders::session_set($order);
+		return Orders::session_set($order);
 	}
 
 	/**
@@ -477,7 +476,7 @@
 			Errors::error(_("There are no item quantities on this invoice."));
 			return false;
 		}
-		if (!check_quantities()) {
+		if (!check_quantities($order)) {
 			Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 			return false;
 		}

@@ -11,8 +11,7 @@
 	 ***********************************************************************/
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
 	 */
-	class Purch_Order
-	{
+	class Purch_Order {
 		public $supplier_id;
 		public $supplier_details;
 		public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
@@ -303,9 +302,16 @@
 																 another browser tab.
 															 */
 		public static function check_edit_conflicts($order) {
-			$session_order = Orders::session_get($order->order_id);
+			if (!isset($_POST['order_id'])) {
+				$_POST['order_id'] = $order->order_id;
+			}
+			$session_order = Orders::session_get();
 			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
-				Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
+					Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
+				} elseif ($session_order->trans_no) {
+					Errors::error(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+				}
 				return $session_order;
 			}
 			return $order;

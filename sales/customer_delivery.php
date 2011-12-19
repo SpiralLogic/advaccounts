@@ -304,7 +304,7 @@
 	table_header($th);
 	$k = 0;
 	$has_marked = false;
-	foreach ($order->line_items as $line => $line) {
+	foreach ($order->line_items as $line_no => $line) {
 		if ($line->quantity == $line->qty_done) {
 			continue; //this line is fully delivered
 		}
@@ -326,12 +326,12 @@
 			alt_table_row_color($k);
 		}
 		Item_UI::status_cell($line->stock_id);
-		text_cells(null, 'Line' . $line . 'Desc', $line->description, 30, 50);
+		text_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
 		$dec = Item::qty_dec($line->stock_id);
 		qty_cell($line->quantity, false, $dec);
 		label_cell($line->units);
 		qty_cell($line->qty_done, false, $dec);
-		small_qty_cells(null, 'Line' . $line, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+		small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
 		$display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
 		$line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
 		amount_cell($line->price);

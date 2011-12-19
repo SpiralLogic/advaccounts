@@ -183,7 +183,7 @@
 		 * @param null $sql_statement
 		 * @internal param bool $exit
 		 *
-		 * @throws DB_Exception
+		 * @throws DBException
 		 */
 		static function show_db_error($msg, $sql_statement = null) {
 			$db_error = DB::error_no();
