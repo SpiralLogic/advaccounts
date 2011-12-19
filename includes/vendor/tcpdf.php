@@ -6108,6 +6108,7 @@
 			 * @return string converted
 			 */
 			function unhtmlentities($text_to_convert) {
+
 				if (!$this->isunicode) {
 					return html_entity_decode($text_to_convert, ENT_QUOTES);
 				}

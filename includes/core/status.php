@@ -76,9 +76,9 @@
 		 * @return bool|mixed
 		 */
 		public function hasError() {
-					if (!empty($this->_errors)) return end($this->_errors);
-					return false;
-				}
+			if (!empty($this->_errors)) return end($this->_errors);
+			return false;
+		}
 
 		/**
 		 * @return array
@@ -86,11 +86,12 @@
 		public function getAll() {
 			return $this->_status;
 		}
-public function __toString() {
-$last = $this->get();
-	$str = ucwords($last['process']);
-	$str .= ($last['status'])?' Succeeded: ':' Failed: ';
-	$str .= $last['message'];
-	return $str;
-}
+
+		public function __toString() {
+			$last = $this->get();
+			$str = ucwords($last['process']);
+			$str .= ($last['status']) ? ' Succeeded: ' : ' Failed: ';
+			$str .= $last['message'];
+			return $str;
+		}
 	}

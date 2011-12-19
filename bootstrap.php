@@ -114,6 +114,7 @@
 				Errors::$fatal = true;
 				$text = '';
 				Errors::$messages[] = error_get_last();
+				Errors::$errors[] = error_get_last();
 			}
 			$Ajax->run();
 			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;

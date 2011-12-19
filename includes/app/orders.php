@@ -6,8 +6,7 @@
 	 * Time: 2:43 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class Orders extends DB_abstract
-	{
+	abstract class Orders extends DB_abstract {
 		/**
 		 * @var
 		 */
@@ -62,11 +61,13 @@
 		 * @internal param $id
 		 * @return Sales_Order|Purch_Order
 		 */
-		public static function session_get($post_id = 'order_id') {
-			if (!isset($_POST[$post_id])) {
-				return false;
+		public static function session_get($id = null) {
+			if (is_null($id)) {
+				if (!isset($_POST['order_id']))
+					return false;
+				$id = $_POST['order_id'];
 			}
-			$id = $_POST[$post_id];
+
 			list($type, $id) = explode('.', $id);
 			static::setup($type);
 			if (isset($_SESSION['orders'][$type][$id])) {
@@ -125,5 +126,4 @@
 				unset($_SESSION['orders'][$type][$id]);
 			}
 		}
-
 	}

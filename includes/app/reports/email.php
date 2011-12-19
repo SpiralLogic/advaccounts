@@ -10,8 +10,7 @@
 
 			 Leave this header in this file!
 	 */
-	class Reports_Email
-	{
+	class Reports_Email {
 		public $to = array();
 		public $cc = array();
 		public $bcc = array();
@@ -20,22 +19,28 @@
 		public $header = "";
 		public $subject = "";
 		public $body = "";
+		/**
+		 * @var \PHPMailer
+		 */
 		public $mail;
 		public $toerror = "No vaild email address";
 
-		public function __construct($name, $mail) {
+		public function __construct($defaults = true) {
 			$this->mail = new PHPMailer();
 			$this->mail->IsSMTP(); // telling the class to use SMTP
 			$this->mail->Host = Config::get('email.server'); // SMTP server
-			$this->mail->SMTPAuth = true;
-			$this->mail->WordWrap = 50;
 			$this->mail->Username = Config::get('email.username');
 			$this->mail->Password = Config::get('email.password');
 			$this->mail->From = Config::get('email.from_email');
-			$this->mail->FromName = Config::get('email.from_name');
-			$bcc = Config::get('email.bcc');
-			if ($bcc) {
-				$this->mail->AddBCC($bcc);
+			$this->mail->SMTPAuth = true;
+			$this->mail->WordWrap = 50;
+			if ($defaults) {
+
+				$this->mail->FromName = Config::get('email.from_name');
+				$bcc = Config::get('email.bcc');
+				if ($bcc) {
+					$this->mail->AddBCC($bcc);
+				}
 			}
 		}
 

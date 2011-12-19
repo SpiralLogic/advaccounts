@@ -115,6 +115,7 @@
 				return $this->_status(false, 'setFromArray', 'Variable array was either not passed, empty or is not an array');
 			}
 			foreach ($changes as $key => $value) {
+				if (is_object($value)) $value=(array)$value;
 				if (!is_array($value))
 					$value = (trim($value) == null) ? '' : trim($value);
 
