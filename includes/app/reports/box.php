@@ -28,7 +28,7 @@
 		}
 
 		public function getDisplay($class = null) {
-
+			$Ajax = Ajax::i();
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
 			$class_counter = 0;
@@ -47,16 +47,13 @@
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '',
-							Config::get('debug_pdf') ? false : 'default process') . hidden(
-							'REP_ID',
-							$report->id,
-							false
-						) . '<br><br>';
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug_pdf') ?
+																										 false :
+																										 'default process') . hidden('REP_ID', $report->id, false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
 						$st_params .= "\n</form></td></tr></table>\n";
 						JS::set_focus('Rep' . $report->id);
-
+						$Ajax->addUpdate(true, 'rep_form', $st_params);
 					}
 				}
 				$st_reports .= "</table>";
@@ -96,13 +93,9 @@
 				return "";
 			}
 			$cnt = 0;
-			foreach (
-				$controls as $title => $type
-			) {
+			foreach ($controls as $title => $type) {
 				$ctrl = '';
-				foreach (
-					$this->ctrl_handlers as $fun
-				) { // first check for non-standard controls
+				foreach ($this->ctrl_handlers as $fun) { // first check for non-standard controls
 					call_user_func($fun, 'PARAM_' . $cnt, $type);
 					//$ctrl = $fun('PARAM_' . $cnt, $type);
 					if ($ctrl) {
@@ -116,7 +109,8 @@
 					$st .= $title . ':<br>';
 					$st .= $ctrl;
 					$st .= "<br><br>";
-				} else {
+				}
+				else {
 					throw new Adv_Exception(_('Unknown report parameter type:') . $type);
 				}
 				$cnt++;
@@ -139,13 +133,9 @@
 			switch ($type) {
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
-					return select_box(
-						$name, '', $sql, 'curr_abrev', 'name', array(
-																												'spec_option' => _("No Currency Filter"),
-																												'spec_id' => ALL_TEXT,
-																												'order' => false
-																									 )
-					);
+					return select_box($name, '', $sql, 'curr_abrev', 'name', array(
+																																				'spec_option' => _("No Currency Filter"),
+																																				'spec_id' => ALL_TEXT, 'order' => false));
 				case 'DATE':
 				case 'DATEBEGIN':
 				case 'DATEEND':
@@ -155,31 +145,33 @@
 				case 'DATEENDTAX':
 					if ($type == 'DATEBEGIN') {
 						$date = Dates::begin_fiscalyear();
-					} elseif ($type == 'DATEEND') {
+					}
+					elseif ($type == 'DATEEND') {
 						$date = Dates::end_fiscalyear();
-					} else {
+					}
+					else {
 						$date = Dates::Today();
 					}
 					if ($type == 'DATEBEGINM') {
 						$date = Dates::begin_month($date);
-					} elseif ($type == 'DATEENDM') {
+					}
+					elseif ($type == 'DATEENDM') {
 						$date = Dates::end_month($date);
-					} elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
+					}
+					elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
 						$row = DB_Company::get_prefs();
 						$edate = Dates::add_months($date, -$row['tax_last']);
 						$edate = Dates::end_month($edate);
 						if ($type == 'DATEENDTAX') {
 							$date = $edate;
-						} else {
+						}
+						else {
 							$bdate = Dates::begin_month($edate);
 							$bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
 							$date = $bdate;
 						}
 					}
-					$st = "<input type='text' name='$name' value='$date'>";
-					if (Config::get('ui_forms_datepicker')) {
-						DatePicker::add($name);
-					}
+					$st = "<input type='text' class='datepicker' name='$name' value='$date'>";
 					return $st;
 					break;
 				case 'YES_NO':
@@ -234,12 +226,9 @@
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
-						return select_box(
-							$name, '', $sql, 'debtor_no', 'name', array(
-																												 'spec_option' => _("No Customer Filter"),
-																												 'spec_id' => ALL_NUMERIC
-																										)
-						);
+						return select_box($name, '', $sql, 'debtor_no', 'name', array(
+																																				 'spec_option' => _("No Customer Filter"),
+																																				 'spec_id' => ALL_NUMERIC));
 					} // FIX allitems numeric!
 					//						return Debtor::select($name, null, _("No Customer Filter"));
 					else {
@@ -250,12 +239,9 @@
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER') {
-						return select_box(
-							$name, '', $sql, 'supplier_id', 'supp_name', array(
-																																'spec_option' => _("No Supplier Filter"),
-																																'spec_id' => ALL_NUMERIC
-																													 )
-						);
+						return select_box($name, '', $sql, 'supplier_id', 'supp_name', array(
+																																								'spec_option' => _("No Supplier Filter"),
+																																								'spec_id' => ALL_NUMERIC));
 					} // FIX allitems numeric!
 					//						return Purch_Creditor::select($name, null, _("No Supplier Filter"));
 					else {
@@ -356,17 +342,15 @@
 					return GL_UI::fiscalyears($name);
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM users";
-					return select_box(
-						$name, '', $sql, 'id', 'user_id', array(
-																									 'spec_option' => _("No Users Filter"),
-																									 'spec_id' => ALL_NUMERIC
-																							)
-					);
+					return select_box($name, '', $sql, 'id', 'user_id', array(
+																																	 'spec_option' => _("No Users Filter"),
+																																	 'spec_id' => ALL_NUMERIC));
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
 					if ($type == 'ACCOUNTTAGS') {
 						$tag_type = TAG_ACCOUNT;
-					} else {
+					}
+					else {
 						$tag_type = TAG_DIMENSION;
 					}
 					return Tags::select($name, 5, $tag_type, true, _("No tags"));
@@ -377,17 +361,12 @@
 		protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
 			global $systypes_array;
 			$types = $systypes_array;
-			foreach (
-				array(ST_LOCTRANSFER, ST_PURCHORDER, ST_SUPPRECEIVE, ST_MANUISSUE, ST_MANURECEIVE, ST_SALESORDER, ST_SALESQUOTE, ST_DIMENSION) as $type
-			) {
+			foreach (array(
+								 ST_LOCTRANSFER, ST_PURCHORDER, ST_SUPPRECEIVE, ST_MANUISSUE, ST_MANURECEIVE, ST_SALESORDER, ST_SALESQUOTE,
+								 ST_DIMENSION) as $type) {
 				unset($types[$type]);
 			}
-			return array_selector(
-				$name, $value, $types, array(
-																		'spec_option' => $spec_opt,
-																		'spec_id' => ALL_NUMERIC,
-																		'async' => false,
-															 )
-			);
+			return array_selector($name, $value, $types, array(
+																												'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'async' => false,));
 		}
 	}

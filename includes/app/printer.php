@@ -11,7 +11,8 @@
 		public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
 			if ($id > 0) {
 				$sql = "UPDATE printers SET description=" . DB::escape($descr) . ",name=" . DB::escape($name) . ",queue=" . DB::escape($queue) . ",host=" . DB::escape($host) . ",port=" . DB::escape($port) . ",timeout=" . DB::escape($timeout) . " WHERE id=" . DB::escape($id);
-			} else {
+			}
+			else {
 				$sql = "INSERT INTO printers (" . "name,description,queue,host,port,timeout) " . "VALUES (" . DB::escape($name) . "," . DB::escape($descr) . "," . DB::escape($queue) . "," . DB::escape($host) . "," . DB::escape($port) . "," . DB::escape($timeout) . ")";
 			}
 			return DB::query($sql, "could not write printer definition");
@@ -35,7 +36,8 @@
 			foreach ($dest as $rep => $printer) {
 				if ($printer != '' || $rep == '') {
 					$sql = "REPLACE INTO print_profiles " . "(profile, report, printer) VALUES (" . DB::escape($name) . "," . DB::escape($rep) . "," . DB::escape($printer) . ")";
-				} else {
+				}
+				else {
 					$sql = "DELETE FROM print_profiles WHERE (" . "report=" . DB::escape($rep) . " AND profile=" . DB::escape($name) . ")";
 				}
 				$result = DB::query($sql, "could not update printing profile");
@@ -50,8 +52,7 @@
 		//	Get destination for report defined in given printing profile.
 		//
 		public static function get_report($profile, $report) {
-			$sql = "SELECT printer FROM print_profiles WHERE profile=" . DB::escape($profile, false,
-				false) . " AND report=" . DB::quote($report);
+			$sql = "SELECT printer FROM print_profiles WHERE profile=" . DB::escape($profile) . " AND report=" . DB::escape($report);
 			$result = DB::query($sql, 'report printer lookup failed');
 			if (!$result) {
 				return false;
