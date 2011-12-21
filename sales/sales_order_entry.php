@@ -241,10 +241,10 @@
 		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
 		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		if ($order->trans_no == 0) {
-			submit_center_last('ProcessOrder', $corder, _('Check entered data and save document'), 'default');
+			submit_center_last('ProcessOrder',$porder , _('Check entered data and save document'), 'default');
 		}
 		else {
-			submit_center_last('ProcessOrder', $porder, _('Validate changes and update document'), 'default');
+			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
 		}
 		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 			//UploadHandler::insert($_GET['ModifyOrderNumber']);
