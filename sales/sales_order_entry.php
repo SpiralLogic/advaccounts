@@ -122,11 +122,12 @@
 		copy_to_order($order);
 		$modified = ($order->trans_no != 0);
 		$so_type = $order->so_type;
-		$trans_no = key($order->trans_no);
 		$trans_type = $order->trans_type;
 		Dates::new_doc_date($order->document_date);
 		$_SESSION['global_customer_id'] = $order->customer_id;
 		$order->write(1);
+		$trans_no = key($order->trans_no);
+
 		if (Errors::$fatal) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
