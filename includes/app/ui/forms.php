@@ -886,7 +886,7 @@
 			if ($init !== null) {
 				$_POST[$name] = $init;
 			} else {
-				$_POST[$name] = '';
+				$_POST[$name] = 0;
 			}
 		}
 		if ($label != null) {

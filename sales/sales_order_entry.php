@@ -118,8 +118,8 @@
 	}
 	//--------------- --------------------------------------------------------------
 	if (isset($_POST['ProcessOrder']) && can_process($order)) {
-		$_SESSION['Jobsboard'] = clone ($order);
 		copy_to_order($order);
+		$_SESSION['Jobsboard'] = clone ($order);
 		$modified = ($order->trans_no != 0);
 		$so_type = $order->so_type;
 		$trans_type = $order->trans_type;

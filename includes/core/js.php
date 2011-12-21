@@ -58,7 +58,7 @@
 				return;
 			}
 			$js = <<<JS
-		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','td .openWindow',
+		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','div .openWindow,td .openWindow',
 			function(e) {
 				if (e.type=='click') {
 					Adv.openWindow(this.href, this.target,{$width},{$height});
@@ -77,10 +77,12 @@ window.clearTimeout(Adv.o.popupCurrent);
 			});
 			Adv.popupWindow = function() {
 					if (Adv.o.order_details) Adv.o.order_details.remove();
+					var my="left center",at="right top";
+					if (Adv.o.popupParent.is('div')) {my="center center";at="center top";}
 								Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href+"&popup=1", width: {$width}, height: {$height}})
 									.css({position:'fixed', background:'white'})
 									.appendTo(Adv.o.wrapper)
-									.position({my:"left center",at:"right top", of:Adv.o.popupParent}).css({top:20})
+									.position({my:my,at:at, of:Adv.o.popupParent}).css({top:20})
 									.on('mouseleave',function() { $(this).remove();
 								});
 			}
@@ -282,9 +284,9 @@ JS;
 				$status['process'] = '';
 				$data['status'] = $status;
 			} elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
-				$message = array_pop(Errors::$dberrors);
+				$dberror = array_pop(Errors::$dberrors['message']);
 				$status['status'] = false;
-				$status['message'] = $message;
+				$status['message'] = $dberror;
 				$data['status'] = $status;
 			}
 			ob_end_clean();
