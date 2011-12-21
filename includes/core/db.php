@@ -243,6 +243,7 @@
 				$prepared = false;
 				$this->_error($e);
 			}
+			static::$data=array();
 			return $prepared;
 		}
 
@@ -511,6 +512,7 @@
 					static::i()->_error($e);
 				}
 			}
+			static::$data=array();
 		}
 
 		//
@@ -602,12 +604,14 @@
 		 * @throws DBException
 		 */
 		protected function _error(PDOException $e, $msg = false, $exit = false) {
-			if (static::$data && is_array(reset(static::$data))) {
-				static::$errorSql = static::placeholderValues(static::$errorSql, static::$data);
-			} elseif (static::$data) {
-				static::$errorSql = static::namedValues(static::$errorSql, static::$data);
+			$data = static::$data;
+			static::$data = array();
+			if ($data&& is_array(reset($data))) {
+				static::$errorSql = static::placeholderValues(static::$errorSql, $data);
+			} elseif ($data) {
+				static::$errorSql = static::namedValues(static::$errorSql, $data);
 			}
-			static::$data = false;
+
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $error['message'] = $e->getMessage();
@@ -624,6 +628,6 @@
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
-			Errors::show_db_error($error, static::$errorSql);
+			Errors::show_db_error($error, static::$errorSql,$data);
 		}
 	}
