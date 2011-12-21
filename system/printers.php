@@ -20,27 +20,18 @@
 			Errors::error(_("Printer name cannot be empty."));
 			JS::set_focus('name');
 		}
-		elseif (empty($_POST['host']))
-		{
+		elseif (empty($_POST['host'])) {
 			Errors::notice(_("You have selected printing to server at user IP."));
 		}
-		elseif (!Validation::is_num('tout', 0, 60))
-		{
+		elseif (!Validation::is_num('tout', 0, 60)) {
 			$error = 1;
 			Errors::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
 			JS::set_focus('tout');
 		}
 		if ($error != 1) {
-			Printer::write_def(
-				$selected_id, get_post('name'), get_post('descr'),
-				get_post('queue'), get_post('host'), Validation::input_num('port', 0),
-				Validation::input_num('tout', 0)
-			);
-			Errors::notice(
-				$selected_id == -1 ?
-				 _('New printer definition has been created')
-				 : _('Selected printer definition has been updated')
-			);
+			Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
+			Errors::notice($selected_id == -1 ? _('New printer definition has been created') :
+											_('Selected printer definition has been updated'));
 			$Mode = 'RESET';
 		}
 	}
@@ -51,7 +42,8 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this printer definition, because print profile have been created using it."));
-		} else {
+		}
+		else {
 			$sql = "DELETE FROM printers WHERE id=" . DB::escape($selected_id);
 			DB::query($sql, "could not delete printer definition");
 			Errors::notice(_('Selected printer definition has been deleted'));
@@ -68,8 +60,7 @@
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow['name']);
 		label_cell($myrow['description']);
@@ -86,7 +77,7 @@
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow = get_printer($selected_id);
+			$myrow = Printer::get($selected_id);
 			$_POST['name'] = $myrow['name'];
 			$_POST['descr'] = $myrow['description'];
 			$_POST['queue'] = $myrow['queue'];
@@ -95,7 +86,8 @@
 			$_POST['port'] = $myrow['port'];
 		}
 		hidden('selected_id', $selected_id);
-	} else {
+	}
+	else {
 		if (!isset($_POST['host'])) {
 			$_POST['host'] = 'localhost';
 		}
