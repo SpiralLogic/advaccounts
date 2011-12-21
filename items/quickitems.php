@@ -25,6 +25,7 @@
 	JS::footerFile("js/quickitems.js");
 	Page::start(_($help_context = "Items"), isset($_GET['frame']));
 	$stock_cats = Item_Category::select('category_id');
+	$units = Item_Unit::select('uom');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch', array('class' => 'bold pad10 center'));
 		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
@@ -45,6 +46,7 @@ JS;
 		$menu->firstPage = $_GET['page'];
 	}
 	$menu->startTab("Items", "Items");
+
 	echo <<<HTML
 <div id="Items" class="center">
 <input type="hidden" value="\${id}" id="id">
@@ -53,7 +55,7 @@ JS;
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
 <tr><td ><label for="long_description">Description:</label></td><td><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></td></tr>
 <tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
-<tr><td ><label for="uom">Units of Mesasure:</label><br></td><td><input id="uom" type="text" value="\${uom}" maxlength="10"></td></tr>
+<tr><td ><label for="uom">Units of Mesasure:</label><br></td><td>$units</tr>
 </table></div><div class="center">
 <table id="stockLevels" class="marginauto grid" style="width:80%">
 <thead><th>Location</th><th>QOH</th><th>Shelf Primary</th><th>Shelf Secondary</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></thead><tbody>

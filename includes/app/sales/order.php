@@ -990,7 +990,7 @@
 				Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=".$this->order_id."&DS=1' class='button'", true, true);
 				end_outer_table(1);
 			}
-			start_table('tablestyle center');
+			start_table('tablestyle ');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"),
 				"");

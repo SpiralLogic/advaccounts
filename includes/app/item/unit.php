@@ -6,8 +6,7 @@
 	 * Time: 2:42 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Item_Unit
-	{
+	class Item_Unit {
 		/**********************************************************************
 		Copyright (C) Advanced Group PTY LTD
 		Released under the terms of the GNU General Public License, GPL,
@@ -92,5 +91,14 @@
 			}
 			echo array_selector($name, $value, $units, array('disabled' => !$enabled));
 			echo "</td></tr>\n";
+		}
+
+		public static function select($name, $value = null, $enabled = true) {
+			$result = Item_Unit::get_all();
+			$units=array();
+			while ($unit = DB::fetch($result)) {
+				$units[$unit['abbr']] = $unit['name'];
+			}
+			return array_selector($name, $value, $units, array('disabled' => !$enabled));
 		}
 	}

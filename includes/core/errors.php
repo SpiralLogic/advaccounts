@@ -201,13 +201,13 @@
 		 *
 		 * @throws DBException
 		 */
-		static function show_db_error($error, $sql = null) {
+		static function show_db_error($error, $sql = null,$data=array()) {
 			$errorCode = DB::error_no();
 			$error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
 			if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
 				$error['message'] .= 	_("The entered information is a duplicate. Please go back and enter different values.");
 			}
-			$error['debug'] .= '<br>SQL that failed was: "' . $sql . '"<br>with error: ';
+			$error['debug'] .= '<br>SQL that failed was: "' . $sql . '" with data: '.serialize($data).'<br>with error: ';
 			static::$dberrors['debug'] = $error['debug'];
 			static::$dberrors['message'] = $error['message'];
 		}
