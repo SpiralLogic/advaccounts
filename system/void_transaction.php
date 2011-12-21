@@ -13,6 +13,28 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"));
+
+	if (!isset($_POST['date_'])) {
+		$_POST['date_'] = Dates::Today();
+		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+			$_POST['date_'] = Dates::end_fiscalyear();
+		}
+	}
+	if (isset($_POST['ProcessVoiding'])) {
+		if (!check_valid_entries()) {
+			unset($_POST['ProcessVoiding']);
+		}
+		Ajax::i()->activate('_page_body');
+	}
+	if (isset($_POST['ConfirmVoiding'])) {
+		handle_void_transaction();
+		Ajax::i()->activate('_page_body');
+	}
+	if (isset($_POST['CancelVoiding'])) {
+		Ajax::i()->activate('_page_body');
+	}
+	voiding_controls();
+	Renderer::end_page();
 	function exist_transaction($type, $type_no) {
 		$void_entry = Voiding::has($type, $type_no);
 		if ($void_entry > 0) {
@@ -173,27 +195,5 @@
 			}
 		}
 	}
-
-	if (!isset($_POST['date_'])) {
-		$_POST['date_'] = Dates::Today();
-		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			$_POST['date_'] = Dates::end_fiscalyear();
-		}
-	}
-	if (isset($_POST['ProcessVoiding'])) {
-		if (!check_valid_entries()) {
-			unset($_POST['ProcessVoiding']);
-		}
-		Ajax::i()->activate('_page_body');
-	}
-	if (isset($_POST['ConfirmVoiding'])) {
-		handle_void_transaction();
-		Ajax::i()->activate('_page_body');
-	}
-	if (isset($_POST['CancelVoiding'])) {
-		Ajax::i()->activate('_page_body');
-	}
-	voiding_controls();
-	Renderer::end_page();
 
 ?>
