@@ -22,12 +22,56 @@
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();
 	}
-	if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['order_id'])) {
-		die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
-	}
-	else {
+
 		$order = Orders::session_get() ? : null;
+	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
+
+		$order = new Purch_Order($_GET['PONumber']);
 	}
+	elseif ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_POST['order_id'])) {
+		Errors::error(_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
+		Page::footer_exit();
+	}
+	$order = Purch_Order::check_edit_conflicts($order);
+	$_POST['order_id'] = $order->order_id;
+Orders::session_set($order);
+	/*read in all the selected order into the Items order */
+
+	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
+		/* if update quantities button is hit page has been called and ${$line->line_no} would have be
+								set from the post to the quantity to be received in this receival*/
+		foreach ($order->line_items as $line) {
+			if (($line->quantity - $line->qty_received) > 0) {
+				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
+				if (!Validation::is_num($line->line_no)) {
+					$_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
+				}
+				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
+					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
+				}
+				$order->line_items[$line->line_no]->receive_qty = Validation::input_num($line->line_no);
+				if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
+					$order->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];
+				}
+			}
+		}
+		Ajax::i()->activate('grn_items');
+	}
+	if (isset($_POST['ProcessGoodsReceived'])) {
+		process_receive_po($order);
+	}
+	start_form();
+	hidden('order_id');
+	Purch_GRN::display($order, true);
+	Display::heading(_("Items to Receive"));
+	display_po_receive_items($order);
+	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $order->order_no);
+	echo '<br>';
+	submit_center_first('Update', _("Update Totals"), '', true);
+	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
+	end_form();
+	Renderer::end_page();
+
 	function display_po_receive_items($order) {
 		Display::div_start('grn_items');
 		start_table('tablestyle width90');
@@ -85,8 +129,8 @@
 		// Otherwise if you try to fullfill item quantities separately will give error.
 		$sql
 		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
-		FROM purch_order_details
-		WHERE order_no=" . DB::escape($order->order_no) . " ORDER BY po_detail_item";
+			FROM purch_order_details
+			WHERE order_no=" . DB::escape($order->order_no) . " ORDER BY po_detail_item";
 		$result = DB::query($sql, "could not query purch order details");
 		$line_no = 1;
 		while ($myrow = DB::fetch($result)) {
@@ -176,42 +220,5 @@
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 	}
 
-	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
-		$order = new Purch_Order($_GET['PONumber']);
-		/*read in all the selected order into the Items order */
-	}
-	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
-		/* if update quantities button is hit page has been called and ${$line->line_no} would have be
-								set from the post to the quantity to be received in this receival*/
-		foreach ($order->line_items as $line) {
-			if (($line->quantity - $line->qty_received) > 0) {
-				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
-				if (!Validation::is_num($line->line_no)) {
-					$_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
-				}
-				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
-					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
-				}
-				$order->line_items[$line->line_no]->receive_qty = Validation::input_num($line->line_no);
-				if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
-					$order->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];
-				}
-			}
-		}
-		Ajax::i()->activate('grn_items');
-	}
-	if (isset($_POST['ProcessGoodsReceived'])) {
-		process_receive_po($order);
-	}
-	start_form();
-	Purch_GRN::display($order, true);
-	Display::heading(_("Items to Receive"));
-	display_po_receive_items($order);
-	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $order->order_no);
-	echo '<br>';
-	submit_center_first('Update', _("Update Totals"), '', true);
-	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
-	end_form();
-	Renderer::end_page();
 ?>
 
