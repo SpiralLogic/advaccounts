@@ -25,11 +25,17 @@
 	define("ICON_VIEW", "view.gif");
 	define("ICON_SUBMIT", "ok.gif");
 	define("ICON_ESCAPE", "escape.png");
+	define('DEFAULT_LOCATION', 'MEL');
+	define('DEFAULT_TAX_GROUP', 1);
+	define('DEFAULT_AREA', 1);
+	define('DEFAULT_SHIP_VIA', 1);
 	define('APP_TITLE', "Advanced Accounting");
 	define('VERSION', "2.2.12");
 	define('BUILD_VERSION', -3);
 	define('POWERED_BY', "Advanced Accounting");
 	define('POWERED_URL', "http://www.advancedgroup.com.au");
+	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
+	define('STORE_URL_EXTENSION', '.htm');
 	define('COMPANY_PATH', PATH_TO_ROOT . '/company');
 	define('THEME_PATH', PATH_TO_ROOT . '/themes/');
 	define("BACKUP_PATH", COMPANY_PATH . "/backup/");

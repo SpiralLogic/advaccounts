@@ -10,7 +10,7 @@
 		$data['customer'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
-		$_SESSION['global_customer_id'] = $customer->id;
+
 	} else {
 		$data['customer'] = $customer = new Debtor();
 	}
@@ -18,6 +18,8 @@
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Debtor::search($_GET['term']);
+		}else {
+			$_SESSION['global_customer_id'] = $customer->id;
 		}
 		JS::renderJSON($data);
 	}
