@@ -11,7 +11,8 @@
 	function getCustomers() {
 		$customersXML = getCustomersXML();
 		if (!$customersXML) return false;
-		$customers = XMLParser::XMLtoArray($customersXML);
+		$customers = array();
+		$customers += XMLParser::XMLtoArray($customersXML);
 		return $customers;
 	}
 
@@ -24,14 +25,19 @@
 		$url .= '&EncryptedPassword=' . $apikey;
 		$url .= '&EDI_Name=Generic\Customers';
 		$url .= '&SELECT_Columns=*';
-		return file_get_contents($url);
+		echo file_get_contents($url);
+		exit();
 	}
 
 	function getProducts() {
 		$productsXML = getProductsXML();
 		if (!$productsXML) return false;
-		$products = XMLParser::XMLtoArray($productsXML);
-		return $products;
+		$products=array();
+		$products += XMLParser::XMLtoArray($productsXML);
+		var_dump($products);
+
+			return $products;
+		exit();
 	}
 
 	function getProductsXML() {
@@ -42,7 +48,7 @@
 		$url .= "Login=" . $apiuser;
 		$url .= '&EncryptedPassword=' . $apikey;
 		$url .= '&EDI_Name=Generic\Products';
-		$url .= '&SELECT_Columns=*';
+		$url .= '&SELECT_Columns=*&LIMIT=1';
 		return file_get_contents($url);
 	}
 
@@ -87,14 +93,16 @@
 	if (AJAX_REFERRER) {
 		$products = getProducts();
 		foreach ($products as $product) {
-			DB::insert('WebProducts')->values($product)->exec();
+		//	DB::insert('WebProducts')->values($product)->exec();
 			echo "<div>" . $product['ProductCode'] . "</div>";
 		}
-		$customers = getCustomers();
+	/*	$customers = getCustomers();
 		foreach ($customers as $customer) {
 			DB::insert('WebCustomers')->values($customer)->exec();
 			echo "<div>" . $customer['CompanyName'] . "</div>";
-		}
+	}
+	*/
+
 		exit();
 	}
 	Page::start('Get From Web', true);

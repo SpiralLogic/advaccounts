@@ -614,8 +614,7 @@
 
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-			$error['message'] = ($msg != false) ? $msg : $error['message'] = $e->getMessage();
-
+			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
 			if ($this->conn->inTransaction() || $this->intransaction) {
 				$this->conn->rollBack();
 				$this->intransaction = false;

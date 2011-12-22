@@ -169,7 +169,6 @@
 				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
 				$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
 				$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
-				$text .= "<h3>Backtrace: </h3>" . var_export(debug_backtrace(), true) . "\n\n";
 				$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
@@ -207,9 +206,10 @@
 			if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
 				$error['message'] .= 	_("The entered information is a duplicate. Please go back and enter different values.");
 			}
-			$error['debug'] .= '<br>SQL that failed was: "' . $sql . '" with data: '.serialize($data).'<br>with error: ';
-			static::$dberrors['debug'] = $error['debug'];
-			static::$dberrors['message'] = $error['message'];
+			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: '.serialize($data).'<br>with error: '.$error['debug'] ;
+			$error['backtrace']  =debug_backtrace();
+
+			static::$dberrors[] = $error;
 		}
 
 		/**

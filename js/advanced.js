@@ -32,7 +32,7 @@ jQuery.fn.quickEach = (function () {
 		return this;
 	};
 }());
-(function (window, $, undefined) {
+(function (window, $) {
 	var Adv = {
 		$content:$("#content"),
 		loader:$("<div/>").attr('id', 'loader'),
@@ -47,12 +47,12 @@ jQuery.fn.quickEach = (function () {
 		this.o.autocomplete = {};
 		this.loader.prependTo(Adv.$content).hide()
 		 .ajaxStart(function () {
-			 if (!Adv.loader.disabled) $(this).show();
+			 if (!Adv.loader.disabled) {$(this).show();}
 			 Adv.hideStatus();
-			 if (Adv.debug.ajax) console.time('ajax')
+			 if (Adv.debug.ajax) {console.time('ajax')}
 		 })
 		 .ajaxStop(function () {
-			 if (Adv.debug.ajax) console.timeEnd('ajax');
+			 if (Adv.debug.ajax) {console.timeEnd('ajax');}
 			 Adv.loader.hide()
 		 });
 		this.extend = function (object) {extender(Adv, object)};
@@ -69,45 +69,43 @@ jQuery.fn.quickEach = (function () {
 	window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-	msgbox:$('#msgbox').ajaxError(
-	 function (event, request, settings) {
-		 if (request.statusText == "abort") return;
-		 var status = {
-			 status:false,
-			 message:"Request failed: " + settings.url + "<br>"
-		 };
-		 Adv.showStatus(status);
-	 }).ajaxComplete(function (event, request) {
-		 Behaviour.apply();
-		 try
-			 {
-				 var data = $.parseJSON(request.responseText);
-				 (data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
-			 }
-		 catch (e)
-			 { Adv.hideStatus()}
-	 }),
-	showStatus:function (status) {
-		Adv.msgbox.empty();
-		status.class = (status.status) ? 'note_msg' : 'err_msg';
-		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
-	},
-	hideStatus:function () {
-		Adv.msgbox.empty();
-	},
-	openWindow:function (url, title, width, height) {
-		var left = (screen.width - width) / 2;
-		var top = (screen.height - height) / 2;
-		return window.open(url, title,
-		 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-	}
+						 msgbox:$('#msgbox').ajaxError(
+							function (event, request, settings) {
+								if ("abort" == request.statusText) {return;}
+								var status = {
+									status:false,
+									message:"Request failed: " + settings.url + "<br>"
+								};
+								Adv.showStatus(status);
+							}).ajaxComplete(function (event, request) {
+																Behaviour.apply();
+																try {
+																	var data = $.parseJSON(request.responseText);
+																	(data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
+																}
+																catch (e) { Adv.hideStatus()}
+															}),
+						 showStatus:function (status) {
+							 Adv.msgbox.empty();
+							 status._class = (status.status) ? 'note_msg' : 'err_msg';
+							 Adv.msgbox.html('<div class="' + status._class + '">' + status.message + '</div>').show();
+						 },
+						 hideStatus:function () {
+							 Adv.msgbox.empty();
+						 },
+						 openWindow:function (url, title, width, height) {
+							 var left = (screen.width - width) / 2;
+							 var top = (screen.height - height) / 2;
+							 return window.open(url, title,
+																	'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
+						 }
 
-})
+					 });
 Adv.extend({Forms:(function () {
-	if (document.getElementsByClassName('datepicker').length > 0)
+	if (0 < document.getElementsByClassName('datepicker').length)
 		{
 			Adv.o.wrapper.on('focus', ".datepicker",
-			 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+			 function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 		}
 	return {
 		setFormValue:function (id, value, disabled) {
@@ -117,25 +115,25 @@ Adv.extend({Forms:(function () {
 					els = [document.getElementById(id)];
 				}
 			$.each(els, function (k, el) {
-				 if (!el) return;
-				 if (typeof disabled === 'boolean')
+				 if (!el) {return;}
+				 if ('boolean' === typeof disabled)
 					 {
 						 el.disabled = disabled;
 					 }
-				 if (el.tagName === 'select')
+				 if ('select' === el.tagName)
 					 {
-						 if (el.value == null || String(value).length == 0)
+						 if (null === el.value || 0 === String(value).length)
 							 {
 								 $(el).find('option:first').prop('selected', true)
 									.data('init', value);
 								 return;
 							 }
 					 }
-				 if (el.type === 'checkbox')
+				 if ('checkbox' === el.type)
 					 {
 						 el.checked = !!value;
 					 }
-				 if (String(value).length == 0)
+				 if (0 === String(value).length)
 					 {
 						 value = '';
 					 }
@@ -156,14 +154,12 @@ Adv.extend({Forms:(function () {
 					});
 				},
 				select:function (event, ui) {
-					if (callback(ui.item, event, this) === false) return false;
+					if (false === callback(ui.item, event, this)) {return false;}
 				}
 			}).css({'z-index':'2'}).bind('paste', function () {
 				 id.autocomplete('search', id.val())
 			 });
-		},
-
-
+		}
 	}
 })()});
 Adv.extend({
@@ -179,7 +175,7 @@ Adv.extend({
 			onload:function (actions, clean) {
 				var c = !!onload;
 				onload = actions;
-				if (c) return;
+				if (c) {return;}
 				onload();
 				if (clean !== undefined)
 					{
@@ -187,25 +183,21 @@ Adv.extend({
 					}
 			},
 			rebind:function () {
-				if (toClean) toClean();
-				if (onload)	onload();
+				if (toClean) {toClean();}
+				if (onload)	{onload();}
 				$.each(events, function (k, v) {
 					firstBind(v.s, v.t, v.a);
 				});
-				if (Adv.msgbox.children().length) toFocus.pos = [0, Adv.msgbox.position().top];
-				if (toFocus.el) $(toFocus.el).focus();
-				if (toFocus.pos) scrollTo(toFocus.pos[0], toFocus.pos[1]);
+				if (Adv.msgbox.children().length) {toFocus.pos = [0, Adv.msgbox.position().top];}
+				if (toFocus.el) {$(toFocus.el).focus();}
+				if (toFocus.pos) {scrollTo(toFocus.pos[0], toFocus.pos[1]);}
 				toFocus = {el:false, pos:false};
 			},
 			onFocus:function (el, pos) {
 				toFocus = {el:el, pos:pos};
 			},
 			onLeave:function (msg) {
-				window.onbeforeunload = (!msg) ? function () {
-					return null;
-				} : function () {
-					return msg;
-				};
+				window.onbeforeunload = (msg) ? function () {return msg;} : function () {return null;};
 			}
 		}
 	}())

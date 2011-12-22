@@ -284,13 +284,13 @@ JS;
 				$status['process'] = '';
 				$data['status'] = $status;
 			} elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
-				$dberror = array_pop(Errors::$dberrors['message']);
+				$dberror = array_pop(Errors::$dberrors);
 				$status['status'] = false;
-				$status['message'] = $dberror;
+				$status['message'] = $dberror['message'];
 				$data['status'] = $status;
 			}
 			ob_end_clean();
-			echo	 json_encode($data);
+			echo	 json_encode($data,JSON_NUMERIC_CHECK);
 			JS::$outputted = true;
 			exit();
 		}
