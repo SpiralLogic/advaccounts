@@ -168,6 +168,7 @@ var Branches = function () {
 				Adv.resetHighlights();
 				adding = false;
 				Customer.setValues(data);
+				Adv.showStatus(data.status);
 			}, 'json');
 		},
 		btnBranchAdd:function () {
@@ -249,7 +250,7 @@ var Customer = function () {
 					transactions.empty().append(content.transactions);
 				}
 			Contacts.init(data.contacts);
-			if (data.branches.length > 0) Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
+			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
 			Accounts.change(data.accounts);
 			(!customer.id) ? Customer.showSearch() : Customer.hideSearch();
 			$.each(customer, function (i, data) {
