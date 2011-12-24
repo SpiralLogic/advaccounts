@@ -232,7 +232,7 @@
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
 		echo "</td></tr><tr><td>";
-		$order->displaq1y_delivery_details();
+		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));

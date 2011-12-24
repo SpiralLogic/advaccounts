@@ -215,7 +215,7 @@
 							}
 							$search_fields = $opts['search'];
 							foreach ($search_fields as $i => $s) {
-								$search_fields[$i] = $s . " LIKE ." . DB::quote("%{$text}%");
+								$search_fields[$i] = $s . " LIKE " . DB::quote("%{$text}%");
 							}
 							$opts['where'][] = '(' . implode($search_fields, ' OR ') . ')';
 						}
@@ -295,7 +295,7 @@
 			//	}
 			//	if($first_id !== false) {
 			$sel = $found === false ? 'selected' : '';
-			$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
+			$optclass = isset($contact_row['inactive']) and $contact_row['inactive'] ? "class='inactive'" : '';
 			$selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
 		}
 		if ($found === false) {
@@ -1184,4 +1184,3 @@
 	}
 
 ?>
-	

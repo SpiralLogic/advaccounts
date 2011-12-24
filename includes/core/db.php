@@ -147,7 +147,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function query($sql, $err_msg = null, $cache=false) {
+		public static function query($sql, $err_msg = null, $cache = false) {
 			static::$prepared = null;
 			if ($cache) {
 				$md5 = md5($sql);
@@ -168,9 +168,9 @@
 				static::i()->_error($e, " (prepare) " . $err_msg);
 			}
 			static::$data = array();
-			if ($cache&&isset($md5)) {
+			if ($cache && isset($md5)) {
 				static::$results = static::fetch_all(PDO::FETCH_BOTH);
-				Cache::set($md5,static::$results);
+				Cache::set($md5, static::$results);
 			}
 			return static::$prepared;
 		}
@@ -376,8 +376,7 @@
 			if (!static::$results) {
 				$results = static::$prepared->fetchAll($fetch_type);
 			}
-			static::$results=false;
-
+			static::$results = false;
 			return $results;
 		}
 		/**
