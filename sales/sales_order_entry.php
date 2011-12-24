@@ -127,7 +127,6 @@
 		$_SESSION['global_customer_id'] = $order->customer_id;
 		$order->write(1);
 		$trans_no = key($order->trans_no);
-
 		if (Errors::$fatal) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
@@ -227,21 +226,20 @@
 	}
 	start_form();
 	hidden('order_id', $_POST['order_id']);
-	$customer_error = (!$order) ? _("There is no order currently being edited") :
-	 $order->header($idate);
+	$customer_error = (!$order) ? _("There is no order currently being edited") : $order->header($idate);
 	if ($customer_error == "") {
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
 		echo "</td></tr><tr><td>";
-		$order->display_delivery_details();
+		$order->displaq1y_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
 		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		if ($order->trans_no == 0) {
-			submit_center_last('ProcessOrder',$porder , _('Check entered data and save document'), 'default');
+			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 		}
 		else {
 			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
@@ -563,8 +561,7 @@
 		if (!check_item_data($order)) {
 			return;
 		}
-		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,
-										 $_POST['description']);
+		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
 		$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 		line_start_focus();
 	}
@@ -639,7 +636,6 @@
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = User::pos();
-
 				$pos = Sales_Point::get($doc->pos);
 				$doc->pos = -1;
 			}
