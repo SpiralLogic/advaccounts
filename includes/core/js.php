@@ -275,8 +275,8 @@ JS;
 		 * @param $data
 		 */
 		public static function renderJSON($data) {
+			$data = (array)$data;
 			if (!isset($data['status']) && count(Errors::$messages) > 0) {
-				$data = (array)$data;
 				$message = array_pop(Errors::$messages);
 				$status['status'] = false;
 				$status['message'] = $message['message'];
@@ -290,7 +290,7 @@ JS;
 				$data['status'] = $status;
 			}
 			ob_end_clean();
-			echo	 json_encode($data,JSON_NUMERIC_CHECK);
+			echo	 json_encode($data);
 			JS::$outputted = true;
 			exit();
 		}

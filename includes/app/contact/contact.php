@@ -3,7 +3,7 @@
 	 * User: Sorijen
 	 * Date: 15/04/11 - 4:08 PM
 	 */
-	class Contacts_Contact extends DB_abstract
+	class Contact extends DB_abstract
 	{
 		public $id = 0;
 		public $parent_id = 0;
@@ -28,7 +28,7 @@
 		}
 
 		protected function _saveNew() {
-			$temp = new Contacts_Contact();
+			$temp = new Contact();
 			foreach ($this as $key => $value) {
 				if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key != $value) {
 					return parent::_saveNew();

@@ -16,7 +16,7 @@
 	/**
 	 *
 	 */
-	class advaccounting
+	class ADVAccounting
 	{
 		/**
 		 * @var
@@ -112,7 +112,7 @@
 		 * @static
 		 *
 		 */
-		public static function init() {
+		public static function i() {
 			require_once APPPATH . "main.php";
 			static::checkLogin();
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
@@ -122,7 +122,7 @@
 				}
 			}
 			if (!isset($_SESSION["App"])) {
-				Session::i()->App = new advaccounting();
+				Session::i()->App = new ADVAccounting();
 			}
 		}
 		/**

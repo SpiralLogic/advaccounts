@@ -39,6 +39,7 @@ class Arr
     static function    remove(&$array, $index, $len = 1)
     {
         array_splice($array, $index, $len);
+			return true;
     }
 
     /**
@@ -53,6 +54,7 @@ class Arr
     {
         array_splice($array, $index, $len);
         Arr::insert($array, $index, $elements);
+			return true;
     }
 
     /**
@@ -77,10 +79,10 @@ class Arr
      * @static
      *
      * @param            $needle
-     * @param            $haystack
+     * @param      array      $haystack
      * @param null $valuekey
      *
-     * @return null
+     * @return int|null
      */
     static function    search_value($needle, $haystack, $valuekey = null)
     {

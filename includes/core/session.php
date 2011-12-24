@@ -10,18 +10,19 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
+class SessionException extends Exception {};
+	/**
+	 *
+	 */
 	class Session extends Input
 	{
-
 		/**
 		 * @static
 		 * @return Session|mixed
 		 */
 		public static function i() {
-
-				if (static::$i === null) {
-				static::$i = new static;
-			}
+			(static::$i === null) and static::$i = new static;
 			return static::$i;
 		}
 		/**
@@ -34,7 +35,6 @@
 		}
 		/**
 		 * @static
-		 *
 		 */
 		public static function regenerate() {
 			session_regenerate_id();
@@ -60,33 +60,27 @@
 			if (class_exists('Memcached', false)) {
 				ini_set('session.save_handler', 'Memcached');
 				ini_set('session.save_path', '127.0.0.1:11211');
-				if (Memcached::HAVE_IGBINARY) {
-					ini_set('session.serialize_handler', 'igbinary');
-				}
+				(Memcached::HAVE_IGBINARY)	and ini_set('session.serialize_handler', 'igbinary');
 			}
-				if (!session_start()) {
+			if (!session_start()) {
 				ini_set('session.save_handler', 'files');
 				if (!session_start()) {
-					die('sessions fucked out');
+					throw new SessionException('Could not start a Session Handler');
 				}
 			}
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 				}
-			} else {
+			}
+			else {
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 			}
 			header("Cache-control: private");
-
 			$this->setTextSupport();
-						Language::set();
-
+			Language::set();
 			$this->_session = &$_SESSION;
 			// Ajax communication object
-
-			if (class_exists('Ajax', false)) {
-				Ajax::i();
-			}
+			(!class_exists('Ajax'))	or Ajax::i();
 		}
 		/**
 		 * @return mixed
@@ -96,7 +90,7 @@
 				static::$get_text = $_SESSION['get_text'];
 				return;
 			}
-			static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::init();
+			static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
 		}
 		/**
 		 * @param $var

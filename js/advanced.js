@@ -109,38 +109,42 @@ Adv.extend({Forms:(function () {
 			Adv.o.wrapper.on('focus', ".datepicker",
 			 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 		}
+	var _setFormValue = function(el,value,disabled) {
+		if (!el) return;
+						 if (typeof disabled === 'boolean')
+							 {
+								 el.disabled = disabled;
+							 }
+						 if (el.tagName === 'select')
+							 {
+								 if (el.value == null || String(value).length == 0)
+									 {
+										 $(el).find('option:first').prop('selected', true)
+											.data('init', value);
+										 return;
+									 }
+							 }
+						 if (el.type === 'checkbox')
+							 {
+								 el.checked = !!value;
+							 }
+						 if (String(value).length == 0)
+							 {
+								 value = '';
+							 }
+						 el.value = value;
+						 $(el).data('init', value);
+	}
 	return {
 		setFormValue:function (id, value, disabled) {
-			var els = document.getElementsByName(id);
+			var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
 			if (!els.length)
 				{
-					els = [document.getElementById(id)];
+					els = document.getElementById(id);
+					return _setFormValue(els,value,disabled);
 				}
 			$.each(els, function (k, el) {
-				 if (!el) return;
-				 if (typeof disabled === 'boolean')
-					 {
-						 el.disabled = disabled;
-					 }
-				 if (el.tagName === 'select')
-					 {
-						 if (el.value == null || String(value).length == 0)
-							 {
-								 $(el).find('option:first').prop('selected', true)
-									.data('init', value);
-								 return;
-							 }
-					 }
-				 if (el.type === 'checkbox')
-					 {
-						 el.checked = !!value;
-					 }
-				 if (String(value).length == 0)
-					 {
-						 value = '';
-					 }
-				 el.value = value;
-				 $(el).data('init', value);
+				 _setFormValue(el,value,disabled);
 			 }
 			)
 		},

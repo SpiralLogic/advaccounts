@@ -101,7 +101,7 @@
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
-		GL_Allocation::display(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
+		GL_Allocation::from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 	}
 	if (Input::get('popup')) {
 		return;

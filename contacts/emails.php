@@ -14,7 +14,7 @@
 			if ($_POST['type'] === CT_CUSTOMER ) {
 				$content = Debtor::getEmailDialogue($_POST['id']);
 			} elseif ($_POST['type'] ===CT_SUPPLIER ){
-				$content = Contacts_Supplier::getEmailDialogue($_POST['id']);
+				$content = Creditor::getEmailDialogue($_POST['id']);
 			}
 			if ($content === false) {
 				echo HTML::h3(null, 'No email addresses available.', array('class' => 'center bold top40 font15'), false);

@@ -6,7 +6,7 @@
 	 * Time: 4:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Postcode {
+	class Contact_Postcode {
 		private static $count = 1;
 
 		public static function render($city, $state, $postcode, $options = array()) {

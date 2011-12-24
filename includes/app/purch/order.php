@@ -325,7 +325,7 @@
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
 				}
-				Purch_Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+				Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 			}
 			else {
 				if (isset($_POST['supplier_id'])) {
@@ -340,7 +340,7 @@
 				// supplier default price update
 				foreach ($this->line_items as $line) {
 					$line->price = Item_Price::get_purchase($this->supplier_id, $line->stock_id);
-					$line->quantity = $line->quantity / Purch_Trans::get_conversion_factor($old_supp, $line->stock_id) * Purch_Trans::get_conversion_factor($this->supplier_id, $line->stock_id);
+					$line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor($this->supplier_id, $line->stock_id);
 				}
 				Ajax::i()->activate('items_table');
 			}
@@ -508,7 +508,7 @@
 				$_POST['units'] = $item_info["units"];
 				$_POST['description'] = '';
 				$dec = $item_info["decimals"];
-				$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
+				$_POST['qty'] = Num::format(Creditor_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
 				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
 				$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 				$_POST['discount'] = Num::percent_format(0);

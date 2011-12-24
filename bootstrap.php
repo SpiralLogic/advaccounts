@@ -12,6 +12,7 @@
 	/**
 	 *
 	 */
+
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
@@ -62,6 +63,8 @@
 	 * We need this in order to work with UTF-8 strings
 	 */
 	define('MBSTRING', function_exists('mb_get_info'));
+
+
 	set_error_handler(/**
 	 * @param $severity
 	 * @param $message
@@ -88,6 +91,7 @@
 			return \Errors::exception_handler($e);
 		});
 	/** @noinspection PhpIncludeInspection */
+
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
 		$Ajax = Ajax::i();
@@ -104,7 +108,6 @@
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**
 		 * @param $text
-		 *
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
@@ -120,20 +123,15 @@
 			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-	Session::i();
-	Config::i();
-	Ajax::i();
-	/***
-	 *
-	 */
+
+	(!class_exists('Session')) or Session::i();
+	(!class_exists('Config')) or Config::i();
+	(!class_exists('Ajax')) or Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-	// intercept all output to destroy it in case of ajax call
-	// POST vars cleanup needed for direct reuse.
-	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, /**
-	 * @param $v
-	 */
+		 * @param $v
+		 */
 		function(&$v) {
 			$v = is_string($v) ? trim($v) : $v;
 		});
-	advaccounting::init();
+ADVAccounting::i();

@@ -6,7 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company {
+	class Debtor extends Contact_Company {
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
@@ -30,7 +30,15 @@
 			parent::__construct($id);
 			$this->debtor_ref = substr($this->name, 0, 60);
 		}
-
+public function getStatus($string=false) {
+	foreach ($this->branches as $branch) {
+		$this->_status->append($branch->getStatus());
+	}foreach ($this->contacts as $contact) {
+			$this->_status->append($contact->getStatus());
+	}
+	$this->_status->append($this->accounts->getStatus());
+	return parent::getStatus();
+}
 		public function addBranch($details = null) {
 			$branch = new Debtor_Branch($details);
 			$branch->debtor_no = $this->id;
@@ -106,7 +114,7 @@
 			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
 			$data['credit_limit'] = User::numeric($this->credit_limit);
 			if (!parent::save($changes)) {
-				return $this->_setDefaults();
+				 $this->_setDefaults();
 				return false;
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
@@ -136,7 +144,7 @@
 			}
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 				foreach ($changes['contacts'] as $id => $contact) {
-					$this->contacts[$id] = new Contacts_Contact($contact);
+					$this->contacts[$id] = new Contact($contact);
 				}
 			}
 		}
@@ -225,21 +233,21 @@
 
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			$contacts = DB::fetch()->asClassLate('Contacts_Contact');
+			$contacts = DB::fetch()->asClassLate('Contact');
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
 
 		protected function _new() {
 			$this->_defaults();
 			$this->accounts = new Debtor_Account();
 			$this->branches[0] = new Debtor_Branch();
-			$this->contacts[0] = new Contacts_Contact();
+			$this->contacts[0] = new Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize', 'Now working with a new customer');
@@ -260,7 +268,7 @@
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
 
 		public static function addEditDialog() {
@@ -278,7 +286,7 @@ JS;
 		}
 
 		public static function addSearchBox($id, $options = array()) {
-			echo UI::searchLine($id, '/contacts/search.php', $options);
+			 UI::searchLine($id, '/contacts/search.php', $options);
 		}
 
 		public static function search($terms) {

@@ -73,7 +73,7 @@
 			if ($fromsupp == ALL_NUMERIC) {
 				$from = _('All');
 			} else {
-				$from = Purch_Creditor::get_name($fromsupp);
+				$from = Creditor::get_name($fromsupp);
 			}
 			$dec = User::price_dec();
 			if ($summaryOnly == 1) {
@@ -163,7 +163,7 @@
 				else {
 					$rate = 1.0;
 				}
-				$supprec = Purch_Creditor::get_to_trans($myrow['supplier_id'], $to);
+				$supprec = Creditor::get_to_trans($myrow['supplier_id'], $to);
 				foreach (
 					$supprec as $i => $value
 				)

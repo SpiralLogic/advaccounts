@@ -168,7 +168,7 @@
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
 	} else {
-		Purch_Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
+		Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
 	amount_row(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);

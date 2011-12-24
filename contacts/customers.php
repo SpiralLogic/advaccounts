@@ -4,11 +4,11 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Session::i()->App->selected_application = 'Contacts';
 	if (isset($_POST['name'])) {
-		$data['customer'] = $customer = new Debtor($_POST);
-		$data['customer']->save();
+		$data['customer'] = $customer = new Debtor();
+		$data['customer']->save($_POST);
 	} elseif (Input::request('id', Input::NUMERIC) > 0) {
 		$data['customer'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
-		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
+		$data['contact_log'] = Contact_Log::read($customer->id, Contact_Log::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 
 	} else {
@@ -121,7 +121,7 @@
 	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-	Contacts_Postcode::render(array('br_city', $currentBranch->city),
+	Contact_Postcode::render(array('br_city', $currentBranch->city),
 		array('br_state', $currentBranch->state), array('br_postcode', $currentBranch->postcode));
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
@@ -140,7 +140,7 @@
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-	Contacts_Postcode::render(array('acc_city', $customer->accounts->city),
+	Contact_Postcode::render(array('acc_city', $customer->accounts->city),
 		array('acc_state', $customer->accounts->state), array('acc_postcode', $customer->accounts->postcode));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
@@ -193,7 +193,7 @@
 											 'rows' => 20
 									)
 	);
-	Contacts_Log::read($customer->id, 'C');
+	Contact_Log::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
 	end_outer_table(1);
@@ -254,7 +254,7 @@
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	hidden('type', Contacts_Log::CUSTOMER);
+	hidden('type', Contact_Log::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();

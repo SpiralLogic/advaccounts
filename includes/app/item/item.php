@@ -450,7 +450,7 @@ JS;
 		}
 
 		public static function addSearchBox($id, $options = array()) {
-			echo UI::searchLine($id, '/items/search.php', $options);
+			 UI::searchLine($id, '/items/search.php', $options);
 		}
 
 		public static function getStockID($stock_code) {

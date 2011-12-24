@@ -85,7 +85,7 @@
 				}
 			}
 			DB::commit();
-			$this->_status(true, 'write', get_class($this) . ' changes saved to database.');
+		return	$this->_status(true, 'write', get_class($this) . ' changes saved to database.');
 		}
 
 		protected

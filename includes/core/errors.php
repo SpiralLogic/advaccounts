@@ -207,7 +207,7 @@
 				$error['message'] .= 	_("The entered information is a duplicate. Please go back and enter different values.");
 			}
 			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: '.serialize($data).'<br>with error: '.$error['debug'] ;
-			$error['backtrace']  =debug_backtrace();
+			$error['backtrace']  =var_export(debug_backtrace(),true);
 
 			static::$dberrors[] = $error;
 		}
