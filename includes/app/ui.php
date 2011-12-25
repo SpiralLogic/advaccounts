@@ -38,7 +38,22 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
-
+/***
+ * @static
+ * @param $id
+ * @param array $attr  includes (url,label,size,name,set,focus, nodiv, callback, options
+ * @param array $options
+ * @return HTML|null
+ *
+ * url: url to get search results from<br>
+ * label: if set becomes the text of a &lt;label&gt; element for the input<br>
+ * size: size of the input<br>
+ * focus: whether to start with focus<br>
+ * nodiv: if true then a div is not included<br>
+ * callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
+ * options: Javascript function autocomplete options<br>
+ *
+ */
 		static function search($id, $attr = array(), $options = array()) {
 
 			$url = (!empty($attr['url'])) ? $attr['url'] : false;
@@ -50,13 +65,19 @@
 			}
 			if ( isset($attr['size'])) {
 				$input_attr['size'] = $attr['size'];
+			}else {
+				$input_attr['size'] = 20;
 			}
 			if ( isset($attr['name'])) {
 				$input_attr['name'] = $attr['name'];
 			}
 			if ( isset($attr['set'])) {
 				$input_attr['data-set'] = $attr['set'];
-			}	if ( isset($attr['focus'])) {
+			}
+			if ( isset($attr['value'])) {
+							$input_attr['value'] = htmlentities($attr['value']);
+						}
+			if ( isset($attr['focus'])) {
 				$options['focus'] = $attr['focus'];
 			}
 			HTML::input($id, $input_attr);

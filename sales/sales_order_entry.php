@@ -226,7 +226,7 @@
 	}
 	start_form();
 	hidden('order_id', $_POST['order_id']);
-	$customer_error = (!$order) ? _("There is no order currently being edited") : $order->header($idate);
+	$customer_error = (!$order) ?_("There is no order currently being edited") : $order->header($idate);
 	if ($customer_error == "") {
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";

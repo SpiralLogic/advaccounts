@@ -82,7 +82,7 @@
 			foreach (
 				$attr as $key => $value
 			) {
-				$attrs .= (empty($value) || $key == 'content') ? '' : " $key='$value'";
+				$attrs .= (empty($value) || $key == 'content') ? '' : ' '.$key.'="'.$value.'"';
 			}
 			echo	'<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
 		}
