@@ -28,7 +28,7 @@
 	}
 	start_table('tablestyle_noborder');
 	start_row();
-	Purch_Creditor::cells(_("Select a supplier:"), 'supplier_id', null, true);
+	Creditor::cells(_("Select a supplier:"), 'supplier_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate');
 	Purch_Allocation::row("filterType", null);
@@ -54,14 +54,14 @@
 		amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
 		amount_cell($supplier_record["Overdue2"]);
 		amount_cell($supplier_record["Balance"]);
-		amount_cell(Purch_Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
+		amount_cell(Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
 		end_row();
 		end_table(1);
 	}
 
 	Display::div_start('totals_tbl');
 	if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
-		$supplier_record = Purch_Creditor::get_to_trans($_POST['supplier_id']);
+		$supplier_record = Creditor::get_to_trans($_POST['supplier_id']);
 		display_supplier_summary($supplier_record);
 	}
 	Display::div_end();
@@ -194,7 +194,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80";
 	DB_Pager::display($table);
-	Contacts_Supplier::addInfoDialog('.pagerclick');
+	Creditor::addInfoDialog('.pagerclick');
 	end_form();
 	Renderer::end_page();
 

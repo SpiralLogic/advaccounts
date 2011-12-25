@@ -6,7 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contacts_Company {
+	class Debtor extends Contact_Company {
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
@@ -29,6 +29,17 @@
 			$this->pymt_discount =& $this->payment_discount;
 			parent::__construct($id);
 			$this->debtor_ref = substr($this->name, 0, 60);
+		}
+
+		public function getStatus($string = false) {
+			foreach ($this->branches as $branch) {
+				$this->_status->append($branch->getStatus());
+			}
+			foreach ($this->contacts as $contact) {
+				$this->_status->append($contact->getStatus());
+			}
+			$this->_status->append($this->accounts->getStatus());
+			return parent::getStatus();
 		}
 
 		public function addBranch($details = null) {
@@ -100,13 +111,12 @@
 		}
 
 		public function save($changes = null) {
-
 			$data['debtor_ref'] = substr($this->name, 0, 29);
 			$data['discount'] = User::numeric($this->discount) / 100;
 			$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
 			$data['credit_limit'] = User::numeric($this->credit_limit);
 			if (!parent::save($changes)) {
-				return $this->_setDefaults();
+				$this->_setDefaults();
 				return false;
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
@@ -136,7 +146,7 @@
 			}
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 				foreach ($changes['contacts'] as $id => $contact) {
-					$this->contacts[$id] = new Contacts_Contact($contact);
+					$this->contacts[$id] = new Contact($contact);
 				}
 			}
 		}
@@ -206,16 +216,14 @@
 				$this->accounts = clone($this->branches[$this->defaultBranch]);
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
-			} else {
+			}
+			else {
 				$this->accounts = $this->accounts[0];
 			}
 		}
 
 		protected function _getBranches() {
-			DB::select()
-			 ->from('cust_branch')
-			 ->where('debtor_no=', $this->debtor_no)
-			 ->where('branch_ref !=', 'accounts');
+			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
 			$branches = DB::fetch()->asClassLate('Debtor_Branch');
 			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_code] = $branch;
@@ -225,21 +233,21 @@
 
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			$contacts = DB::fetch()->asClassLate('Contacts_Contact');
+			$contacts = DB::fetch()->asClassLate('Contact');
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
 
 		protected function _new() {
 			$this->_defaults();
 			$this->accounts = new Debtor_Account();
 			$this->branches[0] = new Debtor_Branch();
-			$this->contacts[0] = new Contacts_Contact();
+			$this->contacts[0] = new Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize', 'Now working with a new customer');
@@ -260,7 +268,7 @@
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
 
 		public static function addEditDialog() {
@@ -268,7 +276,8 @@
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true
+			));
 			$customerBox->show();
 			$js = <<<JS
 							var val = $("#customer_id").val();
@@ -283,12 +292,9 @@ JS;
 
 		public static function search($terms) {
 			$data = array();
-			DB::select('debtor_no as id', 'name as label', 'name as value')
-			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
-			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
-			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
-			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+			DB::select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)->union()
+			 ->select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 			$results = DB::fetch();
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);
@@ -305,8 +311,7 @@ JS;
 				return trim($v);
 			}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
-			$sql
-			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 									UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
 									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
 			$result = DB::query($sql, 'Couldn\'t Get Customers');
@@ -323,14 +328,14 @@ JS;
 		public static function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
-			} else {
+			}
+			else {
 				$todate = Dates::date2sql($to);
 			}
 			$past1 = DB_Company::get_pref('past_due_days');
 			$past2 = 2 * $past1;
 			// removed - debtor_trans.alloc from all summations
-			$value
-			 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+			$value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
 		-1, 1) *" . "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
 			$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
 			$sql = "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
@@ -361,8 +366,7 @@ JS;
 			if (DB::num_rows($result) == 0) {
 				/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 				$nil_balance = true;
-				$sql
-				 = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
+				$sql = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
 	 		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
 	 		FROM debtors_master,
 	 		 payment_terms,
@@ -401,8 +405,7 @@ JS;
 		}
 
 		public static function get_habit($customer_id) {
-			$sql
-			 = "SELECT debtors_master.pymt_discount,
+			$sql = "SELECT debtors_master.pymt_discount,
 				 credit_status.dissallow_invoices
 				FROM debtors_master, credit_status
 				WHERE debtors_master.credit_status = credit_status.id
@@ -435,6 +438,19 @@ JS;
 			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
 		}
 
+		public static function newselect($value = null) {
+			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td nowrap>";
+
+			if (!$value && isset($_POST['customer'])) $value = $_POST['customer'];
+			hidden('customer_id');
+			UI::search('customer', array('url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => true, 'value' => $value));
+			echo "</td>\n</tr>\n";
+			JS::beforeload(<<<JS
+var Customer = function(data) { \$('#customer_id').val(data.id); \$('#customer').val(data.value);\$('form').submit()}
+JS
+			);
+		}
+
 		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors_master ";
 			$mode = DB_Company::get_pref('no_customer_list');
@@ -442,9 +458,20 @@ JS;
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-				'format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ?
-				 _("All Customers") : $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ?
-				 _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
+				'format' => '_format_add_curr',
+				'order' => array('debtor_ref'),
+				'search_box' => $mode != 0,
+				'type' => 1,
+				'size' => 20,
+				'spec_option' => $spec_option === true ? _("All Customers") : $spec_option,
+				'spec_id' => ALL_TEXT,
+				'select_submit' => $submit_on_change,
+				'async' => $async,
+				'sel_hint' => $mode ?
+				 _('Press Space tab to filter by name fragment; F2 - entry new customer') :
+				 _('Select customer'),
+				'show_inactive' => $show_inactive
+			));
 		}
 
 		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {

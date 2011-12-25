@@ -11,22 +11,22 @@
 	 ***********************************************************************/
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
-	class Purch_Trans
+	class Creditor_Trans
 	{
 		protected static $_instance = null;
 
 		public static function i($reset_session = false) {
-			if (!$reset_session && isset($_SESSION["Purch_Trans"])) {
-				static::$_instance = $_SESSION["Purch_Trans"];
+			if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
+				static::$_instance = $_SESSION["Creditor_Trans"];
 			}
 			elseif (static::$_instance === null) {
-				static::$_instance = $_SESSION["Purch_Trans"] = new static;
+				static::$_instance = $_SESSION["Creditor_Trans"] = new static;
 			}
 			return static::$_instance;
 		}
 
 		public static function killInstance() {
-			unset($_SESSION["Purch_Trans"]);
+			unset($_SESSION["Creditor_Trans"]);
 		}
 
 		public $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
@@ -220,7 +220,7 @@
 
 		public static function post_void($type, $type_no) {
 			if ($type == ST_SUPPAYMENT) {
-				Purch_Payment::void($type, $type_no);
+				Creditor_Payment::void($type, $type_no);
 				return true;
 			}
 			if ($type == ST_SUPPINVOICE || $type == ST_SUPPCREDIT) {

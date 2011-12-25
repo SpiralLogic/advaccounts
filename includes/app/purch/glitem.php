@@ -67,7 +67,7 @@
 
 		public	static function display_controls($supp_trans, $k)
 			{
-				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
+				$accs = Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
 				alt_table_row_color($k);
 				echo GL_UI::all('gl_code', null, true, true);

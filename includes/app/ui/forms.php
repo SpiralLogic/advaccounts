@@ -251,8 +251,9 @@
 		$edit = false;
 		//if($name=='stock_id')	Errors::notice('<pre>'.print_r($_POST, true).'</pre>');
 		//if($name=='curr_default') Errors::notice($opts['search_submit']);
-		if ($result = DB::query($sql)) {
-			while ($contact_row = DB::fetch($result)) {
+		if ($results = DB::query($sql, null, true)) {
+			$results = DB::fetch_all(PDO::FETCH_BOTH);
+			foreach ($results as $contact_row) {
 				$value = $contact_row[0];
 				$descr = $opts['format'] == null ? $contact_row[1] : call_user_func($opts['format'], $contact_row);
 				$sel = '';
@@ -286,7 +287,7 @@
 				}
 				$selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
 			}
-			DB::free_result($result);
+			DB::free_result($results);
 		}
 		// Prepend special option.
 		if ($spec_option !== false) { // if special option used - add it
@@ -295,7 +296,7 @@
 			//	}
 			//	if($first_id !== false) {
 			$sel = $found === false ? 'selected' : '';
-			$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
+			$optclass = isset($contact_row['inactive']) and $contact_row['inactive'] ? "class='inactive'" : '';
 			$selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
 		}
 		if ($found === false) {
@@ -1194,4 +1195,3 @@
 		return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 	}
 
-?>

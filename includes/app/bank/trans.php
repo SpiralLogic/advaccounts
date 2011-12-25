@@ -90,7 +90,7 @@
 			Sales_Trans::void($type, $type_no);
 			// in case it's a supplier trans - probably better to check first
 			Purch_Allocation::void($type, $type_no);
-			Purch_Trans::void($type, $type_no);
+			Creditor_Trans::void($type, $type_no);
 			GL_Trans::void_tax_details($type, $type_no);
 			if (!$nested) {
 				DB::commit();

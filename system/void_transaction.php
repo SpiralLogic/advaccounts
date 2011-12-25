@@ -78,7 +78,7 @@
 			case ST_SUPPINVOICE : // it's a suppler invoice
 			case ST_SUPPCREDIT : // it's a supplier credit note
 			case ST_SUPPAYMENT : // it's a supplier payment
-				if (!Purch_Trans::exists($type, $type_no)) {
+				if (!Creditor_Trans::exists($type, $type_no)) {
 					return false;
 				}
 				break;

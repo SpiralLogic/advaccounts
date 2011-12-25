@@ -51,9 +51,9 @@
 				$curr = $trans['curr_code'];
 				$date = Dates::sql2date($trans['tran_date']);
 			} else {
-				$trans = Purch_Trans::get($trans_no, $type);
-				$pyt_trans = Purch_Trans::get($pyt_no, $pyt_type);
-				$supp_accs = Purch_Creditor::get_accounts_name($trans['supplier_id']);
+				$trans = Creditor_Trans::get($trans_no, $type);
+				$pyt_trans = Creditor_Trans::get($pyt_no, $pyt_type);
+				$supp_accs = Creditor::get_accounts_name($trans['supplier_id']);
 				$ar_ap_act = $supp_accs['payable_account'];
 				$person_id = $trans['supplier_id'];
 				$curr = $trans['SupplierCurrCode'];
@@ -122,7 +122,7 @@
 				case PT_CUSTOMER :
 					return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);
 				case PT_SUPPLIER :
-					return ($full ? $payment_person_types[$type] . " " : "") . Purch_Creditor::get_name($person_id);
+					return ($full ? $payment_person_types[$type] . " " : "") . Creditor::get_name($person_id);
 				default :
 					//DisplayDBerror("Invalid type sent to person_name");
 					//return;

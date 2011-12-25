@@ -11,9 +11,9 @@
 		die();
 	}
 	if (Input::has_post('contact_id', 'message', 'type')) {
-		$message_id = Contacts_Log::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);
+		$message_id = Contact_Log::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);
 	}
 	if (Input::has_post('contact_id', 'type')) {
-		$contact_log = Contacts_Log::read($_POST['contact_id'], $_POST['type']);
+		$contact_log = Contact_Log::read($_POST['contact_id'], $_POST['type']);
 		 JS::renderJSON($contact_log);
 	}

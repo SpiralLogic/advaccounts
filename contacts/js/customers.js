@@ -5,7 +5,7 @@ Adv.extend({
 		Adv.btnCustomer.hide();
 		Adv.btnCancel.button('option', 'label', 'New Customer');
 		Branches.btnBranchAdd();
-		Contacts.btnContactAdd();
+
 		Adv.fieldsChanged = 0;
 		Adv.Events.onLeave();
 	},
@@ -94,9 +94,7 @@ var Contacts = function () {
 		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
 		},
-		btnContactAdd:function () {
-			return false;
-		}
+
 	};
 }();
 var Branches = function () {
@@ -108,7 +106,6 @@ var Branches = function () {
 				if (!$(this).val().length) return;
 				var newBranch = Customer.get().branches[$(this).val()];
 				Branches.change(newBranch);
-
 			})
 		},
 		empty:function () {
@@ -121,9 +118,11 @@ var Branches = function () {
 					list.append('<option value="' + data.branch_code + '">' + data.br_name + '</option>');
 				} else
 				{
+					var toAdd;
 					$.each(data, function (key, value) {
-						list.append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
+						toAdd+= '<option value="' + value.branch_code + '">' + value.br_name + '</option>';
 					});
+					list.append(toAdd);
 				}
 			return this;
 		},
@@ -155,6 +154,7 @@ var Branches = function () {
 		},
 		New:function () {
 			$.post('search.php', {branch_code:0, id:Customer.get().id}, function (data) {
+				data=data.branch;
 				console.log(data);
 				Branches.add(data).change(data);
 				Customer.get().branches[data.branch_code] = data;

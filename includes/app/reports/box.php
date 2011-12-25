@@ -243,11 +243,11 @@
 																																								'spec_option' => _("No Supplier Filter"),
 																																								'spec_id' => ALL_NUMERIC));
 					} // FIX allitems numeric!
-					//						return Purch_Creditor::select($name, null, _("No Supplier Filter"));
+					//						return Creditor::select($name, null, _("No Supplier Filter"));
 					else {
 						return select_box($name, '', $sql, 'supplier_id', 'supp_name', null);
 					}
-				//						return Purch_Creditor::select($name);
+				//						return Creditor::select($name);
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");

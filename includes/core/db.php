@@ -6,18 +6,19 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-
-	class DBException extends Exception {
+	class DBException extends Exception
+	{
 	}
-
 
 	/**
 	 *
 	 */
-	class DBDuplicateException extends DBException {
+	class DBDuplicateException extends DBException
+	{
 	}
 
-	class DB {
+	class DB
+	{
 		/**
 		 *
 		 */
@@ -65,6 +66,7 @@
 		 * @var DB_Query
 		 */
 		protected static $query = false;
+		protected static $results = false;
 		protected static $errorSql = false;
 		protected static $errorInfo = false;
 		/**
@@ -96,7 +98,6 @@
 		 * @var DB
 		 */
 		protected static $i = null;
-
 		/***
 		 * @static
 		 *
@@ -112,7 +113,6 @@
 			}
 			return static::$i;
 		}
-
 		/**
 		 * @param $config
 		 */
@@ -125,7 +125,6 @@
 			static::$debug = false;
 			$this->_connect();
 		}
-
 		/**
 		 *
 		 * @return bool
@@ -134,56 +133,63 @@
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$this->conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
 				return true;
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				return $this->_error($e, true);
 			}
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param						$sql
-		 * @param null $err_msg
+		 * @param null			 $err_msg
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function query($sql, $err_msg = null) {
+		public static function query($sql, $err_msg = null, $cache = false) {
 			static::$prepared = null;
+			if ($cache) {
+				$md5 = md5($sql);
+				static::$results = Cache::get($md5);
+				if (static::$results) {
+					return true;
+				}
+			}
 			try {
 				static::$prepared = static::i()->_prepare($sql);
 				try {
 					static::$prepared->execute();
+				} catch (PDOException $e) {
+					static::i()->_error($e, " (ex
+					ecute) " . $err_msg);
 				}
-				catch (PDOException $e) {
-					static::i()->_error($e, " (execute) " . $err_msg);
-				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				static::i()->_error($e, " (prepare) " . $err_msg);
 			}
 			static::$data = array();
+			if ($cache && isset($md5)) {
+				static::$results = static::fetch_all(PDO::FETCH_BOTH);
+				Cache::set($md5, static::$results);
+			}
 			return static::$prepared;
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param						$value
-		 * @param null $type
+		 * @param null			 $type
 		 *
 		 * @return mixed
 		 */
 		public static function quote($value, $type = null) {
 			return static::i()->conn->quote($value, $type);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param						$value
-		 * @param bool $null
+		 * @param bool			 $null
 		 *
 		 * @internal param bool $paramaterized
 		 *
@@ -211,13 +217,12 @@
 			static::$data[] = array($value, $type);
 			return ' ? ';
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param						$sql
 		 *
-		 * @param bool $debug
+		 * @param bool			 $debug
 		 *
 		 * @return bool|PDOStatement
 		 * @throws DBException
@@ -238,20 +243,18 @@
 					$prepared->bindValue($k, $v[0], $v[1]);
 					$k++;
 				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$prepared = false;
 				$this->_error($e);
 			}
-			static::$data=array();
+			static::$data = array();
 			return $prepared;
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param						$sql
-		 * @param bool $debug
+		 * @param bool			 $debug
 		 *
 		 * @return null|PDOStatement
 		 */
@@ -259,7 +262,6 @@
 			static::$prepared = static::i()->_prepare($sql, $debug);
 			return static::$prepared;
 		}
-
 		/**
 		 * @static
 		 *
@@ -275,14 +277,12 @@
 			try {
 				static::$prepared->execute($data);
 				$result = static::$prepared->fetchAll(PDO::FETCH_ASSOC);
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$result = static::i()->_error($e);
 			}
 			static::$data = array();
 			return $result;
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -290,7 +290,6 @@
 		public static function insert_id() {
 			return static::i()->conn->lastInsertId();
 		}
-
 		/***
 		 * @param string $columns,... Database columns to select
 		 *
@@ -302,7 +301,6 @@
 			static::$query = new DB_Query_Select($columns, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -315,7 +313,6 @@
 			static::$query = new DB_Query_Update($into, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -328,7 +325,6 @@
 			static::$query = new DB_Query_Insert($into, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -341,7 +337,6 @@
 			static::$query = new DB_Query_Delete($into, static::i());
 			return static::$query;
 		}
-
 		/***
 		 * @static
 		 *
@@ -358,7 +353,6 @@
 			}
 			return static::$prepared->fetch(PDO::FETCH_BOTH);
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -366,7 +360,6 @@
 		public static function fetch_row() {
 			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -374,15 +367,18 @@
 		public static function fetch_assoc() {
 			return static::$prepared->fetch(PDO::FETCH_ASSOC);
 		}
-
 		/**
 		 * @static
 		 * @return array
 		 */
-		public static function fetch_all() {
-			return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
+		public static function fetch_all($fetch_type = PDO::FETCH_ASSOC) {
+			$results = static::$results;
+			if (!static::$results) {
+				$results = static::$prepared->fetchAll($fetch_type);
+			}
+			static::$results = false;
+			return $results;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -391,7 +387,6 @@
 			$info = static::errorInfo();
 			return $info[1];
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -405,7 +400,6 @@
 			}
 			return static::i()->conn->errorInfo();
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -414,7 +408,6 @@
 			$info = static::errorInfo();
 			return isset($info[2]) ? $info[2] : false;
 		}
-
 		/**
 		 * @static
 		 *
@@ -425,7 +418,6 @@
 		public static function getAttribute(PDO $value) {
 			return static::i()->conn->getAttribute($value);
 		}
-
 		/**
 		 * @static
 		 * @return bool
@@ -436,10 +428,11 @@
 			static::$data = array();
 			return $result;
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param null|PDOStatement $sql
+		 *
 		 * @return int
 		 */
 		public static function num_rows($sql = null) {
@@ -457,7 +450,6 @@
 			Cache::set('sql.rowcount.' . md5($sql), $rows);
 			return $rows;
 		}
-
 		/**
 		 * @static
 		 * @return int
@@ -465,7 +457,6 @@
 		public static function num_fields() {
 			return static::$prepared->columnCount();
 		}
-
 		/**
 		 * @static
 		 *
@@ -475,13 +466,11 @@
 				try {
 					static::i()->conn->beginTransaction();
 					static::i()->intransaction = true;
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -491,13 +480,11 @@
 				static::i()->intransaction = false;
 				try {
 					static::i()->conn->commit();
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -507,14 +494,12 @@
 				try {
 					static::i()->intransaction = false;
 					static::i()->conn->rollBack();
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
-			static::$data=array();
+			static::$data = array();
 		}
-
 		//
 		//
 		/**
@@ -535,7 +520,6 @@
 			}
 			return $result;
 		}
-
 		/**
 		 * @static
 		 *
@@ -550,11 +534,10 @@
 			$result = static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
 			return $result;
 		}
-
 		/***
 		 * @param						$sql
 		 * @param						$type
-		 * @param null $data
+		 * @param null			 $data
 		 *
 		 * @return DB_Query_Result|int
 		 */
@@ -574,44 +557,41 @@
 						$prepared->execute($data);
 						return true;
 				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$this->_error($e);
 			}
-			static::$data=array();
+			static::$data = array();
 			return false;
 		}
-
 		protected static function namedValues($sql, array $data) {
 			foreach ($data as $k => $v) {
 				$sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
-
 		protected static function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
 				$sql = preg_replace('/\?/i', "'$v[0]'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
-
 		/**
-		 * @param PDOException								$e
+		 * @param PDOException												$e
 		 * @param bool																$msg
-		 * @param string|bool								 $exit
+		 * @param string|bool												 $exit
+		 *
 		 * @return bool
 		 * @throws DBException
 		 */
 		protected function _error(PDOException $e, $msg = false, $exit = false) {
 			$data = static::$data;
 			static::$data = array();
-			if ($data&& is_array(reset($data))) {
+			if ($data && is_array(reset($data))) {
 				static::$errorSql = static::placeholderValues(static::$errorSql, $data);
-			} elseif ($data) {
+			}
+			elseif ($data) {
 				static::$errorSql = static::namedValues(static::$errorSql, $data);
 			}
-
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
@@ -619,14 +599,12 @@
 				$this->conn->rollBack();
 				$this->intransaction = false;
 			}
-
 			if ($exit) {
 				throw new DBException($error);
 			}
-
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
-			Errors::show_db_error($error, static::$errorSql,$data);
+			Errors::show_db_error($error, static::$errorSql, $data);
 		}
 	}
