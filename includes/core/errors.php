@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -119,11 +118,35 @@
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
 			}
-			$Ajax->run();
+			if (Ajax::in_ajax()) {
+				Ajax::i()->run();
+			} elseif (AJAX_REFERRER) {
+				echo static::JSONError(true);
+			}
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+		}
+
+		public static function JSONError($json = false) {
+			$status = false;
+			if (count(Errors::$dberrors) > 0) {
+				$dberror = array_pop(Errors::$dberrors);
+				$status['status'] = false;
+				$status['message'] = $dberror['message'];
+			}
+			elseif (count(Errors::$messages) > 0) {
+				$message = array_pop(Errors::$messages);
+				$status['status'] = false;
+				$status['message'] = $message['message'];
+				$status['var'] = basename($message['file']) . $message['line'];
+				$status['process'] = '';
+			}
+			if ($json && $status) {
+				return json_encode(array('status' => $status));
+			}
+			return $status;
 		}
 
 		/**
@@ -258,7 +281,7 @@
 		 */
 		protected static function prepare_exception(\Exception $e) {
 			$data = array(
-				'type' => $e->getCode(),
+				'type' => ($e->getCode()) ? $e->getCode() : E_USER_ERROR,
 				'message' => get_class($e) . ' ' . $e->getMessage(),
 				'file' => $e->getFile(),
 				'line' => $e->getLine(),
@@ -272,9 +295,7 @@
 				}
 			}
 			static::$messages[] = $data;
-			if (static::$fatal) {
-				static::$errors[] = $data;
-			}
+			static::$errors[] = $data;
 		}
 	}
 

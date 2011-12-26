@@ -57,8 +57,12 @@
 		 * @return DB_Query_Result
 		 */
 		public function exec($data = null) {
+			try {
 			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
 			return $result;
+			}catch (DBException $e) {
+return  false;
+			}
 		}
 
 		/***

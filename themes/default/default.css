@@ -525,7 +525,15 @@ div.banner a + a { border-top: 2px groove #999 }
 	background: #fff url(images/wrapbg.gif) repeat-x;
 
 }
-
+.contacts #custsearch{  position: relative;
+	-webkit-transition-duration:        1s;
+	-webkit-transition-timing-function: linear;
+ -moz-transition:all 1s ease-in;
+ -o-transition:all 1s ease-in;
+}
+.contacts #custsearch.hide {
+		height:0;
+}
 .Inventory #_tabs2 {
 
 	background: #464646;

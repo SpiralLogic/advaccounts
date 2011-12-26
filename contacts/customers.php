@@ -73,8 +73,10 @@
 	UI::select('branchList', array_map(function($v) {
 														 return $v->br_name;
 													 }, $customer->branches), array('name' => 'branchList'));
-	UI::button('addBranch', 'Add new address', array(
+	UI::button('addBranch', 'Add', array(
 																									'class' => 'invis', 'name' => 'addBranch'));
+	UI::button('delBranch', 'Delete', array(
+																										'class' => 'invis', 'name' => 'delBranch'));
 	HTML::td()->tr;
 	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
 	//hidden('br_contact_name', $customer->contact_name);

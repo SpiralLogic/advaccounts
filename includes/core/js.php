@@ -3,8 +3,7 @@
 	/**
 	 *
 	 */
-	class JS
-	{
+	class JS {
 		/**
 		 * @var array
 		 */
@@ -283,23 +282,13 @@ JS;
 		 */
 		public static function renderJSON($data) {
 			$data = (array)$data;
-			if (!isset($data['status']) && count(Errors::$messages) > 0) {
-				$message = array_pop(Errors::$messages);
-				$status['status'] = false;
-				$status['message'] = $message['message'];
-				$status['var'] = basename($message['file']) . $message['line'];
-				$status['process'] = '';
-				$data['status'] = $status;
+			if (isset($data['status']) && count(Errors::$dberrors) > 0) {
+				$data['status'] = Errors::JSONError();
+			} elseif (!isset($data['status']) && count(Errors::$messages) > 0) {
+				$data['status'] = Errors::JSONError();
 			}
-			elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
-				$dberror = array_pop(Errors::$dberrors);
-				$status['status'] = false;
-				$status['message'] = $dberror['message'];
-				$data['status'] = $status;
-			}
-			ob_end_clean();
+				ob_end_clean();
 			echo	 json_encode($data);
-			JS::$outputted = true;
 			exit();
 		}
 

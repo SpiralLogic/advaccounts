@@ -22,9 +22,12 @@
 		abstract protected function _defaults();
 
 		abstract protected function _new();
-
-		protected function _read($id = false) {
-			if ($id === false) {
+/***
+ * @param int $id Id of row to read from database
+ * @return bool
+ */
+		protected function _read($id = null) {
+			if ($id === null) {
 				return $this->_status(false, 'read', 'No ' . get_class($this), ' ID to read');
 			}
 			$this->_defaults();
@@ -36,7 +39,7 @@
 		}
 
 		/**
-		 * @return mixed
+		 * @return int|false Id assigned to new database row or false if entry failed
 		 */
 		protected function _saveNew() {
 			try {
@@ -51,7 +54,10 @@
 				return $this->_status(false, 'write', $e->getMessage(). '. The entered information is a duplicate. Please modify the existing record or use different values.');
 			}
 		}
-
+/**
+ * @param bool $string return status as string if true and as array if false
+ * @return string|array
+ */
 		public function getStatus($string=false) {
 			if ($string) {
 				return $this->_status;
@@ -59,8 +65,11 @@
 			return $this->_status->get();
 		}
 
-		public
-		function save($changes = null) {
+		/**
+		 * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+		 * @return array|bool|false|int|null
+		 */
+		public function save($changes = null) {
 			if (is_array($changes)) {
 				$this->setFromArray($changes);
 			}
@@ -88,8 +97,10 @@
 		return	$this->_status(true, 'write', get_class($this) . ' changes saved to database.');
 		}
 
-		protected
-		function __construct($id = 0) {
+		/**
+		 * @param int $id Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
+		 */
+		protected function __construct($id = 0) {
 			if (is_numeric($id) && $id > 0) {
 				$this->id = $id;
 				$this->_read($id);

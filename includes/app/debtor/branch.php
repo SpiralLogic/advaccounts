@@ -49,9 +49,8 @@
 		}
 
 		public function delete() {
-			$sql = "DELETE FROM cust_branch WHERE branch_code=" . $this->branch_code;
-			DB::query($sql, "cannot delete branch");
-			unset($this->branch_code);
+
+			DB::delete('cust_branch')->where('branch_code=',$this->branch_code)->exec();
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
 		}

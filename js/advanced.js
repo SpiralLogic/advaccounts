@@ -79,6 +79,7 @@ Adv.extend({
 		 Adv.showStatus(status);
 	 }).ajaxComplete(function (event, request) {
 		 Behaviour.apply();
+															console.log(request);
 		 try
 			 {
 				 var data = $.parseJSON(request.responseText);
