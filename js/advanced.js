@@ -102,38 +102,38 @@ Adv.extend({
 		 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 	}
 
-})
+});
 Adv.extend({Forms:(function () {
 	if (document.getElementsByClassName('datepicker').length > 0)
 		{
 			Adv.o.wrapper.on('focus', ".datepicker",
 			 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 		}
-	var _setFormValue = function(el,value,disabled) {
+	var _setFormValue = function (el, value, disabled) {
 		if (!el) return;
-						 if (typeof disabled === 'boolean')
-							 {
-								 el.disabled = disabled;
-							 }
-						 if (el.tagName === 'select')
-							 {
-								 if (el.value == null || String(value).length == 0)
-									 {
-										 $(el).find('option:first').prop('selected', true)
-											.data('init', value);
-										 return;
-									 }
-							 }
-						 if (el.type === 'checkbox')
-							 {
-								 el.checked = !!value;
-							 }
-						 if (String(value).length == 0)
-							 {
-								 value = '';
-							 }
-						 el.value = value;
-						 $(el).data('init', value);
+		if (typeof disabled === 'boolean')
+			{
+				el.disabled = disabled;
+			}
+		if (el.tagName === 'select')
+			{
+				if (el.value == null || String(value).length == 0)
+					{
+						$(el).find('option:first').prop('selected', true)
+						 .data('init', value);
+						return;
+					}
+			}
+		if (el.type === 'checkbox')
+			{
+				el.checked = !!value;
+			}
+		if (String(value).length == 0)
+			{
+				value = '';
+			}
+		el.value = value;
+		$(el).data('init', value);
 	}
 	return {
 		setFormValue:function (id, value, disabled) {
@@ -141,33 +141,59 @@ Adv.extend({Forms:(function () {
 			if (!els.length)
 				{
 					els = document.getElementById(id);
-					return _setFormValue(els,value,disabled);
+					return _setFormValue(els, value, disabled);
 				}
 			$.each(els, function (k, el) {
-				 _setFormValue(el,value,disabled);
+				 _setFormValue(el, value, disabled);
 			 }
 			)
 		},
 		autocomplete:function (id, url, callback) {
 			Adv.o.autocomplete[id] = $('#' + id).autocomplete({
 				autoFocus:true,
+				minLength:1,
+				delay:10,
 				source:function (request, response) {
-					var lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-						if (xhr === lastXhr)
+					var $this = Adv.o.autocomplete[id];
+					$this.data('default', null);
+					if ($this.data().autocomplete.previous == $this.val()) return false;
+					Adv.loader.off();
+					Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+						Adv.loader.on();
+						if (!$this.data('active'))
 							{
-								response(data);
+								if (data.length == 0)
+									{
+										data = [
+											{id:0, value:''}
+										]
+									}
+								callback(data[0]);
+								return false;
 							}
+						$this.data('default', data[0]);
+						response(data);
 					});
 				},
 				select:function (event, ui) {
+					Adv.o.autocomplete[id].data('default', null);
 					if (callback(ui.item, event, this) === false) return false;
-				}
-			}).css({'z-index':'2'}).bind('paste', function () {
-				 id.autocomplete('search', id.val())
-			 });
+				}, focus:function () {return false;}
+			}).blur(
+			 function () {$(this).data('active', false); }).bind('autocompleteclose',
+			 function () {
+				 var $this = $(this);
+				 if ($this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null)
+					 {
+						 $this.val($this.data()['default'].label);
+						 callback($this.data()['default'])
+					 }
+				 ;
+				 $this.data('default', null)
+			 })
+			 .focus(
+			 function () { $(this).data('active', true)}).css({'z-index':'2'})
 		}
-
-
 	}
 })()});
 Adv.extend({

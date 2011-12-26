@@ -12,7 +12,6 @@
 	/**
 	 *
 	 */
-
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
@@ -63,51 +62,22 @@
 	 * We need this in order to work with UTF-8 strings
 	 */
 	define('MBSTRING', function_exists('mb_get_info'));
-
-
-	set_error_handler(/**
-	 * @param $severity
-	 * @param $message
-	 * @param $filepath
-	 * @param $line
-	 *
-	 * @return bool
-	 */
-		function ($severity, $message, $filepath, $line) {
-			if (!class_exists('Errors', false)) {
-				/** @noinspection PhpIncludeInspection */
-				include(COREPATH . 'errors.php');
-			}
-			return \Errors::handler($severity, $message, $filepath, $line);
-		});
-	set_exception_handler(/**
-	 * @param Exception $e
-	 */
-		function (\Exception $e) {
-			if (!class_exists('Errors', false)) {
-				/** @noinspection PhpIncludeInspection */
-				include(COREPATH . 'errors.php');
-			}
-			return \Errors::exception_handler($e);
-		});
-	/** @noinspection PhpIncludeInspection */
-
+	set_error_handler(function ($severity, $message, $filepath, $line) {
+		(!class_exists('Errors', false)) and include(COREPATH . 'errors.php');
+		return \Errors::handler($severity, $message, $filepath, $line);
+	});
+	set_exception_handler(function (\Exception $e) {
+		(!class_exists('Errors', false)) and	include(COREPATH . 'errors.php');
+		return \Errors::exception_handler($e);
+	});
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-		$Ajax = Ajax::i();
-		if (isset($Ajax)) {
-			$Ajax->run();
-		}
-		// flush all output buffers (works also with exit inside any div levels)
-		while (ob_get_level()) {
-			ob_end_flush();
-		}
-		Config::store();
-		Cache::set('autoloads', Autoloader::getLoaded());
+		\Events::shutdown();
 	});
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**
 		 * @param $text
+		 *
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
@@ -123,10 +93,9 @@
 			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
 	}
-
-	(!class_exists('Session')) or Session::i();
-	(!class_exists('Config')) or Config::i();
-	(!class_exists('Ajax')) or Ajax::i();
+	Session::i();
+	Config::i();
+	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
 	array_walk($_POST, /**
 		 * @param $v
@@ -134,4 +103,4 @@
 		function(&$v) {
 			$v = is_string($v) ? trim($v) : $v;
 		});
-ADVAccounting::i();
+	ADVAccounting::i();

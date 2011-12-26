@@ -6,7 +6,8 @@
 	 * Time: 4:21 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class status {
+	class status
+	{
 		/**
 		 * @var array
 		 */
@@ -17,13 +18,12 @@
 		protected $_errors = array();
 
 		/**
-		 * @param null $status
-		 * @param null $process
+		 * @param null   $status
+		 * @param null   $process
 		 * @param string $message
-		 * @param null $var
+		 * @param null   $var
 		 */
 		public function __construct($status = null, $process = null, $message = '', $var = null) {
-
 			$this->set($status, $process, $message, $var);
 		}
 
@@ -37,11 +37,11 @@
 		 */
 		public function set($status = null, $process = null, $message = '', $var = null) {
 			if ($status === null || $process === null) {
-
 				$newstatus['status'] = false;
 				$newstatus['process'] = 'status';
 				$newstatus['message'] = 'Not enough parameters passed for status update.';
-			} else {
+			}
+			else {
 				$newstatus['status'] = $status;
 				$newstatus['process'] = $process;
 				$newstatus['message'] = $message;
@@ -50,15 +50,21 @@
 				}
 			}
 			$this->_status[] = $newstatus;
-			if (!$status) $this->_errors[] = $newstatus;
+			if (!$status) {
+				$this->_errors[] = $newstatus;
+			}
 			return $status;
 		}
 
 		/**
 		 * @param array $status
+		 *
 		 * @return mixed
 		 */
-		public function append(array $status) {
+		public function append(array $status, $error_only = true) {
+			if ($error_only && $status['status'] == true) {
+				return $status['status'];
+			}
 			$this->_status[] = $status;
 			return $status['status'];
 		}
@@ -67,8 +73,12 @@
 		 * @return array
 		 */
 		public function get() {
-			if (!empty($this->_errors)) return end($this->_errors);
-			if (!empty($this->_status)) return end($this->_status);
+			if (!empty($this->_errors)) {
+				return end($this->_errors);
+			}
+			if (!empty($this->_status)) {
+				return end($this->_status);
+			}
 			return false;
 		}
 
@@ -76,7 +86,9 @@
 		 * @return bool|mixed
 		 */
 		public function hasError() {
-			if (!empty($this->_errors)) return end($this->_errors);
+			if (!empty($this->_errors)) {
+				return end($this->_errors);
+			}
 			return false;
 		}
 

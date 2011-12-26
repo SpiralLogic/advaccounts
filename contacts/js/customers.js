@@ -93,7 +93,7 @@ var Contacts = function () {
 		},
 		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
-		},
+		}
 
 	};
 }();

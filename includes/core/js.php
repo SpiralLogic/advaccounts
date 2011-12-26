@@ -57,7 +57,8 @@
 			if (static::$_openWindow || !Config::get('ui_windows_popups')) {
 				return;
 			}
-			$js = <<<JS
+			$js
+			 = <<<JS
 		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','div .openWindow,td .openWindow',
 			function(e) {
 				if (e.type=='click') {
@@ -100,13 +101,16 @@ JS;
 		 * @param array $options
 		 */
 		public static function autocomplete($id, $callback, $url = false, $options = array()) {
+			$o = array('focus' => false);
+			$o = array_merge($o, $options);
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[] = <<<JS
+			self::$_onload[]
+			 = <<<JS
 Adv.Forms.autocomplete('$id','$url',$callback);
 JS;
-			if (isset($options['focus'])) {
+			if ($o['focus']) {
 				self::setFocus("autocomplete.$id", true);
 			}
 		}
@@ -121,12 +125,14 @@ JS;
 		public static function gmap($selector, $address, $title) {
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			$js = <<<JS
+			$js
+			 = <<<JS
 
 				Adv.maps = { api_key: '$apikey'}
 JS;
 			JS::beforeload($js);
-			$js = <<<JS
+			$js
+			 = <<<JS
 var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -242,7 +248,8 @@ JS;
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 				}
 				echo $files;
-			} else {
+			}
+			else {
 				self::$_beforeload = array_merge(self::$_beforeload, self::$_onlive, self::$_onload);
 				self::$_onlive = self::$_onload = array();
 			}
@@ -283,7 +290,8 @@ JS;
 				$status['var'] = basename($message['file']) . $message['line'];
 				$status['process'] = '';
 				$data['status'] = $status;
-			} elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
+			}
+			elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
 				$dberror = array_pop(Errors::$dberrors);
 				$status['status'] = false;
 				$status['message'] = $dberror['message'];
@@ -424,7 +432,8 @@ JS;
 				foreach ($js as $j) {
 					self::register($j, $var);
 				}
-			} else {
+			}
+			else {
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
@@ -440,7 +449,8 @@ JS;
 				foreach ($file as $f) {
 					self::registerFile($f, $var);
 				}
-			} else {
+			}
+			else {
 				$dir = dirname($file);
 				$file = basename($file);
 				isset($var[$dir]) or $var[$dir] = array();

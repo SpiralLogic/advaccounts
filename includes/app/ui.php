@@ -31,60 +31,68 @@
 						HTML::option(null, $data[0] . ' (' . $data[1] . ')', array('value' => $data[1]), false);
 					}
 					HTML::optgroup();
-				} else {
+				}
+				else {
 					HTML::option(null, $option, array('value' => $label), false);
 				}
 			}
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
-/***
- * @static
- * @param $id
- * @param array $attr  includes (url,label,size,name,set,focus, nodiv, callback, options
- * @param array $options
- * @return HTML|null
- *
- * url: url to get search results from<br>
- * label: if set becomes the text of a &lt;label&gt; element for the input<br>
- * size: size of the input<br>
- * focus: whether to start with focus<br>
- * nodiv: if true then a div is not included<br>
- * callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
- * options: Javascript function autocomplete options<br>
- *
- */
-		static function search($id, $attr = array(), $options = array()) {
 
-			$url = (!empty($attr['url'])) ? $attr['url'] : false;
-			if (!isset($attr['nodiv'])) {
+		/***
+		 * @static
+		 *
+		 * @param			 $id
+		 * @param array $attr	includes (url,label,size,name,set,focus, nodiv, callback, options
+		 * @param array $options
+		 *
+		 * @return HTML|null
+		 *
+		 * url: url to get search results from<br>
+		 * label: if set becomes the text of a &lt;label&gt; element for the input<br>
+		 * size: size of the input<br>
+		 * focus: whether to start with focus<br>
+		 * nodiv: if true then a div is not included<br>
+		 * callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
+		 * options: Javascript function autocomplete options<br>
+		 *
+		 */
+		static function search($id, $attr = array(), $options = array()) {
+			$o = array(
+				'url' => false,
+				'nodiv' => false,
+				'label' => false,
+				'size' => 30,
+				'name' => false,
+				'set' => false,
+				'value' => false,
+				'focus' => false,
+				'callback' => false);
+			$o = array_merge($o, $attr);
+			$url = ($o['url']) ? $o['url'] : false;
+			if (!$o['nodiv']) {
 				HTML::div(array('class' => 'ui-widget'));
 			}
-			if ( isset($attr['label'])) {
-				HTML::label(array('for' => $id), $attr['label'], false);
+			if (($o['label'])) {
+				HTML::label(array('for' => $id), $o['label'], false);
 			}
-			if ( isset($attr['size'])) {
-				$input_attr['size'] = $attr['size'];
-			}else {
-				$input_attr['size'] = 20;
+			$input_attr['size'] = $o['size'];
+			if (($o['name'])) {
+				$input_attr['name'] = $o['name'];
 			}
-			if ( isset($attr['name'])) {
-				$input_attr['name'] = $attr['name'];
+			if (($o['set'])) {
+				$input_attr['data-set'] = $o['set'];
 			}
-			if ( isset($attr['set'])) {
-				$input_attr['data-set'] = $attr['set'];
+			if (($o['value'])) {
+				$input_attr['value'] = htmlentities($o['value']);
 			}
-			if ( isset($attr['value'])) {
-							$input_attr['value'] = htmlentities($attr['value']);
-						}
-			if ( isset($attr['focus'])) {
-				$options['focus'] = $attr['focus'];
-			}
+			$options['focus'] = $o['focus'];
 			HTML::input($id, $input_attr);
-			if (!isset($attr['nodiv'])) {
+			if (!($o['nodiv'])) {
 				HTML::div();
 			}
-			$callback = (isset($attr['callback'])) ? $attr['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
+			$callback = (($o['callback'])) ? $o['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
 			JS::autocomplete($id, $callback, $url, $options);
 			return static::$_instance;
 		}
@@ -102,7 +110,10 @@
 				'js' => '',
 				'submitonselect' => '',
 				'sales_type' => 1,
-				'no_sale' => false, 'select' => false, 'type' => 'local', 'where' => '');
+				'no_sale' => false,
+				'select' => false,
+				'type' => 'local',
+				'where' => '');
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
 			Cache::set($UniqueID, $o, DB_Company::get_pref('login_tout'));
@@ -125,24 +136,29 @@
 				HTML::textarea('description', $o['description'], array(
 																															'name' => 'description', 'rows' => 1, 'cols' => 45), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
-			} elseif ($o['submitonselect']) {
-				$selectjs = <<<JS
+			}
+			elseif ($o['submitonselect']) {
+				$selectjs
+				 = <<<JS
 				$(this).val(value.stock_id);
 				$('form').trigger('submit'); return false;
 JS;
-			} else {
-				$selectjs = <<<JS
+			}
+			else {
+				$selectjs
+				 = <<<JS
 				$(this).val(value.stock_id);return false;
 JS;
 			}
 			if ($o['cells']) {
 				HTML::td();
 			}
-			$js = <<<JS
+			$js
+			 = <<<JS
 	Adv.o.stock_id = \$$id = $("#$id").catcomplete({
 				delay: 0,
 				autoFocus: true,
-				minLength: 0,
+				minLength: 1,
 				source: function( request, response ) {
 						if (Adv.lastXhr) Adv.lastXhr.abort();
 						Adv.loader.off();
@@ -151,7 +167,6 @@ JS;
 								dataType: "json",
 								data: {UniqueID: '{$UniqueID}',term: request.term},
 								success: function( data,status,xhr ) {
-
 								if ( xhr === Adv.lastXhr ) {
 								if (!Adv.o.stock_id.data('active')) {
 								var value = data[0];
@@ -200,7 +215,8 @@ JS;
 			$emailBox->setOptions(array(
 																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false));
 			$emailBox->show();
-			$action = <<<JS
+			$action
+			 = <<<JS
 	 var emailID= $(this).data('emailid');
 	 $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
 	 \$emailBox.html(data).dialog('open');

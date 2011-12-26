@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -28,6 +29,21 @@
 		 */
 		public static $fatal = false; // container for system messages
 		public static $count = 0; // container for system messages
+		public static $levels
+		 = array(
+			 0 => 'Error',
+			 E_ERROR => 'Error',
+			 E_WARNING => 'Warning',
+			 E_PARSE => 'Parsing Error',
+			 E_NOTICE => 'Notice',
+			 E_CORE_ERROR => 'Core Error',
+			 E_CORE_WARNING => 'Core Warning',
+			 E_COMPILE_ERROR => 'Compile Error',
+			 E_COMPILE_WARNING => 'Compile Warning',
+			 E_USER_ERROR => 'User Error',
+			 E_USER_WARNING => 'User Warning',
+			 E_USER_NOTICE => 'User Notice',
+			 E_STRICT => 'Runtime Notice');
 		/**
 		 * @var string
 		 */
@@ -51,13 +67,15 @@
 					/** @noinspection PhpIncludeInspection */
 					include(realpath(VENDORPATH . 'fb.php'));
 					FB::useFile(DOCROOT . 'tmp/chromelogs', DS . 'tmp' . DS . 'chromelogs');
-				} else {
+				}
+				else {
 					/** @noinspection PhpIncludeInspection */
 					include(realpath(VENDORPATH . 'FirePHP/FirePHP.class.php'));
 					/** @noinspection PhpIncludeInspection */
 					include(realpath(VENDORPATH . 'FirePHP/fb.php'));
 				}
-			} else {
+			}
+			else {
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 		}
@@ -89,6 +107,27 @@
 			trigger_error($msg, E_USER_WARNING);
 		}
 
+		static function shutdown_handler() {
+			$last_error = error_get_last();
+			// Only show valid fatal errors
+			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
+				$severity = static::$levels[$last_error['type']];
+				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
+				static::exception_handler($error);
+				exit(1);
+			}
+			$Ajax = Ajax::i();
+			if (isset($Ajax)) {
+				$Ajax->run();
+			}
+			// flush all output buffers (works also with exit inside any div levels)
+			while (ob_get_level()) {
+				ob_end_flush();
+			}
+			Config::store();
+			Cache::set('autoloads', Autoloader::getLoaded());
+		}
+
 		/**
 		 * @static
 		 *
@@ -111,8 +150,7 @@
 			}
 			static::$count++;
 			$error = array(
-				'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line
-			);
+				'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line);
 			static::$messages[] = $error;
 			if (in_array($type, static::$fatal_levels) || $type == E_USER_ERROR) {
 				static::$errors[] = $error;
@@ -131,7 +169,6 @@
 			}
 			static::$count++;
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
-
 			static::prepare_exception($e);
 		}
 
@@ -143,8 +180,7 @@
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'),
 				E_USER_WARNING => array('WARNING', 'warn_msg'),
-				E_USER_NOTICE => array('USER', 'note_msg')
-			);
+				E_USER_NOTICE => array('USER', 'note_msg'));
 			$content = '';
 			foreach (static::$messages as $msg) {
 				$type = $msg['type'];
@@ -153,7 +189,8 @@
 					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
 					$type = E_USER_ERROR;
-				} elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
+				}
+				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
@@ -195,20 +232,20 @@
 		 * @static
 		 *
 		 * @param						$msg
-		 * @param null $sql_statement
+		 * @param null			 $sql_statement
+		 *
 		 * @internal param bool $exit
 		 *
 		 * @throws DBException
 		 */
-		static function show_db_error($error, $sql = null,$data=array()) {
+		static function show_db_error($error, $sql = null, $data = array()) {
 			$errorCode = DB::error_no();
 			$error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
 			if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
-				$error['message'] .= 	_("The entered information is a duplicate. Please go back and enter different values.");
+				$error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
 			}
-			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: '.serialize($data).'<br>with error: '.$error['debug'] ;
-			$error['backtrace']  =var_export(debug_backtrace(),true);
-
+			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
+			$error['backtrace'] = var_export(debug_backtrace(), true);
 			static::$dberrors[] = $error;
 		}
 
@@ -219,12 +256,16 @@
 		 */
 		protected static function prepare_exception(\Exception $e) {
 			$data = array(
-				'type' => $e->getCode(), 'message' => get_class($e) . ' ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'backtrace' => $e->getTrace()
-			);
+				'type' => $e->getCode(),
+				'message' => get_class($e) . ' ' . $e->getMessage(),
+				'file' => $e->getFile(),
+				'line' => $e->getLine(),
+				'backtrace' => $e->getTrace());
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
-				} elseif ($trace['file'] == __FILE__) {
+				}
+				elseif ($trace['file'] == __FILE__) {
 					unset($data['backtrace'][$key]);
 				}
 			}

@@ -6,7 +6,8 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contact_Company {
+	class Debtor extends Contact_Company
+	{
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
@@ -33,6 +34,7 @@
 
 		public function getStatus($string = false) {
 			foreach ($this->branches as $branch) {
+				/** @var Debtor_Branch $branch */
 				$this->_status->append($branch->getStatus());
 			}
 			foreach ($this->contacts as $contact) {
@@ -91,7 +93,8 @@
 			if ($this->id == 0) {
 				return;
 			}
-			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
+			$sql
+			 = "SELECT debtor_trans.*, sales_orders.customer_ref,
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
@@ -276,10 +279,14 @@
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true
-			));
+																		'autoOpen' => false,
+																		'modal' => true,
+																		'width' => '850',
+																		'height' => '715',
+																		'resizeable' => true));
 			$customerBox->show();
-			$js = <<<JS
+			$js
+			 = <<<JS
 							var val = $("#customer_id").val();
 							$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -292,9 +299,11 @@ JS;
 
 		public static function search($terms) {
 			$data = array();
-			DB::select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)->union()
-			 ->select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+			DB::select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('name LIKE ', "$terms%")
+			 ->limit(20)->union()->select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')
+			 ->where('debtor_ref LIKE', "%$terms%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
+			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 			$results = DB::fetch();
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);
@@ -311,7 +320,8 @@ JS;
 				return trim($v);
 			}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
-			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+			$sql
+			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 									UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
 									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
 			$result = DB::query($sql, 'Couldn\'t Get Customers');
@@ -335,10 +345,12 @@ JS;
 			$past1 = DB_Company::get_pref('past_due_days');
 			$past2 = 2 * $past1;
 			// removed - debtor_trans.alloc from all summations
-			$value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+			$value
+			 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
 		-1, 1) *" . "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
 			$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-			$sql = "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
+			$sql
+			 = "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
 			Sum(" . $value . ") AS Balance,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
@@ -366,7 +378,8 @@ JS;
 			if (DB::num_rows($result) == 0) {
 				/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 				$nil_balance = true;
-				$sql = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
+				$sql
+				 = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no, payment_terms.terms,
 	 		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
 	 		FROM debtors_master,
 	 		 payment_terms,
@@ -405,7 +418,8 @@ JS;
 		}
 
 		public static function get_habit($customer_id) {
-			$sql = "SELECT debtors_master.pymt_discount,
+			$sql
+			 = "SELECT debtors_master.pymt_discount,
 				 credit_status.dissallow_invoices
 				FROM debtors_master, credit_status
 				WHERE debtors_master.credit_status = credit_status.id
@@ -440,15 +454,24 @@ JS;
 
 		public static function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td nowrap>";
-
-			if (!$value && isset($_POST['customer'])) $value = $_POST['customer'];
+			if (!$value && isset($_POST['customer'])) {
+				$value = $_POST['customer'];
+				JS::set_focus('stock_id');
+				$focus = false;
+			}
+			elseif ($value) {
+				$focus = false;
+			}
 			hidden('customer_id');
-			UI::search('customer', array('url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => true, 'value' => $value));
+			UI::search('customer', array(
+																	'url' => '/contacts/customers.php',
+																	'name' => 'customer',
+																	'focus' => $focus,
+																	'value' => $value));
 			echo "</td>\n</tr>\n";
-			JS::beforeload(<<<JS
-var Customer = function(data) { \$('#customer_id').val(data.id); \$('#customer').val(data.value);\$('form').submit()}
-JS
-			);
+			JS::beforeload("var Customer = function(data) { var id = document.getElementById('customer_id');id.value= data.id;
+			var customer = document.getElementById('customer');customer.value=data.value;
+			JsHttpRequest.request(customer)}");
 		}
 
 		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
@@ -458,20 +481,20 @@ JS
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-				'format' => '_format_add_curr',
-				'order' => array('debtor_ref'),
-				'search_box' => $mode != 0,
-				'type' => 1,
-				'size' => 20,
-				'spec_option' => $spec_option === true ? _("All Customers") : $spec_option,
-				'spec_id' => ALL_TEXT,
-				'select_submit' => $submit_on_change,
-				'async' => $async,
-				'sel_hint' => $mode ?
-				 _('Press Space tab to filter by name fragment; F2 - entry new customer') :
-				 _('Select customer'),
-				'show_inactive' => $show_inactive
-			));
+																																						 'format' => '_format_add_curr',
+																																						 'order' => array('debtor_ref'),
+																																						 'search_box' => $mode != 0,
+																																						 'type' => 1,
+																																						 'size' => 20,
+																																						 'spec_option' => $spec_option === true ?
+																																							_("All Customers") : $spec_option,
+																																						 'spec_id' => ALL_TEXT,
+																																						 'select_submit' => $submit_on_change,
+																																						 'async' => $async,
+																																						 'sel_hint' => $mode ?
+																																							_('Press Space tab to filter by name fragment; F2 - entry new customer') :
+																																							_('Select customer'),
+																																						 'show_inactive' => $show_inactive));
 		}
 
 		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
