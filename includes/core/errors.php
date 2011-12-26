@@ -108,24 +108,22 @@
 		}
 
 		static function shutdown_handler() {
+			$Ajax = Ajax::i();
+			Config::store();
+			Cache::set('autoloads', Autoloader::getLoaded());
 			$last_error = error_get_last();
 			// Only show valid fatal errors
 			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
-				$severity = static::$levels[$last_error['type']];
+				$Ajax->aCommands = array();
+				Errors::$fatal = true;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
-				exit(1);
 			}
-			$Ajax = Ajax::i();
-			if (isset($Ajax)) {
-				$Ajax->run();
-			}
+			$Ajax->run();
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
-			Config::store();
-			Cache::set('autoloads', Autoloader::getLoaded());
 		}
 
 		/**
@@ -182,23 +180,6 @@
 				E_USER_WARNING => array('WARNING', 'warn_msg'),
 				E_USER_NOTICE => array('USER', 'note_msg'));
 			$content = '';
-			foreach (static::$messages as $msg) {
-				$type = $msg['type'];
-				$str = $msg['message'];
-				if ($type < E_USER_ERROR && $type != null) {
-					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
-					$type = E_USER_ERROR;
-				}
-				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
-					$type = E_USER_WARNING;
-				}
-				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
-				if (class_exists('FB', false)) {
-					FB::log($msg, $class[0]);
-				}
-				$content .= "<div class='$class[1]'>$str</div>\n\n";
-			}
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
@@ -212,7 +193,28 @@
 				$mail->mail->FromName = "Accounts Errors";
 				$mail->subject('Error log');
 				$mail->html($text);
-				$mail->send();
+				$success = $mail->send();
+				if (!$success) {
+					static::handler(E_ERROR, $success, __FILE__, __LINE__);
+				}
+			}
+			foreach (static::$messages as $msg) {
+				$type = $msg['type'];
+				$str = $msg['message'];
+				if ($type < E_USER_ERROR && $type != null) {
+					Errors::$errors[] = $msg;
+					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
+					$type = E_USER_ERROR;
+				}
+				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
+					$type = E_USER_WARNING;
+				}
+				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
+				if (class_exists('FB', false)) {
+					FB::log($msg, $class[0]);
+				}
+				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
 			return $content;
 		}

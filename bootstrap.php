@@ -72,7 +72,7 @@
 	});
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-		\Events::shutdown();
+		\Errors::shutdown_handler();
 	});
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**
@@ -81,16 +81,9 @@
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
-			$Ajax = Ajax::i();
-			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text)) {
-				$Ajax->aCommands = array();
-				Errors::$fatal = true;
-				$text = '';
-				Errors::$messages[] = error_get_last();
-				Errors::$errors[] = error_get_last();
-			}
-			$Ajax->run();
-			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+
+			return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+
 		}
 	}
 	Session::i();
