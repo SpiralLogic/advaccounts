@@ -20,4 +20,4 @@
 	if (Input::get('application')) {
 		$app->selected_application = $_GET['application'];
 	}
-	$app->display($wawa);
+	$app->display();
