@@ -11,7 +11,8 @@
 	 ***********************************************************************/
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
 	 */
-	class Purch_Order {
+	class Purch_Order
+	{
 		public $supplier_id;
 		public $supplier_details;
 		public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
@@ -30,7 +31,6 @@
 		public $freight;
 		public $salesman;
 		public $reference;
-
 		public function __construct($order_no = 0, $view = false) {
 			/*Constructor function initialises a new purchase order object */
 			$this->line_items = array();
@@ -46,7 +46,6 @@
 			$this->uniqueid = uniqid();
 			$this->order_id = ST_PURCHORDER . '.' . sha1(ST_PURCHORDER . serialize($this->order_no));
 		}
-
 		public function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
 			if ($qty != 0 && isset($qty)) {
 				$this->line_items[$line_no] = new Purch_Line($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount);
@@ -55,7 +54,6 @@
 			}
 			Return 0;
 		}
-
 		public function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['current_user']->name;
@@ -70,7 +68,6 @@
 				$this->salesman = $salesman_code;
 			}
 		}
-
 		public function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr = '', $discount = 0) {
 			$this->line_items[$line_no]->quantity = $qty;
 			$this->line_items[$line_no]->price = $price;
@@ -81,11 +78,9 @@
 			$this->line_items[$line_no]->req_del_date = $req_del_date;
 			$this->line_items[$line_no]->price = $price;
 		}
-
 		public function remove_from_order($line_no) {
 			$this->line_items[$line_no]->Deleted = true;
 		}
-
 		public function order_has_items() {
 			if (count($this->line_items) > 0) {
 				foreach ($this->line_items as $ordered_items) {
@@ -96,14 +91,12 @@
 			}
 			return false;
 		}
-
 		public function clear_items() {
 			unset($this->line_items);
 			$this->line_items = array();
 			$this->lines_on_order = 0;
 			$this->order_no = 0;
 		}
-
 		public function any_already_received() {
 			/* Checks if there have been deliveries or invoiced entered against any of the line items */
 			if (count($this->line_items) > 0) {
@@ -115,7 +108,6 @@
 			}
 			return 0;
 		}
-
 		public function some_already_received($line_no) {
 			/* Checks if there have been deliveries or amounts invoiced against a specific line item */
 			if (count($this->line_items) > 0) {
@@ -126,7 +118,6 @@
 			}
 			return 0;
 		}
-
 		public function delete() {
 			$sql = "DELETE FROM purch_orders WHERE order_no=" . DB::escape($this->order_no);
 			DB::query($sql, "The order header could not be deleted");
@@ -134,7 +125,6 @@
 			DB::query($sql, "The order detail lines could not be deleted");
 			Orders::session_delete($this->order_no);
 		}
-
 		public function add() {
 			DB::begin();
 			/*Insert to purchase order header record */
@@ -158,7 +148,6 @@
 			Orders::session_delete($this->order_id);
 			return $this->order_no;
 		}
-
 		public function update() {
 			DB::begin();
 			/*Update the purchase order header with any changes */
@@ -180,19 +169,21 @@
 						DB::query($sql, "could not query purch order details");
 					}
 				}
-				else if ($po_line->po_detail_rec == '') {
-					// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
-					$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
-					$sql .= $this->order_no . "," . DB::escape($po_line->stock_id) . "," . DB::escape($po_line->description) . ",'" . Dates::date2sql($po_line->req_del_date) . "'," . DB::escape($po_line->price) . ", " . DB::escape($po_line->quantity) . ", " . DB::escape($po_line->discount) . ")";
-				}
 				else {
-					$sql = "UPDATE purch_order_details SET item_code=" . DB::escape($po_line->stock_id) . ",
+					if ($po_line->po_detail_rec == '') {
+						// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
+						$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
+						$sql .= $this->order_no . "," . DB::escape($po_line->stock_id) . "," . DB::escape($po_line->description) . ",'" . Dates::date2sql($po_line->req_del_date) . "'," . DB::escape($po_line->price) . ", " . DB::escape($po_line->quantity) . ", " . DB::escape($po_line->discount) . ")";
+					}
+					else {
+						$sql = "UPDATE purch_order_details SET item_code=" . DB::escape($po_line->stock_id) . ",
 					description =" . DB::escape($po_line->description) . ",
 					delivery_date ='" . Dates::date2sql($po_line->req_del_date) . "',
 					unit_price=" . DB::escape($po_line->price) . ",
 					quantity_ordered=" . DB::escape($po_line->quantity) . ",
 					discount=" . DB::escape($po_line->discount) . "
 					WHERE po_detail_item=" . DB::escape($po_line->po_detail_rec);
+					}
 				}
 				DB::query($sql, "One of the purchase order detail records could not be updated");
 			}
@@ -201,10 +192,8 @@
 			Orders::session_delete($this->order_id);
 			return $this->order_no;
 		}
-
 		public function get_header($order_no) {
-			$sql
-			 = "SELECT purch_orders.*, suppliers.supp_name,
+			$sql = "SELECT purch_orders.*, suppliers.supp_name,
 	 		suppliers.curr_code, locations.location_name
 			FROM purch_orders, suppliers, locations
 			WHERE purch_orders.supplier_id = suppliers.supplier_id
@@ -227,14 +216,14 @@
 				$this->salesman = $myrow['salesman'];
 				return true;
 			}
-			Errors::show_db_error("FATAL : duplicate purchase order found", "", true);
+			elseif (DB::num_rows($result) > 1) {
+				Errors::show_db_error("FATAL : duplicate purchase order found", "", true);
+			}
 			return false;
 		}
-
 		public function get_items($order_no, $view = false) {
 			/*now populate the line po array with the purchase order details records */
-			$sql
-			 = "SELECT purch_order_details.*, units
+			$sql = "SELECT purch_order_details.*, units
 			FROM purch_order_details
 			LEFT JOIN stock_master
 			ON purch_order_details.item_code=stock_master.stock_id
@@ -264,30 +253,25 @@
 					if ($this->add_to_order($this->lines_on_order + 1, $myrow["item_code"], $myrow["quantity_ordered"], $myrow["description"], $myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]), $myrow["qty_invoiced"], $myrow["quantity_received"], $myrow["discount"])
 					) {
 						$this->line_items[$this->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
-						$this->line_items[$this->lines_on_order]->standard_cost
-						 = $myrow["std_cost_unit"]; /*Needed for receiving goods and GL interface */
+						$this->line_items[$this->lines_on_order]->standard_cost = $myrow["std_cost_unit"]; /*Needed for receiving goods and GL interface */
 					}
 				} /* line po from purchase order details */
 			} //end of checks on returned data set
 		}
-
 		public function read($order_no, $view = false) {
 			$result = $this->get_header($order_no);
 			if ($result) {
 				$this->get_items($order_no, $view);
 			}
 		}
-
 		public function	 add_freight($date_) {
 			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $this->order_no . "," . DB::escape('freight') . "," . DB::escape('Freight Charges') . ",'" . Dates::date2sql($date_) . "'," . DB::escape($this->freight) . ", " . DB::escape(1) . ", " . DB::escape(0) . ")";
 			DB::query($sql, "One of the purchase order detail records could not be updated");
 			return DB::insert_id();
 		}
-
 		public function supplier_to_order($supplier_id) {
-			$sql
-			 = "SELECT * FROM suppliers
+			$sql = "SELECT * FROM suppliers
 			WHERE supplier_id = '$supplier_id'";
 			$result = DB::query($sql, "The supplier details could not be retreived");
 			$myrow = DB::fetch_assoc($result);
@@ -296,11 +280,10 @@
 			$this->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
 			$this->supplier_id = $_POST['supplier_id'] = $supplier_id;
 		}
-
 		/*
-	Check if the order was not destroyed during opening the edition page in
-	another browser tab.
-	*/
+	 Check if the order was not destroyed during opening the edition page in
+	 another browser tab.
+	 */
 		public static function check_edit_conflicts($order) {
 			if (!isset($_POST['order_id'])) {
 				$_POST['order_id'] = $order->order_id;
@@ -309,14 +292,14 @@
 			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
 				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
 					Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
-				} elseif ($session_order->trans_no) {
+				}
+				elseif ($session_order->trans_no) {
 					Errors::warning(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
 				}
 				return $session_order;
 			}
 			return $order;
 		}
-
 		public function header() {
 			$editable = ($this->order_no == 0);
 			start_outer_table('tablestyle2 width90');
@@ -383,14 +366,13 @@
 			textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
 			end_outer_table(); // outer table
 		}
-
 		public function display_items($editable = true) {
 			Display::heading(_("Order Items"));
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
 			$th = array(
-				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"),
-				_('Discount %'), _("Total"), "");
+				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), ""
+			);
 			if (count($this->line_items)) {
 				$th[] = '';
 			}
@@ -433,7 +415,6 @@
 			end_table(1);
 			Display::div_end();
 		}
-
 		public function summary($is_self = false, $editable = false) {
 			start_table('tablestyle2 width90');
 			echo "<tr class='tableheader2 top'><th colspan=4>";
@@ -470,7 +451,6 @@
 			}
 			end_table(1);
 		}
-
 		public function item_controls($stock_id = null) {
 			start_row();
 			$dec2 = 0;
@@ -532,22 +512,18 @@
 			}
 			end_row();
 		}
-
 		public static function get_data($supplier_id, $stock_id) {
-			$sql
-			 = "SELECT * FROM purch_data
+			$sql = "SELECT * FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
 			$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
 			return DB::fetch($result);
 		}
-
 		public static function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
 			$data = static::get_data($supplier_id, $stock_id);
 			if ($data === false) {
 				$supplier_code = $stock_id;
-				$sql
-				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+				$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
 					conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
 				return false;

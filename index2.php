@@ -7,34 +7,14 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include ('bootstrap.php');
-	Page::start('Barcode Tests');
-	JS::footerFile('/js/barcode.js');
-	$fontSize = 10; // GD1 in px ; GD2 in point
-	$marge = 10; // between barcode and hri in pixel
-	$x = 125; // barcode center
-	$y = 125; // barcode center
-	$height = 200; // barcode height in 1D ; module size in 2D
-	$width = 2; // barcode height in 1D ; not use in 2D
-	$angle = 90; // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
-	$code = 'Hi Sam do you think this will be helpful!'; // barcode, of course ;)
-	$type = 'datamatrix';
-	// -------------------------------------------------- //
-	//            ALLOCATE GD RESSOURCE
-	// -------------------------------------------------- //
-	$im = imagecreatetruecolor(300, 300);
-	$black = ImageColorAllocate($im, 0x00, 0x00, 0x00);
-	$white = ImageColorAllocate($im, 0xff, 0xff, 0xff);
-	$red = ImageColorAllocate($im, 0xff, 0x00, 0x00);
-	$blue = ImageColorAllocate($im, 0x00, 0x00, 0xff);
-	imagefilledrectangle($im, 0, 0, 300, 300, $white);
-	// -------------------------------------------------- //
-	//                      BARCODE
-	// -------------------------------------------------- //
-	$data = Barcode::gd($im, $black, $x, $y, $angle, array('code' => $code), $width, $height);
-JS::onload(<<<JS
-	$('#barcode').barcode('test');
-JS
-);
-	?><div id="barcode"></div><?
-	Renderer::end_page(true);
+	$items = DB::select('stock_id', 'description')->from('stock_master')->limit(0, 200)->fetch()->all();
+	foreach ($items as $item) {
+		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
+		$image = base64_encode($data);
+		echo '<div style="display:inline-block;text-align:center;clear:left;width:25%;"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
+		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
+		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
+		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
+	}
+
 ?>

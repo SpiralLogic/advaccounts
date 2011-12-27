@@ -21,7 +21,6 @@
 			HTML::button($id, $content, $attr, false);
 			return static::$_instance;
 		}
-
 		static function select($id = false, $options = array(), $params = array()) {
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array)$options as $label => $option) {
@@ -39,7 +38,6 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
-
 		/***
 		 * @static
 		 *
@@ -60,22 +58,15 @@
 		 */
 		static function search($id, $attr = array(), $options = array()) {
 			$o = array(
-				'url' => false,
-				'nodiv' => false,
-				'label' => false,
-				'size' => 30,
-				'name' => false,
-				'set' => false,
-				'value' => false,
-				'focus' => false,
-				'callback' => false);
+				'url' => false, 'nodiv' => false, 'label' => false, 'size' => 30, 'name' => false, 'set' => false, 'value' => false, 'focus' => false, 'callback' => false
+			);
 			$o = array_merge($o, $attr);
 			$url = ($o['url']) ? $o['url'] : false;
 			if (!$o['nodiv']) {
 				HTML::div(array('class' => 'ui-widget'));
 			}
 			if (($o['label'])) {
-				HTML::label(null,$o['label'],array('for' => $id), false);
+				HTML::label(null, $o['label'], array('for' => $id), false);
 			}
 			$input_attr['size'] = $o['size'];
 			if (($o['name'])) {
@@ -96,7 +87,6 @@
 			JS::autocomplete($id, $callback, $url, $options);
 			return static::$_instance;
 		}
-
 		static function searchLine($id, $url = '#', $options = array()) {
 			$defaults = array(
 				'description' => false,
@@ -108,13 +98,14 @@
 				'purchase' => false,
 				'sale' => false,
 				'js' => '',
-				'selectjs',
+				'selectjs' => '',
 				'submitonselect' => '',
 				'sales_type' => 1,
 				'no_sale' => false,
 				'select' => false,
 				'type' => 'local',
-				'where' => '');
+				'where' => ''
+			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
 			Cache::set($UniqueID, $o, DB_Company::get_pref('login_tout'));
@@ -126,7 +117,8 @@
 			HTML::input($id, array('value' => $o['selected'], 'name' => $id));
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
-																						 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
+																						 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'
+																				));
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {
@@ -134,30 +126,29 @@
 			}
 			$selectjs = '';
 			if ($o['selectjs']) {
-				$selectjs = 	$o['selectjs'];
-			}elseif ($o['description'] !== false) {
+				$selectjs = $o['selectjs'];
+			}
+			elseif ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array(
-																															'name' => 'description', 'rows' => 1, 'cols' => 45), false);
+																															'name' => 'description', 'rows' => 1, 'cols' => 45
+																												 ), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}
 			elseif ($o['submitonselect']) {
-				$selectjs
-				 = <<<JS
+				$selectjs = <<<JS
 				$(this).val(value.stock_id);
 				$('form').trigger('submit'); return false;
 JS;
 			}
 			else {
-				$selectjs
-				 = <<<JS
+				$selectjs = <<<JS
 				$(this).val(value.stock_id);return false;
 JS;
 			}
 			if ($o['cells']) {
 				HTML::td();
 			}
-			$js
-			 = <<<JS
+			$js = <<<JS
 	Adv.o.stock_id = \$$id = $("#$id").catcomplete({
 				delay: 0,
 				autoFocus: true,
@@ -207,7 +198,6 @@ JS;
 			JS::addLive($js, $clean);
 			return HTML::setReturn(false);
 		}
-
 		public static function emailDialogue($contactType) {
 			static $loaded = false;
 			if ($loaded == true) {
@@ -216,10 +206,10 @@ JS;
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$emailBox->setOptions(array(
-																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false));
+																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+														));
 			$emailBox->show();
-			$action
-			 = <<<JS
+			$action = <<<JS
 	 var emailID= $(this).data('emailid');
 	 $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
 	 \$emailBox.html(data).dialog('open');
