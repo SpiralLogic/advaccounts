@@ -38,7 +38,8 @@
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch', array('class' => 'bold pad10 center'));
 		Item::addSearchBox('stock_id', array(
-																										 'selectjs' => 'Items.fetch(value.stock_id);return false;'));
+																				'selectjs' => '$("#stock_id").val(value.stock_id);Items.fetch(value.stock_id);return false;'
+																	 ));
 		HTML::div();
 		$id = 0;
 	}
@@ -48,8 +49,7 @@
 	$data['item'] = $item = new Item($id);
 	$data['stockLevels'] = $item->getStockLevels();
 	$data = json_encode($data, JSON_NUMERIC_CHECK);
-	$js
-	 = <<<JS
+	$js = <<<JS
 	Items.onload($data);
 JS;
 	JS::onload($js);
