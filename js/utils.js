@@ -8,19 +8,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function set_mark(img) {
-	var box = document.getElementById('ajaxmark');
-	if (box) {
-		if (img) box.src = user.theme + 'images/' + img;
-		box.style.visibility = img ? 'visible' : 'hidden'
-	}
-}
+
 
 function disp_msg(msg, cl) {
-	var box = document.getElementById('msgbox')
+	var box = document.getElementById('msgbox');
 	box.innerHTML = "<div class='" + (cl || 'err_msg') + "'>" + msg + '</div>';
 	console.log(msg, cl);
-//	box.style.display = msg=='' ? 'none':'block';
 	if (msg != '') window.scrollTo(0, element_pos(box).y - 10);
 }
 
@@ -37,7 +30,7 @@ function disp_msg(msg, cl) {
 JsHttpRequest.request = function (trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 15000;	// default timeout value
-	set_mark(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');
+	Adv.loader.on(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 0);
 }
 
@@ -84,7 +77,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 				 delete JsHttpRequest.PENDING[id];
 			 }
 		 }
-		 set_mark(retry ? 'ajax-loader2.gif' : 'warning.png');
+		 Adv.loader.on(retry ? 'ajax-loader2.gif' : 'warning.png');
 		 if (retry) {
 			 JsHttpRequest._request(trigger, form, tout, retry - 1);
 		 }
@@ -140,7 +133,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 			 }
 			 // Write errors to the debug div.
 			 document.getElementById('msgbox').innerHTML = errors;
-			 set_mark();
+			 Adv.loader.on();
 
 			 Behaviour.apply();
 			 if (errors.length > 0) {

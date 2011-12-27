@@ -16,7 +16,6 @@
 		'Crypt_RSA', //
 		'Crypt_TripleDES', //
 		'FB', //
-		'PHPQuickProfiler', //
 		'gettextNativeSupport', //
 		'Console', //
 		'PHPMailer', //
@@ -25,5 +24,5 @@
 		'JsHttpRequest', //
 		'TCPDF', //
 		'Cpdf', //
-		'PhpConsole'
+		'Barcode'
 	);

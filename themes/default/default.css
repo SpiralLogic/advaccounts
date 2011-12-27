@@ -819,7 +819,7 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label {
+.label, tablestyle2 label{
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	padding:          4px;

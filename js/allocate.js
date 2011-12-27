@@ -65,7 +65,6 @@ var allocations = {
 			focus_alloc(this);
 		};
 	},
-
 	'.allocateAll':function (e) {
 		e.onclick = function () {
 			allocate_all(this.name.substr(5));

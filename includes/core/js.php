@@ -458,7 +458,10 @@ JS;
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
-
+public static function redirect($url){
+	$data['status']=array('status'=>'redirect','message'=>$_SERVER['PHP_SELF']);
+	static::renderJSON($data);
+}
 		/***
 		 * @static
 		 *

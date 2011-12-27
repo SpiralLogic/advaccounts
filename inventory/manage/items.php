@@ -294,7 +294,7 @@
 	}
 	$fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], false);
 	Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
-	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+	Item_UI::type_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 	Item_Unit::row(_('Units of Measure:'), 'units', null, $fresh_item);
 	check_row(_("Editable description:"), 'editable');
 	check_row(_("Exclude from sales:"), 'no_sale');

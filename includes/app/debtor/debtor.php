@@ -461,6 +461,8 @@ JS;
 			}
 			elseif ($value) {
 				$focus = false;
+			}else {
+				$focus=true;
 			}
 			hidden('customer_id');
 			UI::search('customer', array(
@@ -554,3 +556,4 @@ JS;
 			return $preview_str;
 		}
 	}
+

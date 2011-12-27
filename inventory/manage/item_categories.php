@@ -162,7 +162,7 @@
 	text_row(_("Category Name:"), 'description', null, 30, 30);
 	table_section_title(_("Default values for new items"));
 	Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
-	Item_UI::types_row(_("Item Type:"), 'mb_flag', null, true);
+	Item_UI::type_row(_("Item Type:"), 'mb_flag', null, true);
 	Item_Unit::row(_("Units of Measure:"), 'units', null);
 	check_row(_("Exclude from sales:"), 'no_sale');
 	GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);

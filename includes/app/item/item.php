@@ -366,13 +366,10 @@
 		}
 
 		public static function search($term) {
-			$term = DB::escape("%$term%");
+			$term = DB::quote("%$term%");
 			$sql = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
 			$result = DB::query($sql, 'Couldn\'t Get Items');
-			$data = '';
-			while ($row = DB::fetch_assoc($result)) {
-				$data[] = $row;
-			}
+			$data = DB::fetch_all();
 			array_walk_recursive($data, function(&$v) {
 				$v = htmlspecialchars_decode($v, ENT_QUOTES);
 			});

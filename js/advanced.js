@@ -35,7 +35,7 @@ jQuery.fn.quickEach = (function () {
 (function (window, $, undefined) {
 	var Adv = {
 		$content:$("#content"),
-		loader:$("<div/>").attr('id', 'loader'),
+		loader:document.getElementById('ajaxmark'),
 		fieldsChanged:0,
 		debug:{ ajax:true},
 		lastXhr:'',
@@ -45,24 +45,27 @@ jQuery.fn.quickEach = (function () {
 		var extender = jQuery.extend;
 		this.o.wrapper = $("#wrapper");
 		this.o.autocomplete = {};
-		this.loader.prependTo(Adv.$content).hide()
+		$(this.loader)
 		 .ajaxStart(function () {
-			 if (!Adv.loader.disabled) $(this).show();
+Adv.loader.on();
 			 Adv.hideStatus();
 			 if (Adv.debug.ajax) console.time('ajax')
 		 })
 		 .ajaxStop(function () {
+			 Adv.loader.off();
 			 if (Adv.debug.ajax) console.timeEnd('ajax');
-			 Adv.loader.hide()
 		 });
 		this.extend = function (object) {extender(Adv, object)};
 		extender(Adv.loader, {
-			disabled:false,
+			tout: 15000,
 			off:function () {
-				this.disabled = true;
+				Adv.loader.style.visibility='hidden';
 			},
-			on:function () {
-				this.disabled = false;
+			on:function (img) {
+				Adv.loader.tout = Adv.loader.tout | 15000;	// default timeout value
+				img =Adv.loader.tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
+					if (img) Adv.loader.src = user.theme + 'images/' + img;
+				Adv.loader.style.visibility = 'visible';
 			}
 		})
 	}).apply(Adv);
@@ -79,7 +82,6 @@ Adv.extend({
 		 Adv.showStatus(status);
 	 }).ajaxComplete(function (event, request) {
 		 Behaviour.apply();
-															console.log(request);
 		 try
 			 {
 				 var data = $.parseJSON(request.responseText);
@@ -89,12 +91,13 @@ Adv.extend({
 			 { Adv.hideStatus()}
 	 }),
 	showStatus:function (status) {
-		Adv.msgbox.empty();
+		Adv.msgbox.hide().empty();
+		if (status.status==='redirect') return window.location.href=status.message;
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
 		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
 	},
 	hideStatus:function () {
-		Adv.msgbox.empty();
+		Adv.msgbox.hide().empty();
 	},
 	openWindow:function (url, title, width, height) {
 		var left = (screen.width - width) / 2;

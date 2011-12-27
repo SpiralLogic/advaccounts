@@ -59,8 +59,10 @@ Adv.extend({
 					 });
 var Items = function() {
 	var btn = $("#btnItems").button(), item, initItem, $buyFrame = $('#buyFrame'), $sellFrame = $('#sellFrame');
-	var $buyFrameSrc = $('#buyFrame').attr('src'), $sellFrameSrc = $('#sellFrame').attr('src'), $Items = $("#Items"), $stockRow = $("#stockRow"), $stockLevels = $("#stockLevels");
+	var $buyFrameSrc = $('#buyFrame')[0].src.match(/[\w\-\.:/=&!~\*\'"(),]+/g)[0]+'?frame=1', $sellFrameSrc = $('#sellFrame')[0].src.match(/[\w\-\.:/=&!~\*\'"(),]+/g)[0]+'?frame=1', $Items = $("#Items"), $Accounts= $("#Accounts"), $stockRow = $("#stockRow"), $stockLevels = $("#stockLevels");
 	$Items.template('items');
+	$Accounts.template('accounts');
+
 	$stockRow.template('stockrow');
 	return {
 		fetch:     function(id) {
@@ -80,10 +82,11 @@ var Items = function() {
 		},
 		onload:    function(data) {
 			$Items.empty();
-
+			$Accounts.empty();
 			item = data.item;
 			initItem = $.extend(true, {}, item);
 			$.tmpl('items', data.item).appendTo("#Items");
+			$.tmpl('accounts', data.item).appendTo("#Accounts");
 			$stockLevels.find('tbody').html($.tmpl('stockrow', data.stockLevels));
 
 		},

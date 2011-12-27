@@ -75,7 +75,7 @@
 				HTML::div(array('class' => 'ui-widget'));
 			}
 			if (($o['label'])) {
-				HTML::label(array('for' => $id), $o['label'], false);
+				HTML::label(null,$o['label'],array('for' => $id), false);
 			}
 			$input_attr['size'] = $o['size'];
 			if (($o['name'])) {
@@ -108,6 +108,7 @@
 				'purchase' => false,
 				'sale' => false,
 				'js' => '',
+				'selectjs',
 				'submitonselect' => '',
 				'sales_type' => 1,
 				'no_sale' => false,
@@ -132,7 +133,9 @@
 				HTML::td()->td(true);
 			}
 			$selectjs = '';
-			if ($o['description'] !== false) {
+			if ($o['selectjs']) {
+				$selectjs = 	$o['selectjs'];
+			}elseif ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array(
 																															'name' => 'description', 'rows' => 1, 'cols' => 45), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";

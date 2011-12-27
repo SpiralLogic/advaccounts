@@ -6,61 +6,35 @@
 	 * Time: 3:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Test
-	{
-		public $one;
-		public $two;
-		public $three;
-		public $four;
-		public function __construct() {
-		}
-		public function test1($array) {
-			$start = microtime(true);
-			foreach ($array as $k => $v) {
-				if (property_exists($this, $k)) {
-					$this->$k = $v;
-				}
-			}
-			return microtime(true) - $start;
-		}
-		public function test2($array) {
-			$start = microtime(true);
-			while($array, function($v, $k, $object) {
-				if (property_exists($object, $k)) {
-					$object->$k = $v;
-				}
-			}, $this);
-			return microtime(true) - $start;
-		}
-	}
-
-	echo '<pre>';
-	$array = array('one' => 1, 'two' => 2, 'eight' => 8);
-	$time = 0;
-	for ($i = 0; $i < 10000; $i++) {
-		$test1 = new Test();
-		$time += $test1->test1($array);
-		unset($test1);
-	}
-	echo getReadableTime($time);
-	$time = 0;
-	for ($i = 0; $i < 10000; $i++) {
-		$test2 = new Test();
-		$time += $test2->test2($array);
-	}
-	echo getReadableTime($time);
-	function getReadableTime($time) {
-		$ret = $time;
-		$formatter = 0;
-		$formats = array('ms', 's', 'm');
-		if ($time >= 1000 && $time < 60000) {
-			$formatter = 1;
-			$ret = ($time / 1000);
-		}
-		if ($time >= 60000) {
-			$formatter = 2;
-			$ret = ($time / 1000) / 60;
-		}
-		$ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
-		return $ret;
-	}
+	include ('bootstrap.php');
+	Page::start('Barcode Tests');
+	JS::footerFile('/js/barcode.js');
+	$fontSize = 10; // GD1 in px ; GD2 in point
+	$marge = 10; // between barcode and hri in pixel
+	$x = 125; // barcode center
+	$y = 125; // barcode center
+	$height = 200; // barcode height in 1D ; module size in 2D
+	$width = 2; // barcode height in 1D ; not use in 2D
+	$angle = 90; // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
+	$code = 'Hi Sam do you think this will be helpful!'; // barcode, of course ;)
+	$type = 'datamatrix';
+	// -------------------------------------------------- //
+	//            ALLOCATE GD RESSOURCE
+	// -------------------------------------------------- //
+	$im = imagecreatetruecolor(300, 300);
+	$black = ImageColorAllocate($im, 0x00, 0x00, 0x00);
+	$white = ImageColorAllocate($im, 0xff, 0xff, 0xff);
+	$red = ImageColorAllocate($im, 0xff, 0x00, 0x00);
+	$blue = ImageColorAllocate($im, 0x00, 0x00, 0xff);
+	imagefilledrectangle($im, 0, 0, 300, 300, $white);
+	// -------------------------------------------------- //
+	//                      BARCODE
+	// -------------------------------------------------- //
+	$data = Barcode::gd($im, $black, $x, $y, $angle, array('code' => $code), $width, $height);
+JS::onload(<<<JS
+	$('#barcode').barcode('test');
+JS
+);
+	?><div id="barcode"></div><?
+	Renderer::end_page(true);
+?>
