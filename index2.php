@@ -7,8 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include ('bootstrap.php');
-	$result = DB::select('stock_id', 'description')->from('stock_master')->where("concat('',stock_id * 1) <> stock_id")->fetch();
-	echo count($result);
+	$_GET['start'] = $_GET['start'] ? : 0;
+	$result = DB::select('stock_id', 'description')->from('stock_master')->where("concat('',stock_id * 1) <> stock_id")->limit($_GET['start'], 500)->fetch();
 	foreach ($result as $item) {
 		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
 		$image = base64_encode($data);
