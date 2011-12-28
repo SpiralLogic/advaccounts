@@ -7,27 +7,68 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include ('bootstrap.php');
-	$_GET['start'] = $_GET['start'] ? : 0;
-	$result = DB::select('stock_id', 'description')->from('stock_master')->where("concat('',stock_id * 1) <> stock_id")->limit($_GET['start'], 500)->fetch();
+	$_GET['start'] = isset($_GET['start']) ? $_GET['start'] : 0;
+	echo '<html><head><style>
+body {
+margin:0;padding:0;
+}
+
+	td {
+	 width:181.3pt;
+	 min-width:90.65pt;
+	 max-width:90.65pt;
+	 height:70pt;
+	 max-height:70pt;
+	 min-height:70pt;
+padding:0;margin:0;
+overflow:hidden;
+font-size:8pt;
+text-align:center;
+}img {
+margin-top:3pt;
+}
+div  { display:block;
+ }
+
+	 table{
+	 text-align:center;
+vertical-align: baseline ;
+margin:0;
+padding:0;
+	 }
+	</style></head><body>';
+	$result = DB::select('stock_id', 'description')->from('stock_master')->where("concat('',stock_id * 1) <> stock_id")
+	 ->limit($_GET['start'], 500)->fetch();
+	$i = 0;
+	$j = 0;
+	echo '<div class="page-break"><table ><tbody><tr>';
 	foreach ($result as $item) {
 		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
 		$image = base64_encode($data);
-		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
-		$result->next();
-		$item = $result->current();
-		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
-		$image = base64_encode($data);
-		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
-		$result->next();
-		$item = $result->current();
-		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
-		$image = base64_encode($data);
-		echo '<div style="width:25%; text-align:center;float:left"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
-		$result->next();
-		$item = $result->current();
-		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
-		$image = base64_encode($data);
-		echo '<div style="display:inline-block;text-align:center;clear:left;width:25%;"><IMG SRC="data:image/gif;base64,' . $image . '">' . '<br>' . $item['stock_id'] . '<br>' . $item['description'] . '</div>';
+		echo '<td ><IMG SRC="data:image/gif;base64,
+		' . $image . '">' . '</td><td  >' . $item['stock_id'] . ' ' . $item['description'] . '</td>';
+		if ($i == 2) {
+			$i = 0;
+			if ($j == 10) {
+				echo '</tr></table></div><div><table><tr>';
+				$j = 0;
+				continue;
+			}
+			else {
+				echo '</tr><tr>';
+				$j++;
+			}
+		}
+		else {
+			$i++;
+		}
 	}
+	echo '</table></div></body><script type="text/javascript">
+	function breakeveryheader(){
+	for (i=0; i<document.getElementsByTagName("div").length; i++){
+	document.getElementsByTagName("div")[i].style.pageBreakBefore="always";}
+	}
+breakeveryheader();
+	</script></html>';
 
 ?>
