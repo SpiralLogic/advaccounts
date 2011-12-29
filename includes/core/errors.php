@@ -120,7 +120,7 @@
 			}
 			if (Ajax::in_ajax()) {
 				Ajax::i()->run();
-			} elseif (AJAX_REFERRER) {
+			} elseif (AJAX_REFERRER || strpos($_SERVER['HTTP_ACCEPT'],'application/json')) {
 				echo static::JSONError(true);
 			}
 			// flush all output buffers (works also with exit inside any div levels)

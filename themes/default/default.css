@@ -195,12 +195,8 @@ div.banner a + a { border-top: 2px groove #999 }
 	vertical-align: middle
 }
 
-#title {
-	margin-bottom: 10px;
-	width:         100%;
-}
-
 .titletext {
+	margin-bottom: 10px;
 	font-weight:   bold;
 	font-size:     13px;
 	color:         #333;
@@ -208,7 +204,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	padding:       5px;
 }
 
-.titletext, .bottomBar, .footer {
+.bottomBar, .footer {
 	margin: 0 auto;
 }
 
@@ -251,7 +247,6 @@ div.banner a + a { border-top: 2px groove #999 }
 
 #wrapper, #results {
 	clear:      left;
-	width:      100%;
 	background: url(images/wrapbg.gif) repeat-x #fff;
 	border:     1px solid #8ab9f2;
 	padding:    8px 5px;

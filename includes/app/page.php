@@ -31,7 +31,6 @@
 			foreach (array(MODE_EDIT, MODE_DELETE) as $m) {
 				foreach ($_POST as $p => $pvar) {
 					if (strpos($p, $m) === 0) {
-						//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
 						unset($_POST['_focus']); // focus on first form entry
 						$selected_id = quoted_printable_decode(substr($p, strlen($m)));
 						Ajax::i()->activate('_page_body');
@@ -43,37 +42,36 @@
 			$Mode = '';
 		}
 
-		public static function start($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
+		public static function start($title, $no_menu = false, $is_index = false) {
 			global $page_security;
 			if (empty($page_security)) {
 				$page_security = 'SA_OPEN';
 			}
-			$hide_menu = $no_menu;
-			Page::header($title, $no_menu, $is_index, $onload, $js);
-			Security::check_page($page_security);
-			//	Errors::error_box();
-			if ($script_only) {
-				echo '<noscript>';
-				echo Display::heading(_('This page is usable only with javascript enabled browsers.'));
-				echo '</noscript>';
-				Display::div_start('_page_body', null, true);
+			if ($no_menu || AJAX_REFERRER || Ajax::in_ajax()) {
+				Renderer::i()->has_header = false;
 			} else {
-				Display::div_start('_page_body'); // whole page content for ajax reloading
+				Page::header($title, $no_menu, $is_index);
+				if (!$no_menu) {
+					Renderer::i()->menu_header();
+				}
 			}
+
+			Errors::error_box();
+			if ($title && !$is_index) {
+				echo "<div class='titletext'>$title" . (User::hints() ?
+				 "<span id='hints' class='floatright'></span>" : '') . "</div>";
+			}
+			Security::check_page($page_security);
+
+			Display::div_start('_page_body'); // whole page content for ajax reloading
+
 		}
 
-		public static function header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
+		public static function header($title, $no_menu = false) {
 			// titles and screen header
-			if (Ajax::in_ajax() || AJAX_REFERRER) {
-				Renderer::i()->has_header = false;
-				return; // just for speed up
-			}
+
 			User::theme();
 			JS::open_window(900, 500);
-			JS::beforeload($js);
-			if (!isset($no_menu)) {
-				$no_menu = false;
-			}
 			if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "") {
 				$sel_app = $_SESSION["App"]->selected_application;
 			} elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
@@ -92,22 +90,15 @@
 				header("Content-type: text/html; charset='$encoding'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html class='" . strtolower( $_SESSION['sel_app']) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<html class='" . strtolower($_SESSION['sel_app']) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 			echo "<head><title>$title</title>";
 			echo "<meta charset='$encoding'>";
-			echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
+			echo "<link rel='apple-touch-icon' href='/company/images/apple-touch-icon.png'/>";
 			static::add_css(Config::get('assets.css'));
 			static::send_css();
 			JS::renderHeader();
-			echo "</head> \n";
-			if ($onload == "") {
-				echo "<body";
-			} else {
-				echo "body onload='$onload'";
-			}
-			echo	($no_menu) ? ' class="lite">' : '>';
-			Renderer::i()->menu_header($title, $no_menu, $is_index);
-			Errors::error_box();
+			echo "</head><body" . ($no_menu ? ' class="lite">' : '>');
+			echo "<div id='content'>\n";
 		}
 
 		public static function help_url($context = null) {
@@ -148,7 +139,7 @@
 				Sidemenu::render();
 			}
 			Messages::show();
-			if (User::get()->username == 'mike'&&rand(0,50)==0) JS::onload('window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);');
+			if (User::get()->username == 'mike' && rand(0, 50) == 0) JS::onload('window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);');
 			JS::render();
 			if (AJAX_REFERRER) {
 				return;
