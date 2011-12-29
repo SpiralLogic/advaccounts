@@ -64,7 +64,7 @@
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
-					include(realpath(VENDORPATH . 'fb.php'));
+					include(realpath(VENDORPATH . 'FirePHP/fb.chrome.php'));
 					FB::useFile(DOCROOT . 'tmp/chromelogs', DS . 'tmp' . DS . 'chromelogs');
 				}
 				else {

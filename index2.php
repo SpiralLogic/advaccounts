@@ -37,12 +37,15 @@ margin:0;
 padding:0;
 	 }
 	</style></head><body>';
-	$result = DB::select('stock_id', 'description')->from('stock_master')->where("concat('',stock_id * 1) <> stock_id")
-	 ->limit($_GET['start'], 500)->fetch();
+	$result = DB::select('stock_id','description')->from('stock_master')->where("description LIKE ",
+																																							'%cone%')->and_where("stock_id LIKE ",
+																																															 'Bar%')->fetch()->all();
 	$i = 0;
 	$j = 0;
+	$count=1;
 	echo '<div class="page-break"><table ><tbody><tr>';
-	foreach ($result as $item) {
+	while ($item = array_pop($result)) {
+		if ($count<10) {array_push($result,$item);$count++;}else {$count=1;}
 		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
 		$image = base64_encode($data);
 		echo '<td ><IMG SRC="data:image/gif;base64,

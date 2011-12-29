@@ -42,7 +42,7 @@
 	 * @package     FirePHPCore
 	 */
 	if (!class_exists('FirePHP')) {
-		require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'FirePHP.class.php';
+		require_once dirname(__FILE__) . DS . 'FirePHP.class.php';
 	}
 	/**
 	 * Sends the given data to the FirePHP Firefox Extension.

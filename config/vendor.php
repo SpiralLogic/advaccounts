@@ -15,14 +15,13 @@
 		'Crypt_Rijndael', //
 		'Crypt_RSA', //
 		'Crypt_TripleDES', //
-		'FB', //
+		'Firephp'.DS.'FB', //
 		'gettextNativeSupport', //
-		'Console', //
 		'PHPMailer', //
 		'SMTP', //
 		'OLEwriter', //
 		'JsHttpRequest', //
-		'TCPDF', //
+		'tcpdf'.DS.'TCPDF',//
 		'Cpdf', //
-		'Barcode'
+
 	);
