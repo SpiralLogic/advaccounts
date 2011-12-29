@@ -18,3 +18,4 @@ tmp/*
 .git*
 .gitignore
 .idea/vcs.xml
+settings.jar
