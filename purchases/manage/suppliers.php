@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
+	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -212,14 +212,14 @@
 	end_outer_table(1);
 	Display::div_start('controls');
 	if (!$new_supplier) {
-		submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('popup') ? true : 'default');
+		submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
 	} else {
 		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 	}
 	Display::div_end();
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	end_form();
 	Renderer::end_page();
 

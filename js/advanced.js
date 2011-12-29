@@ -99,7 +99,49 @@ Adv.extend({
 							 var top = (screen.height - height) / 2;
 							 return window.open(url, title,
 																	'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
+						 },
+						 hoverWindow:{
+							 _init:false, width:600, height:600, init:function (width, height) {
+								 Adv.hoverWindow.width = width;
+								 Adv.hoverWindow.height = height;
+								 if (Adv.hoverWindow._init) {return;}
+								 Adv.hoverWindow._init = true;
+								 Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow',
+																																		function (e) {
+																																			if (e.type == 'click') {
+																																				Adv.openWindow(this.href, this.target);
+																																				return false;
+																																			}
+																																			if (e.type == 'mouseenter') {
+
+																																				if (Adv.o.popupCurrent) window.clearTimeout(Adv.o.popupCurrent);
+																																				Adv.o.popupEl = this;
+																																				Adv.o.popupParent = $(this).parent();
+																																				Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
+																																			}
+																																			if (e.type == 'mouseleave') {
+																																				window.clearTimeout(Adv.o.popupCurrent);
+																																			}
+
+																																		})
+							 }},
+						 popupWindow:function () {
+							 if (Adv.o.order_details) {Adv.o.order_details.parent().remove();}
+							 var my = "left center", at = "right top";
+							 if (Adv.o.popupParent.is('div')) {
+								 my = "center center";
+								 at = "center top";
+							 }
+							 Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href, width:30, height:30, onload:'Adv.o.order_details.show().animate({width:' + Adv.hoverWindow.width + ', height:' + Adv.hoverWindow.height + '},100,"bounce")'})
+								.css({background:'white'}).hide();
+							 $('<div>', {id:'iframePopup', width:Adv.hoverWindow.width, height:Adv.hoverWindow.height}).html(Adv.o.order_details)
+								.position({my:my, at:at, of:Adv.o.popupParent}).css('top', 20)
+								.on('mouseleave',
+										function () {
+											$(this).remove();
+										}).appendTo(Adv.o.wrapper);
 						 }
+
 
 					 });
 Adv.extend({Forms:(function () {
@@ -175,7 +217,7 @@ Adv.extend({Forms:(function () {
 			 .bind('autocompleteclose',
 						 function () {
 							 var $this = $(this);
-							 if (this.value.length >1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
+							 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
 								 $this.val($this.data()['default'].label);
 								 callback($this.data()['default'])
 							 }
@@ -207,7 +249,7 @@ Adv.extend({
 								 },
 								 rebind:function () {
 									 if (toClean) {toClean();}
-									 if (onload)	{onload();}
+									 if (onload) {onload();}
 									 $.each(events, function (k, v) {
 										 firstBind(v.s, v.t, v.a);
 									 });
@@ -233,3 +275,4 @@ Adv.extend({
 							 }
 						 }())
 					 });
+

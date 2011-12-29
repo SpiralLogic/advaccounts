@@ -35,7 +35,7 @@
 		}
 
 		public static function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
-			if (Input::request('frame' || Input::get('popup'))) {
+			if (Input::request('frame' || Input::get('frame'))) {
 				$is_index = $hide_back_link = true;
 			}
 			if (!$is_index && !$hide_back_link && function_exists('link_back')) {

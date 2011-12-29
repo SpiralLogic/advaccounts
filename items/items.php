@@ -31,7 +31,7 @@
 	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
-	Page::start(_($help_context = "Items"), Input::request('popup'));
+	Page::start(_($help_context = "Items"), Input::request('frame'));
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">

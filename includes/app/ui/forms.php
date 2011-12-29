@@ -605,7 +605,7 @@
 	}
 
 	function submit_return($name, $value, $title = false) {
-		if (Input::request('popup')) {
+		if (Input::request('frame')) {
 			submit($name, $value, true, $title, 'selector');
 		}
 	}

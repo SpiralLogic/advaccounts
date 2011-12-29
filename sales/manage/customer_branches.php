@@ -13,7 +13,7 @@
 	$page_security = 'SA_CUSTOMER';
 	//$page_security = 3;
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::start(_($help_context = "Customer Branches"), Input::request('popup'));
+	Page::start(_($help_context = "Customer Branches"), Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -84,7 +84,7 @@
 			DB::query($sql, "The branch record could not be inserted or updated");
 			Errors::notice($note);
 			$Mode = MODE_RESET;
-			if (Input::request('popup')) {
+			if (Input::request('frame')) {
 				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
 			}
 		}
@@ -159,7 +159,7 @@
 					'insert' => true, 'fun' => 'select_link'), array(
 					'insert' => true, 'fun' => 'edit_link'), array(
 					'insert' => true, 'fun' => 'del_link'));
-			if (!Input::request('popup')) {
+			if (!Input::request('frame')) {
 				$cols[' '] = 'skip';
 			}
 			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
@@ -232,7 +232,7 @@
 	}
 	hidden('selected_id', $selected_id);
 	hidden('branch_code');
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	table_section_title(_("Name and Contact"));
 	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
 	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);

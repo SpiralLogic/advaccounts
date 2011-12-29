@@ -19,6 +19,6 @@
 		}
 		 JS::renderJSON($data);
 	}
-	Page::start(_($help_context = "Items"), Input::request('popup'));
+	Page::start(_($help_context = "Items"), Input::request('frame'));
 	Debtor::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	Renderer::end_page();

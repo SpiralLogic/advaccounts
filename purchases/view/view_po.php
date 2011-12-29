@@ -94,7 +94,7 @@
 	}
 	echo "</td></tr>";
 	end_table(1); // outer table
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');

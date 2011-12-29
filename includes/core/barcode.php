@@ -33,8 +33,7 @@
 	 *    GD
 	 *    FPDF
 	 */
-	class Barcode
-	{
+	class Barcode {
 		static public function			 create($datas) {
 			return self::_draw($datas);
 		}
@@ -59,7 +58,7 @@
 			if ($digit == '') {
 				return false;
 			}
-			$width = 2;
+			$width = 3;
 			$marge = 3;
 			$height = $width;
 			$size = ($width * count($digit)) + $marge;
@@ -183,8 +182,7 @@
 		}
 	}
 
-	class BarcodeDatamatrix
-	{
+	class BarcodeDatamatrix {
 		static private $encoding
 		 = array(
 			 '101010011', '101011001', '101001011', '110010101', //

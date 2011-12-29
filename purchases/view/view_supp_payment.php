@@ -59,7 +59,7 @@
 	if (!$voided) {
 		GL_Allocation::from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 	}
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Renderer::end_page(true);

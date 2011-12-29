@@ -56,37 +56,7 @@
 			if (static::$_openWindow || !Config::get('ui_windows_popups')) {
 				return;
 			}
-			$js
-			 = <<<JS
-		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','div .openWindow,td .openWindow',
-			function(e) {
-				if (e.type=='click') {
-					Adv.openWindow(this.href, this.target,{$width},{$height});
-					return false;
-				}
-				if (e.type=='mouseenter') {
-
-				if (Adv.o.popupCurrent) window.clearTimeout(Adv.o.popupCurrent);
-				Adv.o.popupEl= this;
-				Adv.o.popupParent= $(this).parent();
-				Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow,750);
-				}if (e.type=='mouseleave') {
-window.clearTimeout(Adv.o.popupCurrent);
-}
-
-			});
-			Adv.popupWindow = function() {
-					if (Adv.o.order_details) Adv.o.order_details.remove();
-					var my="left center",at="right top";
-					if (Adv.o.popupParent.is('div')) {my="center center";at="center top";}
-								Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href+"&popup=1", width: {$width}, height: {$height}})
-									.css({position:'fixed', background:'white'})
-									.appendTo(Adv.o.wrapper)
-									.position({my:my,at:at, of:Adv.o.popupParent}).css({top:20})
-									.on('mouseleave',function() { $(this).remove();
-								});
-			}
-JS;
+			$js="Adv.hoverWindow.init($width,$height);";
 			static::onload($js);
 			static::$_openWindow = true;
 		}

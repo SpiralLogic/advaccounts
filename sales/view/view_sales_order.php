@@ -199,7 +199,7 @@
 	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
 	label_row(_("Total Order Value"), $display_total, "class=right colspan=6", "nowrap class=right", 1);
 	end_table(2);
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");

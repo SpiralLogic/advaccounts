@@ -99,7 +99,7 @@
 	label_row(_("TOTAL VALUE"), $display_total, "colspan=6 class=right", "nowrap class=right");
 	end_table(1);
 	Display::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Display::submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');

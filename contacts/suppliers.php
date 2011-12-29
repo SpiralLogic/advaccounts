@@ -36,7 +36,7 @@
 		 JS::renderJSON($data);
 	}
 	JS::footerFile("js/suppliers.js");
-	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
+	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
 	if (isset($_GET['id'])) {
 		$supplier = new Creditor($_GET['id']);
 	} elseif (isset($_POST['id']) && !empty($_POST['id'])) {

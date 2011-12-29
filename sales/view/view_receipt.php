@@ -52,7 +52,7 @@
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
 		GL_Allocation::from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Display::submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');

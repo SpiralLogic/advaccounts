@@ -103,7 +103,7 @@
 	if (!$voided) {
 		GL_Allocation::from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 	}
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	/* end of check to see that there was an invoice record to print */

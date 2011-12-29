@@ -27,7 +27,7 @@
 		JS::renderJSON($data);
 	}
 	JS::footerFile("js/customers.js");
-	Page::start(_($help_context = "Customers"), Input::request('popup'));
+	Page::start(_($help_context = "Customers"), Input::request('frame'));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -41,7 +41,7 @@
 		$status = $customer->getStatus();
 		Errors::notice($status['message']);
 	}
-	if (!Input::get('popup') && !Input::get('id')) {
+	if (!Input::get('frame') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */
 		HTML::div('custsearch');
 		HTML::table(array('class' => 'marginauto bold'));
@@ -195,7 +195,7 @@
 	$menu->endTab()->startTab('Invoices', 'Invoices');
 	HTML::div('transactions');
 	$menu->endTab()->render();
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	end_form();
 	HTML::div('contactLog', array(
 															 'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));
@@ -218,7 +218,7 @@
 																				 'style' => 'margin:10px;'));
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();
-	if (!Input::get('popup')) {
+	if (!Input::get('frame')) {
 		HTML::_div()->div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
 		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
