@@ -393,7 +393,7 @@
 			table_header($th);
 			$subtotal = 0;
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->line_items as $line_no => $line) {
 				$line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
 				if ($id != $line_no) {
@@ -405,7 +405,7 @@
 					amount_cell($line->price);
 					percent_cell($line->discount_percent * 100);
 					amount_cell($line_total);
-					edit_button_cell("Edit$line_no", _('Edit'), _('Edit document line'));
+					edit_button_cell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
 					delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
 					end_row();
 				}
@@ -445,7 +445,7 @@
 		 */
 		public static function item_controls($order, $rowcounter, $line_no = -1) {
 			alt_table_row_color($rowcounter);
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($line_no != -1 && $line_no == $id) {
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 				$_POST['qty'] = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);

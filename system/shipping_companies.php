@@ -22,7 +22,7 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' && can_process()) {
+	if ($Mode == ADD_ITEM && can_process()) {
 		$sql
 		 = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . DB::escape($_POST['shipper_name']) . ", " .
@@ -32,9 +32,9 @@
 		 DB::escape($_POST['address']) . ")";
 		DB::query($sql, "The Shipping Company could not be added");
 		Errors::notice(_('New shipping company has been added'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'UPDATE_ITEM' && can_process()) {
+	if ($Mode == UPDATE_ITEM && can_process()) {
 		$sql = "UPDATE shippers SET shipper_name=" . DB::escape($_POST['shipper_name']) . " ,
 		contact =" . DB::escape($_POST['contact']) . " ,
 		phone =" . DB::escape($_POST['phone']) . " ,
@@ -43,9 +43,9 @@
 		WHERE shipper_id = " . DB::escape($selected_id);
 		DB::query($sql, "The shipping company could not be updated");
 		Errors::notice(_('Selected shipping company has been updated'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 		$sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
 		$result = DB::query($sql, "check failed");
@@ -67,9 +67,9 @@
 				Errors::notice(_('Selected shipping company has been deleted'));
 			}
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -104,7 +104,7 @@
 	end_table(1);
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing Shipper
 			$sql = "SELECT * FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get shipper");

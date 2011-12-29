@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Units of Measure"));
 	Page::simple_mode(false);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		if (strlen($_POST['abbr']) == 0) {
@@ -38,10 +38,10 @@
 			} else {
 				Errors::notice(_('New unit has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		if (Item_Unit::used($selected_id)) {
 			Errors::error(_("Cannot delete this unit of measure because items have been created using this unit."));
@@ -49,9 +49,9 @@
 			Item_Unit::delete($selected_id);
 			Errors::notice(_('Selected unit has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = '';
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -79,7 +79,7 @@
 	end_table(1);
 	start_table('tablestyle2');
 	if ($selected_id != '') {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing item category
 			$myrow = Item_Unit::get($selected_id);
 			$_POST['abbr'] = $myrow["abbr"];

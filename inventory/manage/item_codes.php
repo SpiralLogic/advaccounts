@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Foreign Item Codes"));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
@@ -43,7 +43,7 @@
 			}
 		}
 		if ($input_error == 0) {
-			if ($Mode == 'ADD_ITEM') {
+			if ($Mode == ADD_ITEM) {
 				Item_Code::add(
 					$_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
@@ -57,15 +57,15 @@
 				);
 				Errors::notice(_("Item code has been updated."));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		Item_Code::delete($selected_id);
 		Errors::notice(_("Item code has been sucessfully deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST);
 	}
@@ -114,7 +114,7 @@
 	end_table();
 	Display::div_end();
 	if ($selected_id != '') {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Item_Code::get($selected_id);
 			$_POST['item_code'] = $myrow["item_code"];
 			$_POST['quantity'] = $myrow["quantity"];

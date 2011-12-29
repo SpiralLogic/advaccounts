@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Categories"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
@@ -43,7 +43,7 @@
 				);
 				Errors::notice(_('New item category has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}	function edit_link($row) {
 	return	button("Edit" . $row["category_id"], _("Edit"));
@@ -53,7 +53,7 @@
 		function delete_link($row) {
 			return		button("Delete" . $row["category_id"], _("Delete"));
 		}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query stock master");
@@ -64,9 +64,9 @@
 			Item_Category::delete($selected_id);
 			Errors::notice(_('Selected item category has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -119,7 +119,7 @@
 	Display::div_start('details');
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing item category
 			$myrow = Item_Category::get($selected_id);
 			$_POST['category_id'] = $myrow["category_id"];
@@ -138,7 +138,7 @@
 		}
 		hidden('selected_id', $selected_id);
 		hidden('category_id');
-	} else if ($Mode != 'CLONE') {
+	} else if ($Mode != MODE_CLONE) {
 		$_POST['long_description'] = '';
 		$_POST['description'] = '';
 		$_POST['no_sale'] = 0;

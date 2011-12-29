@@ -43,7 +43,7 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$user = null;
 		if ($_POST['password'] != "") {
 			$user = new Auth($_POST['user_id']);
@@ -76,15 +76,15 @@
 				);
 				Errors::notice(_("A new user has been added."));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		Users::delete($selected_id);
 		Errors::notice(_("User has been deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST); // clean all input fields
@@ -132,7 +132,7 @@
 	start_table('tablestyle2');
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing User
 			$myrow = Users::get($selected_id);
 			$_POST['id'] = $myrow["id"];

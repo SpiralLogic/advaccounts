@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Tax Groups"));
 	Page::simple_mode(true);
 	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
@@ -67,7 +67,7 @@
 				Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				Errors::notice(_('New tax group has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
 	function can_delete($selected_id) {
@@ -91,14 +91,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tax_Groups::delete($selected_id);
 			Errors::notice(_('Selected tax group has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -134,7 +134,7 @@
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		//editing an existing status code
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$group = Tax_Groups::get($selected_id);
 			$_POST['name'] = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];

@@ -66,7 +66,7 @@
 			}
 			table_header($th);
 			$k = 0;
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->gl_items as $line => $item) {
 				if ($id != $line) {
 					alt_table_row_color($k);
@@ -112,7 +112,7 @@
 		public static function item_controls($order, $dim, $Index = null) {
 
 			start_row();
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($Index != -1 && $Index == $id) {
 				// Modifying an existing row
 				$item = $order->gl_items[$Index];

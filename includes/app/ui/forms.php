@@ -538,7 +538,7 @@
 	/**
 	 * For following controls:
 	 * 'both' - use both Ctrl-Enter and Escape hotkeys
-	 * 'cancel' - apply to 'RESET' button
+	 * 'cancel' - apply to MODE_RESET button
 	 *
 	 * @param bool $add
 	 * @param bool $title
@@ -562,14 +562,14 @@
 			}
 		}
 		if ($add) {
-			submit('ADD_ITEM', _("Add new"), true, $title, $async);
+			submit(ADD_ITEM, _("Add new"), true, $title, $async);
 		}
 		else {
-			submit('UPDATE_ITEM', _("Update"), true, _('Submit changes'), $async);
+			submit(UPDATE_ITEM, _("Update"), true, _('Submit changes'), $async);
 			if ($clone) {
-				submit('CLONE', _("Clone"), true, _('Edit new record with current data'), $async);
+				submit(MODE_CLONE, _("Clone"), true, _('Edit new record with current data'), $async);
 			}
-			submit('RESET', _("Cancel"), true, _('Cancel edition'), $cancel);
+			submit(MODE_RESET, _("Cancel"), true, _('Cancel edition'), $cancel);
 		}
 	}
 

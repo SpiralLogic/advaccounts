@@ -341,12 +341,12 @@
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	start_table('center red bold');
-	label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO EDIT ANYTHING IN THE FUTURE ON THIS INVOICE"));
+	label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO MODE_EDIT ANYTHING IN THE FUTURE ON THIS INVOICE"));
 	end_table();
 	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
 	start_table('center red bold');
-	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
+	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO MODE_EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
 	end_table();
 	end_form();
 	Renderer::end_page();

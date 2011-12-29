@@ -146,3 +146,10 @@
 	define('STOCK_INFO', 'I');
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
+// Modes
+define('ADD_ITEM','ADD_ITEM');
+	define('MODE_RESET','RESET');
+	define('UPDATE_ITEM','UPDATE_ITEM');
+	define('MODE_EDIT','Edit');
+	define('MODE_DELETE','Delete');
+	define('MODE_CLONE','CLONE');

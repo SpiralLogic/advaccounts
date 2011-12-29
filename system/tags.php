@@ -51,7 +51,7 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
@@ -63,7 +63,7 @@
 				}
 			}
 			if ($ret) {
-				$Mode = 'RESET';
+				$Mode = MODE_RESET;
 			}
 		}
 	}
@@ -79,14 +79,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tags::delete($selected_id);
 			Errors::notice(_('Selected tag has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['name'] = $_POST['description'] = '';
 	}
@@ -112,7 +112,7 @@
 	start_table('tablestyle2');
 	if ($selected_id != -1) // We've selected a tag
 	{
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			// Editing an existing tag
 			$myrow = Tags::get($selected_id);
 			$_POST['name'] = $myrow["name"];

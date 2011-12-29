@@ -65,7 +65,7 @@
 	if (isset($_GET['trans_no'])) {
 		$_POST['trans_no'] = $_GET['trans_no'];
 	}
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
 			//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 			$tmpname = $_FILES['filename']['tmp_name'];
@@ -77,7 +77,7 @@
 				fwrite($fp, $index_file);
 				fclose($fp);
 			}
-			if ($Mode == 'UPDATE_ITEM' && file_exists($dir . "/" . $_POST['unique_name'])) {
+			if ($Mode == UPDATE_ITEM && file_exists($dir . "/" . $_POST['unique_name'])) {
 				unlink($dir . "/" . $_POST['unique_name']);
 			}
 			$unique_name = uniqid('');
@@ -91,7 +91,7 @@
 			$filesize = 0;
 		}
 		$date = Dates::date2sql(Dates::Today());
-		if ($Mode == 'ADD_ITEM') {
+		if ($Mode == ADD_ITEM) {
 			$sql
 			 = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
 			filesize, filetype, tran_date) VALUES (" . DB::escape($_POST['filterType']) . ","
@@ -116,9 +116,9 @@
 			DB::query($sql, "Attachment could not be updated");
 			Errors::notice(_("Attachment has been updated."));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		$row = get_attachment($selected_id);
 		$dir = COMPANY_PATH . "/attachments";
 		if (file_exists($dir . "/" . $row['unique_name'])) {
@@ -127,9 +127,9 @@
 		$sql = "DELETE FROM attachments WHERE id = " . DB::escape($selected_id);
 		DB::query($sql, "Could not delete attachment");
 		Errors::notice(_("Attachment has been deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		unset($_POST['trans_no']);
 		unset($_POST['description']);
 		$selected_id = -1;
@@ -190,7 +190,7 @@
 	start_form(true);
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$row = get_attachment($selected_id);
 			$_POST['trans_no'] = $row["trans_no"];
 			$_POST['description'] = $row["description"];

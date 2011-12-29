@@ -16,7 +16,7 @@
 		STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (Input::request('frame')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
@@ -39,7 +39,7 @@
 			JS::set_focus('conversion_factor');
 		}
 		if ($input_error == 0) {
-			if ($Mode == 'ADD_ITEM') {
+			if ($Mode == ADD_ITEM) {
 				$sql
 				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
  			conversion_factor, supplier_description) VALUES (";
@@ -60,20 +60,20 @@
 				DB::query($sql, "The supplier purchasing details could not be updated");
 				Errors::notice(_("Supplier purchasing data has been updated."));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
-		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+		$sql = "MODE_DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
 		DB::query($sql, "could not delete purchasing data");
 		Errors::notice(_("The purchasing data item has been sucessfully deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 	}
 	if (isset($_POST['_selected_id_update'])) {
@@ -147,7 +147,7 @@
 		Display::div_end();
 	}
 	$dec2 = 6;
-	if ($Mode == 'Edit') {
+	if ($Mode == MODE_EDIT) {
 		$sql
 		 = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
@@ -164,7 +164,7 @@
 	Display::br();
 	hidden('selected_id', $selected_id);
 	start_table('tableinfo');
-	if ($Mode == 'Edit') {
+	if ($Mode == MODE_EDIT) {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
 	} else {

@@ -46,8 +46,7 @@
 		HTML::div('custsearch');
 		HTML::table(array('class' => 'marginauto bold'));
 		HTML::tr(true)->td(true);
-		UI::search('customer', array(
-																'label' => 'Search Customer:', 'size' => 80, 'callback' => 'Customer.fetch', 'focus' => true));
+		UI::search('customer', array( 'label' => 'Search Customer:', 'size' => 80, 'callback' => 'Customer.fetch', 'focus' => true));
 		HTML::td()->tr->table->div;
 	}
 	start_form();

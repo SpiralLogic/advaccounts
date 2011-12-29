@@ -377,7 +377,7 @@
 				$th[] = '';
 			}
 			table_header($th);
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			$total = 0;
 			$k = 0;
 			foreach ($this->line_items as $line_no => $po_line) {
@@ -454,7 +454,7 @@
 		public function item_controls($stock_id = null) {
 			start_row();
 			$dec2 = 0;
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if (($id != -1) && $stock_id != null) {
 				hidden('line_no', $id);
 				$_POST['stock_id'] = $this->line_items[$id]->stock_id;

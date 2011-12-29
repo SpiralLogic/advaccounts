@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Payment Terms"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {
 			$inpug_error = 1;
@@ -75,10 +75,10 @@
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The payment term could not be added or updated");
 			Errors::notice($note);
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DB::escape($selected_id);
 		$result = DB::query($sql, "check failed");
@@ -99,9 +99,9 @@
 			}
 		}
 		//end if payment terms used in customer or supplier accounts
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -144,7 +144,7 @@
 	start_table('tablestyle2');
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing payment terms
 			$sql
 			 = "SELECT * FROM payment_terms

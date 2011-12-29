@@ -1724,7 +1724,7 @@
 		}
 
 		/////////////////////////////////////////////////
-		// CLASS METHODS, MESSAGE RESET
+		// CLASS METHODS, MESSAGE MODE_RESET
 		/////////////////////////////////////////////////
 		/**
 		 * Clears all recipients assigned in the TO array.	Returns void.

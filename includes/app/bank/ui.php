@@ -111,7 +111,7 @@
 			}
 			table_header($th);
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->gl_items as $line => $item) {
 				if ($id != $line) {
 					alt_table_row_color($k);
@@ -152,7 +152,7 @@
 
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			start_row();
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($Index != -1 && $Index == $id) {
 				$item = $order->gl_items[$Index];
 				$_POST['code_id'] = $item->code_id;

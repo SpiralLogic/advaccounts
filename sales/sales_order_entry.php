@@ -160,10 +160,10 @@
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($type, $order_no);
 	}
-	if (isset($_POST['CancelOrder'])) {
+	if (isset($_POST['DeleteOrder'])) {
 		handle_cancel_order($order);
 	}
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
@@ -194,7 +194,7 @@
 		$idate = _("Invoice Date:");
 		$orderitems = _("Sales Invoice Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-		$cancelorder = _("Delete Invoice");
+		$deleteorder = _("Delete Invoice");
 		$corder = '';
 		$porder = _("Place Invoice");
 	}
@@ -202,7 +202,7 @@
 		$idate = _("Delivery Date:");
 		$orderitems = _("Delivery Note Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-		$cancelorder = _("Delete Delivery");
+		$deleteorder = _("Delete Delivery");
 		$corder = '';
 		$porder = _("Place Delivery");
 	}
@@ -210,7 +210,7 @@
 		$idate = _("Quotation Date:");
 		$orderitems = _("Sales Quotation Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-		$cancelorder = _("Delete Quotation");
+		$deleteorder = _("Delete Quotation");
 		$porder = _("Place Quotation");
 		$corder = _("Commit Quotations Changes");
 	}
@@ -218,7 +218,7 @@
 		$idate = _("Order Date:");
 		$orderitems = _("Sales Order Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Order");
-		$cancelorder = _("Delete Order");
+		$deleteorder = _("Delete Order");
 		$porder = _("Place Order");
 		$corder = _("Commit Order Changes");
 	}
@@ -233,9 +233,16 @@
 		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+
+		if ($order->trans_no > 0 && User::get()->can_access('SA_VOIDTRANSACTION')) {
+			submit_js_confirm('DeleteOrder', _('You are about to void this Document.\nDo you want to continue?'));
+			submit_center_first('DeleteOrder', $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
+			submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		}else {
+			submit_center_first('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		}
+
+
 		if ($order->trans_no == 0) {
 			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 		}
@@ -571,6 +578,11 @@
 	 ** @param Sales_Order $order
 	 */
 	function handle_cancel_order($order) {
+		if (!User::get()->can_access(SS_SETUP)) {Errors::error('You don\'t have access to delete orders');
+		return;
+		}
+
+
 		if ($order->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");

@@ -106,9 +106,7 @@ JS;
 				$url = $_SERVER['PHP_SELF'];
 			}
 			self::$_onload[]
-			 = <<<JS
-Adv.Forms.autocomplete('$id','$url',$callback);
-JS;
+			 =  "Adv.Forms.autocomplete('$id','$url',$callback);";
 			if ($o['focus']) {
 				self::setFocus("autocomplete.$id", true);
 			}

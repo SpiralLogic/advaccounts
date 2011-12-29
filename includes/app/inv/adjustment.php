@@ -87,7 +87,7 @@
 			table_header($th);
 			$total = 0;
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->line_items as $line_no => $stock_item) {
 				$total += ($stock_item->standard_cost * $stock_item->quantity);
 				if ($id != $line_no) {
@@ -117,7 +117,7 @@
 
 			start_row();
 			$dec2 = 0;
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($line_no != -1 && $line_no == $id) {
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 				$_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);

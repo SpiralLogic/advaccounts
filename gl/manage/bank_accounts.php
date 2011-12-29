@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Bank Accounts"));
 	Page::simple_mode();
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		//first off validate inputs sensible
@@ -41,10 +41,10 @@
 				);
 				Errors::notice(_('New bank account has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	elseif ($Mode == 'Delete')
+	elseif ($Mode == MODE_DELETE)
 	{
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
@@ -68,9 +68,9 @@
 			Bank_Account::delete($selected_id);
 			Errors::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['bank_name'] = $_POST['bank_account_name'] = '';
 		$_POST['bank_account_number'] = $_POST['bank_address'] = '';
@@ -120,7 +120,7 @@
 	$is_editing = $selected_id != -1;
 	start_table('tablestyle2');
 	if ($is_editing) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Bank_Account::get($selected_id);
 			$_POST['account_code'] = $myrow["account_code"];
 			$_POST['account_type'] = $myrow["account_type"];

@@ -17,10 +17,10 @@
 
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
-			foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
+			foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
 				if (isset($_POST[$m])) {
 					Ajax::i()->activate('_page_body');
-					if ($m == 'RESET' || $m == 'CLONE') {
+					if ($m == MODE_RESET || $m == MODE_CLONE) {
 						$selected_id = $default;
 					}
 					unset($_POST['_focus']);
@@ -28,7 +28,7 @@
 					return;
 				}
 			}
-			foreach (array('Edit', 'Delete') as $m) {
+			foreach (array(MODE_EDIT, MODE_DELETE) as $m) {
 				foreach ($_POST as $p => $pvar) {
 					if (strpos($p, $m) === 0) {
 						//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));

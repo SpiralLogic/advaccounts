@@ -960,7 +960,7 @@
 			table_header($th);
 			$total_discount = $total = 0;
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			$has_marked = false;
 			foreach ($this->line_items as $line_no => $stock_item) {
 				$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
@@ -1079,8 +1079,7 @@
 					Ajax::i()->activate('branch_id');
 				}
 				Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
-				if (($this->customer_id != get_post('customer_id', -1)) || ($this->Branch != get_post('branch_id', -1)) || list_updated('customer_id')
-				) {
+				if (($this->Branch != get_post('branch_id', -1)) ) {
 					if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
 						// ignore errors on customer search box call
 						if ($_POST['customer_id'] == '') {
@@ -1234,7 +1233,7 @@
 		 */
 		public function item_controls(&$rowcounter, $line_no = -1) {
 			alt_table_row_color($rowcounter);
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($line_no != -1 && $line_no == $id) // edit old line
 			{
 				$_POST['stock_id'] = $this->line_items[$id]->stock_id;

@@ -47,7 +47,7 @@
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($order_no);
 	}
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}

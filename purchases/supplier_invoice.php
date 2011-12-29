@@ -96,7 +96,7 @@
 			}
 		}
 	}
-	$id3 = find_submit('Delete');
+	$id3 = find_submit(MODE_DELETE);
 	if ($id3 != -1) {
 		Creditor_Trans::i()->remove_grn_from_trans($id3);
 		Ajax::i()->activate('grn_items');

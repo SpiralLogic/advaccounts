@@ -35,7 +35,7 @@
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
 			Errors::error(_("The price entered must be numeric."));
@@ -52,16 +52,16 @@
 				$msg = _("The new price has been added.");
 			}
 			Errors::notice($msg);
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked
 		Item_Price::delete($selected_id);
 		Errors::notice(_("The selected price has been deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 	}
 	if (list_updated('stock_id')) {
@@ -105,7 +105,7 @@
 	}
 	Display::div_end();
 	echo "<br>";
-	if ($Mode == 'Edit') {
+	if ($Mode == MODE_EDIT) {
 		$myrow = Item_Price::get($selected_id);
 		$_POST['curr_abrev'] = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];

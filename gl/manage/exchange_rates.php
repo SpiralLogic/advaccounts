@@ -64,11 +64,11 @@
 	}
 
 	function edit_link($row) {
-		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
+		return button(MODE_EDIT . $row["id"], _("Edit"), true, ICON_EDIT);
 	}
 
 	function del_link($row) {
-		return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
+		return button(MODE_DELETE . $row["id"], _("Delete"), true, ICON_DELETE);
 	}
 
 	function display_rates($curr_code) {
@@ -112,10 +112,10 @@
 		unset($_POST['BuyRate']);
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		handle_submit();
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		handle_delete();
 	}
 	start_form();

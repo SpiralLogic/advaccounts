@@ -132,25 +132,12 @@
 		$_SESSION['alloc']->write();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
 	}
-	function read_customer_data() {
-		global $customer;
-		$sql = "SELECT debtors_master.pymt_discount,
-		credit_status.dissallow_invoices
-		FROM debtors_master, credit_status
-		WHERE debtors_master.credit_status = credit_status.id
-			AND debtors_master.debtor_no = " . $customer->id;
-		$result = DB::query($sql, "could not query customers");
-		$myrow = DB::fetch($result);
-		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
-		$_POST['pymt_discount'] = 0;
-		$_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
-	}
 
 	start_form();
 	start_outer_table('tablestyle2 width60 pad5');
 	table_section(1);
 	UI::search('customer', array(
-															'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
+		'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
@@ -201,4 +188,17 @@
 		Renderer::end_page(true, true, true);
 	} else {
 		Renderer::end_page();
+	}
+	function read_customer_data() {
+		global $customer;
+		$sql = "SELECT debtors_master.pymt_discount,
+			credit_status.dissallow_invoices
+			FROM debtors_master, credit_status
+			WHERE debtors_master.credit_status = credit_status.id
+				AND debtors_master.debtor_no = " . $customer->id;
+		$result = DB::query($sql, "could not query customers");
+		$myrow = DB::fetch($result);
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+		$_POST['pymt_discount'] = 0;
+		$_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
 	}

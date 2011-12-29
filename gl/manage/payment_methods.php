@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Payment Methods"));
 	Page::simple_mode();
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		//first off validate inputs sensible
@@ -30,9 +30,9 @@
 				GL_PaymentMethod::add($_POST['name'], $_POST['undeposited']);
 				Errors::notice(_('New payment method has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
-	} elseif ($Mode == 'Delete') {
+	} elseif ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
 		$payment_method = DB::escape($selected_id);
@@ -55,9 +55,9 @@
 			GL_PaymentMethod::delete($selected_id);
 			Errors::notice(_('Selected payment method has been deleted'));
 		} //end if Delete bank account
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['undeposited'] = $_POST['name'] = '';
 	}
@@ -88,7 +88,7 @@
 	$is_editing = $selected_id != -1;
 	start_table('tablestyle2');
 	if ($is_editing) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = GL_PaymentMethod::get($selected_id);
 			$_POST['name'] = $myrow["name"];
 			$_POST['undeposited'] = $myrow["undeposited"];

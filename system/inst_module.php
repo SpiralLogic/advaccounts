@@ -199,7 +199,7 @@
 				edit_button_cell("Edit" . $i, _("Edit"));
 			}
 			delete_button_cell("Delete" . $i, _("Delete"));
-			submit_js_confirm('Delete' . $i, _('You are about to delete this extension\nDo you want to continue?'));
+			submit_js_confirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
 			end_row();
 		}
 		end_table(1);
@@ -255,7 +255,7 @@
 		$extensions = DB_Company::get_company_extensions();
 		start_table('tablestyle2');
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
-			if ($Mode == 'Edit') {
+			if ($Mode == MODE_EDIT) {
 				$mod = $extensions[$selected_id];
 				$_POST['tab'] = $mod['tab'];
 				$_POST['name'] = $mod['name'];
@@ -281,19 +281,19 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
 				Errors::notice(_("Extension data has been updated."));
 			} else {
 				Errors::notice(_("Extension has been installed."));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		handle_delete();
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 	if (get_post('Update')) {
 		$exts = DB_Company::get_company_extensions();
@@ -306,7 +306,7 @@
 		$installed_extensions = $exts;
 		Errors::notice(_('Current active extensions set has been saved.'));
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST);
 	}

@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Locations"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		/* actions to take once the user has clicked the submit button
@@ -47,7 +47,7 @@
 				);
 				Errors::notice(_('New location has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
 	function can_delete($selected_id) {
@@ -110,14 +110,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Inv_Location::delete($selected_id);
 			Errors::notice(_('Selected location has been deleted'));
 		} //end if Delete Location
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -156,7 +156,7 @@
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
 		//editing an existing Location
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Inv_Location::get($selected_id);
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['location_name'] = $myrow["location_name"];

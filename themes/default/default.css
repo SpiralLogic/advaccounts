@@ -1183,7 +1183,11 @@ body.lite {
 .inactive {
 	color: gray;
 }
-
+#msgbox {
+	width:80%;
+	margin:10px auto;
+	font-weight: bolder;
+}
 div.err_msg {
 	margin:           10px;
 	padding:          3px;
@@ -1197,8 +1201,8 @@ div.warn_msg, span.note_msg {
 	margin:           10px;
 	padding:          3px;
 	border:           1px solid #ff9900;
-	background-color: #ffff00;
-	color:            #ff5500;
+	background-color: #f0ef42;
+	color:            #8b0000;
 	text-align:       center;
 }
 

@@ -325,7 +325,7 @@ function goBack() {
 }
 
 function setFocus(name, byId) {
-
+var el;
 	if (typeof(name) == 'object')
 		{
 			el = name;
