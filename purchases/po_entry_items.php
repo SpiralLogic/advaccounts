@@ -25,7 +25,7 @@
 	if (isset($_GET['AddedID'])) {
 		$order_no = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
-		$supplier = new Contacts_Supplier(Session::i()->supplier_id);
+		$supplier = new Creditor(Session::i()->supplier_id);
 		if (!isset($_GET['Updated'])) {
 			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
 		}
@@ -107,7 +107,7 @@
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();
 	if (isset($order->supplier_id)) {
-		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
+		Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
 	}
 	Renderer::end_page();
 	/**

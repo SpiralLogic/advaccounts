@@ -39,9 +39,9 @@
 				}
 			}
 			//if ($supp_trans->due_date=="") {
-			//	Purch_Trans::get_duedate_from_terms($supp_trans);
+			//	Creditor_Trans::get_duedate_from_terms($supp_trans);
 			//}
-			Purch_Trans::get_duedate_from_terms($supp_trans);
+			Creditor_Trans::get_duedate_from_terms($supp_trans);
 		}
 
 		public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null) {
@@ -93,7 +93,7 @@
 			return Num::round($diff, $dec);
 		}
 
-		public static function add(Purch_Trans $supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
+		public static function add(Creditor_Trans $supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
 		{
 			//$company_currency = Bank_Currency::for_company();
 			/*Start an sql transaction */
@@ -125,15 +125,15 @@
 				$date_
 			);
 			/*First insert the invoice into the supp_trans table*/
-			$invoice_id = Purch_Trans::add(
+			$invoice_id = Creditor_Trans::add(
 				$trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
 				$supp_trans->reference, $supp_trans->supp_reference,
 				$invoice_items_total, $tax_total, $supp_trans->ov_discount
 			);
 			$total = 0;
 			/* Now the control account */
-			$supplier_accounts = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
-			$total += Purch_Trans::add_gl(
+			$supplier_accounts = Creditor::get_accounts_name($supp_trans->supplier_id);
+			$total += Creditor_Trans::add_gl(
 				$trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
 				-($invoice_items_total + $tax_total + $supp_trans->ov_discount),
 				$supp_trans->supplier_id,
@@ -159,7 +159,7 @@
 					$entered_gl_code->amount = -$entered_gl_code->amount;
 				}
 				$memo_ = $entered_gl_code->memo_;
-				$total += Purch_Trans::add_gl(
+				$total += Creditor_Trans::add_gl(
 					$trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
 					$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id, "", 0,
 					$memo_
@@ -193,7 +193,7 @@
 				 ? $stock_gl_code["inventory_account"]
 				 :
 				 $stock_gl_code["cogs_account"]);
-				$total += Purch_Trans::add_gl(
+				$total += Creditor_Trans::add_gl(
 					$trans_type, $invoice_id, $date_, $iv_act,
 					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 				 $entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id
@@ -293,7 +293,7 @@
 					if (!$supp_trans->is_invoice) {
 						$taxitem['Value'] = -$taxitem['Value'];
 					}
-					$total += Purch_Trans::add_gl(
+					$total += Creditor_Trans::add_gl(
 						$trans_type, $invoice_id, $date_,
 						$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
 						$supp_trans->supplier_id,
@@ -308,7 +308,7 @@
 			if ($invoice_no != 0) {
 				$invoice_alloc_balance = Purch_Allocation::get_balance(ST_SUPPINVOICE, $invoice_no);
 				if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated
-					$trans = Purch_Trans::get($invoice_no, ST_SUPPINVOICE);
+					$trans = Creditor_Trans::get($invoice_no, ST_SUPPINVOICE);
 					$total = $trans['Total'];
 					$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
 					/*Now insert the allocation record if > 0 */
@@ -407,11 +407,11 @@
 
 		public static function void($type, $type_no) {
 			DB::begin();
-			$trans = Purch_Trans::get($type_no, $type);
+			$trans = Creditor_Trans::get($type_no, $type);
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
 			Purch_Allocation::void($type, $type_no);
-			Purch_Trans::void($type, $type_no);
+			Creditor_Trans::void($type, $type_no);
 			$result = Purch_Line::get_for_invoice($type, $type_no);
 			// now remove this invoice/credit from any GRNs/POs that it's related to
 			if (DB::num_rows($result) > 0) {
@@ -564,7 +564,7 @@
 				$supp_trans->tran_date = $_POST['tran_date'];
 				end_row();
 				start_row();
-				Purch_Trans::get_duedate_from_terms($supp_trans);
+				Creditor_Trans::get_duedate_from_terms($supp_trans);
 				$_POST['due_date'] = $supp_trans->due_date;
 				Ajax::i()->activate('due_date');
 			}
@@ -578,7 +578,7 @@
 			start_table();
 			start_row();
 			if (isset($_POST['invoice_no'])) {
-				$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
+				$trans = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
 				$_POST['supplier_id'] = $trans['supplier_id'];
 				$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
 				label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], false));
@@ -586,7 +586,7 @@
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
 				}
-				Purch_Creditor::cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+				Creditor::cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 				JS::set_focus('supplier_id');
 			}
 			if ($supp_trans->supplier_id != $_POST['supplier_id']) {

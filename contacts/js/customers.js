@@ -2,12 +2,14 @@ Adv.extend({
 
 	resetHighlights:function () {
 		$(".ui-state-highlight").removeClass("ui-state-highlight");
+		Adv.o.custsearch.removeClass('hide');
 		Adv.btnCustomer.hide();
 		Adv.btnCancel.button('option', 'label', 'New Customer');
 		Branches.btnBranchAdd();
-		Contacts.btnContactAdd();
+
 		Adv.fieldsChanged = 0;
 		Adv.Events.onLeave();
+
 	},
 	revertState:function () {
 		$('.ui-state-highlight').each(function () {
@@ -22,6 +24,7 @@ Adv.extend({
 	},
 	stateModified:function (feild) {
 		if (feild.prop('disabled')) return;
+		Adv.o.custsearch.addClass('hide');
 		Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
 		var fieldname = feild.addClass("ui-state-highlight").attr('name');
 		$("[name='" + fieldname + "']").each(function () {
@@ -93,10 +96,8 @@ var Contacts = function () {
 		},
 		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
-		},
-		btnContactAdd:function () {
-			return false;
 		}
+
 	};
 }();
 var Branches = function () {
@@ -108,7 +109,6 @@ var Branches = function () {
 				if (!$(this).val().length) return;
 				var newBranch = Customer.get().branches[$(this).val()];
 				Branches.change(newBranch);
-
 			})
 		},
 		empty:function () {
@@ -121,9 +121,11 @@ var Branches = function () {
 					list.append('<option value="' + data.branch_code + '">' + data.br_name + '</option>');
 				} else
 				{
+					var toAdd;
 					$.each(data, function (key, value) {
-						list.append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
+						toAdd+= '<option value="' + value.branch_code + '">' + value.br_name + '</option>';
 					});
+					list.append(toAdd);
 				}
 			return this;
 		},
@@ -155,6 +157,7 @@ var Branches = function () {
 		},
 		New:function () {
 			$.post('search.php', {branch_code:0, id:Customer.get().id}, function (data) {
+				data=data.branch;
 				console.log(data);
 				Branches.add(data).change(data);
 				Customer.get().branches[data.branch_code] = data;
@@ -164,11 +167,16 @@ var Branches = function () {
 		},
 		Save:function () {
 			btn.unbind('click');
+			Adv.btnCustomer.button('disable');
 			$.post('customers.php', Customer.get(), function (data) {
+				if (data.status){
+					Adv.showStatus(data.status);
+				Adv.btnCustomer.button('enable');
+						if (!data.status.status) return;
+				}
 				Adv.resetHighlights();
 				adding = false;
 				Customer.setValues(data);
-				Adv.showStatus(data.status);
 			}, 'json');
 		},
 		btnBranchAdd:function () {
@@ -240,6 +248,7 @@ var Customer = function () {
 
 		},
 		setValues:function (content) {
+			if (!content.customer) return;
 			customer = data = content.customer;
 			if (content.contact_log !== undefined)
 				{
@@ -332,6 +341,7 @@ $(function () {
 		}),
 		ContactLog:$("#contactLog").hide()
 	});
+	Adv.o.custsearch = $('#custsearch');
 	Adv.ContactLog.dialog({
 		autoOpen:false,
 		show:"slide",

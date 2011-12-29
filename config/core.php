@@ -37,5 +37,6 @@
 		'Num', //
 		'Session', //
 		'Status', //
-		'UploadHandler' //
+		'UploadHandler', //
+		'Events', //
 	);

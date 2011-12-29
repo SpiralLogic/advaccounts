@@ -6,7 +6,7 @@
 	 * Time: 7:09 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Sales_Line
+	class Sales_Line extends \Sales_Order
 	{
 		public $id;
 		public $stock_id;

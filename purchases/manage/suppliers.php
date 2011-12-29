@@ -107,7 +107,7 @@
 		start_table('tablestyle_noborder pad3');
 		//	start_table('tablestyle_noborder');
 		start_row();
-		Purch_Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
+		Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		end_row();
 		end_table();
@@ -122,7 +122,7 @@
 	table_section(1);
 	if (!$new_supplier) {
 		//SupplierID exists - either passed when calling the form or from the form itself
-		$myrow = Purch_Creditor::get($_POST['supplier_id']);
+		$myrow = Creditor::get($_POST['supplier_id']);
 		$_POST['supp_name'] = $myrow["supp_name"];
 		$_POST['supp_ref'] = $myrow["supp_ref"];
 		$_POST['address'] = $myrow["address"];

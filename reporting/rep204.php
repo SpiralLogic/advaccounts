@@ -67,7 +67,7 @@
 			$from = _('All');
 		}
 		else {
-			$from = Purch_Creditor::get_name($fromsupp);
+			$from = Creditor::get_name($fromsupp);
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 40, 80, 190, 250, 320, 385, 450, 515);

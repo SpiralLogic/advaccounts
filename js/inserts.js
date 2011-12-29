@@ -17,10 +17,11 @@ var _hotkeys = {
 function save_focus(e) {
 	_focus = e.name || e.id;
 	var h = document.getElementById('hints');
-	if (h) {
-		h.style.display = e.title && e.title.length ? 'inline' : 'none';
-		h.innerHTML = e.title ? e.title : '';
-	}
+	if (h)
+		{
+			h.style.display = e.title && e.title.length ? 'inline' : 'none';
+			h.innerHTML = e.title ? e.title : '';
+		}
 }
 
 function _expand(tabobj) {
@@ -29,13 +30,15 @@ function _expand(tabobj) {
 	var alltabs = ul.getElementsByTagName("input");
 	var frm = tabobj.form;
 
-	if (ul.getAttribute("rel")) {
-		for (var i = 0; i < alltabs.length; i++) {
-			alltabs[i].className = "ajaxbutton"  //deselect all tabs
+	if (ul.getAttribute("rel"))
+		{
+			for (var i = 0; i < alltabs.length; i++)
+				{
+					alltabs[i].className = "ajaxbutton"  //deselect all tabs
+				}
+			tabobj.className = "current";
+			JsHttpRequest.request(tabobj)
 		}
-		tabobj.className = "current";
-		JsHttpRequest.request(tabobj)
-	}
 }
 
 //interface for selecting a tab (plus expand corresponding content)
@@ -53,40 +56,47 @@ function _set_combo_input(e) {
 // submit request if there is submit_on_change option set and
 // search field has changed.
 
-		if (button && (this.value != this.getAttribute('_last'))) {
-			JsHttpRequest.request(button);
-		} else {
-			if (this.className == 'combo2') {
-				this.style.display = 'none';
-				select.style.display = 'inline';
-				setFocus(select);
+		if (button && (this.value != this.getAttribute('_last')))
+			{
+				JsHttpRequest.request(button);
+			} else
+			{
+				if (this.className == 'combo2')
+					{
+						this.style.display = 'none';
+						select.style.display = 'inline';
+						setFocus(select);
+					}
 			}
-		}
 		return false;
 	};
 	e.onkeyup = function (ev) {
 		var select = document.getElementsByName(this.getAttribute('rel'))[0];
-		if (select && select.selectedIndex >= 0) {
-			var len = select.length;
-			var byid = this.className == 'combo';
-			var ac = this.value.toUpperCase();
-			select.options[select.selectedIndex].selected = false;
-			for (i = 0; i < len; i++) {
-				var txt = byid ? select.options[i].value : select.options[i].text;
-				if (txt.toUpperCase().indexOf(ac) >= 0) {
-					select.options[i].selected = true;
-					break;
-				}
+		if (select && select.selectedIndex >= 0)
+			{
+				var len = select.length;
+				var byid = this.className == 'combo';
+				var ac = this.value.toUpperCase();
+				select.options[select.selectedIndex].selected = false;
+				for (i = 0; i < len; i++)
+					{
+						var txt = byid ? select.options[i].value : select.options[i].text;
+						if (txt.toUpperCase().indexOf(ac) >= 0)
+							{
+								select.options[i].selected = true;
+								break;
+							}
+					}
 			}
-		}
 	};
 	e.onkeydown = function (ev) {
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
-		if (key == 13) {
-			this.blur();
-			return false;
-		}
+		if (key == 13)
+			{
+				this.blur();
+				return false;
+			}
 	}
 }
 
@@ -94,15 +104,17 @@ function _update_box(s) {
 	var byid = s.className == 'combo';
 	var rel = s.getAttribute('rel');
 	var box = document.getElementsByName(rel)[0];
-	if (box && s.selectedIndex >= 0) {
-		var opt = s.options[s.selectedIndex];
-		if (box) {
-			var old = box.value;
-			box.value = byid ? opt.value : opt.text;
-			box.setAttribute('_last', box.value);
-			return old != box.value
+	if (box && s.selectedIndex >= 0)
+		{
+			var opt = s.options[s.selectedIndex];
+			if (box)
+				{
+					var old = box.value;
+					box.value = byid ? opt.value : opt.text;
+					box.setAttribute('_last', box.value);
+					return old != box.value
+				}
 		}
-	}
 }
 
 function _set_combo_select(e) {
@@ -114,37 +126,41 @@ function _set_combo_select(e) {
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
 //			if(this.className=='combo')
 //			    _update_box(this);
-		if ((this.selectedIndex != this.getAttribute('_last')) || (this.className == 'combo' && _update_box(this))) {
-			this.onchange();
-		}
+		if ((this.selectedIndex != this.getAttribute('_last')) || (this.className == 'combo' && _update_box(this)))
+			{
+				this.onchange();
+			}
 	}
 	e.onchange = function () {
 		var s = this;
 		this.setAttribute('_last', this.selectedIndex);
-		if (s.className == 'combo') {
-			_update_box(s);
-		}
-		if (s.selectedIndex >= 0) {
-			var sname = '_' + s.name + '_update';
-			var update = document.getElementsByName(sname)[0];
-			if (update) {
-				JsHttpRequest.request(update);
+		if (s.className == 'combo')
+			{
+				_update_box(s);
 			}
-		}
+		if (s.selectedIndex >= 0)
+			{
+				var sname = '_' + s.name + '_update';
+				var update = document.getElementsByName(sname)[0];
+				if (update)
+					{
+						JsHttpRequest.request(update);
+					}
+			}
 		return true;
 	}
 	e.onkeydown = function (event) {
 		event = event || window.event;
 		key = event.keyCode || event.which;
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
-
-		if (box && key == 32 && this.className == 'combo2') {
-			this.style.display = 'none';
-			box.style.display = 'inline';
-			box.value = '';
-			setFocus(box);
-			return false;
-		}
+		if (box && key == 32 && this.className == 'combo2')
+			{
+				this.style.display = 'none';
+				box.style.display = 'inline';
+				box.value = '';
+				setFocus(box);
+				return false;
+			}
 	}
 }
 
@@ -152,32 +168,37 @@ var _w;
 
 function callEditor(key) {
 	var el = document.getElementsByName(editors[key][1])[0];
-	if (_w) {
-		_w.close();
-	} // this is really necessary to have window on top in FF2 :/
+	if (_w)
+		{
+			_w.close();
+		} // this is really necessary to have window on top in FF2 :/
 	_w = open(editors[key][0] + el.value + '&popup=1', "edit", "Scrollbars=0,resizable=0,width=800,height=600");
-	if (_w.opener == null) {
-		_w.opener = self;
-	}
+	if (_w.opener == null)
+		{
+			_w.opener = self;
+		}
 	editors._call = key; // store call point for passBack
 	_w.focus();
 }
 
 function passBack(value) {
 	var o = opener;
-	if (value != false) {
-		var back = o.editors[o.editors._call]; // form input bindings
-		var to = o.document.getElementsByName(back[1])[0];
-		if (to) {
-			if (to[0] != undefined) {
-				to[0].value = value;
-			} // ugly hack to set selector to any value
-			to.value = value;
-			// update page after item selection
-			o.JsHttpRequest.request('_' + to.name + '_update', to.form);
-			o.setFocus(to.name);
+	if (value != false)
+		{
+			var back = o.editors[o.editors._call]; // form input bindings
+			var to = o.document.getElementsByName(back[1])[0];
+			if (to)
+				{
+					if (to[0] != undefined)
+						{
+							to[0].value = value;
+						} // ugly hack to set selector to any value
+					to.value = value;
+					// update page after item selection
+					o.JsHttpRequest.request('_' + to.name + '_update', to.form);
+					o.setFocus(to.name);
+				}
 		}
-	}
 	close();
 }
 
@@ -186,31 +207,38 @@ function passBack(value) {
  */
 var inserts = {
 	'input':function (e) {
-		if (e.onfocus == undefined) {
-			e.onfocus = function () {
-				save_focus(this);
-				if (this.className == 'combo') {
-					this.select();
-				}
-			};
-		}
-		if (e.className == 'combo' || e.className == 'combo2') {
-			_set_combo_input(e);
-		} else {
-			if (e.type == 'text') {
-				e.onkeydown = function (ev) {
-					ev = ev || window.event;
-					key = ev.keyCode || ev.which;
-					if (key == 13) {
-						if (e.className == 'searchbox') {
-							e.onblur();
+		if (e.onfocus == undefined)
+			{
+				e.onfocus = function () {
+					save_focus(this);
+					if (this.className == 'combo')
+						{
+							this.select();
 						}
-						return false;
-					}
-					return true;
-				}
+				};
 			}
-		}
+		if (e.className == 'combo' || e.className == 'combo2')
+			{
+				_set_combo_input(e);
+			} else
+			{
+				if (e.type == 'text')
+					{
+						e.onkeydown = function (ev) {
+							ev = ev || window.event;
+							key = ev.keyCode || ev.which;
+							if (key == 13)
+								{
+									if (e.className == 'searchbox')
+										{
+											e.onblur();
+										}
+									return false;
+								}
+							return true;
+						}
+					}
+			}
 	},
 	'input.combo2,input[aspect="fallback"]':function (e) {
 		// this hides search button for js enabled browsers
@@ -225,49 +253,59 @@ var inserts = {
 		e.onclick = function () {
 			save_focus(e);
 			var asp = e.getAttribute('aspect')
-			if (asp && asp.indexOf('process') !== -1) {
-				JsHttpRequest.request(this, null, 60000);
-			} else {
-				JsHttpRequest.request(this);
-			}
+			if (asp && asp.indexOf('process') !== -1)
+				{
+					JsHttpRequest.request(this, null, 60000);
+				} else
+				{
+					JsHttpRequest.request(this);
+				}
 			return false;
 		}
 	},
 	'button':function (e) {
-		if (e.name) {
-			var func = _validate[e.name];
-			var old = e.onclick;
-			if (func) {
-				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
-					e.onclick = func;
-				} else {
-					e.onclick = function () {
-						if (func()) {
-							old();
-							return true;
-						} else {
-							return false;
-						}
+		if (e.name)
+			{
+				var func = _validate[e.name];
+				var old = e.onclick;
+				if (func)
+					{
+						if (typeof old != 'function' || old == func)
+							{ // prevent multiply binding on ajax update
+								e.onclick = func;
+							} else
+							{
+								e.onclick = function () {
+									if (func())
+										{
+											old();
+											return true;
+										} else
+										{
+											return false;
+										}
+								}
+							}
 					}
-				}
 			}
-		}
 	},
 	'.amount':function (e) {
-		if (e.onblur == undefined) {
-			e.onblur = function () {
-				var dec = this.getAttribute("dec");
-				price_format(this.name, get_amount(this.name), dec);
-			};
-		}
+		if (e.onblur == undefined)
+			{
+				e.onblur = function () {
+					var dec = this.getAttribute("dec");
+					price_format(this.name, get_amount(this.name), dec);
+				};
+			}
 	},
 	'.freight':function (e) {
-		if (e.onblur == undefined) {
-			e.onblur = function () {
-				var dec = this.getAttribute("dec");
-				price_format(this.name, get_amount(this.name), dec, '2');
-			};
-		}
+		if (e.onblur == undefined)
+			{
+				e.onblur = function () {
+					var dec = this.getAttribute("dec");
+					price_format(this.name, get_amount(this.name), dec, '2');
+				};
+			}
 	},
 	'.searchbox':// emulated onchange event handling for text inputs
 	 function (e) {
@@ -275,10 +313,11 @@ var inserts = {
 		 e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
 		 e.onblur = function () {
 			 var val = this.getAttribute('_last_val');
-			 if (val != this.value) {
-				 this.setAttribute('_last_val', this.value);
-				 JsHttpRequest.request('_' + this.name + '_changed', this.form);
-			 }
+			 if (val != this.value)
+				 {
+					 this.setAttribute('_last_val', this.value);
+					 JsHttpRequest.request('_' + this.name + '_changed', this.form);
+				 }
 		 }
 	 },
 	'button[aspect="selector"], input[aspect="selector"]':function (e) {
@@ -288,15 +327,17 @@ var inserts = {
 		}
 	},
 	'select':function (e) {
-		if (e.onfocus == undefined) {
-			e.onfocus = function () {
-				save_focus(this);
-			};
-			var c = e.className;
-			if (c == 'combo' || c == 'combo2') {
-				_set_combo_select(e);
+		if (e.onfocus == undefined)
+			{
+				e.onfocus = function () {
+					save_focus(this);
+				};
+				var c = e.className;
+				if (c == 'combo' || c == 'combo2')
+					{
+						_set_combo_select(e);
+					}
 			}
-		}
 	},
 	'a.printlink':function (l) {
 		l.onclick = function () {
@@ -309,26 +350,29 @@ var inserts = {
 		e.onkeydown = function (ev) {
 			ev = ev || window.event;
 			key = ev.keyCode || ev.which;
-			if (key == 37 || key == 38 || key == 39 || key == 40) {
-				move_focus(key, e, document.links);
-				ev.returnValue = false;
-				return false;
-			}
+			if (key == 37 || key == 38 || key == 39 || key == 40)
+				{
+					move_focus(key, e, document.links);
+					ev.returnValue = false;
+					return false;
+				}
 		}
 	},
 	'ul.ajaxtabs':function (ul) {
 		var ulist = ul.getElementsByTagName("li");
-		for (var x = 0; x < ulist.length; x++) { //loop through each LI e
-			var ulistlink = ulist[x].getElementsByTagName("input")[0];
-			if (ulistlink.onclick == undefined) {
+		for (var x = 0; x < ulist.length; x++)
+			{ //loop through each LI e
+				var ulistlink = ulist[x].getElementsByTagName("input")[0];
+				if (ulistlink.onclick == undefined)
+					{
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
-				var url = ulistlink.form.action
-				ulistlink.onclick = function () {
-					_expand(this);
-					return false;
-				}
+						var url = ulistlink.form.action
+						ulistlink.onclick = function () {
+							_expand(this);
+							return false;
+						}
+					}
 			}
-		}
 	}
 	/*	'tr.editrow': function(e) {
 	 e.onkeydown = function(ev) {
@@ -358,117 +402,119 @@ var inserts = {
 };
 
 function stopEv(ev) {
-	if (ev.preventDefault) {
-		ev.preventDefault();
-		ev.stopPropagation();
-	} else {
-		ev.returnValue = false;
-		ev.cancelBubble = true;
-		window.keycode = 0;
-	}
+	if (ev.preventDefault)
+		{
+			ev.preventDefault();
+			ev.stopPropagation();
+		} else
+		{
+			ev.returnValue = false;
+			ev.cancelBubble = true;
+			window.keycode = 0;
+		}
 	return false;
 }
 /*
  Modified accesskey system. While Alt key is pressed letter keys moves
  focus to next marked link. Alt key release activates focused link.
  *//*
-function setHotKeys() {
-	document.onkeydown = function (ev) {
-		ev = ev || window.event;
-		key = ev.keyCode || ev.which;
-		if (key == 18 && key != 68 && !ev.ctrlKey) {	// start selection, skip Win AltGr
-			_hotkeys.alt = true;
-			_hotkeys.focus = -1;
-			return stopEv(ev);
-		} else {
-			if (ev.altKey && !ev.ctrlKey && key != 68 && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
-				var n = _hotkeys.focus;
-				var l = document.links;
-				var cnt = l.length;
-				key = String.fromCharCode(key);
-				for (var i = 0; i < cnt; i++) {
-					n = (n + 1) % cnt;
-					// check also if the link is visible
-					if (l[n].accessKey == key && l[n].scrollWidth) {
-						_hotkeys.focus = n;
-						// The timeout is needed to prevent unpredictable behaviour on IE.
-						var tmp = function () {
-							document.links[_hotkeys.focus].focus();
-						};
-						setTimeout(tmp, 0);
-						break;
-					}
-				}
-				return stopEv(ev);
-			}
-		}
-		if ((ev.ctrlKey && key == 13) || key == 27) {
-			_hotkeys.alt = false; // cancel link selection
-			_hotkeys.focus = -1;
-			ev.cancelBubble = true;
-			if (ev.stopPropagation) {
-				ev.stopPropagation();
-			}
-			// activate submit/escape form
-			for (var j = 0; j < this.forms.length; j++) {
-				var form = this.forms[j];
-				for (var i = 0; i < form.elements.length; i++) {
-					var el = form.elements[i];
-					var asp = el.getAttribute('aspect');
+ function setHotKeys() {
+ document.onkeydown = function (ev) {
+ ev = ev || window.event;
+ key = ev.keyCode || ev.which;
+ if (key == 18 && key != 68 && !ev.ctrlKey) {	// start selection, skip Win AltGr
+ _hotkeys.alt = true;
+ _hotkeys.focus = -1;
+ return stopEv(ev);
+ } else {
+ if (ev.altKey && !ev.ctrlKey && key != 68 && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
+ var n = _hotkeys.focus;
+ var l = document.links;
+ var cnt = l.length;
+ key = String.fromCharCode(key);
+ for (var i = 0; i < cnt; i++) {
+ n = (n + 1) % cnt;
+ // check also if the link is visible
+ if (l[n].accessKey == key && l[n].scrollWidth) {
+ _hotkeys.focus = n;
+ // The timeout is needed to prevent unpredictable behaviour on IE.
+ var tmp = function () {
+ document.links[_hotkeys.focus].focus();
+ };
+ setTimeout(tmp, 0);
+ break;
+ }
+ }
+ return stopEv(ev);
+ }
+ }
+ if ((ev.ctrlKey && key == 13) || key == 27) {
+ _hotkeys.alt = false; // cancel link selection
+ _hotkeys.focus = -1;
+ ev.cancelBubble = true;
+ if (ev.stopPropagation) {
+ ev.stopPropagation();
+ }
+ // activate submit/escape form
+ for (var j = 0; j < this.forms.length; j++) {
+ var form = this.forms[j];
+ for (var i = 0; i < form.elements.length; i++) {
+ var el = form.elements[i];
+ var asp = el.getAttribute('aspect');
 
-					if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
-						passBack(key == 13 ? el.getAttribute('rel') : false);
-						ev.returnValue = false;
-						return false;
-					}
-					if (((asp && asp.indexOf('default') !== -1) && key == 13) || ((asp && asp.indexOf('cancel') !== -1) && key == 27)) {
+ if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
+ passBack(key == 13 ? el.getAttribute('rel') : false);
+ ev.returnValue = false;
+ return false;
+ }
+ if (((asp && asp.indexOf('default') !== -1) && key == 13) || ((asp && asp.indexOf('cancel') !== -1) && key == 27)) {
 
-						if (asp.indexOf('process') !== -1) {
-							JsHttpRequest.request(el, null, 60000);
-						} else {
-							JsHttpRequest.request(el);
-						}
-						ev.returnValue = false;
-						return false;
-					}
-				}
-			}
-			ev.returnValue = false;
-			return false;
-		}
-		if (editors && editors[key]) {
-			callEditor(key);
-			return stopEv(ev); // prevent default binding
-		}
-		return true;
-	};
-	document.onkeyup = function (ev) {
-		ev = ev || window.event;
-		key = ev.keyCode || ev.which;
+ if (asp.indexOf('process') !== -1) {
+ JsHttpRequest.request(el, null, 60000);
+ } else {
+ JsHttpRequest.request(el);
+ }
+ ev.returnValue = false;
+ return false;
+ }
+ }
+ }
+ ev.returnValue = false;
+ return false;
+ }
+ if (editors && editors[key]) {
+ callEditor(key);
+ return stopEv(ev); // prevent default binding
+ }
+ return true;
+ };
+ document.onkeyup = function (ev) {
+ ev = ev || window.event;
+ key = ev.keyCode || ev.which;
 
-		if (_hotkeys.alt == true) {
-			if (key == 18) {
-				_hotkeys.alt = false;
-				if (_hotkeys.focus >= 0) {
-					var link = document.links[_hotkeys.focus];
-					if (link.onclick) {
-						link.onclick();
-					} else {
-						if (link.target == '_blank') {
-							window.open(link.href, '', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
-							openWindow(link.href, '_blank');
-						} else {
-							window.location = link.href;
-						}
-					}
-				}
-				return stopEv(ev);
-			}
-		}
-		return true;
-	}
-}
-*/
+ if (_hotkeys.alt == true) {
+ if (key == 18) {
+ _hotkeys.alt = false;
+ if (_hotkeys.focus >= 0) {
+ var link = document.links[_hotkeys.focus];
+ if (link.onclick) {
+ link.onclick();
+ } else {
+ if (link.target == '_blank') {
+ window.open(link.href, '', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
+ openWindow(link.href, '_blank');
+ } else {
+ window.location = link.href;
+ }
+ }
+ }
+ return stopEv(ev);
+ }
+ }
+ return true;
+ }
+ }
+ */
 Behaviour.register(inserts);
 
 Behaviour.addLoadEvent(setFocus);

@@ -25,11 +25,7 @@
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Bank_Currency::for_company();
 	}
-	if (Input::request('frame')) {
-		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
-	} else {
-		start_form();
-	}
+	start_form(false, $_SERVER['REQUEST_URI']);
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -50,7 +46,8 @@
 				//editing an existing price
 				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("This price has been updated.");
-			} else {
+			}
+			else {
 				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
@@ -82,7 +79,8 @@
 	Display::div_start('price_table');
 	if (Input::request('frame')) {
 		start_table('tablestyle width90');
-	} else {
+	}
+	else {
 		start_table('tablestyle width30');
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
@@ -119,8 +117,7 @@
 	GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
 	Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
-			get_post('sales_type_id')));
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'), get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
@@ -133,6 +130,7 @@
 	end_form();
 	if (Input::request('frame')) {
 		Renderer::end_page(true, true, true);
-	} else {
+	}
+	else {
 		Renderer::end_page();
 	}

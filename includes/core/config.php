@@ -26,7 +26,6 @@
 		 * @var bool
 		 */
 		protected static $i = false;
-
 		/**
 		 * @static
 		 * @return mixed
@@ -45,7 +44,6 @@
 			static::$i = true;
 			static::js();
 		}
-
 		/**
 		 * @static
 		 *
@@ -72,7 +70,6 @@
 			/** @noinspection PhpIncludeInspection */
 			static::$_vars[$group_name] = include($file);
 		}
-
 		/**
 		 * @static
 		 *
@@ -86,7 +83,6 @@
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
-
 		/***
 		 * @static
 		 *
@@ -107,9 +103,7 @@
 			$group_array = explode('.', $var);
 			$var = array_pop($group_array);
 			$group = implode('.', $group_array);
-			if (!isset(static::$_vars[$group])) {
-				static::load($group_array);
-			}
+			(isset(static::$_vars[$group])) or static::load($group_array);
 			if ($var === null && $array_key === null) {
 				return static::get_all($group);
 			}
@@ -118,7 +112,6 @@
 			}
 			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
 		}
-
 		/**
 		 * @static
 		 *
@@ -130,7 +123,6 @@
 				unset(static::$_vars[$group][$var]);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -138,9 +130,8 @@
 		public static function store() {
 			Cache::set('config', static::$_vars);
 		}
-
 		/**
-		 * @static
+		 * @staticx
 		 *
 		 * @param string $group
 		 *
@@ -148,12 +139,9 @@
 		 */
 		public static function get_all($group = 'config') {
 			static::i();
-			if (!isset(static::$_vars[$group])) {
-				static::load($group);
-			}
+			(isset(static::$_vars[$group])) or static::load($group);
 			return static::$_vars[$group];
 		}
-
 		/**
 		 * @static
 		 *

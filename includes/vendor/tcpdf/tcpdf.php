@@ -169,7 +169,7 @@
 	/**
 	 * barcode class
 	 */
-	require(dirname(__FILE__) . "/tcpdfbarcode.php");
+//	require(dirname(__FILE__) . "/tcpdfbarcode.php");
 
 	/**
 	 * HTML entity decode functions

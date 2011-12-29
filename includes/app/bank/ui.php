@@ -50,7 +50,7 @@
 				//	workorders_list_row(_("Work Order:"), 'person_id', null);
 				//	break;
 				case PT_SUPPLIER :
-					Purch_Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
+					Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
 					break;
 				case PT_CUSTOMER :
 					Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
@@ -182,7 +182,7 @@
 					$acc = Sales_Branch::get_accounts($_POST['PersonDetailID']);
 					$_POST['code_id'] = $acc['receivables_account'];
 				} elseif ($_POST['PayType'] == PT_SUPPLIER) {
-					$acc = Purch_Creditor::get_accounts_name($_POST['person_id']);
+					$acc = Creditor::get_accounts_name($_POST['person_id']);
 					$_POST['code_id'] = $acc['payable_account'];
 				} //elseif ($_POST['PayType'] == PT_WORKORDER)
 				//	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');

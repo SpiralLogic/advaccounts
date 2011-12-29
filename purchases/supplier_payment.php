@@ -125,7 +125,7 @@
 		} else {
 			$rate = Validation::input_num('_ex_rate');
 		}
-		$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'),
+		$payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'),
 			Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
 		Dates::new_doc_date($_POST['DatePaid']);
 		$_SESSION['alloc']->trans_no = $payment_id;
@@ -152,7 +152,7 @@
 	start_form();
 	start_outer_table('tablestyle2 width60 pad5');
 	table_section(1);
-	Purch_Creditor::row(_("Payment To:"), 'supplier_id', null, false, true);
+	Creditor::row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);

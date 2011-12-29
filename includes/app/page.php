@@ -92,7 +92,7 @@
 				header("Content-type: text/html; charset='$encoding'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html class='" . $_SESSION['sel_app'] . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<html class='" . strtolower( $_SESSION['sel_app']) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 			echo "<head><title>$title</title>";
 			echo "<meta charset='$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";

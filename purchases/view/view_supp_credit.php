@@ -18,7 +18,7 @@
 	} elseif (isset($_POST["trans_no"])) {
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans = new Purch_Trans();
+	$supp_trans = new Creditor_Trans();
 	$supp_trans->is_invoice = false;
 	Purch_Invoice::get($trans_no, ST_SUPPCREDIT, $supp_trans);
 	Display::heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
@@ -42,13 +42,13 @@
 	start_table('tablestyle width95');
 	label_row(_("Sub Total"), $display_sub_tot, "class=right", "nowrap class=right width=17%");
 	$tax_items = GL_Trans::get_tax_details(ST_SUPPCREDIT, $trans_no);
-	Purch_Trans::trans_tax_details($tax_items, 1);
+	Creditor_Trans::trans_tax_details($tax_items, 1);
 	$display_total = Num::format(-($supp_trans->ov_amount + $supp_trans->ov_gst), User::price_dec());
 	label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class=right", "nowrap class=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
 	if (!$voided) {
-		GL_Allocation::display(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no,
+		GL_Allocation::from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no,
 			-($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
 	Renderer::end_page(true);

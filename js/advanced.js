@@ -35,7 +35,7 @@ jQuery.fn.quickEach = (function () {
 (function (window, $, undefined) {
 	var Adv = {
 		$content:$("#content"),
-		loader:$("<div/>").attr('id', 'loader'),
+		loader:document.getElementById('ajaxmark'),
 		fieldsChanged:0,
 		debug:{ ajax:true},
 		lastXhr:'',
@@ -45,24 +45,27 @@ jQuery.fn.quickEach = (function () {
 		var extender = jQuery.extend;
 		this.o.wrapper = $("#wrapper");
 		this.o.autocomplete = {};
-		this.loader.prependTo(Adv.$content).hide()
+		$(this.loader)
 		 .ajaxStart(function () {
-			 if (!Adv.loader.disabled) $(this).show();
+Adv.loader.on();
 			 Adv.hideStatus();
 			 if (Adv.debug.ajax) console.time('ajax')
 		 })
 		 .ajaxStop(function () {
+			 Adv.loader.off();
 			 if (Adv.debug.ajax) console.timeEnd('ajax');
-			 Adv.loader.hide()
 		 });
 		this.extend = function (object) {extender(Adv, object)};
 		extender(Adv.loader, {
-			disabled:false,
+			tout: 15000,
 			off:function () {
-				this.disabled = true;
+				Adv.loader.style.visibility='hidden';
 			},
-			on:function () {
-				this.disabled = false;
+			on:function (img) {
+				Adv.loader.tout = Adv.loader.tout | 15000;	// default timeout value
+				img =Adv.loader.tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
+					if (img) Adv.loader.src = user.theme + 'images/' + img;
+				Adv.loader.style.visibility = 'visible';
 			}
 		})
 	}).apply(Adv);
@@ -88,12 +91,13 @@ Adv.extend({
 			 { Adv.hideStatus()}
 	 }),
 	showStatus:function (status) {
-		Adv.msgbox.empty();
+		Adv.msgbox.hide().empty();
+		if (status.status==='redirect') return window.location.href=status.message;
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
 		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
 	},
 	hideStatus:function () {
-		Adv.msgbox.empty();
+		Adv.msgbox.hide().empty();
 	},
 	openWindow:function (url, title, width, height) {
 		var left = (screen.width - width) / 2;
@@ -102,68 +106,98 @@ Adv.extend({
 		 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 	}
 
-})
+});
 Adv.extend({Forms:(function () {
 	if (document.getElementsByClassName('datepicker').length > 0)
 		{
 			Adv.o.wrapper.on('focus', ".datepicker",
 			 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 		}
+	var _setFormValue = function (el, value, disabled) {
+		if (!el) return;
+		if (typeof disabled === 'boolean')
+			{
+				el.disabled = disabled;
+			}
+		if (el.tagName === 'select')
+			{
+				if (el.value == null || String(value).length == 0)
+					{
+						$(el).find('option:first').prop('selected', true)
+						 .data('init', value);
+						return;
+					}
+			}
+		if (el.type === 'checkbox')
+			{
+				el.checked = !!value;
+			}
+		if (String(value).length == 0)
+			{
+				value = '';
+			}
+		el.value = value;
+		$(el).data('init', value);
+	}
 	return {
 		setFormValue:function (id, value, disabled) {
-			var els = document.getElementsByName(id);
+			var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
 			if (!els.length)
 				{
-					els = [document.getElementById(id)];
+					els = document.getElementById(id);
+					return _setFormValue(els, value, disabled);
 				}
 			$.each(els, function (k, el) {
-				 if (!el) return;
-				 if (typeof disabled === 'boolean')
-					 {
-						 el.disabled = disabled;
-					 }
-				 if (el.tagName === 'select')
-					 {
-						 if (el.value == null || String(value).length == 0)
-							 {
-								 $(el).find('option:first').prop('selected', true)
-									.data('init', value);
-								 return;
-							 }
-					 }
-				 if (el.type === 'checkbox')
-					 {
-						 el.checked = !!value;
-					 }
-				 if (String(value).length == 0)
-					 {
-						 value = '';
-					 }
-				 el.value = value;
-				 $(el).data('init', value);
+				 _setFormValue(el, value, disabled);
 			 }
 			)
 		},
 		autocomplete:function (id, url, callback) {
 			Adv.o.autocomplete[id] = $('#' + id).autocomplete({
 				autoFocus:true,
+				minLength:1,
+				delay:10,
 				source:function (request, response) {
-					var lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-						if (xhr === lastXhr)
+					var $this = Adv.o.autocomplete[id];
+					$this.data('default', null);
+					if ($this.data().autocomplete.previous == $this.val()) return false;
+					Adv.loader.off();
+					Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+						Adv.loader.on();
+						if (!$this.data('active'))
 							{
-								response(data);
+								if (data.length == 0)
+									{
+										data = [
+											{id:0, value:''}
+										]
+									}
+								callback(data[0]);
+								return false;
 							}
+						$this.data('default', data[0]);
+						response(data);
 					});
 				},
 				select:function (event, ui) {
+					Adv.o.autocomplete[id].data('default', null);
 					if (callback(ui.item, event, this) === false) return false;
-				}
-			}).css({'z-index':'2'}).bind('paste', function () {
-				 id.autocomplete('search', id.val())
-			 });
+				}, focus:function () {return false;}
+			}).blur(
+			 function () {$(this).data('active', false); }).bind('autocompleteclose',
+			 function () {
+				 var $this = $(this);
+				 if ($this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null)
+					 {
+						 $this.val($this.data()['default'].label);
+						 callback($this.data()['default'])
+					 }
+				 ;
+				 $this.data('default', null)
+			 })
+			 .focus(
+			 function () { $(this).data('active', true)}).css({'z-index':'2'})
 		}
-
-
 	}
 })()});
 Adv.extend({

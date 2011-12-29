@@ -16,8 +16,7 @@
 	{
 		public $aCommands = array();
 		public $triggers = array();
-		protected static $_instance = null;
-
+		protected static $i = null;
 		/***
 		 * @static
 		 * @return Ajax
@@ -25,12 +24,9 @@
 		 * Returns Ajax Instance
 		 */
 		public static function i() {
-			if (static::$_instance === null) {
-				static::$_instance = new static;
-			}
-			return static::$_instance;
+			(static::$i === null) and	static::$i = new static;
+			return static::$i;
 		}
-
 		/**
 		 *
 		 */
@@ -38,24 +34,20 @@
 			parent::__construct($_SESSION['Language']->encoding);
 		}
 		/**
-		*
-		* 	This function is used in ctrl routines to activate
-		* 	update of ajaxified html element selected by given name/id.
-		*
-
+		 *
+		 *	 This function is used in ctrl routines to activate
+		 *	 update of ajaxified html element selected by given name/id.
+		 *
 		 * @param $trigname
 		 */
 		function activate($trigname) {
-			if (Ajax::in_ajax()) {
-				$this->triggers[$trigname] = true;
-			}
+			(Ajax::in_ajax()) and $this->triggers[$trigname] = true;
 		}
 		/**
-		*
-		* 	Javascript clientside redirection.
-		* 	This is the last command added to reponse (if any).
-		*
-
+		 *
+		 *	 Javascript clientside redirection.
+		 *	 This is the last command added to reponse (if any).
+		 *
 		 * @param $url
 		 */
 		function redirect($url) {
@@ -65,20 +57,18 @@
 			}
 		}
 		/**
-		*
-		* Popup window (target=_blank)
-		*
-
+		 *
+		 * Popup window (target=_blank)
+		 *
 		 * @param $url
 		 */
 		function popup($url) {
 			$this->_addCommand(true, array('n' => 'pu'), $this->absolute_url($url));
 		}
 		/**
-		*
-		* Adds an executable Javascript code.
-		*
-
+		 *
+		 * Adds an executable Javascript code.
+		 *
 		 * @param $trigger
 		 * @param $sJS
 		 *
@@ -89,10 +79,9 @@
 			return $this;
 		}
 		/**
-		*
-		* Assign target attribute with data.
-		*
-
+		 *
+		 * Assign target attribute with data.
+		 *
 		 * @param $trigger
 		 * @param $sTarget
 		 * @param $sAttribute
@@ -102,14 +91,14 @@
 		 */
 		function addAssign($trigger, $sTarget, $sAttribute, $sData) {
 			$this->_addCommand($trigger, array(
-																				'n' => 'as', 't' => $sTarget, 'p' => $sAttribute), $sData);
+																				'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+																	 ), $sData);
 			return $this;
 		}
 		/**
-		*
-		* Updates input element or label with data.
-		*
-
+		 *
+		 * Updates input element or label with data.
+		 *
 		 * @param $trigger
 		 * @param $sTarget
 		 * @param $sData
@@ -118,14 +107,14 @@
 		 */
 		function addUpdate($trigger, $sTarget, $sData) {
 			$this->_addCommand($trigger, array(
-																				'n' => 'up', 't' => $sTarget), $sData);
+																				'n' => 'up', 't' => $sTarget
+																	 ), $sData);
 			return $this;
 		}
 		/**
-		*
-		* Set disable state of element.
-		*
-
+		 *
+		 * Set disable state of element.
+		 *
 		 * @param			$trigger
 		 * @param			$sTarget
 		 * @param bool $sData
@@ -134,14 +123,14 @@
 		 */
 		function addDisable($trigger, $sTarget, $sData = true) {
 			$this->_addCommand($trigger, array(
-																				'n' => 'di', 't' => $sTarget), $sData);
+																				'n' => 'di', 't' => $sTarget
+																	 ), $sData);
 			return $this;
 		}
 		/**
-		*
-		* Set state of element to enabled.
-		*
-
+		 *
+		 * Set state of element to enabled.
+		 *
 		 * @param			$trigger
 		 * @param			$sTarget
 		 * @param bool $sData
@@ -150,14 +139,14 @@
 		 */
 		function addEnable($trigger, $sTarget, $sData = true) {
 			$this->_addCommand($trigger, array(
-																				'n' => 'di', 't' => $sTarget), !$sData);
+																				'n' => 'di', 't' => $sTarget
+																	 ), !$sData);
 			return $this;
 		}
 		/**
-		*
-		* Set current focus.
-		*
-
+		 *
+		 * Set current focus.
+		 *
 		 * @param $trigger
 		 * @param $sTarget
 		 *
@@ -168,10 +157,9 @@
 			return $this;
 		}
 		/**
-		*
-		* Internal procedure adding command to response.
-		*
-
+		 *
+		 * Internal procedure adding command to response.
+		 *
 		 * @param $trigger
 		 * @param $aAttributes
 		 * @param $mData
@@ -184,7 +172,6 @@
 				$this->aCommands[] = $aAttributes;
 			}
 		}
-
 		/**
 		 * @return mixed
 		 */
@@ -199,7 +186,8 @@
 				if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
 					unset($this->aCommands[$idx]);
 					//			Errors::error('unset '.$com['t']);
-				} else {
+				}
+				else {
 					if ($com['n'] == 'up' && $com['t'] == '_page_body') {
 						$cmds = array($com);
 						foreach ($this->aCommands as $cmd) {
@@ -216,10 +204,7 @@
 			//		Errors::error('Activate:'.htmlentities(print_r($this->triggers, true)));
 			//		Errors::error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 			$GLOBALS['_RESULT'] = $this->aCommands;
-
-
 		}
-
 		/**
 		 * @static
 		 * @return bool
@@ -228,10 +213,9 @@
 			return static::i()->isActive();
 		}
 		/**
-		* Returns absolute path of relative $url. To be used in ajax calls
-		* for proper redirection from any referer page.
-		*
-
+		 * Returns absolute path of relative $url. To be used in ajax calls
+		 * for proper redirection from any referer page.
+		 *
 		 * @param $url
 		 *
 		 * @return string
