@@ -58,7 +58,7 @@
 			);
 			Errors::notice(_('New currency has been added'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 
 	function check_can_delete() {
@@ -107,7 +107,7 @@
 			GL_Currency::delete($selected_id);
 			Errors::notice(_('Selected currency has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 
 	function display_currencies() {
@@ -157,7 +157,7 @@
 		global $Mode;
 		start_table('tablestyle2');
 		if ($selected_id != '') {
-			if ($Mode == 'Edit') {
+			if ($Mode == MODE_EDIT) {
 				//editing an existing currency
 				$myrow = GL_Currency::get($selected_id);
 				$_POST['Abbreviation'] = $myrow["curr_abrev"];
@@ -183,13 +183,13 @@
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		handle_submit();
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		handle_delete();
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = '';
 		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
 		$_POST['CurrencyName'] = $_POST['country'] = '';

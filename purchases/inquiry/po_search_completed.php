@@ -191,7 +191,7 @@
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
 	DB_Pager::display($table);
-	Contacts_Supplier::addInfoDialog('.pagerclick');
+	Creditor::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
 	end_form();
 	Renderer::end_page();

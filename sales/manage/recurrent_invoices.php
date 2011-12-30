@@ -14,7 +14,7 @@
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Recurrent Invoices"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
@@ -44,19 +44,19 @@
 			}
 			DB::query($sql, "The recurrent invoice could not be updated or added");
 			Errors::notice($note);
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		$cancel_delete = 0;
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
 			DB::query($sql, "could not delete recurrent invoice");
 			Errors::notice(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST);
 	}
@@ -104,7 +104,7 @@
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing area
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get recurrent invoice");

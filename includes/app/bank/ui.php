@@ -50,7 +50,7 @@
 				//	workorders_list_row(_("Work Order:"), 'person_id', null);
 				//	break;
 				case PT_SUPPLIER :
-					Purch_Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
+					Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
 					break;
 				case PT_CUSTOMER :
 					Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
@@ -111,7 +111,7 @@
 			}
 			table_header($th);
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->gl_items as $line => $item) {
 				if ($id != $line) {
 					alt_table_row_color($k);
@@ -152,7 +152,7 @@
 
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			start_row();
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($Index != -1 && $Index == $id) {
 				$item = $order->gl_items[$Index];
 				$_POST['code_id'] = $item->code_id;
@@ -182,7 +182,7 @@
 					$acc = Sales_Branch::get_accounts($_POST['PersonDetailID']);
 					$_POST['code_id'] = $acc['receivables_account'];
 				} elseif ($_POST['PayType'] == PT_SUPPLIER) {
-					$acc = Purch_Creditor::get_accounts_name($_POST['person_id']);
+					$acc = Creditor::get_accounts_name($_POST['person_id']);
 					$_POST['code_id'] = $acc['payable_account'];
 				} //elseif ($_POST['PayType'] == PT_WORKORDER)
 				//	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');

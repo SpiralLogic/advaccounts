@@ -3,8 +3,7 @@
 	/**
 	 *
 	 */
-	class JS
-	{
+	class JS {
 		/**
 		 * @var array
 		 */
@@ -57,36 +56,7 @@
 			if (static::$_openWindow || !Config::get('ui_windows_popups')) {
 				return;
 			}
-			$js = <<<JS
-		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','div .openWindow,td .openWindow',
-			function(e) {
-				if (e.type=='click') {
-					Adv.openWindow(this.href, this.target,{$width},{$height});
-					return false;
-				}
-				if (e.type=='mouseenter') {
-
-				if (Adv.o.popupCurrent) window.clearTimeout(Adv.o.popupCurrent);
-				Adv.o.popupEl= this;
-				Adv.o.popupParent= $(this).parent();
-				Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow,750);
-				}if (e.type=='mouseleave') {
-window.clearTimeout(Adv.o.popupCurrent);
-}
-
-			});
-			Adv.popupWindow = function() {
-					if (Adv.o.order_details) Adv.o.order_details.remove();
-					var my="left center",at="right top";
-					if (Adv.o.popupParent.is('div')) {my="center center";at="center top";}
-								Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href+"&popup=1", width: {$width}, height: {$height}})
-									.css({position:'fixed', background:'white'})
-									.appendTo(Adv.o.wrapper)
-									.position({my:my,at:at, of:Adv.o.popupParent}).css({top:20})
-									.on('mouseleave',function() { $(this).remove();
-								});
-			}
-JS;
+			$js="Adv.hoverWindow.init($width,$height);";
 			static::onload($js);
 			static::$_openWindow = true;
 		}
@@ -100,13 +70,14 @@ JS;
 		 * @param array $options
 		 */
 		public static function autocomplete($id, $callback, $url = false, $options = array()) {
+			$o = array('focus' => false);
+			$o = array_merge($o, $options);
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[] = <<<JS
-Adv.Forms.autocomplete('$id','$url',$callback);
-JS;
-			if (isset($options['focus'])) {
+			self::$_onload[]
+			 =  "Adv.Forms.autocomplete('$id','$url',$callback);";
+			if ($o['focus']) {
 				self::setFocus("autocomplete.$id", true);
 			}
 		}
@@ -121,12 +92,14 @@ JS;
 		public static function gmap($selector, $address, $title) {
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			$js = <<<JS
+			$js
+			 = <<<JS
 
 				Adv.maps = { api_key: '$apikey'}
 JS;
 			JS::beforeload($js);
-			$js = <<<JS
+			$js
+			 = <<<JS
 var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -242,7 +215,8 @@ JS;
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 				}
 				echo $files;
-			} else {
+			}
+			else {
 				self::$_beforeload = array_merge(self::$_beforeload, self::$_onlive, self::$_onload);
 				self::$_onlive = self::$_onload = array();
 			}
@@ -275,23 +249,14 @@ JS;
 		 * @param $data
 		 */
 		public static function renderJSON($data) {
-			if (!isset($data['status']) && count(Errors::$messages) > 0) {
-				$data = (array)$data;
-				$message = array_pop(Errors::$messages);
-				$status['status'] = false;
-				$status['message'] = $message['message'];
-				$status['var'] = basename($message['file']) . $message['line'];
-				$status['process'] = '';
-				$data['status'] = $status;
-			} elseif (isset($data['status']) && count(Errors::$dberrors) > 0) {
-				$dberror = array_pop(Errors::$dberrors['message']);
-				$status['status'] = false;
-				$status['message'] = $dberror;
-				$data['status'] = $status;
+			$data = (array)$data;
+			if (isset($data['status']) && count(Errors::$dberrors) > 0) {
+				$data['status'] = Errors::JSONError();
+			} elseif (!isset($data['status']) && count(Errors::$messages) > 0) {
+				$data['status'] = Errors::JSONError();
 			}
-			ob_end_clean();
+				ob_end_clean();
 			echo	 json_encode($data);
-			JS::$outputted = true;
 			exit();
 		}
 
@@ -424,7 +389,8 @@ JS;
 				foreach ($js as $j) {
 					self::register($j, $var);
 				}
-			} else {
+			}
+			else {
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
@@ -440,7 +406,8 @@ JS;
 				foreach ($file as $f) {
 					self::registerFile($f, $var);
 				}
-			} else {
+			}
+			else {
 				$dir = dirname($file);
 				$file = basename($file);
 				isset($var[$dir]) or $var[$dir] = array();
@@ -459,7 +426,10 @@ JS;
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
-
+public static function redirect($url){
+	$data['status']=array('status'=>'redirect','message'=>$_SERVER['PHP_SELF']);
+	static::renderJSON($data);
+}
 		/***
 		 * @static
 		 *

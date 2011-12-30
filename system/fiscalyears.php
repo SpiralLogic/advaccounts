@@ -135,7 +135,7 @@
 			DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
 			Errors::notice(_('New fiscal year has been added'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 
 	function check_can_delete($selected_id) {
@@ -366,7 +366,7 @@
 			delete_this_fiscalyear($selected_id);
 			Errors::notice(_('Selected fiscal year has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 
 	function display_fiscalyears() {
@@ -425,7 +425,7 @@
 		start_form();
 		start_table('tablestyle2');
 		if ($selected_id != -1) {
-			if ($Mode == 'Edit') {
+			if ($Mode == MODE_EDIT) {
 				$myrow = DB_Company::get_fiscalyear($selected_id);
 				$_POST['from_date'] = Dates::sql2date($myrow["begin"]);
 				$_POST['to_date'] = Dates::sql2date($myrow["end"]);
@@ -446,14 +446,14 @@
 		end_form();
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		handle_submit();
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		global $selected_id;
 		handle_delete($selected_id);
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 	}
 	display_fiscalyears();

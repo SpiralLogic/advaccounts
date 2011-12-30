@@ -84,34 +84,6 @@
 	} else {
 		unset($selected_stock_item);
 	}
-	function trans_view($trans, $trans_no) {
-		return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
-	}
-
-	function batch_checkbox($row) {
-		$name = "Sel_" . $row['trans_no'];
-		return $row['Done'] ? '' :
-		 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
-			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
-	}
-
-	function edit_link($row) {
-		return $row["Outstanding"] == 0 ? '' :
-		 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
-	}
-
-	function prt_link($row) {
-		return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
-	}
-
-	function invoice_link($row) {
-		return $row["Outstanding"] == 0 ? '' :
-		 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
-	}
-
-	function check_overdue($row) {
-		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
-	}
 
 	$sql = "SELECT trans.trans_no,
 		debtor.name,
@@ -179,6 +151,34 @@
 	DB_Pager::display($table);
 	end_form();
 	Renderer::end_page();
+	function trans_view($trans, $trans_no) {
+			return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
+		}
+
+		function batch_checkbox($row) {
+			$name = "Sel_" . $row['trans_no'];
+			return $row['Done'] ? '' :
+			 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
+				. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
+		}
+
+		function edit_link($row) {
+			return $row["Outstanding"] == 0 ? '' :
+			 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+		}
+
+		function prt_link($row) {
+			return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
+		}
+
+		function invoice_link($row) {
+			return $row["Outstanding"] == 0 ? '' :
+			 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+		}
+
+		function check_overdue($row) {
+			return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
+		}
 
 ?>
 

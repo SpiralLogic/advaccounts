@@ -145,12 +145,11 @@ div#content {
 	z-index:  3;
 }
 
-#loader {
+#iframePopup {
 	position:   fixed;
 	text-align: center;
-	width:      90%;
-	height:     100%;
-	background: url("/themes/default/images/ajax-loader3.gif") no-repeat center center;
+
+	background: url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
 }
 
 #sidemenu {
@@ -196,12 +195,8 @@ div.banner a + a { border-top: 2px groove #999 }
 	vertical-align: middle
 }
 
-#title {
-	margin-bottom: 10px;
-	width:         100%;
-}
-
 .titletext {
+	margin-bottom: 10px;
 	font-weight:   bold;
 	font-size:     13px;
 	color:         #333;
@@ -209,7 +204,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	padding:       5px;
 }
 
-.titletext, .bottomBar, .footer {
+.bottomBar, .footer {
 	margin: 0 auto;
 }
 
@@ -252,7 +247,6 @@ div.banner a + a { border-top: 2px groove #999 }
 
 #wrapper, #results {
 	clear:      left;
-	width:      100%;
 	background: url(images/wrapbg.gif) repeat-x #fff;
 	border:     1px solid #8ab9f2;
 	padding:    8px 5px;
@@ -525,7 +519,15 @@ div.banner a + a { border-top: 2px groove #999 }
 	background: #fff url(images/wrapbg.gif) repeat-x;
 
 }
-
+.contacts #custsearch{  position: relative;
+	-webkit-transition-duration:        1s;
+	-webkit-transition-timing-function: linear;
+ -moz-transition:all 1s ease-in;
+ -o-transition:all 1s ease-in;
+}
+.contacts #custsearch.hide {
+		height:0;
+}
 .Inventory #_tabs2 {
 
 	background: #464646;
@@ -811,7 +813,7 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label {
+.label, tablestyle2 label{
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	padding:          4px;
@@ -1175,7 +1177,11 @@ body.lite {
 .inactive {
 	color: gray;
 }
-
+#msgbox {
+	width:80%;
+	margin:10px auto;
+	font-weight: bolder;
+}
 div.err_msg {
 	margin:           10px;
 	padding:          3px;
@@ -1189,8 +1195,8 @@ div.warn_msg, span.note_msg {
 	margin:           10px;
 	padding:          3px;
 	border:           1px solid #ff9900;
-	background-color: #ffff00;
-	color:            #ff5500;
+	background-color: #f0ef42;
+	color:            #8b0000;
 	text-align:       center;
 }
 

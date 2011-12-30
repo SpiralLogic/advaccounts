@@ -13,7 +13,7 @@
 	$page_security = 'SA_CUSTOMER';
 	//$page_security = 3;
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::start(_($help_context = "Customer Branches"), Input::request('popup'));
+	Page::start(_($help_context = "Customer Branches"), Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -28,9 +28,9 @@
 		$br = Sales_Branch::get($_GET['SelectedBranch']);
 		$_POST['customer_id'] = $br['debtor_no'];
 		$selected_id = $_POST['branch_code'] = $br['branch_code'];
-		$Mode = 'Edit';
+		$Mode = MODE_EDIT;
 	}
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		//first off validate inputs sensible
@@ -83,12 +83,12 @@
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The branch record could not be inserted or updated");
 			Errors::notice($note);
-			$Mode = 'RESET';
-			if (Input::request('popup')) {
+			$Mode = MODE_RESET;
+			if (Input::request('frame')) {
 				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
 			}
 		}
-	} elseif ($Mode == 'Delete') {
+	} elseif ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
@@ -108,9 +108,9 @@
 				Errors::notice(_('Selected customer branch has been deleted'));
 			}
 		} //end ifs to test if the branch can be deleted
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET' || get_post('_customer_id_update')) {
+	if ($Mode == MODE_RESET || get_post('_customer_id_update')) {
 		$selected_id = -1;
 		$cust_id = $_POST['customer_id'];
 		$inact = get_post('show_inactive');
@@ -159,7 +159,7 @@
 					'insert' => true, 'fun' => 'select_link'), array(
 					'insert' => true, 'fun' => 'edit_link'), array(
 					'insert' => true, 'fun' => 'del_link'));
-			if (!Input::request('popup')) {
+			if (!Input::request('frame')) {
 				$cols[' '] = 'skip';
 			}
 			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
@@ -176,7 +176,7 @@
 	table_section(1);
 	$_POST['email'] = "";
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing branch
 			$sql = "SELECT * FROM cust_branch
 			WHERE branch_code=" . DB::escape($_POST['branch_code']) . "
@@ -207,7 +207,7 @@
 			$_POST['group_no'] = $myrow["group_no"];
 			$_POST['notes'] = $myrow["notes"];
 		}
-	} elseif ($Mode != 'ADD_ITEM') { //end of if $SelectedBranch only do the else when a new record is being entered
+	} elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
 		if (!$num_branches) {
 			$sql = "SELECT name, address, email, debtor_ref
 			FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
@@ -232,7 +232,7 @@
 	}
 	hidden('selected_id', $selected_id);
 	hidden('branch_code');
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	table_section_title(_("Name and Contact"));
 	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
 	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);

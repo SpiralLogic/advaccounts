@@ -34,9 +34,9 @@ var balances = {
 			focus_amount(this);
 		};
 	}
-}
+};
 
 Behaviour.register(balances);
 $(function() {
 $("#summary").draggable();
-})
+});

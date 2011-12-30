@@ -103,7 +103,7 @@
 			AND id=" . DB::escape($selected_component);
 			DB::query($sql, "could not update bom");
 			Errors::notice(_('Selected component has been updated'));
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		} else {
 			/*Selected component is null cos no item selected on first time round
 									so must be adding a record must be Submitting new entries in the new
@@ -126,7 +126,7 @@
 					 . Validation::input_num('quantity') . ")";
 					DB::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
-					$Mode = 'RESET';
+					$Mode = MODE_RESET;
 				} else {
 					/*The component must already be on the bom */
 					Errors::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
@@ -139,13 +139,13 @@
 		}
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
 		DB::query($sql, "Could not delete this bom components");
 		Errors::notice(_("The component item has been deleted from this bom"));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST['quantity']);
 	}
@@ -161,7 +161,7 @@
 	end_form();
 	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
 		$selected_parent = $_POST['stock_id'];
-		if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+		if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 			on_submit($selected_parent, $selected_id);
 		}
 		start_form();
@@ -169,7 +169,7 @@
 		echo '<br>';
 		start_table('tablestyle2');
 		if ($selected_id != -1) {
-			if ($Mode == 'Edit') {
+			if ($Mode == MODE_EDIT) {
 				//editing a selected component from the link to the line item
 				$sql = "SELECT bom.*,stock_master.description FROM "
 				 . "bom,stock_master

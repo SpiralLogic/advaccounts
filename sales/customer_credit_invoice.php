@@ -98,6 +98,46 @@
 	elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
+
+	if (isset($_POST['ProcessCredit']) && can_process()) {
+		$new_credit = (Orders::session_get($_POST['order_id'])->trans_no == 0);
+		if (!isset($_POST['WriteOffGLCode'])) {
+			$_POST['WriteOffGLCode'] = 0;
+		}
+		copy_to_order();
+		if ($new_credit) {
+			Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
+		}
+		$credit = Orders::session_get($_POST['order_id']);
+		$credit_no = $credit->write($_POST['WriteOffGLCode']);
+		Orders::session_delete($credit);
+		if ($new_credit) {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+		}
+		else {
+			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
+		}
+	}
+	if (isset($_POST['Location'])) {
+		Orders::session_get($_POST['order_id'])->Location = $_POST['Location'];
+	}
+
+	if (isset($_POST['CancelChanges'])) {
+		$order = Orders::session_get($_POST['order_id']);
+		$type = $order->trans_type;
+		$order_no = key($order->trans_no);
+		Orders::session_delete($_POST['order_id']);
+		create_order($type, $order_no);
+	}
+	if (get_post('Update')) {
+		Ajax::i()->activate('credit_items');
+	}
+	display_credit_items();
+	display_credit_options();
+	submit_center_first('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
+	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+	submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
+	Renderer::end_page();
 	function check_quantities() {
 		$ok = 1;
 		foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $itm) {
@@ -146,28 +186,6 @@
 		Orders::session_set($order);
 	}
 
-	if (isset($_POST['ProcessCredit']) && can_process()) {
-		$new_credit = (Orders::session_get($_POST['order_id'])->trans_no == 0);
-		if (!isset($_POST['WriteOffGLCode'])) {
-			$_POST['WriteOffGLCode'] = 0;
-		}
-		copy_to_order();
-		if ($new_credit) {
-			Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
-		}
-		$credit = Orders::session_get($_POST['order_id']);
-		$credit_no = $credit->write($_POST['WriteOffGLCode']);
-		Orders::session_delete($credit);
-		if ($new_credit) {
-			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
-		}
-		else {
-			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
-		}
-	}
-	if (isset($_POST['Location'])) {
-		Orders::session_get($_POST['order_id'])->Location = $_POST['Location'];
-	}
 	function display_credit_items() {
 		start_form();
 		hidden('order_id');
@@ -274,22 +292,5 @@
 		echo "</table>";
 		Display::div_end();
 	}
-
-	if (isset($_POST['CancelChanges'])) {
-		$order = Orders::session_get($_POST['order_id']);
-		$type = $order->trans_type;
-		$order_no = key($order->trans_no);
-		Orders::session_delete($_POST['order_id']);
-		create_order($type, $order_no);
-	}
-	if (get_post('Update')) {
-		Ajax::i()->activate('credit_items');
-	}
-	display_credit_items();
-	display_credit_options();
-	submit_center_first('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
-	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-	submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
-	Renderer::end_page();
 
 ?>

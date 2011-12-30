@@ -16,7 +16,7 @@
 	/**
 	 *
 	 */
-	class advaccounting
+	class ADVAccounting
 	{
 		/**
 		 * @var
@@ -112,7 +112,7 @@
 		 * @static
 		 *
 		 */
-		public static function init() {
+		public static function i() {
 			require_once APPPATH . "main.php";
 			static::checkLogin();
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
@@ -122,7 +122,7 @@
 				}
 			}
 			if (!isset($_SESSION["App"])) {
-				Session::i()->App = new advaccounting();
+				Session::i()->App = new ADVAccounting();
 			}
 		}
 		/**
@@ -144,6 +144,7 @@
 					Session::regenerate();
 					Language::i()->set_language($_SESSION['Language']->code);
 				} elseif (!$currentUser->logged_in()) {
+
 					static::showLogin();
 				}
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
@@ -160,8 +161,10 @@
 				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST
 			);
 			require(DOCROOT . "access/login.php");
-			if (Ajax::in_ajax() || AJAX_REFERRER) {
+			if (Ajax::in_ajax() ) {
 				Ajax::i()->activate('_page_body');
+			} elseif(AJAX_REFERRER) {
+JS::redirect(BASE_URL);
 			}
 			exit();
 		}

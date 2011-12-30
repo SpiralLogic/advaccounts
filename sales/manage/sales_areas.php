@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Areas"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
@@ -30,10 +30,10 @@
 			}
 			DB::query($sql, "The sales area could not be updated or added");
 			Errors::notice($note);
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DB::escape($selected_id);
@@ -48,9 +48,9 @@
 			DB::query($sql, "could not delete sales area");
 			Errors::notice(_('Selected sales area has been deleted'));
 		} //end if Delete area
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -80,7 +80,7 @@
 	echo '<br>';
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing area
 			$sql = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get area");

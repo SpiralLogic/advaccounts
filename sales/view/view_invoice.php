@@ -99,7 +99,7 @@
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 class=right", "nowrap class=right");
 	end_table(1);
 	Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	$customer = new Debtor($myrow['debtor_no']);

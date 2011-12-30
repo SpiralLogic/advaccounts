@@ -77,7 +77,7 @@
 				$line = $tr->line_items[$failed_item];
 				Errors::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
 				echo "<br>";
-				$_POST['Edit' . $failed_item] = 1; // enter edit mode
+				$_POST[MODE_EDIT . $failed_item] = 1; // enter edit mode
 				$input_error = 1;
 			}
 		}
@@ -129,7 +129,7 @@
 		line_start_focus();
 	}
 
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($id);
 	}

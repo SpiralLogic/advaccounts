@@ -18,7 +18,8 @@
 		}
 		if ($multi) {
 			echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
-		} else {
+		}
+		else {
 			echo "<form method='post' action='$action' $name>\n";
 		}
 	}
@@ -68,7 +69,6 @@
 	}
 
 	function hidden($name, $value = null, $echo = true) {
-
 		if ($value === null) {
 			$value = get_post($name);
 		}
@@ -76,7 +76,8 @@
 		Ajax::i()->addUpdate($name, $name, $value);
 		if ($echo) {
 			echo $ret . "\n";
-		} else {
+		}
+		else {
 			return $ret;
 		}
 	}
@@ -97,7 +98,6 @@
 	 * @return string
 	 */
 	function select_box($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
-
 		$opts = array( // default options
 			'where' => array(), // additional constraints
 			'order' => $namefield, // list sort order
@@ -172,14 +172,16 @@
 			}
 			if (!$opts['async']) {
 				Ajax::i()->activate('_page_body');
-			} else {
+			}
+			else {
 				Ajax::i()->activate($name);
 			}
 		}
 		if (isset($_POST[$search_button])) {
 			if (!$opts['async']) {
 				Ajax::i()->activate('_page_body');
-			} else {
+			}
+			else {
 				Ajax::i()->activate($name);
 			}
 		}
@@ -191,17 +193,20 @@
 					$selected_id = array(); // ignore selected_id while search
 					if (!$opts['async']) {
 						Ajax::i()->activate('_page_body');
-					} else {
+					}
+					else {
 						Ajax::i()->activate($name);
 					}
 				}
 				if ($txt == '') {
 					if ($spec_option === false && $selected_id == array()) {
 						$limit = ' LIMIT 1';
-					} else {
+					}
+					else {
 						$opts['where'][] = $valfield . "='" . get_post($name, $spec_id) . "'";
 					}
-				} else {
+				}
+				else {
 					if ($txt != '*') {
 						$texts = explode(" ", trim($txt));
 						foreach ($texts as $text) {
@@ -210,7 +215,7 @@
 							}
 							$search_fields = $opts['search'];
 							foreach ($search_fields as $i => $s) {
-								$search_fields[$i] = $s . " LIKE '%{$text}%'";
+								$search_fields[$i] = $s . ' LIKE ' . DB::escape("%$text%");
 							}
 							$opts['where'][] = '(' . implode($search_fields, ' OR ') . ')';
 						}
@@ -226,7 +231,8 @@
 			if ($group_pos) {
 				$group = substr($sql, $group_pos);
 				$sql = substr($sql, 0, $group_pos) . $where . ' ' . $group;
-			} else {
+			}
+			else {
 				$sql .= $where;
 			}
 		}
@@ -264,7 +270,8 @@
 				// show selected option even if inactive
 				if ((!isset($opts['show_inactive']) || !$opts['show_inactive']) && isset($contact_row['inactive']) && @$contact_row['inactive'] && $sel === '') {
 					continue;
-				} else {
+				}
+				else {
 					$optclass = (isset($contact_row['inactive']) && $contact_row['inactive']) ? "class='inactive'" : '';
 				}
 				if ($first_id === false) {
@@ -302,11 +309,13 @@
 				$selector = "<input type='hidden' name='$name' value='" . $_POST[$name] . "'>";
 				if (isset($contact_row['long_description'])) {
 					$selector .= "<textarea name='{$name}_text' cols='{$opts['max']}' id='{$name}_text' $rel rows='2'>{$contact_row['long_description']}</textarea></td>\n";
-				} else {
+				}
+				else {
 					$selector .= "<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='" . $opts['editable'] . "' maxlength='" . $opts['max'] . "' $rel value='$edit'>\n";
 				}
 				JS::set_focus($name . '_text'); // prevent lost focus
-			} else {
+			}
+			else {
 				if (get_post($search_submit ? $search_submit : "_{$name}_button")) {
 					JS::set_focus($name);
 				}
@@ -338,7 +347,8 @@
 		JS::default_focus(($search_box && $by_id) ? $search_box : $name);
 		if ($search_box && $opts['cells']) {
 			$str = ($edit_entry != '' ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
-		} else {
+		}
+		else {
 			$str = $edit_entry . $selector;
 		}
 		return $str;
@@ -357,7 +367,6 @@
 	 * @return string
 	 */
 	function array_selector($name, $selected_id, $items, $options = null) {
-
 		$opts = array( // default options
 			'spec_option' => false, // option text or false
 			'spec_id' => 0, // option id
@@ -387,7 +396,8 @@
 		if (isset($_POST['_' . $name . '_update'])) {
 			if (!$opts['async']) {
 				Ajax::i()->activate('_page_body');
-			} else {
+			}
+			else {
 				Ajax::i()->activate($name);
 			}
 		}
@@ -461,7 +471,8 @@
 		$aspect = '';
 		if ($atype === null) {
 			$aspect = User::fallback() ? " aspect='fallback'" : " style='display:none;'";
-		} elseif (!is_bool($atype)) { // necessary: switch uses '=='
+		}
+		elseif (!is_bool($atype)) { // necessary: switch uses '=='
 			$aspect = "aspect='$atype' ";
 			$types = explode(' ', $atype);
 			foreach ($types as $type) {
@@ -491,7 +502,8 @@
 		 "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" . "</button>\n";
 		if ($echo) {
 			echo $submit_str;
-		} else {
+		}
+		else {
 			return $submit_str;
 		}
 	}
@@ -511,11 +523,12 @@
 		submit($name, $value, true, $title, $async, $icon);
 		echo "&nbsp;";
 	}
-	function submit_center_middle($name, $value, $title = false, $async = false, $icon = false) {
 
-			submit($name, $value, true, $title, $async, $icon);
-			echo "&nbsp;";
-		}
+	function submit_center_middle($name, $value, $title = false, $async = false, $icon = false) {
+		submit($name, $value, true, $title, $async, $icon);
+		echo "&nbsp;";
+	}
+
 	function submit_center_last($name, $value, $title = false, $async = false, $icon = false) {
 		echo "&nbsp;";
 		submit($name, $value, true, $title, $async, $icon);
@@ -525,7 +538,7 @@
 	/**
 	 * For following controls:
 	 * 'both' - use both Ctrl-Enter and Escape hotkeys
-	 * 'cancel' - apply to 'RESET' button
+	 * 'cancel' - apply to MODE_RESET button
 	 *
 	 * @param bool $add
 	 * @param bool $title
@@ -537,23 +550,26 @@
 		if ($async === 'both') {
 			$async = 'default';
 			$cancel = 'cancel';
-		} else {
+		}
+		else {
 			if ($async === 'default') {
 				$cancel = true;
-			} else {
+			}
+			else {
 				if ($async === 'cancel') {
 					$async = true;
 				}
 			}
 		}
 		if ($add) {
-			submit('ADD_ITEM', _("Add new"), true, $title, $async);
-		} else {
-			submit('UPDATE_ITEM', _("Update"), true, _('Submit changes'), $async);
+			submit(ADD_ITEM, _("Add new"), true, $title, $async);
+		}
+		else {
+			submit(UPDATE_ITEM, _("Update"), true, _('Submit changes'), $async);
 			if ($clone) {
-				submit('CLONE', _("Clone"), true, _('Edit new record with current data'), $async);
+				submit(MODE_CLONE, _("Clone"), true, _('Edit new record with current data'), $async);
 			}
-			submit('RESET', _("Cancel"), true, _('Cancel edition'), $cancel);
+			submit(MODE_RESET, _("Cancel"), true, _('Cancel edition'), $cancel);
 		}
 	}
 
@@ -589,7 +605,7 @@
 	}
 
 	function submit_return($name, $value, $title = false) {
-		if (Input::request('popup')) {
+		if (Input::request('frame')) {
 			submit($name, $value, true, $title, 'selector');
 		}
 	}
@@ -619,7 +635,8 @@
 																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
 																																													 ))) . "' value='1'" . ($title ? " title='$title'" :
 			 " title='$value'") . ($aspect ? " aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
-		} else {
+		}
+		else {
 			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
 																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
 																																													))) . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
@@ -653,7 +670,6 @@
 	}
 
 	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
-
 		$str = '';
 		if ($label) {
 			$str .= $label . " ";
@@ -692,7 +708,6 @@
 	}
 
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
-
 		JS::default_focus($name);
 		if ($label != null) {
 			label_cell($label, $labparams);
@@ -710,12 +725,12 @@
 	}
 
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null, $submit_on_change = false) {
-
 		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;
-			} else {
+			}
+			else {
 				$_POST[$name] = "";
 			}
 		}
@@ -801,11 +816,11 @@
 	 * @param array $options
 	 */
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
-
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001) {
 				$_POST[$name] = null;
-			} else {
+			}
+			else {
 				$dd = Dates::Today();
 				if ($inc_days != 0) {
 					$dd = Dates::add_days($dd, $inc_days);
@@ -829,8 +844,8 @@
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
-		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
-		 '') . " > $post_label";
+		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ?
+		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
 		Ajax::i()->addUpdate($name, $name, $_POST[$name]);
 	}
@@ -878,14 +893,14 @@
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
-
 		if (!isset($dec)) {
 			$dec = User::price_dec();
 		}
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;
-			} else {
+			}
+			else {
 				$_POST[$name] = 0;
 			}
 		}
@@ -900,7 +915,8 @@
 		}
 		if ($label != null) {
 			echo "<td>";
-		} else {
+		}
+		else {
 			echo "<td class='right'>";
 		}
 		echo "<input ";
@@ -909,7 +925,8 @@
 		}
 		if ($name == 'freight') {
 			echo "class='freight' ";
-		} else {
+		}
+		else {
 			echo "class='amount' ";
 		}
 		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
@@ -949,13 +966,14 @@
 		echo "</tr>\n";
 	}
 
-	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$leftfill=0) {
+	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0) {
 		echo "<tr>";
 		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
 		if ($leftfill != 0) {
 			echo "<td colspan=$leftfill></td>";
 		}
-		echo "</tr>\n";	}
+		echo "</tr>\n";
+	}
 
 	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
 		if (!isset($dec)) {
@@ -994,7 +1012,6 @@
 	}
 
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-
 		JS::default_focus($name);
 		if ($label != null) {
 			echo "<td $params>$label</td>\n";
@@ -1024,7 +1041,6 @@
 	 * @param $key
 	 */
 	function inactive_control_cell($id, $value, $table, $key) {
-
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
 		if (check_value('show_inactive')) {
@@ -1053,7 +1069,6 @@
 	 * @param $th
 	 */
 	function inactive_control_column(&$th) {
-
 		if (check_value('show_inactive')) {
 			Arr::insert($th, count($th) - 2, _("Inactive"));
 		}
@@ -1167,4 +1182,3 @@
 		return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 	}
 
-?>

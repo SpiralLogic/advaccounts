@@ -21,28 +21,28 @@
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Contacts_Supplier::search($_GET['term']);
+			$data = Creditor::search($_GET['term']);
 		} elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Contacts_Supplier($_POST);
+				$data['supplier'] = $supplier = new Creditor($_POST);
 				$supplier->save();
 				$data['status'] = $supplier->getStatus();
 			} elseif (!isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Contacts_Supplier($_POST['id']);
+				$data['supplier'] = $supplier = new Creditor($_POST['id']);
 			}
 		} else {
-			$data['supplier'] = new Contacts_Supplier(0);
+			$data['supplier'] = new Creditor(0);
 		}
 		 JS::renderJSON($data);
 	}
 	JS::footerFile("js/suppliers.js");
-	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
+	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
 	if (isset($_GET['id'])) {
-		$supplier = new Contacts_Supplier($_GET['id']);
+		$supplier = new Creditor($_GET['id']);
 	} elseif (isset($_POST['id']) && !empty($_POST['id'])) {
-		$supplier = new Contacts_Supplier($_POST['id']);
+		$supplier = new Creditor($_POST['id']);
 	} else {
-		$supplier = new Contacts_Supplier();
+		$supplier = new Creditor();
 	}
 	if (Validation::check(Validation::SUPPLIERS)) {
 		HTML::div('suppliersearch', array('style' => 'text-align:center; '));

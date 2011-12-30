@@ -1,9 +1,5 @@
 <?php
-	/*
-	 * Reports_Printer_Remote class.
-	 * All needed filters should be set for the printer in printercap file.
-	 * Based on PrintSendLPR class by Mick Sear, eCreate
-	 */
+
 	class Reports_Printer_Remote
 	{
 		var $host;

@@ -50,7 +50,7 @@ class Item_UI {
 																																										'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => true, 'description' => ''));
 	}
 
-	public static function types_row($label, $name, $selected_id = null, $enabled = true) {
+	public static function type_row($label, $name, $selected_id = null, $enabled = true) {
 		global $stock_types;
 		echo "<tr>";
 		if ($label != null) {
@@ -60,6 +60,11 @@ class Item_UI {
 		echo array_selector($name, $selected_id, $stock_types, array(
 																																'select_submit' => true, 'disabled' => !$enabled));
 		echo "</td></tr>\n";
+	}
+	public static function type($name, $selected_id = null, $enabled = true) {
+		global $stock_types;
+		return array_selector($name, $selected_id, $stock_types, array(
+																																'select_submit' => true, 'disabled' => !$enabled));
 	}
 
 	public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {

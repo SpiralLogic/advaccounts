@@ -97,7 +97,7 @@
 			Item_Code::update($selected_item, $kit_code, get_post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
 			Errors::notice(_("Component of selected kit has been updated."));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 		Ajax::i()->activate('_page_body');
 	}
 
@@ -106,10 +106,10 @@
 		Errors::notice(_('Kit common properties has been updated'));
 		Ajax::i()->activate('_page_body');
 	}
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		update_component($_POST['item_code'], $selected_id);
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// Before removing last component from selected kit check
 		// if selected kit is not included in any other kit.
 		//
@@ -129,10 +129,10 @@
 		} else {
 			Item_Code::delete($selected_id);
 			Errors::notice(_("The component item has been deleted from this bom"));
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST['quantity']);
 		unset($_POST['component']);
@@ -167,7 +167,7 @@
 		echo '<br>';
 		start_table('tablestyle2');
 	}
-	if ($Mode == 'Edit') {
+	if ($Mode == MODE_EDIT) {
 		$myrow = Item_Code::get($selected_id);
 		$_POST['component'] = $myrow["stock_id"];
 		$_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
@@ -177,7 +177,7 @@
 	//	if (get_post('description') == '')
 	//		$_POST['description'] = get_kit_name($_POST['component']);
 	if (get_post('item_code') == '') { // new kit/alias
-		if ($Mode != 'ADD_ITEM' && $Mode != 'UPDATE_ITEM') {
+		if ($Mode != ADD_ITEM && $Mode != UPDATE_ITEM) {
 			$_POST['description'] = $props['description'];
 			$_POST['category'] = $props['category_id'];
 		}

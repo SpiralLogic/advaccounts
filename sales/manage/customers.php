@@ -12,7 +12,7 @@
 				* ********************************************************************* */
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::start(_($help_context = "Customers"), Input::request('popup'));
+	Page::start(_($help_context = "Customers"), Input::request('frame'));
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = $_GET['debtor_no'];
 	}
@@ -219,8 +219,8 @@
 		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
 		Display::link_params_td("/sales/manage/customer_branches.php",
-			"<span class='bold'>" . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
-		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
+			"<span class='bold'>" . (Input::request('frame') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
+		 "debtor_no=" . $_POST['customer_id'] . (Input::request('frame') ? '&frame=1' : ''));
 		end_row();
 	}
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
@@ -230,12 +230,12 @@
 	if ($new_customer) {
 		submit_center('submit', _("Add New Customer"), true, '', 'default');
 	} else {
-		submit_center_first('submit', _("Update Customer"), _('Update customer data'), Input::request('popup') ? true : 'default');
+		submit_center_first('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? true : 'default');
 		submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
 	}
 	Display::div_end();
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	end_form();
 	Renderer::end_page();
 ?>

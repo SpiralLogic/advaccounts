@@ -12,13 +12,13 @@
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_code'])) {
 			if ($_POST['branch_code'] > 0) {
-				$data = new Debtor_Branch(array('branch_code' => $_POST['branch_code']));
+				$data['branch']= new Debtor_Branch(array('branch_code' => $_POST['branch_code']));
 			} elseif ($_POST['id'] > 0) {
-				$data = new Debtor_Branch(array('debtor_no' => $_POST['id']));
+				$data['branch'] = new Debtor_Branch(array('debtor_no' => $_POST['id']));
 			}
 		}
-		 JS::renderJSON($data, JSON_NUMERIC_CHECK);
+		 JS::renderJSON($data);
 	}
-	Page::start(_($help_context = "Items"), Input::request('popup'));
+	Page::start(_($help_context = "Items"), Input::request('frame'));
 	Debtor::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	Renderer::end_page();

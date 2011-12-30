@@ -28,6 +28,7 @@
 
 		public function header() {
 			Page::start(_($help_context = "Main Menu"), false, true);
+
 		}
 
 		public function footer() {
@@ -35,20 +36,19 @@
 		}
 
 		public static function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
-			if (Input::request('frame' || Input::get('popup'))) {
-				$is_index = $hide_back_link = true;
+			if (isset($_GET['frame'])) {
+				$is_index = $hide_back_link= $no_menu = true;
+				static::i()->has_header = false;
 			}
-			if (!$is_index && !$hide_back_link && function_exists('link_back')) {
+			if ((!$is_index || !$hide_back_link) && method_exists('Display','link_back')) {
 				Display::link_back(true, $no_menu);
 			}
 			Display::div_end(); // end of _page_body section
-			Page::footer($no_menu, $is_index, $hide_back_link);
+			Page::footer($no_menu, $is_index);
 		}
 
-		public function menu_header($title, $no_menu, $is_index) {
+		public function menu_header(  ) {
 			$sel_app = $_SESSION['sel_app'];
-			echo "<div id='content'>\n";
-			if (!$no_menu || AJAX_REFERRER) {
 				$applications = Session::i()->App->applications;
 				echo "<div id='top'>\n";
 				echo "<p>" . Config::get('db.' . User::get()->company,
@@ -79,15 +79,8 @@
 					}
 				}
 				echo "</ul></div></div>\n";
-			}
 			echo "<div id='wrapper'>\n";
-			if ($no_menu) {
-				$this->has_header = false;
-				echo "<br>";
-			} elseif ($title && !$is_index) {
-				echo "<div class='center'><table id='title'><tr><td class='width100 titletext'>$title</td><td class=right>" . (User::hints() ?
-				 "<span id='hints'></span>" : '') . "</td></tr></table></div>";
-			}
+
 		}
 
 		public function menu_footer($no_menu, $is_index) {

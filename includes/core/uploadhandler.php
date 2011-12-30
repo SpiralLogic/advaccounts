@@ -266,7 +266,7 @@
 				$file->size = $file_size;
 				$file->delete_url = $this->options['script_url']
 				 . '?file=' . rawurlencode($file->name);
-				$file->delete_type = 'DELETE';
+				$file->delete_type = 'MODE_DELETE';
 			} else {
 				$file->error = $error;
 			}

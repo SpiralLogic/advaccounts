@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Printer Locations"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$error = 0;
 		if (empty($_POST['name'])) {
 			$error = 1;
@@ -32,10 +32,10 @@
 			Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
 			Errors::notice($selected_id == -1 ? _('New printer definition has been created') :
 											_('Selected printer definition has been updated'));
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
 		$result = DB::query($sql, "check printers relations failed");
@@ -48,9 +48,9 @@
 			DB::query($sql, "could not delete printer definition");
 			Errors::notice(_('Selected printer definition has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		unset($_POST);
 	}
@@ -76,7 +76,7 @@
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Printer::get($selected_id);
 			$_POST['name'] = $myrow['name'];
 			$_POST['descr'] = $myrow['description'];

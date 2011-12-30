@@ -22,15 +22,15 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' && can_process()) {
+	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
 		Errors::notice(_('New credit status has been added'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'UPDATE_ITEM' && can_process()) {
+	if ($Mode == UPDATE_ITEM && can_process()) {
 		Errors::notice(_('Selected credit status has been updated'));
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM debtors_master
@@ -44,14 +44,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Sales_CreditStatus::delete($selected_id);
 			Errors::notice(_('Selected credit status has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -83,7 +83,7 @@
 	echo '<br>';
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing status code
 			$myrow = Sales_CreditStatus::get($selected_id);
 			$_POST['reason_description'] = $myrow["reason_description"];

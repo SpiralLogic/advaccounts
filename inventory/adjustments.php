@@ -74,7 +74,7 @@
 			if ($failed_item >= 0) {
 				$line = $adj->line_items[$failed_item];
 				Errors::error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") . " " . $line->stock_id . " - " . $line->description);
-				$_POST['Edit' . $failed_item] = 1; // enter edit mode
+				$_POST[MODE_EDIT . $failed_item] = 1; // enter edit mode
 				unset($_POST['Process']);
 				return false;
 			}
@@ -125,7 +125,7 @@
 		line_start_focus();
 	}
 
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($id);
 	}

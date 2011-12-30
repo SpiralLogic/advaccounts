@@ -34,21 +34,21 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' && can_process()) {
+	if ($Mode == ADD_ITEM && can_process()) {
 		Tax_Types::add(
 			$_POST['name'], $_POST['sales_gl_code'],
 			$_POST['purchasing_gl_code'], Validation::input_num('rate', 0)
 		);
 		Errors::notice(_('New tax type has been added'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'UPDATE_ITEM' && can_process()) {
+	if ($Mode == UPDATE_ITEM && can_process()) {
 		Tax_Types::update(
 			$selected_id, $_POST['name'],
 			$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate')
 		);
 		Errors::notice(_('Selected tax type has been updated'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
@@ -61,14 +61,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tax_Types::delete($selected_id);
 			Errors::notice(_('Selected tax type has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -101,7 +101,7 @@
 	end_table(1);
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing status code
 			$myrow = Tax_Types::get($selected_id);
 			$_POST['name'] = $myrow["name"];

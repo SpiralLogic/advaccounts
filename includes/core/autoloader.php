@@ -36,9 +36,9 @@
 		 * @static
 		 *
 		 */
-		static function init() {
+		static function i() {
 			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
-			spl_autoload_register('Autoloader::load');
+			spl_autoload_register('Autoloader::load',true,true);
 			static::$classes = Cache::get('autoload.classes');
 			if (!static::$classes) {
 				$core = include(DOCROOT . 'config' . DS . 'core.php');
@@ -164,7 +164,7 @@
 			if ($filepath) {
 				return static::includeFile($filepath, $classname);
 			}
-			throw new Autoload_Exception('Could not find and load $classname');
+			return false;
 		}
 
 		/**
@@ -215,4 +215,4 @@
 		}
 	}
 
-	Autoloader::init();
+	Autoloader::i();

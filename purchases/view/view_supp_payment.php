@@ -16,7 +16,7 @@
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-	$receipt = Purch_Trans::get($trans_no, ST_SUPPAYMENT);
+	$receipt = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
 	$company_currency = Bank_Currency::for_company();
 	$show_currencies = false;
 	$show_both_amounts = false;
@@ -57,9 +57,9 @@
 	$voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 	// now display the allocations for this payment
 	if (!$voided) {
-		GL_Allocation::display(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
+		GL_Allocation::from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 	}
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Renderer::end_page(true);

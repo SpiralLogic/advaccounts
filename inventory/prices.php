@@ -25,11 +25,7 @@
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Bank_Currency::for_company();
 	}
-	if (Input::request('frame')) {
-		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
-	} else {
-		start_form();
-	}
+	start_form(false, $_SERVER['REQUEST_URI']);
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
@@ -39,7 +35,7 @@
 		echo "<hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
 			Errors::error(_("The price entered must be numeric."));
@@ -50,21 +46,22 @@
 				//editing an existing price
 				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("This price has been updated.");
-			} else {
+			}
+			else {
 				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
 			Errors::notice($msg);
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked
 		Item_Price::delete($selected_id);
 		Errors::notice(_("The selected price has been deleted."));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 	}
 	if (list_updated('stock_id')) {
@@ -82,7 +79,8 @@
 	Display::div_start('price_table');
 	if (Input::request('frame')) {
 		start_table('tablestyle width90');
-	} else {
+	}
+	else {
 		start_table('tablestyle width30');
 	}
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
@@ -107,7 +105,7 @@
 	}
 	Display::div_end();
 	echo "<br>";
-	if ($Mode == 'Edit') {
+	if ($Mode == MODE_EDIT) {
 		$myrow = Item_Price::get($selected_id);
 		$_POST['curr_abrev'] = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
@@ -119,8 +117,7 @@
 	GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
 	Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
-			get_post('sales_type_id')));
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'), get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
@@ -133,6 +130,7 @@
 	end_form();
 	if (Input::request('frame')) {
 		Renderer::end_page(true, true, true);
-	} else {
+	}
+	else {
 		Renderer::end_page();
 	}

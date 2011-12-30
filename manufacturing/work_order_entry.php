@@ -163,7 +163,7 @@
 		return true;
 	}
 
-	if (isset($_POST['ADD_ITEM']) && can_process()) {
+	if (isset($_POST[ADD_ITEM]) && can_process()) {
 		if (!isset($_POST['cr_acc'])) {
 			$_POST['cr_acc'] = "";
 		}
@@ -176,7 +176,7 @@
 		Dates::new_doc_date($_POST['date_']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
-	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
+	if (isset($_POST[UPDATE_ITEM]) && can_process()) {
 		WO::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
 			$_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
@@ -302,14 +302,14 @@
 	end_table(1);
 	if (isset($selected_id)) {
 		echo "<table class=center><tr>";
-		submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
+		submit_cells(UPDATE_ITEM, _("Update"), '', _('Save changes to work order'), 'default');
 		if (get_post('released')) {
 			submit_cells('close', _("Close This Work Order"), '', '', true);
 		}
 		submit_cells('delete', _("Delete This Work Order"), '', '', true);
 		echo "</tr></table>";
 	} else {
-		submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
+		submit_center(ADD_ITEM, _("Add Workorder"), true, '', 'default');
 	}
 	end_form();
 	Renderer::end_page();

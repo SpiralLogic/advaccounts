@@ -27,18 +27,18 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' && can_process()) {
+	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('New point of sale has been added'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'UPDATE_ITEM' && can_process()) {
+	if ($Mode == UPDATE_ITEM && can_process()) {
 		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'),
 			check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
 		$res = DB::query($sql, "canot check pos usage");
 		if (DB::num_rows($res)) {
@@ -46,10 +46,10 @@
 		} else {
 			Sales_Point::delete($selected_id);
 			Errors::notice(_('Selected point of sale has been deleted'));
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -83,7 +83,7 @@
 	}
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Sales_Point::get($selected_id);
 			$_POST['name'] = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];

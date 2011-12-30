@@ -16,15 +16,13 @@
 																														ST_SALESORDER => 'SA_SALESORDER',
 																														ST_SALESQUOTE => 'SA_SALESQUOTE',
 																														ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-																														ST_SALESINVOICE => 'SA_SALESINVOICE'
-																											 ), array(
-																															 'NewOrder' => 'SA_SALESORDER',
-																															 'ModifySalesOrder' => 'SA_SALESORDER',
-																															 'NewQuotation' => 'SA_SALESQUOTE',
-																															 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-																															 'NewDelivery' => 'SA_SALESDELIVERY',
-																															 'NewInvoice' => 'SA_SALESINVOICE'
-																													));
+																														ST_SALESINVOICE => 'SA_SALESINVOICE'), array(
+																																																				'NewOrder' => 'SA_SALESORDER',
+																																																				'ModifySalesOrder' => 'SA_SALESORDER',
+																																																				'NewQuotation' => 'SA_SALESQUOTE',
+																																																				'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+																																																				'NewDelivery' => 'SA_SALESDELIVERY',
+																																																				'NewInvoice' => 'SA_SALESINVOICE'));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::get('customer_id', Input::NUMERIC)) {
@@ -127,7 +125,6 @@
 		$_SESSION['global_customer_id'] = $order->customer_id;
 		$order->write(1);
 		$trans_no = key($order->trans_no);
-
 		if (Errors::$fatal) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
@@ -163,10 +160,10 @@
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($type, $order_no);
 	}
-	if (isset($_POST['CancelOrder'])) {
+	if (isset($_POST['DeleteOrder'])) {
 		handle_cancel_order($order);
 	}
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
@@ -197,7 +194,7 @@
 		$idate = _("Invoice Date:");
 		$orderitems = _("Sales Invoice Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-		$cancelorder = _("Delete Invoice");
+		$deleteorder = _("Delete Invoice");
 		$corder = '';
 		$porder = _("Place Invoice");
 	}
@@ -205,7 +202,7 @@
 		$idate = _("Delivery Date:");
 		$orderitems = _("Delivery Note Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-		$cancelorder = _("Delete Delivery");
+		$deleteorder = _("Delete Delivery");
 		$corder = '';
 		$porder = _("Place Delivery");
 	}
@@ -213,7 +210,7 @@
 		$idate = _("Quotation Date:");
 		$orderitems = _("Sales Quotation Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-		$cancelorder = _("Delete Quotation");
+		$deleteorder = _("Delete Quotation");
 		$porder = _("Place Quotation");
 		$corder = _("Commit Quotations Changes");
 	}
@@ -221,14 +218,13 @@
 		$idate = _("Order Date:");
 		$orderitems = _("Sales Order Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Order");
-		$cancelorder = _("Delete Order");
+		$deleteorder = _("Delete Order");
 		$porder = _("Place Order");
 		$corder = _("Commit Order Changes");
 	}
 	start_form();
 	hidden('order_id', $_POST['order_id']);
-	$customer_error = (!$order) ? _("There is no order currently being edited") :
-	 $order->header($idate);
+	$customer_error = (!$order) ? _("There is no order currently being edited") : $order->header($idate);
 	if ($customer_error == "") {
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";
@@ -237,11 +233,18 @@
 		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-		submit_center_first('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+
+		if ($order->trans_no > 0 && User::get()->can_access('SA_VOIDTRANSACTION')) {
+			submit_js_confirm('DeleteOrder', _('You are about to void this Document.\nDo you want to continue?'));
+			submit_center_first('DeleteOrder', $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
+			submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		}else {
+			submit_center_first('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		}
+
+
 		if ($order->trans_no == 0) {
-			submit_center_last('ProcessOrder',$porder , _('Check entered data and save document'), 'default');
+			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 		}
 		else {
 			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
@@ -272,13 +275,14 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" :
-			 "ModifyQuotationNumber") . "=$order_no");
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
+			 "ModifyOrderNumber" : "ModifyQuotationNumber") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+			 ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
@@ -338,6 +342,7 @@
 		$order->deliver_to = $_POST['deliver_to'];
 		$order->delivery_address = $_POST['delivery_address'];
 		$order->name = $_POST['name'];
+		$order->customer_name = $_POST['customer'];
 		$order->phone = $_POST['phone'];
 		$order->Location = $_POST['Location'];
 		$order->ship_via = $_POST['ship_via'];
@@ -376,6 +381,7 @@
 		$_POST['deliver_to'] = $order->deliver_to;
 		$_POST['delivery_address'] = $order->delivery_address;
 		$_POST['name'] = $order->name;
+		$_POST['customer'] = $order->customer_name;
 		$_POST['phone'] = $order->phone;
 		$_POST['Location'] = $order->Location;
 		$_POST['ship_via'] = $order->ship_via;
@@ -563,8 +569,7 @@
 		if (!check_item_data($order)) {
 			return;
 		}
-		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,
-										 $_POST['description']);
+		$order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
 		$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 		line_start_focus();
 	}
@@ -573,6 +578,11 @@
 	 ** @param Sales_Order $order
 	 */
 	function handle_cancel_order($order) {
+		if (!User::get()->can_access(SS_SETUP)) {Errors::error('You don\'t have access to delete orders');
+		return;
+		}
+
+
 		if ($order->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
@@ -639,7 +649,6 @@
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = User::pos();
-
 				$pos = Sales_Point::get($doc->pos);
 				$doc->pos = -1;
 			}

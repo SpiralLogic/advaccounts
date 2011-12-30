@@ -121,7 +121,7 @@
 		line_start_focus();
 	}
 
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($id);
 	}

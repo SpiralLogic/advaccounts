@@ -133,6 +133,7 @@
 		set_last_sent($tmpl_no, $order->document_date);
 		return $invno;
 	}
+
 	function get_sales_group_name($group_no) {
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DB::query($sql, "could not get group");

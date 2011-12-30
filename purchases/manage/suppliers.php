@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
+	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -107,7 +107,7 @@
 		start_table('tablestyle_noborder pad3');
 		//	start_table('tablestyle_noborder');
 		start_row();
-		Purch_Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
+		Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		end_row();
 		end_table();
@@ -122,7 +122,7 @@
 	table_section(1);
 	if (!$new_supplier) {
 		//SupplierID exists - either passed when calling the form or from the form itself
-		$myrow = Purch_Creditor::get($_POST['supplier_id']);
+		$myrow = Creditor::get($_POST['supplier_id']);
 		$_POST['supp_name'] = $myrow["supp_name"];
 		$_POST['supp_ref'] = $myrow["supp_ref"];
 		$_POST['address'] = $myrow["address"];
@@ -212,14 +212,14 @@
 	end_outer_table(1);
 	Display::div_start('controls');
 	if (!$new_supplier) {
-		submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('popup') ? true : 'default');
+		submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
 	} else {
 		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 	}
 	Display::div_end();
-	hidden('popup', Input::request('popup'));
+	hidden('frame', Input::request('frame'));
 	end_form();
 	Renderer::end_page();
 

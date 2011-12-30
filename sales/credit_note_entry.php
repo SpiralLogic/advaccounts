@@ -52,7 +52,7 @@
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($type, $order_no);
 	}
-	$id = find_submit('Delete');
+	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
@@ -65,6 +65,21 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
+	if (isset($_POST['ProcessCredit']) && can_process()) {
+		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
+			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
+			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+			exit;
+		}
+		if (!isset($_POST['WriteOffGLCode'])) {
+			$_POST['WriteOffGLCode'] = 0;
+		}
+		$credit = copy_to_cn($order);
+		$credit_no = $credit->write($_POST['WriteOffGLCode']);
+		Dates::new_doc_date($credit->document_date);
+		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+	} /*end of process credit note */
+
 	start_form();
 	hidden('order_id', $_POST['order_id']);
 	$customer_error = Sales_Credit::header($order);
@@ -84,6 +99,7 @@
 	echo "</tr></table></div>";
 	end_form();
 	Renderer::end_page();
+
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
@@ -157,20 +173,6 @@
 		return ($input_error == 0);
 	}
 
-	if (isset($_POST['ProcessCredit']) && can_process()) {
-		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
-			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
-			exit;
-		}
-		if (!isset($_POST['WriteOffGLCode'])) {
-			$_POST['WriteOffGLCode'] = 0;
-		}
-		$credit = copy_to_cn($order);
-		$credit_no = $credit->write($_POST['WriteOffGLCode']);
-		Dates::new_doc_date($credit->document_date);
-		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
-	} /*end of process credit note */
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
 			Errors::error(_("The quantity must be greater than zero."));

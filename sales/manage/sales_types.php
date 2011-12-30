@@ -27,17 +27,17 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' && can_process()) {
+	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('New sales type has been added'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'UPDATE_ITEM' && can_process()) {
+	if ($Mode == UPDATE_ITEM && can_process()) {
 		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
 		$result = DB::query($sql, "The number of transactions using this Sales type record could not be retrieved");
@@ -55,9 +55,9 @@
 				Errors::notice(_('Selected sales type has been deleted'));
 			}
 		} //end if sales type used in debtor transactions or in customers set up
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -100,7 +100,7 @@
 	}
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = Sales_Type::get($selected_id);
 			$_POST['sales_type'] = $myrow["sales_type"];
 			$_POST['tax_included'] = $myrow["tax_included"];

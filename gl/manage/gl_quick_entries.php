@@ -69,7 +69,7 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
 			if ($selected_id != -1) {
 				GL_QuickEntry::update($selected_id, $_POST['description'], $_POST['type'], Validation::input_num('base_amount'), $_POST['base_desc']);
@@ -78,7 +78,7 @@
 				GL_QuickEntry::add($_POST['description'], $_POST['type'], Validation::input_num('base_amount'), $_POST['base_desc']);
 				Errors::notice(_('New quick entry has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
 	if ($Mode2 == 'ADD_ITEM2' || $Mode2 == 'UPDATE_ITEM2') {
@@ -92,11 +92,11 @@
 		}
 		$Mode2 = 'RESET2';
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (!GL_QuickEntry::has_lines($selected_id)) {
 			GL_QuickEntry::delete($selected_id);
 			Errors::notice(_('Selected quick entry has been deleted'));
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		} else {
 			Errors::error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
 			JS::set_focus('description');
@@ -107,7 +107,7 @@
 		Errors::notice(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['description'] = $_POST['type'] = '';
 		$_POST['base_desc'] = _('Base Amount');
@@ -137,7 +137,7 @@
 	start_form();
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		//if ($Mode == 'Edit')
+		//if ($Mode == MODE_EDIT)
 		//{
 		//editing an existing status code
 		$myrow = GL_QuickEntry::get($selected_id);

@@ -18,3 +18,5 @@ tmp/*
 .git*
 .gitignore
 .idea/vcs.xml
+settings.jar
+sor4.xml

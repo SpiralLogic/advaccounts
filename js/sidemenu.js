@@ -10,7 +10,7 @@
 	var $current, Searchboxtimeout, menuTimeout, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
 	 .attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickMenu = $('#quickCustomer');
 	(function () {
-		var $this = this, $wrapper = $("#_page_body"), $results = $wrapper.clone();
+		var $this = this, $wrapper = $("#wrapper"), $results = $wrapper.clone();
 		this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).draggable().show();
 		this.sidemenuHide = function () {
 			$this.menu.clearQueue().animate({right:'-10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});

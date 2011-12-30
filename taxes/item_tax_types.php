@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Tax Types"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
@@ -39,7 +39,7 @@
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('New item tax type has been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
 	function can_delete($selected_id) {
@@ -53,14 +53,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			delete($selected_id);
 			Errors::notice(_('Selected item tax type has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -92,7 +92,7 @@
 	end_table(1);
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			$myrow = get($selected_id);
 			unset($_POST); // clear exemption checkboxes
 			$_POST['name'] = $myrow["name"];

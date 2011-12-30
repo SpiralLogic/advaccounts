@@ -30,7 +30,7 @@
 		return true;
 	}
 
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (GL_Class::update($selected_id, $_POST['name'], $_POST['ctype'])) {
@@ -39,7 +39,7 @@
 			} else {
 				if (GL_Class::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('New account class has been added'));
-					$Mode = 'RESET';
+					$Mode = MODE_RESET;
 				}
 			}
 		}
@@ -60,14 +60,14 @@
 		return true;
 	}
 
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			GL_Class::delete($selected_id);
 			Errors::notice(_('Selected account class has been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
 	}
@@ -101,7 +101,7 @@
 	end_table(1);
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing status code
 			$myrow = GL_Class::get($selected_id);
 			$_POST['id'] = $myrow["cid"];

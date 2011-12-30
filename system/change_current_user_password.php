@@ -31,7 +31,7 @@
 		return true;
 	}
 
-	if (isset($_POST['UPDATE_ITEM'])) {
+	if (isset($_POST[UPDATE_ITEM])) {
 		if (can_process()) {
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Password cannot be changed in demo mode."));
@@ -66,7 +66,7 @@
 	password_row(_("Password:"), 'password', $_POST['password']);
 	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 	end_table(1);
-	submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
+	submit_center(UPDATE_ITEM, _('Change password'), true, '', 'default');
 	end_form();
 	Renderer::end_page();
 ?>

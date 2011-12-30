@@ -37,7 +37,7 @@
 	start_form();
 	start_table('tablestyle_noborder');
 	start_row();
-	Purch_Creditor::cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
+	Creditor::cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 	date_cells(_("to:"), 'OrdersToDate');
@@ -128,7 +128,7 @@
 	$table->set_marker('check_overdue', _("Marked orders have overdue items."));
 	$table->width = "80%";
 	DB_Pager::display($table);
-	Contacts_Supplier::addInfoDialog('.pagerclick');
+	Creditor::addInfoDialog('.pagerclick');
 	end_form();
 	Renderer::end_page();
 ?>

@@ -18,7 +18,7 @@
 	} elseif (isset($_POST["trans_no"])) {
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans = new Purch_Trans();
+	$supp_trans = new Creditor_Trans();
 	$supp_trans->is_invoice = true;
 	Purch_Invoice::get($trans_no, ST_SUPPINVOICE, $supp_trans);
 	$supplier_curr_code = Bank_Currency::for_creditor($supp_trans->supplier_id);
@@ -45,12 +45,12 @@
 	start_table('tablestyle width95');
 	label_row(_("Sub Total"), $display_sub_tot, "class=right", "nowrap class=right width=15%");
 	$tax_items = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
-	$tax_total = Purch_Trans::trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
+	$tax_total = Creditor_Trans::trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
 	$display_total = Num::format($supp_trans->ov_amount + $supp_trans->ov_gst, User::price_dec());
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 class=right", "nowrap class=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
-	if (Input::get('popup')) {
+	if (Input::get('frame')) {
 		return;
 	}
 	Renderer::end_page(true);

@@ -106,7 +106,7 @@
 			}
 			table_header($th);
 			$k = 0; //row colour counter
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			foreach ($order->line_items as $line_no => $stock_item) {
 				if ($id != $line_no) {
 					alt_table_row_color($k);
@@ -131,7 +131,7 @@
 		public static function item_controls($order, $line_no = -1) {
 
 			start_row();
-			$id = find_submit('Edit');
+			$id = find_submit(MODE_EDIT);
 			if ($line_no != -1 && $line_no == $id) {
 				$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 				$_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);

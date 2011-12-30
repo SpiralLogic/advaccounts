@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Persons"));
 	Page::simple_mode(true);
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		if (strlen($_POST['salesman_name']) == 0) {
@@ -56,10 +56,10 @@
 			} else {
 				Errors::notice(_('New sales person data have been added'));
 			}
-			$Mode = 'RESET';
+			$Mode = MODE_RESET;
 		}
 	}
-	if ($Mode == 'Delete') {
+	if ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE salesman=" . DB::escape($selected_id);
@@ -72,9 +72,9 @@
 			DB::query($sql, "The sales-person could not be deleted");
 			Errors::notice(_('Selected sales person data have been deleted'));
 		}
-		$Mode = 'RESET';
+		$Mode = MODE_RESET;
 	}
-	if ($Mode == 'RESET') {
+	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
 		unset($_POST);
@@ -110,7 +110,7 @@
 	echo '<br>';
 	$_POST['salesman_email'] = "";
 	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+		if ($Mode == MODE_EDIT) {
 			//editing an existing Sales-person
 			$sql = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get sales person");
@@ -124,7 +124,7 @@
 			$_POST['provision2'] = Num::percent_format($myrow["provision2"]);
 		}
 		hidden('selected_id', $selected_id);
-	} elseif ($Mode != 'ADD_ITEM') {
+	} elseif ($Mode != ADD_ITEM) {
 		$_POST['provision'] = Num::percent_format(0);
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
