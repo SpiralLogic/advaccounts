@@ -53,10 +53,13 @@
 			}
 			else {
 				Page::header($title, $no_menu, $is_index);
-			}
-			if (!$no_menu) {
+
+			if ($no_menu) {
 				Renderer::i()->has_header = false;
-					Renderer::i()->menu_header();
+
+			}else {
+				Renderer::i()->menu_header();
+			}
 			}
 			Errors::error_box();
 			if ($title && !$is_index && !isset($_GET['frame'])) {				Renderer::i()->has_header = false;
