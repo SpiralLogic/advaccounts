@@ -36,14 +36,15 @@
 		}
 
 		public static function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
-			if (Input::get('frame')) {
-				$is_index = $hide_back_link = true;
+			if (isset($_GET['frame'])) {
+				$is_index = $hide_back_link= $no_menu = true;
+				static::i()->has_header = false;
 			}
-			if (!$is_index && !$hide_back_link && method_exists('Display','link_back')) {
+			if ((!$is_index || !$hide_back_link) && method_exists('Display','link_back')) {
 				Display::link_back(true, $no_menu);
 			}
 			Display::div_end(); // end of _page_body section
-			Page::footer($no_menu, $is_index, $hide_back_link);
+			Page::footer($no_menu, $is_index);
 		}
 
 		public function menu_header(  ) {

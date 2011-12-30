@@ -44,7 +44,11 @@
 			}
 			end_outer_table(1);
 		}
-
+/***
+ * @static
+ * @param $title
+ * @param Item_Order $order
+ */
 
 		public static function items($title, &$order) {
 			Display::heading($title);
@@ -230,17 +234,17 @@
 						DB::begin();
 					}
 					if (!$new) {
-						static::void_journal_trans($trans_type, $trans_id, false);
+						static::void($trans_type, $trans_id, false);
 					}
 					foreach ($order->gl_items as $journal_item) {
 						// post to first found bank account using given gl acount code.
 						$is_bank_to = Bank_Account::is($journal_item->code_id);
-						static::add($trans_type, $trans_id, $date_, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, $journal_item->amount);
+						GL_Trans::add($trans_type, $trans_id, $date_, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, $journal_item->amount);
 						if ($is_bank_to) {
 							Bank_Trans::add($trans_type, $trans_id, $is_bank_to, $ref, $date_, $journal_item->amount, 0, "", Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
 						}
 						// store tax details if the gl account is a tax account
-						static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
+						GL_Trans::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
 					}
 					if ($new) {
 						DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
@@ -257,12 +261,12 @@
 						$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
 						foreach ($order->gl_items as $journal_item) {
 							$is_bank_to = Bank_Account::is($journal_item->code_id);
-							static::add($trans_type, $trans_id_reverse, $reversingDate, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, -$journal_item->amount);
+							GL_Trans::add($trans_type, $trans_id_reverse, $reversingDate, $journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, $journal_item->reference, -$journal_item->amount);
 							if ($is_bank_to) {
 								Bank_Trans::add($trans_type, $trans_id_reverse, $is_bank_to, $ref, $reversingDate, -$journal_item->amount, 0, "", Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
 							}
 							// store tax details if the gl account is a tax account
-							static::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
+							GL_Trans::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
 						}
 						DB_Comments::add($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 						Ref::save($trans_type,  $ref);

@@ -6,7 +6,8 @@
 	 * Time: 6:57 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Page {
+	class Page
+	{
 		static $css = array();
 
 		//
@@ -14,7 +15,6 @@
 		//
 		public static function simple_mode($numeric_id = true) {
 			global $Mode, $selected_id;
-
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
 			foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
@@ -47,36 +47,37 @@
 			if (empty($page_security)) {
 				$page_security = 'SA_OPEN';
 			}
-			if ($no_menu || AJAX_REFERRER || Ajax::in_ajax()) {
-				Renderer::i()->has_header = false;
-			} else {
-				Page::header($title, $no_menu, $is_index);
-				if (!$no_menu) {
-					Renderer::i()->menu_header();
-				}
-			}
+			if (AJAX_REFERRER || Ajax::in_ajax()) {
 
+				$no_menu = true;
+			}
+			else {
+				Page::header($title, $no_menu, $is_index);
+			}
+			if (!$no_menu) {
+				Renderer::i()->has_header = false;
+					Renderer::i()->menu_header();
+			}
 			Errors::error_box();
-			if ($title && !$is_index) {
-				echo "<div class='titletext'>$title" . (User::hints() ?
-				 "<span id='hints' class='floatright'></span>" : '') . "</div>";
+			if ($title && !$is_index && !isset($_GET['frame'])) {				Renderer::i()->has_header = false;
+
+				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
 			}
 			Security::check_page($page_security);
-
 			Display::div_start('_page_body'); // whole page content for ajax reloading
-
 		}
 
 		public static function header($title, $no_menu = false) {
 			// titles and screen header
-
 			User::theme();
 			JS::open_window(900, 500);
 			if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "") {
 				$sel_app = $_SESSION["App"]->selected_application;
-			} elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
+			}
+			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
 				$sel_app = $_SESSION["sel_app"];
-			} else {
+			}
+			else {
 				$sel_app = User::startup_tab();
 			}
 			$_SESSION["sel_app"] = $sel_app;
@@ -107,9 +108,11 @@
 			$clean = 0;
 			if ($context != null) {
 				$help_page_url = $context;
-			} elseif (isset($help_context)) {
+			}
+			elseif (isset($help_context)) {
 				$help_page_url = $help_context;
-			} else // main menu
+			}
+			else // main menu
 			{
 				$app = $_SESSION['sel_app'];
 				$help_page_url = Session::i()->App->applications[$app]->help_context;
@@ -122,12 +125,11 @@
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-				' ' => '',
-				'/' => '',
-				'&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+																																												 ' ' => '', '/' => '',
+																																												 '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
 		}
 
-		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false) {
+		public static function footer($no_menu = false, $is_index = false) {
 			$Validate = array();
 			$rend = Renderer::i();
 			$rend->menu_footer($no_menu, $is_index);
@@ -139,14 +141,15 @@
 				Sidemenu::render();
 			}
 			Messages::show();
-			if (User::get()->username == 'mike' && rand(0, 50) == 0) JS::onload('window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);');
+			if (User::get()->username == 'mike' && rand(0, 50) == 0) {
+				JS::onload('window.setTimeout(function(){\$.getScript("http://www.cornify.com/js/cornify.js",function(){for(var i=0;i<100;i++){cornify_add();}})},10000);');
+			}
 			JS::render();
 			if (AJAX_REFERRER) {
 				return;
 			}
 			echo "</div></body>";
 			JS::get_websales();
-
 			echo	 "</html>\n";
 		}
 
