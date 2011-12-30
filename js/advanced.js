@@ -133,7 +133,7 @@ Adv.extend({
 								 my = "center center";
 								 at = "center top";
 							 }
-							 Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href, width:30, height:30, onload:'Adv.o.order_details.show().animate({width:' + Adv.hoverWindow.width + ', height:' + Adv.hoverWindow.height + '},100)'})
+							 Adv.o.order_details = $("<iframe>", {src:Adv.o.popupEl.href, width:Adv.hoverWindow.width, height:Adv.hoverWindow.height, onload:'Adv.o.order_details.show()'})
 								.css({background:'white'}).hide();
 							 $('<div>', {id:'iframePopup', width:Adv.hoverWindow.width, height:Adv.hoverWindow.height}).html(Adv.o.order_details)
 								.position({my:my, at:at, of:Adv.o.popupParent}).css('top', 20)
