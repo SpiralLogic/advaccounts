@@ -16,7 +16,8 @@
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Work Orders"));
-	} else {
+	}
+	else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}
@@ -24,8 +25,8 @@
 	//
 	if (get_post('SearchOrders')) {
 		Ajax::i()->activate('orders_tbl');
-	} elseif (get_post('_OrderNumber_changed'))
-	{
+	}
+	elseif (get_post('_OrderNumber_changed')) {
 		$disable = get_post('OrderNumber') !== '';
 		Ajax::i()->addDisable(true, 'StockLocation', $disable);
 		Ajax::i()->addDisable(true, 'OverdueOnly', $disable);
@@ -33,8 +34,8 @@
 		Ajax::i()->addDisable(true, 'SelectedStockItem', $disable);
 		if ($disable) {
 			JS::set_focus('OrderNumber');
-		} else
-		{
+		}
+		else {
 			JS::set_focus('StockLocation');
 		}
 		Ajax::i()->activate('orders_tbl');
@@ -56,8 +57,7 @@
 	end_row();
 	end_table();
 	function check_overdue($row) {
-		return (!$row["closed"]
-		 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
+		return (!$row["closed"] && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
 	}
 
 	function view_link($dummy, $order_no) {
@@ -74,40 +74,16 @@
 	}
 
 	function edit_link($row) {
-		return $row['closed']
-		 ? '<i>' . _('Closed') . '</i>'
-		 :
-		 DB_Pager::link(
-			 _("Edit"),
-			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
-		 );
+		return $row['closed'] ? '<i>' . _('Closed') . '</i>' : DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 	}
 
 	function release_link($row) {
-		return $row["closed"]
-		 ? ''
-		 :
-		 ($row["released"] == 0
-			?
-			DB_Pager::link(
-				_('Release'),
-			 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
-			)
-			:
-			DB_Pager::link(
-				_('Issue'),
-			 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
-			));
+		return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
+		 DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
 	}
 
 	function produce_link($row) {
-		return $row["closed"] || !$row["released"]
-		 ? ''
-		 :
-		 DB_Pager::link(
-			 _('Produce'),
-			"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
-		 );
+		return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
 	}
 
 	function costs_link($row) {
@@ -117,13 +93,7 @@
 													 "/gl/gl_bank.php?NewPayment=1&PayType="
 													 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
 										 */
-		return $row["closed"] || !$row["released"]
-		 ? ''
-		 :
-		 DB_Pager::link(
-			 _('Costs'),
-			"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
-		 );
+		return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
 	}
 
 	function view_gl_link($row) {
@@ -137,8 +107,7 @@
 		return Num::format($amount, $row['decimals']);
 	}
 
-	$sql
-	 = "SELECT
+	$sql = "SELECT
 	workorder.id,
 	workorder.wo_ref,
 	workorder.type,
@@ -153,10 +122,7 @@
 	workorder.released,
 	workorder.stock_id,
 	unit.decimals
-	FROM workorders as workorder,"
-	 . "stock_master as item,"
-	 . "item_units as unit,"
-	 . "locations as location
+	FROM workorders as workorder," . "stock_master as item," . "item_units as unit," . "locations as location
 	WHERE workorder.stock_id=item.stock_id 
 		AND workorder.loc_code=location.loc_code
 		AND item.units=unit.abbr";
@@ -177,43 +143,23 @@
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}
 	$cols = array(
-		_("#") => array('fun' => 'view_link'),
-		_("Reference"), // viewlink 2 ?
-		_("Type") => array('fun' => 'wo_type_name'),
-		_("Location"),
-		_("Item") => array('fun' => 'view_stock'),
-		_("Required") => array(
-			'fun' => 'dec_amount',
-			'align' => 'right'
-		),
-		_("Manufactured") => array(
-			'fun' => 'dec_amount',
-			'align' => 'right'
-		),
-		_("Date") => 'date',
-		_("Required By") => array(
-			'type' => 'date',
-			'ord' => ''
-		),
-		array(
-			'insert' => true,
-			'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'release_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'produce_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'costs_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'view_gl_link'
+		_("#") => array('fun' => 'view_link'), _("Reference"), // viewlink 2 ?
+		_("Type") => array('fun' => 'wo_type_name'), _("Location"), _("Item") => array('fun' => 'view_stock'), _("Required") => array(
+			'fun' => 'dec_amount', 'align' => 'right'
+		), _("Manufactured") => array(
+			'fun' => 'dec_amount', 'align' => 'right'
+		), _("Date") => 'date', _("Required By") => array(
+			'type' => 'date', 'ord' => ''
+		), array(
+			'insert' => true, 'fun' => 'edit_link'
+		), array(
+			'insert' => true, 'fun' => 'release_link'
+		), array(
+			'insert' => true, 'fun' => 'produce_link'
+		), array(
+			'insert' => true, 'fun' => 'costs_link'
+		), array(
+			'insert' => true, 'fun' => 'view_gl_link'
 		)
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
@@ -221,5 +167,5 @@
 	$table->width = "90%";
 	DB_Pager::display($table);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

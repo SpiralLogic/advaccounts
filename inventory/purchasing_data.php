@@ -12,8 +12,7 @@
 	$page_security = 'SA_PURCHASEPRICING';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
-	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
-		STOCK_PURCHASED);
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -26,31 +25,25 @@
 			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
-		elseif (!Validation::is_num('price', 0))
-		{
+		elseif (!Validation::is_num('price', 0)) {
 			$input_error = 1;
 			Errors::error(_("The price entered was not numeric."));
 			JS::set_focus('price');
 		}
-		elseif (!Validation::is_num('conversion_factor'))
-		{
+		elseif (!Validation::is_num('conversion_factor')) {
 			$input_error = 1;
 			Errors::error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 			JS::set_focus('conversion_factor');
 		}
 		if ($input_error == 0) {
 			if ($Mode == ADD_ITEM) {
-				$sql
-				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+				$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
  			conversion_factor, supplier_description) VALUES (";
-				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", "
-				 . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
-				 . Validation::input_num('conversion_factor') . ", "
-				 . DB::escape($_POST['supplier_description']) . ")";
+				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
 				Errors::notice(_("This supplier purchasing data has been added."));
-			} else
-			{
+			}
+			else {
 				$sql = "UPDATE purch_data SET price=" . Validation::input_num('price', 0) . ",
 				suppliers_uom=" . DB::escape($_POST['suppliers_uom']) . ",
 				conversion_factor=" . Validation::input_num('conversion_factor') . ",
@@ -85,7 +78,8 @@
 	}
 	if (Input::request('frame')) {
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
-	} else {
+	}
+	else {
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
@@ -101,9 +95,9 @@
 	if ($mb_flag == -1) {
 		Errors::error(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
-	} else {
-		$sql = "SELECT purch_data.*,suppliers.supp_name,"
-		 . "suppliers.curr_code
+	}
+	else {
+		$sql = "SELECT purch_data.*,suppliers.supp_name," . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($_POST['stock_id']);
@@ -111,20 +105,20 @@
 		Display::div_start('price_table');
 		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("There is no supplier prices set up for the product selected"));
-		} else {
+		}
+		else {
 			if (Input::request('frame')) {
 				start_table('tablestyle width90');
-			} else {
+			}
+			else {
 				start_table('tablestyle width65');
 			}
 			$th = array(
-				_("Updated"), _("Supplier"), _("Price"), _("Currency"),
-				_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
+				_("Updated"), _("Supplier"), _("Price"), _("Currency"), _("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
 			);
 			table_header($th);
 			$k = $j = 0; //row colour counter
-			while ($myrow = DB::fetch($result))
-			{
+			while ($myrow = DB::fetch($result)) {
 				alt_table_row_color($k);
 				label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
 				label_cell($myrow["supp_name"]);
@@ -148,8 +142,7 @@
 	}
 	$dec2 = 6;
 	if ($Mode == MODE_EDIT) {
-		$sql
-		 = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
+		$sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
@@ -167,7 +160,8 @@
 	if ($Mode == MODE_EDIT) {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
-	} else {
+	}
+	else {
 		Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
@@ -176,16 +170,14 @@
 	if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
 		$_POST['conversion_factor'] = Num::exrate_format(1);
 	}
-	amount_row(
-		_("Conversion Factor (to our UOM):"), 'conversion_factor',
-		Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec()
-	);
+	amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec());
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	if (Input::request('frame')) {
-		Renderer::end_page(true, true, true);
-	} else {
-		Renderer::end_page();
+		Page::end(true, true, true);
+	}
+	else {
+		Page::end();
 	}

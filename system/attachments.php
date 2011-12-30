@@ -13,7 +13,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (isset($_GET['vw'])) {
 		$view_id = $_GET['vw'];
-	} else {
+	}
+	else {
 		$view_id = find_submit('view');
 	}
 	if ($view_id != -1) {
@@ -21,13 +22,15 @@
 		if ($row['filename'] != "") {
 			if (Ajax::in_ajax()) {
 				Ajax::i()->popup($_SERVER['PHP_SELF'] . '?vw=' . $view_id);
-			} else {
+			}
+			else {
 				$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';
 				header("Content-type: " . $type);
 				header('Content-Length: ' . $row['filesize']);
 				if ($type == 'application/octet-stream') {
 					header('Content-Disposition: attachment; filename=' . $row['filename']);
-				} else {
+				}
+				else {
 					header("Content-Disposition: inline");
 				}
 				echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
@@ -37,7 +40,8 @@
 	}
 	if (isset($_GET['dl'])) {
 		$download_id = $_GET['dl'];
-	} else {
+	}
+	else {
 		$download_id = find_submit('download');
 	}
 	if ($download_id != -1) {
@@ -45,7 +49,8 @@
 		if ($row['filename'] != "") {
 			if (Ajax::in_ajax()) {
 				Ajax::i()->redirect($_SERVER['PHP_SELF'] . '?dl=' . $download_id);
-			} else {
+			}
+			else {
 				$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';
 				header("Content-type: " . $type);
 				header('Content-Length: ' . $row['filesize']);
@@ -86,23 +91,20 @@
 			$filename = $_FILES['filename']['name'];
 			$filesize = $_FILES['filename']['size'];
 			$filetype = $_FILES['filename']['type'];
-		} else {
+		}
+		else {
 			$unique_name = $filename = $filetype = "";
 			$filesize = 0;
 		}
 		$date = Dates::date2sql(Dates::Today());
 		if ($Mode == ADD_ITEM) {
-			$sql
-			 = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (" . DB::escape($_POST['filterType']) . ","
-			 . DB::escape($_POST['trans_no']) . "," . DB::escape($_POST['description']) . ", "
-			 . DB::escape($filename) . ", " . DB::escape($unique_name) . ", " . DB::escape($filesize)
-			 . ", " . DB::escape($filetype) . ", '$date')";
+			$sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
+			filesize, filetype, tran_date) VALUES (" . DB::escape($_POST['filterType']) . "," . DB::escape($_POST['trans_no']) . "," . DB::escape($_POST['description']) . ", " . DB::escape($filename) . ", " . DB::escape($unique_name) . ", " . DB::escape($filesize) . ", " . DB::escape($filetype) . ", '$date')";
 			DB::query($sql, "Attachment could not be inserted");
 			Errors::notice(_("Attachment has been inserted."));
-		} else {
-			$sql
-			 = "UPDATE attachments SET
+		}
+		else {
+			$sql = "UPDATE attachments SET
 			type_no=" . DB::escape($_POST['filterType']) . ",
 			trans_no=" . DB::escape($_POST['trans_no']) . ",
 			description=" . DB::escape($_POST['description']) . ", ";
@@ -143,8 +145,7 @@
 	}
 
 	function get_attached_documents($type) {
-		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type)
-		 . " ORDER BY trans_no";
+		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type) . " ORDER BY trans_no";
 		return DB::query($sql, "Could not retrieve attachments");
 	}
 
@@ -162,8 +163,7 @@
 		start_table('tablestyle');
 		table_header($th);
 		$k = 0;
-		while ($row = DB::fetch($rows))
-		{
+		while ($row = DB::fetch($rows)) {
 			alt_table_row_color($k);
 			label_cell(GL_UI::trans_view($type, $row['trans_no']));
 			label_cell($row['description']);
@@ -199,7 +199,8 @@
 			label_row(_("Transaction #"), $row['trans_no']);
 		}
 		hidden('selected_id', $selected_id);
-	} else {
+	}
+	else {
 		text_row_ex(_("Transaction #") . ':', 'trans_no', 10);
 	}
 	text_row_ex(_("Description") . ':', 'description', 40);
@@ -210,6 +211,6 @@
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

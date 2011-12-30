@@ -98,7 +98,6 @@
 	elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
-
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		$new_credit = (Orders::session_get($_POST['order_id'])->trans_no == 0);
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -121,7 +120,6 @@
 	if (isset($_POST['Location'])) {
 		Orders::session_get($_POST['order_id'])->Location = $_POST['Location'];
 	}
-
 	if (isset($_POST['CancelChanges'])) {
 		$order = Orders::session_get($_POST['order_id']);
 		$type = $order->trans_type;
@@ -137,7 +135,7 @@
 	submit_center_first('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
 	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
 	submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
-	Renderer::end_page();
+	Page::end();
 	function check_quantities() {
 		$ok = 1;
 		foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $itm) {
@@ -228,8 +226,8 @@
 		Display::div_start('credit_items');
 		start_table('tablestyle width90');
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"),
-			_("Discount %"), _("Total"));
+			_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"), _("Discount %"), _("Total")
+		);
 		table_header($th);
 		$k = 0; //row colour counter
 		foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $line) {

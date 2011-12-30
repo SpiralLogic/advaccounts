@@ -30,8 +30,7 @@
 		}
 		if ($error != 1) {
 			Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
-			Errors::notice($selected_id == -1 ? _('New printer definition has been created') :
-											_('Selected printer definition has been updated'));
+			Errors::notice($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
 			$Mode = MODE_RESET;
 		}
 	}
@@ -104,6 +103,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

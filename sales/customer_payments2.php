@@ -36,8 +36,7 @@
 		$payment_no = $_GET['AddedID'];
 		Errors::notice(_("The customer payment has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
-		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no,
-			_("&View the GL Journal Entries for this Customer Payment")));
+		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 		//	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 		Display::link_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 		Page::footer_exit();
@@ -65,18 +64,16 @@
 		$comp_currency = Bank_Currency::for_company();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
-		} else {
+		}
+		else {
 			$rate = Validation::input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$payment_no = write_customer_payment2(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'],
-			$_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate,
-			Validation::input_num('charge'));
+		$payment_no = write_customer_payment2(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 	}
-
 	start_form();
 	start_outer_table('tablestyle2 width60 pad5');
 	table_section(1);
@@ -87,7 +84,8 @@
 	}
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['customer_id'])) {
 		Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	} else {
+	}
+	else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
@@ -95,7 +93,8 @@
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
-	} else {
+	}
+	else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
@@ -129,8 +128,7 @@
 	}
 	Display::br();
 	end_form();
-	Renderer::end_page();
-
+	Page::end();
 	function can_process() {
 		if (!get_post('customer_id')) {
 			Errors::error(_("There is no customer selected."));
@@ -146,7 +144,8 @@
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			JS::set_focus('DateBanked');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DateBanked');
 			return false;
@@ -199,7 +198,8 @@
 		$_SESSION['alloc']->amount = Validation::input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
 			return Gl_Allocation::check();
-		} else {
+		}
+		else {
 			return true;
 		}
 	}

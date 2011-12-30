@@ -26,25 +26,19 @@
 			Errors::error(_("The location code must be five characters or less long (including converted special chars)."));
 			JS::set_focus('loc_code');
 		}
-		elseif (strlen($_POST['location_name']) == 0)
-		{
+		elseif (strlen($_POST['location_name']) == 0) {
 			$input_error = 1;
 			Errors::error(_("The location name must be entered."));
 			JS::set_focus('location_name');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				Inv_Location::update(
-					$selected_id, $_POST['location_name'], $_POST['delivery_address'],
-					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
-				);
+				Inv_Location::update($selected_id, $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
 				Errors::notice(_('Selected location has been updated'));
-			} else {
+			}
+			else {
 				/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
-				Inv_Location::add(
-					$_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'],
-					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
-				);
+				Inv_Location::add($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
 				Errors::notice(_('New location has been added'));
 			}
 			$Mode = MODE_RESET;
@@ -135,8 +129,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["loc_code"]);
 		label_cell($myrow["location_name"]);
@@ -170,7 +163,8 @@
 		hidden("selected_id", $selected_id);
 		hidden("loc_code");
 		label_row(_("Location Code:"), $_POST['loc_code']);
-	} else { //end of if $selected_id only do the else when a new record is being entered
+	}
+	else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("Location Code:"), 'loc_code', null, 5, 5);
 	}
 	text_row_ex(_("Location Name:"), 'location_name', 50, 50);
@@ -183,6 +177,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -34,8 +34,7 @@
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
-	$sql
-	 = "SELECT bank_trans.* FROM bank_trans
+	$sql = "SELECT bank_trans.* FROM bank_trans
 	WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
@@ -46,12 +45,10 @@
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	start_table('tablestyle');
 	$th = array(
-		_("Type"), _("#"), _("Reference"), _("Date"),
-		_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
+		_("Type"), _("#"), _("Reference"), _("Date"), _("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
 	);
 	table_header($th);
-	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
-	 . DB::escape($_POST['bank_account']) . "
+	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
 	$before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
 	start_row("class='inquirybg'");
@@ -65,8 +62,7 @@
 	$running_total = $bfw;
 	$j = 1;
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		$running_total += $myrow["amount"];
 		$trandate = Dates::sql2date($myrow["trans_date"]);
@@ -94,6 +90,6 @@
 	end_row();
 	end_table(2);
 	Display::div_end();
-	Renderer::end_page();
+	Page::end();
 
 ?>

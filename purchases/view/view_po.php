@@ -23,7 +23,8 @@
 	Display::heading(_("Line Details"));
 	start_table('tablestyle width100');
 	$th = array(
-		_("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"), _("Received"), _("Invoiced"));
+		_("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"), _("Received"), _("Invoiced")
+	);
 	table_header($th);
 	$total = $k = 0;
 	$overdue_items = false;
@@ -99,6 +100,6 @@
 	}
 	Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
 	Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

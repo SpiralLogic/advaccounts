@@ -22,7 +22,8 @@
 	$myrow = WO::get($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		WO_Cost::display($woid, true);
-	} else {
+	}
+	else {
 		WO_Quick::display($woid, true);
 	}
 	echo "<div class='center'>";
@@ -31,7 +32,8 @@
 	if ($myrow["released"] == false) {
 		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		WO::display_bom($myrow["stock_id"]);
-	} else {
+	}
+	else {
 		Display::heading(_("Work Order Requirements"));
 		WO_Requirements::display($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
@@ -45,7 +47,8 @@
 			Display::heading(_("Additional Costs"));
 			WO_Cost::display_payments($woid);
 			echo "</td></tr></table>";
-		} else {
+		}
+		else {
 			echo "<br><table cellspacing=7><tr class='top'><td>";
 			Display::heading(_("Additional Costs"));
 			WO_Cost::display_payments($woid);
@@ -54,6 +57,6 @@
 	}
 	echo "<br></div>";
 	Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

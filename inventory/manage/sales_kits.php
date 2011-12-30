@@ -26,7 +26,8 @@
 		Display::div_start('bom');
 		start_table('tablestyle width60');
 		$th = array(
-			_("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', '');
+			_("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', ''
+		);
 		table_header($th);
 		$k = 0;
 		while ($myrow = DB::fetch($result)) {
@@ -45,16 +46,17 @@
 
 	function update_component($kit_code, $selected_item) {
 		global $Mode, $selected_kit;
-
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
 			return;
-		} elseif ($_POST['description'] == '') {
+		}
+		elseif ($_POST['description'] == '') {
 			Errors::error(_("Item code description cannot be empty."));
 			JS::set_focus('description');
 			return;
-		} elseif ($selected_item == -1) // adding new item or new alias/kit
+		}
+		elseif ($selected_item == -1) // adding new item or new alias/kit
 		{
 			if (get_post('item_code') == '') { // New kit/alias definition
 				$kit = Item_Code::get_kit($_POST['kit_code']);
@@ -87,12 +89,14 @@
 				$kit_code = $_POST['kit_code'];
 				$selected_kit = $_POST['item_code'] = $kit_code;
 				$msg = _("New alias code has been created.");
-			} else {
+			}
+			else {
 				$msg = _("New component has been added to selected kit.");
 			}
 			Item_Code::add($kit_code, get_post('component'), get_post('description'), get_post('category'), Validation::input_num('quantity'), 0);
 			Errors::notice($msg);
-		} else {
+		}
+		else {
 			$props = Item_Code::get_kit_props($_POST['item_code']);
 			Item_Code::update($selected_item, $kit_code, get_post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
 			Errors::notice(_("Component of selected kit has been updated."));
@@ -126,7 +130,8 @@
 				}
 			}
 			Errors::error($msg);
-		} else {
+		}
+		else {
 			Item_Code::delete($selected_id);
 			Errors::notice(_("The component item has been deleted from this bom"));
 			$Mode = MODE_RESET;
@@ -153,7 +158,8 @@
 		// New sales kit entry
 		start_table('tablestyle2');
 		text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
-	} else {
+	}
+	else {
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
 		$_POST['category'] = $props['category_id'];
@@ -196,6 +202,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -44,12 +44,8 @@
 			// create an array of the taxes and array of rates
 			$taxes = array();
 			$rates = array();
-			for (
-				$i = 0; $i < 5; $i++
-			)
-			{
-				if (isset($_POST['tax_type_id' . $i])
-				 && $_POST['tax_type_id' . $i] != ANY_NUMERIC
+			for ($i = 0; $i < 5; $i++) {
+				if (isset($_POST['tax_type_id' . $i]) && $_POST['tax_type_id' . $i] != ANY_NUMERIC
 				) {
 					$taxes[] = $_POST['tax_type_id' . $i];
 					$rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
@@ -58,12 +54,10 @@
 				}
 			}
 			if ($selected_id != -1) {
-				Tax_Groups::update(
-					$selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
-					$rates
-				);
+				Tax_Groups::update($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				Errors::notice(_('Selected tax group has been updated'));
-			} else {
+			}
+			else {
 				Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				Errors::notice(_('New tax group has been added'));
 			}
@@ -111,13 +105,13 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		if ($myrow["tax_shipping"]) {
 			label_cell(_("Yes"));
-		} else {
+		}
+		else {
 			label_cell(_("No"));
 		}
 		/*for ($i=0; $i< 5; $i++)
@@ -140,8 +134,7 @@
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 			$items = Tax_Groups::get_for_item($selected_id);
 			$i = 0;
-			while ($tax_item = DB::fetch($items))
-			{
+			while ($tax_item = DB::fetch($items)) {
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
 				$_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);
 				$i++;
@@ -161,10 +154,7 @@
 	//Editable rate has been removed 090920 Joe Hunt
 	$th = array(_("Tax"), _("Rate (%)"));
 	table_header($th);
-	for (
-		$i = 0; $i < 5; $i++
-	)
-	{
+	for ($i = 0; $i < 5; $i++) {
 		start_row();
 		if (!isset($_POST['tax_type_id' . $i])) {
 			$_POST['tax_type_id' . $i] = 0;
@@ -184,6 +174,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

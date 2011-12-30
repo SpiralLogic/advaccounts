@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_JOURNALENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
 		$help_context = "Modifying Journal Entry";
-	} else {
+	}
+	else {
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
 	Page::start($_SESSION['page_title']);
@@ -33,17 +33,19 @@
 		JS::reset_focus();
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 		Page::footer_exit();
-	} elseif (isset($_GET['UpdatedID'])) {
+	}
+	elseif (isset($_GET['UpdatedID'])) {
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
-		Display::link_no_params(DOCROOT. "gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+		Display::link_no_params(DOCROOT . "gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();
 	}
 	if (isset($_GET['NewJournal'])) {
 		create_order(ST_JOURNAL, 0);
-	} elseif (isset($_GET['ModifyGL'])) {
+	}
+	elseif (isset($_GET['ModifyGL'])) {
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
 			Display::link_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
@@ -72,7 +74,8 @@
 			$order->tran_date = Dates::sql2date($date);
 			$order->reference = Ref::get($type, $trans_no);
 			$_POST['ref_original'] = $order->reference; // Store for comparison when updating
-		} else {
+		}
+		else {
 			$order->reference = Ref::get_next(ST_JOURNAL);
 			$order->tran_date = Dates::new_doc_date();
 			if (!Dates::is_date_in_fiscalyear($order->tran_date)) {
@@ -102,7 +105,8 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			$input_error = 1;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			$input_error = 1;
@@ -111,7 +115,8 @@
 			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
-		} elseif (Ref::exists(ST_JOURNAL, $_POST['ref'])) {
+		}
+		elseif (Ref::exists(ST_JOURNAL, $_POST['ref'])) {
 			// The reference can exist already so long as it's the same as the original (when modifying)
 			if ($_POST['ref'] != $_POST['ref_original']) {
 				Errors::error(_("The entered reference is already in use."));
@@ -135,7 +140,8 @@
 		unset($_SESSION['journal_items']);
 		if ($new) {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-		} else {
+		}
+		else {
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 		}
 	}
@@ -160,7 +166,8 @@
 			Errors::error(_("The debit amount entered is not a valid number or is less than zero."));
 			JS::set_focus('AmountDebit');
 			return false;
-		} elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0)) {
+		}
+		elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0)) {
 			Errors::error(_("The credit amount entered is not a valid number or is less than zero."));
 			JS::set_focus('AmountCredit');
 			return false;
@@ -182,11 +189,11 @@
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			if (Validation::input_num('AmountDebit') > 0) {
 				$amount = Validation::input_num('AmountDebit');
-			} else {
+			}
+			else {
 				$amount = -Validation::input_num('AmountCredit');
 			}
-			$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'],
-				$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+			$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 		}
 		line_start_focus();
 	}
@@ -202,11 +209,11 @@
 		}
 		if (Validation::input_num('AmountDebit') > 0) {
 			$amount = Validation::input_num('AmountDebit');
-		} else {
+		}
+		else {
 			$amount = -Validation::input_num('AmountCredit');
 		}
-		$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount,
-			$_POST['LineMemo']);
+		$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 		line_start_focus();
 	}
 
@@ -239,9 +246,8 @@
 	echo "</td>";
 	end_row();
 	end_table(1);
-	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'),
-		'default');
+	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

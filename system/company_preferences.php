@@ -32,26 +32,20 @@
 			}
 			$filename .= "/" . $_FILES['pic']['name'];
 			//But check for the worst
-			if (!in_array(
-				(substr(trim($_FILES['pic']['name']), -3)),
-				array('jpg', 'JPG', 'png', 'PNG')
-			)
+			if (!in_array((substr(trim($_FILES['pic']['name']), -3)), array('jpg', 'JPG', 'png', 'PNG'))
 			) {
 				Errors::error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 				$input_error = 1;
 			}
-			elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024))
-			{ //File Size Check
+			elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
 				Errors::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 				$input_error = 1;
 			}
-			elseif ($_FILES['pic']['type'] == "text/plain")
-			{ //File type Check
+			elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
 				Errors::error(_('Only graphics files can be uploaded'));
 				$input_error = 1;
 			}
-			elseif (file_exists($filename))
-			{
+			elseif (file_exists($filename)) {
 				$result = unlink($filename);
 				if (!$result) {
 					Errors::error(_('The existing image could not be removed'));
@@ -73,7 +67,8 @@
 				if (!$result) {
 					Errors::error(_('The existing image could not be removed'));
 					$input_error = 1;
-				} else {
+				}
+				else {
 					$_POST['coy_logo'] = "";
 				}
 			}
@@ -140,10 +135,7 @@
 	file_row(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
 	check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 	number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
-	Sales_Type::row(
-		_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
-		_('No base price list')
-	);
+	Sales_Type::row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false, _('No base price list'));
 	text_row_ex(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', null, null, "%");
 	$curr = GL_Currency::get($_POST['curr_default']);
 	text_row_ex(_("Round to nearest:"), 'round_to', 10, 10, '', null, null, $curr['hundreds_name']);
@@ -158,6 +150,6 @@
 	hidden('coy_logo', $_POST['coy_logo']);
 	submit_center('update', _("Update"), true, '', 'default');
 	end_form(2);
-	Renderer::end_page();
+	Page::end();
 
 ?>

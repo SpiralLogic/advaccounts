@@ -26,7 +26,7 @@
 		elseif (isset ($_POST['id'])) {
 			$data = new Item($_POST['id']);
 		}
-		 JS::renderJSON($data);
+		JS::renderJSON($data);
 	}
 	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
@@ -68,4 +68,4 @@
 <div class="spacer"></div>
 <?
 
-	Renderer::end_page(true, true);
+	Page::end(true, true);

@@ -35,7 +35,8 @@
 			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
 				Errors::notice(_('Selected unit has been updated'));
-			} else {
+			}
+			else {
 				Errors::notice(_('New unit has been added'));
 			}
 			$Mode = MODE_RESET;
@@ -45,7 +46,8 @@
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		if (Item_Unit::used($selected_id)) {
 			Errors::error(_("Cannot delete this unit of measure because items have been created using this unit."));
-		} else {
+		}
+		else {
 			Item_Unit::delete($selected_id);
 			Errors::notice(_('Selected unit has been deleted'));
 		}
@@ -64,8 +66,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["abbr"]);
 		label_cell($myrow["name"]);
@@ -91,8 +92,8 @@
 	if ($selected_id != '' && Item_Unit::used($selected_id)) {
 		label_row(_("Unit Abbreviation:"), $_POST['abbr']);
 		hidden('abbr', $_POST['abbr']);
-	} else
-	{
+	}
+	else {
 		text_row(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
 	}
 	text_row(_("Descriptive Name:"), 'description', null, 40, 40);
@@ -100,6 +101,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == '', '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

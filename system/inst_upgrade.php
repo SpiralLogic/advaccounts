@@ -28,16 +28,12 @@
 		if (!isset($field)) {
 			return 0;
 		} // table exists
-		while ($row = DB::fetch_assoc($fields))
-		{
+		while ($row = DB::fetch_assoc($fields)) {
 			if ($row['Field'] == $field) {
 				if (!isset($properties)) {
 					return 0;
 				}
-				foreach (
-					$properties as $property => $value
-				)
-				{
+				foreach ($properties as $property => $value) {
 					if ($row[$property] != $value) {
 						return 3;
 					} // failed type/length check
@@ -56,10 +52,8 @@
 		$upgrades = array();
 		$datadir = @opendir($patchdir);
 		if ($datadir) {
-			while (false !== ($fname = readdir($datadir)))
-			{ // check all php files but index.php
-				if (!is_dir($patchdir . $fname) && ($fname != 'index.php')
-				 && stristr($fname, '.php') != false
+			while (false !== ($fname = readdir($datadir))) { // check all php files but index.php
+				if (!is_dir($patchdir . $fname) && ($fname != 'index.php') && stristr($fname, '.php') != false
 				) {
 					unset($install);
 					include_once($patchdir . $fname);
@@ -94,9 +88,12 @@
 					$ret &= DB_Utils::import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
 				}
 				$ret &= $inst->install($force);
-			} else if ($state !== true) {
-				Errors::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
-				$ret = false;
+			}
+			else {
+				if ($state !== true) {
+					Errors::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+					$ret = false;
+				}
 			}
 		}
 		return $ret;
@@ -116,35 +113,19 @@
 	$installers = get_installers();
 	if (get_post('Upgrade')) {
 		$ret = true;
-		foreach (
-			Config::get_all('db') as $conn
-		)
-		{
+		foreach (Config::get_all('db') as $conn) {
 			// connect to database
 			if (!($db = db_open($conn))) {
-				Errors::error(
-					_("Cannot connect to database for company")
-					 . " '" . $conn['name'] . "'"
-				);
+				Errors::error(_("Cannot connect to database for company") . " '" . $conn['name'] . "'");
 				continue;
 			}
 			// create security backup
 			DB_Utils::backup($conn, 'no', 'Security backup before upgrade');
 			// apply all upgrade data
-			foreach (
-				$installers as $i => $inst
-			)
-			{
+			foreach ($installers as $i => $inst) {
 				$ret = upgrade_step($i, $conn);
 				if (!$ret) {
-					Errors::error(
-						sprintf(
-							_("Database upgrade to version %s failed for company '%s'."),
-							$inst->version, $conn['name']
-						)
-						 . '<br>'
-						 . _('You should restore company database from latest backup file')
-					);
+					Errors::error(sprintf(_("Database upgrade to version %s failed for company '%s'."), $inst->version, $conn['name']) . '<br>' . _('You should restore company database from latest backup file'));
 				}
 			}
 			// 		db_close($conn); ?
@@ -162,16 +143,12 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_("Version"), _("Description"), _("Sql file"), _("Install"),
-		_("Force upgrade")
+		_("Version"), _("Description"), _("Sql file"), _("Install"), _("Force upgrade")
 	);
 	table_header($th);
 	$k = 0; //row colour counter
 	$partial = 0;
-	foreach (
-		$installers as $i => $inst
-	)
-	{
+	foreach ($installers as $i => $inst) {
 		alt_table_row_color($k);
 		start_row();
 		label_cell($inst->version);
@@ -184,31 +161,26 @@
 		if ($check === true) {
 			label_cell(_("Installed"));
 		}
-		else if (!$check) {
-			check_cells(null, 'install_' . $i, 0);
-		}
 		else {
-			label_cell(
-				"<span class=redfg>"
-				 . sprintf(_("Partially installed (%s)"), $check) . "</span>"
-			);
-			$partial++;
+			if (!$check) {
+				check_cells(null, 'install_' . $i, 0);
+			}
+			else {
+				label_cell("<span class=redfg>" . sprintf(_("Partially installed (%s)"), $check) . "</span>");
+				$partial++;
+			}
 		}
 		check_cells(null, 'force_' . $i, 0);
 		end_row();
 	}
 	end_table(1);
 	if ($partial != 0) {
-		Errors::warning(
-			_(
-				"Database upgrades marked as partially installed cannot be installed automatically.
-You have to clean database manually to enable them, or try to perform forced upgrade."
-			)
-		);
+		Errors::warning(_("Database upgrades marked as partially installed cannot be installed automatically.
+You have to clean database manually to enable them, or try to perform forced upgrade."));
 		Display::br();
 	}
 	submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -39,15 +39,10 @@
 			return false;
 		}
 		if ($selected_id != "") {
-			GL_ExchangeRate::update(
-				$_POST['curr_abrev'], $_POST['date_'],
-				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
-			);
-		} else {
-			GL_ExchangeRate::add(
-				$_POST['curr_abrev'], $_POST['date_'],
-				Validation::input_num('BuyRate'), Validation::input_num('BuyRate')
-			);
+			GL_ExchangeRate::update($_POST['curr_abrev'], $_POST['date_'], Validation::input_num('BuyRate'), Validation::input_num('BuyRate'));
+		}
+		else {
+			GL_ExchangeRate::add($_POST['curr_abrev'], $_POST['date_'], Validation::input_num('BuyRate'), Validation::input_num('BuyRate'));
 		}
 		$selected_id = '';
 		clear_data();
@@ -76,7 +71,6 @@
 
 	function display_rate_edit() {
 		global $selected_id;
-
 		start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate
@@ -86,21 +80,17 @@
 			hidden('selected_id', $selected_id);
 			hidden('date_', $_POST['date_']);
 			label_row(_("Date to Use From:"), $_POST['date_']);
-		} else {
+		}
+		else {
 			$_POST['date_'] = Dates::Today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}
 		if (isset($_POST['get_rate'])) {
-			$_POST['BuyRate']
-			 = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
+			$_POST['BuyRate'] = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
 			Ajax::i()->activate('BuyRate');
 		}
-		small_amount_row(
-			_("Exchange Rate:"), 'BuyRate', null, '',
-			submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
-			User::exrate_dec()
-		);
+		small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
@@ -132,26 +122,21 @@
 		$selected_id = "";
 	}
 	Session::i()->global_curr_code = $_POST['curr_abrev'];
-	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
+	$sql = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 	$cols = array(
-		_("Date to Use From") => 'date',
-		_("Exchange Rate") => 'rate',
-		array(
-			'insert' => true,
-			'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'del_link'
+		_("Date to Use From") => 'date', _("Exchange Rate") => 'rate', array(
+			'insert' => true, 'fun' => 'edit_link'
+		), array(
+			'insert' => true, 'fun' => 'del_link'
 		),
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
 		Errors::warning(_("The selected currency is the company currency."), 2);
 		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
-	} else {
+	}
+	else {
 		Display::br(1);
 		$table->width = "40%";
 		if ($table->rec_count == 0) {
@@ -162,6 +147,6 @@
 		display_rate_edit();
 	}
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

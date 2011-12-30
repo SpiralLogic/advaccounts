@@ -26,13 +26,15 @@
 			if ($selected_id != -1) {
 				GL_PaymentMethod::update($selected_id, $_POST['name'], $_POST['undeposited']);
 				Errors::notice(_('Payment method has been updated'));
-			} else {
+			}
+			else {
 				GL_PaymentMethod::add($_POST['name'], $_POST['undeposited']);
 				Errors::notice(_('New payment method has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
-	} elseif ($Mode == MODE_DELETE) {
+	}
+	elseif ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
 		$payment_method = DB::escape($selected_id);
@@ -102,5 +104,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

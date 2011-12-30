@@ -10,8 +10,7 @@
 					MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 					See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 * ********************************************************************* */
-	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
-	 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
+	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 	// ----------------------------------------------------------------
 	// $ Revision:	2.0 $
 	// Creator:	Joe Hunt
@@ -19,11 +18,8 @@
 	// Title:	Print Invoices
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	print_invoices();
-
-	function print_invoices()
-	{
+	function print_invoices() {
 		include_once(APPPATH . "reports/pdf.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -52,17 +48,15 @@
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		for ($i = $fno[0]; $i <= $tno[0]; $i++) {
-			for (
-				$j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++
-			) {
+			for ($j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++) {
 				if (isset($_POST['PARAM_6']) && $_POST['PARAM_6'] != $j) {
 					continue;
 				}
-				if (!Sales_Trans::exists($j, $i)) {
+				if (!Debtor_Trans::exists($j, $i)) {
 					continue;
 				}
 				$sign = $j == ST_SALESINVOICE ? 1 : -1;
-				$myrow = Sales_Trans::get($i, $j);
+				$myrow = Debtor_Trans::get($i, $j);
 				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = Sales_Branch::get($myrow["branch_code"]);
@@ -91,16 +85,13 @@
 					$rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
 				}
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-				$result = Debtor_Trans::get($j, $i);
+				$result = Debtor_TransDetail::get($j, $i);
 				$SubTotal = 0;
 				while ($myrow2 = DB::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {
 						continue;
 					}
-					$Net = Num::round(
-						$sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-						User::price_dec()
-					);
+					$Net = Num::round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
 					$SubTotal += $Net;
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
@@ -108,7 +99,8 @@
 					$DisplayNet = Num::format($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";
-					} else {
+					}
+					else {
 						$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
 					}
 					$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
@@ -131,8 +123,7 @@
 				$comments = DB_Comments::get($j, $i);
 				if ($comments && DB::num_rows($comments)) {
 					$rep->NewLine();
-					while ($comment = DB::fetch($comments))
-					{
+					while ($comment = DB::fetch($comments)) {
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
 				}
@@ -157,24 +148,15 @@
 				while ($tax_item = DB::fetch($tax_items)) {
 					$DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
-						$rep->TextCol(
-							3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
-						 " (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2
-						);
+						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
 					}
 					else {
-						$rep->TextCol(
-							3, 7, $tax_item['tax_type_name'] . " (" .
-						 $tax_item['rate'] . "%)", -2
-						);
+						$rep->TextCol(3, 7, $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", -2);
 						$rep->TextCol(7, 8, $DisplayTax, -2);
 					}
 				}
 				$rep->NewLine();
-				$DisplayTotal = Num::format(
-					$sign * ($myrow["ov_freight"] + $myrow["ov_gst"] +
-					 $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec
-				);
+				$DisplayTotal = Num::format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);

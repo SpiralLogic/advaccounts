@@ -14,9 +14,11 @@
 	Page::start(_($help_context = "Install/Update Languages"));
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
-	} elseif (isset($_POST['selected_id'])) {
+	}
+	elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
-	} else {
+	}
+	else {
 		$selected_id = -1;
 	}
 	function check_data() {
@@ -109,7 +111,8 @@
 		for ($i = 0; $i < $n; $i++) {
 			if ($conn[$i]['code'] == $lang) {
 				start_row("class='stockmankobg'");
-			} else {
+			}
+			else {
 				alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['code']);
@@ -117,7 +120,8 @@
 			label_cell($conn[$i]['encoding']);
 			if (isset($conn[$i]['rtl']) && $conn[$i]['rtl']) {
 				$rtl = _("Yes");
-			} else {
+			}
+			else {
 				$rtl = _("No");
 			}
 			label_cell($rtl);
@@ -139,7 +143,8 @@
 	function display_language_edit($selected_id) {
 		if ($selected_id != -1) {
 			$n = $selected_id;
-		} else {
+		}
+		else {
 			$n = count(Config::get('languages.installed'));
 		}
 		start_form(true);
@@ -158,7 +163,8 @@
 			$_POST['encoding'] = $conn['encoding'];
 			if (isset($conn['rtl'])) {
 				$_POST['rtl'] = $conn['rtl'];
-			} else {
+			}
+			else {
 				$_POST['rtl'] = false;
 			}
 			$_POST['dflt'] = Config::set('default.lang', $conn['code']);
@@ -190,6 +196,6 @@
 	display_languages();
 	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
 	display_language_edit($selected_id);
-	Renderer::end_page();
+	Page::end();
 
 ?>

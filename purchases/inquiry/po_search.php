@@ -20,7 +20,8 @@
 	//
 	if (get_post('SearchOrders')) {
 		Ajax::i()->activate('orders_tbl');
-	} elseif (get_post('_order_number_changed')) {
+	}
+	elseif (get_post('_order_number_changed')) {
 		$disable = get_post('order_number') !== '';
 		Ajax::i()->addDisable(true, 'OrdersAfterDate', $disable);
 		Ajax::i()->addDisable(true, 'OrdersToDate', $disable);
@@ -29,7 +30,8 @@
 		Ajax::i()->addDisable(true, 'SelectStockFromList', $disable);
 		if ($disable) {
 			Ajax::i()->addFocus(true, 'order_number');
-		} else {
+		}
+		else {
 			Ajax::i()->addFocus(true, 'OrdersAfterDate');
 		}
 		Ajax::i()->activate('orders_tbl');
@@ -72,7 +74,8 @@
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
-	} else {
+	}
+	else {
 		unset($selected_stock_item);
 	}
 	//figure out the sql required from the inputs available
@@ -98,7 +101,8 @@
 	}
 	if (isset($order_number) && $order_number != "") {
 		$sql .= "AND porder.reference LIKE " . DB::quote($selected_stock_item);
-	} else {
+	}
+	else {
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 		$data_before = Dates::date2sql($_POST['OrdersToDate']);
 		$sql .= " AND porder.ord_date >= '$data_after'";
@@ -115,12 +119,19 @@
 	/*show a table of the orders returned by the sql */
 	$cols = array(
 		_("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array(
-			'ord' => '', 'type' => 'id'), _("Supplier ID") => array('skip'), _("Location"), _("Supplier's Reference"), _("Order Date") => array(
-			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
-			'insert' => true, 'fun' => 'edit_link'), array(
-			'insert' => true, 'fun' => 'prt_link'), array(
-			'insert' => true, 'fun' => 'receive_link'));
+			'fun' => 'trans_view', 'ord' => ''
+		), _("Reference"), _("Supplier") => array(
+			'ord' => '', 'type' => 'id'
+		), _("Supplier ID") => array('skip'), _("Location"), _("Supplier's Reference"), _("Order Date") => array(
+			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'
+		), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
+			'insert' => true, 'fun' => 'edit_link'
+		), array(
+			'insert' => true, 'fun' => 'prt_link'
+		), array(
+			'insert' => true, 'fun' => 'receive_link'
+		)
+	);
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
@@ -130,5 +141,5 @@
 	DB_Pager::display($table);
 	Creditor::addInfoDialog('.pagerclick');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

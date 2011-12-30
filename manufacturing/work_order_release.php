@@ -15,9 +15,11 @@
 	Page::start(_($help_context = "Work Order Release to Manufacturing"));
 	if (isset($_GET["trans_no"])) {
 		$selected_id = $_GET["trans_no"];
-	} elseif (isset($_POST["selected_id"])) {
+	}
+	elseif (isset($_POST["selected_id"])) {
 		$selected_id = $_POST["selected_id"];
-	} else {
+	}
+	else {
 		Errors::warning("This page must be called with a work order reference");
 		exit;
 	}
@@ -42,7 +44,7 @@
 		Display::note(GL_UI::trans_view(ST_WORKORDER, $selected_id, _("View this Work Order")));
 		Display::link_no_params("search_work_orders.php", _("Select another &work order"));
 		Ajax::i()->activate('_page_body');
-		Renderer::end_page();
+		Page::end();
 		exit;
 	}
 	start_form();
@@ -61,6 +63,6 @@
 		hidden('stock_id', $myrow['stock_id']);
 	}
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

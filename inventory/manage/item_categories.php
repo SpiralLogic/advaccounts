@@ -23,36 +23,24 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				Item_Category::update(
-					$selected_id, $_POST['description'],
-					$_POST['tax_type_id'], $_POST['sales_account'],
-					$_POST['cogs_account'], $_POST['inventory_account'],
-					$_POST['adjustment_account'], $_POST['assembly_account'],
-					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
-					check_value('no_sale')
-				);
+				Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
 				Errors::notice(_('Selected item category has been updated'));
-			} else {
-				Item_Category::add(
-					$_POST['description'],
-					$_POST['tax_type_id'], $_POST['sales_account'],
-					$_POST['cogs_account'], $_POST['inventory_account'],
-					$_POST['adjustment_account'], $_POST['assembly_account'],
-					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'],
-					$_POST['dim2'], check_value('no_sale')
-				);
+			}
+			else {
+				Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
 				Errors::notice(_('New item category has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
-	}	function edit_link($row) {
-	return	button("Edit" . $row["category_id"], _("Edit"));
+	}
+	function edit_link($row) {
+		return button("Edit" . $row["category_id"], _("Edit"));
+	}
 
-		}
+	function delete_link($row) {
+		return button("Delete" . $row["category_id"], _("Delete"));
+	}
 
-		function delete_link($row) {
-			return		button("Delete" . $row["category_id"], _("Delete"));
-		}
 	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
@@ -60,7 +48,8 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this item category because items have been created using this item category."));
-		} else {
+		}
+		else {
 			Item_Category::delete($selected_id);
 			Errors::notice(_('Selected item category has been deleted'));
 		}
@@ -83,15 +72,25 @@
 	start_form();
 	start_table('tablestyle width90');*/
 	$th = array(
-		array('type' => 'skip'),	_("Name"),															array('type' => 'skip'),
-		 _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
-		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
-		_("Assembly Account"), array(
-
-					 'fun' => 'edit_link'), array(
-			'insert' => true,		'fun' => 'delete_link')
+		array('type' => 'skip'),
+		_("Name"),
+		array('type' => 'skip'),
+		_("Tax type"),
+		_("Units"),
+		_("Type"),
+		_("Sales Act"),
+		_("Inventory Account"),
+		_("COGS Account"),
+		_("Adjustment Account"),
+		_("Assembly Account"),
+		array(
+			'fun' => 'edit_link'
+		),
+		array(
+			'insert' => true, 'fun' => 'delete_link'
+		)
 	);
-/*	inactive_control_column($th);
+	/*	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($result))
@@ -138,25 +137,28 @@
 		}
 		hidden('selected_id', $selected_id);
 		hidden('category_id');
-	} else if ($Mode != MODE_CLONE) {
-		$_POST['long_description'] = '';
-		$_POST['description'] = '';
-		$_POST['no_sale'] = 0;
-		$company_record = DB_Company::get_prefs();
-		if (get_post('inventory_account') == "") {
-			$_POST['inventory_account'] = $company_record["default_inventory_act"];
-		}
-		if (get_post('cogs_account') == "") {
-			$_POST['cogs_account'] = $company_record["default_cogs_act"];
-		}
-		if (get_post('sales_account') == "") {
-			$_POST['sales_account'] = $company_record["default_inv_sales_act"];
-		}
-		if (get_post('adjustment_account') == "") {
-			$_POST['adjustment_account'] = $company_record["default_adj_act"];
-		}
-		if (get_post('assembly_account') == "") {
-			$_POST['assembly_account'] = $company_record["default_assembly_act"];
+	}
+	else {
+		if ($Mode != MODE_CLONE) {
+			$_POST['long_description'] = '';
+			$_POST['description'] = '';
+			$_POST['no_sale'] = 0;
+			$company_record = DB_Company::get_prefs();
+			if (get_post('inventory_account') == "") {
+				$_POST['inventory_account'] = $company_record["default_inventory_act"];
+			}
+			if (get_post('cogs_account') == "") {
+				$_POST['cogs_account'] = $company_record["default_cogs_act"];
+			}
+			if (get_post('sales_account') == "") {
+				$_POST['sales_account'] = $company_record["default_inv_sales_act"];
+			}
+			if (get_post('adjustment_account') == "") {
+				$_POST['adjustment_account'] = $company_record["default_adj_act"];
+			}
+			if (get_post('assembly_account') == "") {
+				$_POST['assembly_account'] = $company_record["default_assembly_act"];
+			}
 		}
 	}
 	text_row(_("Category Name:"), 'description', null, 30, 30);
@@ -170,14 +172,16 @@
 		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
-	} else {
+	}
+	else {
 		GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		GL_UI::all_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 	if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
 		GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
-	} else {
+	}
+	else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
 	$dim = DB_Company::get_pref('use_dimension');
@@ -197,6 +201,6 @@
 	Display::div_end();
 	submit_add_or_update_center($selected_id == -1, '', 'both', true);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

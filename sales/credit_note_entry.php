@@ -18,11 +18,13 @@
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		$order = handle_new_credit(0);
-	} elseif (isset($_GET['ModifyCredit'])) {
+	}
+	elseif (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
 		$order = handle_new_credit($_GET['ModifyCredit']);
 		$help_context = "Modifying Customer Credit Note";
-	} else {
+	}
+	else {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
 	Page::start($_SESSION['page_title']);
@@ -79,7 +81,6 @@
 		Dates::new_doc_date($credit->document_date);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
-
 	start_form();
 	hidden('order_id', $_POST['order_id']);
 	$customer_error = Sales_Credit::header($order);
@@ -90,7 +91,8 @@
 		Sales_Credit::option_controls($order);
 		echo "</td></tr>";
 		end_table();
-	} else {
+	}
+	else {
 		Errors::error($customer_error);
 	}
 	submit_center_first('Update', _("Update"));
@@ -98,8 +100,7 @@
 	submit_center_last('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 	echo "</tr></table></div>";
 	end_form();
-	Renderer::end_page();
-
+	Page::end();
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
@@ -157,7 +158,8 @@
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				$input_error = 1;
-			} elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
+			}
+			elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
 				$_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
 			}
 		}
@@ -165,7 +167,8 @@
 			Errors::error(_("The entered date for the credit note is invalid."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;

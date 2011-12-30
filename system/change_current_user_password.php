@@ -35,14 +35,14 @@
 		if (can_process()) {
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Password cannot be changed in demo mode."));
-			} else {
+			}
+			else {
 				$auth = new Auth(User::get()->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0) {
 					Errors::error($check['text']);
 				}
-				elseif ($check['strength'] < 3)
-				{
+				elseif ($check['strength'] < 3) {
 					Errors::error(_("Password Too Weak!"));
 				}
 				else {
@@ -53,7 +53,8 @@
 			}
 			Ajax::i()->activate('_page_body');
 		}
-	} elseif (Input::session('change_password')) {
+	}
+	elseif (Input::session('change_password')) {
 		Errors::warning('You are required to change your password!');
 	}
 	start_form();
@@ -68,5 +69,5 @@
 	end_table(1);
 	submit_center(UPDATE_ITEM, _('Change password'), true, '', 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

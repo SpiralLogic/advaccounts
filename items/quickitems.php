@@ -105,4 +105,4 @@ HTML;
 	$menu->endTab();
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	Renderer::end_page(isset($_GET['frame']));
+	Page::end(isset($_GET['frame']));

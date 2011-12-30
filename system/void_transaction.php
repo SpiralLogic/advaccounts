@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"));
-
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::Today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
@@ -34,7 +33,7 @@
 		Ajax::i()->activate('_page_body');
 	}
 	voiding_controls();
-	Renderer::end_page();
+	Page::end();
 	function exist_transaction($type, $type_no) {
 		$void_entry = Voiding::has($type, $type_no);
 		if ($void_entry > 0) {
@@ -58,7 +57,7 @@
 			case ST_CUSTPAYMENT : // it's a customer payment
 			case ST_CUSTREFUND : // it's a customer refund
 			case ST_CUSTDELIVERY : // it's a customer dispatch
-				if (!Sales_Trans::exists($type, $type_no)) {
+				if (!Debtor_Trans::exists($type, $type_no)) {
 					return false;
 				}
 				break;
@@ -117,20 +116,23 @@
 		end_table(1);
 		if (!isset($_POST['ProcessVoiding'])) {
 			submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
-		} else {
+		}
+		else {
 			if (!exist_transaction($_POST['filterType'], $_POST['trans_no'])) {
 				Errors::error(_("The entered transaction does not exist or cannot be voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
-			} else {
+			}
+			else {
 				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				$_SESSION['voiding'] = $_POST['trans_no'] . $_POST['filterType'];
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
 					$view_str = GL_UI::view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
-				} else {
+				}
+				else {
 					$view_str = GL_UI::trans_view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
 				Errors::warning($view_str);
@@ -189,7 +191,8 @@
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
-			} else {
+			}
+			else {
 				Errors::error(_("The entered transaction does not exist or cannot be voided."));
 				JS::set_focus('trans_no');
 			}

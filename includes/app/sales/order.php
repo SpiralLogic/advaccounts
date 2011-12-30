@@ -115,7 +115,7 @@
 					}
 				}
 				else { // other type of sales transaction
-					Sales_Trans::read($type, $trans_no, $this);
+					Debtor_Trans::read($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = Sales_Order::get_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
@@ -127,14 +127,14 @@
 					}
 					// old derivative transaction edit
 					if (!$view && ($type != ST_CUSTCREDIT || $this->trans_link != 0)) {
-						$src_type = Sales_Trans::get_parent_type($type);
+						$src_type = Debtor_Trans::get_parent_type($type);
 						if ($src_type == ST_SALESORDER && isset($sodata)) { // get src data from sales_orders
 							$this->src_docs = array($sodata['order_no'] => $sodata['version']);
 							$srcdetails = Sales_Order::get_details($this->order_no, ST_SALESORDER);
 						}
 						else { // get src_data from debtor_trans
-							$this->src_docs = Sales_Trans::get_version($src_type, Sales_Trans::get_parent($type, $trans_no[0]));
-							$srcdetails = Debtor_Trans::get($src_type, array_keys($this->src_docs));
+							$this->src_docs = Debtor_Trans::get_version($src_type, Debtor_Trans::get_parent($type, $trans_no[0]));
+							$srcdetails = Debtor_TransDetail::get($src_type, array_keys($this->src_docs));
 						}
 						// calculate & save: qtys on other docs and free qtys on src doc
 						for ($line_no = 0; $srcline = DB::fetch($srcdetails); $line_no++) {
@@ -207,7 +207,7 @@
 			if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 				// this is direct document - first add parent
 				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this order
-				$src->trans_type = Sales_Trans::get_parent_type($src->trans_type);
+				$src->trans_type = Debtor_Trans::get_parent_type($src->trans_type);
 				$src->reference = Ref::get_next($src->trans_type);
 				$src->write(1);
 				$type = $this->trans_type;
@@ -1073,13 +1073,13 @@
 			}
 			else {
 				//Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
-			Debtor::newselect();
-					if ($this->customer_id != get_post('customer_id', -1)) {
+				Debtor::newselect();
+				if ($this->customer_id != get_post('customer_id', -1)) {
 					// customer has changed
 					Ajax::i()->activate('branch_id');
 				}
 				Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
-				if (($this->Branch != get_post('branch_id', -1)) ) {
+				if (($this->Branch != get_post('branch_id', -1))) {
 					if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
 						// ignore errors on customer search box call
 						if ($_POST['customer_id'] == '') {
@@ -1569,7 +1569,7 @@
 		 * @return bool
 		 */
 		public static function update_parent_line($doc_type, $line_id, $qty_dispatched) {
-			$doc_type = Sales_Trans::get_parent_type($doc_type);
+			$doc_type = Debtor_Trans::get_parent_type($doc_type);
 			//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 			if ($doc_type == 0) {
 				return false;

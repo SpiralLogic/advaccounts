@@ -44,13 +44,15 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
-		} else {
+		}
+		else {
 			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DB::escape($selected_id);
 			$result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
-			} else {
+			}
+			else {
 				Sales_Type::delete($selected_id);
 				Errors::notice(_('Selected sales type has been deleted'));
 			}
@@ -74,7 +76,8 @@
 	while ($myrow = DB::fetch($result)) {
 		if ($myrow["id"] == $base_sales) {
 			start_row("class='overduebg'");
-		} else {
+		}
+		else {
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["sales_type"]);
@@ -107,7 +110,8 @@
 			$_POST['factor'] = Num::format($myrow["factor"], 4);
 		}
 		hidden('selected_id', $selected_id);
-	} else {
+	}
+	else {
 		$_POST['factor'] = Num::format(1, 4);
 	}
 	text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
@@ -116,6 +120,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

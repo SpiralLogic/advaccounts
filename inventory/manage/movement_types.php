@@ -25,7 +25,8 @@
 			if ($selected_id != -1) {
 				Inv_Movement::update_type($selected_id, $_POST['name']);
 				Errors::notice(_('Selected movement type has been updated'));
-			} else {
+			}
+			else {
 				Inv_Movement::add_type($_POST['name']);
 				Errors::notice(_('New movement type has been added'));
 			}
@@ -33,8 +34,7 @@
 		}
 	}
 	function can_delete($selected_id) {
-		$sql
-		 = "SELECT COUNT(*) FROM stock_moves
+		$sql = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query stock moves");
 		$myrow = DB::fetch_row($result);
@@ -65,8 +65,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');
@@ -89,6 +88,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

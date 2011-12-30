@@ -55,14 +55,13 @@
 	}
 
 	function fmt_balance($row) {
-		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
-		 -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
+		 $row["TotalAmount"] - $row["Allocated"];
 		return $value;
 	}
 
 	function alloc_link($row) {
-		$link = DB_Pager::link(_("Allocations"),
-		 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+		$link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
 		 $link : '';
 	}
@@ -103,9 +102,11 @@
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
 			$sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
-		} elseif ($_POST['filterType'] == '3') {
+		}
+		elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND trans.type = " . ST_SUPPAYMENT . " ";
-		} elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
+		}
+		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
 			$sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
 		}
 		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
@@ -119,16 +120,25 @@
 	$cols = array(
 		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link', 'ord' => ''),
-		_("Reference"), _("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Reference"),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
 		_("Supplier ID") => array('skip'),
 		_("Supp Reference"),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
 		_("Due Date") => array('fun' => 'due_date'),
 		_("Currency") => array('align' => 'center'),
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), _("Allocated") => 'amount', _("Balance") => array(
-			'type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'), array(
-			'insert' => true, 'fun' => 'alloc_link'));
+		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
+		_("Credit") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
+		),
+		_("Allocated") => 'amount',
+		_("Balance") => array(
+			'type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'
+		),
+		array(
+			'insert' => true, 'fun' => 'alloc_link'
+		)
+	);
 	if ($_POST['supplier_id'] != ALL_TEXT) {
 		$cols[_("Supplier ID")] = 'skip';
 		$cols[_("Supplier")] = 'skip';
@@ -140,5 +150,5 @@
 	DB_Pager::display($table);
 	Creditor::addInfoDialog('.pagerclick');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

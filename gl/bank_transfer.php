@@ -39,7 +39,8 @@
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 			GL_ExchangeRate::display($from_currency, $to_currency, $_POST['DatePaid']);
-		} else {
+		}
+		else {
 			amount_row(_("Amount:"), 'amount');
 			amount_row(_("Bank Charge:"), 'charge');
 		}
@@ -82,7 +83,6 @@
 			JS::set_focus('ref');
 			return false;
 		}
-
 		if (!Ref::is_new($_POST['ref'], ST_BANKTRANSFER)) {
 			$_POST['ref'] = Ref::get_next(ST_BANKTRANSFER);
 		}
@@ -95,9 +95,7 @@
 	}
 
 	function handle_add_deposit() {
-		$trans_no = GL_Bank::add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-			$_POST['DatePaid'], Validation::input_num('amount'), $_POST['ref'],
-			$_POST['memo_'], Validation::input_num('charge'));
+		$trans_no = GL_Bank::add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], Validation::input_num('amount'), $_POST['ref'], $_POST['memo_'], Validation::input_num('charge'));
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
 	}
 
@@ -107,5 +105,5 @@
 		}
 	}
 	gl_payment_controls();
-	Renderer::end_page();
+	Page::end();
 ?>

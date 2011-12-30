@@ -36,7 +36,8 @@
 				if (GL_Class::update($selected_id, $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('Selected account class settings has been updated'));
 				}
-			} else {
+			}
+			else {
 				if (GL_Class::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('New account class has been added'));
 					$Mode = MODE_RESET;
@@ -48,8 +49,7 @@
 		if ($selected_id == -1) {
 			return false;
 		}
-		$sql
-		 = "SELECT COUNT(*) FROM chart_types
+		$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
 		$result = DB::query($sql, "could not query chart master");
 		$myrow = DB::fetch_row($result);
@@ -81,15 +81,15 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["cid"]);
 		label_cell($myrow['class_name']);
 		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 			$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
-		} else {
+		}
+		else {
 			label_cell($class_types[$myrow["ctype"]]);
 		}
 		inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
@@ -108,25 +108,28 @@
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-			} else {
+			}
+			else {
 				$_POST['ctype'] = $myrow["ctype"];
 			}
 			hidden('selected_id', $selected_id);
 		}
 		hidden('id');
 		label_row(_("Class ID:"), $_POST['id']);
-	} else {
+	}
+	else {
 		text_row_ex(_("Class ID:"), 'id', 3);
 	}
 	text_row_ex(_("Class Name:"), 'name', 50, 60);
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
-	} else {
+	}
+	else {
 		GL_Class::types_row(_("Class Type:"), 'ctype', null);
 	}
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

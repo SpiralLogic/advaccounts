@@ -15,7 +15,8 @@
 	Page::start(_($help_context = "View Supplier Invoice"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
-	} elseif (isset($_POST["trans_no"])) {
+	}
+	elseif (isset($_POST["trans_no"])) {
 		$trans_no = $_POST["trans_no"];
 	}
 	$supp_trans = new Creditor_Trans();
@@ -53,6 +54,6 @@
 	if (Input::get('frame')) {
 		return;
 	}
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

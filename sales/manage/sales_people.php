@@ -43,7 +43,8 @@
  			break_pt=" . Validation::input_num('break_pt') . ",
  			provision2=" . Validation::input_num('provision2') . "
  			WHERE salesman_code = " . DB::escape($selected_id);
-			} else {
+			}
+			else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
  			provision, break_pt, provision2)
@@ -53,7 +54,8 @@
 			DB::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
 				Errors::notice(_('Selected sales person data have been updated'));
-			} else {
+			}
+			else {
 				Errors::notice(_('New sales person data have been added'));
 			}
 			$Mode = MODE_RESET;
@@ -67,7 +69,8 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
-		} else {
+		}
+		else {
 			$sql = "DELETE FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			DB::query($sql, "The sales-person could not be deleted");
 			Errors::notice(_('Selected sales person data have been deleted'));
@@ -124,7 +127,8 @@
 			$_POST['provision2'] = Num::percent_format($myrow["provision2"]);
 		}
 		hidden('selected_id', $selected_id);
-	} elseif ($Mode != ADD_ITEM) {
+	}
+	elseif ($Mode != ADD_ITEM) {
 		$_POST['provision'] = Num::percent_format(0);
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
@@ -140,6 +144,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

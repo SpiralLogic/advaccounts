@@ -50,8 +50,7 @@
 		$sql = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
 		$result = DB::query($sql, "could not check recursive bom");
 		if ($result != 0) {
-			while ($myrow = DB::fetch_row($result))
-			{
+			while ($myrow = DB::fetch_row($result)) {
 				if ($myrow[0] == $ultimate_parent) {
 					return 1;
 				}
@@ -67,13 +66,11 @@
 		Display::div_start('bom');
 		start_table('tablestyle width60');
 		$th = array(
-			_("Code"), _("Description"), _("Location"),
-			_("Work Centre"), _("Quantity"), _("Units"), '', ''
+			_("Code"), _("Description"), _("Location"), _("Work Centre"), _("Quantity"), _("Units"), '', ''
 		);
 		table_header($th);
 		$k = 0;
-		while ($myrow = DB::fetch($result))
-		{
+		while ($myrow = DB::fetch($result)) {
 			alt_table_row_color($k);
 			label_cell($myrow["component"]);
 			label_cell($myrow["description"]);
@@ -96,44 +93,40 @@
 			return;
 		}
 		if ($selected_component != -1) {
-			$sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added'])
-			 . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
+			$sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added']) . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
 			quantity= " . Validation::input_num('quantity') . "
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			DB::query($sql, "could not update bom");
 			Errors::notice(_('Selected component has been updated'));
 			$Mode = MODE_RESET;
-		} else {
+		}
+		else {
 			/*Selected component is null cos no item selected on first time round
 									so must be adding a record must be Submitting new entries in the new
 									component form */
 			//need to check not recursive bom component of itself!
 			if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
 				/*Now check to see that the component is not already on the bom */
-				$sql
-				 = "SELECT component FROM bom
+				$sql = "SELECT component FROM bom
 				WHERE parent=" . DB::escape($selected_parent) . "
 				AND component=" . DB::escape($_POST['component']) . "
 				AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
 				AND loc_code=" . DB::escape($_POST['loc_code']);
 				$result = DB::query($sql, "check failed");
 				if (DB::num_rows($result) == 0) {
-					$sql
-					 = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . ","
-					 . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", "
-					 . Validation::input_num('quantity') . ")";
+					$sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
+					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . "," . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
 					DB::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = MODE_RESET;
-				} else {
+				}
+				else {
 					/*The component must already be on the bom */
 					Errors::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}
 			} //end of if its not a recursive bom
-			else
-			{
+			else {
 				Errors::error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 			}
 		}
@@ -171,8 +164,7 @@
 		if ($selected_id != -1) {
 			if ($Mode == MODE_EDIT) {
 				//editing a selected component from the link to the line item
-				$sql = "SELECT bom.*,stock_master.description FROM "
-				 . "bom,stock_master
+				$sql = "SELECT bom.*,stock_master.description FROM " . "bom,stock_master
 				WHERE id=" . DB::escape($selected_id) . "
 				AND stock_master.stock_id=bom.component";
 				$result = DB::query($sql, "could not get bom");
@@ -184,7 +176,8 @@
 				label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 			}
 			hidden('selected_id', $selected_id);
-		} else {
+		}
+		else {
 			start_row();
 			label_cell(_("Component:"));
 			echo "<td>";
@@ -206,6 +199,6 @@
 		end_form();
 	}
 	// ----------------------------------------------------------------------------------
-	Renderer::end_page();
+	Page::end();
 
 ?>

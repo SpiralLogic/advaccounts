@@ -25,9 +25,7 @@
 
 	function sort_areas($areas) {
 		$old_order = 0;
-		foreach (
-			$areas as $key => $area
-		) {
+		foreach ($areas as $key => $area) {
 			$areas[$key][] = $old_order++;
 		}
 		uasort($areas, 'comp_areas');
@@ -49,31 +47,24 @@
 			Errors::error(_("Role description cannot be empty."));
 			JS::set_focus('description');
 		}
-		elseif ($_POST['name'] == '')
-		{
+		elseif ($_POST['name'] == '') {
 			$input_error = 1;
 			Errors::error(_("Role name cannot be empty."));
 			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
 		if (get_post('role') == $_SESSION['current_user']->access) {
-			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]])
-			 || !isset($_POST['Section' . SS_SETUP])
+			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]]) || !isset($_POST['Section' . SS_SETUP])
 			) {
 				Errors::error(_("Access level edition in Company setup section have to be enabled for your account."));
 				$input_error = 1;
-				JS::set_focus(
-					!isset($_POST['Section' . SS_SETUP])
-					 ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]
-				);
+				JS::set_focus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]);
 			}
 		}
 		if ($input_error == 0) {
 			$sections = array();
 			$areas = array();
-			foreach (
-				$_POST as $p => $val
-			) {
+			foreach ($_POST as $p => $val) {
 				if (substr($p, 0, 4) == 'Area') {
 					$a = substr($p, 4);
 					if (($a & ~0xffff) && (($a & 0xff00) < (99 << 8))) {
@@ -90,16 +81,10 @@
 			if ($new_role) {
 				Printer::add_role($_POST['name'], $_POST['description'], $sections, $areas);
 				Errors::notice(_("New security role has been added."));
-			} else
-			{
-				Printer::update_role(
-					$_POST['role'], $_POST['name'], $_POST['description'],
-					$sections, $areas
-				);
-				DB::update_record_status(
-					$_POST['role'], get_post('inactive'),
-					'security_roles', 'id'
-				);
+			}
+			else {
+				Printer::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
+				DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
 				Errors::notice(_("Security role has been updated."));
 			}
 			$new_role = true;
@@ -110,7 +95,8 @@
 	if (get_post('delete')) {
 		if (check_role_used(get_post('role'))) {
 			Errors::error(_("This role is currently assigned to some users and cannot be deleted"));
-		} else {
+		}
+		else {
 			Security::get_profile(get_post('role'));
 			Errors::notice(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
@@ -140,21 +126,17 @@
 			unset($_POST['inactive']);
 			$access = $sections = array();
 		}
-		foreach (
-			$access as $a
-		) {
+		foreach ($access as $a) {
 			$_POST['Area' . $a] = 1;
 		}
-		foreach (
-			$sections as $s
-		) {
+		foreach ($sections as $s) {
 			$_POST['Section' . $s] = 1;
 		}
 		if ($clone) {
 			JS::set_focus('name');
 			Ajax::i()->activate('_page_body');
-		} else
-		{
+		}
+		else {
 			$_POST['role'] = $id;
 		}
 	}
@@ -183,9 +165,7 @@
 	start_table('tablestyle width40');
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
-	foreach (
-		sort_areas($security_areas) as $area => $parms
-	) {
+	foreach (sort_areas($security_areas) as $area => $parms) {
 		// system setup areas are accessable only for site admins i.e.
 		// admins of first registered company
 		if ((($parms[0] & 0xff00) == SS_SADMIN)) {
@@ -199,23 +179,14 @@
 			$m = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
 			//			 Errors::error(sprintf("Bad section %X:", $m));
-			label_row(
-				$security_sections[$m] . ':',
-				checkbox(
-					null, 'Section' . $m, null, true,
-					_("On/off set of features")
-				),
-				"class='tableheader2'", "class='tableheader'"
-			);
+			label_row($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='tableheader2'", "class='tableheader'");
 		}
 		if (check_value('Section' . $m)) {
 			alt_table_row_color($k);
-			check_cells(
-				$parms[1], 'Area' . $parms[0], null,
-				false, '', "class='center'"
-			);
+			check_cells($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
 			end_row();
-		} else {
+		}
+		else {
 			hidden('Area' . $parms[0]);
 		}
 	}
@@ -225,7 +196,8 @@
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
-	} else {
+	}
+	else {
 		submit_center_first('addupdate', _("Save Role"), '', 'default');
 		submit('Update', _("Update view"), true, '', null);
 		submit('clone', _("Clone This Role"), true, '', true);
@@ -234,6 +206,6 @@
 	}
 	Display::div_end();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

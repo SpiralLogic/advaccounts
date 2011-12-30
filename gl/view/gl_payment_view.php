@@ -32,7 +32,8 @@
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
-	} else {
+	}
+	else {
 		$colspan1 = 3;
 		$colspan2 = 6;
 	}
@@ -45,8 +46,7 @@
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']),
-		"class='tableheader2'", "colspan=$colspan1");
+	label_cells(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	end_row();
 	start_row();
@@ -58,7 +58,8 @@
 	$items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
 	if (DB::num_rows($items) == 0) {
 		Errors::warning(_("There are no items for this payment."));
-	} else {
+	}
+	else {
 		Display::heading(_("Items for this Payment"));
 		if ($show_currencies) {
 			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
@@ -68,13 +69,20 @@
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"));
-		} else if ($dim == 1) {
-			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo"));
-		} else {
-			$th = array(
-				_("Account Code"), _("Account Description"), _("Amount"), _("Memo"));
+				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo")
+			);
+		}
+		else {
+			if ($dim == 1) {
+				$th = array(
+					_("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo")
+				);
+			}
+			else {
+				$th = array(
+					_("Account Code"), _("Account Description"), _("Amount"), _("Memo")
+				);
+			}
 		}
 		table_header($th);
 		$k = 0; //row colour counter
@@ -102,5 +110,5 @@
 			GL_Allocation::display($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
 		}
 	}
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

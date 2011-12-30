@@ -14,7 +14,8 @@
 	JS::open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
-	} else {
+	}
+	else {
 		Page::start(_($help_context = "View Sales Order"), true);
 	}
 	if (isset($_SESSION['View'])) {
@@ -25,7 +26,8 @@
 	echo "<tr class='tableheader2 top'><th colspan=4>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
-	} else {
+	}
+	else {
 		Display::heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
 	}
 	echo "</td></tr>";
@@ -41,7 +43,8 @@
 	label_cells(_("Reference"), $_SESSION['View']->reference, "class='label'");
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
-	} else {
+	}
+	else {
 		label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
 	}
 	label_cells(_("Telephone"), $_SESSION['View']->phone, "class='label'");
@@ -54,8 +57,7 @@
 	start_row();
 	label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
 	label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
-	label_cells(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
-		"class='label'", "colspan=3");
+	label_cells(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
 	end_row();
 	label_row(_("Comments"), $_SESSION['View']->Comments, "class='label'", "colspan=5");
 	end_table();
@@ -91,8 +93,7 @@
 		$inv_numbers = array();
 		$invoices_total = 0;
 		if (count($dn_numbers)) {
-			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',',
-				array_values($dn_numbers)) . ")";
+			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
 			$result = DB::query($sql, "The related invoices could not be retreived");
 			$k = 0;
 			while ($inv_row = DB::fetch($result)) {
@@ -116,8 +117,7 @@
 		table_header($th);
 		$payments_total = 0;
 		if (count($inv_numbers)) {
-			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',',
-				array_values($inv_numbers)) . ")";
+			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
 			$result = DB::query($sql, "The related payments could not be retreived");
 			$k = 0;
 			while ($payment_row = DB::fetch($result)) {
@@ -142,8 +142,7 @@
 		if (count($inv_numbers)) {
 			// FIXME - credit notes retrieved here should be those linked to invoices containing
 			// at least one line from this order
-			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',',
-				array_values($inv_numbers)) . ")";
+			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
 			$result = DB::query($sql, "The related credit notes could not be retreived");
 			$k = 0;
 			while ($credits_row = DB::fetch($result)) {
@@ -210,15 +209,14 @@
 	Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 	Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
 	if ($qty_remaining > 0) {
-		Display::submenu_option(_("Make &Delivery Against This Order"),
-			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
-	} else {
-		Display::submenu_option(_("Invoice Items On This Order"),
-			"/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
+		Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
+	}
+	else {
+		Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
 	}
 	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

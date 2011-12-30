@@ -50,7 +50,6 @@
 				GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, null, $person_type_id, $person_id);
 			}
 		}
-
 		//	Add bank tranfer to database.
 		//
 		//	$from_account - source bank account id
@@ -86,7 +85,6 @@
 			DB::commit();
 			return $trans_no;
 		}
-
 		//	Add bank payment or deposit to database.
 		//
 		//	$from_account - bank account id
@@ -115,15 +113,17 @@
 				$cust_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_debtor($person_id), $date_);
 				// we need to negate it too
 				$cust_amount = -$cust_amount;
-				$trans_no = Sales_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
-			} elseif ($person_type_id == PT_SUPPLIER) {
+				$trans_no = Debtor_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
+			}
+			elseif ($person_type_id == PT_SUPPLIER) {
 				// we need to add a supplier transaction record
 				// convert to supp currency
 				$supp_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
 				// we need to negate it too
 				$supp_amount = -$supp_amount;
 				$trans_no = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supp_amount, 0, 0);
-			} else {
+			}
+			else {
 				$trans_no = SysTypes::get_next_trans_no($trans_type);
 				$do_exchange_variance = true;
 			}

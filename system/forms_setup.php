@@ -15,8 +15,7 @@
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get();
 		DB::begin();
-		while ($type = DB::fetch($systypes))
-		{
+		while ($type = DB::fetch($systypes)) {
 			Ref::save($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 		DB::commit();
@@ -29,8 +28,7 @@
 	$th = array(_("Form"), _("Next Reference"));
 	table_header($th);
 	$i = 0;
-	while ($type = DB::fetch($systypes))
-	{
+	while ($type = DB::fetch($systypes)) {
 		if ($i++ == ST_CUSTCREDIT) {
 			table_section(2);
 			table_header($th);
@@ -40,6 +38,6 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-	Renderer::end_page();
+	Page::end();
 
 ?>

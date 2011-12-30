@@ -20,28 +20,17 @@
 		}
 		// update per company files
 		$cnt = count(Config::get_all('db'));
-		for (
-			$i = 0; $i < $cnt; $i++
-		)
-		{
+		for ($i = 0; $i < $cnt; $i++) {
 			$newexts = $extensions;
 			// update 'active' status
 			$exts = DB_Company::get_company_extensions($i);
-			foreach (
-				$exts as $key => $ext
-			)
-			{
+			foreach ($exts as $key => $ext) {
 				if (isset($newexts[$key])) {
 					$newexts[$key]['active'] = $exts[$key]['active'];
 				}
 			}
 			if (!advaccounting::write_extensions($newexts, $i)) {
-				Errors::notice(
-					sprintf(
-						_("Cannot update extensions list for company '%s'."),
-						Config::get('db.' . $i, 'name')
-					)
-				);
+				Errors::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i, 'name')));
 				return false;
 			}
 		}
@@ -53,9 +42,7 @@
 			Errors::error(_("Extension name cannot be empty."));
 			return false;
 		}
-		foreach (
-			$exts as $n => $ext
-		) {
+		foreach ($exts as $n => $ext) {
 			if ($_POST['name'] == $ext['name'] && $id != $n) {
 				Errors::error(_("Extension name have to be unique."));
 				return false;
@@ -106,7 +93,8 @@
 				unlink($file2);
 			}
 			move_uploaded_file($file1, $file2);
-		} else {
+		}
+		else {
 			$extensions[$id]['filename'] = get_post('filename');
 		}
 		if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
@@ -127,15 +115,13 @@
 				unlink($file2);
 			}
 			move_uploaded_file($file1, $file2);
-		} else {
+		}
+		else {
 			$extensions[$id]['acc_file'] = get_post('acc_file');
 		}
 		// security area guess for plugins
 		if ($extensions[$id]['type'] == 'plugin') {
-			$exttext = file_get_contents(
-				PATH_TO_ROOT . '/modules/'
-				 . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']
-			);
+			$exttext = file_get_contents(PATH_TO_ROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
 			$area = 'SA_OPEN';
 			if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 				$area = trim($match[1]);
@@ -155,9 +141,7 @@
 		global $selected_id;
 		$extensions = DB_Company::get_company_extensions();
 		$id = $selected_id;
-		$filename = PATH_TO_ROOT
-		 . ($extensions[$id]['type'] == 'plugin' ? "/modules/" : '/')
-		 . $extensions[$id]['path'];
+		$filename = PATH_TO_ROOT . ($extensions[$id]['type'] == 'plugin' ? "/modules/" : '/') . $extensions[$id]['path'];
 		Files::flush_dir($filename);
 		rmdir($filename);
 		unset($extensions[$id]);
@@ -170,24 +154,17 @@
 	function display_extensions() {
 		start_table('tablestyle');
 		$th = array(
-			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
-			_("Access extensions"), "", ""
+			_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"), _("Access extensions"), "", ""
 		);
 		table_header($th);
 		$k = 0;
 		$mods = DB_Company::get_company_extensions();
 		$mods = Arr::natsort($mods, null, 'name');
-		foreach (
-			$mods as $i => $mod
-		)
-		{
+		foreach ($mods as $i => $mod) {
 			$is_mod = $mod['type'] == 'module';
 			alt_table_row_color($k);
 			label_cell($mod['name']);
-			label_cell(
-				$is_mod ?
-				 $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true)
-			);
+			label_cell($is_mod ? $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true));
 			$ttl = Display::access_string($mod['title']);
 			label_cell($ttl[0]);
 			label_cell($mod['path']);
@@ -195,7 +172,8 @@
 			label_cell(@$mod['acc_file']);
 			if ($is_mod) {
 				label_cell(''); // not implemented (yet)
-			} else {
+			}
+			else {
 				edit_button_cell("Edit" . $i, _("Edit"));
 			}
 			delete_button_cell("Delete" . $i, _("Delete"));
@@ -212,13 +190,8 @@
 		// with current status stored in company directory.
 		$mods = DB_Company::get_company_extensions();
 		$exts = DB_Company::get_company_extensions($id);
-		foreach (
-			$mods as $key => $ins
-		) {
-			foreach (
-				$exts as $ext
-			)
-			{
+		foreach ($mods as $key => $ins) {
+			foreach ($exts as $ext) {
 				if ($ext['name'] == $ins['name']) {
 					$mods[$key]['active'] = @$ext['active'];
 					continue 2;
@@ -228,22 +201,13 @@
 		$mods = Arr::natsort($mods, null, 'name');
 		table_header($th);
 		$k = 0;
-		foreach (
-			$mods as $i => $mod
-		)
-		{
+		foreach ($mods as $i => $mod) {
 			alt_table_row_color($k);
 			label_cell($mod['name']);
-			label_cell(
-				$mod['type'] == 'module' ?
-				 $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true)
-			);
+			label_cell($mod['type'] == 'module' ? $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true));
 			$ttl = Display::access_string($mod['title']);
 			label_cell($ttl[0]);
-			check_cells(
-				null, 'Active' . $i, @$mod['active'] ? 1 : 0,
-				false, false, "class='center'"
-			);
+			check_cells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
 			end_row();
 		}
 		end_table(1);
@@ -285,7 +249,8 @@
 		if (handle_submit()) {
 			if ($selected_id != -1) {
 				Errors::notice(_("Extension data has been updated."));
-			} else {
+			}
+			else {
 				Errors::notice(_("Extension has been installed."));
 			}
 			$Mode = MODE_RESET;
@@ -297,9 +262,7 @@
 	}
 	if (get_post('Update')) {
 		$exts = DB_Company::get_company_extensions();
-		foreach (
-			$exts as $i => $ext
-		) {
+		foreach ($exts as $i => $ext) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
 		advaccounting::write_extensions($exts, get_post('extset'));
@@ -321,10 +284,11 @@
 	if ($set == -1) {
 		display_extensions();
 		display_ext_edit($selected_id);
-	} else {
+	}
+	else {
 		company_extensions($set);
 	}
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

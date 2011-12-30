@@ -71,7 +71,8 @@
  	 WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
  	 AND debtor_no=" . DB::escape($_POST['customer_id']);
 				$note = _('Selected customer branch has been updated');
-			} else {
+			}
+			else {
 				/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
 				$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax,
@@ -88,7 +89,8 @@
 				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
 			}
 		}
-	} elseif ($Mode == MODE_DELETE) {
+	}
+	elseif ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
@@ -96,13 +98,15 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
-		} else {
+		}
+		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "could not query sales orders");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
-			} else {
+			}
+			else {
 				$sql = "DELETE FROM cust_branch WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
 				DB::query($sql, "could not delete branch");
 				Errors::notice(_('Selected customer branch has been deleted'));
@@ -154,11 +158,28 @@
 		}
 		if ($num_branches) {
 			$cols = array(
-				'branch_code' => 'skip', _("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"), _("Phone No"), _("Fax No"), _("E-mail") => 'email', _("Tax Group"), _("Inactive") => 'inactive', //		array('fun'=>'inactive'),
+				'branch_code' => 'skip',
+				_("Short Name"),
+				_("Name"),
+				_("Contact"),
+				_("Sales Person"),
+				_("Area"),
+				_("Phone No"),
+				_("Fax No"),
+				_("E-mail") => 'email',
+				_("Tax Group"),
+				_("Inactive") => 'inactive',
+				//		array('fun'=>'inactive'),
 				' ' => array(
-					'insert' => true, 'fun' => 'select_link'), array(
-					'insert' => true, 'fun' => 'edit_link'), array(
-					'insert' => true, 'fun' => 'del_link'));
+					'insert' => true, 'fun' => 'select_link'
+				),
+				array(
+					'insert' => true, 'fun' => 'edit_link'
+				),
+				array(
+					'insert' => true, 'fun' => 'del_link'
+				)
+			);
 			if (!Input::request('frame')) {
 				$cols[' '] = 'skip';
 			}
@@ -166,10 +187,12 @@
 			$table->set_inactive_ctrl('cust_branch', 'branch_code');
 			//$table->width = "85%";
 			DB_Pager::display($table);
-		} else {
+		}
+		else {
 			Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
 		}
-	} else {
+	}
+	else {
 		Errors::warning(_("No Customer selected."));
 	}
 	start_outer_table('tablestyle2');
@@ -207,7 +230,8 @@
 			$_POST['group_no'] = $myrow["group_no"];
 			$_POST['notes'] = $myrow["notes"];
 		}
-	} elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
+	}
+	elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
 		if (!$num_branches) {
 			$sql = "SELECT name, address, email, debtor_ref
 			FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
@@ -263,5 +287,5 @@
 	end_outer_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

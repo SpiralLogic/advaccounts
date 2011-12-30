@@ -35,8 +35,7 @@
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
 	$after_date = Dates::date2sql($_POST['AfterDate']);
-	$sql
-	 = "SELECT type, trans_no, tran_date, person_id, qty, reference
+	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
 	WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
@@ -46,8 +45,7 @@
 	Display::div_start('doc_tbl');
 	start_table('tablestyle');
 	$th = array(
-		_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
-		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
+		_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
 	table_header($th);
 	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
@@ -69,15 +67,15 @@
 	$k = 0; //row colour counter
 	$total_in = 0;
 	$total_out = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		$trandate = Dates::sql2date($myrow["tran_date"]);
 		$type_name = $systypes_array[$myrow["type"]];
 		if ($myrow["qty"] > 0) {
 			$quantity_formatted = Num::format($myrow["qty"], $dec);
 			$total_in += $myrow["qty"];
-		} else {
+		}
+		else {
 			$quantity_formatted = Num::format(-$myrow["qty"], $dec);
 			$total_out += -$myrow["qty"];
 		}
@@ -89,13 +87,12 @@
 		$person = $myrow["person_id"];
 		$gl_posting = "";
 		if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
-			$cust_row = Sales_Trans::get_details($myrow["type"], $myrow["trans_no"]);
+			$cust_row = Debtor_Trans::get_details($myrow["type"], $myrow["trans_no"]);
 			if (strlen($cust_row['name']) > 0) {
 				$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 			}
 		}
-		elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
-		{
+		elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
 			// get the supplier name
 			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
 			$supp_result = DB::query($sql, "check failed");
@@ -104,16 +101,13 @@
 				$person = $supp_row['supp_name'];
 			}
 		}
-		elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
-		{
+		elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST) {
 			// get the adjustment type
 			$movement_type = Inv_Movement::get_type($myrow["person_id"]);
 			$person = $movement_type["name"];
 		}
-		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE
-		 || $myrow["type"] == ST_MANURECEIVE
-		)
-		{
+		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE || $myrow["type"] == ST_MANURECEIVE
+		) {
 			$person = "";
 		}
 		label_cell($person);
@@ -137,6 +131,6 @@
 	end_row();
 	end_table(1);
 	Display::div_end();
-	Renderer::end_page();
+	Page::end();
 
 ?>

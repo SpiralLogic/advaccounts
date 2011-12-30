@@ -19,21 +19,16 @@
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
 			$paths = array(
-				PATH_TO_ROOT . '/reporting/',
-				COMPANY_PATH . '/reporting/'
+				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . '/reporting/'
 			);
 			$reports = array('' => _('Default printing destination'));
-			foreach (
-				$paths as $dirno => $path
-			) {
+			foreach ($paths as $dirno => $path) {
 				$repdir = opendir($path);
-				while (false !== ($fname = readdir($repdir)))
-				{
+				while (false !== ($fname = readdir($repdir))) {
 					// reports have filenames in form rep(repid).php
 					// where repid must contain at least one digit (reports_main.php is not ;)
-					if (is_file($path . $fname)
-					 //				&& preg_match('/.*[^0-9]([0-9]+)[.]php/', $fname, $match))
-					 && preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match)
+					if (is_file($path . $fname) //				&& preg_match('/.*[^0-9]([0-9]+)[.]php/', $fname, $match))
+							&& preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match)
 					) {
 						$repno = $match[1];
 						$title = '';
@@ -42,9 +37,11 @@
 							$title = trim($match[2]);
 						}
 						else // for any 3rd party printouts without ADVReport() class use
+						{
 							if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
 								$title = trim($match[2]);
 							}
+						}
 						$reports[$repno] = $title;
 					}
 				}
@@ -58,7 +55,6 @@
 
 	function clear_form() {
 		global $selected_id;
-
 		$selected_id = '';
 		$_POST['name'] = '';
 		Ajax::i()->activate('_page_body');
@@ -83,9 +79,7 @@
 		}
 		if (!$error) {
 			$prof = array('' => get_post('Prn')); // store default value/profile name
-			foreach (
-				get_reports() as $rep => $descr
-			) {
+			foreach (get_reports() as $rep => $descr) {
 				$val = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
@@ -96,7 +90,8 @@
 			if ($selected_id == '') {
 				Errors::notice(_('New printing profile has been created'));
 				clear_form();
-			} else {
+			}
+			else {
 				Errors::notice(_('Printing profile has been updated'));
 			}
 		}
@@ -113,16 +108,14 @@
 	}
 	start_form();
 	start_table();
-	Reports_UI::print_profiles_row(
-		_('Select printing profile') . ':', 'profile_id', null,
-		_('New printing profile'), true
-	);
+	Reports_UI::print_profiles_row(_('Select printing profile') . ':', 'profile_id', null, _('New printing profile'), true);
 	end_table();
 	echo '<hr>';
 	start_table();
 	if (get_post('profile_id') == '') {
 		text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
-	} else {
+	}
+	else {
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
 	}
 	end_table(1);
@@ -136,19 +129,13 @@
 	table_header($th);
 	$k = 0;
 	$unkn = 0;
-	foreach (
-		get_reports() as $rep => $descr
-	)
-	{
+	foreach (get_reports() as $rep => $descr) {
 		alt_table_row_color($k);
 		label_cell($rep == '' ? '-' : $rep, 'class=center');
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
 		echo '<td>';
-		echo Reports_UI::printers(
-			'Prn' . $rep, null,
-			$rep == '' ? _('Browser support') : _('Default')
-		);
+		echo Reports_UI::printers('Prn' . $rep, null, $rep == '' ? _('Browser support') : _('Default'));
 		echo '</td>';
 		if ($descr == '') {
 			$unkn = 1;
@@ -158,24 +145,20 @@
 	end_table();
 	if ($unkn) {
 		Errors::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
-	} else {
+	}
+	else {
 		echo '<br>';
 	}
 	Display::div_start('controls');
 	if (get_post('profile_id') == '') {
 		submit_center('submit', _("Add New Profile"), true, '', 'default');
-	} else {
-		submit_center_first(
-			'submit', _("Update Profile"),
-			_('Update printer profile'), 'default'
-		);
-		submit_center_last(
-			'delete', _("Delete Profile"),
-			_('Delete printer profile (only if not used by any user)'), true
-		);
+	}
+	else {
+		submit_center_first('submit', _("Update Profile"), _('Update printer profile'), 'default');
+		submit_center_last('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
 	}
 	Display::div_end();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

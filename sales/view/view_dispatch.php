@@ -15,11 +15,12 @@
 	Page::start(_($help_context = "View Sales Dispatch"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
-	} elseif (isset($_POST["trans_no"])) {
+	}
+	elseif (isset($_POST["trans_no"])) {
 		$trans_id = $_POST["trans_no"];
 	}
 	// 3 different queries to get the information - what a JOKE !!!!
-	$myrow = Sales_Trans::get($trans_id, ST_CUSTDELIVERY);
+	$myrow = Debtor_Trans::get($trans_id, ST_CUSTDELIVERY);
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
 	start_table('tablestyle2 width90');
@@ -30,11 +31,8 @@
 	start_table('tablestyle width100');
 	label_row(_("Charge To"), $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "class='label' nowrap", "colspan=5");
 	start_row();
-	label_cells(_("Charge Branch"), $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "class='label' nowrap",
-		"colspan=2");
-	label_cells(_("Delivered To"), $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-		"class='label' nowrap",
-		"colspan=2");
+	label_cells(_("Charge Branch"), $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "class='label' nowrap", "colspan=2");
+	label_cells(_("Delivered To"), $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]), "class='label' nowrap", "colspan=2");
 	end_row();
 	start_row();
 	label_cells(_("Reference"), $myrow["reference"], "class='label'");
@@ -49,18 +47,18 @@
 	start_row();
 	label_cells(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
 	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
-	label_cells(_("Deliveries"),
-		Debtor::trans_view(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
+	label_cells(_("Deliveries"), Debtor::trans_view(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
 	DB_Comments::display_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
-	$result = Debtor_Trans::get(ST_CUSTDELIVERY, $trans_id);
+	$result = Debtor_TransDetail::get(ST_CUSTDELIVERY, $trans_id);
 	start_table('tablestyle width95');
 	if (DB::num_rows($result) > 0) {
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
+		);
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
@@ -73,7 +71,8 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-			} else {
+			}
+			else {
 				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -85,7 +84,8 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-	} else {
+	}
+	else {
 		Errors::warning(_("There are no line items on this dispatch."), 1, 2);
 	}
 	$display_sub_tot = Num::price_format($sub_total);
@@ -94,7 +94,7 @@
 	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 class=right", "nowrap class=right width=15%");
 	label_row(_("Shipping"), $display_freight, "colspan=6 class=right", "nowrap class=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTDELIVERY, $trans_id);
-	Sales_Trans::display_tax_details($tax_items, 6);
+	Debtor_Trans::display_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(_("TOTAL VALUE"), $display_total, "colspan=6 class=right", "nowrap class=right");
 	end_table(1);
@@ -103,4 +103,4 @@
 		return;
 	}
 	Display::submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
-	Renderer::end_page(true);
+	Page::end(true);

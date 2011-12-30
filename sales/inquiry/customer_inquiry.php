@@ -34,7 +34,6 @@
 	end_row();
 	end_table();
 	Session::i()->global_customer = $_POST['customer_id'];
-
 	Display::div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
 		$customer_record = Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
@@ -45,7 +44,6 @@
 	if (get_post('RefreshInquiry')) {
 		Ajax::i()->activate('totals_tbl');
 	}
-
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
@@ -55,9 +53,11 @@
 		unset($_POST['filterType']);
 		if ($searchArray[0] == 'd') {
 			$filter = " AND type = " . ST_CUSTDELIVERY . " ";
-		} elseif ($searchArray[0] == 'i') {
+		}
+		elseif ($searchArray[0] == 'i') {
 			$filter = " AND (type = " . ST_SALESINVOICE . " OR type = " . ST_BANKPAYMENT . ") ";
-		} elseif ($searchArray[0] == 'p') {
+		}
+		elseif ($searchArray[0] == 'p') {
 			$filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
 		}
 	}
@@ -111,7 +111,8 @@
 		if (isset($filter) && $filter) {
 			$sql .= $filter;
 		}
-	} else {
+	}
+	else {
 		$sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 	}
@@ -125,15 +126,20 @@
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . " OR trans.type = " . ST_BANKPAYMENT . ") ";
-		} elseif ($_POST['filterType'] == '2') {
+		}
+		elseif ($_POST['filterType'] == '2') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . ") ";
-		} elseif ($_POST['filterType'] == '3') {
+		}
+		elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . " OR trans.type = " . ST_BANKDEPOSIT . " OR trans.type = " . ST_BANKDEPOSIT . ") ";
-		} elseif ($_POST['filterType'] == '4') {
+		}
+		elseif ($_POST['filterType'] == '4') {
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
-		} elseif ($_POST['filterType'] == '5') {
+		}
+		elseif ($_POST['filterType'] == '5') {
 			$sql .= " AND trans.type = " . ST_CUSTDELIVERY . " ";
-		} elseif ($_POST['filterType'] == '6') {
+		}
+		elseif ($_POST['filterType'] == '6') {
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 		}
 		if ($_POST['filterType'] == '2') {
@@ -146,19 +152,31 @@
 	DB::query("set @bal:=0");
 	$cols = array(
 		_("Type") => array(
-			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'), _("Reference") => array('ord' => ''), _("Date") => array(
-			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
-			'type' => 'date', 'fun' => 'due_date'), _("Customer") => array('ord' => 'Asc'), _("Branch") => array('ord' => ''),
-		_("Currency") => array('align' => 'center'), _("Debit") => array(
-			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), _("RB") => array(
-			'align' => 'right', 'type' => 'amount'), array(
-			'insert' => true, 'fun' => 'gl_view'), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'credit_link'), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'edit_link'), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'email_link'), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
+			'fun' => 'systype_name', 'ord' => ''
+		), _("#") => array(
+			'fun' => 'trans_view', 'ord' => ''
+		), _("Order") => array('fun' => 'order_view'), _("Reference") => array('ord' => ''), _("Date") => array(
+			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
+		), _("Due Date") => array(
+			'type' => 'date', 'fun' => 'due_date'
+		), _("Customer") => array('ord' => 'asc'), _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Debit") => array(
+			'align' => 'right', 'fun' => 'fmt_debit'
+		), _("Credit") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
+		), _("RB") => array(
+			'align' => 'right', 'type' => 'amount'
+		), array(
+			'insert' => true, 'fun' => 'gl_view'
+		), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'credit_link'
+		), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'edit_link'
+		), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'email_link'
+		), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'prt_link'
+		)
+	);
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';
 		$cols[_("Currency")] = 'skip';
@@ -172,179 +190,192 @@
 	DB_Pager::display($table);
 	UI::emailDialogue('c');
 	end_form();
-	Renderer::end_page();
-
+	Page::end();
 	/**
 	 * @param $customer_record
 	 */
 	function display_customer_summary($customer_record) {
-			$past1 = DB_Company::get_pref('past_due_days');
-			$past2 = 2 * $past1;
-			if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
-				echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
-			}
-			$nowdue = "1-" . $past1 . " " . _('Days');
-			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-			start_table('tablestyle width90');
-			$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
-			table_header($th);
-			start_row();
-			label_cell($customer_record["curr_code"]);
-			label_cell($customer_record["terms"]);
-			amount_cell($customer_record["Balance"] - $customer_record["Due"]);
-			amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
-			amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
-			amount_cell($customer_record["Overdue2"]);
-			amount_cell($customer_record["Balance"]);
-			end_row();
-			end_table();
+		$past1 = DB_Company::get_pref('past_due_days');
+		$past2 = 2 * $past1;
+		if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
+			echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
 		}
+		$nowdue = "1-" . $past1 . " " . _('Days');
+		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
+		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+		start_table('tablestyle width90');
+		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
+		table_header($th);
+		start_row();
+		label_cell($customer_record["curr_code"]);
+		label_cell($customer_record["terms"]);
+		amount_cell($customer_record["Balance"] - $customer_record["Due"]);
+		amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
+		amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
+		amount_cell($customer_record["Overdue2"]);
+		amount_cell($customer_record["Balance"]);
+		end_row();
+		end_table();
+	}
 
 	/**
 	 * @param $dummy
 	 * @param $type
+	 *
 	 * @return mixed
 	 */
 	function systype_name($dummy, $type) {
-			global $systypes_array;
-			return $systypes_array[$type];
-		}
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return null|string
 	 */
 	function order_view($row) {
-			return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
-		}
+		return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
+	}
 
 	/**
 	 * @param $trans
+	 *
 	 * @return null|string
 	 */
 	function trans_view($trans) {
-			return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-		}
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return string
 	 */
 	function due_date($row) {
-			return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
-		}
+		return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return string
 	 */
 	function gl_view($row) {
-			return GL_UI::view($row["type"], $row["trans_no"]);
-		}
+		return GL_UI::view($row["type"], $row["trans_no"]);
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return int|string
 	 */
 	function fmt_debit($row) {
-			$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
-			 -$row["TotalAmount"] : $row["TotalAmount"];
-			return $value >= 0 ? Num::price_format($value) : '';
-		}
+		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
+		 -$row["TotalAmount"] : $row["TotalAmount"];
+		return $value >= 0 ? Num::price_format($value) : '';
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return int|string
 	 */
 	function fmt_credit($row) {
-			$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
-			 -$row["TotalAmount"] : $row["TotalAmount"];
-			return $value > 0 ? Num::price_format($value) : '';
-		}
+		$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
+		 -$row["TotalAmount"] : $row["TotalAmount"];
+		return $value > 0 ? Num::price_format($value) : '';
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return string
 	 */
 	function credit_link($row) {
-			return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-			 DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
-		}
+		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+		 DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return string
 	 */
 	function edit_link($row) {
-			$str = '';
-			switch ($row['type']) {
-				case ST_SALESINVOICE:
-					if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
-						if ($row['Allocated'] == 0) {
-							$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
-						} else {
-							$str = "/sales/customer_invoice.php?ViewInvoice=" . $row['trans_no'];
-						}
+		$str = '';
+		switch ($row['type']) {
+			case ST_SALESINVOICE:
+				if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
+					if ($row['Allocated'] == 0) {
+						$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
 					}
-					break;
-				case ST_CUSTCREDIT:
-					if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
-						if ($row['order_'] == 0) {
-							$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
-						} else {
-							$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
-						}
+					else {
+						$str = "/sales/customer_invoice.php?ViewInvoice=" . $row['trans_no'];
 					}
-					break;
-				case ST_CUSTDELIVERY:
-					if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
-						$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
+				}
+				break;
+			case ST_CUSTCREDIT:
+				if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
+					if ($row['order_'] == 0) {
+						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
 					}
-					break;
-			}
-			if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
-				return DB_Pager::link(_('Edit'), $str, ICON_EDIT);
-			}
-			return '';
+					else {
+						$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
+					}
+				}
+				break;
+			case ST_CUSTDELIVERY:
+				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
+					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
+				}
+				break;
 		}
+		if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
+			return DB_Pager::link(_('Edit'), $str, ICON_EDIT);
+		}
+		return '';
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return string
 	 */
 	function prt_link($row) {
-			if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
-			) // customer payment or bank deposit printout not defined yet.
-			{
-				return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT,
-					'button printlink');
-			} else {
-				return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT,
-					'button printlink');
-			}
+		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
+		) // customer payment or bank deposit printout not defined yet.
+		{
+			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button printlink');
 		}
+		else {
+			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button printlink');
+		}
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return HTML|string
 	 */
 	function email_link($row) {
-			if ($row['type'] != ST_SALESINVOICE) {
-				return;
-			}
-			HTML::setReturn(true);
-			UI::button(false, 'Email', array(
-																			'class' => 'button email-button', 'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']));
-			return HTML::setReturn(false);
+		if ($row['type'] != ST_SALESINVOICE) {
+			return;
 		}
+		HTML::setReturn(true);
+		UI::button(false, 'Email', array(
+																		'class' => 'button email-button', 'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
+															 ));
+		return HTML::setReturn(false);
+	}
 
 	/**
 	 * @param $row
+	 *
 	 * @return bool
 	 */
 	function check_overdue($row) {
-			return (isset($row['OverDue']) && $row['OverDue'] == 1) && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
-		}
+		return (isset($row['OverDue']) && $row['OverDue'] == 1) && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+	}
 
 ?>

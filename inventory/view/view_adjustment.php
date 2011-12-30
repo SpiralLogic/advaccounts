@@ -20,8 +20,7 @@
 	$adjustment_items = Inv_Adjustment::get($trans_no);
 	$k = 0;
 	$header_shown = false;
-	while ($adjustment = DB::fetch($adjustment_items))
-	{
+	while ($adjustment = DB::fetch($adjustment_items)) {
 		if (!$header_shown) {
 			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
 			start_table('tablestyle2 width90');
@@ -37,8 +36,7 @@
 			echo "<br>";
 			start_table('tablestyle width90');
 			$th = array(
-				_("Item"), _("Description"), _("Quantity"),
-				_("Units"), _("Unit Cost")
+				_("Item"), _("Description"), _("Quantity"), _("Units"), _("Unit Cost")
 			);
 			table_header($th);
 		}
@@ -52,5 +50,5 @@
 	}
 	end_table(1);
 	Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

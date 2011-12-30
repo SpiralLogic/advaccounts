@@ -33,18 +33,14 @@
 		$typestotal = 0;
 		//Get Accounts directly under this group/type
 		$result = GL_Account::get_all(null, null, $type);
-		while ($account = DB::fetch($result))
-		{
+		while ($account = DB::fetch($result)) {
 			$prev_balance = GL_Trans::get_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 			$curr_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if (!$prev_balance && !$curr_balance) {
 				continue;
 			}
 			if ($drilldown && $levelptr == 0) {
-				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate="
-				 . $from . "&TransToDate=" . $to
-				 . "&account=" . $account['account_code'] . "'>" . $account['account_code']
-				 . " " . $account['account_name'] . "</a>";
+				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
 				start_row("class='stockmankobg'");
 				label_cell($url);
 				amount_cell(($curr_balance + $prev_balance) * $convert);
@@ -55,12 +51,8 @@
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
 		$result = GL_Type::get_all(false, false, $type);
-		while ($accounttype = DB::fetch($result))
-		{
-			$typestotal += display_type(
-				$accounttype["id"], $accounttype["name"], $from, $to,
-				$convert, $drilldown
-			);
+		while ($accounttype = DB::fetch($result)) {
+			$typestotal += display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
 		}
 		//Display Type Summary if total is != 0
 		if (($acctstotal + $typestotal) != 0) {
@@ -77,9 +69,7 @@
 			) //END Patch#2
 				//elseif ($drilldown && $type != $_POST["AccGrp"])
 			{
-				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
-				 . $from . "&TransToDate=" . $to
-				 . "&AccGrp=" . $type . "'>" . $typename . "</a>";
+				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $type . "'>" . $typename . "</a>";
 				alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($acctstotal + $typestotal) * $convert);
@@ -107,8 +97,7 @@
 		if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {
 			$drilldown = 1;
 		} // Deeper Level
-		else
-		{
+		else {
 			$drilldown = 0;
 		} // Root level
 		Display::div_start('balance_tbl');
@@ -119,8 +108,7 @@
 			$parent = -1;
 			//Get classes for BS
 			$classresult = GL_Class::get_all(false, 1);
-			while ($class = DB::fetch($classresult))
-			{
+			while ($class = DB::fetch($classresult)) {
 				$classclose = 0.0;
 				$convert = Systypes::get_class_type_convert($class["ctype"]);
 				$ctype = $class["ctype"];
@@ -129,16 +117,11 @@
 				table_section_title($class["class_name"]);
 				//Get Account groups/types under this group/type
 				$typeresult = GL_Type::get_all(false, $class['cid'], -1);
-				while ($accounttype = DB::fetch($typeresult))
-				{
-					$TypeTotal = display_type(
-						$accounttype["id"], $accounttype["name"], $from, $to,
-						$convert, $drilldown);
+				while ($accounttype = DB::fetch($typeresult)) {
+					$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
 					//Print Summary
 					if ($TypeTotal != 0) {
-						$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate="
-						 . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" .
-						 $accounttype['name'] . "</a>";
+						$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
 						alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal * $convert);
@@ -165,9 +148,7 @@
 				$calculateclose *= -1;
 			}
 			//Final Report Summary
-			$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate="
-			 . $from . "&TransToDate=" . $to
-			 . "&Compare=0'>" . _('Calculated Return') . "</a>";
+			$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=0'>" . _('Calculated Return') . "</a>";
 			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell($url);
 			amount_cell($calculateclose);
@@ -198,7 +179,7 @@
 	inquiry_controls();
 	display_balance_sheet();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>
 

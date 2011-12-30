@@ -33,8 +33,7 @@
 	function display_trial_balance() {
 		Display::div_start('balance_tbl');
 		start_table('tablestyle');
-		$tableheader
-		 = "<tr>
+		$tableheader = "<tr>
  <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
  <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
@@ -57,8 +56,7 @@
 			$begin = $_POST['TransFromDate'];
 		}
 		$begin = Dates::add_days($begin, -1);
-		while ($account = DB::fetch($accounts))
-		{
+		while ($account = DB::fetch($accounts)) {
 			$prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 			$tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
@@ -66,16 +64,15 @@
 				continue;
 			}
 			alt_table_row_color($k);
-			$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" .
-			 $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" .
-			 $account["account_code"] . "'>" . $account["account_code"] . "</a>";
+			$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
 				debit_or_credit_cells($prev['balance']);
 				debit_or_credit_cells($curr['balance']);
 				debit_or_credit_cells($tot['balance']);
-			} else {
+			}
+			else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
 				amount_cell($curr['debit']);
@@ -120,7 +117,7 @@
 
 	gl_inquiry_controls();
 	display_trial_balance();
-	Renderer::end_page();
+	Page::end();
 
 ?>
 

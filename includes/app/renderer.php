@@ -12,9 +12,7 @@
 		* ********************************************************************* */
 	class Renderer
 	{
-		public $has_header = true;
 		protected static $_i = null;
-
 		/***
 		 * @static
 		 * @return Renderer
@@ -25,65 +23,40 @@
 			}
 			return static::$_i;
 		}
-
-		public function header() {
-			Page::start(_($help_context = "Main Menu"), false, true);
-
-		}
-
-		public function footer() {
-			Renderer::end_page(false, true);
-		}
-
-		public static function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
-			if (isset($_GET['frame'])) {
-				$is_index = $hide_back_link= $no_menu = true;
-				static::i()->has_header = false;
-			}
-			if ((!$is_index || !$hide_back_link) && method_exists('Display','link_back')) {
-				Display::link_back(true, $no_menu);
-			}
-			Display::div_end(); // end of _page_body section
-			Page::footer($no_menu, $is_index);
-		}
-
-		public function menu_header(  ) {
+		public function menu_header() {
 			$sel_app = $_SESSION['sel_app'];
-				$applications = Session::i()->App->applications;
-				echo "<div id='top'>\n";
-				echo "<p>" . Config::get('db.' . User::get()->company,
-					'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
-				echo "<ul>\n";
-				echo " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
-				echo " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
-				if (Config::get('help_baseurl') != null) {
-					echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+			$applications = Session::i()->App->applications;
+			echo "<div id='top'>\n";
+			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
+			echo "<ul>\n";
+			echo " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
+			echo " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+			if (Config::get('help_baseurl') != null) {
+				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+			}
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
+			echo "</ul>\n";
+			echo "</div>\n";
+			echo "<div id='logo'>\n";
+			$indicator = "/themes/" . User::theme() . "/images/ajax-loader.gif";
+			echo "<h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' class='center' style='visibility:hidden;'></span></h1>\n";
+			echo "</div>\n";
+			echo '<div id="_tabs2"><div class="menu_container">';
+			echo "<ul class='menu'>\n";
+			foreach ($applications as $app) {
+				$acc = Display::access_string($app->name);
+				if ($app->direct) {
+					echo "<li " . ($sel_app == $app->id ? "class='active' " : "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
-				echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
-				echo "</ul>\n";
-				echo "</div>\n";
-				echo "<div id='logo'>\n";
-				$indicator = "/themes/" . User::theme() . "/images/ajax-loader.gif";
-				echo "<h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' class='center' style='visibility:hidden;'></span></h1>\n";
-				echo "</div>\n";
-				echo '<div id="_tabs2"><div class="menu_container">';
-				echo "<ul class='menu'>\n";
-				foreach ($applications as $app) {
-					$acc = Display::access_string($app->name);
-					if ($app->direct) {
-						echo "<li " . ($sel_app == $app->id ? "class='active' " :
-						 "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
-					} else {
-						echo "<li " . ($sel_app == $app->id ? "class='active' " :
-						 "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
-					}
+				else {
+					echo "<li " . ($sel_app == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
-				echo "</ul></div></div>\n";
+			}
+			echo "</ul></div></div>\n";
 			echo "<div id='wrapper'>\n";
-
 		}
-
-		public function menu_footer($no_menu, $is_index) {
+		public function menu_footer($no_menu) {
+			echo "</div>";
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
@@ -92,10 +65,8 @@
 					if ($_SESSION['current_user']->logged_in()) {
 						echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}
-					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) .
-					 "</span>";
+					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
-				echo "</div>";
 			}
 			if (Config::get('debug')) {
 				$this->display_loaded();
@@ -103,7 +74,6 @@
 			echo "</div>\n";
 			echo "</div>\n";
 		}
-
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
 			$row = "<table id='loaded'>";
@@ -113,7 +83,6 @@
 			}
 			echo $row . "</table>";
 		}
-
 		public function display_applications(&$waapp) {
 			$selected_app = $waapp->get_selected_application();
 			if ($selected_app->direct) {
@@ -131,15 +100,18 @@
 				echo "<ul>\n";
 				if ($_SESSION["Language"]->dir == "rtl") {
 					$class = "right";
-				} else {
+				}
+				else {
 					$class = "left";
 				}
 				foreach ($module->lappfunctions as $appfunction) {
 					if ($appfunction->label == "") {
 						echo "<li class='empty'>&nbsp;</li>\n";
-					} elseif (User::get()->can_access_page($appfunction->access)) {
+					}
+					elseif (User::get()->can_access_page($appfunction->access)) {
 						echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
-					} else {
+					}
+					else {
 						echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, true) . "</span></li>\n";
 					}
 				}
@@ -150,10 +122,12 @@
 					foreach ($module->rappfunctions as $appfunction) {
 						if ($appfunction->label == "") {
 							echo "<li class='empty'>&nbsp;</li>\n";
-						} elseif (User::get()->can_access_page($appfunction->access)
+						}
+						elseif (User::get()->can_access_page($appfunction->access)
 						) {
 							echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
-						} else {
+						}
+						else {
 							echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, true) . "</span></li>\n";
 						}
 					}

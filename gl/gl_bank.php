@@ -10,15 +10,19 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)? 'SA_PAYMENT' : 'SA_DEPOSIT';
+	$page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? 'SA_PAYMENT' :
+	 'SA_DEPOSIT';
 	$js = '';
 	JS::open_window(800, 500);
 	if (isset($_GET['NewPayment'])) {
 		$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
 		handle_new_order(ST_BANKPAYMENT);
-	} else if (isset($_GET['NewDeposit'])) {
-		$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
-		handle_new_order(ST_BANKDEPOSIT);
+	}
+	else {
+		if (isset($_GET['NewDeposit'])) {
+			$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
+			handle_new_order(ST_BANKDEPOSIT);
+		}
 	}
 	Page::start($_SESSION['page_title']);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -28,7 +32,6 @@
 		Ajax::i()->activate('person_id');
 	}
 	function line_start_focus() {
-
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
@@ -86,14 +89,13 @@
 		}
 		elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
 			$_POST['ref'] = Ref::get_next($_SESSION['pay_items']->trans_type);
-					}
+		}
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date for the payment is invalid."));
 			JS::set_focus('date_');
 			$input_error = 1;
 		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
-		{
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			//	Errors::error(_("The entered date is not in fiscal year."));
 			//	JS::set_focus('date_');
 			//	$input_error = 1;
@@ -103,21 +105,13 @@
 		}
 	}
 	if (isset($_POST['Process'])) {
-		$trans = GL_Bank::add_bank_transaction(
-			$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
-			$_SESSION['pay_items'], $_POST['date_'],
-			$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-			$_POST['ref'], $_POST['memo_']
-		);
+		$trans = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
 		$trans_type = $trans[0];
 		$trans_no = $trans[1];
 		Dates::new_doc_date($_POST['date_']);
 		$_SESSION['pay_items']->clear_items();
 		unset($_SESSION['pay_items']);
-		Display::meta_forward(
-			$_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ?
-			 "AddedID=$trans_no" : "AddedDep=$trans_no"
-		);
+		Display::meta_forward($_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
 	} /*end of process credit note */
 	function check_item_data() {
 		//if (!Validation::is_num('amount', 0))
@@ -146,11 +140,7 @@
 	function handle_update_item() {
 		$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
-			$_SESSION['pay_items']->update_gl_item(
-				$_POST['Index'], $_POST['code_id'],
-				$_POST['dimension_id'], $_POST['dimension2_id'], $amount,
-				$_POST['LineMemo']
-			);
+			$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 		}
 		line_start_focus();
 	}
@@ -165,10 +155,7 @@
 			return;
 		}
 		$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
-		$_SESSION['pay_items']->add_gl_item(
-			$_POST['code_id'], $_POST['dimension_id'],
-			$_POST['dimension2_id'], $amount, $_POST['LineMemo']
-		);
+		$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 		line_start_focus();
 	}
 
@@ -186,10 +173,8 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		GL_QuickEntry::show_menu(
-			$_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'),
-			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
-		);
+		GL_QuickEntry::show_menu($_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'), $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
+		 QE_PAYMENT : QE_DEPOSIT);
 		$_POST['total_amount'] = Num::price_format(0);
 		Ajax::i()->activate('total_amount');
 		line_start_focus();
@@ -199,20 +184,14 @@
 	start_table('tablesstyle2 width90 pad10');
 	start_row();
 	echo "<td>";
-	Bank_UI::items(
-		$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
-		 _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']
-	);
+	Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']);
 	Bank_UI::option_controls();
 	echo "</td>";
 	end_row();
 	end_table(1);
 	submit_center_first('Update', _("Update"), '', null);
-	submit_center_last(
-		'Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
-		 _("Process Payment") : _("Process Deposit"), '', 'default'
-	);
+	submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

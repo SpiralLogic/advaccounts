@@ -98,8 +98,7 @@
 				try {
 					DB::insert('WebProducts')->values($product)->exec();
 					echo "<div>" . $product['ProductCode'] . "</div>";
-				}
-				catch (DBDuplicateException $e) {
+				} catch (DBDuplicateException $e) {
 					echo "<div>Product already exists: " . $name . "</div>";
 				}
 			}
@@ -114,8 +113,7 @@
 				try {
 					DB::insert('WebCustomers')->values($customer)->exec();
 					echo "<div>" . $customer['CompanyName'] . "</div>";
-				}
-				catch (DBDuplicateException $e) {
+				} catch (DBDuplicateException $e) {
 					echo "<div>Customer already exists: " . $name . "</div>";
 				}
 			}
@@ -136,4 +134,4 @@
 			}
 			Adv.getFromWeb();
 JS);
-	Renderer::end_page(true, true, true);
+	Page::end(true, true, true);

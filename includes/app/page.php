@@ -8,11 +8,17 @@
 	 */
 	class Page
 	{
-		static $css = array();
-
-		//
-		// Helper function for simple db table editor pages
-		//
+		protected $css = array();
+		protected static $i = null;
+		public $renderer = null;
+		protected $no_menu = false;
+		protected $is_index = false;
+		protected $header = false;
+		protected $app;
+		protected $sel_app;
+		public $has_header = true;
+		public $frame = false;
+		protected $title = '';
 		public static function simple_mode($numeric_id = true) {
 			global $Mode, $selected_id;
 			$default = $numeric_id ? -1 : '';
@@ -41,72 +47,74 @@
 			}
 			$Mode = '';
 		}
-
 		public static function start($title, $no_menu = false, $is_index = false) {
+			if (static::$i === null) {
+				static::$i = new static($title, $no_menu, $is_index);
+			}
+			return static::$i;
+		}
+		protected function __construct($title, $no_menu, $index) {
 			global $page_security;
 			if (empty($page_security)) {
 				$page_security = 'SA_OPEN';
 			}
+			$this->title = $title;
+			$this->frame = isset($_GET['frame']);
+			$this->no_menu = $no_menu;
+			$this->renderer = Renderer::i();
+			$this->theme = User::theme();
 			if (AJAX_REFERRER || Ajax::in_ajax()) {
-
-				$no_menu = true;
+				$this->no_menu = true;
 			}
 			else {
-				Page::header($title, $no_menu, $is_index);
-
-			if ($no_menu) {
-				Renderer::i()->has_header = false;
-
-			}else {
-				Renderer::i()->menu_header();
-			}
+				$this->header();
+				if ($this->no_menu) {
+					$this->renderer->has_header = false;
+				}
+				else {
+					$this->renderer->menu_header();
+				}
 			}
 			Errors::error_box();
-			if ($title && !$is_index && !isset($_GET['frame'])) {				Renderer::i()->has_header = false;
-
+			if ($title && !$index && !$this->frame) {
+				$this->renderer->has_header = false;
 				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
 			}
 			Security::check_page($page_security);
-			Display::div_start('_page_body'); // whole page content for ajax reloading
+			Display::div_start('_page_body');
 		}
-
-		public static function header($title, $no_menu = false) {
-			// titles and screen header
-			User::theme();
+		protected function header() {
 			JS::open_window(900, 500);
-			if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "") {
-				$sel_app = $_SESSION["App"]->selected_application;
+			if (isset($_SESSION["App"])) {
+				$this->app = &$_SESSION["App"];
+				if (is_object($this->app) && isset($this->app->selected_application) && $this->app->selected_application != "") {
+					$_SESSION["sel_app"] = $this->app->selected_application;
+				}
 			}
-			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
-				$sel_app = $_SESSION["sel_app"];
+			if (!isset($_SESSION["sel_app"])) {
+				$_SESSION["sel_app"] = User::startup_tab();
 			}
-			else {
-				$sel_app = User::startup_tab();
-			}
-			$_SESSION["sel_app"] = $sel_app;
-			// When startup tab for current user was set to already
-			// removed/inactivated extension module select Sales tab as default.
-			if (isset($_SESSION["App"]) && is_object($_SESSION["App"])) {
-				$_SESSION["App"]->selected_application = isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
+			$this->sel_app = &$_SESSION["sel_app"];
+			if (is_object($this->app)) {
+				$this->app->selected_application = isset($this->app->applications[$this->sel_app]) ? $this->sel_app : 'orders';
 			}
 			$encoding = $_SESSION['Language']->encoding;
 			if (!headers_sent()) {
 				header("Content-type: text/html; charset='$encoding'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html class='" . strtolower($_SESSION['sel_app']) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
-			echo "<head><title>$title</title>";
+			echo "<html class='" . strtolower($this->sel_app) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<head><title>$this->title</title>";
 			echo "<meta charset='$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/apple-touch-icon.png'/>";
-			static::add_css(Config::get('assets.css'));
-			static::send_css();
+			$this->css += Config::get('assets.css');
+			$this->send_css();
 			JS::renderHeader();
-			echo "</head><body" . ($no_menu ? ' class="lite">' : '>');
+			echo "</head><body" . ($this->no_menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
-
 		public static function help_url($context = null) {
-			global $help_context, $old_style_help;
+			global $help_context;
 			$country = $_SESSION['Language']->code;
 			$clean = 0;
 			if ($context != null) {
@@ -117,30 +125,21 @@
 			}
 			else // main menu
 			{
-				$app = $_SESSION['sel_app'];
-				$help_page_url = Session::i()->App->applications[$app]->help_context;
-				$clean = 1;
-			}
-			if (@$old_style_help) {
-				$help_page_url = _($help_page_url);
-			}
-			if ($clean) {
+				$help_page_url = Session::i()->App->applications[static::$i->sel_app]->help_context;
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '', '/' => '',
-																																												 '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+																																												 ' ' => '', '/' => '', '&' => 'And'
+																																										))) . '&ctxhelp=1&lang=' . $country;
 		}
-
-		public static function footer($no_menu = false, $is_index = false) {
+		public function footer() {
 			$Validate = array();
-			$rend = Renderer::i();
-			$rend->menu_footer($no_menu, $is_index);
+			$this->renderer->menu_footer($this->no_menu);
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
 			Ajax::i()->addScript('editors', $edits);
 			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
 			User::add_js_data();
-			if ($rend->has_header) {
+			if ($this->has_header) {
 				Sidemenu::render();
 			}
 			Messages::show();
@@ -155,21 +154,31 @@
 			JS::get_websales();
 			echo	 "</html>\n";
 		}
-
 		public static function add_css($file = false) {
-			static::$css += $file;
+			static::$i->css[] = $file;
 		}
-
-		public static function send_css() {
-			$theme = User::theme();
-			$path = "/themes/$theme/";
-			$css = implode(',', static::$css);
+		protected function send_css() {
+			$path = DS . "themes" . DS . $this->theme . DS;
+			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
 		}
-
 		public static function footer_exit() {
 			Display::br(2);
-			Renderer::end_page(false, false, true);
+			static::$i->renderer->end_page(false, false, true);
 			exit;
+		}
+		public static function end($no_menu = false, $is_index = false, $hide_back_link = false) {
+			static::$i->_end_page($hide_back_link);
+		}
+		protected function _end_page($hide_back_link) {
+			if ($this->frame) {
+				$is_index = $hide_back_link = $no_menu = true;
+				$this->has_header = false;
+			}
+			if (($this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
+				Display::link_back(true, $this->no_menu);
+			}
+			Display::div_end(); // end of _page_body section
+			$this->footer();
 		}
 	}

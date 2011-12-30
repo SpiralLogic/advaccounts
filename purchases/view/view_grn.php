@@ -24,7 +24,8 @@
 	Display::heading(_("Line Details"));
 	start_table('tablestyle width90');
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
+		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
+	);
 	table_header($th);
 	$total = 0;
 	$k = 0; //row colour counter
@@ -47,6 +48,6 @@
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap class=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

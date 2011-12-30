@@ -10,6 +10,7 @@
 	{
 		/**
 		 * @static
+		 *
 		 * @param $user_id
 		 * @param $real_name
 		 * @param $password
@@ -27,9 +28,9 @@
 				" . DB::escape($real_name) . ", " . DB::escape($password) . "," . DB::escape($phone) . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . " )";
 			DB::query($sql, "could not add user for $user_id");
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $user_id
 		 * @param $password
@@ -40,9 +41,9 @@
 			DB::query($sql, "could not update user password for $user_id");
 			session_regenerate_id();
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $user_id
 		 * @param $real_name
@@ -66,9 +67,9 @@
 			DB::query($sql, "could not update user for $user_id");
 			session_regenerate_id();
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $price_dec
 		 * @param $qty_dec
@@ -117,10 +118,11 @@
 			DB::query($sql, "could not update user display prefs for $id");
 			session_regenerate_id();
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param bool $all
+		 *
 		 * @return null|PDOStatement
 		 */
 		public static function	get_all($all = false) {
@@ -131,10 +133,11 @@
 			}
 			return DB::query($sql, "could not get users");
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
+		 *
 		 * @return DB_Query_Result
 		 */
 		public static function	get($id) {
@@ -142,12 +145,13 @@
 			$result = DB::query($sql, "could not get user $id");
 			return DB::fetch($result);
 		}
-
 		//	This public static function is necessary for admin prefs update after upgrade from 2.1
 		//
 		/**
 		 * @static
+		 *
 		 * @param $user_id
+		 *
 		 * @return DB_Query_Result
 		 */
 		public static function	get_by_login($user_id) {
@@ -155,20 +159,21 @@
 			$result = DB::query($sql, "could not get user $user_id");
 			return DB::fetch($result);
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 */
 		public static function	delete($id) {
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete user $id");
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $user_id
 		 * @param $password
+		 *
 		 * @return bool|mixed
 		 */
 		public static function	get_for_login($user_id, $password) {
@@ -177,9 +182,9 @@
 			$auth = new Auth($user_id);
 			return $auth->check_user_password($user_id, $password);
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $user_id
 		 */
 		public static function	update_visitdate($user_id) {
@@ -187,10 +192,11 @@
 				WHERE user_id=" . DB::escape($user_id);
 			DB::query($sql, "could not update last visit date for user $user_id");
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $id
+		 *
 		 * @return mixed
 		 */
 		public static function	check_activity($id) {
@@ -199,7 +205,6 @@
 			$ret = DB::fetch($result);
 			return $ret[0];
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -210,7 +215,6 @@
 			}
 			return _("users online") . ": " . static::get_online();
 		}
-
 		/**
 		 * @static
 		 * @return int|mixed
@@ -225,24 +229,7 @@
 				$timeoutseconds = 120;
 				$timestamp = time();
 				$timeout = $timestamp - $timeoutseconds;
-				/*
-																															 This will find out if user is from behind proxy server.
-																															 In that case, the script would count them all as 1 user.
-																															 This public static function tryes to get real IP address.
-																															 */
-				if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-					$ip = $_SERVER['HTTP_CLIENT_IP'];
-				} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-					$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-				} elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-					$ip = $_SERVER['HTTP_X_FORWARDED'];
-				} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-					$ip = $_SERVER['HTTP_FORWARDED_FOR'];
-				} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-					$ip = $_SERVER['HTTP_FORWARDED'];
-				} else {
-					$ip = $_SERVER['REMOTE_ADDR'];
-				}
+				$ip = static::get_ip();
 				// Add user to database
 				DB::query("INSERT INTO useronline (timestamp, ip, file) VALUES ('" . $timestamp . "','" . $ip . "','" . $_SERVER['PHP_SELF'] . "')");
 				//Remove users that were not online within $timeoutseconds.
@@ -250,17 +237,44 @@
 				// Select online users
 				$result = DB::query("SELECT DISTINCT ip FROM useronline");
 				$users = DB::num_rows($result);
-			} else {
+			}
+			else {
 				$users = 1;
 			}
 			Cache::set('users_online', $users, 300);
 			return $users;
 		}
-
+		public static function get_ip() {
+			/*
+																																		 This will find out if user is from behind proxy server.
+																																		 In that case, the script would count them all as 1 user.
+																																		 This public static function tryes to get real IP address.
+																																		 */
+			if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+				$ip = $_SERVER['HTTP_CLIENT_IP'];
+			}
+			elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+				$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			}
+			elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+				$ip = $_SERVER['HTTP_X_FORWARDED'];
+			}
+			elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+				$ip = $_SERVER['HTTP_FORWARDED_FOR'];
+			}
+			elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+				$ip = $_SERVER['HTTP_FORWARDED'];
+			}
+			else {
+				$ip = $_SERVER['REMOTE_ADDR'];
+			}
+			return $ip;
+		}
 		/**
 		 * @static
-		 * @param $label
-		 * @param $name
+		 *
+		 * @param			$label
+		 * @param			$name
 		 * @param null $value
 		 */
 		public static function themes_row($label, $name, $value = null) {
@@ -276,11 +290,11 @@
 			echo array_selector($name, $value, $themes);
 			echo "</td></tr>\n";
 		}
-
 		/**
 		 * @static
-		 * @param $label
-		 * @param $name
+		 *
+		 * @param			$label
+		 * @param			$name
 		 * @param null $selected_id
 		 * @param bool $all
 		 */
@@ -302,12 +316,13 @@
 			echo array_selector($name, $selected_id, $tabs);
 			echo "</td></tr>\n";
 		}
-
 		/**
 		 * @static
-		 * @param $name
+		 *
+		 * @param			$name
 		 * @param null $selected_id
 		 * @param bool $spec_opt
+		 *
 		 * @return string
 		 */
 		public static function select($name, $selected_id = null, $spec_opt = false) {
@@ -316,11 +331,11 @@
 																																					 'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC
 																																			));
 		}
-
 		/**
 		 * @static
-		 * @param $label
-		 * @param $name
+		 *
+		 * @param			$label
+		 * @param			$name
 		 * @param null $selected_id
 		 * @param bool $spec_opt
 		 */
@@ -332,11 +347,11 @@
 			echo Users::select($name, $selected_id, $spec_opt);
 			echo "</td>\n";
 		}
-
 		/**
 		 * @static
-		 * @param $label
-		 * @param $name
+		 *
+		 * @param			$label
+		 * @param			$name
 		 * @param null $selected_id
 		 * @param bool $spec_opt
 		 */

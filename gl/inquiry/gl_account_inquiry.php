@@ -87,8 +87,7 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
-			Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 		if ($_POST["account"] != null) {
 			Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
@@ -99,26 +98,33 @@
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
 			$account_col = array(_("Account"));
-		} else {
+		}
+		else {
 			$account_col = array();
 		}
 		if ($dim == 2) {
 			$dim_cols = array(_("Dimension") . " 1", _("Dimension") . " 2");
-		} else if ($dim == 1) {
-			$dim_cols = array(_("Dimension"));
-		} else {
-			$dim_cols = array();
+		}
+		else {
+			if ($dim == 1) {
+				$dim_cols = array(_("Dimension"));
+			}
+			else {
+				$dim_cols = array();
+			}
 		}
 		if ($show_balances) {
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
-		} else {
+		}
+		else {
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
 		}
 		$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
 		table_header($th);
 		if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
 			$begin = "";
-		} else {
+		}
+		else {
 			$begin = Dates::begin_fiscalyear();
 			if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
 				$begin = $_POST['TransFromDate'];
@@ -188,6 +194,6 @@
 		show_results();
 	}
 	Display::div_end();
-	Renderer::end_page();
+	Page::end();
 
 ?>

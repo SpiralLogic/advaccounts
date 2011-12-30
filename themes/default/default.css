@@ -149,7 +149,7 @@ div#content {
 	position:   fixed;
 	text-align: center;
 
-	background: url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
+	background: white url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
 }
 
 #sidemenu {
@@ -519,15 +519,19 @@ div.banner a + a { border-top: 2px groove #999 }
 	background: #fff url(images/wrapbg.gif) repeat-x;
 
 }
-.contacts #custsearch{  position: relative;
+
+.contacts #custsearch {
+	position:                           relative;
 	-webkit-transition-duration:        1s;
 	-webkit-transition-timing-function: linear;
- -moz-transition:all 1s ease-in;
- -o-transition:all 1s ease-in;
+	-moz-transition:                    all 1s ease-in;
+	-o-transition:                      all 1s ease-in;
 }
+
 .contacts #custsearch.hide {
-		height:0;
+	height: 0;
 }
+
 .Inventory #_tabs2 {
 
 	background: #464646;
@@ -813,7 +817,7 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label, tablestyle2 label{
+.label, tablestyle2 label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	padding:          4px;
@@ -1177,11 +1181,13 @@ body.lite {
 .inactive {
 	color: gray;
 }
+
 #msgbox {
-	width:80%;
-	margin:10px auto;
+	width:       80%;
+	margin:      10px auto;
 	font-weight: bolder;
 }
+
 div.err_msg {
 	margin:           10px;
 	padding:          3px;

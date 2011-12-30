@@ -15,7 +15,8 @@
 	Page::start(_($help_context = "View Supplier Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
-	} elseif (isset($_POST["trans_no"])) {
+	}
+	elseif (isset($_POST["trans_no"])) {
 		$trans_no = $_POST["trans_no"];
 	}
 	$supp_trans = new Creditor_Trans();
@@ -48,9 +49,8 @@
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
 	if (!$voided) {
-		GL_Allocation::from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no,
-			-($supp_trans->ov_amount + $supp_trans->ov_gst));
+		GL_Allocation::from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

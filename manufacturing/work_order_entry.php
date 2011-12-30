@@ -13,12 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Entry"));
-	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."),
-		STOCK_MANUFACTURE);
+	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
 	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
-	} elseif (isset($_POST['selected_id'])) {
+	}
+	elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	}
 	if (isset($_GET['AddedID'])) {
@@ -28,13 +28,15 @@
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
-				'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
+				'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0
+			);
 			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
 			Errors::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
-				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
+				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype
+			);
 			Errors::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 		safe_exit();
@@ -76,7 +78,6 @@
 			}
 			if (!Ref::is_new($_POST['wo_ref'], ST_WORKORDER)) {
 				$_POST['ref'] = Ref::get_next(ST_WORKORDER);
-
 			}
 		}
 		if (!Validation::is_num('quantity', 0)) {
@@ -88,7 +89,8 @@
 			Errors::error(_("The date entered is in an invalid format."));
 			JS::set_focus('date_');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -131,7 +133,8 @@
 							}
 						}
 					}
-				} elseif ($_POST['type'] == WO_UNASSEMBLY) {
+				}
+				elseif ($_POST['type'] == WO_UNASSEMBLY) {
 					// if unassembling, check item to unassemble
 					$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
 					if (-Validation::input_num('quantity') + $qoh < 0) {
@@ -140,7 +143,8 @@
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			if (!Dates::is_date($_POST['RequDate'])) {
 				JS::set_focus('RequDate');
 				Errors::error(_("The date entered is in an invalid format."));
@@ -170,15 +174,12 @@
 		if (!isset($_POST['cr_lab_acc'])) {
 			$_POST['cr_lab_acc'] = "";
 		}
-		$id = WO::add($_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'),
-			$_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'],
-			Validation::input_num('Labour'), $_POST['cr_lab_acc']);
+		$id = WO::add($_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'], Validation::input_num('Labour'), $_POST['cr_lab_acc']);
 		Dates::new_doc_date($_POST['date_']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
 	if (isset($_POST[UPDATE_ITEM]) && can_process()) {
-		WO::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
-			$_POST['RequDate'], $_POST['memo_']);
+		WO::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
@@ -245,7 +246,8 @@
 		label_row(_("Reference:"), $_POST['wo_ref']);
 		label_row(_("Type:"), $wo_types_array[$_POST['type']]);
 		hidden('type', $myrow["type"]);
-	} else {
+	}
+	else {
 		$_POST['units_issued'] = $_POST['released'] = 0;
 		ref_row(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
 		WO_Types::row(_("Type:"), 'type', null);
@@ -256,7 +258,8 @@
 		hidden('type', $_POST['type']);
 		label_row(_("Item:"), $myrow["StockItemName"]);
 		label_row(_("Destination Location:"), $myrow["location_name"]);
-	} else {
+	}
+	else {
 		Item_UI::manufactured_row(_("Item:"), 'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
 			Ajax::i()->activate('quantity');
@@ -265,7 +268,8 @@
 	}
 	if (!isset($_POST['quantity'])) {
 		$_POST['quantity'] = Item::qty_format(1, Input::post('stock_id'), $dec);
-	} else {
+	}
+	else {
 		$_POST['quantity'] = Item::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
 	if (get_post('type') == WO_ADVANCED) {
@@ -275,7 +279,8 @@
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::get_pref('default_workorder_required'));
-	} else {
+	}
+	else {
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		date_row(_("Date") . ":", 'date_', '', true);
 		hidden('RequDate', '');
@@ -308,10 +313,11 @@
 		}
 		submit_cells('delete', _("Delete This Work Order"), '', '', true);
 		echo "</tr></table>";
-	} else {
+	}
+	else {
 		submit_center(ADD_ITEM, _("Add Workorder"), true, '', 'default');
 	}
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>
