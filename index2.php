@@ -45,7 +45,7 @@ padding:0;
 	$count=1;
 	echo '<div class="page-break"><table ><tbody><tr>';
 	while ($item = array_pop($result)) {
-		if ($count<10) {array_push($result,$item);$count++;}else {$count=1;}
+		if ($count<1) {array_push($result,$item);$count++;}else {$count=1;}
 		$data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
 		$image = base64_encode($data);
 		echo '<td ><IMG SRC="data:image/gif;base64,
