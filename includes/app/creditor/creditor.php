@@ -89,7 +89,7 @@
 			DB::query($sql, "The supplier could not be updated");
 			return $this->_status(true, 'Processing', "Supplier has been updated.");
 		}
-		protected function delete() {
+		public function delete() {
 			// TODO: Implement delete() method.
 		}
 		protected function _canProcess() {

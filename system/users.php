@@ -51,29 +51,15 @@
 		}
 		if (can_process($user)) {
 			if ($selected_id != -1) {
-				Users::update(
-					$selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
-					$_POST['email'], $_POST['Access'], $_POST['language'],
-					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
-				);
+				Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				Users::update_password($selected_id, $_POST['user_id'], $password);
 				Errors::notice(_("The selected user has been updated."));
-			} else {
-				Users::add(
-					$_POST['user_id'], $_POST['real_name'], $password,
-					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
-					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
-				);
+			}
+			else {
+				Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				$id = DB::insert_id();
 				// use current user display preferences as start point for new user
-				Users::update_display_prefs(
-					$id, User::price_dec(), User::qty_dec(), User::exrate_dec(),
-					User::percent_dec(), User::show_gl_info(), User::show_codes(),
-					User::date_format(), User::date_sep(), User::tho_sep(),
-					User::dec_sep(), User::theme(), User::pagesize(), User::hints(),
-					$_POST['profile'], check_value('rep_popup'), User::query_size(),
-					User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab()
-				);
+				Users::update_display_prefs($id, User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
 				Errors::notice(_("A new user has been added."));
 			}
 			$Mode = MODE_RESET;
@@ -94,14 +80,12 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_("User login"), _("Full Name"), _("Phone"),
-		_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
+		_("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", ""
 	);
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
 		/*The security_headings array is defined in config.php */
@@ -115,14 +99,14 @@
 		if ($not_me) {
 			inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');
 		}
-		elseif (check_value('show_inactive'))
-		{
+		elseif (check_value('show_inactive')) {
 			label_cell('');
 		}
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		if ($not_me) {
 			delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		} else {
+		}
+		else {
 			label_cell('');
 		}
 		end_row();
@@ -150,7 +134,8 @@
 		hidden('user_id');
 		start_row();
 		label_row(_("User login:"), Input::post('user_id'));
-	} else { //end of if $selected_id only do the else when a new record is being entered
+	}
+	else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
 		$_POST['language'] = User::language();
 		$_POST['profile'] = User::print_profile();
@@ -168,16 +153,10 @@
 	Security::roles_row(_("Access Level:"), 'Access', null);
 	Languages::row(_("Language:"), 'language', null);
 	Sales_Point::row(_("User's POS") . ':', 'pos', null);
-	Reports_UI::print_profiles_row(
-		_("Printing profile") . ':', 'profile', null,
-		_('Browser printing support')
-	);
-	check_row(
-		_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'),
-		false, _('Set this option to on if your browser directly supports pdf files')
-	);
+	Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
+	check_row(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

@@ -13,10 +13,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Item Stocktake Note"));
-	Validation::check(Validation::COST_ITEMS,
-		_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
-	Validation::check(Validation::MOVEMENT_TYPES,
-		_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
+	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
+	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
@@ -27,7 +25,6 @@
 		Page::footer_exit();
 	}
 	function line_start_focus() {
-
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
@@ -60,12 +57,13 @@
 		}
 		if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
 			$_POST['ref'] = Ref::get_next(ST_INVADJUST);
-								}
+		}
 		if (!Dates::is_date($_POST['AdjDate'])) {
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			return false;
@@ -79,8 +77,7 @@
 			$current_stock = $item->getStockLevels($_POST['StockLocation']);
 			$line->quantity -= $current_stock['qty'];
 		}
-		$trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'],
-			$_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
+		$trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['adj_items']->clear_items();
 		unset($_SESSION['adj_items']);
@@ -146,6 +143,6 @@
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last('Process', _("Process Adjustment"), '', 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

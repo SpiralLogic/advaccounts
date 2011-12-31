@@ -68,7 +68,8 @@
 		alt_table_row_color($k);
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
-		} else {
+		}
+		else {
 			$disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
 		}
 		label_cell($myrow["reason_description"]);
@@ -96,6 +97,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -20,7 +20,6 @@
 		Page::footer_exit();
 	}
 	function line_start_focus() {
-
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
@@ -40,7 +39,8 @@
 			Errors::error(_("The entered date for the issue is invalid."));
 			JS::set_focus('date_');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -52,7 +52,6 @@
 		}
 		if (!Ref::is_new($_POST['ref'], ST_MANUISSUE)) {
 			$_POST['ref'] = Ref::get_next(ST_MANUISSUE);
-
 		}
 		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {
@@ -64,11 +63,11 @@
 
 	if (isset($_POST['Process']) && can_process()) {
 		// if failed, returns a stockID
-		$failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'],
-			$_SESSION['issue_items']->line_items, $_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
+		$failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items, $_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
 		if ($failed_data != null) {
 			Errors::error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _("From location :") . $failed_data[1] . "<br>");
-		} else {
+		}
+		else {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
 		}
 	} /*end of process credit note */
@@ -134,6 +133,6 @@
 	end_table();
 	submit_center('Process', _("Process Issue"), true, '', 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

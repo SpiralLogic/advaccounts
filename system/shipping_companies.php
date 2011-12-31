@@ -23,13 +23,8 @@
 	}
 
 	if ($Mode == ADD_ITEM && can_process()) {
-		$sql
-		 = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
-		VALUES (" . DB::escape($_POST['shipper_name']) . ", " .
-		 DB::escape($_POST['contact']) . ", " .
-		 DB::escape($_POST['phone']) . ", " .
-		 DB::escape($_POST['phone2']) . ", " .
-		 DB::escape($_POST['address']) . ")";
+		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
+		VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
 		DB::query($sql, "The Shipping Company could not be added");
 		Errors::notice(_('New shipping company has been added'));
 		$Mode = MODE_RESET;
@@ -53,7 +48,8 @@
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
-		} else {
+		}
+		else {
 			// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
 			$result = DB::query($sql, "check failed");
@@ -61,7 +57,8 @@
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				Errors::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
-			} else {
+			}
+			else {
 				$sql = "DELETE FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
 				DB::query($sql, "could not delete shipper");
 				Errors::notice(_('Selected shipping company has been deleted'));
@@ -87,8 +84,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["shipper_name"]);
 		label_cell($myrow["contact"]);
@@ -125,5 +121,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

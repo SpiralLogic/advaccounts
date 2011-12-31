@@ -3,7 +3,8 @@
 	/**
 	 *
 	 */
-	class JS {
+	class JS
+	{
 		/**
 		 * @var array
 		 */
@@ -37,13 +38,11 @@
 		 * @var bool
 		 */
 		private static $_openWindow = false;
-
 		/**
 		 *
 		 */
 		private function __construct() {
 		}
-
 		/**
 		 * @static
 		 *
@@ -56,11 +55,10 @@
 			if (static::$_openWindow || !Config::get('ui_windows_popups')) {
 				return;
 			}
-			$js="Adv.hoverWindow.init($width,$height);";
+			$js = "Adv.hoverWindow.init($width,$height);";
 			static::onload($js);
 			static::$_openWindow = true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -75,13 +73,11 @@
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[]
-			 =  "Adv.Forms.autocomplete('$id','$url',$callback);";
+			self::$_onload[] = "Adv.Forms.autocomplete('$id','$url',$callback);";
 			if ($o['focus']) {
 				self::setFocus("autocomplete.$id", true);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -92,14 +88,12 @@
 		public static function gmap($selector, $address, $title) {
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			$js
-			 = <<<JS
+			$js = <<<JS
 
 				Adv.maps = { api_key: '$apikey'}
 JS;
 			JS::beforeload($js);
-			$js
-			 = <<<JS
+			$js = <<<JS
 var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -114,7 +108,6 @@ JS;
 			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
-
 		/**
 		 * @static
 		 *
@@ -123,7 +116,6 @@ JS;
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
-
 		/**
 		 * @static
 		 *
@@ -143,7 +135,6 @@ JS;
 				$inserted = true;
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -164,7 +155,6 @@ JS;
 			}
 			return $name;
 		}
-
 		/**
 		 * @static
 		 *
@@ -172,7 +162,6 @@ JS;
 		public static function reset_focus() {
 			unset($_POST['_focus']);
 		}
-
 		/**
 		 * @static
 		 *
@@ -190,7 +179,6 @@ JS;
 			$content .= ";";
 			self::onload($content);
 		}
-
 		/**
 		 * @static
 		 *
@@ -203,7 +191,6 @@ JS;
 				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -242,7 +229,6 @@ JS;
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 			HTML::script(array('content' => $content))->script;
 		}
-
 		/**
 		 * @static
 		 *
@@ -250,16 +236,17 @@ JS;
 		 */
 		public static function renderJSON($data) {
 			$data = (array)$data;
-			if (isset($data['status']) && count(Errors::$dberrors) > 0) {
-				$data['status'] = Errors::JSONError();
-			} elseif (!isset($data['status']) && count(Errors::$messages) > 0) {
-				$data['status'] = Errors::JSONError();
+			$error = Errors::JSONError();
+			if (isset($data['status']) && $data['status'] && count(Errors::$dberrors) > 0) {
+				$data['status'] = $error;
 			}
-				ob_end_clean();
+			elseif (!isset($data['status']) && count(Errors::$messages) > 0) {
+				$data['status'] = $error;
+			}
+			ob_end_clean();
 			echo	 json_encode($data);
 			exit();
 		}
-
 		/**
 		 * @static
 		 *
@@ -269,7 +256,6 @@ JS;
 		public static function setFocus($selector, $cached = false) {
 			$_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
 		}
-
 		/**
 		 * @static
 		 *
@@ -281,7 +267,6 @@ JS;
 			$options = (object)$options;
 			return json_encode($options);
 		}
-
 		/**
 		 * @static
 		 *
@@ -292,7 +277,6 @@ JS;
 		public static function addEvent($selector, $type, $action) {
 			self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
 		}
-
 		/**
 		 * @static
 		 *
@@ -309,7 +293,6 @@ JS;
 			$cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
 			return self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
-
 		/**
 		 * @static
 		 *
@@ -322,7 +305,6 @@ JS;
 				self::register($clean, self::$_toclean);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -337,7 +319,6 @@ JS;
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -348,7 +329,6 @@ JS;
 				self::register($js, self::$_onload);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -359,7 +339,6 @@ JS;
 				self::register($js, self::$_beforeload);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -368,7 +347,6 @@ JS;
 		public static function headerFile($file) {
 			self::registerFile($file, self::$_headerFiles);
 		}
-
 		/**
 		 * @static
 		 *
@@ -377,7 +355,6 @@ JS;
 		public static function footerFile($file) {
 			self::registerFile($file, self::$_footerFiles);
 		}
-
 		/**
 		 * @static
 		 *
@@ -394,7 +371,6 @@ JS;
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -414,7 +390,6 @@ JS;
 				$var[$dir][$file] = $file;
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -426,10 +401,10 @@ JS;
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
-public static function redirect($url){
-	$data['status']=array('status'=>'redirect','message'=>$_SERVER['PHP_SELF']);
-	static::renderJSON($data);
-}
+		public static function redirect($url) {
+			$data['status'] = array('status' => 'redirect', 'message' => $_SERVER['PHP_SELF']);
+			static::renderJSON($data);
+		}
 		/***
 		 * @static
 		 *

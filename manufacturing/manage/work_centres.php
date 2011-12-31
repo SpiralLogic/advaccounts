@@ -25,7 +25,8 @@
 			if ($selected_id != -1) {
 				WO_WorkCentre::update($selected_id, $_POST['name'], $_POST['description']);
 				Errors::notice(_('Selected work center has been updated'));
-			} else {
+			}
+			else {
 				WO_WorkCentre::add($_POST['name'], $_POST['description']);
 				Errors::notice(_('New work center has been added'));
 			}
@@ -96,6 +97,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

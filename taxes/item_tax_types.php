@@ -25,8 +25,7 @@
 			$exempt_from = array();
 			$tax_types = Tax_Types::get_all_simple();
 			$i = 0;
-			while ($myrow = DB::fetch($tax_types))
-			{
+			while ($myrow = DB::fetch($tax_types)) {
 				if (check_value('ExemptTax' . $myrow["id"])) {
 					$exempt_from[$i] = $myrow["id"];
 					$i++;
@@ -35,7 +34,8 @@
 			if ($selected_id != -1) {
 				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('Selected item tax type has been updated'));
-			} else {
+			}
+			else {
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('New item tax type has been added'));
 			}
@@ -73,12 +73,12 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result2))
-	{
+	while ($myrow = DB::fetch($result2)) {
 		alt_table_row_color($k);
 		if ($myrow["exempt"] == 0) {
 			$disallow_text = _("No");
-		} else {
+		}
+		else {
 			$disallow_text = _("Yes");
 		}
 		label_cell($myrow["name"]);
@@ -100,8 +100,7 @@
 			// read the exemptions and check the ones that are on
 			$exemptions = Tax_ItemType::get_exemptions($selected_id);
 			if (DB::num_rows($exemptions) > 0) {
-				while ($exmp = DB::fetch($exemptions))
-				{
+				while ($exmp = DB::fetch($exemptions)) {
 					$_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
 				}
 			}
@@ -117,8 +116,7 @@
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
 		$tax_types = Tax_Types::get_all_simple();
-		while ($myrow = DB::fetch($tax_types))
-		{
+		while ($myrow = DB::fetch($tax_types)) {
 			alt_table_row_color($k);
 			label_cell($myrow["name"]);
 			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap class=right");
@@ -129,6 +127,6 @@
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

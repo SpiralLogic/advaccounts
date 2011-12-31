@@ -95,7 +95,8 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('DatePaid');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DatePaid');
 			return false;
@@ -111,7 +112,8 @@
 		$_SESSION['alloc']->amount = -Validation::input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
 			return Gl_Allocation::check();
-		} else {
+		}
+		else {
 			return true;
 		}
 	}
@@ -122,11 +124,11 @@
 		$comp_currency = Bank_Currency::for_company();
 		if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
 			$rate = 0;
-		} else {
+		}
+		else {
 			$rate = Validation::input_num('_ex_rate');
 		}
-		$payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'),
-			Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
+		$payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
 		Dates::new_doc_date($_POST['DatePaid']);
 		$_SESSION['alloc']->trans_no = $payment_id;
 		$_SESSION['alloc']->write();
@@ -145,7 +147,7 @@
 		/*First off check for valid inputs */
 		if (check_inputs() == true) {
 			handle_add_payment();
-			Renderer::end_page();
+			Page::end();
 			exit;
 		}
 	}
@@ -185,5 +187,5 @@
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

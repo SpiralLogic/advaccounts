@@ -22,10 +22,8 @@
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();
 	}
-
-		$order = Orders::session_get() ? : null;
+	$order = Orders::session_get() ? : null;
 	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
-
 		$order = new Purch_Order($_GET['PONumber']);
 	}
 	elseif ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_POST['order_id'])) {
@@ -34,9 +32,8 @@
 	}
 	$order = Purch_Order::check_edit_conflicts($order);
 	$_POST['order_id'] = $order->order_id;
-Orders::session_set($order);
+	Orders::session_set($order);
 	/*read in all the selected order into the Items order */
-
 	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
 		/* if update quantities button is hit page has been called and ${$line->line_no} would have be
 								set from the post to the quantity to be received in this receival*/
@@ -70,14 +67,13 @@ Orders::session_set($order);
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
 	end_form();
-	Renderer::end_page();
-
+	Page::end();
 	function display_po_receive_items($order) {
 		Display::div_start('grn_items');
 		start_table('tablestyle width90');
 		$th = array(
-			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"),
-			_('Discount %'), _("Total"));
+			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total")
+		);
 		table_header($th);
 		/*show the line items on the order with the quantity being received for modification */
 		$total = 0;
@@ -127,8 +123,7 @@ Orders::session_set($order);
 		/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
 		// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 		// Otherwise if you try to fullfill item quantities separately will give error.
-		$sql
-		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+		$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 			FROM purch_order_details
 			WHERE order_no=" . DB::escape($order->order_no) . " ORDER BY po_detail_item";
 		$result = DB::query($sql, "could not query purch order details");

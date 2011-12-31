@@ -29,7 +29,9 @@
 					"reporting/reports_main.php?Class=2", 'SA_ITEMSTRANSVIEW');
 				$this->add_module(_("Maintenance"));
 				$this->add_lapp_function(2, _("&Items"),
-					"inventory/manage/items.php?", 'SA_ITEM');
+									"inventory/manage/items.php?", 'SA_ITEM');
+				$this->add_lapp_function(2, _("&Items2"),
+									"items/quickitems.php?", 'SA_ITEM');
 				$this->add_lapp_function(2, _("&Foreign Item Codes"),
 					"inventory/manage/item_codes.php?", 'SA_FORITEMCODE');
 				$this->add_lapp_function(2, _("Sales &Kits"),

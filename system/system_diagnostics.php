@@ -30,11 +30,9 @@
 		'tst_langs',
 		'tst_tmpdir',
 		'tst_sessionhandler',
-			'tst_sessionpath',
+		'tst_sessionpath',
 		'tst_config',
 		'tst_extconfig'
-
-
 	);
 	function tst_mysql() {
 		$test['descr'] = _('MySQL version') . ' >3.23.58';
@@ -65,19 +63,18 @@
 	function tst_sessionpath() {
 		$test['descr'] = _('Session save path');
 		$test['type'] = 0;
-		$test['test'] = 			session_save_path();
-
+		$test['test'] = session_save_path();
 		$test['result'] = true;
 		return $test;
 	}
 
-		function tst_sessionhandler() {
-			$test['descr'] = _('Session handler');
-			$test['type'] = 0;
-			$test['test'] = session_module_name();
-			$test['result'] = true;
-			return $test;
-		}
+	function tst_sessionhandler() {
+		$test['descr'] = _('Session handler');
+		$test['type'] = 0;
+		$test['test'] = session_module_name();
+		$test['result'] = true;
+		return $test;
+	}
 
 	function tst_browser() {
 		$test['descr'] = _('Browser type');
@@ -126,7 +123,8 @@
 		$test['test'] = Config::get('logs_error_file') == '' ? _("Disabled") : Config::get('logs_error_file');
 		if (Config::get('logs_error_file') == '') {
 			$test['comments'] = _('To switch error logging set $error_logging in config.php file');
-		} else {
+		}
+		else {
 			if (!is_writable(Config::get('logs_error_file'))) {
 				$test['comments'] = _('Log file is not writeable');
 			}
@@ -174,7 +172,8 @@
 				if (!is_dir($spath) || !is_writable($spath)) {
 					$test['result'] = false;
 					$test['comments'][] = sprintf(_("'%s' is not writeable"), $spath);
-				} else {
+				}
+				else {
 					$dir = opendir($spath);
 					while (false !== ($fname = readdir($dir))) {
 						// check only *.js files. Manually installed package can contain other
@@ -280,6 +279,6 @@
 		end_row();
 	}
 	end_table();
-	Renderer::end_page();
+	Page::end();
 
 ?>

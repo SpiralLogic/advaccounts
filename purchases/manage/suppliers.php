@@ -62,12 +62,12 @@
 				DB::update_record_status($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
 				Ajax::i()->activate('supplier_id'); // in case of status change
 				Errors::notice(_("Supplier has been updated."));
-			} else {
+			}
+			else {
 				$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::escape($_POST['supp_name']) . ", " . DB::escape($_POST['supp_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['supp_address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['supp_account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit',
-					0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
+				VALUES (" . DB::escape($_POST['supp_name']) . ", " . DB::escape($_POST['supp_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['supp_address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['supp_account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
 				DB::query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = DB::insert_id();
 				$new_supplier = false;
@@ -75,7 +75,8 @@
 				Ajax::i()->activate('_page_body');
 			}
 		}
-	} elseif (isset($_POST['delete']) && $_POST['delete'] != "") {
+	}
+	elseif (isset($_POST['delete']) && $_POST['delete'] != "") {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
@@ -85,7 +86,8 @@
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
-		} else {
+		}
+		else {
 			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch_row($result);
@@ -115,7 +117,8 @@
 			Ajax::i()->activate('supplier_id');
 			JS::set_focus('supplier_id');
 		}
-	} else {
+	}
+	else {
 		hidden('supplier_id', get_post('supplier_id'));
 	}
 	start_outer_table('tablestyle2');
@@ -147,7 +150,8 @@
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
 		$_POST['notes'] = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
-	} else {
+	}
+	else {
 		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
@@ -183,7 +187,8 @@
 	if (!$new_supplier) {
 		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
-	} else {
+	}
+	else {
 		GL_Currency::row(_("Supplier's Currency:"), 'curr_code', null);
 	}
 	Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
@@ -215,12 +220,13 @@
 		submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
-	} else {
+	}
+	else {
 		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 	}
 	Display::div_end();
 	hidden('frame', Input::request('frame'));
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

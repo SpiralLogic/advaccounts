@@ -15,10 +15,10 @@
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
-	elseif (isset($_POST['selected_id']))
-	{
+	elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
-	} else {
+	}
+	else {
 		$selected_id = -1;
 	}
 	function check_data() {
@@ -30,12 +30,8 @@
 			Errors::error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
-		foreach (
-			Config::get_all('db') as $id => $con
-		)
-		{
-			if ($id != $selected_id && $_POST['host'] == $con['host']
-			 && $_POST['dbname'] == $con['dbname']
+		foreach (Config::get_all('db') as $id => $con) {
+			if ($id != $selected_id && $_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']
 			) {
 			}
 		}
@@ -65,20 +61,21 @@
 			if (($db = DB_Utils::create($conn)) == 0) {
 				Errors::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
-			} else {
+			}
+			else {
 				$filename = $_FILES['uploadfile']['tmp_name'];
 				if (is_uploaded_file($filename)) {
 					if (!DB_Utils::import($filename, $conn, $id)) {
 						Errors::error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
-					} else if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
-						DB::query(
-							"UPDATE users set password = '" . md5(
-								$_POST['admpassword']
-							) . "' WHERE user_id = 'admin'"
-						);
 					}
-				} else {
+					else {
+						if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
+							DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
+						}
+					}
+				}
+				else {
 					Errors::error(_("Error uploading Database Script, please upload it manually"));
 					$error = true;
 				}
@@ -87,17 +84,15 @@
 				remove_connection($id);
 				return false;
 			}
-		} else {
+		}
+		else {
 			if ($_GET['c'] = 'u') {
 				$conn = Config::get($id, null, 'db');
 				if (($db = DB_Utils::create($conn)) == 0) {
 					Errors::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
-				} elseif ($_POST['admpassword'] != "") {
-					DB::query(
-						"UPDATE users set password = '" . md5(
-							$_POST['admpassword']
-						) . "' WHERE user_id = 'admin'"
-					);
+				}
+				elseif ($_POST['admpassword'] != "") {
+					DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 			}
 		}
@@ -114,9 +109,7 @@
 		$id = $_GET['id'];
 		// First make sure all company directories from the one under removal are writable.
 		// Without this after operation we end up with changed per-company owners!
-		for (
-			$i = $id; $i < count(Config::get_all('db')); $i++
-		) {
+		for ($i = $id; $i < count(Config::get_all('db')); $i++) {
 			if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
 				Errors::error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
@@ -133,9 +126,7 @@
 			return;
 		}
 		// 'shift' company directories names
-		for (
-			$i = $id + 1; $i < count(Config::get_all('db')); $i++
-		) {
+		for ($i = $id + 1; $i < count(Config::get_all('db')); $i++) {
 			if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
 				Errors::error(_("Cannot rename company subdirectory"));
 				return;
@@ -169,25 +160,23 @@
 		</script>";
 		start_table('tablestyle');
 		$th = array(
-			_("Company"), _("Database Host"), _("Database User"),
-			_("Database Name"), _("Table Pref"), _("Default"), "", ""
+			_("Company"), _("Database Host"), _("Database User"), _("Database Name"), _("Table Pref"), _("Default"), "", ""
 		);
 		table_header($th);
 		$k = 0;
 		$conn = Config::get_all('db');
 		$n = count($conn);
-		for (
-			$i = 0; $i < $n; $i++
-		)
-		{
+		for ($i = 0; $i < $n; $i++) {
 			if ($i == Config::get('company_default')) {
 				$what = _("Yes");
-			} else {
+			}
+			else {
 				$what = _("No");
 			}
 			if ($i == $coyno) {
 				start_row("class='stockmankobg'");
-			} else {
+			}
+			else {
 				alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['name']);
@@ -202,12 +191,7 @@
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
-			label_cell(
-				$i == $coyno
-				 ? ''
-				 :
-				 "<a href=''>$delete</a>"
-			);
+			label_cell($i == $coyno ? '' : "<a href=''>$delete</a>");
 			end_row();
 		}
 		end_table();
@@ -217,7 +201,8 @@
 	function display_company_edit($selected_id) {
 		if ($selected_id != -1) {
 			$n = $selected_id;
-		} else {
+		}
+		else {
 			$n = count(Config::get_all('db'));
 		}
 		start_form(true);
@@ -243,7 +228,8 @@
 			$_POST['dbname'] = $conn['dbname'];
 			if ($selected_id == Config::get('company_default')) {
 				$_POST['def'] = true;
-			} else {
+			}
+			else {
 				$_POST['def'] = false;
 			}
 			$_POST['dbcreate'] = false;
@@ -278,6 +264,6 @@
 	display_companies();
 	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
-	Renderer::end_page();
+	Page::end();
 
 ?>

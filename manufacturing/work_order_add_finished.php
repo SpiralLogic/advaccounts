@@ -23,10 +23,11 @@
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array(
-			'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
+			'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype
+		);
 		Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-		Renderer::end_page();
+		Page::end();
 		exit;
 	}
 	$wo_details = WO::get($_POST['selected_id']);
@@ -43,7 +44,6 @@
 		}
 		if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
 			$_POST['ref'] = Ref::get_next(ST_MANURECEIVE);
-
 		}
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered is not a valid number or less then zero."));
@@ -54,7 +54,8 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -106,8 +107,7 @@
 		if ($_POST['ProductionType'] == 0) {
 			$_POST['quantity'] = -$_POST['quantity'];
 		}
-		$id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], Validation::input_num('quantity'), $_POST['date_'], $_POST['memo_'],
-			$close_wo);
+		$id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], Validation::input_num('quantity'), $_POST['date_'], $_POST['memo_'], $close_wo);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
 	WO_Cost::display($_POST['selected_id']);
@@ -116,8 +116,7 @@
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 	$dec = Item::qty_dec($wo_details["stock_id"]);
 	if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
-		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
-			$dec);
+		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
 	}
 	start_table('tablestyle2');
 	Display::br();
@@ -125,8 +124,7 @@
 	if (!isset($_POST['ProductionType'])) {
 		$_POST['ProductionType'] = 1;
 	}
-	yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"),
-		_("Return Items to Work Order"));
+	yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
 	small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 	date_row(_("Date:"), 'date_');
 	textarea_row(_("Memo:"), 'memo_', null, 40, 3);
@@ -134,6 +132,6 @@
 	submit_center_first('Process', _("Process"), '', 'default');
 	submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

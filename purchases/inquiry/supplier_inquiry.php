@@ -44,7 +44,8 @@
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 		start_table('tablestyle width90');
 		$th = array(
-			_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
+			_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
+		);
 		table_header($th);
 		start_row();
 		label_cell($supplier_record["curr_code"]);
@@ -102,8 +103,7 @@
 
 	function prt_link($row) {
 		if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT,
-				ICON_PRINT);
+			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
 		}
 	}
 
@@ -142,13 +142,10 @@
 			}
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
-			$sql .= " supplier.supp_name LIKE " . DB::quote($ajaxsearch)
-			 . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch)
-			 . " OR trans.reference LIKE " . DB::quote($ajaxsearch)
-			 . " OR trans.supp_reference LIKE " . DB::quote($ajaxsearch)
-			 . ")";
+			$sql .= " supplier.supp_name LIKE " . DB::quote($ajaxsearch) . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch) . " OR trans.reference LIKE " . DB::quote($ajaxsearch) . " OR trans.supp_reference LIKE " . DB::quote($ajaxsearch) . ")";
 		}
-	} else {
+	}
+	else {
 		$sql .= " AND trans . tran_date >= '$date_after'
 	 AND trans . tran_date <= '$date_to'";
 	}
@@ -158,13 +155,17 @@
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1')) {
 			$sql .= " AND (trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_BANKDEPOSIT . ")";
-		} elseif (($_POST['filterType'] == '2')) {
+		}
+		elseif (($_POST['filterType'] == '2')) {
 			$sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
-		} elseif (($_POST['filterType'] == '6')) {
+		}
+		elseif (($_POST['filterType'] == '6')) {
 			$sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
-		} elseif ($_POST['filterType'] == '3') {
+		}
+		elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_SUPPAYMENT . " OR trans.type = " . ST_BANKPAYMENT . ") ";
-		} elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
+		}
+		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
 			$sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
 		}
 		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
@@ -175,16 +176,31 @@
 	$cols = array(
 		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
 		_("#") => array('fun' => 'trans_view', 'ord' => ''),
-		_("Reference"), _("Supplier") => array('type' => 'id'),
+		_("Reference"),
+		_("Supplier") => array('type' => 'id'),
 		_("Supplier ID") => 'skip',
 		_("Supplier's Reference"),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
-			'type' => 'date', 'fun' => 'due_date'), _("Currency") => array('align' => 'center'), _("Debit") => array(
-			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), array(
-			'insert' => true, 'fun' => 'gl_view'), array(
-			'insert' => true, 'fun' => 'credit_link'), array(
-			'insert' => true, 'fun' => 'prt_link'));
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+		_("Due Date") => array(
+			'type' => 'date', 'fun' => 'due_date'
+		),
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array(
+			'align' => 'right', 'fun' => 'fmt_debit'
+		),
+		_("Credit") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
+		),
+		array(
+			'insert' => true, 'fun' => 'gl_view'
+		),
+		array(
+			'insert' => true, 'fun' => 'credit_link'
+		),
+		array(
+			'insert' => true, 'fun' => 'prt_link'
+		)
+	);
 	if (Input::post('supplier_id')) {
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
@@ -196,6 +212,6 @@
 	DB_Pager::display($table);
 	Creditor::addInfoDialog('.pagerclick');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

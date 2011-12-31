@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
-	 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
+	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 	// ----------------------------------------------------------------
 	// $ Revision:	2.0 $
 	// Creator:	Janusz Dobrwolski
@@ -20,11 +19,8 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$packing_slip = 0;
-
 	print_deliveries();
-
-	function print_deliveries()
-	{
+	function print_deliveries() {
 		global $packing_slip;
 		require_once(APPPATH . "reports/pdf.php");
 		$from = $_POST['PARAM_0'];
@@ -50,20 +46,18 @@
 			if ($packing_slip == 0) {
 				$rep = new ADVReport(_('DELIVERY'), "DeliveryNoteBulk", User::pagesize());
 			}
-			else
-			{
+			else {
 				$rep = new ADVReport(_('PACKING SLIP'), "PackingSlipBulk", User::pagesize());
 			}
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		for ($i = $fno[0]; $i <= $tno[0]; $i++)
-		{
-			if (!Sales_Trans::exists(ST_CUSTDELIVERY, $i)) {
+		for ($i = $fno[0]; $i <= $tno[0]; $i++) {
+			if (!Debtor_Trans::exists(ST_CUSTDELIVERY, $i)) {
 				continue;
 			}
-			$myrow = Sales_Trans::get($i, ST_CUSTDELIVERY);
+			$myrow = Debtor_Trans::get($i, ST_CUSTDELIVERY);
 			$branch = Sales_Branch::get($myrow["branch_code"]);
 			$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
@@ -73,21 +67,20 @@
 				if ($packing_slip == 0) {
 					$rep->title = _('DELIVERY NOTE');
 					$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
-				} else {
+				}
+				else {
 					$rep->title = _('PACKING SLIP');
 					$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
 				}
 				$rep->Info($params, $cols, null, $aligns);
 			}
-			else
-			{
+			else {
 				$rep->title = _('DELIVERY NOTE');
 			}
 			$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
-			$result = Debtor_Trans::get(ST_CUSTDELIVERY, $i);
+			$result = Debtor_TransDetail::get(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
-			while ($myrow2 = DB::fetch($result))
-			{
+			while ($myrow2 = DB::fetch($result)) {
 				if ($myrow2["quantity"] == 0) {
 					continue;
 				}
@@ -108,8 +101,7 @@
 			$comments = DB_Comments::get(ST_CUSTDELIVERY, $i);
 			if ($comments && DB::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = DB::fetch($comments))
-				{
+				while ($comment = DB::fetch($comments)) {
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}
 			}
@@ -120,7 +112,8 @@
 			$doctype = ST_CUSTDELIVERY;
 			if ($rep->currency != $myrow['curr_code']) {
 				include(DOCROOT . "reporting/includes/doctext2.php");
-			} else {
+			}
+			else {
 				include(DOCROOT . "reporting/includes/doctext.php");
 			}
 			if ($email == 1) {

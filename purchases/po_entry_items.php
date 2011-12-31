@@ -68,7 +68,8 @@
 	}
 	if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
 		$order = create_order($_GET['ModifyOrderNumber']);
-	} elseif (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
+	}
+	elseif (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 		line_start_focus();
 	}
 	elseif (isset($_GET['NewOrder'])) {
@@ -81,7 +82,6 @@
 	echo "<br>";
 	hidden('order_id');
 	$order->header();
-
 	$order->display_items();
 	start_table('tablestyle2');
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
@@ -109,16 +109,16 @@
 	if (isset($order->supplier_id)) {
 		Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
 	}
-	Renderer::end_page();
+	Page::end();
 	/**
 	 * @param $order
 	 *
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function copy_from_order($order) {
-
-		if (!Input::get('UseOrder')) $order = Purch_Order::check_edit_conflicts($order);
-
+		if (!Input::get('UseOrder')) {
+			$order = Purch_Order::check_edit_conflicts($order);
+		}
 		$_POST['supplier_id'] = $order->supplier_id;
 		$_POST['OrderDate'] = $order->orig_order_date;
 		$_POST['Requisition'] = $order->requisition_no;
@@ -129,7 +129,6 @@
 		$_POST['freight'] = $order->freight;
 		$_POST['salesman'] = $order->salesman;
 		$_POST['order_id'] = $order->order_id;
-
 		return Orders::session_set($order);
 	}
 
@@ -174,6 +173,7 @@
 
 	/**
 	 * @param Purch_Order $order
+	 *
 	 * @return mixed
 	 */
 	function handle_cancel_po($order) {
@@ -193,7 +193,7 @@
 		Errors::notice(_("This purchase order has been cancelled."));
 		Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
-		Renderer::end_page();
+		Page::end();
 		exit;
 	}
 
@@ -215,7 +215,6 @@
 			$result = DB::query($sql);
 			$row = DB::fetch($result);
 			$order->supplier_to_order($row['supplier_id']);
-
 			foreach ($sales_order->line_items as $line_no => $line_item) {
 				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 			}
@@ -242,7 +241,6 @@
 			$order = new Purch_Order($order_no);
 		}
 		$order = copy_from_order($order);
-
 		return $order;
 	}
 
@@ -300,8 +298,7 @@
 		$allow_update = check_data();
 		if ($allow_update == true) {
 			if ($allow_update == true) {
-				$sql
-				 = "SELECT long_description as description , units, mb_flag
+				$sql = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
 				$result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 				if (DB::num_rows($result) == 0) {

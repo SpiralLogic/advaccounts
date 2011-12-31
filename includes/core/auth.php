@@ -20,14 +20,12 @@
 		 * @var
 		 */
 		private $hasher;
-
 		/**
 		 * @param $username
 		 */
 		public function __construct($username) {
 			$this->username = $username;
 		}
-
 		/**
 		 * @param $id
 		 * @param $password
@@ -37,7 +35,6 @@
 			 ->exec();
 			session_regenerate_id();
 		}
-
 		/**
 		 * @param $password
 		 *
@@ -46,7 +43,6 @@
 		public function hash_password($password) {
 			return base64_encode($this->hasher()->pbkdf2($password, Config::get('auth_salt'), 10000, 32));
 		}
-
 		/**
 		 * Returns the hash object and creates it if necessary
 		 *
@@ -56,7 +52,6 @@
 			is_null($this->hasher) and $this->hasher = new Crypt_Hash();
 			return $this->hasher;
 		}
-
 		public function check_user_password($user_id, $password) {
 			$result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
 			$hashed_password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
@@ -64,14 +59,16 @@
 				$_SESSION['change_password'] = true;
 			}
 			if ($result['password'] == $hashed_password) {
-				return $result;
-			} elseif ((substr($result['password'], 0, 1) != '$' && $result['password'] == $this->hash_password($password)) || (strlen($result['password']) == 32 && $result['password'] == md5($password))) {
-				DB::update('users')->value('password', $hashed_password)->value('change_password', 0)->where('user_id=', $user_id)->exec();
-				return $result;
 			}
-			return false;
+			elseif ((substr($result['password'], 0, 1) != '$' && $result['password'] == $this->hash_password($password)) || (strlen($result['password']) == 32 && $result['password'] == md5($password))) {
+				DB::update('users')->value('password', $hashed_password)->value('change_password', 0)->where('user_id=', $user_id)->exec();
+			}
+			else {
+				$result = false;
+			}
+			DB::insert('user_log')->values(array('user' => $user_id, 'IP' => Users::get_ip(), 'success' => (bool)$result))->exec();
+			return $result;
 		}
-
 		/**
 		 * @static
 		 *
@@ -88,15 +85,18 @@
 			if ($length < 8) {
 				$returns['error'] = 1;
 				$returns['text'] = 'The password is not long enough';
-			} else {
+			}
+			else {
 				//check for a couple of bad passwords:
 				if ($username && strtolower($password) == strtolower($username)) {
 					$returns['error'] = 4;
 					$returns['text'] = 'Password cannot be the same as your Username';
-				} elseif (strtolower($password) == 'password') {
+				}
+				elseif (strtolower($password) == 'password') {
 					$returns['error'] = 3;
 					$returns['text'] = 'Password is too common';
-				} else {
+				}
+				else {
 					preg_match_all("/(.)\1{2}/", $password, $matches);
 					$consecutives = count($matches[0]);
 					preg_match_all("/\d/i", $password, $matches);
@@ -109,25 +109,30 @@
 					if ($consecutives > 0) {
 						$returns['error'] = 2;
 						$returns['text'] = 'Too many consecutive characters';
-					} elseif ($others > 1 || ($uppers > 1 && $numbers > 1)) {
+					}
+					elseif ($others > 1 || ($uppers > 1 && $numbers > 1)) {
 						//bulletproof
 						$returns['strength'] = 5;
 						$returns['text'] = 'Virtually Bulletproof';
-					} elseif (($uppers > 0 && $numbers > 0) || $length > 14) {
+					}
+					elseif (($uppers > 0 && $numbers > 0) || $length > 14) {
 						//very strong
 						$returns['strength'] = 4;
 						$returns['text'] = 'Very Strong';
-					} else {
+					}
+					else {
 						if ($uppers > 0 || $numbers > 2 || $length > 9) {
 							//strong
 							$returns['strength'] = 3;
 							$returns['text'] = 'Strong';
-						} else {
+						}
+						else {
 							if ($numbers > 1) {
 								//fair
 								$returns['strength'] = 2;
 								$returns['text'] = 'Fair';
-							} else {
+							}
+							else {
 								//weak
 								$returns['strength'] = 1;
 								$returns['text'] = 'Weak';

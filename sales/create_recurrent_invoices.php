@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
-
 	if (isset($_GET['recurrent'])) {
 		$date = Dates::Today();
 		if (Dates::is_date_in_fiscalyear($date)) {
@@ -26,33 +25,43 @@
 				while ($row = DB::fetch($cust)) {
 					$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
 				}
-			} else {
+			}
+			else {
 				$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
 			}
 			if (count($invs) > 0) {
 				$min = min($invs);
 				$max = max($invs);
-			} else {
+			}
+			else {
 				$min = $max = 0;
 			}
 			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
-					'PARAM_0' => $min . "-" . ST_SALESINVOICE, 'PARAM_1' => $max . "-" . ST_SALESINVOICE, 'PARAM_2' => "", 'PARAM_3' => 0, 'PARAM_4' => 0, 'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
+					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
+					'PARAM_1' => $max . "-" . ST_SALESINVOICE,
+					'PARAM_2' => "",
+					'PARAM_3' => 0,
+					'PARAM_4' => 0,
+					'PARAM_5' => "",
+					'PARAM_6' => ST_SALESINVOICE
+				);
 				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
 				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
-		} else {
+		}
+		else {
 			Errors::error(_("The entered date is not in fiscal year."));
 		}
 	}
-
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
 	start_table('tablestyle width70');
 	$th = array(
-		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
+	);
 	table_header($th);
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);
@@ -63,17 +72,18 @@
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
 		if ($myrow['monthly'] > 0) {
 			$due_date = Dates::begin_month($last_sent);
-		} else {
+		}
+		else {
 			$due_date = $last_sent;
 		}
 		$due_date = Dates::add_months($due_date, $myrow['monthly']);
 		$due_date = Dates::add_days($due_date, $myrow['days']);
-		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today,
-			$begin) && Dates::date1_greater_date2($end, $today);
+		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
 		if ($overdue) {
 			start_row("class='overduebg'");
 			$due = true;
-		} else {
+		}
+		else {
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["description"]);
@@ -81,7 +91,8 @@
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
-		} else {
+		}
+		else {
 			label_cell(Debtor::get_name($myrow["debtor_no"]));
 			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
@@ -92,7 +103,8 @@
 		label_cell($last_sent);
 		if ($overdue) {
 			label_cell("<a href='/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
-		} else {
+		}
+		else {
 			label_cell("");
 		}
 		end_row();
@@ -100,12 +112,12 @@
 	end_table();
 	if ($due) {
 		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
-	} else {
+	}
+	else {
 		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
-	Renderer::end_page();
-
+	Page::end();
 	function set_last_sent($id, $date) {
 		$date = Dates::date2sql($date);
 		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
@@ -123,8 +135,7 @@
 		//$doc->Comments='';
 		foreach ($doc->line_items as $line_no => $item) {
 			$line = &$doc->line_items[$line_no];
-			$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type,
-				$doc->price_factor, $doc->document_date);
+			$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type, $doc->price_factor, $doc->document_date);
 		}
 		$order = $doc;
 		$order->trans_type = ST_SALESINVOICE;

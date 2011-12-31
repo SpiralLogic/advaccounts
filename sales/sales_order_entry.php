@@ -16,13 +16,15 @@
 																														ST_SALESORDER => 'SA_SALESORDER',
 																														ST_SALESQUOTE => 'SA_SALESQUOTE',
 																														ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-																														ST_SALESINVOICE => 'SA_SALESINVOICE'), array(
-																																																				'NewOrder' => 'SA_SALESORDER',
-																																																				'ModifySalesOrder' => 'SA_SALESORDER',
-																																																				'NewQuotation' => 'SA_SALESQUOTE',
-																																																				'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-																																																				'NewDelivery' => 'SA_SALESDELIVERY',
-																																																				'NewInvoice' => 'SA_SALESINVOICE'));
+																														ST_SALESINVOICE => 'SA_SALESINVOICE'
+																											 ), array(
+																															 'NewOrder' => 'SA_SALESORDER',
+																															 'ModifySalesOrder' => 'SA_SALESORDER',
+																															 'NewQuotation' => 'SA_SALESQUOTE',
+																															 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+																															 'NewDelivery' => 'SA_SALESDELIVERY',
+																															 'NewInvoice' => 'SA_SALESINVOICE'
+																													));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::get('customer_id', Input::NUMERIC)) {
@@ -233,16 +235,14 @@
 		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
-
 		if ($order->trans_no > 0 && User::get()->can_access('SA_VOIDTRANSACTION')) {
 			submit_js_confirm('DeleteOrder', _('You are about to void this Document.\nDo you want to continue?'));
 			submit_center_first('DeleteOrder', $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
 			submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-		}else {
+		}
+		else {
 			submit_center_first('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		}
-
-
 		if ($order->trans_no == 0) {
 			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 		}
@@ -260,7 +260,7 @@
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Debtor::addEditDialog();
 	Item::addEditDialog();
-	Renderer::end_page();
+	Page::end();
 	unset($_SESSION['order_no']);
 	/**
 	 * @param				$order_no
@@ -275,14 +275,13 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
-			 "ModifyOrderNumber" : "ModifyQuotationNumber") . "=$order_no");
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" :
+			 "ModifyQuotationNumber") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-			 ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
@@ -578,11 +577,10 @@
 	 ** @param Sales_Order $order
 	 */
 	function handle_cancel_order($order) {
-		if (!User::get()->can_access(SS_SETUP)) {Errors::error('You don\'t have access to delete orders');
-		return;
+		if (!User::get()->can_access(SS_SETUP)) {
+			Errors::error('You don\'t have access to delete orders');
+			return;
 		}
-
-
 		if ($order->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");

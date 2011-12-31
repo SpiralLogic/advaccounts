@@ -24,13 +24,11 @@
 		 * @var DB
 		 */
 		protected $conn;
-
 		/**
 		 * @abstract
 		 *
 		 */
 		protected abstract function execute();
-
 		/**
 		 * @param $conn
 		 */
@@ -38,7 +36,6 @@
 			$this->conn = $conn;
 			static::$query = $this;
 		}
-
 		/**
 		 * @param $data
 		 *
@@ -50,21 +47,15 @@
 			}
 			return $this->compiled_query;
 		}
-
 		/***
 		 * @param null $data
 		 *
 		 * @return DB_Query_Result
 		 */
 		public function exec($data = null) {
-			try {
 			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
 			return $result;
-			}catch (DBException $e) {
-return  false;
-			}
 		}
-
 		/***
 		 * @return DB_Query_Result
 		 */

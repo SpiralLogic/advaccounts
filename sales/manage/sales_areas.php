@@ -24,7 +24,8 @@
 			if ($selected_id != -1) {
 				$sql = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
 				$note = _('Selected sales area has been updated');
-			} else {
+			}
+			else {
 				$sql = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales area has been added');
 			}
@@ -93,5 +94,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

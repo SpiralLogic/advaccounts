@@ -62,5 +62,5 @@
 	if (Input::get('frame')) {
 		return;
 	}
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

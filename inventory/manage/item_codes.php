@@ -21,20 +21,17 @@
 			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
-		elseif (!Validation::input_num('quantity'))
-		{
+		elseif (!Validation::input_num('quantity')) {
 			$input_error = 1;
 			Errors::error(_("The price entered was not positive number."));
 			JS::set_focus('quantity');
 		}
-		elseif ($_POST['description'] == '')
-		{
+		elseif ($_POST['description'] == '') {
 			$input_error = 1;
 			Errors::error(_("Item code description cannot be empty."));
 			JS::set_focus('description');
 		}
-		elseif ($selected_id == -1)
-		{
+		elseif ($selected_id == -1) {
 			$kit = Item_Code::get_kit($_POST['item_code']);
 			if (DB::num_rows($kit)) {
 				$input_error = 1;
@@ -44,17 +41,11 @@
 		}
 		if ($input_error == 0) {
 			if ($Mode == ADD_ITEM) {
-				Item_Code::add(
-					$_POST['item_code'], $_POST['stock_id'],
-					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
-				);
+				Item_Code::add($_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 				Errors::notice(_("New item code has been added."));
-			} else
-			{
-				Item_Code::update(
-					$selected_id, $_POST['item_code'], $_POST['stock_id'],
-					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
-				);
+			}
+			else {
+				Item_Code::update($selected_id, $_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 				Errors::notice(_("Item code has been updated."));
 			}
 			$Mode = MODE_RESET;
@@ -89,13 +80,11 @@
 	Display::div_start('code_table');
 	start_table('tablestyle width60');
 	$th = array(
-		_("EAN/UPC Code"), _("Quantity"), _("Units"),
-		_("Description"), _("Category"), "", ""
+		_("EAN/UPC Code"), _("Quantity"), _("Units"), _("Description"), _("Category"), "", ""
 	);
 	table_header($th);
 	$k = $j = 0; //row colour counter
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["item_code"]);
 		qty_cell($myrow["quantity"], $dec);
@@ -122,7 +111,8 @@
 			$_POST['category_id'] = $myrow["category_id"];
 		}
 		hidden('selected_id', $selected_id);
-	} else {
+	}
+	else {
 		$_POST['quantity'] = 1;
 		$_POST['description'] = $dflt_desc;
 		$_POST['category_id'] = $dflt_cat;
@@ -137,6 +127,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

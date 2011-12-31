@@ -24,7 +24,8 @@
 	if ($trans1["amount"] < 0) {
 		$from_trans = $trans1; // from trans is the negative one
 		$to_trans = $trans2;
-	} else {
+	}
+	else {
 		$from_trans = $trans2;
 		$to_trans = $trans1;
 	}
@@ -56,23 +57,16 @@
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
 	if ($show_both_amounts) {
-		label_cells(
-			_("Amount"), Num::format(
-				$to_trans['amount'], User::price_dec()
-			), "class='tableheader2'", "class=right"
-		);
+		label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
 	}
 	end_row();
 	start_row();
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
-	label_cells(
-		_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
-		"class='tableheader2'"
-	);
+	label_cells(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 	end_row();
 	DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);
 	end_table(1);
 	Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

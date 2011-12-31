@@ -18,8 +18,7 @@
 	}
 
 	function prt_link($row) {
-		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND
-		 && $row['type'] != ST_BANKDEPOSIT
+		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
 		) // customer payment or bank deposit printout not defined yet.
 		{
 			return Reporting::print_doc_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
@@ -82,24 +81,14 @@
 			}
 			$sql .= " ORDER BY $trans_no_name";
 			$print_type = $_POST['filterType'];
-			$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY
-			 || $print_type == ST_PURCHORDER
-			 || $print_type == ST_SALESORDER
-			 || $print_type == ST_SALESQUOTE);
+			$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY || $print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
 			$cols = array(
-				_("#"),
-				_("Reference"),
-				_("View") => array(
-					'insert' => true,
-					'fun' => 'view_link'
-				),
-				_("Print") => array(
-					'insert' => true,
-					'fun' => 'prt_link'
-				),
-				_("GL") => array(
-					'insert' => true,
-					'fun' => 'gl_view'
+				_("#"), _("Reference"), _("View") => array(
+					'insert' => true, 'fun' => 'view_link'
+				), _("Print") => array(
+					'insert' => true, 'fun' => 'prt_link'
+				), _("GL") => array(
+					'insert' => true, 'fun' => 'gl_view'
 				)
 			);
 			if (!$print_out) {
@@ -124,6 +113,6 @@
 	viewing_controls();
 	handle_search();
 	end_form(2);
-	Renderer::end_page();
+	Page::end();
 
 ?>

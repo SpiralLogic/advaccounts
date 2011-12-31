@@ -24,7 +24,7 @@
 		Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		Display::link_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 		Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-		Renderer::end_page();
+		Page::end();
 		exit;
 	}
 	$wo_details = WO::get($_POST['selected_id']);
@@ -43,7 +43,8 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -58,15 +59,12 @@
 
 	if (isset($_POST['process']) && can_process() == true) {
 		DB::begin();
-		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0,
-			$wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, $wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		$is_bank_to = Bank_Account::is($_POST['cr_acc']);
 		if ($is_bank_to) {
-			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER,
-				$_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
+			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
 		}
-		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'],
-			$wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		DB::commit();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
@@ -92,6 +90,6 @@
 	hidden('dim2', $item_accounts["dimension2_id"]);
 	submit_center('process', _("Process Additional Cost"), true, '', true);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

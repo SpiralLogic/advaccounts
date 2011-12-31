@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Page::header(_("Logout"), true, false, '');
+	Page::start(_("Logout"), true, false, '');
 	echo "<table style='width:100%' > <tr><td class='center'><img src='/themes/default/images/logo_advaccounts.png' alt='ADVAccounts' style='width:250px; height:50px' /></td>
  </tr>
  <tr>
@@ -35,7 +35,7 @@
 <br>\n";
 	session_unset();
 	session_destroy();
-	Renderer::end_page(false, false, true);
+	Page::end(false, false, true);
 ?>
 
 

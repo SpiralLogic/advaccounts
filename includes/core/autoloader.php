@@ -85,8 +85,9 @@
 		 */
 		protected static function add_classes(array $classes, $type) {
 			$classes = array_flip(array_diff_key(array_flip($classes), (array)static::$loaded));
-			foreach ($classes as $class) {
-				static::$classes[$class] = $type . str_replace('_', DS, $class) . '.php';
+			foreach ($classes as $dir => $class) {
+				if (!is_string($dir)) $dir='';
+				static::$classes[$class] = $type . $dir.DS.str_replace('_', DS, $class) . '.php';
 			}
 		}
 
@@ -163,7 +164,8 @@
 			$filepath = static::tryPath($path);
 			if ($filepath) {
 				return static::includeFile($filepath, $classname);
-			}
+			}					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . static::$classes[$class]);
+
 			return false;
 		}
 

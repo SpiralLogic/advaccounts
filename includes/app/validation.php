@@ -43,7 +43,6 @@
 		const QUICK_ENTRIES = "quick_entries";
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
-
 		public static function check($validate, $msg = '', $extra = null) {
 			if ($extra === false) {
 				return 0;
@@ -58,21 +57,20 @@
 				if (is_string($extra)) {
 					$extra = DB::escape($extra);
 				}
-			} else {
+			}
+			else {
 				$extra = '';
 			}
 			$result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
 			$myrow = DB::fetch_row($result);
 			if (!($myrow[0] > 0)) {
 				throw new Adv_Exception($msg);
-				Renderer::end_page();
-				exit;
-			} else {
+			}
+			else {
 				Cache::set('Validation' . $validate, true);
 				return $myrow[0];
 			}
 		}
-
 		//
 		//	Integer input check
 		//	Return 1 if number has proper form and is within <min, max> range
@@ -91,7 +89,6 @@
 			$result = filter_var($_POST[$postname], FILTER_VALIDATE_INT, $options);
 			return ($result === false || $result === null) ? false : 1;
 		}
-
 		//
 		//	Numeric input check.
 		//	Return 1 if number has proper form and is within <min, max> range
@@ -110,7 +107,6 @@
 			}
 			return ($result === false || $result === null) ? $default : 1;
 		}
-
 		/**
 		 *
 		 *	 Read numeric value from user formatted input

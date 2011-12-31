@@ -21,7 +21,8 @@
 		Display::br(1);
 		start_table('tablestyle');
 		$th = array(
-			_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
+			_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date")
+		);
 		table_header($th);
 		start_row();
 		label_cell($myrow["id"]);
@@ -39,7 +40,7 @@
 	Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
 	display_wo_production($wo_production);
 	Display::br(2);
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>
 

@@ -38,7 +38,8 @@
 				if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('Selected account type has been updated'));
 				}
-			} else {
+			}
+			else {
 				if (GL_Type::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('New account type has been added'));
 					$Mode = MODE_RESET;
@@ -95,7 +96,8 @@
 		$bs_text = GL_Class::get_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";
-		} else {
+		}
+		else {
 			$parent_text = GL_Type::get_name($myrow["parent"]);
 		}
 		label_cell($myrow["id"]);
@@ -122,7 +124,8 @@
 		}
 		hidden('id');
 		label_row(_("ID:"), $_POST['id']);
-	} else {
+	}
+	else {
 		text_row_ex(_("ID:"), 'id', 10);
 	}
 	text_row_ex(_("Name:"), 'name', 50);
@@ -131,6 +134,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

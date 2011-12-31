@@ -15,10 +15,11 @@
 	Page::start(_($help_context = "View Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
-	} elseif (isset($_POST["trans_no"])) {
+	}
+	elseif (isset($_POST["trans_no"])) {
 		$trans_id = $_POST["trans_no"];
 	}
-	$myrow = Sales_Trans::get($trans_id, ST_CUSTCREDIT);
+	$myrow = Debtor_Trans::get($trans_id, ST_CUSTCREDIT);
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
@@ -53,11 +54,12 @@
 	echo "</td></tr>";
 	end_table(1); // outer table
 	$sub_total = 0;
-	$result = Debtor_Trans::get(ST_CUSTCREDIT, $trans_id);
+	$result = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
 	start_table('tablestyle width95');
 	if (DB::num_rows($result) > 0) {
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
+		);
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
@@ -70,7 +72,8 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-			} else {
+			}
+			else {
 				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -82,7 +85,8 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-	} else {
+	}
+	else {
 		Errors::warning(_("There are no line items on this credit note."), 1, 2);
 	}
 	$display_sub_tot = Num::price_format($sub_total);
@@ -95,9 +99,8 @@
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 class=right", "nowrap class=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
-	Sales_Trans::display_tax_details($tax_items, 6);
-	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class=right",
-		"nowrap class=right");
+	Debtor_Trans::display_tax_details($tax_items, 6);
+	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class=right", "nowrap class=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
@@ -108,6 +111,6 @@
 	}
 	/* end of check to see that there was an invoice record to print */
 	Display::submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
-	Renderer::end_page(true);
+	Page::end(true);
 
 ?>

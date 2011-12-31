@@ -33,19 +33,19 @@
 				case ST_CUSTPAYMENT : // it's a customer payment
 				case ST_CUSTREFUND : // it's a customer refund
 				case ST_CUSTDELIVERY : // it's a customer dispatch
-					if (!Sales_Trans::exists($type, $type_no)) {
+					if (!Debtor_Trans::exists($type, $type_no)) {
 						return false;
 					}
 					if ($type == 13) // added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
 					{
-						$delivery = Sales_Trans::get($type_no, $type);
+						$delivery = Debtor_Trans::get($type_no, $type);
 						if ($delivery['trans_link'] != 0) {
 							if (static::get(10, $delivery['trans_link']) === false) {
 								return false;
 							}
 						}
 					}
-					Sales_Trans::post_void($type, $type_no);
+					Debtor_Trans::post_void($type, $type_no);
 					break;
 				case ST_LOCTRANSFER : // it's a stock transfer
 					if (Inv_Transfer::get_items($type_no) == null) {
@@ -102,19 +102,16 @@
 			static::add($type, $type_no, $date_, $memo_);
 			return true;
 		}
-
 		public static function get($type, $type_no) {
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
 			$result = DB::query($sql, "could not query voided transaction table");
 			return DB::fetch($result);
 		}
-
 		public static function has($type, $type_no) {
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
 			$result = DB::query($sql, "could not query voided transaction table");
 			return DB::num_rows($result);
 		}
-
 		public static function add($type, $type_no, $date_, $memo_) {
 			$date = Dates::date2sql($date_);
 			$sql = "INSERT INTO voided (type, id, date_, memo_)

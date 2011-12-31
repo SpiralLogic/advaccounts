@@ -14,7 +14,8 @@
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 		Page::start(_($help_context = "Inventory Item Status"), true);
-	} else {
+	}
+	else {
 		Page::start(_($help_context = "Inventory Item Status"));
 	}
 	if (Input::post('stock_id')) {
@@ -34,26 +35,24 @@
 	$kitset_or_service = false;
 	Display::div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."),
-			0, 1);
+		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
 	start_table('tablestyle');
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
-	} else {
+	}
+	else {
 		$th = array(
-			_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
-			_("Demand"), _("Available"), _("On Order")
+			_("Location"), _("Quantity On Hand"), _("Re-Order Level"), _("Demand"), _("Available"), _("On Order")
 		);
 	}
 	table_header($th);
 	$dec = Item::qty_dec($_POST['stock_id']);
 	$j = 1;
 	$k = 0; //row colour counter
-	while ($myrow = DB::fetch($loc_details))
-	{
+	while ($myrow = DB::fetch($loc_details)) {
 		alt_table_row_color($k);
 		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
@@ -68,7 +67,8 @@
 			qty_cell($qoh - $demand_qty, false, $dec);
 			qty_cell($qoo, false, $dec);
 			end_row();
-		} else {
+		}
+		else {
 			/* It must be a service or kitset part */
 			label_cell($myrow["location_name"]);
 			qty_cell($demand_qty, false, $dec);
@@ -83,6 +83,6 @@
 	end_table();
 	Display::div_end();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -19,20 +19,17 @@
 			JS::set_focus('Abbreviation');
 			return false;
 		}
-		elseif (strlen($_POST['CurrencyName']) == 0)
-		{
+		elseif (strlen($_POST['CurrencyName']) == 0) {
 			Errors::error(_("The currency name must be entered."));
 			JS::set_focus('CurrencyName');
 			return false;
 		}
-		elseif (strlen($_POST['Symbol']) == 0)
-		{
+		elseif (strlen($_POST['Symbol']) == 0) {
 			Errors::error(_("The currency symbol must be entered."));
 			JS::set_focus('Symbol');
 			return false;
 		}
-		elseif (strlen($_POST['hundreds_name']) == 0)
-		{
+		elseif (strlen($_POST['hundreds_name']) == 0) {
 			Errors::error(_("The hundredths name must be entered."));
 			JS::set_focus('hundreds_name');
 			return false;
@@ -46,16 +43,11 @@
 			return false;
 		}
 		if ($selected_id != "") {
-			GL_Currency::update(
-				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
-				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
-			);
+			GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
 			Errors::notice(_('Selected currency settings has been updated'));
-		} else {
-			GL_Currency::add(
-				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
-				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
-			);
+		}
+		else {
+			GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
 			Errors::notice(_('New currency has been added'));
 		}
 		$Mode = MODE_RESET;
@@ -115,17 +107,16 @@
 		$result = GL_Currency::get_all(check_value('show_inactive'));
 		start_table('tablestyle');
 		$th = array(
-			_("Abbreviation"), _("Symbol"), _("Currency Name"),
-			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
+			_("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
 		);
 		inactive_control_column($th);
 		table_header($th);
 		$k = 0; //row colour counter
-		while ($myrow = DB::fetch($result))
-		{
+		while ($myrow = DB::fetch($result)) {
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");
-			} else {
+			}
+			else {
 				alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
@@ -133,17 +124,13 @@
 			label_cell($myrow["currency"]);
 			label_cell($myrow["hundreds_name"]);
 			label_cell($myrow["country"]);
-			label_cell(
-				$myrow[1] == $company_currency
-				 ? '-'
-				 :
-				 ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'"
-			);
+			label_cell($myrow[1] == $company_currency ? '-' : ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'");
 			inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
 			if ($myrow["curr_abrev"] != $company_currency) {
 				delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
-			} else {
+			}
+			else {
 				label_cell('');
 			}
 			end_row();
@@ -170,7 +157,8 @@
 			hidden('Abbreviation');
 			hidden('selected_id', $selected_id);
 			label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);
-		} else {
+		}
+		else {
 			$_POST['auto_update'] = 1;
 			text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
 		}
@@ -199,6 +187,6 @@
 	display_currencies();
 	display_currency_edit($selected_id);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

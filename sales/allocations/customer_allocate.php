@@ -24,8 +24,7 @@
 
 	function edit_allocations_for_transaction($type, $trans_no) {
 		global $systypes_array;
-		Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type],
-			$_SESSION['alloc']->trans_no));
+		Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
 		Display::heading($_SESSION['alloc']->person_name);
 		Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
 		Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
@@ -36,12 +35,11 @@
 			Gl_Allocation::show_allocatable(true);
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
-			submit_center_last('Cancel', _("Back to Allocations"),
-				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
-		} else {
+			submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+		}
+		else {
 			Errors::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-			submit_center('Cancel', _("Back to Allocations"), true,
-				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+			submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}
 		Display::div_end();
 		end_form();
@@ -69,6 +67,6 @@
 	if (isset($_SESSION['alloc'])) {
 		edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
 	}
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -21,13 +21,14 @@
 	if (isset($_POST)) {
 		unset($_POST);
 	}
-	$receipt = Sales_Trans::get($trans_id, $trans_type);
+	$receipt = Debtor_Trans::get($trans_id, $trans_type);
 	echo "<br>";
 	start_table('tablestyle2 width90');
 	echo "<tr class='tableheader2 top'><th colspan=6>";
 	if ($trans_type == ST_CUSTPAYMENT) {
 		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
-	} else {
+	}
+	else {
 		Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
 	echo "</td></tr>";
@@ -56,5 +57,5 @@
 		return;
 	}
 	Display::submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

@@ -27,5 +27,5 @@
 	Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());
 	WO::display_bom(Input::post('stock_id'));
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

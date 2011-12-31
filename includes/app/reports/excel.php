@@ -48,13 +48,11 @@
 		public $formatFooter;
 		public $formatAmount = array();
 		public $sheet;
-
-		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL,
-			$excelColWidthFactor = 6.5) {
+		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
 			global $page_security;
 			if (!User::get()->can_access_page($page_security)) {
 				Errors::error(_("The security settings on your account do not permit you to print this report"));
-				Renderer::end_page();
+				Page::end();
 				exit;
 			}
 			$this->size = $size;
@@ -97,10 +95,12 @@
 			if ($how == 0) {
 				$dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
 				$dateformat = "mm{$sep}dd{$sep}yyyy";
-			} elseif ($how == 1) {
+			}
+			elseif ($how == 1) {
 				$dateformat_long = "dd{$sep}mm{$sep}yyyy\ \ hh:mm";
 				$dateformat = "dd{$sep}mm{$sep}yyyy";
-			} else {
+			}
+			else {
 				$dateformat_long = "yyyy{$sep}mm{$sep}dd\ \ hh:mm";
 				$dateformat = "yyyy{$sep}mm{$sep}dd";
 			}
@@ -156,7 +156,6 @@
 			$this->formatFooter->setTop(2);
 			$this->formatFooter->setTopColor('gray');
 		}
-
 		// Check a given name to see if it's a valid Excel worksheet name,
 		// and fix if necessary
 		public function worksheetNameGenerator($name) {
@@ -171,7 +170,6 @@
 			}
 			return $name;
 		}
-
 		public function NumFormat($dec) {
 			if (!isset($this->formatAmount[$dec])) {
 				$dec = (int)$dec;
@@ -189,16 +187,15 @@
 			}
 			return $this->formatAmount[$dec];
 		}
-
 		public function Font($fontname = '', $style = 'normal') {
 		}
-
 		public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
 			$this->company = DB_Company::get_prefs();
 			$year = DB_Company::get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
-			} else {
+			}
+			else {
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
@@ -220,7 +217,6 @@
 				$this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
 			}
 		}
-
 		public function Header() {
 			$tcol = $this->numcols - 1;
 			$this->sheet->setRow($this->y, 20);
@@ -271,11 +267,13 @@
 					if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
 						if ($this->aligns2[$j] == "right") {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
-						} else {
+						}
+						else {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
 						}
 						$j++;
-					} else {
+					}
+					else {
 						$this->sheet->writeString($this->y, $i, "", $this->formatHeaderLeft);
 					}
 				}
@@ -284,22 +282,22 @@
 			for ($i = 0; $i < $this->numcols; $i++) {
 				if (!isset($this->headers[$i])) {
 					$header = "";
-				} else {
+				}
+				else {
 					$header = $this->headers[$i];
 				}
 				if ($this->aligns[$i] == "right") {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-				} else {
+				}
+				else {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
 				}
 			}
 			$this->NewLine();
 		}
-
 		public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
 			return;
 		}
-
 		// Alternate header style - primary differences are for PDFs
 		public function Header3() {
 			// Flag to make sure we only print the company name once
@@ -389,11 +387,13 @@
 					if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
 						if ($this->aligns2[$j] == "right") {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderRight);
-						} else {
+						}
+						else {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderLeft);
 						}
 						$j++;
-					} else {
+					}
+					else {
 						$this->sheet->writeString($this->y, $i, "", $this->formatTopHeaderLeft);
 					}
 				}
@@ -402,24 +402,29 @@
 			for ($i = 0; $i < $this->numcols; $i++) {
 				if (!isset($this->headers[$i])) {
 					$header = "";
-				} else {
+				}
+				else {
 					$header = $this->headers[$i];
 				}
 				if ($this->aligns[$i] == "right") {
 					if ($this->headers2 == null) {
 						$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-					} else {
+					}
+					else {
 						$this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderRight);
 					}
-				} else if ($this->headers2 == null) {
-					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
-				} else {
-					$this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderLeft);
+				}
+				else {
+					if ($this->headers2 == null) {
+						$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
+					}
+					else {
+						$this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderLeft);
+					}
 				}
 			}
 			$this->NewLine();
 		}
-
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
@@ -437,76 +442,66 @@
 				$day = (int)(substr($date, 8, 2));
 				if ($output_format == 0) {
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
-				} elseif ($output_format == 1) {
+				}
+				elseif ($output_format == 1) {
 					return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
-				} elseif ($output_format == 2) {
+				}
+				elseif ($output_format == 2) {
 					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
-			} else {
+			}
+			else {
 				return $date;
 			}
 		}
-
 		public function AddImage($logo, $x, $y, $w, $h) {
 			return;
 		}
-
 		public function SetDrawColor($r, $g, $b) {
 			return;
 		}
-
 		public function SetTextColor($r, $g, $b) {
 			return;
 		}
-
 		public function SetFillColor($r, $g, $b) {
 			return;
 		}
-
 		public function GetCellPadding() {
 			return 0;
 		}
-
 		public function SetCellPadding($pad) {
 			return;
 		}
-
 		public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			return;
 		}
-
 		public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			return;
 		}
-
 		public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			$txt = html_entity_decode($txt);
 			if ($this->aligns[$c] == 'right') {
 				$this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
-			} else {
+			}
+			else {
 				$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
 			}
 			if ($n - $c > 1) {
 				$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
 			}
 		}
-
-		public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0,
-			$color_red = false) {
+		public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = false) {
 			if (!is_numeric($txt)) {
 				$txt = 0;
 			}
 			$this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec));
 		}
-
-		public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0,
-			$color_red = false, $amount_locale = NULL, $amount_format = NULL) {
+		public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = false, $amount_locale = NULL, $amount_format = NULL) {
 			if (!is_numeric($txt)) {
 				$txt = 0;
 			}
 			$this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec));
 		}
-
 		public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			if (!$conv) {
 				$txt = Dates::date2sql($txt);
@@ -515,7 +510,6 @@
 			$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
 			$this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
 		}
-
 		public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			$txt = html_entity_decode($txt);
 			$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
@@ -523,15 +517,12 @@
 				$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
 			}
 		}
-
 		public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			return;
 		}
-
 		public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			return;
 		}
-
 		/**
 		 * Crude text wrap calculator based on PDF version.
 		 */
@@ -549,38 +540,32 @@
 					if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
 						$txt2 = substr($txt2, 0, $pos);
 						$ret = substr($txt, $pos + 1);
-					} else {
+					}
+					else {
 						$ret = substr($txt, $k);
 					}
 				}
 			}
 			return array($txt2, $ret);
 		}
-
 		public function SetLineStyle($style) {
 			return;
 		}
-
 		public function SetLineWidth($width) {
 			return;
 		}
-
 		public function LineTo($from, $row, $to, $row2) {
 			return;
 		}
-
 		public function Line($row, $height = 0) {
 			return;
 		}
-
 		public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
 			return;
 		}
-
 		public function NewLine($l = 1, $np = 0, $h = NULL) {
 			$this->y += $l;
 		}
-
 		public function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
 		{ // if we need the time part too, we have to add this value after a decimalpoint.
 			$mo = array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -591,17 +576,20 @@
 			}
 			if ($mon < 1) {
 				$mon = 1;
-			} elseif ($mon > 12) {
+			}
+			elseif ($mon > 12) {
 				$mon = 12;
 			}
 			if ($day < 1) {
 				$day = 1;
-			} elseif ($day > $mo[$mon]) {
+			}
+			elseif ($day > $mo[$mon]) {
 				$day = $mo[$mon];
 			}
 			if ($year < $BASE) {
 				$year = $BASE;
-			} elseif ($year > $MAXYEAR) {
+			}
+			elseif ($year > $MAXYEAR) {
 				$year = $MAXYEAR;
 			}
 			$jul = (int)$day;
@@ -616,14 +604,12 @@
 			}
 			return $jul;
 		}
-
 		public function px2units($px) // XLS app conversion. Not bulletproof.
 		{
 			$excel_column_width_factor = 256;
 			$unit_offset_length = $this->excelColWidthFactor;
 			return ($px / $unit_offset_length);
 		}
-
 		public function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
 			for ($i = 0; $i < $this->numcols; $i++) {
 				$this->sheet->writeBlank($this->y, $i, $this->formatFooter);

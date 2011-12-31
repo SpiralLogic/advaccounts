@@ -9,21 +9,21 @@
 	return array(
 		'css' => array(
 			'default.css', //
-			'jquery-ui-1.8.7.css', //
-			'jquery.calculator.css', //
-			'jquery.fileupload-ui.css'
+			'jquery-ui.css', //
+			'jquery.calc.css', //
+		//	'jquery.fileupload-ui.css'
 		), //
 		'header' => array(), //
 		'footer' => array(
 			'/js/libs/JsHttpRequest.js',
-			'/js/libs/jquery-1.7.min.js',
-			'/js/libs/jquery-ui-1.8.14.min.js',
+			'/js/libs/jquery.min.js',
+			'/js/libs/jquery-ui.min.js',
 			'/js/behaviour.js',
 			'/js/utils.js',
 			'/js/inserts.js',
 			'/js/advanced.js',
 			'/js/libs/jquery-tmpl.min.js',
-			'/js/libs/jquery.calculator.pack.js',
+			'/js/libs/jquery.calc.js',
 			'/js/calc.js',
 			'/js/sidemenu.js',
 		), //

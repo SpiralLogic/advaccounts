@@ -14,8 +14,11 @@
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
 		$page_security = 'SA_GLACCOUNTTAGS';
-	} else if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
-		$page_security = 'SA_DIMTAGS';
+	}
+	else {
+		if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
+			$page_security = 'SA_DIMTAGS';
+		}
 	}
 	// We use Input::post('type') throughout this script, so convert $_GET vars
 	// if Input::post('type') is not set.
@@ -23,10 +26,10 @@
 		if (Input::get('type') == "account") {
 			$_POST['type'] = TAG_ACCOUNT;
 		}
-		elseif (Input::get('type') == "dimension")
-		{
+		elseif (Input::get('type') == "dimension") {
 			$_POST['type'] = TAG_DIMENSION;
-		} else {
+		}
+		else {
 			die(_("Unspecified tag type"));
 		}
 	}
@@ -57,7 +60,8 @@
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
 					Errors::notice(_('Selected tag settings have been updated'));
 				}
-			} else {
+			}
+			else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
 					Errors::notice(_('New tag has been added'));
 				}
@@ -97,8 +101,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow['name']);
 		label_cell($myrow['description']);
@@ -127,6 +130,6 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

@@ -73,7 +73,6 @@
 	$update_pager = false;
 	function update_data() {
 		global $update_pager;
-
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
 		Ajax::i()->activate('summary');
@@ -83,7 +82,6 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($reconcile_id) {
-
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
 			return false;
@@ -223,13 +221,21 @@
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(
 		_("Type") => array(
-			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => array('date', 'ord' => ''), _("Debit") => array(
-			'align' => 'right', 'fun' => 'fmt_debit', 'ord' => ''), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit', 'ord' => ''), _("Person/Item") => array('fun' => 'fmt_person'), array(
-			'insert' => true, 'fun' => 'gl_view'), "X" => array(
-			'insert' => true, 'fun' => 'rec_checkbox'), array(
-			'insert' => true, 'fun' => 'ungroup'));
+			'fun' => 'systype_name', 'ord' => ''
+		), _("#") => array(
+			'fun' => 'trans_view', 'ord' => ''
+		), _("Reference"), _("Date") => array('date', 'ord' => ''), _("Debit") => array(
+			'align' => 'right', 'fun' => 'fmt_debit', 'ord' => ''
+		), _("Credit") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit', 'ord' => ''
+		), _("Person/Item") => array('fun' => 'fmt_person'), array(
+			'insert' => true, 'fun' => 'gl_view'
+		), "X" => array(
+			'insert' => true, 'fun' => 'rec_checkbox'
+		), array(
+			'insert' => true, 'fun' => 'ungroup'
+		)
+	);
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
 	DB_Pager::display($table);
@@ -244,6 +250,6 @@
 	})
 JS;
 	JS::onload($js);
-	Renderer::end_page();
+	Page::end();
 
 ?>

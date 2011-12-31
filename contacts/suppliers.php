@@ -22,32 +22,38 @@
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Creditor::search($_GET['term']);
-		} elseif (isset($_POST['id'])) {
+		}
+		elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {
 				$data['supplier'] = $supplier = new Creditor($_POST);
 				$supplier->save();
 				$data['status'] = $supplier->getStatus();
-			} elseif (!isset($_POST['name'])) {
+			}
+			elseif (!isset($_POST['name'])) {
 				$data['supplier'] = $supplier = new Creditor($_POST['id']);
 			}
-		} else {
+		}
+		else {
 			$data['supplier'] = new Creditor(0);
 		}
-		 JS::renderJSON($data);
+		JS::renderJSON($data);
 	}
 	JS::footerFile("js/suppliers.js");
 	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
 	if (isset($_GET['id'])) {
 		$supplier = new Creditor($_GET['id']);
-	} elseif (isset($_POST['id']) && !empty($_POST['id'])) {
+	}
+	elseif (isset($_POST['id']) && !empty($_POST['id'])) {
 		$supplier = new Creditor($_POST['id']);
-	} else {
+	}
+	else {
 		$supplier = new Creditor();
 	}
 	if (Validation::check(Validation::SUPPLIERS)) {
 		HTML::div('suppliersearch', array('style' => 'text-align:center; '));
 		UI::search('supplier', array(
-																'label' => 'Supplier:', 'size' => 80, 'callback' => 'Supplier.fetch'));
+																'label' => 'Supplier:', 'size' => 80, 'callback' => 'Supplier.fetch'
+													 ));
 	}
 	$menu = new MenuUI();
 	$menu->startTab('Details', 'Supplier Details');
@@ -85,11 +91,15 @@
 	$menu->render();
 	if ($customer->id) {
 		UI::button('btnSupplier', 'Update Supplier', array(
-																											'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
-	} else {
+																											'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
+																								 ));
+	}
+	else {
 		UI::button('btnSupplier', 'New Supplier', array(
-																									 'name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden', 'style' => 'margin:10px;'));
+																									 'name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden', 'style' => 'margin:10px;'
+																							));
 	}
 	UI::button('btnCancel', 'Cancel', array(
-																				 'name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
-	Renderer::end_page(true, true);
+																				 'name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
+																		))->div;
+	Page::end(true, true);

@@ -14,7 +14,8 @@
 	if (get_post('view')) {
 		if (!get_post('backups')) {
 			Errors::error(_('Select backup file first.'));
-		} else {
+		}
+		else {
 			$filename = BACKUP_PATH . get_post('backups');
 			if (Ajax::in_ajax()) {
 				Ajax::i()->popup($filename);
@@ -37,12 +38,8 @@
 	check_paths();
 	function check_paths() {
 		if (!file_exists(BACKUP_PATH)) {
-			Errors::error(
-				_("Backup paths have not been set correctly.")
-				 . _("Please contact System Administrator.") . "<br>"
-				 . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>"
-			);
-			Renderer::end_page();
+			Errors::error(_("Backup paths have not been set correctly.") . _("Please contact System Administrator.") . "<br>" . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>");
+			Page::end();
 			exit;
 		}
 	}
@@ -50,32 +47,25 @@
 	function generate_backup($conn, $ext = 'no', $comm = '') {
 		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename) {
-			Errors::notice(
-				_("Backup successfully generated.") . ' '
-				 . _("Filename") . ": " . $filename
-			);
-		} else {
+			Errors::notice(_("Backup successfully generated.") . ' ' . _("Filename") . ": " . $filename);
+		}
+		else {
 			Errors::error(_("Database backup failed."));
 		}
 		return $filename;
 	}
 
 	function get_backup_file_combo() {
-
 		$ar_files = array();
 		JS::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);
-		while (($file = readdir($dh)) !== false)
-		{
+		while (($file = readdir($dh)) !== false) {
 			$ar_files[] = $file;
 		}
 		closedir($dh);
 		rsort($ar_files);
 		$opt_files = "";
-		foreach (
-			$ar_files as $file
-		)
-		{
+		foreach ($ar_files as $file) {
 			if (preg_match("/.sql(.zip|.gz)?$/", $file)) {
 				$opt_files .= "<option value='$file'>$file</option>";
 			}
@@ -127,12 +117,10 @@
 	}
 	if (get_post('deldump')) {
 		if (unlink(BACKUP_PATH . get_post('backups'))) {
-			Errors::notice(
-				_("File successfully deleted.") . " "
-				 . _("Filename") . ": " . get_post('backups')
-			);
+			Errors::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . get_post('backups'));
 			Ajax::i()->activate('backups');
-		} else {
+		}
+		else {
 			Errors::error(_("Can't delete backup file."));
 		}
 	}
@@ -147,8 +135,8 @@
 			rename($tmpname, BACKUP_PATH . $fname);
 			Errors::notice("File uploaded to backup directory");
 			Ajax::i()->activate('backups');
-		} else
-		{
+		}
+		else {
 			Errors::error(_("File was not uploaded into the system."));
 		}
 	}
@@ -181,5 +169,5 @@
 	end_row();
 	end_outer_table();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

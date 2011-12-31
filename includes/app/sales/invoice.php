@@ -31,7 +31,7 @@
 			if (is_array($delivery_no)) {
 				$delivery_no = 0;
 			}
-			Sales_Trans::update_version(Sales_Trans::get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
+			Debtor_Trans::update_version(Debtor_Trans::get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
 			$ov_gst = 0;
 			$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 			foreach ($taxes as $taxitem) {
@@ -50,7 +50,8 @@
 			// the transaction will be settled at once.
 			if (Bank_Account::is($branch_data['receivables_account'])) {
 				$alloc = $items_total + $items_added_tax + $invoice->freight_cost + $freight_added_tax;
-			} else {
+			}
+			else {
 				$alloc = 0;
 			}
 			/* Insert/update the debtor_trans */
@@ -58,15 +59,11 @@
 			if (is_array($sales_order)) {
 				$sales_order = $sales_order[0];
 			} // assume all crucial SO data are same for every delivery
-			$invoice_no = Sales_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
-				$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
-				$items_added_tax, $invoice->freight_cost, $freight_added_tax,
-				$invoice->sales_type, $sales_order, $delivery_no,
-				$invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
+			$invoice_no = Debtor_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id, $invoice->Branch, $date_, $invoice->reference, $items_total, 0, $items_added_tax, $invoice->freight_cost, $freight_added_tax, $invoice->sales_type, $sales_order, $delivery_no, $invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
 			// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 			if ($trans_no == 0) {
 				$invoice->trans_no = array($invoice_no => 0);
-				Sales_Trans::set_parent($invoice);
+				Debtor_Trans::set_parent($invoice);
 			}
 			else {
 				DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
@@ -76,17 +73,10 @@
 			}
 			$total = 0;
 			foreach ($invoice->line_items as $line_no => $invoice_line) {
-				$line_taxfree_price = Tax::tax_free_price($invoice_line->stock_id,
-					$invoice_line->price, 0, $invoice->tax_included,
-					$invoice->tax_group_array);
-				$line_tax = Tax::full_price_for_item($invoice_line->stock_id,
-					$invoice_line->price, 0, $invoice->tax_included,
-					$invoice->tax_group_array) - $line_taxfree_price;
-				Debtor_Trans::add(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
-					$invoice_line->description, $invoice_line->qty_dispatched,
-					$invoice_line->line_price(), $line_tax, $invoice_line->discount_percent,
-					$invoice_line->standard_cost,
-					$trans_no ? $invoice_line->id : 0);
+				$line_taxfree_price = Tax::tax_free_price($invoice_line->stock_id, $invoice_line->price, 0, $invoice->tax_included, $invoice->tax_group_array);
+				$line_tax = Tax::full_price_for_item($invoice_line->stock_id, $invoice_line->price, 0, $invoice->tax_included, $invoice->tax_group_array) - $line_taxfree_price;
+				Debtor_TransDetail::add(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id, $invoice_line->description, $invoice_line->qty_dispatched, $invoice_line->line_price(), $line_tax, $invoice_line->discount_percent, $invoice_line->standard_cost, $trans_no ?
+				 $invoice_line->id : 0);
 				// Update delivery items for the quantity invoiced
 				if ($invoice_line->qty_old != $invoice_line->qty_dispatched) {
 					Sales_Order::update_parent_line(ST_SALESINVOICE, $invoice_line->src_id, ($invoice_line->qty_dispatched - $invoice_line->qty_old));
@@ -97,53 +87,32 @@
 						//Post sales transaction to GL credit sales
 						// 2008-06-14. If there is a Branch Sales Account, then override with this,
 						// else take the Item Sales Account
-						$sales_account = (
-						$branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
+						$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
 						// 2008-08-01. If there is a Customer Dimension, then override with this,
 						// else take the Item Dimension (if any)
-						$dim = ($invoice->dimension_id != $customer['dimension_id']
-						 ? $invoice->dimension_id
-						 :
+						$dim = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id :
 						 ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
-						$dim2 = ($invoice->dimension2_id != $customer['dimension2_id']
-						 ? $invoice->dimension2_id
-						 :
-						 ($customer['dimension2_id'] != 0
-							? $customer["dimension2_id"]
-							:
-							$stock_gl_code["dimension2_id"]));
-						$total += Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
-							(-$line_taxfree_price * $invoice_line->qty_dispatched),
-							$invoice->customer_id, "The sales price GL posting could not be inserted");
+						$dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id :
+						 ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
+						$total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2, (-$line_taxfree_price * $invoice_line->qty_dispatched), $invoice->customer_id, "The sales price GL posting could not be inserted");
 						if ($invoice_line->discount_percent != 0) {
-							$total += Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_,
-								$branch_data["sales_discount_account"], $dim, $dim2,
-								($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
-								$invoice->customer_id, "The sales discount GL posting could not be inserted");
+							$total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, ($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent), $invoice->customer_id, "The sales discount GL posting could not be inserted");
 						} /*end of if discount !=0 */
 					}
 				} /*quantity dispatched is more than 0 */
 			} /*end of delivery_line loop */
 			if (($items_total + $charge_shipping) != 0) {
-				$total += Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
-					($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
-					$invoice->customer_id, "The total debtor GL posting could not be inserted");
+				$total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0, ($items_total + $charge_shipping + $items_added_tax + $freight_added_tax), $invoice->customer_id, "The total debtor GL posting could not be inserted");
 			}
 			if ($charge_shipping != 0) {
-				$total += Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
-					-$invoice->get_tax_free_shipping(), $invoice->customer_id,
-					"The freight GL posting could not be inserted");
+				$total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0, -$invoice->get_tax_free_shipping(), $invoice->customer_id, "The freight GL posting could not be inserted");
 			}
 			// post all taxes
 			foreach ($taxes as $taxitem) {
 				if ($taxitem['Net'] != 0) {
 					$ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($invoice->customer_id), $date_);
-					GL_Trans::add_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
-						$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
-						$taxitem['Net'], $ex_rate, $date_, $invoice->reference);
-					$total += Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
-						(-$taxitem['Value']), $invoice->customer_id,
-						"A tax GL posting could not be inserted");
+					GL_Trans::add_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'], $taxitem['rate'], $invoice->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $date_, $invoice->reference);
+					$total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0, (-$taxitem['Value']), $invoice->customer_id, "A tax GL posting could not be inserted");
 				}
 			}
 			/*Post a balance post if $total != 0 */
@@ -155,28 +124,27 @@
 			DB::commit();
 			return $invoice_no;
 		}
-
 		public static function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
 			// reverse all the changes in parent document(s)
-			$items_result = Debtor_Trans::get($type, $type_no);
-			$deliveries = Sales_Trans::get_parent($type, $type_no);
+			$items_result = Debtor_TransDetail::get($type, $type_no);
+			$deliveries = Debtor_Trans::get_parent($type, $type_no);
 			if ($deliveries !== 0) {
-				$srcdetails = Debtor_Trans::get(Sales_Trans::get_parent_type($type), $deliveries);
+				$srcdetails = Debtor_TransDetail::get(Debtor_Trans::get_parent_type($type), $deliveries);
 				while ($row = DB::fetch($items_result)) {
 					$src_line = DB::fetch($srcdetails);
 					Sales_Order::update_parent_line($type, $src_line['id'], -$row['quantity']);
 				}
 			}
 			// clear details after they've been reversed in the sales order
-			Debtor_Trans::void($type, $type_no);
+			Debtor_TransDetail::void($type, $type_no);
 			GL_Trans::void_tax_details($type, $type_no);
 			Sales_Allocation::void($type, $type_no);
 			// do this last because other voidings can depend on it - especially voiding
 			// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
-			Sales_Trans::void($type, $type_no);
+			Debtor_Trans::void($type, $type_no);
 			DB::commit();
 		}
 	}

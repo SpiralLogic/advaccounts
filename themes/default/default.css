@@ -149,7 +149,7 @@ div#content {
 	position:   fixed;
 	text-align: center;
 
-	background: url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
+	background: white url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
 }
 
 #sidemenu {
@@ -519,15 +519,19 @@ div.banner a + a { border-top: 2px groove #999 }
 	background: #fff url(images/wrapbg.gif) repeat-x;
 
 }
-.contacts #custsearch{  position: relative;
+
+.contacts #custsearch {
+	position:                           relative;
 	-webkit-transition-duration:        1s;
 	-webkit-transition-timing-function: linear;
- -moz-transition:all 1s ease-in;
- -o-transition:all 1s ease-in;
+	-moz-transition:                    all 1s ease-in;
+	-o-transition:                      all 1s ease-in;
 }
+
 .contacts #custsearch.hide {
-		height:0;
+	height: 0;
 }
+
 .Inventory #_tabs2 {
 
 	background: #464646;
@@ -799,7 +803,7 @@ table.tablestyle_inner {
 table.tablestyle_inner td {
 	border-collapse: collapse;
 	border:          1px solid #f9f9f9;
-	padding:         5px;
+
 }
 
 .tablestyle_noborder {
@@ -820,7 +824,6 @@ table.tablestyle_inner td {
 	font-size:        12px;
 
 }
-
 .td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
 	text-indent:   5px;
 	border:        1px solid #E1E1E1;
@@ -1177,11 +1180,13 @@ body.lite {
 .inactive {
 	color: gray;
 }
+
 #msgbox {
-	width:80%;
-	margin:10px auto;
+	width:       80%;
+	margin:      10px auto;
 	font-weight: bolder;
 }
+
 div.err_msg {
 	margin:           10px;
 	padding:          3px;

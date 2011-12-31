@@ -22,12 +22,10 @@
 	echo "<hr></div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	function select_link($row) {
-		return DB_Pager::link($row["parent"] . " - " . $row["description"],
-		 "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
+		return DB_Pager::link($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 	}
 
-	$sql
-	 = "SELECT
+	$sql = "SELECT
 		bom.parent,
 		workcentre.name As WorkCentreName,
 		location.location_name,
@@ -39,15 +37,12 @@
 			AND bom.loc_code = location.loc_code
 			AND bom.component=" . DB::quote($_POST['stock_id']);
 	$cols = array(
-		_("Parent Item") => array('fun' => 'select_link'),
-		_("Work Centre"),
-		_("Location"),
-		_("Quantity Required")
+		_("Parent Item") => array('fun' => 'select_link'), _("Work Centre"), _("Location"), _("Quantity Required")
 	);
 	$table =& db_pager::new_db_pager('usage_table', $sql, $cols);
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

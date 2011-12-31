@@ -6,32 +6,39 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends Exception {
+	class DBException extends Exception
+	{
 	}
 
-	class DBUpdateException extends DBException {
-	}
-
-	;
-	class DBInsertException extends DBException {
-	}
-
-	;
-	class DBDeleteException extends DBException {
+	class DBUpdateException extends DBException
+	{
 	}
 
 	;
-	class DBSelectException extends DBException {
+	class DBInsertException extends DBException
+	{
+	}
+
+	;
+	class DBDeleteException extends DBException
+	{
+	}
+
+	;
+	class DBSelectException extends DBException
+	{
 	}
 
 	;
 	/**
 	 *
 	 */
-	class DBDuplicateException extends DBException {
+	class DBDuplicateException extends DBException
+	{
 	}
 
-	class DB {
+	class DB
+	{
 		/**
 		 *
 		 */
@@ -111,7 +118,6 @@
 		 * @var DB
 		 */
 		protected static $i = null;
-
 		/***
 		 * @static
 		 *
@@ -127,7 +133,6 @@
 			}
 			return static::$i;
 		}
-
 		/**
 		 * @param $config
 		 */
@@ -140,7 +145,6 @@
 			static::$debug = false;
 			$this->_connect();
 		}
-
 		/**
 		 *
 		 * @return bool
@@ -151,12 +155,10 @@
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$this->conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
 				return true;
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				return $this->_error($e, true);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -178,13 +180,10 @@
 				static::$prepared = static::i()->_prepare($sql);
 				try {
 					static::$prepared->execute();
+				} catch (PDOException $e) {
+					static::i()->_error($e, " (execute) " . $err_msg);
 				}
-				catch (PDOException $e) {
-					static::i()->_error($e, " (ex
-					ecute) " . $err_msg);
-				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				static::i()->_error($e, " (prepare) " . $err_msg);
 			}
 			static::$data = array();
@@ -194,7 +193,6 @@
 			}
 			return static::$prepared;
 		}
-
 		/**
 		 * @static
 		 *
@@ -206,7 +204,6 @@
 		public static function quote($value, $type = null) {
 			return static::i()->conn->quote($value, $type);
 		}
-
 		/**
 		 * @static
 		 *
@@ -239,7 +236,6 @@
 			static::$data[] = array($value, $type);
 			return ' ? ';
 		}
-
 		/**
 		 * @static
 		 *
@@ -266,15 +262,13 @@
 					$prepared->bindValue($k, $v[0], $v[1]);
 					$k++;
 				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$prepared = false;
 				$this->_error($e);
 			}
 			static::$data = array();
 			return $prepared;
 		}
-
 		/**
 		 * @static
 		 *
@@ -287,7 +281,6 @@
 			static::$prepared = static::i()->_prepare($sql, $debug);
 			return static::$prepared;
 		}
-
 		/**
 		 * @static
 		 *
@@ -303,14 +296,12 @@
 			try {
 				static::$prepared->execute($data);
 				$result = static::$prepared->fetchAll(PDO::FETCH_ASSOC);
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$result = static::i()->_error($e);
 			}
 			static::$data = array();
 			return $result;
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -318,7 +309,6 @@
 		public static function insert_id() {
 			return static::i()->conn->lastInsertId();
 		}
-
 		/***
 		 * @param string $columns,... Database columns to select
 		 *
@@ -330,7 +320,6 @@
 			static::$query = new DB_Query_Select($columns, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -343,7 +332,6 @@
 			static::$query = new DB_Query_Update($into, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -356,7 +344,6 @@
 			static::$query = new DB_Query_Insert($into, static::i());
 			return static::$query;
 		}
-
 		/**
 		 * @static
 		 *
@@ -369,7 +356,6 @@
 			static::$query = new DB_Query_Delete($into, static::i());
 			return static::$query;
 		}
-
 		/***
 		 * @static
 		 *
@@ -386,7 +372,6 @@
 			}
 			return static::$prepared->fetch(PDO::FETCH_BOTH);
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -394,7 +379,6 @@
 		public static function fetch_row() {
 			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -402,7 +386,6 @@
 		public static function fetch_assoc() {
 			return static::$prepared->fetch(PDO::FETCH_ASSOC);
 		}
-
 		/**
 		 * @static
 		 * @return array
@@ -415,7 +398,6 @@
 			static::$results = false;
 			return $results;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -424,7 +406,6 @@
 			$info = static::errorInfo();
 			return $info[1];
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -438,7 +419,6 @@
 			}
 			return static::i()->conn->errorInfo();
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -447,7 +427,6 @@
 			$info = static::errorInfo();
 			return isset($info[2]) ? $info[2] : false;
 		}
-
 		/**
 		 * @static
 		 *
@@ -458,7 +437,6 @@
 		public static function getAttribute(PDO $value) {
 			return static::i()->conn->getAttribute($value);
 		}
-
 		/**
 		 * @static
 		 * @return bool
@@ -469,7 +447,6 @@
 			static::$data = array();
 			return $result;
 		}
-
 		/**
 		 * @static
 		 *
@@ -492,7 +469,6 @@
 			Cache::set('sql.rowcount.' . md5($sql), $rows);
 			return $rows;
 		}
-
 		/**
 		 * @static
 		 * @return int
@@ -500,7 +476,6 @@
 		public static function num_fields() {
 			return static::$prepared->columnCount();
 		}
-
 		/**
 		 * @static
 		 *
@@ -510,13 +485,11 @@
 				try {
 					static::i()->conn->beginTransaction();
 					static::i()->intransaction = true;
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -526,13 +499,11 @@
 				static::i()->intransaction = false;
 				try {
 					static::i()->conn->commit();
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -542,14 +513,12 @@
 				try {
 					static::i()->intransaction = false;
 					static::i()->conn->rollBack();
-				}
-				catch (PDOException $e) {
+				} catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
 			static::$data = array();
 		}
-
 		//
 		//
 		/**
@@ -564,13 +533,12 @@
 		 * @return \DB_Query_Result
 		 */
 		public static function update_record_status($id, $status, $table, $key) {
-			$result = static::update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
-			if (!$result) {
-				$result = static::insert_record_status($id, $status, $table, $key);
+			try {
+				static::update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
+			} catch (DBUpdateException $e) {
+				static::insert_record_status($id, $status, $table, $key);
 			}
-			return $result;
 		}
-
 		/**
 		 * @static
 		 *
@@ -582,10 +550,12 @@
 		 * @return DB_Query_Result
 		 */
 		public static function insert_record_status($id, $status, $table, $key) {
-			$result = static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
-			return $result;
+			try {
+				static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
+			} catch (DBInsertException $e) {
+				throw new DBUpdateException('Could not update record inactive status');
+			}
 		}
-
 		/***
 		 * @param						$sql
 		 * @param						$type
@@ -609,10 +579,8 @@
 						$prepared->execute($data);
 						return true;
 				}
-			}
-			catch (PDOException $e) {
+			} catch (PDOException $e) {
 				$this->_error($e);
-
 				switch ($type) {
 					case DB::SELECT:
 						throw new DBSelectException('Could not select from database.');
@@ -627,21 +595,18 @@
 			static::$data = array();
 			return false;
 		}
-
 		protected static function namedValues($sql, array $data) {
 			foreach ($data as $k => $v) {
 				$sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
-
 		protected static function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
 				$sql = preg_replace('/\?/i', "'$v[0]'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
-
 		/**
 		 * @param PDOException												$e
 		 * @param bool																$msg
@@ -672,6 +637,6 @@
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
-	//		Errors::show_db_error($error, static::$errorSql, $data);
+			Errors::show_db_error($error, static::$errorSql, $data);
 		}
 	}

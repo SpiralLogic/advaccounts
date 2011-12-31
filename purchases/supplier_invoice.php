@@ -49,7 +49,8 @@
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
-		} else {
+		}
+		else {
 			$myrow = DB::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
@@ -64,8 +65,7 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			Creditor_Trans::i()
-			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
+			Creditor_Trans::i()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
 			$taxexists = false;
 			foreach (Creditor_Trans::i()->gl_codes as &$gl_item) {
 				if ($gl_item->gl_code == 2430) {
@@ -135,11 +135,8 @@
 			$sql = "UPDATE grn_items
 	 	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
-			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"],
-																							Dates::Today());
-			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'],
-												Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1,
-												$myrow['unit_price']);
+			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
+			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			DB::commit();
 			Errors::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
@@ -162,7 +159,8 @@
 	}
 	if ($_POST['supplier_id'] == '') {
 		Errors::warning(_("There is no supplier selected."));
-	} else {
+	}
+	else {
 		Purch_GRN::display_items(Creditor_Trans::i(), 1);
 		Purch_GLItem::display_items(Creditor_Trans::i(), 1);
 		Display::div_start('inv_tot');
@@ -217,7 +215,7 @@
 	}});
 JS;
 	JS::onload($js);
-	Renderer::end_page();
+	Page::end();
 	/**
 	 *
 	 */
@@ -231,6 +229,7 @@ JS;
 		Ajax::i()->activate('gl_items');
 		JS::set_focus('gl_code');
 	}
+
 	/**
 	 * @return bool
 	 */
@@ -256,7 +255,8 @@ JS;
 			Errors::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 			JS::set_focus('trans_date');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('trans_date');
 			return false;
@@ -275,6 +275,7 @@ JS;
 		}
 		return true;
 	}
+
 	/**
 	 * @return mixed
 	 */
@@ -297,9 +298,7 @@ JS;
 			}
 		}
 		if (get_post('ChgTotal', 0) != 0) {
-			Creditor_Trans::i()
-			 ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'),
-															 'Rounding Correction');
+			Creditor_Trans::i()->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
 		$invoice_no = Purch_Invoice::add(Creditor_Trans::i());
 		$_SESSION['history'][ST_SUPPINVOICE] = $_POST['Reference'];
@@ -307,6 +306,7 @@ JS;
 		Creditor_Trans::killInstance();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 	}
+
 	/**
 	 * @param $n
 	 *
@@ -337,7 +337,8 @@ JS;
 						JS::set_focus('ChgPrice' . $n);
 						$_SESSION['err_over_charge'] = true;
 						return false;
-					} else {
+					}
+					else {
 						$_SESSION['err_over_charge'] = false;
 					}
 				}
@@ -351,7 +352,8 @@ JS;
 			}
 		}
 		return true;
-}
+	}
+
 	/**
 	 * @param $n
 	 */
@@ -359,15 +361,13 @@ JS;
 		if (check_item_data($n)) {
 			if (Validation::input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 				$complete = true;
-			} else {
+			}
+			else {
 				$complete = false;
 			}
 			$_SESSION['err_over_charge'] = false;
 			Creditor_Trans::i()
-			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
-													$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n),
-													$_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete,
-													$_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
+			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
 		}
 	}
 

@@ -18,29 +18,21 @@
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
 	if (isset($_POST['UpdateData'])) {
-		$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
-		 + $_POST['OldOverheadCost'];
-		$new_cost = Validation::input_num('material_cost') + Validation::input_num('labour_cost')
-		 + Validation::input_num('overhead_cost');
+		$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldOverheadCost'];
+		$new_cost = Validation::input_num('material_cost') + Validation::input_num('labour_cost') + Validation::input_num('overhead_cost');
 		$should_update = true;
-		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost')
-		 || !Validation::is_num('overhead_cost')
+		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost') || !Validation::is_num('overhead_cost')
 		) {
 			Errors::error(_("The entered cost is not numeric."));
 			JS::set_focus('material_cost');
 			$should_update = false;
 		}
-		elseif ($old_cost == $new_cost)
-		{
+		elseif ($old_cost == $new_cost) {
 			Errors::error(_("The new cost is the same as the old cost. Cost was not updated."));
 			$should_update = false;
 		}
 		if ($should_update) {
-			$update_no = Item_Price::update_cost(
-				$_POST['stock_id'],
-				Validation::input_num('material_cost'), Validation::input_num('labour_cost'),
-				Validation::input_num('overhead_cost'), $old_cost
-			);
+			$update_no = Item_Price::update_cost($_POST['stock_id'], Validation::input_num('material_cost'), Validation::input_num('labour_cost'), Validation::input_num('overhead_cost'), $old_cost);
 			Errors::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
 				Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
@@ -58,13 +50,12 @@
 	echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
 	echo "</div><hr>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	$sql
-	 = "SELECT description, units, material_cost, labour_cost,
+	$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
 	WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
-	$result = DB::query($sql,"The cost details for the item could not be retrieved");
+	$result = DB::query($sql, "The cost details for the item could not be retrieved");
 	$myrow = DB::fetch($result);
 	Display::div_start('cost_table');
 	hidden("OldMaterialCost", $myrow["material_cost"]);
@@ -79,7 +70,8 @@
 	if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
 		amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
 		amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
-	} else {
+	}
+	else {
 		hidden("labour_cost", 0);
 		hidden("overhead_cost", 0);
 	}
@@ -87,6 +79,6 @@
 	Display::div_end();
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 
 ?>

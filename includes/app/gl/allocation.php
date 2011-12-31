@@ -29,46 +29,33 @@
 			$this->type = $type;
 			$this->read(); // read payment or credit
 		}
-
 		public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
-				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no,
-					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
+				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
-
 		public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
-				$this->allocs[$index] = new allocation_item($type, $type_no,
-					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
+				$this->allocs[$index] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
-
 		public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
-			for (
-				$i = 0; $i < count($this->allocs); $i++
-			)
-			{
+			for ($i = 0; $i < count($this->allocs); $i++) {
 				$item = $this->allocs[$i];
 				if (($item->type == $type) && ($item->type_no == $type_no)) {
-					return $this->update_item(
-						$i, $type, $type_no, $date_, $due_date,
-						$amount, $amount_allocated, $current_allocated
-					);
+					return $this->update_item($i, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				}
 			}
-			return $this->add_item(
-				$type, $type_no, $date_, $due_date,
-				$amount, $amount_allocated, $current_allocated
-			);
+			return $this->add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 		}
-
 		//
 		//	Read payment or credit current/available allocations to order.
 		//
@@ -80,13 +67,13 @@
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
 				$bank_trans = DB::fetch(Bank_Trans::get($type, $trans_no));
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
-			} else {
+			}
+			else {
 				$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
 			}
 			$this->allocs = array();
 			if ($trans_no) {
-				$trans = $this->person_type ? Creditor_Trans::get($trans_no, $type)
-				 : Sales_Trans::get($trans_no, $type);
+				$trans = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
 				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
 				$this->amount = $trans["Total"];
@@ -101,19 +88,14 @@
 																		outstanding balances ie Total-alloc >0 */
 			if ($this->person_type) {
 				$trans_items = Purch_Allocation::get_allocatable_to_trans($this->person_id);
-			} else {
+			}
+			else {
 				$trans_items = Sales_Allocation::get_to_trans($this->person_id);
 			}
-			while ($myrow = DB::fetch($trans_items))
-			{
-				$this->add_item(
-					$myrow["type"], $myrow["trans_no"],
-					Dates::sql2date($myrow["tran_date"]),
-					Dates::sql2date($myrow["due_date"]),
-					$myrow["Total"], // trans total
-					$myrow["alloc"], // trans total allocated
-					0
-				); // this allocation
+			while ($myrow = DB::fetch($trans_items)) {
+				$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
+												$myrow["alloc"], // trans total allocated
+												0); // this allocation
 			}
 			if ($trans_no == 0) {
 				return;
@@ -122,28 +104,15 @@
 																	NB existing entries where still some of the trans outstanding entered from
 																	above logic will be overwritten with the prev alloc detail below */
 			if ($this->person_type) {
-				$trans_items = Purch_Allocation::get_allocatable_to_trans(
-					$this->person_id,
-					$trans_no, $type
-				);
-			} else {
-				$trans_items = Sales_Allocation::get_to_trans(
-					$this->person_id,
-					$trans_no, $type
-				);
+				$trans_items = Purch_Allocation::get_allocatable_to_trans($this->person_id, $trans_no, $type);
 			}
-			while ($myrow = DB::fetch($trans_items))
-			{
-				$this->add_or_update_item(
-					$myrow["type"], $myrow["trans_no"],
-					Dates::sql2date($myrow["tran_date"]),
-					Dates::sql2date($myrow["due_date"]),
-					$myrow["Total"],
-				 $myrow["alloc"] - $myrow["amt"], $myrow["amt"]
-				);
+			else {
+				$trans_items = Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
+			}
+			while ($myrow = DB::fetch($trans_items)) {
+				$this->add_or_update_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
 		}
-
 		//
 		//	Update allocations in database.
 		//
@@ -151,77 +120,47 @@
 			DB::begin();
 			if ($this->person_type) {
 				Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
-			} else {
+			}
+			else {
 				Sales_Allocation::void($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
 			$total_allocated = 0;
-			foreach (
-				$this->allocs as $alloc_item
-			)
-			{
+			foreach ($this->allocs as $alloc_item) {
 				if ($alloc_item->current_allocated > 0) {
 					if ($this->person_type) {
-						Purch_Allocation::add(
-							$alloc_item->current_allocated,
-							$this->type, $this->trans_no,
-							$alloc_item->type, $alloc_item->type_no, $this->date_
-						);
-						Purch_Allocation::update(
-							$alloc_item->type,
-							$alloc_item->type_no, $alloc_item->current_allocated
-						);
+						Purch_Allocation::add($alloc_item->current_allocated, $this->type, $this->trans_no, $alloc_item->type, $alloc_item->type_no, $this->date_);
+						Purch_Allocation::update($alloc_item->type, $alloc_item->type_no, $alloc_item->current_allocated);
 					}
 					else {
-						Sales_Allocation::add(
-							$alloc_item->current_allocated,
-							$this->type, $this->trans_no,
-							$alloc_item->type, $alloc_item->type_no, $this->date_
-						);
-						Sales_Allocation::update(
-							$alloc_item->type,
-							$alloc_item->type_no, $alloc_item->current_allocated
-						);
+						Sales_Allocation::add($alloc_item->current_allocated, $this->type, $this->trans_no, $alloc_item->type, $alloc_item->type_no, $this->date_);
+						Sales_Allocation::update($alloc_item->type, $alloc_item->type_no, $alloc_item->current_allocated);
 					}
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-					Bank::exchange_variation(
-						$this->type, $this->trans_no,
-						$alloc_item->type, $alloc_item->type_no, $this->date_,
-						$alloc_item->current_allocated,
-						$this->person_type ? PT_SUPPLIER : PT_CUSTOMER
-					);
+					Bank::exchange_variation($this->type, $this->trans_no, $alloc_item->type, $alloc_item->type_no, $this->date_, $alloc_item->current_allocated, $this->person_type ?
+					 PT_SUPPLIER : PT_CUSTOMER);
 					//////////////////////////////////////////////////////////////
 					$total_allocated += $alloc_item->current_allocated;
 				}
 			} /*end of the loop through the array of allocations made */
 			if ($this->person_type) {
-				Purch_Allocation::update(
-					$this->type, $this->trans_no,
-					$total_allocated
-				);
-			} else {
-				Sales_Allocation::update(
-					$this->type, $this->trans_no,
-					$total_allocated
-				);
+				Purch_Allocation::update($this->type, $this->trans_no, $total_allocated);
+			}
+			else {
+				Sales_Allocation::update($this->type, $this->trans_no, $total_allocated);
 			}
 			DB::commit();
 		}
-
 		public static function show_allocatable($show_totals) {
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
 				start_table('tablestyle width60');
 				$th = array(
-					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
-					_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
+					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), _("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
 				);
 				table_header($th);
-				foreach (
-					$_SESSION['alloc']->allocs as $alloc_item
-				)
-				{
+				foreach ($_SESSION['alloc']->allocs as $alloc_item) {
 					alt_table_row_color($k);
 					label_cell($systypes_array[$alloc_item->type]);
 					label_cell(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
@@ -233,57 +172,36 @@
 					amount_cells(null, "amount" . $counter, Num::price_format('amount' . $counter));
 					$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
 					amount_cell($un_allocated, false, '', 'maxval' . $counter);
-					label_cell(
-						"<a href='#' name=Alloc$counter class='button allocateAll'>"
-						 . _("All") . "</a>"
-					);
-					label_cell(
-						"<a href='#' name=DeAll$counter class='button allocateNone'>"
-						 . _("None") . "</a>" . hidden(
-							"un_allocated" . $counter,
-							Num::price_format($un_allocated), false
-						)
-					);
+					label_cell("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
+					label_cell("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
 					end_row();
 					$total_allocated += Validation::input_num('amount' . $counter);
 					$counter++;
 				}
 				if ($show_totals) {
-					label_row(
-						_("Total Allocated"), Num::price_format($total_allocated),
-						"colspan=6 class=right", "class=right id='total_allocated'", 3
-					);
+					label_row(_("Total Allocated"), Num::price_format($total_allocated), "colspan=6 class=right", "class=right id='total_allocated'", 3);
 					$amount = $_SESSION['alloc']->amount;
-					if ($_SESSION['alloc']->type == ST_SUPPCREDIT
-					 || $_SESSION['alloc']->type == ST_SUPPAYMENT
-					 || $_SESSION['alloc']->type == ST_BANKPAYMENT
+					if ($_SESSION['alloc']->type == ST_SUPPCREDIT || $_SESSION['alloc']->type == ST_SUPPAYMENT || $_SESSION['alloc']->type == ST_BANKPAYMENT
 					) {
 						$amount = -$amount;
 					}
 					if ($amount - $total_allocated < 0) {
 						$font1 = "<span class='red'>";
 						$font2 = "</span>";
-					} else {
+					}
+					else {
 						$font1 = $font2 = "";
 					}
 					$left_to_allocate = Num::price_format($amount - $total_allocated);
-					label_row(
-						_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
-						"colspan=6 class=right", "nowrap class=right id='left_to_allocate'",
-						3
-					);
+					label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class=right", "nowrap class=right id='left_to_allocate'", 3);
 				}
 				end_table(1);
 			}
 			hidden('TotalNumberOfAllocs', $counter);
 		}
-
 		public static function check() {
 			$total_allocated = 0;
-			for (
-				$counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++
-			)
-			{
+			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
 				if (!Validation::is_num('amount' . $counter, 0)) {
 					Errors::error(_("The entry for one or more amounts is invalid or negative."));
 					JS::set_focus('amount' . $counter);
@@ -309,9 +227,7 @@
 			}
 			return true;
 		}
-
 		public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
-
 			$type = ST_SALESINVOICE;
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->start();
@@ -325,15 +241,11 @@
 			$doc->Location = 'MEL';
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
-			$doc->add_to_order(0, 'MiscSale', '1',
-				Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
-			 'Order: ' . $memo);
+			$doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			$doc->finish();
-			$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount,
-				0, $amount);
+			$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 		}
-
 		public static function display($alloc_result, $total) {
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
@@ -369,7 +281,6 @@
 			end_row();
 			end_table(1);
 		}
-
 		public static function from($person_type, $person_id, $type, $type_no, $total) {
 			switch ($person_type) {
 				case PT_CUSTOMER :
@@ -393,11 +304,7 @@
 		public $amount_allocated;
 		public $amount;
 		public $current_allocated;
-
-		public function __construct(
-			$type, $type_no, $date_, $due_date, $amount,
-			$amount_allocated, $current_allocated
-		) {
+		public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			$this->type = $type;
 			$this->type_no = $type_no;
 			$this->date_ = $date_;

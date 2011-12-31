@@ -40,8 +40,7 @@
 	table_header($th);
 	$transfer_items = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
 	$k = 0;
-	while ($item = DB::fetch($transfer_items))
-	{
+	while ($item = DB::fetch($transfer_items)) {
 		if ($item['loc_code'] == $to_trans['loc_code']) {
 			alt_table_row_color($k);
 			label_cell($item['stock_id']);
@@ -54,5 +53,5 @@
 	}
 	end_table(1);
 	Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
-	Renderer::end_page(true);
+	Page::end(true);
 ?>

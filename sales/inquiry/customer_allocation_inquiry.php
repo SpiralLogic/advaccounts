@@ -57,16 +57,17 @@
 	}
 
 	function alloc_link($row) {
-		$link = DB_Pager::link(_("Allocation"),
-		 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+		$link = DB_Pager::link(_("Allocation"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
 			/*its a credit note which could have an allocation */
 			return $link;
-		} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
+		}
+		elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
 		) {
 			/*its a receipt which could have an allocation*/
 			return $link;
-		} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
+		}
+		elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
 			/*its a negative receipt */
 			return '';
 		}
@@ -112,9 +113,11 @@
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
-		} elseif ($_POST['filterType'] == '3') {
+		}
+		elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . ")";
-		} elseif ($_POST['filterType'] == '4') {
+		}
+		elseif ($_POST['filterType'] == '4') {
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
 		}
 		if ($_POST['filterType'] == '2') {
@@ -122,7 +125,8 @@
 			$sql .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + " . "trans.ov_gst + trans.ov_freight + " . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
 		}
-	} else {
+	}
+	else {
 		$sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
 	}
 	if (!check_value('showSettled')) {
@@ -141,11 +145,12 @@
 		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 		_("Allocated") => 'amount',
 		_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'),
-		array('insert' => true, 'fun' => 'alloc_link'));
+		array('insert' => true, 'fun' => 'alloc_link')
+	);
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

@@ -89,22 +89,13 @@
 	table_section_title(_("Customers and Sales Defaults"));
 	// default for customer branch
 	GL_UI::all_row(_("Receivable Account:"), 'debtors_act');
-	GL_UI::all_row(
-		_("Sales Account:"), 'default_sales_act', null,
-		false, false, true
-	);
+	GL_UI::all_row(_("Sales Account:"), 'default_sales_act', null, false, false, true);
 	GL_UI::all_row(_("Sales Discount Account:"), 'default_sales_discount_act');
 	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
-	text_row(
-		_("Delivery Required By:"), 'default_delivery_required',
-		$_POST['default_delivery_required'], 6, 6, '', "", _("days")
-	);
+	text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
 	table_section(2);
 	table_section_title(_("Dimension Defaults"));
-	text_row(
-		_("Dimension Required By After:"), 'default_dim_required',
-		$_POST['default_dim_required'], 6, 6, '', "", _("days")
-	);
+	text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 	table_section_title(_("Suppliers and Purchasing"));
 	percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 	percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
@@ -122,13 +113,10 @@
 	GL_UI::all_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
 	GL_UI::all_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
 	table_section_title(_("Manufacturing Defaults"));
-	text_row(
-		_("Work Order Required By After:"), 'default_workorder_required',
-		$_POST['default_workorder_required'], 6, 6, '', "", _("days")
-	);
+	text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
 	end_outer_table(1);
 	submit_center('submit', _("Update"), true, '', 'default');
 	end_form(2);
-	Renderer::end_page();
+	Page::end();
 
 ?>

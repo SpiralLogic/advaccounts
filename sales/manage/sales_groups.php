@@ -24,7 +24,8 @@
 			if ($selected_id != -1) {
 				$sql = "UPDATE groups SET description=" . DB::escape($_POST['description']) . " WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected sales group has been updated');
-			} else {
+			}
+			else {
 				$sql = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}
@@ -96,5 +97,5 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	Renderer::end_page();
+	Page::end();
 ?>

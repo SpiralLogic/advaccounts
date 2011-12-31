@@ -51,7 +51,7 @@
 			global $page_security;
 			if (!User::get()->can_access_page($page_security)) {
 				Errors::error(_("The security settings on your account do not permit you to print this report"));
-				Renderer::end_page();
+				Page::end();
 				exit;
 			}
 			// Page margins - if user-specified, use those. Otherwise, use defaults below.
@@ -176,34 +176,33 @@
 			$enc = strtoupper($_SESSION['Language']->encoding);
 			// for the language array in class.pdf.inc
 			$l = array(
-				'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
+				'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page'
+			);
 			parent::__construct($size, $l, $orientation);
 		}
-
 		/*
-				 * Select the font and style to use for following output until
-				 * it's changed again.
-				 *
-				 * $style is either:
-				 * * a special case string (for backwards compatible with older code):
-				 * * bold
-				 * * italic
-				 * * or a case-insensitive string where each char represents a style choice
-				 * and you can use more than one or none at all. Possible choices:
-				 * * empty string: regular
-				 * * B: bold
-				 * * I: italic
-				 * * U: underline
-				 * * D: line trough (aka "strike through")
-				 * $fontname should be a standard PDF font (like 'times', 'helvetica' or 'courier')
-				 * or one that's been installed on your system (see TCPDF docs for details).
-				 * An empty string can also be used which will retain the font currently in use if
-				 * you just want to change the style.
-				 */
+						 * Select the font and style to use for following output until
+						 * it's changed again.
+						 *
+						 * $style is either:
+						 * * a special case string (for backwards compatible with older code):
+						 * * bold
+						 * * italic
+						 * * or a case-insensitive string where each char represents a style choice
+						 * and you can use more than one or none at all. Possible choices:
+						 * * empty string: regular
+						 * * B: bold
+						 * * I: italic
+						 * * U: underline
+						 * * D: line trough (aka "strike through")
+						 * $fontname should be a standard PDF font (like 'times', 'helvetica' or 'courier')
+						 * or one that's been installed on your system (see TCPDF docs for details).
+						 * An empty string can also be used which will retain the font currently in use if
+						 * you just want to change the style.
+						 */
 		public function Font($style = '', $fontname = '') {
 			$this->selectFont($fontname, $style);
 		}
-
 		public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null, $companylogoenable = false, $footerenable = false, $footertext = '') {
 			$this->addinfo('Title', $this->title);
 			$this->addinfo('Subject', $this->title);
@@ -212,7 +211,8 @@
 			$year = DB_Company::get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
-			} else {
+			}
+			else {
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
@@ -240,7 +240,6 @@
 			$this->footerEnable = $footerenable;
 			$this->footerText = $footertext;
 		}
-
 		public function Header() {
 			$companyCol = $this->endLine - 150;
 			$titleCol = $this->leftMargin + 100;
@@ -313,7 +312,6 @@
 			$this->Line($this->row - 5, 1);
 			$this->NewLine(2);
 		}
-
 		public function Header2($myrow, $branch = null, $sales_order = null, $bankaccount = null, $doctype = null) {
 			global $print_as_quote, $packing_slip;
 			$this->pageNumber++;
@@ -333,14 +331,14 @@
 			}
 			if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
 				include("includes/doctext2.php");
-			} else {
+			}
+			else {
 				include("includes/doctext.php");
 			}
 			include("includes/header.php");
 			// }
 			$this->row = $temp;
 		}
-
 		// Alternate header style which also supports a simple footer
 		public function Header3() {
 			// Make this header the default for the current report ( used by NewLine() )
@@ -389,10 +387,8 @@
 				$this->Line($footerRow, 1);
 				$prevFontSize = $this->fontSize;
 				$this->fontSize = FOOTER_FONT_SIZE;
-				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0,
-					$link = NULL, $stretch = 1);
-				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(),
-					$align = 'right', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
+				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
+				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				$this->fontSize = $prevFontSize;
 			}
 			//
@@ -415,10 +411,12 @@
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) {
 					$this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0);
-				} else {
+				}
+				else {
 					$this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
 				}
-			} else {
+			}
+			else {
 				$this->Text($companyCol, $this->company['coy_name']);
 			}
 			// Dimension 1 - optional
@@ -534,7 +532,6 @@
 			// restore user-specified draw color
 			$this->SetDrawColor($oldDrawColor[0], $oldDrawColor[1], $oldDrawColor[2]);
 		}
-
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
@@ -552,24 +549,26 @@
 				$day = (int)(substr($date, 8, 2));
 				if ($output_format == 0) {
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
-				} elseif ($output_format == 1) {
+				}
+				elseif ($output_format == 1) {
 					return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
-				} elseif ($output_format == 2) {
+				}
+				elseif ($output_format == 2) {
 					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
-			} else {
+			}
+			else {
 				return $date;
 			}
 		}
-
 		public function AddImage($logo, $x, $y, $w, $h) {
 			if (strpos($logo, ".png") || strpos($logo, ".PNG")) {
 				$this->addPngFromFile($logo, $x, $y, $w, $h);
-			} else {
+			}
+			else {
 				$this->addJpegFromFile($logo, $x, $y, $w, $h);
 			}
 		}
-
 		// Get current draw color setting from TCPDF object; returns array of RGB numbers
 		public function GetDrawColor() {
 			// Convert the TCPDF stored DrawColor string into an array of strings
@@ -578,21 +577,19 @@
 			if ($colorFields[count($colorFields) - 1] == 'G') // Convert a grayscale string value to the equivalent RGB value
 			{
 				$drawColor = array((float)$colorFields[0], (float)$colorFields[0], (float)$colorFields[0]);
-			} else // Convert RGB string values to the a numeric array
+			}
+			else // Convert RGB string values to the a numeric array
 			{
 				$drawColor = array((float)$colorFields[0], (float)$colorFields[1], (float)$colorFields[2]);
 			}
 			return $drawColor;
 		}
-
 		public function SetDrawColor($r, $g, $b) {
 			parent::SetDrawColor($r, $g, $b);
 		}
-
 		public function SetTextColor($r, $g, $b) {
 			parent::SetTextColor($r, $g, $b);
 		}
-
 		/**
 		 * Set the fill color for table cells.
 		 *
@@ -601,25 +598,21 @@
 		public function SetFillColor($r, $g, $b) {
 			parent::SetFillColor($r, $g, $b);
 		}
-
 		// Get current cell padding setting from TCPDF object
 		public function GetCellPadding() {
 			return $this->cMargin;
 		}
-
 		// Set desired cell padding (aka "cell margin")
 		// Seems to be just left and right margins...
 		public function SetCellPadding($pad) {
 			parent::SetCellPadding($pad);
 		}
-
 		public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
 			if ($n == 0) {
 				$n = $this->pageWidth - $this->rightMargin;
 			}
 			return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, $align, $border, $fill, $link, $stretch);
 		}
-
 		public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1, $spacebreak = false) {
 			if ($this->fontSize != $this->oldFontSize) {
 				$this->SetFontSize($this->fontSize);
@@ -627,11 +620,9 @@
 			}
 			return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align, $border, $fill, $link, $stretch, $spacebreak);
 		}
-
 		public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
 			return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
 		}
-
 		public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1, $color_red = false) {
 			if ($color_red && $txt < 0) {
 				$this->SetTextColor(255, 0, 0);
@@ -642,7 +633,6 @@
 			}
 			return $ret;
 		}
-
 		public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1, $color_red = false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n') {
 			setlocale(LC_MONETARY, $amount_locale);
 			if ($color_red && $txt < 0) {
@@ -654,24 +644,19 @@
 			}
 			return $ret;
 		}
-
 		public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
 			if ($conv) {
 				$txt = Dates::sql2date($txt);
 			}
 			return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
 		}
-
 		public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
-			return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c], $border, $fill, $link,
-				$stretch);
+			return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c], $border, $fill, $link, $stretch);
 		}
-
 		public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
 			$this->row -= $r;
 			$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch, true);
 		}
-
 		public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0, $spacebreak = true) {
 			$str = Explode("\n", $txt);
 			for ($i = 0; $i < count($str); $i++) {
@@ -682,14 +667,12 @@
 				} while ($l != '');
 			}
 		}
-
 		/**
 		 * Expose the underlying calcTextWrap() public function in this API.
 		 */
 		public function TextWrapCalc($txt, $width, $spacebreak = false) {
 			return $this->calcTextWrap($txt, $width, $spacebreak);
 		}
-
 		/**
 		 * Sets the line drawing style.
 		 *
@@ -710,25 +693,21 @@
 		public function SetLineStyle($style) {
 			parent::SetLineStyle($style);
 		}
-
 		/**
 		 * Sets the line drawing width.
 		 */
 		public function SetLineWidth($width) {
 			parent::SetLineWidth($width);
 		}
-
 		public function LineTo($from, $row, $to, $row2) {
 			parent::line($from, $row, $to, $row2);
 		}
-
 		public function Line($row, $height = 0) {
 			$oldLineWidth = $this->GetLineWidth();
 			$this->SetLineWidth($height + 1);
 			parent::line($this->pageWidth - $this->rightMargin, $row, $this->leftMargin, $row);
 			$this->SetLineWidth($oldLineWidth);
 		}
-
 		/**
 		 * Underlines the contents of a cell, but not the cell padding area.
 		 * Primarily useful for the last line before a "totals" line.
@@ -754,22 +733,21 @@
 			// lowercase letter 'g', etc.
 			if ($this->fontSize < 10) {
 				$y_adj = 2;
-			} else {
+			}
+			else {
 				$y_adj = 3;
 			}
 			parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj, $this->cols[$c + 1] - $this->cMargin, $this->row - $r - $y_adj, $style);
 			// Double underline, far enough below the first underline so as not to overlap
 			// the first underline (depends on current line thickness (aka "line width")
 			if ($type == 2) {
-				parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin,
-				 $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
+				parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
 			}
 			// If line width was specified, reset it back to the original setting
 			if ($linewidth != 0) {
 				$this->SetLineWidth($oldLineWidth);
 			}
 		}
-
 		public function NewLine($l = 1, $np = 0, $h = NULL) {
 			// If the line height wasn't specified, use the current setting
 			if ($h == NULL) {
@@ -784,7 +762,6 @@
 				$this->{$this->headerFunc}();
 			} // call header template chosen by current report
 		}
-
 		public function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
 			if (Config::get('debug_pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
@@ -799,7 +776,8 @@
 				//header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 				//header('Pragma: public');
 				//$this->pdf->stream();
-			} else {
+			}
+			else {
 				$dir = COMPANY_PATH . '/pdf_files';
 				//save the file
 				if (!file_exists($dir)) {
@@ -809,7 +787,8 @@
 				// are world readable
 				if ($email == 1) {
 					$fname = $dir . '/' . $this->filename;
-				} else {
+				}
+				else {
 					$fname = $dir . '/' . uniqid('') . '.pdf';
 				}
 				$this->Output($fname, 'F');
@@ -817,7 +796,8 @@
 					$emailtype = true;
 					if ($this->currency != $myrow['curr_code']) {
 						include("includes/doctext2.php");
-					} else {
+					}
+					else {
 						include("includes/doctext.php");
 					}
 					$mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
@@ -854,24 +834,25 @@
 					$ret = $mail->send();
 					if (!$ret) {
 						Errors::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
-					} else {
+					}
+					else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						Errors::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
-							$myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
+						Errors::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
 					}
 					unlink($fname);
-				} else {
+				}
+				else {
 					$printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
-
 							if (User::rep_popup()) {
 								Ajax::i()->popup($fname);
 							} // when embeded pdf viewer used
 							else {
 								Ajax::i()->redirect($fname);
 							} // otherwise use faster method
-						} else {
+						}
+						else {
 							//echo '<html>
 							//		<head>
 							//	 	 <SCRIPT LANGUAGE="JavaScript"><!--
@@ -890,12 +871,14 @@
 							header('Pragma: public');
 							$this->Stream();
 						}
-					} else { // send report to network printer
+					}
+					else { // send report to network printer
 						$prn = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
 						if ($error) {
 							Errors::error($error);
-						} else {
+						}
+						else {
 							Errors::notice(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}

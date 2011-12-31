@@ -46,7 +46,8 @@
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
-		} else {
+		}
+		else {
 			$myrow = DB::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
@@ -61,8 +62,8 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			Creditor_Trans::i()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'],
-																							Validation::input_num('amount'), $_POST['memo_']);
+			Creditor_Trans::i()
+			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], Validation::input_num('amount'), $_POST['memo_']);
 			JS::set_focus('gl_code');
 		}
 	}
@@ -108,9 +109,7 @@
 	}
 	start_form();
 	Purch_Invoice::header(Creditor_Trans::i());
-	if ($_POST['supplier_id'] == '') {
-		Errors::error('No supplier found for entered search text');
-	} else {
+	if ($_POST['supplier_id'] != '') {
 		$total_grn_value = Purch_GRN::display_items(Creditor_Trans::i(), 1);
 		$total_gl_value = Purch_GLItem::display_items(Creditor_Trans::i(), 1);
 		Display::div_start('inv_tot');
@@ -128,7 +127,7 @@
 	submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
 	Display::br();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 	/**
 	 * @return bool
 	 */
@@ -156,7 +155,8 @@
 			Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			JS::set_focus('tran_date');
 			return false;
-		} elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
+		}
+		elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('tran_date');
 			return false;
@@ -183,7 +183,8 @@
 		}
 		if (isset($_POST['invoice_no'])) {
 			$invoice_no = Purch_Invoice::add(Creditor_Trans::i(), $_POST['invoice_no']);
-		} else {
+		}
+		else {
 			$invoice_no = Purch_Invoice::add(Creditor_Trans::i());
 		}
 		Creditor_Trans::i()->clear_items();
@@ -231,10 +232,7 @@
 		if (check_item_data($n)) {
 			$complete = False;
 			Creditor_Trans::i()
-			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
-													$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n),
-													$_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete,
-													$_POST['std_cost_unit' . $n], "");
+			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "");
 		}
 	}
 

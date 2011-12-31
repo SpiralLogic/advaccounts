@@ -86,7 +86,6 @@
 		}
 		/* read in all the selected deliveries into the Items order */
 		$order = new Sales_Order(ST_CUSTDELIVERY, $src, true);
-
 		if ($order->count_items() == 0) {
 			Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
@@ -99,7 +98,7 @@
 		copy_from_order($order);
 	}
 	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
-		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+		if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 			echo"<div class='center'><br><span class='bold'>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in ADV Accounts version prior to 2.0
 		and therefore can not be modified.") . "</span></div>";
@@ -121,7 +120,7 @@
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
 		Errors::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
-		Renderer::end_page();
+		Page::end();
 		exit;
 	}
 	elseif ($order && !check_quantities($order)) {
@@ -143,10 +142,10 @@
 		$invoice_no = $order->write();
 		$order->finish();
 		if ($newinvoice) {
-		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 		else {
-		//	Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
+			//	Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
 		}
 	}
 	// find delivery spans for batch invoice display
@@ -229,15 +228,15 @@
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		Renderer::end_page();
+		Page::end();
 		exit();
 	}
 	Display::heading(_("Invoice Items"));
 	Display::div_start('Items');
 	start_table('tablestyle width90');
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"),
-		_("Tax Type"), _("Discount"), _("Total"));
+		_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
+	);
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
 		$th[] = "";
@@ -349,7 +348,7 @@
 	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO MODE_EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
 	end_table();
 	end_form();
-	Renderer::end_page();
+	Page::end();
 	/**
 	 * @param $order
 	 *
@@ -393,7 +392,7 @@
 	function set_delivery_shipping_sum($delivery_notes) {
 		$shipping = 0;
 		foreach ($delivery_notes as $delivery_num) {
-			$myrow = Sales_Trans::get($delivery_num, 13);
+			$myrow = Debtor_Trans::get($delivery_num, 13);
 			//$branch = Sales_Branch::get($myrow["branch_code"]);
 			//$sales_order = Sales_Order::get_header($myrow["order_"]);
 			//$shipping += $sales_order['freight_cost'];

@@ -72,9 +72,9 @@
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
 	if (Input::request('frame')) {
-		Renderer::end_page(true, true, true);
+		Page::end(true, true, true);
 	}
 	else {
-		Renderer::end_page();
+		Page::end();
 	}
 ?>

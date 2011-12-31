@@ -70,9 +70,9 @@ var Items = function () {
 	 $locationFrame = $('#locationFrame'),
 	 $selects = $('select'),
 	 urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g;
-	var $buyFrameSrc = $('#buyFrame')[0].src.match(urlregex)[0] + '?frame=1',
-	 $sellFrameSrc = $('#sellFrame')[0].src.match(urlregex)[0] + '?frame=1',
-	 $locationFrameSrc = $('#locationFrame')[0].src.match(urlregex)[0] + '?frame=1',
+	var $buyFrameSrc = $('#buyFrame').data('src').match(urlregex)[0] + '?frame=1',
+	 $sellFrameSrc = $('#sellFrame').data('src').match(urlregex)[0] + '?frame=1',
+	 $locationFrameSrc = $('#locationFrame').data('src').match(urlregex)[0] + '?frame=1',
 	 $Items = $("#Items"), $Accounts = $("#Accounts"), $stockRow = $("#stockRow"), $stockLevels = $("#stockLevels");
 	$Items.template('items');
 	$Accounts.template('accounts');
