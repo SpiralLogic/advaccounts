@@ -111,6 +111,7 @@
 			$this->union[] = '(' . $this->_buildQuery() . ')';
 			$this->select = $this->from = $this->orderby = $this->groupby = array();
 			$this->limit = '';
+			$this->resetWhere();
 			return $this;
 		}
 

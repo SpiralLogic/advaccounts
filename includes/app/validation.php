@@ -65,8 +65,6 @@
 			$myrow = DB::fetch_row($result);
 			if (!($myrow[0] > 0)) {
 				throw new Adv_Exception($msg);
-				Page::end();
-				exit;
 			}
 			else {
 				Cache::set('Validation' . $validate, true);

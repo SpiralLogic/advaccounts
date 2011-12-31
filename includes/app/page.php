@@ -164,7 +164,7 @@
 		}
 		public static function footer_exit() {
 			Display::br(2);
-			static::$i->renderer->end_page(false, false, true);
+			static::$i->_end_page(false, false, true);
 			exit;
 		}
 		public static function end($no_menu = false, $is_index = false, $hide_back_link = false) {

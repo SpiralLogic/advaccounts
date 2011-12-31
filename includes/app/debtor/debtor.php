@@ -272,9 +272,10 @@ JS;
 		}
 		public static function search($terms) {
 			$data = array();
-			DB::select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)->union()
-			 ->select('debtor_no as id', 'name as label', 'name as value')->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+			$sql = DB::select('debtor_no as id', 'name as label', 'name as value',"IF(name LIKE '".trim($terms)."%',0,5) as weight")->from('debtors_master')->where('name LIKE ', "$terms%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
+			 if  (is_numeric($terms)) $sql->or_where('debtor_no LIKE', "$terms%");
+			$sql->orderby( 'weight,name')->limit(20);
 			$results = DB::fetch();
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);

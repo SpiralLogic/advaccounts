@@ -24,6 +24,9 @@
 		 */
 		protected $count = 0;
 
+		protected function resetWhere() {
+			$this->wheredata=$this->where=array();$count=0;
+		}
 		/***
 		 * @param array $conditions
 		 * @param string $type

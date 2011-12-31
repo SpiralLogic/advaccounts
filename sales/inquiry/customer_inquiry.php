@@ -105,8 +105,9 @@
 				$sql .= " debtor_no = $ajaxsearch OR ";
 			}
 			$ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
-			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
+			$sql .= " name LIKE $ajaxsearch ";
+			if (is_numeric($ajaxsearch)) $sql .= " OR trans_no LIKE $ajaxsearch OR order_ LIKE $ajaxsearch ";
+			$sql .= " OR reference LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
 		if (isset($filter) && $filter) {
 			$sql .= $filter;
