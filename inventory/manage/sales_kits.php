@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SALESKIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESKIT;
+
 	Page::start(_($help_context = "Sales Kits & Alias Codes"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Page::simple_mode(true);

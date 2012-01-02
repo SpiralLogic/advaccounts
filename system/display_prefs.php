@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SETUPDISPLAY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SETUPDISPLAY;
+
 	Page::start(_($help_context = "Display Setup"));
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {

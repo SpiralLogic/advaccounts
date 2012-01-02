@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_BANKTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_BANKTRANSVIEW;
+
 	Page::start(_($help_context = "View Bank Deposit"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];

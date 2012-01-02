@@ -12,8 +12,9 @@
 	//
 	//	Entry/Modify Delivery Note against Sales Order
 	//
-	$page_security = 'SA_SALESDELIVERY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESDELIVERY;
+
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {

@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_CREATELANGUAGE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CREATELANGUAGE;
+
 	Page::start(_($help_context = "Install/Update Languages"));
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];

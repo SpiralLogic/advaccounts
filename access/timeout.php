@@ -12,8 +12,9 @@
 	/*
 	 User authentication page popped up after login timeout during ajax call.
  */
-	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_OPEN;
+
 	require(DOCROOT . '/access/login.php');
 	if (get_post('SubmitUser') && $_SESSION['current_user']->logged_in()) {
 		// After successfull login repeat last ajax call.

@@ -370,7 +370,7 @@
 							amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), User::price_dec()));
 						}
 						submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
-						if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')
+						if ($supp_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)
 						) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 							submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 							submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
@@ -399,7 +399,7 @@
 			if ($mode == 1) {
 				if ($supp_trans->is_invoice) {
 					$heading = _("Items Received Yet to be Invoiced");
-					if (User::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+					if (User::get()->can_access(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 					{
 						$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
 					}
@@ -461,7 +461,7 @@
 					"",
 					""
 				);
-				// if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+				// if ($supp_trans->is_invoice && CurrentUser::get()->can_access(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				// $th[] = "";
 				if (!$supp_trans->is_invoice) {
 					unset($th[14]);
@@ -500,7 +500,7 @@
 					amount_decimal_cell(Num::round(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)), User::price_dec());
 					amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec()));
 					if ($mode == 1) {
-						if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) {
+						if ($supp_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)) {
 							label_cell("");
 						}
 						label_cell(""); // PO

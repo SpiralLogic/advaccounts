@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_WORKORDERANALYTIC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_WORKORDERANALYTIC;
+
 	Page::start(_($help_context = "Inventory Item Where Used Inquiry"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	start_form(false);

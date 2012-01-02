@@ -12,13 +12,12 @@
 	if (!file_exists('config/config.php')) {
 		header("Location: /install/index.php");
 	}
-	$page_security = 'SA_OPEN';
 
 	require_once("bootstrap.php");
 	/** @var ADVAccounting $app */
 	$app = Session::i()->App;
 	Extensions::add_access();
 	if (Input::get('application')) {
-		$app->selected_application = $_GET['application'];
+		$app->set_selected ($_GET['application']);
 	}
 	$app->display();

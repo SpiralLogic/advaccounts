@@ -26,7 +26,7 @@
 			'type' => 'plugin', //
 			'filename' => 'advanced.php', //
 			'acc_file' => 'acc_levels.php', //
-			'access' => 'SA_ADVANCED', //
+			'access' => SA_ADVANCED, //
 		),
 	);
 	return array(

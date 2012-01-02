@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SETUPCOMPANY';
+
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SETUPCOMPANY;
 	Page::start(_($help_context = "System Diagnostics"));
 	// Type of requirement for positive test result
 	$test_level = array(

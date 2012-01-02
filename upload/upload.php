@@ -1,6 +1,7 @@
 <?php
-	$page_security = 'SA_SALESMAN';
+
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESMAN;
 	//$upload_dir = DOCROOT.'sales/upload/';
 	$order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : false;
 	if ($order) {

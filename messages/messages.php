@@ -1,7 +1,8 @@
 <?php
 
-	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_OPEN;
+
 	Session::i()->App->selected_application = 'messages';
 	if (AJAX_REFERRER) {
 		$data['post'] = $_POST;

@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = 'SA_OPEN';
+	$page_security = SA_OPEN;
 	Page::start(_("Logout"), true, false, '');
 	echo "<table style='width:100%' > <tr><td class='center'><img src='/themes/default/images/logo_advaccounts.png' alt='ADVAccounts' style='width:250px; height:50px' /></td>
  </tr>

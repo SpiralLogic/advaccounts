@@ -6,8 +6,8 @@
 	 * Time: 9:50 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CUSTOMER;
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_code'])) {
