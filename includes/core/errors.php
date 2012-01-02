@@ -215,10 +215,12 @@
 				$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
 				$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
 				$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
+				$subject = 'Error log: ';
+				if (isset($_SESSION['current_user']))$subject .= $_SESSION['current_user']->username;
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
-				$mail->subject('Error log');
+				$mail->subject($subject);
 				$mail->html($text);
 				$success = $mail->send();
 				if (!$success) {
@@ -229,8 +231,7 @@
 				$type = $msg['type'];
 				$str = $msg['message'];
 				if ($type < E_USER_ERROR && $type != null) {
-					Errors::$errors[] = $msg;
-					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					if ($msg['file']) $str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
 					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
 					$type = E_USER_ERROR;
 				}
@@ -238,9 +239,6 @@
 					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
-				if (class_exists('FB', false)) {
-					FB::log($msg, $class[0]);
-				}
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
 			return $content;
@@ -276,6 +274,7 @@
 			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
 			$error['backtrace'] = var_export(debug_backtrace(), true);
 			static::$dberrors[] = $error;
+			static::handler(E_USER_ERROR, $error['message'], false, __LINE__);
 		}
 
 		/**

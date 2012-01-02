@@ -89,7 +89,7 @@
 			$menu .= "</ul>";
 			$content = ob_get_clean();
 			echo $menu . $content . '</div>';
-			JS::tabs('#tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
+			JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
 			MenuUI::$menuCount++;
 		}
 	}

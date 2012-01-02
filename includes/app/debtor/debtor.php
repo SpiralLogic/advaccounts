@@ -143,6 +143,7 @@
 					$this->contacts[$id] = new Contact($contact);
 				}
 			}
+			$this->credit_limit=str_replace(',','',$this->credit_limit);
 		}
 		protected function _canProcess() {
 			if (strlen($this->name) == 0) {

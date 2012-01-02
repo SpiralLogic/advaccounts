@@ -130,9 +130,9 @@
 		$sql .= "AND porder.reference LIKE " . DB::quote('%' . $order_number . '%');
 	}
 	else {
-		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY'])) {
+		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= (Input::get('NFY') == 1) ? "'NFY'" : DB::quote($_POST['StockLocation']);
+			$sql .= (Input::get(LOC_NOT_FAXED_YET) == 1) ? "'".LOC_NOT_FAXED_YET."'" : DB::quote($_POST['StockLocation']);
 		}
 		else {
 			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
