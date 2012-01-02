@@ -9,7 +9,7 @@
 			JS::renderJSON($data);
 		}
 	}
-	if (isset($_POST['name'])) {
+	if (issedt($_POST['name'])) {
 		$data['customer'] = $customer = new Debtor();
 		$data['customer']->save($_POST);
 	}
@@ -28,6 +28,7 @@
 	}
 	JS::footerFile("js/customers.js");
 	Page::start(_($help_context = "Customers"), Input::request('frame'));
+
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));

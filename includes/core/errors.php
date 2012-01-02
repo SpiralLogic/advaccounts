@@ -115,7 +115,7 @@
 			// Only show valid fatal errors
 			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
 				$Ajax->aCommands = array();
-				Errors::$fatal = true;
+				static::$fatal = true;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
 			}
@@ -124,6 +124,10 @@
 			} elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
 				if (static::$fatal) ob_end_clean();
 				echo static::JSONError(true);
+			}elseif(static::$fatal) {
+				ob_end_clean();
+				echo static::format();
+				exit();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
@@ -232,7 +236,7 @@
 				$str = $msg['message'];
 				if ($type < E_USER_ERROR && $type != null) {
 					if ($msg['file']) $str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
+					$str .= (!isset($msg['backtrace'])) ? '' : "\n".var_export($msg['backtrace'],true);
 					$type = E_USER_ERROR;
 				}
 				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {

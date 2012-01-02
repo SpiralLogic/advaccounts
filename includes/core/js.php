@@ -208,26 +208,27 @@ JS;
 				self::$_onlive = self::$_onload = array();
 			}
 			if (self::$_beforeload) {
-				$content .= implode(";\n", self::$_beforeload);
+				$content .= implode("\n", self::$_beforeload);
 			}
 			if (self::$_onlive) {
-				$onReady .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
+				$onReady .= 'Adv.Events.onload(function() {' . implode("\n", self::$_onlive) . '}';
 				if (count(self::$_toclean)) {
 					$onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
 				}
 				$onReady .= ');';
 			}
 			if (self::$_onload) {
-				$onReady .= implode(";\n\n", self::$_onload);
+				$onReady .= implode("\n", self::$_onload);
 			}
 			if (!empty(self::$_focus)) {
 				$onReady .= self::$_focus . '.focus();';
 			}
 			if ($onReady != '') {
-				$content .= ";\n$(function() { " . $onReady . '});';
+				$content .= "\n$(function() { " . $onReady . '});';
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-			HTML::script(array('content' => $content))->script;
+
+			HTML::script(array('content' => minify_js($content)))->script;
 		}
 		/**
 		 * @static
@@ -368,6 +369,7 @@ JS;
 				}
 			}
 			else {
+				if (substr(trim($js),-1)!==';')$js.=';';
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
@@ -396,11 +398,16 @@ JS;
 		 * @param bool $message
 		 */
 		public static function onUnload($message = false) {
+
 			if ($message) {
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
+/**
+ * @static
+ * @param $url
+ */
 		public static function redirect($url) {
 			$data['status'] = array('status' => 'redirect', 'message' => $_SERVER['PHP_SELF']);
 			static::renderJSON($data);
