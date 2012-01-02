@@ -145,7 +145,6 @@
 			}
 		}
 		protected function _canProcess() {
-			return true;
 			if (strlen($this->name) == 0) {
 				return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
 			}

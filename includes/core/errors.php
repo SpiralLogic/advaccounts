@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -57,6 +56,7 @@
 		 * @var array
 		 */
 		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+
 		/**
 		 * @static
 		 *
@@ -79,6 +79,7 @@
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -87,6 +88,7 @@
 		static function error($msg) {
 			trigger_error($msg, E_USER_ERROR);
 		}
+
 		/**
 		 * @static
 		 *
@@ -95,6 +97,7 @@
 		static function notice($msg) {
 			trigger_error($msg, E_USER_NOTICE);
 		}
+
 		/**
 		 * @static
 		 *
@@ -103,6 +106,7 @@
 		static function warning($msg) {
 			trigger_error($msg, E_USER_WARNING);
 		}
+
 		static function shutdown_handler() {
 			$Ajax = Ajax::i();
 			Config::store();
@@ -117,8 +121,8 @@
 			}
 			if (Ajax::in_ajax()) {
 				Ajax::i()->run();
-			}
-			elseif (!static::$jsonerrorsent && AJAX_REFERRER && strpos($_SERVER['HTTP_ACCEPT'], 'application/json')) {
+			} elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
+				if (static::$fatal) ob_end_clean();
 				echo static::JSONError(true);
 			}
 			// flush all output buffers (works also with exit inside any div levels)
@@ -126,6 +130,7 @@
 				ob_end_flush();
 			}
 		}
+
 		public static function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
@@ -146,6 +151,7 @@
 			}
 			return $status;
 		}
+
 		/**
 		 * @static
 		 *
@@ -176,6 +182,7 @@
 			}
 			return true;
 		}
+
 		/**
 		 * @static
 		 *
@@ -189,14 +196,16 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
+
 		/**
 		 * @static
 		 * @return string
 		 */
 		static function format() {
 			$msg_class = array(
-				E_USER_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING => array('WARNING', 'warn_msg'), E_USER_NOTICE => array('USER', 'note_msg')
-			);
+				E_USER_ERROR => array('ERROR', 'err_msg'),
+				E_USER_WARNING => array('WARNING', 'warn_msg'),
+				E_USER_NOTICE => array('USER', 'note_msg'));
 			$content = '';
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
@@ -236,6 +245,7 @@
 			}
 			return $content;
 		}
+
 		/**
 		 * @static
 		 *
@@ -246,6 +256,7 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
+
 		/**
 		 * @static
 		 *
@@ -266,6 +277,7 @@
 			$error['backtrace'] = var_export(debug_backtrace(), true);
 			static::$dberrors[] = $error;
 		}
+
 		/**
 		 * @static
 		 *
@@ -277,8 +289,7 @@
 				'message' => get_class($e) . ' ' . $e->getMessage(),
 				'file' => $e->getFile(),
 				'line' => $e->getLine(),
-				'backtrace' => $e->getTrace()
-			);
+				'backtrace' => $e->getTrace());
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);

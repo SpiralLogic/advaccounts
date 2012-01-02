@@ -44,6 +44,7 @@
 	 *
 	 */
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+	define('IS_JSON_REQUEST', (strpos($_SERVER['HTTP_ACCEPT'],'application/json')!==false));
 	/**
 	 *
 	 */
