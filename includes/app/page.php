@@ -10,6 +10,7 @@
 	{
 		protected $css = array();
 		protected static $i = null;
+		/** @var Renderer */
 		public $renderer = null;
 		protected $no_menu = false;
 		protected $is_index = false;
@@ -47,6 +48,13 @@
 			}
 			$Mode = '';
 		}
+		/**
+		 * @static
+		 * @param $title
+		 * @param bool $no_menu
+		 * @param bool $is_index
+		 * @return Page
+		 */
 		public static function start($title, $no_menu = false, $is_index = false) {
 			if (static::$i === null) {
 				static::$i = new static($title, $no_menu, $is_index);
@@ -69,7 +77,7 @@
 			else {
 				$this->header();
 				if ($this->no_menu) {
-					$this->renderer->has_header = false;
+					$this->header = false;
 				}
 				else {
 					$this->renderer->menu_header();
@@ -106,7 +114,7 @@
 			echo "<html class='" . strtolower($this->sel_app) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 			echo "<head><title>$this->title</title>";
 			echo "<meta charset='$encoding'>";
-			echo "<link rel='apple-touch-icon' href='/company/images/apple-touch-icon.png'/>";
+			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
 			$this->css += Config::get('assets.css');
 			$this->send_css();
 			JS::renderHeader();

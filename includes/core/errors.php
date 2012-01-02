@@ -53,9 +53,13 @@
 		 */
 		public static $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
 		/**
-		 * @var array
-		 */
-		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+				 * @var array
+				 */
+				public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+		/**
+				 * @var array
+				 */
+				public static $ignore = array(E_USER_DEPRECATED,E_DEPRECATED, E_STRICT);
 
 		/**
 		 * @static
@@ -126,7 +130,7 @@
 				echo static::JSONError(true);
 			}elseif(static::$fatal) {
 				ob_end_clean();
-				echo static::format();
+				static::format();
 				exit();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
@@ -170,7 +174,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			// error_reporting==0 when messages are set off with @
-			if ($type > E_USER_NOTICE || $type == E_STRICT) {
+			if (in_array($type, static::$ignore)) {
 				return true;
 			}
 			if (static::$count > 5) {
@@ -208,6 +212,7 @@
 		static function format() {
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'),
+				E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
 				E_USER_WARNING => array('WARNING', 'warn_msg'),
 				E_USER_NOTICE => array('USER', 'note_msg'));
 			$content = '';

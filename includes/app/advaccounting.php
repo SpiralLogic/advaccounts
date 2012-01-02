@@ -10,7 +10,8 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-	include(DOCROOT . 'config' . DS . 'defines.php');
+
+	include(DOCROOT . 'config' . DS. 'defines.php');
 	include(DOCROOT . 'config' . DS . 'types.php');
 	include(DOCROOT . 'config' . DS . 'access_levels.php');
 	/**
@@ -102,7 +103,7 @@
 		 */
 		public function display() {
 			$page = Page::start(_($help_context = "Main Menu"), false, true);
-			$page->renderer->display_applications($this);
+			$page->renderer->display_application($this);
 			Page::end();
 		}
 		/**
@@ -119,7 +120,7 @@
 				}
 			}
 			if (!isset($_SESSION["App"])) {
-				Session::i()->App = new ADVAccounting();
+				$_SESSION["App"] = new ADVAccounting();
 			}
 		}
 		/**

@@ -9,7 +9,7 @@
 			JS::renderJSON($data);
 		}
 	}
-	if (issedt($_POST['name'])) {
+	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Debtor();
 		$data['customer']->save($_POST);
 	}

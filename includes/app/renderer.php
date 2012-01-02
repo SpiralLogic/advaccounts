@@ -12,6 +12,9 @@
 		* ********************************************************************* */
 	class Renderer
 	{
+		/***
+		 * @var Renderer
+		 */
 		protected static $_i = null;
 		/***
 		 * @static
@@ -27,22 +30,21 @@
 			$sel_app = $_SESSION['sel_app'];
 			$applications = Session::i()->App->applications;
 			echo "<div id='top'>\n";
-			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
-			echo "<ul>\n";
-			echo " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
-			echo " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+				echo "<p>" . Config::get('db.' . User::get()->company,
+					'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
+				echo "<ul>\n";
+			 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n".
+			 " <li><a href='" .
+			 PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
 			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
-			echo "</ul>\n";
-			echo "</div>\n";
-			echo "<div id='logo'>\n";
-			$indicator = "/themes/" . User::theme() . "/images/ajax-loader.gif";
-			echo "<h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' class='center' style='visibility:hidden;'></span></h1>\n";
-			echo "</div>\n";
-			echo '<div id="_tabs2"><div class="menu_container">';
-			echo "<ul class='menu'>\n";
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>".
+			 "<div id='logo'><h1>" . APP_TITLE . " " . VERSION .
+			 "<span style='padding-left:280px;'>"
+			 ."<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>"
+			 ."</span></h1></div>".
+			 '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
 			foreach ($applications as $app) {
 				$acc = Display::access_string($app->name);
 				if ($app->direct) {
@@ -52,8 +54,8 @@
 					echo "<li " . ($sel_app == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 			}
-			echo "</ul></div></div>\n";
-			echo "<div id='wrapper'>\n";
+			echo "</ul></div></div>".
+			 "<div id='wrapper'>";
 		}
 		public function menu_footer($no_menu) {
 			echo "</div>";
@@ -71,8 +73,7 @@
 			if (Config::get('debug')) {
 				$this->display_loaded();
 			}
-			echo "</div>\n";
-			echo "</div>\n";
+			echo "</div></div>\n";
 		}
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
@@ -83,7 +84,7 @@
 			}
 			echo $row . "</table>";
 		}
-		public function display_applications(&$waapp) {
+		public function display_application(ADVAccounting $waapp) {
 			$selected_app = $waapp->get_selected_application();
 			if ($selected_app->direct) {
 				Display::meta_forward($selected_app->direct);
