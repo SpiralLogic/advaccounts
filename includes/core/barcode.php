@@ -58,7 +58,7 @@
 			if ($digit == '') {
 				return false;
 			}
-			$width = 3;
+			$width = 2;
 			$marge = 3;
 			$height = $width;
 			$size = ($width * count($digit)) + $marge;

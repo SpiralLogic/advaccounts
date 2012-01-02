@@ -334,7 +334,7 @@
 		check_row(_("Delete Image:"), 'del_image');
 	}
 	check_row(_("Exclude from sales:"), 'no_sale');
-	record_status_list_row(_("Item status:"), 'inactive');
+	check_row(_("Item status:"), 'inactive');
 	end_outer_table(1);
 	Display::div_end();
 	Display::div_start('controls');
