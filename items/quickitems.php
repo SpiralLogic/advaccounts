@@ -37,8 +37,8 @@
 	$assembly_account = GL_UI::all('assembly_account');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch', array('class' => 'bold pad10 center'));
-		Item::addSearchBox('stock_id', array(
-																				'selectjs' => '$("#stock_id").val(value.stock_id);Items.fetch(value.stock_id);return false;'
+		Item::addSearchBox('itemSearchId', array('label'=>'Item:','size'=>'50px',
+																				'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
 																	 ));
 		HTML::div();
 		$id = 0;
@@ -59,22 +59,36 @@ JS;
 	}
 	$menu->startTab("Items", "Items");
 	echo <<<HTML
-<div id="Items" class="center">
+<div id="Items" class="left formbox" style='display:none'>
 <input type="hidden" value="\${id}" id="id">
-<table class="tablestyle2 marginauto width80">
-<tr><td><label for="stock_id">Code:</label></td><td><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></td></tr>
-<tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
-<tr><td ><label for="long_description">Description:</label></td><td><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></td></tr>
-<tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
-<tr><td ><label for="uom">Units of Mesasure:</label><br></td><td>$units</tr>
-</table></div><div class="center">
-<table id="stockLevels" class="marginauto grid" style="width:80%">
+<label for="stock_id"><span>Code:</span><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></label>
+<label for="name"><span>Name:</span><input id="name" type="text" value="\${name}" maxlength="10"></label>
+<label for="long_description"><span>Description:</span><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></label>
+<label for="category_id"><span>Category:</span>$stock_cats</label>
+<label for="uom"><span>Units of Mesasure:</span>$units</label>
+</div><div class="center">
+<table id="stockLevels" class="marginauto grid width80" style="display:none">
 <thead><th>Location</th><th>QOH</th><th>Shelf Primary</th><th>Shelf Secondary</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></thead><tbody>
 <script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${shelf_primary}</td><td>\${shelf_secondary}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script></tbody>
 </table>
 </div>
 HTML;
+	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
+	UI::button('btnItem', 'Save', array("style" => "display:none"));
 	$menu->endTab();
+	$menu->startTab("Accounts", "Accounts");
+	echo <<<HTML
+	<div id="Accounts" class="left formbox">
+	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
+		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
+		<label for="sales_account"><span>Sales Account:</span>$sales_account</label>
+<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>
+	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
+	<label for="adjustment_account"><span>Adjustments Account:</span>$adjustment_account</label>
+	<label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label></div>
+HTML;
+	$menu->endTab();
+
 	$menu->startTab("Selling", "Sales Prices");
 	echo "<iframe id='sellFrame' data-src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
@@ -84,26 +98,9 @@ HTML;
 	$menu->startTab("Locations", "Stock Locations");
 	echo "<iframe id='locationFrame' data-src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
-	$menu->startTab("Accounts", "Accounts");
-	echo <<<HTML
-	<div id="Accounts" class="center">
-	<table class="tablestyle2 marginauto width80" >
-	<tr><td ><label for="tax_type_id">Units of Mesasure:</label><br></td><td>$tax_itemtype</tr>
-		<tr><td ><label for="mb_flag">Units of Mesasure:</label><br></td><td>$stock_type</tr>
-
-		<tr><td ><label for="sales_account">Units of Mesasure:</label><br></td><td>$sales_account</tr>
-
-		<tr><td ><label for="inventory_account">Units of Mesasure:</label><br></td><td>$inventory_account</tr>
-	<tr><td ><label for="cogs_account">Units of Mesasure:</label><br></td><td>$cogs_account</tr>
-	<tr><td ><label for="adjustment_account">Units of Mesasure:</label><br></td><td>$adjustment_account</tr>
-	<tr><td ><label for="assembly_account">Units of Mesasure:</label><br></td><td>$assembly_account</tr>
-	</table></div>
-HTML;
-	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' data-src='" . Config::get('store_product_url') . $item->stock_id . Config::get('store_url_extension') . "' style='width:100%'
+	echo "<iframe id='webFrame' data-srcpre='" . Config::get('store_product_url')."' data-srcpost='".Config::get('store_url_extension') . "' style='width:100%'
 	height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->render();
-	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
 	Page::end(isset($_GET['frame']));

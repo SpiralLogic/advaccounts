@@ -40,7 +40,7 @@ jQuery.fn.quickEach = (function () {
 		fieldsChanged:0,
 		debug:{ ajax:true},
 		lastXhr:'',
-		o:{}
+		o:{tabs:{}}
 	};
 	(function () {
 		var extender = jQuery.extend;

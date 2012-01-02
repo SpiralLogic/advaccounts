@@ -58,7 +58,7 @@
 			$sql = "SELECT loc_stock.*, locations.location_name
 		FROM loc_stock, locations
 		WHERE loc_stock.loc_code=locations.loc_code
-		AND loc_stock.stock_id = " . DB::escape($stock_id) . " ORDER BY loc_stock.loc_code";
+		AND loc_stock.stock_id = " . DB::escape($stock_id) . "AND loc_stock.loc_code <> '" . LOC_DROP_SHIP . "' AND loc_stock.loc_code <> '" . LOC_NOT_FAXED_YET . "' ORDER BY loc_stock.loc_code";
 			return DB::query($sql, "an item reorder could not be retreived");
 		}
 

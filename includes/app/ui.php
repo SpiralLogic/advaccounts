@@ -6,8 +6,7 @@
 	 * Time: 5:47 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class UI extends HTML
-	{
+	class UI extends HTML {
 		static function button($id = false, $content = false, $attr = array()) {
 			if ($id) {
 				$attr['id'] = $id;
@@ -21,6 +20,7 @@
 			HTML::button($id, $content, $attr, false);
 			return static::$_instance;
 		}
+
 		static function select($id = false, $options = array(), $params = array()) {
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array)$options as $label => $option) {
@@ -38,6 +38,7 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
+
 		/***
 		 * @static
 		 *
@@ -87,12 +88,14 @@
 			JS::autocomplete($id, $callback, $url, $options);
 			return static::$_instance;
 		}
+
 		static function searchLine($id, $url = '#', $options = array()) {
 			$defaults = array(
 				'description' => false,
 				'disabled' => false,
 				'editable' => true,
 				'selected' => '',
+				'label' => false,
 				'cells' => false,
 				'inactive' => false,
 				'purchase' => false,
@@ -104,7 +107,8 @@
 				'no_sale' => false,
 				'select' => false,
 				'type' => 'local',
-				'where' => ''
+				'where' => '',
+				'size'=>'20px'
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
@@ -114,11 +118,14 @@
 			if ($o['cells']) {
 				HTML::td(true);
 			}
-			HTML::input($id, array('value' => $o['selected'], 'name' => $id));
+			if ($o['label']) {
+				HTML::label(null, $o['label'], array('for' => $id));
+			}
+			HTML::input($id, array('value' => $o['selected'], 'name' => $id,'size'=>$o['size']));
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
-																						 'for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'
-																				));
+					'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+				));
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {
@@ -130,8 +137,8 @@
 			}
 			elseif ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array(
-																															'name' => 'description', 'rows' => 1, 'cols' => 45
-																												 ), false);
+					'name' => 'description', 'rows' => 1, 'cols' => 45
+				), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}
 			elseif ($o['submitonselect']) {
@@ -180,7 +187,7 @@ JS;
 										Adv.loader.on();
 								}}})
 						},
- select: function( event, ui ) {
+ 					select: function( event, ui ) {
  var value = ui.item.value;
  $selectjs
 											 value.description = value.long_description;
@@ -198,6 +205,7 @@ JS;
 			JS::addLive($js, $clean);
 			return HTML::setReturn(false);
 		}
+
 		public static function emailDialogue($contactType) {
 			static $loaded = false;
 			if ($loaded == true) {
@@ -206,8 +214,8 @@ JS;
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$emailBox->setOptions(array(
-																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-														));
+				'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+			));
 			$emailBox->show();
 			$action = <<<JS
 	 var emailID= $(this).data('emailid');

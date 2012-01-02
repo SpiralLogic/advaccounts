@@ -75,7 +75,7 @@
 	elseif (isset($_GET['NewOrder'])) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
-			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe></div>";
+			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?".LOC_NOT_FAXED_YET."=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe></div>";
 		}
 	}
 	start_form();
@@ -218,10 +218,10 @@
 			foreach ($sales_order->line_items as $line_no => $line_item) {
 				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 			}
-			if ($_GET['DS']) {
-				$item_info = Item::get('DS');
-				$_POST['StkLocation'] = 'DRP';
-				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+			if ($_GET[LOC_DROP_SHIP]) {
+				$item_info = Item::get(LOC_DROP_SHIP);
+				$_POST['StkLocation'] = LOC_DROP_SHIP;
+				$order->add_to_order(count($sales_order->line_items), LOC_DROP_SHIP, 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
 					$address .= $sales_order->name . "\n";

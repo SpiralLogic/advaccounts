@@ -696,6 +696,32 @@ div.banner a + a { border-top: 2px groove #999 }
 #address_map {
 	cursor: pointer;
 }
+div.formbox {
+	display:inline-block;
+	margin: 0 auto;
+}
+div.formbox .input-text, div.formbox  select, div.formbox  textarea {
+	border: 1px solid #3b6e22;
+
+}
+
+div.formbox label {
+	display:       block;
+	margin-bottom: 10px;
+	color:         #555555;
+}
+
+div.formbox label span:first-child {
+	display:          block;
+	float:            left;
+	margin-right:     5px;
+	padding:5px;
+	width:            130px;
+	height:inherit;
+	font-weight:      bold;
+	background-color: #D4E6F6;
+
+}
 
 .headingtext {
 	font-weight: bolder;
@@ -817,13 +843,13 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label, tablestyle2 label{
+.label, .tablestyle2 label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	padding:          4px;
 	font-size:        12px;
-
 }
+
 .td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
 	text-indent:   5px;
 	border:        1px solid #E1E1E1;

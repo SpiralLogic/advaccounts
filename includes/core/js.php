@@ -172,7 +172,7 @@ JS;
 		public static function tabs($id, $options = array(), $page) {
 			$defaults = array('noajax' => false);
 			extract(array_merge($defaults, $options));
-			$content = "$('" . $id . "').tabs().toggleClass('tabs')";
+			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs().toggleClass('tabs')";
 			if ($page) {
 				$content .= ".tabs('select'," . $page . ")";
 			}

@@ -81,7 +81,7 @@
 			$rep->Info($params, $cols, null, $aligns);
 			for ($i = $fno[0]; $i <= $tno[0]; $i++)
 			{
-				if ($fno[0] == $tno[0]) {
+				if ($fno[0] == $tno[0] && isset($fno[1])) {
 					$types = array($fno[1]);
 				}
 				else

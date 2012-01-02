@@ -143,9 +143,9 @@
 					$this->contacts[$id] = new Contact($contact);
 				}
 			}
+			$this->credit_limit=str_replace(',','',$this->credit_limit);
 		}
 		protected function _canProcess() {
-			return true;
 			if (strlen($this->name) == 0) {
 				return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
 			}

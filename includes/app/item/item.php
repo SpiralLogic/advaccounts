@@ -412,7 +412,7 @@
 				item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'
 														));
 			$stockbox->setOptions(array(
-																 'autoopen' => false, 'modal' => true, 'width' => 950, 'height' => 620, 'resizeable' => true
+																 'autoopen' => false, 'modal' => true, 'width' => 940, 'height' => 630, 'resizeable' => true
 														));
 			$stockbox->show();
 			$action = <<<JS
