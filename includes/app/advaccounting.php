@@ -10,8 +10,7 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-
-	include(DOCROOT . 'config' . DS. 'defines.php');
+	include(DOCROOT . 'config' . DS . 'defines.php');
 	include(DOCROOT . 'config' . DS . 'types.php');
 	include(DOCROOT . 'config' . DS . 'access_levels.php');
 	/**
@@ -30,11 +29,11 @@
 		/**
 		 * @var array
 		 */
-		public $applications;
+		public $applications = array();
 		/**
 		 * @var
 		 */
-		public $selected_application;
+		public $selected;
 		/**
 		 * @var \Menu
 		 */
@@ -43,21 +42,19 @@
 		 *
 		 */
 		public function __construct() {
-			$installed_extensions = Config::get('extensions.installed');
+			$extensions = Config::get('extensions.installed');
 			$this->menu = new Menu(_("Main Menu"));
 			$this->menu->add_item(_("Main Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
-			$this->applications = array();
 			$apps = Config::get('apps.active');
 			foreach ($apps as $app) {
 				$app = 'Apps_' . $app;
 				$this->add_application(new $app());
 			}
-			if (count($installed_extensions) > 0) {
+			if (count($extensions) > 0) {
 				// Do not use global array directly here, or you suffer
 				// from buggy php behaviour (unexpected loop break
 				// because of same var usage in class constructor).
-				$extensions = $installed_extensions;
 				foreach ($extensions as $ext) {
 					$ext = 'Apps_' . $ext['name'];
 					$this->add_application(new $ext());
@@ -65,14 +62,15 @@
 				Session::$get_text->add_domain(Language::i()->code, PATH_TO_ROOT . "/lang");
 			}
 			$this->add_application(new Apps_System());
+			$this->get_selected();
 		}
 		/**
 		 * @param $app
 		 */
-		public function add_application(&$app) {
+		public function add_application($app) {
 			if ($app->enabled) // skip inactive modules
 			{
-				$this->applications[$app->id] = &$app;
+				$this->applications[strtolower($app->id)] = $app;
 			}
 		}
 		/**
@@ -81,22 +79,27 @@
 		 * @return null
 		 */
 		public function get_application($id) {
-			if (isset($this->applications[$id])) {
-				return $this->applications[$id];
+			if (isset($this->applications[strtolower($id)])) {
+				return $this->applications[strtolower($id)];
 			}
 			return null;
 		}
 		/**
 		 * @return null
 		 */
-		public function get_selected_application() {
-			if (isset($this->selected_application)) {
-				return $this->applications[$this->selected_application];
+		public function get_selected() {
+			if ($this->selected !== null) {
+				return $this->selected;
 			}
-			foreach ($this->applications as $application) {
-				return $application;
+			$path = explode('/', $_SERVER['SCRIPT_NAME']);
+			$app_id = $path[0];
+			$this->selected=$this->get_application($app_id);
+			if (!$this->selected) {
+				$app_id = User::get()->startup_tab();
+				$this->selected=$this->get_application($app_id);
 			}
-			return null;
+
+			return $this->selected;
 		}
 		/**
 		 *
@@ -122,6 +125,7 @@
 			if (!isset($_SESSION["App"])) {
 				$_SESSION["App"] = new ADVAccounting();
 			}
+			return $_SESSION["App"];
 		}
 		/**
 		 *
@@ -252,5 +256,6 @@
 			}
 			return true;
 		}
+		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
 	}
 

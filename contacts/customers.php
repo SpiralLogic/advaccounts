@@ -1,11 +1,11 @@
 <?php
 
-	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Session::i()->App->selected_application = 'Contacts';
+	$page_security = SA_CUSTOMER;
+	Session::i()->App->set_selected('Contacts');
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Debtor::search($_GET['term']);
+			$data = Debtor::seagrch($_GET['term']);
 			JS::renderJSON($data);
 		}
 	}
@@ -123,10 +123,10 @@
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
-	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" :
+	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled=\"\"");
+	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled=\"\"");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled=\"\"");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);

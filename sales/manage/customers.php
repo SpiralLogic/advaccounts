@@ -10,8 +10,9 @@
 				 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CUSTOMER;
+
 	Page::start(_($help_context = "Customers"), Input::request('frame'));
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = $_GET['debtor_no'];

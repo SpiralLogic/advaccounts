@@ -6,8 +6,8 @@
 	 * Time: 5:53 AM
 	 *
 	 */
-	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CUSTOMER;
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (Input::has_post('type', 'id')) {

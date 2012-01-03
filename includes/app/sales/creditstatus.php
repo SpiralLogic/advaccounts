@@ -45,7 +45,7 @@
 
 		public static function select($name, $selected_id = null, $disabled = null) {
 			if ($disabled === null) {
-				$disabled = (!$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT'));
+				$disabled = (!$_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT));
 			}
 			$sql = "SELECT id, reason_description, inactive FROM credit_status";
 			return select_box($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));

@@ -11,11 +11,11 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = 'SA_SALESTRANSVIEW';
+	$page_security = SA_SALESTRANSVIEW;
 	Security::set_page(Input::post('order_view_mode'), array(
-																													'OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'
+																													'OutstandingOnly' => SA_SALESDELIVERY, 'InvoiceTemplates' => SA_SALESINVOICE
 																										 ), array(
-																														 'OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'
+																														 'OutstandingOnly' => SA_SALESDELIVERY, 'InvoiceTemplates' => SA_SALESINVOICE
 																												));
 	JS::open_window(900, 600);
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {

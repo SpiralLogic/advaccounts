@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESINVOICE;
+
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
 	if (isset($_GET['recurrent'])) {

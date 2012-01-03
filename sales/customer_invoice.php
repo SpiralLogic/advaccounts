@@ -14,8 +14,9 @@
 	//	Entry/Modify Sales Invoice against single delivery
 	//	Entry/Modify Batch Sales Invoice against batch of deliveries
 	//
-	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESINVOICE;
+
 	JS::open_window(900, 500);
 	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {

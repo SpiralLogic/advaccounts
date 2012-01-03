@@ -1,7 +1,8 @@
 <?php
 
-	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CUSTOMER;
+
 	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {

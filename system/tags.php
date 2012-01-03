@@ -13,11 +13,11 @@
 	// For tag constants
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
-		$page_security = 'SA_GLACCOUNTTAGS';
+		$page_security = SA_GLACCOUNTTAGS;
 	}
 	else {
 		if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
-			$page_security = 'SA_DIMTAGS';
+			$page_security = SA_DIMTAGS;
 		}
 	}
 	// We use Input::post('type') throughout this script, so convert $_GET vars

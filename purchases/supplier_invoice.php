@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SUPPLIERINVOICE;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -123,7 +124,7 @@
 		Ajax::i()->activate('inv_tot');
 	}
 	$id2 = -1;
-	if (User::get()->can_access('SA_GRNDELETE')) {
+	if (User::get()->can_access(SA_GRNDELETE)) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DB::begin();

@@ -12,99 +12,34 @@
 		* ********************************************************************* */
 	class Renderer
 	{
-		/***
-		 * @var Renderer
-		 */
-		protected static $_i = null;
-		/***
-		 * @static
-		 * @return Renderer
-		 */
-		public static function i() {
-			if (static::$_i === null) {
-				static::$_i = new static;
-			}
-			return static::$_i;
-		}
-		public function menu_header() {
-			$sel_app = $_SESSION['sel_app'];
-			$applications = Session::i()->App->applications;
-			echo "<div id='top'>\n";
-				echo "<p>" . Config::get('db.' . User::get()->company,
-					'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
-				echo "<ul>\n";
-			 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n".
-			 " <li><a href='" .
-			 PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
-			if (Config::get('help_baseurl') != null) {
-				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
-			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>".
-			 "<div id='logo'><h1>" . APP_TITLE . " " . VERSION .
-			 "<span style='padding-left:280px;'>"
-			 ."<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>"
-			 ."</span></h1></div>".
-			 '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
-			foreach ($applications as $app) {
+		public  function menu() {
+			/** @var ADVAccounting $application  */
+			$application = Session::i()->App;
+
+			foreach ($application->applications as $app) {
 				$acc = Display::access_string($app->name);
 				if ($app->direct) {
-					echo "<li " . ($sel_app == $app->id ? "class='active' " : "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
+					echo "<li " . ($application->selected->id == $app->id ? "class='active' " : "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 				else {
-					echo "<li " . ($sel_app == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
+					echo "<li " . ($application->selected->id == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 			}
-			echo "</ul></div></div>".
-			 "<div id='wrapper'>";
 		}
-		public function menu_footer($no_menu) {
-			echo "</div>";
-			if ($no_menu == false && !AJAX_REFERRER) {
-				echo "<div id='footer'>\n";
-				if (isset($_SESSION['current_user'])) {
-					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
-					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
-					if ($_SESSION['current_user']->logged_in()) {
-						echo "<span class='date'> " . Users::show_online() . "</span>\n";
-					}
-					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
-				}
+		public  function display_application(ADVAccounting $application) {
+			if ($application->selected->direct) {
+				Display::meta_forward($application->selected->direct);
 			}
-			if (Config::get('debug')) {
-				$this->display_loaded();
-			}
-			echo "</div></div>\n";
-		}
-		protected function display_loaded() {
-			$loaded = Autoloader::getPerf();
-			$row = "<table id='loaded'>";
-			while ($v1 = array_shift($loaded)) {
-				$v2 = array_shift($loaded);
-				$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
-			}
-			echo $row . "</table>";
-		}
-		public function display_application(ADVAccounting $waapp) {
-			$selected_app = $waapp->get_selected_application();
-			if ($selected_app->direct) {
-				Display::meta_forward($selected_app->direct);
-			}
-			foreach ($selected_app->modules as $module) {
+			foreach ($application->selected->modules as $module) {
 				// image
-				echo "<table style='width:100%'><tr>";
+				echo "<table class='width100'><tr>";
 				echo "<td class='menu_group top'>";
-				echo "<table style='width:100%'>";
+				echo "<table class='width100'>";
 				echo "<tr><td class='menu_group' colspan=2>";
 				echo $module->name;
 				echo "</td></tr><tr>";
-				echo "<td style='width:50%' class='menu_group_items'>";
+				echo "<td class='width50 menu_group_items'>";
 				echo "<ul>\n";
-				if ($_SESSION["Language"]->dir == "rtl") {
-					$class = "right";
-				}
-				else {
-					$class = "left";
-				}
 				foreach ($module->lappfunctions as $appfunction) {
 					if ($appfunction->label == "") {
 						echo "<li class='empty'>&nbsp;</li>\n";
@@ -117,8 +52,8 @@
 					}
 				}
 				echo "</ul></td>\n";
-				if (sizeof($module->rappfunctions) > 0) {
-					echo "<td style='width:50%' class='menu_group_items'>";
+				if (count($module->rappfunctions) > 0) {
+					echo "<td class='width50 menu_group_items'>";
 					echo "<ul>\n";
 					foreach ($module->rappfunctions as $appfunction) {
 						if ($appfunction->label == "") {

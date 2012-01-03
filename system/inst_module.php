@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_CREATEMODULES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CREATEMODULES;
+
 	Page::start(_($help_context = "Install/Activate extensions"));
 	Page::simple_mode(true);
 	function update_extensions($extensions) {
@@ -122,7 +123,7 @@
 		// security area guess for plugins
 		if ($extensions[$id]['type'] == 'plugin') {
 			$exttext = file_get_contents(PATH_TO_ROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
-			$area = 'SA_OPEN';
+			$area = SA_OPEN;
 			if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 				$area = trim($match[1]);
 			}

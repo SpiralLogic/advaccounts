@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_JOURNALENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_JOURNALENTRY;
+
 	JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
@@ -177,7 +178,7 @@
 			JS::set_focus('code_id');
 			return false;
 		}
-		if (!User::get()->can_access('SA_BANKJOURNAL') && Bank_Account::is($_POST['code_id'])) {
+		if (!User::get()->can_access(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
 			Errors::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			JS::set_focus('code_id');
 			return false;

@@ -12,8 +12,9 @@
 	//
 	//	Entry/Modify Credit Note for selected Sales Invoice
 	//
-	$page_security = 'SA_SALESCREDITINV';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESCREDITINV;
+
 	JS::open_window(900, 500);
 	if (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);

@@ -12,8 +12,9 @@
 	//
 	//	Entry/Modify free hand Credit Note
 	//
-	$page_security = 'SA_SALESCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESCREDIT;
+
 	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");

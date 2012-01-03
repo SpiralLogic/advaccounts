@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_GRN;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	if (isset($_GET['AddedID'])) {
