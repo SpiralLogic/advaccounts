@@ -228,7 +228,7 @@
 	if (!Input::get('frame')) {
 		HTML::_div()->div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
-		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
+		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=');
 		$shortcuts->endTab();
 		$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
 		$shortcuts->endTab();

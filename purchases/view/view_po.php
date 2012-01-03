@@ -100,7 +100,7 @@
 		return;
 	}
 	Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
-	Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
+	Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=" . $_GET['trans_no']);
 	Page::end(true);
 
 ?>

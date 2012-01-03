@@ -103,7 +103,7 @@
 	}
 
 	function edit_link($row) {
-		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
+		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrder" : "ModifyQuote");
 		return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 	}
 

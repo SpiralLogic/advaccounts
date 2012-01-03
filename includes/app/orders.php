@@ -10,9 +10,9 @@
 	{
 		const NEW_ORDER = 'NewOrder';
 		const MODIFY_ORDER = 'ModifyOrder';
-		const NEW_QUOTE = 'NewQuotation';
+		const NEW_QUOTE = 'NewQuote';
 		const NEW_QUOTE_TO_ORDER = 'NewQuoteToSalesOrder';
-		const MODIFY_QUOTE = 'ModifyQuotation';
+		const MODIFY_QUOTE = 'ModifyQuote';
 		const NEW_DELIVERY = 'NewDelivery';
 		const NEW_INVOICE = 'NewInvoice';
 		/**

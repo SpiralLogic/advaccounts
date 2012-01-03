@@ -63,7 +63,7 @@
 	Purch_GRN::display($order, true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items($order);
-	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $order->order_no);
+	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');

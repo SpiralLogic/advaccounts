@@ -278,8 +278,8 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" :
-			 "ModifyQuotationNumber") . "=$order_no");
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
+			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
@@ -295,7 +295,7 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
+			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuote=1");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {

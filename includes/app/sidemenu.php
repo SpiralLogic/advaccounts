@@ -40,7 +40,7 @@ HTML;
 <h3><a href="#">Create</a></h3>
 
 		 <div>
-		 <a href="/sales/sales_order_entry.php?NewQuotation=Yes">Quote</a>
+		 <a href="/sales/sales_order_entry.php?NewQuote=Yes">Quote</a>
 		 <a href="/sales/sales_order_entry.php?NewOrder=Yes">Order</a>
 		 <a href="/sales/sales_order_entry.php?NewInvoice=0">Direct Invoice</a>
 		 <a href="/purchases/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
