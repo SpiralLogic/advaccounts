@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Tax_Groups {
+	class Tax_Groups
+	{
 		public static function clear_shipping_tax_group() {
 			$sql = "UPDATE tax_groups SET tax_shipping=0 WHERE 1";
 			DB::query($sql, "could not update tax_shipping fields");
@@ -64,10 +65,7 @@
 		}
 
 		public static function add_items($id, $items, $rates) {
-			for (
-				$i = 0; $i < count($items); $i++
-			)
-			{
+			for ($i = 0; $i < count($items); $i++) {
 				$sql
 				 = "INSERT INTO tax_group_items (tax_group_id, tax_type_id, rate)
 			VALUES (" . DB::escape($id) . ", " . DB::escape($items[$i]) . ", " . $rates[$i] . ")";
@@ -91,8 +89,7 @@
 		public static function get_items_as_array($id) {
 			$ret_tax_array = array();
 			$tax_group_items = static::get_for_item($id);
-			while ($tax_group_item = DB::fetch($tax_group_items))
-			{
+			while ($tax_group_item = DB::fetch($tax_group_items)) {
 				$index = $tax_group_item['tax_type_id'];
 				$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
 				$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
@@ -118,8 +115,7 @@
 		public static function for_shipping_as_array() {
 			$ret_tax_array = array();
 			$tax_group_items = static::get_shipping_items();
-			while ($tax_group_item = DB::fetch($tax_group_items))
-			{
+			while ($tax_group_item = DB::fetch($tax_group_items)) {
 				$index = $tax_group_item['tax_type_id'];
 				$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
 				$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
@@ -131,12 +127,13 @@
 			return $ret_tax_array;
 		}
 
-
 		// TAX GROUPS
 		public static function select($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			$sql = "SELECT id, name FROM tax_groups";
 			return select_box($name, $selected_id, $sql, 'id', 'name', array(
-				'order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
+																																			'order' => 'id', 'spec_option' => $none_option,
+																																			'spec_id' => ALL_NUMERIC,
+																																			'select_submit' => $submit_on_change, 'async' => false,));
 		}
 
 		public static function cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {

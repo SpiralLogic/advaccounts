@@ -14,6 +14,52 @@
 
 	Page::start(_($help_context = "Install/Activate extensions"));
 	Page::simple_mode(true);
+
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+		if (handle_submit()) {
+			if ($selected_id != -1) {
+				Errors::notice(_("Extension data has been updated."));
+			}
+			else {
+				Errors::notice(_("Extension has been installed."));
+			}
+			$Mode = MODE_RESET;
+		}
+	}
+	if ($Mode == MODE_DELETE) {
+		handle_delete();
+		$Mode = MODE_RESET;
+	}
+	if (get_post('Update')) {
+		$exts = DB_Company::get_company_extensions();
+		foreach ($exts as $i => $ext) {
+			$exts[$i]['active'] = check_value('Active' . $i);
+		}
+		advaccounting::write_extensions($exts, get_post('extset'));
+		$installed_extensions = $exts;
+		Errors::notice(_('Current active extensions set has been saved.'));
+	}
+	if ($Mode == MODE_RESET) {
+		$selected_id = -1;
+		unset($_POST);
+	}
+	start_form(true);
+	if (list_updated('extset')) {
+		Ajax::i()->activate('_page_body');
+	}
+	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
+	echo Extensions::view('extset', null, true);
+	echo "</div><br>";
+	$set = get_post('extset', -1);
+	if ($set == -1) {
+		display_extensions();
+		display_ext_edit($selected_id);
+	}
+	else {
+		company_extensions($set);
+	}
+	end_form();
+	Page::end();
 	function update_extensions($extensions) {
 		if (!advaccounting::write_extensions($extensions)) {
 			Errors::notice(_("Cannot update system extensions list."));
@@ -245,51 +291,5 @@
 		Errors::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		if (handle_submit()) {
-			if ($selected_id != -1) {
-				Errors::notice(_("Extension data has been updated."));
-			}
-			else {
-				Errors::notice(_("Extension has been installed."));
-			}
-			$Mode = MODE_RESET;
-		}
-	}
-	if ($Mode == MODE_DELETE) {
-		handle_delete();
-		$Mode = MODE_RESET;
-	}
-	if (get_post('Update')) {
-		$exts = DB_Company::get_company_extensions();
-		foreach ($exts as $i => $ext) {
-			$exts[$i]['active'] = check_value('Active' . $i);
-		}
-		advaccounting::write_extensions($exts, get_post('extset'));
-		$installed_extensions = $exts;
-		Errors::notice(_('Current active extensions set has been saved.'));
-	}
-	if ($Mode == MODE_RESET) {
-		$selected_id = -1;
-		unset($_POST);
-	}
-	start_form(true);
-	if (list_updated('extset')) {
-		Ajax::i()->activate('_page_body');
-	}
-	echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
-	echo Extensions::view('extset', null, true);
-	echo "</div><br>";
-	$set = get_post('extset', -1);
-	if ($set == -1) {
-		display_extensions();
-		display_ext_edit($selected_id);
-	}
-	else {
-		company_extensions($set);
-	}
-	end_form();
-	Page::end();
 
 ?>

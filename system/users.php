@@ -9,40 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_USERS;
 	Page::start(_($help_context = "Users"));
 	Page::simple_mode(true);
-	function can_process($user) {
-		if (strlen($_POST['user_id']) < 4) {
-			Errors::error(_("The user login entered must be at least 4 characters long."));
-			JS::set_focus('user_id');
-			return false;
-		}
-		if ($_POST['password'] != "") {
-			if (strlen($_POST['password']) < 4) {
-				Errors::error(_("The password entered must be at least 4 characters long."));
-				JS::set_focus('password');
-				return false;
-			}
-			if (strstr($_POST['password'], $_POST['user_id']) != false) {
-				Errors::error(_("The password cannot contain the user login."));
-				JS::set_focus('password');
-				return false;
-			}
-			$check = ($user !== null) ? $user->checkPasswordStrength($_POST['password']) : false;
-			if (!$check && $check['error'] > 0) {
-				Errors::error($check['text']);
-				return false;
-			}
-			if (!$check && $check['strength'] < 3) {
-				Errors::error(_("Password Too Weeak!"));
-				return false;
-			}
-		}
-		return true;
-	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$user = null;
@@ -81,8 +51,7 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", ""
-	);
+		_("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
@@ -160,4 +129,38 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	/**
+	 * @param  $user
+	 * @return bool
+	 */
+	function can_process($user) {
+		if (strlen($_POST['user_id']) < 4) {
+			Errors::error(_("The user login entered must be at least 4 characters long."));
+			JS::set_focus('user_id');
+			return false;
+		}
+		if ($_POST['password'] != "") {
+			if (strlen($_POST['password']) < 4) {
+				Errors::error(_("The password entered must be at least 4 characters long."));
+				JS::set_focus('password');
+				return false;
+			}
+			if (strstr($_POST['password'], $_POST['user_id']) != false) {
+				Errors::error(_("The password cannot contain the user login."));
+				JS::set_focus('password');
+				return false;
+			}
+			$check = ($user !== null) ? Auth::checkPasswordStrength($_POST['password']) : false;
+			if (!$check && $check['error'] > 0) {
+				Errors::error($check['text']);
+				return false;
+			}
+			if (!$check && $check['strength'] < 3) {
+				Errors::error(_("Password Too Weeak!"));
+				return false;
+			}
+		}
+		return true;
+	}
+
 ?>

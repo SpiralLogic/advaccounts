@@ -14,14 +14,6 @@
 	$page_security = SA_SHIPPING;
 	Page::start(_($help_context = "Shipping Company"));
 	Page::simple_mode(true);
-	function can_process() {
-		if (strlen($_POST['shipper_name']) == 0) {
-			Errors::error(_("The shipping company name cannot be empty."));
-			JS::set_focus('shipper_name');
-			return false;
-		}
-		return true;
-	}
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
@@ -123,4 +115,13 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function can_process() {
+			if (strlen($_POST['shipper_name']) == 0) {
+				Errors::error(_("The shipping company name cannot be empty."));
+				JS::set_focus('shipper_name');
+				return false;
+			}
+			return true;
+		}
+
 ?>

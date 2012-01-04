@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_POSSETUP;
-
 	Page::start(_($help_context = "POS settings"));
 	Page::simple_mode(true);
 	function can_process() {
@@ -60,8 +59,7 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', ''
-	);
+		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;

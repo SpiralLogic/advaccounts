@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESALLOC;
-
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 	start_form();
@@ -41,6 +40,24 @@
 	if (isset($_POST['customer_id'])) {
 		$customer_id = $_POST['customer_id'];
 	}
+	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
+	$cols = array(
+		_("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"),
+		_("Date") => array(
+			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Customer") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'amount_left'), array(
+			'insert' => true, 'fun' => 'alloc_link'));
+	if (isset($_POST['customer_id'])) {
+		$cols[_("Customer")] = 'skip';
+		$cols[_("Currency")] = 'skip';
+	}
+	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+	$table->width = "75%";
+	DB_Pager::display($table);
+	end_form();
+	Page::end();
 	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
@@ -62,24 +79,4 @@
 		return $row['settled'] == 1;
 	}
 
-	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
-	$cols = array(
-		_("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"), _("Date") => array(
-			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
-		), _("Customer") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'amount_left'
-		), array(
-			'insert' => true, 'fun' => 'alloc_link'
-		)
-	);
-	if (isset($_POST['customer_id'])) {
-		$cols[_("Customer")] = 'skip';
-		$cols[_("Currency")] = 'skip';
-	}
-	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
-	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
-	$table->width = "75%";
-	DB_Pager::display($table);
-	end_form();
-	Page::end();
 ?>

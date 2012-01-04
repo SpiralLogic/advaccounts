@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SRECURRENT;
-
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Recurrent Invoices"));
 	Page::simple_mode(true);
@@ -24,7 +23,8 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql = "UPDATE recurrent_invoices SET
+				$sql
+				 = "UPDATE recurrent_invoices SET
  			description=" . DB::escape($_POST['description']) . ",
  			order_no=" . DB::escape($_POST['order_no']) . ",
  			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
@@ -37,7 +37,8 @@
 				$note = _('Selected recurrent invoice has been updated');
 			}
 			else {
-				$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
+				$sql
+				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
  			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
@@ -59,20 +60,13 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	function get_sales_group_name($group_no) {
-		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-		$result = DB::query($sql, "could not get group");
-		$row = DB::fetch($result);
-		return $row[0];
-	}
-
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DB::query($sql, "could not get recurrent invoices");
 	start_form();
 	start_table('tablestyle width70');
 	$th = array(
-		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "", ""
-	);
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"),
+		_("End"), _("Last Created"), "", "");
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
@@ -138,4 +132,11 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function get_sales_group_name($group_no) {
+		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
+		$result = DB::query($sql, "could not get group");
+		$row = DB::fetch($result);
+		return $row[0];
+	}
+
 ?>

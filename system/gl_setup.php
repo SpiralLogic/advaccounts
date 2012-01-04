@@ -13,24 +13,6 @@
 	$page_security = SA_GLSETUP;
 
 	Page::start(_($help_context = "System and General GL Setup"));
-	function can_process() {
-		if (!Validation::is_num('po_over_receive', 0, 100)) {
-			Errors::error(_("The delivery over-receive allowance must be between 0 and 100."));
-			JS::set_focus('po_over_receive');
-			return false;
-		}
-		if (!Validation::is_num('po_over_charge', 0, 100)) {
-			Errors::error(_("The invoice over-charge allowance must be between 0 and 100."));
-			JS::set_focus('po_over_charge');
-			return false;
-		}
-		if (!Validation::is_num('past_due_days', 0, 100)) {
-			Errors::error(_("The past due days interval allowance must be between 0 and 100."));
-			JS::set_focus('past_due_days');
-			return false;
-		}
-		return true;
-	}
 
 	if (isset($_POST['submit']) && can_process()) {
 		$_POST['allow_negative_stock'] = check_value('allow_negative_stock');
@@ -119,5 +101,23 @@
 	submit_center('submit', _("Update"), true, '', 'default');
 	end_form(2);
 	Page::end();
+	function can_process() {
+			if (!Validation::is_num('po_over_receive', 0, 100)) {
+				Errors::error(_("The delivery over-receive allowance must be between 0 and 100."));
+				JS::set_focus('po_over_receive');
+				return false;
+			}
+			if (!Validation::is_num('po_over_charge', 0, 100)) {
+				Errors::error(_("The invoice over-charge allowance must be between 0 and 100."));
+				JS::set_focus('po_over_charge');
+				return false;
+			}
+			if (!Validation::is_num('past_due_days', 0, 100)) {
+				Errors::error(_("The past due days interval allowance must be between 0 and 100."));
+				JS::set_focus('past_due_days');
+				return false;
+			}
+			return true;
+		}
 
 ?>

@@ -79,11 +79,11 @@
 			//		$areas = sort_areas($areas);
 			$sections = array_values($sections);
 			if ($new_role) {
-				Printer::add_role($_POST['name'], $_POST['description'], $sections, $areas);
+				Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
 				Errors::notice(_("New security role has been added."));
 			}
 			else {
-				Printer::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
+				Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
 				DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
 				Errors::notice(_("Security role has been updated."));
 			}
@@ -93,7 +93,7 @@
 		}
 	}
 	if (get_post('delete')) {
-		if (check_role_used(get_post('role'))) {
+		if (Security::check_role_used(get_post('role'))) {
 			Errors::error(_("This role is currently assigned to some users and cannot be deleted"));
 		}
 		else {

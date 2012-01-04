@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTYPES;
-
 	Page::start(_($help_context = "Sales Types"));
 	Page::simple_mode(true);
 	function can_process() {
@@ -34,7 +33,8 @@
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
-		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
+		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 :
+		 0, Validation::input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = MODE_RESET;
 	}

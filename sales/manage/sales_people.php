@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESMAN;
-
 	Page::start(_($help_context = "Sales Persons"));
 	Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -36,8 +35,7 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the delete code below*/
-				$sql = "UPDATE salesman SET salesman_name="
-				 . DB::escape($_POST['salesman_name']) . ",
+				$sql = "UPDATE salesman SET salesman_name=" . DB::escape($_POST['salesman_name']) . ",
  			user_id=" . DB::escape($_POST['user_id']) . ",
  			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
  			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
@@ -49,17 +47,10 @@
 			}
 			else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-				$sql = "INSERT INTO salesman (salesman_name, user_id, salesman_phone, salesman_fax, salesman_email,
+				$sql
+				 = "INSERT INTO salesman (salesman_name, user_id, salesman_phone, salesman_fax, salesman_email,
  			provision, break_pt, provision2)
- 			VALUES ("
-				 . DB::escape($_POST['salesman_name']) . ", "
-				 . DB::escape($_POST['user_id']) . ", "
-				 . DB::escape($_POST['salesman_phone']) . ", "
-				 . DB::escape($_POST['salesman_fax']) . ", "
-				 . DB::escape($_POST['salesman_email']) . ", "
-				 . Validation::input_num('provision') . ", "
-				 . Validation::input_num('break_pt') . ", "
-				 . Validation::input_num('provision2') . ")";
+ 			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['user_id']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -101,7 +92,8 @@
 	$result = DB::query($sql, "could not get sales persons");
 	start_form();
 	start_table('tablestyle nowrap width80');
-	$th = array(_("Name"),_("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "","");
+	$th = array(
+		_("Name"), _("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
@@ -147,7 +139,7 @@
 		$_POST['provision2'] = Num::percent_format(0);
 	}
 	start_table('tablestyle2');
-	Users::row(_('User:'),'user_id');
+	Users::row(_('User:'), 'user_id');
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);

@@ -205,7 +205,8 @@
 	}
 
 	function read_customer_data() {
-		$sql = "SELECT debtors.pymt_discount,
+		$sql
+		 = "SELECT debtors.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors, credit_status
 		WHERE debtors.credit_status = credit_status.id

@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESINVOICE;
-
 	JS::open_window(900, 600);
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
@@ -92,7 +91,8 @@
 	else {
 		unset($selected_stock_item);
 	}
-	$sql = "SELECT trans.trans_no,
+	$sql
+	 = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_code,
 		
@@ -139,34 +139,15 @@
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected
 	$cols = array(
-		_("Delivery #") => array('fun' => 'trans_view'),
-		_("Customer"),
-		_("branch_code") => 'skip',
-		_("Contact"),
-		_("Address"),
-		_("Reference"),
-		_("Cust Ref"),
-		_("Delivery Date") => array(
-			'type' => 'date', 'ord' => ''
-		),
-		_("Due By") => array('type' => 'date'),
-		_("Delivery Total") => array(
-			'type' => 'amount', 'ord' => ''
-		),
-		_("Currency") => array('align' => 'center'),
+		_("Delivery #") => array('fun' => 'trans_view'), _("Customer"), _("branch_code") => 'skip', _("Contact"), _("Address"),
+		_("Reference"), _("Cust Ref"), _("Delivery Date") => array(
+			'type' => 'date', 'ord' => ''), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
+			'type' => 'amount', 'ord' => ''), _("Currency") => array('align' => 'center'),
 		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing")) => array(
-			'insert' => true, 'fun' => 'batch_checkbox', 'align' => 'center'
-		),
-		array(
-			'insert' => true, 'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true, 'fun' => 'invoice_link'
-		),
-		array(
-			'insert' => true, 'fun' => 'prt_link'
-		)
-	);
+			'insert' => true, 'fun' => 'batch_checkbox', 'align' => 'center'), array(
+			'insert' => true, 'fun' => 'edit_link'), array(
+			'insert' => true, 'fun' => 'invoice_link'), array(
+			'insert' => true, 'fun' => 'prt_link'));
 	if (isset($_SESSION['Batch'])) {
 		foreach ($_SESSION['Batch'] as $trans => $del) {
 			unset($_SESSION['Batch'][$trans]);
@@ -185,12 +166,14 @@
 
 	function batch_checkbox($row) {
 		$name = "Sel_" . $row['trans_no'];
-		return $row['Done'] ? '' : "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
-															 . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
+		return $row['Done'] ? '' :
+		 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
+			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
 	}
 
 	function edit_link($row) {
-		return $row["Outstanding"] == 0 ? '' : DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+		return $row["Outstanding"] == 0 ? '' :
+		 DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
 	}
 
 	function prt_link($row) {
@@ -198,7 +181,8 @@
 	}
 
 	function invoice_link($row) {
-		return $row["Outstanding"] == 0 ? '' : DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+		return $row["Outstanding"] == 0 ? '' :
+		 DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
 	}
 
 	function check_overdue($row) {

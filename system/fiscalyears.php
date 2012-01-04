@@ -15,6 +15,21 @@
 	$js = "";
 	Page::start(_($help_context = "Fiscal Years"));
 	Page::simple_mode(true);
+
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+		handle_submit();
+	}
+	if ($Mode == MODE_DELETE) {
+		global $selected_id;
+		handle_delete($selected_id);
+	}
+	if ($Mode == MODE_RESET) {
+		$selected_id = -1;
+	}
+	display_fiscalyears();
+	echo '<br>';
+	display_fiscalyear_edit($selected_id);
+	Page::end();
 	function is_date_in_fiscalyears($date) {
 		$date = Dates::date2sql($date);
 		$sql = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
@@ -409,20 +424,5 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 		end_form();
 	}
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit();
-	}
-	if ($Mode == MODE_DELETE) {
-		global $selected_id;
-		handle_delete($selected_id);
-	}
-	if ($Mode == MODE_RESET) {
-		$selected_id = -1;
-	}
-	display_fiscalyears();
-	echo '<br>';
-	display_fiscalyear_edit($selected_id);
-	Page::end();
 
 ?>

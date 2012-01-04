@@ -24,24 +24,6 @@
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();
 	}
-	function line_start_focus() {
-		Ajax::i()->activate('items_table');
-		JS::set_focus('_stock_id_edit');
-	}
-
-	function handle_new_order() {
-		if (isset($_SESSION['transfer_items'])) {
-			$_SESSION['transfer_items']->clear_items();
-			unset ($_SESSION['transfer_items']);
-		}
-		//session_register("transfer_items");
-		$_SESSION['transfer_items'] = new Item_Order(ST_LOCTRANSFER);
-		$_POST['AdjDate'] = Dates::new_doc_date();
-		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-			$_POST['AdjDate'] = Dates::end_fiscalyear();
-		}
-		$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
-	}
 
 	if (isset($_POST['Process'])) {
 		$tr = &$_SESSION['transfer_items'];
@@ -95,6 +77,37 @@
 		unset($_SESSION['transfer_items']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
+
+	$id = find_submit(MODE_DELETE);
+	if ($id != -1) {
+		handle_delete_item($id);
+	}
+	if (isset($_POST['AddItem'])) {
+		handle_new_item();
+	}
+	if (isset($_POST['UpdateItem'])) {
+		handle_update_item();
+	}
+	if (isset($_POST['CancelItemChanges'])) {
+		line_start_focus();
+	}
+	if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
+		handle_new_order();
+	}
+	start_form();
+	Inv_Transfer::header($_SESSION['transfer_items']);
+	start_table('tablesstyle width70 pad10');
+	start_row();
+	echo "<td>";
+	Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
+	Inv_Transfer::option_controls();
+	echo "</td>";
+	end_row();
+	end_table(1);
+	submit_center_first('Update', _("Update"), '', null);
+	submit_center_last('Process', _("Process Transfer"), '', 'default');
+	end_form();
+	Page::end();
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
 			Errors::error(_("The quantity entered must be a positive number."));
@@ -130,36 +143,23 @@
 		Item_Order::add_line($_SESSION['transfer_items'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['std_cost']);
 		line_start_focus();
 	}
+	function line_start_focus() {
+			Ajax::i()->activate('items_table');
+			JS::set_focus('_stock_id_edit');
+		}
 
-	$id = find_submit(MODE_DELETE);
-	if ($id != -1) {
-		handle_delete_item($id);
-	}
-	if (isset($_POST['AddItem'])) {
-		handle_new_item();
-	}
-	if (isset($_POST['UpdateItem'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['CancelItemChanges'])) {
-		line_start_focus();
-	}
-	if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
-		handle_new_order();
-	}
-	start_form();
-	Inv_Transfer::header($_SESSION['transfer_items']);
-	start_table('tablesstyle width70 pad10');
-	start_row();
-	echo "<td>";
-	Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
-	Inv_Transfer::option_controls();
-	echo "</td>";
-	end_row();
-	end_table(1);
-	submit_center_first('Update', _("Update"), '', null);
-	submit_center_last('Process', _("Process Transfer"), '', 'default');
-	end_form();
-	Page::end();
+		function handle_new_order() {
+			if (isset($_SESSION['transfer_items'])) {
+				$_SESSION['transfer_items']->clear_items();
+				unset ($_SESSION['transfer_items']);
+			}
+			//session_register("transfer_items");
+			$_SESSION['transfer_items'] = new Item_Order(ST_LOCTRANSFER);
+			$_POST['AdjDate'] = Dates::new_doc_date();
+			if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+				$_POST['AdjDate'] = Dates::end_fiscalyear();
+			}
+			$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
+		}
 
 ?>
