@@ -37,8 +37,8 @@
 	}
 	if ($Mode == MODE_DELETE) {
 		$cancel_delete = 0;
-		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DB::escape($selected_id);
+		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
+		$sql = "SELECT COUNT(*) FROM branches WHERE area=" . DB::escape($selected_id);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

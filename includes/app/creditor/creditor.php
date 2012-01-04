@@ -150,9 +150,9 @@
 			}
 			$past1 = DB_Company::get_pref('past_due_days');
 			$past2 = 2 * $past1;
-			// removed - supp_trans.alloc from all summations
-			$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
-			$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
+			// removed - creditor_trans.alloc from all summations
+			$value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+			$due = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
 			$sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
 
 		Sum($value) AS Balance,
@@ -163,13 +163,13 @@
 
 		FROM suppliers,
 			 payment_terms,
-			 supp_trans
+			 creditor_trans
 
 		WHERE
 			 suppliers.payment_terms = payment_terms.terms_indicator
 			 AND suppliers.supplier_id = $supplier_id
-			 AND supp_trans.tran_date <= '$todate'
-			 AND suppliers.supplier_id = supp_trans.supplier_id
+			 AND creditor_trans.tran_date <= '$todate'
+			 AND suppliers.supplier_id = creditor_trans.supplier_id
 
 		GROUP BY
 			 suppliers.supp_name,
@@ -219,7 +219,7 @@
  	SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
 
 
- 	FROM supp_trans as trans
+ 	FROM creditor_trans as trans
  	WHERE trans.ov_amount != 0
 		AND trans . tran_date >= '$date_from'
 		AND trans . tran_date <= '$date_to'

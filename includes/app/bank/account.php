@@ -70,7 +70,7 @@
 		}
 
 		public static function get_customer_default($cust_id) {
-			$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no=" . DB::escape($cust_id);
+			$sql = "SELECT curr_code FROM debtors WHERE debtor_no=" . DB::escape($cust_id);
 			$result = DB::query($sql, "could not retreive default customer currency code");
 			$row = DB::fetch_row($result);
 			$ba = static::get_default($row[0]);

@@ -40,13 +40,13 @@
 			$this->Deleted = false;
 		}
 
-		public static function add_item($supp_trans_type, $supp_trans_no, $stock_id, $description,
+		public static function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description,
 			$gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_,
 			$err_msg = "", $discount, $exp_price = -1) {
 			$unit_price = $unit_price / (1 - $discount / 100);
-			$sql = "INSERT INTO supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
+			$sql = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 		 	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
-			$sql .= "VALUES (" . DB::escape($supp_trans_type) . ", " . DB::escape($supp_trans_no) . ", "
+			$sql .= "VALUES (" . DB::escape($creditor_trans_type) . ", " . DB::escape($creditor_trans_no) . ", "
 			 . DB::escape($stock_id) .
 			 ", " . DB::escape($description) . ", " . DB::escape($gl_code) . ", " . DB::escape($unit_price)
 			 . ", " . DB::escape($unit_tax) . ", " . DB::escape($quantity) . ",
@@ -58,23 +58,23 @@
 			return DB::insert_id();
 		}
 
-		public static function add_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
-			return Purch_Line::add_item($supp_trans_type, $supp_trans_no, "", "", $gl_code, $amount,
+		public static function add_gl_item($creditor_trans_type, $creditor_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
+			return Purch_Line::add_item($creditor_trans_type, $creditor_trans_no, "", "", $gl_code, $amount,
 				0, 0, /*$grn_item_id*/
 				0, /*$po_detail_item_id*/
 				0, $memo_, $err_msg);
 		}
 
-		public static function get_for_invoice($supp_trans_type, $supp_trans_no) {
-			$sql = "SELECT *, unit_price AS FullUnitPrice FROM supp_invoice_items
-			WHERE supp_trans_type = " . DB::escape($supp_trans_type) . "
-			AND supp_trans_no = " . DB::escape($supp_trans_no) . " ORDER BY id";
+		public static function get_for_invoice($creditor_trans_type, $creditor_trans_no) {
+			$sql = "SELECT *, unit_price AS FullUnitPrice FROM creditor_trans_details
+			WHERE creditor_trans_type = " . DB::escape($creditor_trans_type) . "
+			AND creditor_trans_no = " . DB::escape($creditor_trans_no) . " ORDER BY id";
 			return DB::query($sql, "Cannot retreive supplier transaction detail records");
 		}
 
 		public static function void_for_invoice($type, $type_no) {
-			$sql = "UPDATE supp_invoice_items SET quantity=0, unit_price=0
-			WHERE supp_trans_type = " . DB::escape($type) . " AND supp_trans_no=" . DB::escape($type_no);
+			$sql = "UPDATE creditor_trans_details SET quantity=0, unit_price=0
+			WHERE creditor_trans_type = " . DB::escape($type) . " AND creditor_trans_no=" . DB::escape($type_no);
 			DB::query($sql, "could not void supptrans details");
 		}
 	}

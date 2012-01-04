@@ -67,11 +67,11 @@
 				case	 ST_PURCHORDER	 :
 					return array("purch_orders", null, "order_no", "reference", "tran_date");
 				case	 ST_SUPPINVOICE	:
-					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+					return array("creditor_trans", "type", "trans_no", "reference", "tran_date");
 				case	 ST_SUPPCREDIT	 :
-					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+					return array("creditor_trans", "type", "trans_no", "reference", "tran_date");
 				case	 ST_SUPPAYMENT	 :
-					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+					return array("creditor_trans", "type", "trans_no", "reference", "tran_date");
 				case	 ST_SUPPRECEIVE	:
 					return array("grn_batch", null, "id", "reference", "delivery_date");
 				case	 ST_WORKORDER	:

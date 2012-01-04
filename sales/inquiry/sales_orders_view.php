@@ -224,7 +224,7 @@
 		debtor.curr_code,
 		Sum(line.qty_sent) AS TotDelivered,
 		Sum(line.quantity) AS TotQuantity
-	FROM sales_orders as sorder, sales_order_details as line, debtors_master as debtor, cust_branch as branch
+	FROM sales_orders as sorder, sales_order_details as line, debtors as debtor, branches as branch
 		WHERE sorder.order_no = line.order_no
 		AND sorder.trans_type = line.trans_type";
 	if (isset($searchArray) && $searchArray[0] == 'o') {

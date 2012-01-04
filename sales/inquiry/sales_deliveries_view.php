@@ -106,7 +106,7 @@
 		debtor.curr_code,
 		Sum(line.quantity-line.qty_done) AS Outstanding,
 		Sum(line.qty_done) AS Done
-	FROM sales_orders as sorder, debtor_trans as trans, debtor_trans_details as line, debtors_master as debtor, cust_branch as branch
+	FROM sales_orders as sorder, debtor_trans as trans, debtor_trans_details as line, debtors as debtor, branches as branch
 		WHERE
 		sorder.order_no = trans.order_ AND
 		trans.debtor_no = debtor.debtor_no

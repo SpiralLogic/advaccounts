@@ -69,7 +69,7 @@
 		if ($selected_id == -1) {
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

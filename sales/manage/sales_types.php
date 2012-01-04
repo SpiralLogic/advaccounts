@@ -47,7 +47,7 @@
 			Errors::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		}
 		else {
-			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DB::escape($selected_id);
+			$sql = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
 			$result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {

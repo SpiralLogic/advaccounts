@@ -77,7 +77,7 @@
 			$status = $c->getStatus();
 			$dup = ((substr($status['message'], 0, 9) == "Duplicate"));
 			if ($dup) {
-				$result2 = DB::select('debtor_no')->from('debtors_master')->where('name LIKE', $c->name)->fetch()->assoc()->one();
+				$result2 = DB::select('debtor_no')->from('debtors')->where('name LIKE', $c->name)->fetch()->assoc()->one();
 				$c->id = $result2['debtor_no'];
 				$d = new Debtor((array)$c);
 				$d->save();

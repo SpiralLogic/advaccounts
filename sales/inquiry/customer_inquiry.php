@@ -81,7 +81,7 @@
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
+		FROM debtor_trans as trans, debtors as debtor, branches as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {

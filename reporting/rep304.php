@@ -30,7 +30,7 @@
 			stock_master.description, stock_master.inactive,
 			stock_moves.loc_code,
 			debtor_trans.debtor_no,
-			debtors_master.name AS debtor_name,
+			debtors.name AS debtor_name,
 			stock_moves.tran_date,
 			SUM(-stock_moves.qty) AS qty,
 			SUM(-stock_moves.qty*stock_moves.price*(1-stock_moves.discount_percent)) AS amt,
@@ -38,11 +38,11 @@
 		FROM stock_master,
 			stock_category,
 			debtor_trans,
-			debtors_master,
+			debtors,
 			stock_moves
 		WHERE stock_master.stock_id=stock_moves.stock_id
 		AND stock_master.category_id=stock_category.category_id
-		AND debtor_trans.debtor_no=debtors_master.debtor_no
+		AND debtor_trans.debtor_no=debtors.debtor_no
 		AND stock_moves.type=debtor_trans.type
 		AND stock_moves.trans_no=debtor_trans.trans_no
 		AND stock_moves.tran_date>='$from'
@@ -56,11 +56,11 @@
 			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
 		}
 		if ($fromcust != -1) {
-			$sql .= " AND debtors_master.debtor_no = " . DB::escape($fromcust);
+			$sql .= " AND debtors.debtor_no = " . DB::escape($fromcust);
 		}
 		$sql
-		 .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
-			stock_master.stock_id, debtors_master.name";
+		 .= " GROUP BY stock_master.stock_id, debtors.name ORDER BY stock_master.category_id,
+			stock_master.stock_id, debtors.name";
 		return DB::query($sql, "No transactions were returned");
 	}
 

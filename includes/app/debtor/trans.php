@@ -252,8 +252,8 @@
 		public static function get($trans_id, $trans_type) {
 			$sql = "SELECT debtor_trans.*,
 		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
-		debtors_master.name AS DebtorName, debtors_master.address, debtors_master.email AS email2,
-		debtors_master.curr_code, debtors_master.tax_id, debtors_master.payment_terms ";
+		debtors.name AS DebtorName, debtors.address, debtors.email AS email2,
+		debtors.curr_code, debtors.tax_id, debtors.payment_terms ";
 			if ($trans_type == ST_CUSTPAYMENT) {
 				// it's a payment/refund so also get the bank account
 				$sql .= ", bank_accounts.bank_name, bank_accounts.bank_account_name,
@@ -261,20 +261,20 @@
 			}
 			if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 				// it's an invoice so also get the shipper and salestype
-				$sql .= ", shippers.shipper_name, " . "sales_types.sales_type, " . "sales_types.tax_included, " . "cust_branch.*, " . "debtors_master.discount, " . "tax_groups.name AS tax_group_name, " . "tax_groups.id AS tax_group_id ";
+				$sql .= ", shippers.shipper_name, " . "sales_types.sales_type, " . "sales_types.tax_included, " . "branches.*, " . "debtors.discount, " . "tax_groups.name AS tax_group_name, " . "tax_groups.id AS tax_group_id ";
 			}
-			$sql .= " FROM debtor_trans, debtors_master ";
+			$sql .= " FROM debtor_trans, debtors ";
 			if ($trans_type == ST_CUSTPAYMENT) {
 				// it's a payment so also get the bank account
 				$sql .= ", bank_trans, bank_accounts";
 			}
 			if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 				// it's an invoice so also get the shipper, salestypes
-				$sql .= ", shippers, sales_types, cust_branch, tax_groups ";
+				$sql .= ", shippers, sales_types, branches, tax_groups ";
 			}
 			$sql .= " WHERE debtor_trans.trans_no=" . DB::escape($trans_id) . "
 		AND debtor_trans.type=" . DB::escape($trans_type) . "
-		AND debtor_trans.debtor_no=debtors_master.debtor_no";
+		AND debtor_trans.debtor_no=debtors.debtor_no";
 			if ($trans_type == ST_CUSTPAYMENT) {
 				// it's a payment so also get the bank account
 				$sql .= " AND bank_trans.trans_no =$trans_id
@@ -285,8 +285,8 @@
 				// it's an invoice so also get the shipper
 				$sql .= " AND shippers.shipper_id=debtor_trans.ship_via
 			AND sales_types.id = debtor_trans.tpe
-			AND cust_branch.branch_code = debtor_trans.branch_code
-			AND cust_branch.tax_group_id = tax_groups.id ";
+			AND branches.branch_code = debtor_trans.branch_code
+			AND branches.tax_group_id = tax_groups.id ";
 			}
 			$result = DB::query($sql, "Cannot retreive a debtor transaction");
 			if (DB::num_rows($result) == 0) {
@@ -326,11 +326,11 @@
 			return $row[0];
 		}
 		public static function get_details($type, $type_no) {
-			$sql = "SELECT debtors_master.name, debtors_master.curr_code, cust_branch.br_name
-		FROM debtors_master,cust_branch,debtor_trans
+			$sql = "SELECT debtors.name, debtors.curr_code, branches.br_name
+		FROM debtors,branches,debtor_trans
 		WHERE debtor_trans.type=" . DB::escape($type) . " AND debtor_trans.trans_no=" . DB::escape($type_no) . "
-		AND debtors_master.debtor_no = debtor_trans.debtor_no
-		AND	cust_branch.branch_code = debtor_trans.branch_code";
+		AND debtors.debtor_no = debtor_trans.debtor_no
+		AND	branches.branch_code = debtor_trans.branch_code";
 			$result = DB::query($sql, "could not get customer details from trans");
 			return DB::fetch($result);
 		}

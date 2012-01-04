@@ -22,30 +22,30 @@
 	function get_customer_details_for_report($area = 0, $salesid = 0)
 	{
 		$sql
-		 = "SELECT debtors_master.debtor_no,
-			debtors_master.name,
-			debtors_master.address,
+		 = "SELECT debtors.debtor_no,
+			debtors.name,
+			debtors.address,
 			sales_types.sales_type,
-			cust_branch.branch_code,
-			cust_branch.br_name,
-			cust_branch.br_address,
-			cust_branch.contact_name,
-			cust_branch.phone,
-			cust_branch.fax,
-			cust_branch.email,
-			cust_branch.area,
-			cust_branch.salesman,
+			branches.branch_code,
+			branches.br_name,
+			branches.br_address,
+			branches.contact_name,
+			branches.phone,
+			branches.fax,
+			branches.email,
+			branches.area,
+			branches.salesman,
 			areas.description,
 			salesman.salesman_name
-		FROM debtors_master
-		INNER JOIN cust_branch
-			ON debtors_master.debtor_no=cust_branch.debtor_no
+		FROM debtors
+		INNER JOIN branches
+			ON debtors.debtor_no=branches.debtor_no
 		INNER JOIN sales_types
-			ON debtors_master.sales_type=sales_types.id
+			ON debtors.sales_type=sales_types.id
 		INNER JOIN areas
-			ON cust_branch.area = areas.area_code
+			ON branches.area = areas.area_code
 		INNER JOIN salesman
-			ON cust_branch.salesman=salesman.salesman_code";
+			ON branches.salesman=salesman.salesman_code";
 		if ($area != 0) {
 			if ($salesid != 0) {
 				$sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid) . "
@@ -63,8 +63,8 @@
 		$sql
 		 .= " ORDER BY description,
 			salesman.salesman_name,
-			debtors_master.debtor_no,
-			cust_branch.branch_code";
+			debtors.debtor_no,
+			branches.branch_code";
 		return DB::query($sql, "No transactions were returned");
 	}
 
