@@ -267,7 +267,7 @@ JS;
 			JS::set_focus('due_date');
 			return false;
 		}
-		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+		$sql = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */

@@ -53,7 +53,7 @@
 			return;
 		}
 		if ($new_customer == false) {
-			$sql = "UPDATE debtors_master SET name=" . DB::escape($_POST['CustName']) . ",
+			$sql = "UPDATE debtors SET name=" . DB::escape($_POST['CustName']) . ",
 			debtor_ref=" . DB::escape($_POST['cust_ref']) . ",
 			address=" . DB::escape($_POST['address']) . ",
 			tax_id=" . DB::escape($_POST['tax_id']) . ",
@@ -70,13 +70,13 @@
  notes=" . DB::escape($_POST['notes']) . "
  WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 			DB::query($sql, "The customer could not be updated");
-			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors_master', 'debtor_no');
+			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_no');
 			Ajax::i()->activate('customer_id'); // in case of status change
 			Errors::notice(_("Customer has been updated."));
 		}
 		else { //it is a new customer
 			DB::begin();
-			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+			$sql = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
 			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
@@ -114,7 +114,7 @@
 				Errors::error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
-				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
+				$sql = "SELECT COUNT(*) FROM branches WHERE debtor_no=$sel_id";
 				$result = DB::query($sql, "check failed");
 				$myrow = DB::fetch_row($result);
 				if ($myrow[0] > 0) {
@@ -125,7 +125,7 @@
 			}
 		}
 		if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
-			$sql = "DELETE FROM debtors_master WHERE debtor_no=$sel_id";
+			$sql = "DELETE FROM debtors WHERE debtor_no=$sel_id";
 			DB::query($sql, "cannot delete customer");
 			Errors::notice(_("Selected customer has been deleted."));
 			unset($_POST['customer_id']);
@@ -164,7 +164,7 @@
 		$_POST['inactive'] = 0;
 	}
 	else {
-		$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
+		$sql = "SELECT * FROM debtors WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch($result);
 		$_POST['CustName'] = $myrow["name"];

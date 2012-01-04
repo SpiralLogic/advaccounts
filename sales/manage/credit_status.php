@@ -34,7 +34,7 @@
 		$Mode = MODE_RESET;
 	}
 	function can_delete($selected_id) {
-		$sql = "SELECT COUNT(*) FROM debtors_master
+		$sql = "SELECT COUNT(*) FROM debtors
 		WHERE credit_status=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch_row($result);

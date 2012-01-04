@@ -118,7 +118,7 @@
 		table_header($th);
 		$payments_total = 0;
 		if (count($inv_numbers)) {
-			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
+			$sql = "SELECT a.*, d.reference FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
 			$result = DB::query($sql, "The related payments could not be retreived");
 			$k = 0;
 			while ($payment_row = DB::fetch($result)) {

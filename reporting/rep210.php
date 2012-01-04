@@ -24,15 +24,15 @@
 	function get_remittance($type, $trans_no)
 		{
 			$sql
-			 = "SELECT supp_trans.*,
- 		(supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
+			 = "SELECT creditor_trans.*,
+ 		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
  		suppliers.supp_name, suppliers.supp_account_no,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
  		suppliers.email, suppliers.address, suppliers.contact
-		FROM supp_trans, suppliers
-		WHERE supp_trans.supplier_id = suppliers.supplier_id
-		AND supp_trans.type = " . DB::escape($type) . "
-		AND supp_trans.trans_no = " . DB::escape($trans_no);
+		FROM creditor_trans, suppliers
+		WHERE creditor_trans.supplier_id = suppliers.supplier_id
+		AND creditor_trans.type = " . DB::escape($type) . "
+		AND creditor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
 			if (DB::num_rows($result) == 0) {
 				return false;
@@ -47,7 +47,7 @@
 		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 		AND alloc.trans_type_from=" . DB::escape($type) . "
 		AND trans.supplier_id=" . DB::escape($supplier_id),
-				"supp_allocations as alloc");
+				"creditor_allocations as alloc");
 			$sql .= " ORDER BY trans_no";
 			return DB::query($sql, "Cannot retreive alloc to transactions");
 		}

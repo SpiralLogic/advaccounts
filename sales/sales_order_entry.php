@@ -308,7 +308,7 @@
 			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
-			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
+			$sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
 			$result = DB::query($sql, "could not retrieve customer allocation");
 			$row = DB::fetch($result);
 			if ($row !== false) {

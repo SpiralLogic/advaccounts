@@ -78,11 +78,16 @@
 	$this->NewLine();
 	# __ADVANCEDEDIT__ END #
 	$this->Font('italic');
-	if (!isset($customer) && isset($myrow['debtor_no'])) {
-		$customer = new Debtor($myrow['debtor_no']);
+	if (!isset($companyto)) {
+		if (isset($myrow['debtor_no'])) {
+		$companyto = new Debtor($myrow['debtor_no']);
+	}elseif (isset($myrow['supplier_id'])) {
+			$companyto =new Creditor($myrow['supplier_id']);
+		}
+
 	}
 	if (isset($branch['branch_code'])) {
-		$currentBranch = $customer->branches[$branch['branch_code']];
+		$currentBranch = $companyto->branches[$branch['branch_code']];
 		if (!isset($customer_branch_details)) {
 			$customer_branch_details = $currentBranch;
 		}
@@ -200,8 +205,8 @@
 	$this->row = $this->row - $this->lineHeight - 5;
 	$temp = $this->row;
 	$name = !isset($myrow['DebtorName']) ? : $myrow['DebtorName'];
-	if (isset($customer)) {
-		$addr = $customer->accounts->getAddress();
+	if (isset($companyto) && isset($companyto->accounts)) {
+		$addr = $companyto->accounts->getAddress();
 	}
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 		$name = $myrow['name'];
@@ -222,8 +227,8 @@
 	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
 		$name = $sales_order['deliver_to'];
 	}
-	elseif (isset($customer->name)) {
-		$name = $customer->name;
+	elseif (isset($companyto->name)) {
+		$name = $companyto->name;
 	}
 	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['delivery_address'])) {
 		$addr = $sales_order['delivery_address'];
@@ -290,7 +295,7 @@
 		$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 	}
 	elseif ($doctype == ST_STATEMENT) {
-		$report_phone = $customer->accounts->phone;
+		$report_phone = $companyto->accounts->phone;
 	}
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 	# __ADVANCEDEDIT__ END #
@@ -332,7 +337,7 @@
 		}
 	}
 	elseif ($doctype == ST_STATEMENT) {
-		$this->TextWrap($col, $this->row, $width, $customer->accounts->fax, 'C');
+		$this->TextWrap($col, $this->row, $width, $companyto->accounts->fax, 'C');
 	}
 	elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
 		$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
@@ -357,7 +362,7 @@
 	if ($doctype == ST_STATEMENT && isset($currentBranch)) {
 		$this->NewLine();
 		$this->NewLine();
-		$this->TextWrap($ccol, $this->row, $right - $ccol, "Email: " . $customer->accounts->email);
+		$this->TextWrap($ccol, $this->row, $right - $ccol, "Email: " . $companyto->accounts->email);
 	}
 	if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
 		# __ADVANCEDEDIT__ END #
@@ -378,7 +383,7 @@
 			$str = $row["terms"];
 		}
 		$this->Font('italic');
-		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ": " . $str . " " . $doc_customer_id . ": " . $customer->id);
+		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ": " . $str . " " . $doc_customer_id . ": " . $companyto->id);
 		$this->Font();
 	}
 	$this->row = $iline5 - $this->lineHeight - 1;

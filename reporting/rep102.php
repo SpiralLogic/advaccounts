@@ -37,13 +37,13 @@
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
-		FROM debtors_master,
+		FROM debtors,
 			payment_terms,
 			debtor_trans
 
 		WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
-			AND debtors_master.payment_terms = payment_terms.terms_indicator
-			AND debtors_master.debtor_no = debtor_trans.debtor_no
+			AND debtors.payment_terms = payment_terms.terms_indicator
+			AND debtors.debtor_no = debtor_trans.debtor_no
 			AND debtor_trans.debtor_no = $customer_id
 			AND debtor_trans.tran_date <= '$todate'
 			AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
@@ -141,7 +141,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$total = array(0, 0, 0, 0, 0);
-		$sql = "SELECT debtor_no, name, curr_code FROM debtors_master";
+		$sql = "SELECT debtor_no, name, curr_code FROM debtors";
 		if ($fromcust != ALL_NUMERIC) {
 			$sql .= " WHERE debtor_no=" . DB::escape($fromcust);
 		}

@@ -155,11 +155,11 @@
 			$sql = "SELECT " . "grn_batch.*, " . "grn_items.*, " . "purch_order_details.unit_price, " . "purch_order_details.std_cost_unit, units
  	 FROM " . "grn_batch, " . "grn_items, " . "purch_order_details, " . "stock_master";
 			if ($invoice_no != 0) {
-				$sql .= ", supp_invoice_items";
+				$sql .= ", creditor_trans_details";
 			}
 			$sql .= " WHERE " . "grn_items.grn_batch_id=" . "grn_batch.id AND " . "grn_items.po_detail_item=" . "purch_order_details.po_detail_item";
 			if ($invoice_no != 0) {
-				$sql .= " AND " . "supp_invoice_items.supp_trans_type=" . ST_SUPPINVOICE . " AND " . "supp_invoice_items.supp_trans_no=$invoice_no AND " . "grn_items.id=" . "supp_invoice_items.grn_item_id";
+				$sql .= " AND " . "creditor_trans_details.creditor_trans_type=" . ST_SUPPINVOICE . " AND " . "creditor_trans_details.creditor_trans_no=$invoice_no AND " . "grn_items.id=" . "creditor_trans_details.grn_item_id";
 			}
 			$sql .= " AND " . "stock_master.stock_id=" . "grn_items.item_code ";
 			if ($begin != "") {
@@ -235,8 +235,8 @@
 			return (DB::num_rows($result) > 0);
 		}
 		public static function exists_on_invoices($grn_batch) {
-			$sql = "SELECT supp_invoice_items.id FROM supp_invoice_items,grn_items
-		WHERE supp_invoice_items.grn_item_id=grn_items.id
+			$sql = "SELECT creditor_trans_details.id FROM creditor_trans_details,grn_items
+		WHERE creditor_trans_details.grn_item_id=grn_items.id
 		AND quantity != 0
 		AND grn_batch_id=" . DB::escape($grn_batch);
 			$result = DB::query($sql, "Cannot query GRNs");
@@ -311,20 +311,20 @@
 			end_table(1);
 		}
 		//--------------
-		public static function display_for_selection($supp_trans, $k) {
-			if ($supp_trans->is_invoice) {
-				$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, true);
+		public static function display_for_selection($creditor_trans, $k) {
+			if ($creditor_trans->is_invoice) {
+				$result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, true);
 			}
 			else {
 				if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
-					$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
+					$result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
 				}
 				else {
 					if (isset($_POST['invoice_no'])) {
-						$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+						$result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true, $_POST['invoice_no']);
 					}
 					else {
-						$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true);
+						$result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true);
 					}
 				}
 			}
@@ -334,7 +334,7 @@
 			/*Set up a table to show the outstanding GRN items for selection */
 			while ($myrow = DB::fetch($result)) {
 				$grn_already_on_invoice = false;
-				foreach ($supp_trans->grn_items as $entered_grn) {
+				foreach ($creditor_trans->grn_items as $entered_grn) {
 					if ($entered_grn->id == $myrow["id"]) {
 						$grn_already_on_invoice = true;
 					}
@@ -352,7 +352,7 @@
 						$dec = Item::qty_dec($myrow["item_code"]);
 						qty_cell($myrow["qty_recd"], false, $dec);
 						qty_cell($myrow["quantity_inv"], false, $dec);
-						if ($supp_trans->is_invoice) {
+						if ($creditor_trans->is_invoice) {
 							qty_cells(null, 'this_quantity_inv' . $n, Num::format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
 						}
 						else {
@@ -363,14 +363,14 @@
 						amount_cells(null, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
 						small_amount_cells(null, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), null, null, User::percent_dec());
 						amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
-						if ($supp_trans->is_invoice) {
+						if ($creditor_trans->is_invoice) {
 							amount_cells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
 						}
 						else {
 							amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), User::price_dec()));
 						}
-						submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
-						if ($supp_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)
+						submit_cells('grn_item_id' . $n, _("Add"), '', ($creditor_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
+						if ($creditor_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)
 						) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 							submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 							submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
@@ -388,16 +388,16 @@
 		//		 = 1 display on invoice/credit page
 		//		 = 2 display on view invoice
 		//		 = 3 display on view credit
-		public static function display_items($supp_trans, $mode = 0) {
+		public static function display_items($creditor_trans, $mode = 0) {
 			$ret = true;
 			// if displaying in form, and no items, exit
-			if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
+			if (($mode == 2 || $mode == 3) && count($creditor_trans->grn_items) == 0) {
 				return 0;
 			}
 			start_outer_table('tablestyle_noborder');
 			$heading2 = "";
 			if ($mode == 1) {
-				if ($supp_trans->is_invoice) {
+				if ($creditor_trans->is_invoice) {
 					$heading = _("Items Received Yet to be Invoiced");
 					if (User::get()->can_access(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 					{
@@ -409,7 +409,7 @@
 				}
 			}
 			else {
-				if ($supp_trans->is_invoice) {
+				if ($creditor_trans->is_invoice) {
 					$heading = _("Received Items Charged on this Invoice");
 				}
 				else {
@@ -418,7 +418,7 @@
 			}
 			Display::heading($heading);
 			if ($mode == 1) {
-				/*	if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
+				/*	if (!$creditor_trans->is_invoice && !isset($_POST['invoice_no'])) {
 					 echo "</td>";
 					 date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
 					 date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
@@ -461,9 +461,9 @@
 					"",
 					""
 				);
-				// if ($supp_trans->is_invoice && CurrentUser::get()->can_access(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+				// if ($creditor_trans->is_invoice && CurrentUser::get()->can_access(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				// $th[] = "";
-				if (!$supp_trans->is_invoice) {
+				if (!$creditor_trans->is_invoice) {
 					unset($th[14]);
 					$th[8] = _("Qty Yet To Credit");
 				}
@@ -476,8 +476,8 @@
 			table_header($th);
 			$total_grn_value = 0;
 			$i = $k = 0;
-			if (count($supp_trans->grn_items) > 0) {
-				foreach ($supp_trans->grn_items as $entered_grn) {
+			if (count($creditor_trans->grn_items) > 0) {
+				foreach ($creditor_trans->grn_items as $entered_grn) {
 					alt_table_row_color($k);
 					$grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
 					label_cell(GL_UI::trans_view(ST_SUPPRECEIVE, $grn_batch));
@@ -500,7 +500,7 @@
 					amount_decimal_cell(Num::round(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)), User::price_dec());
 					amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec()));
 					if ($mode == 1) {
-						if ($supp_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)) {
+						if ($creditor_trans->is_invoice && User::get()->can_access(SA_GRNDELETE)) {
 							label_cell("");
 						}
 						label_cell(""); // PO
@@ -516,7 +516,7 @@
 				}
 			}
 			if ($mode == 1) {
-				$ret = Purch_GRN::display_for_selection($supp_trans, $k);
+				$ret = Purch_GRN::display_for_selection($creditor_trans, $k);
 				$colspan = 13;
 			}
 			else {
@@ -526,7 +526,7 @@
 			if (!$ret) {
 				start_row();
 				echo "<td colspan=" . ($colspan + 1) . ">";
-				if ($supp_trans->is_invoice) {
+				if ($creditor_trans->is_invoice) {
 					Errors::warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 				}
 				else {

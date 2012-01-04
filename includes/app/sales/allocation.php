@@ -14,7 +14,7 @@
 	public static function add($amount, $trans_type_from, $trans_no_from,
 															 $trans_type_to, $trans_no_to) {
 		$sql
-		 = "INSERT INTO cust_allocations (
+		 = "INSERT INTO debtor_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)
 		VALUES ($amount, Now() ," . DB::escape($trans_type_from) . ", " . DB::escape($trans_no_from) . ", " . DB::escape($trans_no_to)
@@ -24,7 +24,7 @@
 
 
 	public static function delete($trans_id) {
-		$sql = "DELETE FROM cust_allocations WHERE id = " . DB::escape($trans_id);
+		$sql = "DELETE FROM debtor_allocations WHERE id = " . DB::escape($trans_id);
 		return DB::query($sql, "The existing allocation $trans_id could not be deleted");
 	}
 
@@ -51,7 +51,7 @@
 
 		// clear any allocations for this transaction
 		$sql
-		 = "SELECT * FROM cust_allocations
+		 = "SELECT * FROM debtor_allocations
 		WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
 		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
 		$result = DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
@@ -70,7 +70,7 @@
 		}
 		// remove any allocations for this transaction
 		$sql
-		 = "DELETE FROM cust_allocations
+		 = "DELETE FROM debtor_allocations
 		WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
 		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
 		DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
@@ -95,7 +95,7 @@
 			$sql .= ", $extra_fields ";
 		}
 		$sql .= " FROM debtor_trans as trans, "
-		 . "debtors_master as debtor";
+		 . "debtors as debtor";
 		if ($extra_tables) {
 			$sql .= ",$extra_tables ";
 		}
@@ -129,7 +129,7 @@
 			AND alloc.trans_no_from=$trans_no
 			AND alloc.trans_type_from=$type
 			AND trans.debtor_no=" . DB::escape($customer_id),
-				"cust_allocations as alloc");
+				"debtor_allocations as alloc");
 		} else {
 			$sql = Sales_Allocation::get_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
 			AND trans.type <> " . ST_CUSTPAYMENT . "

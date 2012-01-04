@@ -22,36 +22,36 @@
 	function get_open_balance($supplier_id, $to, $convert)
 		{
 			$to = Dates::date2sql($to);
-			$sql = "SELECT SUM(IF(supp_trans.type = " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
- 	supp_trans.ov_discount)";
+			$sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
+ 	creditor_trans.ov_discount)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ", 0)) AS charges,
- 	SUM(IF(supp_trans.type <> " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
- 	supp_trans.ov_discount)";
+ 	SUM(IF(creditor_trans.type <> " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
+ 	creditor_trans.ov_discount)";
 			if ($convert) {
 				$sql .= "* rate";
 			}
 			$sql
 			 .= ", 0)) AS credits,
-		SUM(supp_trans.alloc";
+		SUM(creditor_trans.alloc";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ") AS Allocated,
-		SUM((supp_trans.ov_amount + supp_trans.ov_gst +
- 	supp_trans.ov_discount - supp_trans.alloc)";
+		SUM((creditor_trans.ov_amount + creditor_trans.ov_gst +
+ 	creditor_trans.ov_discount - creditor_trans.alloc)";
 			if ($convert) {
 				$sql .= " * rate";
 			}
 			$sql
 			 .= ") AS OutStanding
-		FROM supp_trans
- 	WHERE supp_trans.tran_date < '$to'
-		AND supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
+		FROM creditor_trans
+ 	WHERE creditor_trans.tran_date < '$to'
+		AND creditor_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
 			$result = DB::query($sql, "No transactions were returned");
 			return DB::fetch($result);
 		}
@@ -61,15 +61,15 @@
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
 			$sql
-			 = "SELECT supp_trans.*,
-				(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)
-				AS TotalAmount, supp_trans.alloc AS Allocated,
-				((supp_trans.type = " . ST_SUPPINVOICE . ")
-					AND supp_trans.due_date < '$to') AS OverDue
- 			FROM supp_trans
- 			WHERE supp_trans.tran_date >= '$from' AND supp_trans.tran_date <= '$to'
- 			AND supp_trans.supplier_id = '$supplier_id'
- 				ORDER BY supp_trans.tran_date";
+			 = "SELECT creditor_trans.*,
+				(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)
+				AS TotalAmount, creditor_trans.alloc AS Allocated,
+				((creditor_trans.type = " . ST_SUPPINVOICE . ")
+					AND creditor_trans.due_date < '$to') AS OverDue
+ 			FROM creditor_trans
+ 			WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
+ 			AND creditor_trans.supplier_id = '$supplier_id'
+ 				ORDER BY creditor_trans.tran_date";
 			$TransResult = DB::query($sql, "No transactions were returned");
 			return $TransResult;
 		}

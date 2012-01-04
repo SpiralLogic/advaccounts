@@ -26,12 +26,12 @@
 			$PastDueDays1 = DB_Company::get_pref('past_due_days');
 			$PastDueDays2 = 2 * $PastDueDays1;
 			// Revomed allocated from sql
-			$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
-			$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
+			$value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+			$due = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
 			$sql
-			 = "SELECT supp_trans.type,
-		supp_trans.reference,
-		supp_trans.tran_date,
+			 = "SELECT creditor_trans.type,
+		creditor_trans.reference,
+		creditor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
@@ -39,14 +39,14 @@
 
 		FROM suppliers,
 			payment_terms,
-			supp_trans
+			creditor_trans
 
 	 	WHERE suppliers.payment_terms = payment_terms.terms_indicator
-			AND suppliers.supplier_id = supp_trans.supplier_id
-			AND supp_trans.supplier_id = $supplier_id
-			AND supp_trans.tran_date <= '$todate'
-			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
-			ORDER BY supp_trans.tran_date";
+			AND suppliers.supplier_id = creditor_trans.supplier_id
+			AND creditor_trans.supplier_id = $supplier_id
+			AND creditor_trans.tran_date <= '$todate'
+			AND ABS(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount) > 0.004
+			ORDER BY creditor_trans.tran_date";
 			return DB::query($sql, "The supplier details could not be retrieved");
 		}
 

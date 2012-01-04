@@ -130,7 +130,7 @@
 			Errors::error(_("Cannot delete this account because it is used by one or more Taxes."));
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE
+		$sql = "SELECT COUNT(*) FROM branches WHERE
 		sales_account=$acc 
 		OR sales_discount_account=$acc
 		OR receivables_account=$acc

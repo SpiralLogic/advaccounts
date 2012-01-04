@@ -24,21 +24,21 @@
 		$date = Dates::date2sql($date);
 		$dec = User::price_dec();
 		$sql
-		 = "SELECT supp_trans.supp_reference,
-			supp_trans.tran_date,
-			supp_trans.due_date,
-			supp_trans.trans_no,
-			supp_trans.type,
-			supp_trans.rate,
-			(ABS(supp_trans.ov_amount) + ABS(supp_trans.ov_gst) - supp_trans.alloc) AS Balance,
-			(ABS(supp_trans.ov_amount) + ABS(supp_trans.ov_gst) ) AS TranTotal
-		FROM supp_trans
-		WHERE supp_trans.supplier_id = '" . $supplier . "'
-		AND ROUND(ABS(supp_trans.ov_amount),$dec) + ROUND(ABS(supp_trans.ov_gst),$dec) -
-		ROUND(supp_trans.alloc,$dec) != 0
-		AND supp_trans.tran_date <='" . $date . "'
-		ORDER BY supp_trans.type,
-			supp_trans.trans_no";
+		 = "SELECT creditor_trans.supp_reference,
+			creditor_trans.tran_date,
+			creditor_trans.due_date,
+			creditor_trans.trans_no,
+			creditor_trans.type,
+			creditor_trans.rate,
+			(ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) - creditor_trans.alloc) AS Balance,
+			(ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) ) AS TranTotal
+		FROM creditor_trans
+		WHERE creditor_trans.supplier_id = '" . $supplier . "'
+		AND ROUND(ABS(creditor_trans.ov_amount),$dec) + ROUND(ABS(creditor_trans.ov_gst),$dec) -
+		ROUND(creditor_trans.alloc,$dec) != 0
+		AND creditor_trans.tran_date <='" . $date . "'
+		ORDER BY creditor_trans.type,
+			creditor_trans.trans_no";
 		return DB::query($sql, "No transactions were returned");
 	}
 

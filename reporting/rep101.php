@@ -142,7 +142,7 @@
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
 			$grandtotal = array(0, 0, 0, 0);
-			$sql = "SELECT debtor_no, name, curr_code FROM " . '' . "debtors_master ";
+			$sql = "SELECT debtor_no, name, curr_code FROM " . '' . "debtors ";
 			if ($fromcust != ALL_NUMERIC) {
 				$sql .= "WHERE debtor_no=" . DB::escape($fromcust);
 			}

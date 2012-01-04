@@ -60,7 +60,7 @@
 			Errors::error(_("Cannot delete this location because it is used by some work orders records."));
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE default_location='$selected_id'";
+		$sql = "SELECT COUNT(*) FROM branches WHERE default_location='$selected_id'";
 		$result = DB::query($sql, "could not query customer branches");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
