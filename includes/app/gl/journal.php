@@ -133,7 +133,7 @@
 				$_POST['description'] = $item->description;
 				$_POST['LineMemo'] = $item->reference;
 				hidden('Index', $id);
-				$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
+				$skip_bank = !User::get()->can_access(SA_BANKJOURNAL);
 				echo GL_UI::all('code_id', null, $skip_bank, true);
 				if ($dim >= 1) {
 					Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -154,7 +154,7 @@
 				if (isset($_POST['_code_id_update'])) {
 					Ajax::i()->activate('code_id');
 				}
-				$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
+				$skip_bank = !User::get()->can_access(SA_BANKJOURNAL);
 				echo GL_UI::all('code_id', null, $skip_bank, true);
 				if ($dim >= 1) {
 					Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);

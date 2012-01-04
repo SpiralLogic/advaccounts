@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_MANUFRECEIVE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_MANUFRECEIVE;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {

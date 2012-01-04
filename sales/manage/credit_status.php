@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_CRSTATUS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CRSTATUS;
+
 	Page::start(_($help_context = "Credit Status"));
 	Page::simple_mode(true);
 	function can_process() {

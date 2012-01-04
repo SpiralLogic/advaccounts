@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SUPPTRANSVIEW;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order"), true);
 	if (!isset($_GET['trans_no'])) {
@@ -99,7 +100,7 @@
 		return;
 	}
 	Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
-	Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
+	Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=" . $_GET['trans_no']);
 	Page::end(true);
 
 ?>

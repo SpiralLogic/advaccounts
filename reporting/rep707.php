@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_GLANALYTIC';
+	$page_security = SA_GLANALYTIC;
 	// ----------------------------------------------------------------
 	// $ Revision:	2.0 $
 	// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.

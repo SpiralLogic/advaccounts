@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SUPPTRANSVIEW;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Outstanding Purchase Orders"));
 	if (isset($_GET['order_number'])) {
@@ -53,7 +54,7 @@
 	}
 
 	function edit_link($row) {
-		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
 	}
 
 	function prt_link($row) {

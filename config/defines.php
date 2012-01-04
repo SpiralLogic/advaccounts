@@ -62,6 +62,153 @@
 	define('SS_GL', 62 << 8);
 	define('SS_GL_A', 63 << 8);
 	define('SS_ADV', 71 << 8);
+
+	define(	'SA_ADVANCED' ,	'SA_ADVANCED' );
+	define(	'SA_OPEN' ,	'SA_OPEN' );
+	define(	'SA_DENIED' ,	'SA_DENIED' );
+	//
+	//	Site administration
+	//
+	define(		'SA_CREATECOMPANY' ,		'SA_CREATECOMPANY' );
+	define(		'SA_CREATELANGUAGE' ,		'SA_CREATELANGUAGE' );
+	define(		'SA_CREATEMODULES' ,		'SA_CREATEMODULES' );
+	define(		'SA_SOFTWAREUPGRADE' ,		'SA_SOFTWAREUPGRADE' );
+	//
+	//	Company setup
+	//
+	define(		'SA_SETUPCOMPANY' ,		'SA_SETUPCOMPANY' );
+	define(		'SA_SECROLES' ,		'SA_SECROLES' );
+	define(		'SA_USERS' ,		'SA_USERS' );
+	define(		'SA_POSSETUP' ,		'SA_POSSETUP' );
+	define(		'SA_PRINTERS' ,		'SA_PRINTERS' );
+	define(		'SA_PRINTPROFILE' ,		'SA_PRINTPROFILE' );
+	define(		'SA_PAYTERMS' ,		'SA_PAYTERMS' );
+	define(		'SA_SHIPPING' ,		'SA_SHIPPING' );
+	define(		'SA_CRSTATUS' ,		'SA_CRSTATUS' );
+	define(		'SA_INVENTORYLOCATION' ,		'SA_INVENTORYLOCATION' );
+	define(		'SA_INVENTORYMOVETYPE' ,		'SA_INVENTORYMOVETYPE' );
+	define(		'SA_WORKCENTRES' ,		'SA_WORKCENTRES' );
+	define(		'SA_FORMSETUP' ,		'SA_FORMSETUP' );
+	//
+	// Special and common functions
+	//
+	define(		'SA_VOIDTRANSACTION' ,		'SA_VOIDTRANSACTION' );
+	define(		'SA_BACKUP' ,		'SA_BACKUP' );
+	define(		'SA_VIEWPRINTTRANSACTION' ,		'SA_VIEWPRINTTRANSACTION' );
+	define(		'SA_ATTACHDOCUMENT' ,		'SA_ATTACHDOCUMENT' );
+	define(		'SA_SETUPDISPLAY' ,		'SA_SETUPDISPLAY' );
+	define(		'SA_CHGPASSWD' ,		'SA_CHGPASSWD' );
+	//
+	// Sales related functionality
+	//
+	define(		'SA_SALESTYPES' ,		'SA_SALESTYPES' );
+	define(		'SA_SALESPRICE' ,		'SA_SALESPRICE' );
+	define(		'SA_SALESMAN' ,		'SA_SALESMAN' );
+	define(		'SA_SALESAREA' ,		'SA_SALESAREA' );
+	define(		'SA_SALESGROUP' ,		'SA_SALESGROUP' );
+	define(		'SA_STEMPLATE' ,		'SA_STEMPLATE' );
+	define(		'SA_SRECURRENT' ,		'SA_SRECURRENT' );
+	define(		'SA_SALESTRANSVIEW' ,		'SA_SALESTRANSVIEW' );
+	define(		'SA_CUSTOMER' ,		'SA_CUSTOMER' );
+	define(		'SA_CUSTOMER_CREDIT' ,		'SA_CUSTOMER_CREDIT' );
+	define(		'SA_SALESQUOTE' ,		'SA_SALESQUOTE' );
+	define(		'SA_SALESORDER' ,		'SA_SALESORDER' );
+	define(		'SA_SALESDELIVERY' ,		'SA_SALESDELIVERY' );
+	define(		'SA_SALESINVOICE' ,		'SA_SALESINVOICE' );
+	define(		'SA_SALESCREDITINV' ,		'SA_SALESCREDITINV' );
+	define(		'SA_SALESCREDIT' ,		'SA_SALESCREDIT' );
+	define(		'SA_SALESPAYMNT' ,		'SA_SALESPAYMNT' );
+	define(		'SA_SALESREFUND' ,		'SA_SALESREFUND' );
+	define(		'SA_SALESALLOC' ,		'SA_SALESALLOC' );
+	define(		'SA_SALESANALYTIC' ,		'SA_SALESANALYTIC' );
+	define(		'SA_SALESBULKREP' ,		'SA_SALESBULKREP' );
+	define(		'SA_PRICEREP' ,		'SA_PRICEREP' );
+	define(		'SA_SALESMANREP' ,		'SA_SALESMANREP' );
+	define(		'SA_CUSTBULKREP' ,		'SA_CUSTBULKREP' );
+	define(		'SA_CUSTSTATREP' ,		'SA_CUSTSTATREP' );
+	define(		'SA_CUSTPAYMREP' ,		'SA_CUSTPAYMREP' );
+	define(		'SA_CUSTREFUNDREP' ,		'SA_CUSTREFUNDREP' );
+	//
+	// Purchase related functions
+	//
+	define(		'SA_PURCHASEPRICING' ,		'SA_PURCHASEPRICING' );
+	define(		'SA_SUPPTRANSVIEW' ,		'SA_SUPPTRANSVIEW' );
+	define(		'SA_SUPPLIER' ,		'SA_SUPPLIER' );
+	define(		'SA_PURCHASEORDER' ,		'SA_PURCHASEORDER' );
+	define(		'SA_GRN' ,		'SA_GRN' );
+	define(		'SA_SUPPLIERINVOICE' ,		'SA_SUPPLIERINVOICE' );
+	define(		'SA_GRNDELETE' ,		'SA_GRNDELETE' );
+	define(		'SA_SUPPLIERCREDIT' ,		'SA_SUPPLIERCREDIT' );
+	define(		'SA_SUPPLIERPAYMNT' ,		'SA_SUPPLIERPAYMNT' );
+	define(		'SA_SUPPLIERALLOC' ,		'SA_SUPPLIERALLOC' );
+	define(		'SA_SUPPLIERANALYTIC' ,		'SA_SUPPLIERANALYTIC' );
+	define(		'SA_SUPPBULKREP' ,		'SA_SUPPBULKREP' );
+	define(		'SA_SUPPPAYMREP' ,		'SA_SUPPPAYMREP' );
+	//
+	// Inventory
+	//
+	define(		'SA_ITEM' ,		'SA_ITEM' );
+	define(		'SA_SALESKIT' ,		'SA_SALESKIT' );
+	define(		'SA_ITEMCATEGORY' ,		'SA_ITEMCATEGORY' );
+	define(		'SA_UOM' ,		'SA_UOM' );
+	define(		'SA_ITEMSSTATVIEW' ,		'SA_ITEMSSTATVIEW' );
+	define(		'SA_ITEMSTRANSVIEW' ,		'SA_ITEMSTRANSVIEW' );
+	define(		'SA_FORITEMCODE' ,		'SA_FORITEMCODE' );
+	define(		'SA_LOCATIONTRANSFER' ,		'SA_LOCATIONTRANSFER' );
+	define(		'SA_INVENTORYADJUSTMENT' ,		'SA_INVENTORYADJUSTMENT' );
+	define(		'SA_REORDER' ,		'SA_REORDER' );
+	define(		'SA_ITEMSANALYTIC' ,		'SA_ITEMSANALYTIC' );
+	define(		'SA_ITEMSVALREP' ,		'SA_ITEMSVALREP' );
+	//
+	// Manufacturing module
+	//
+	define(		'SA_BOM' ,		'SA_BOM' );
+	define(		'SA_MANUFTRANSVIEW' ,		'SA_MANUFTRANSVIEW' );
+	define(		'SA_WORKORDERENTRY' ,		'SA_WORKORDERENTRY' );
+	define(		'SA_MANUFISSUE' ,		'SA_MANUFISSUE' );
+	define(		'SA_MANUFRECEIVE' ,		'SA_MANUFRECEIVE' );
+	define(		'SA_MANUFRELEASE' ,		'SA_MANUFRELEASE' );
+	define(		'SA_WORKORDERANALYTIC' ,		'SA_WORKORDERANALYTIC' );
+	define(		'SA_WORKORDERCOST' ,		'SA_WORKORDERCOST' );
+	define(		'SA_MANUFBULKREP' ,		'SA_MANUFBULKREP' );
+	define(		'SA_BOMREP' ,		'SA_BOMREP' );
+	//
+	// Dimensions
+	//
+	define(		'SA_DIMTAGS' ,		'SA_DIMTAGS' );
+	define(		'SA_DIMTRANSVIEW' ,		'SA_DIMTRANSVIEW' );
+	define(		'SA_DIMENSION' ,		'SA_DIMENSION' );
+	define(		'SA_DIMENSIONREP' ,		'SA_DIMENSIONREP' );
+	//
+	// Banking and General Ledger
+	//
+	define(		'SA_ITEMTAXTYPE' ,		'SA_ITEMTAXTYPE' );
+	define(		'SA_GLACCOUNT' ,		'SA_GLACCOUNT' );
+	define(		'SA_GLACCOUNTGROUP' ,		'SA_GLACCOUNTGROUP' );
+	define(		'SA_GLACCOUNTCLASS' ,		'SA_GLACCOUNTCLASS' );
+	define(		'SA_QUICKENTRY' ,		'SA_QUICKENTRY' );
+	define(		'SA_CURRENCY' ,		'SA_CURRENCY' );
+	define(		'SA_BANKACCOUNT' ,		'SA_BANKACCOUNT' );
+	define(		'SA_TAXRATES' ,		'SA_TAXRATES' );
+	define(		'SA_TAXGROUPS' ,		'SA_TAXGROUPS' );
+	define(		'SA_FISCALYEARS' ,		'SA_FISCALYEARS' );
+	define(		'SA_GLSETUP' ,		'SA_GLSETUP' );
+	define(		'SA_GLACCOUNTTAGS' ,		'SA_GLACCOUNTTAGS' );
+	define(		'SA_BANKTRANSVIEW' ,		'SA_BANKTRANSVIEW' );
+	define(		'SA_GLTRANSVIEW' ,		'SA_GLTRANSVIEW' );
+	define(		'SA_EXCHANGERATE' ,		'SA_EXCHANGERATE' );
+	define(		'SA_PAYMENT' ,		'SA_PAYMENT' );
+	define(		'SA_DEPOSIT' ,		'SA_DEPOSIT' );
+	define(		'SA_BANKTRANSFER' ,		'SA_BANKTRANSFER' );
+	define(		'SA_RECONCILE' ,		'SA_RECONCILE' );
+	define(		'SA_JOURNALENTRY' ,		'SA_JOURNALENTRY' );
+	define(		'SA_BANKJOURNAL' ,		'SA_BANKJOURNAL' );
+	define(		'SA_BUDGETENTRY' ,		'SA_BUDGETENTRY' );
+	define(		'SA_STANDARDCOST' ,		'SA_STANDARDCOST' );
+	define(		'SA_GLANALYTIC' ,		'SA_GLANALYTIC' );
+	define(		'SA_TAXREP' ,		'SA_TAXREP' );
+	define(		'SA_BANKREP' ,		'SA_BANKREP' );
+	define(		'SA_GLREP' ,		'SA_GLREP' );
 	//	ADVAccounts system transaction types
 	//
 	define('ST_JOURNAL', 0);

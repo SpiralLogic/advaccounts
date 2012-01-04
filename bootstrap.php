@@ -16,9 +16,7 @@
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
-	/**
-	 *
-	 */
+
 	define('DS', DIRECTORY_SEPARATOR);
 	/**
 	 *
@@ -82,7 +80,6 @@
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
-
 			return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 
 		}

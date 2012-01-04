@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_OPEN;
+
 	//	JS::footerFile('/js/libs/jquery.megalist.js');
 	Page::start(_($help_context = "Reports and Analysis"));
 	$reports = new Reports_Box();

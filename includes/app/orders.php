@@ -6,7 +6,15 @@
 	 * Time: 2:43 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class Orders extends DB_abstract {
+	abstract class Orders extends DB_abstract
+	{
+		const NEW_ORDER = 'NewOrder';
+		const MODIFY_ORDER = 'ModifyOrder';
+		const NEW_QUOTE = 'NewQuote';
+		const NEW_QUOTE_TO_ORDER = 'NewQuoteToSalesOrder';
+		const MODIFY_QUOTE = 'ModifyQuote';
+		const NEW_DELIVERY = 'NewDelivery';
+		const NEW_INVOICE = 'NewInvoice';
 		/**
 		 * @var
 		 */
@@ -52,7 +60,6 @@
 				$_SESSION['orders'][$type] = array();
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -63,11 +70,11 @@
 		 */
 		public static function session_get($id = null) {
 			if (is_null($id)) {
-				if (!isset($_POST['order_id']))
+				if (!isset($_POST['order_id'])) {
 					return false;
+				}
 				$id = $_POST['order_id'];
 			}
-
 			list($type, $id) = explode('.', $id);
 			static::setup($type);
 			if (isset($_SESSION['orders'][$type][$id])) {
@@ -75,7 +82,6 @@
 			}
 			return false;
 		}
-
 		/**
 		 * @static
 		 *
@@ -89,7 +95,6 @@
 			$_SESSION['orders'][$type][$id] = $order;
 			return $order;
 		}
-
 		/**
 		 * @static
 		 *
@@ -97,7 +102,6 @@
 		 */
 		public static function session_start($order) {
 		}
-
 		/**
 		 * @static
 		 *
@@ -110,7 +114,6 @@
 			static::setup($type);
 			return isset($_SESSION['orders'][$type][$id]);
 		}
-
 		/**
 		 * @static
 		 *

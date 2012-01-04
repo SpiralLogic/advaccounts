@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_GRN;
+
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	if (isset($_GET['AddedID'])) {
@@ -62,7 +63,7 @@
 	Purch_GRN::display($order, true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items($order);
-	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $order->order_no);
+	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');

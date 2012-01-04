@@ -6,8 +6,9 @@
 	 * Time: 12:39 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESORDER;
+
 	if (!isset($_SESSION['remote_order'])) {
 		$order->start();
 		$order = new Sales_Order(ST_SALESORDER, array(0));

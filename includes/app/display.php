@@ -20,7 +20,8 @@
 		 *
 		 * @return array|mixed|string
 		 */
-		public static function access_string($label, $clean = false) {
+		public static function access_string($label , $clean = false) {
+
 			$access = '';
 			$slices = array();
 			if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {

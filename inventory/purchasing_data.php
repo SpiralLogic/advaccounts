@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_PURCHASEPRICING';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_PURCHASEPRICING;
+
 	Page::start(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));

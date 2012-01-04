@@ -942,9 +942,11 @@
 			if (count($this->line_items) > 0) {
 				start_outer_table('center width90');
 				table_section(1);
-				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", true, true);
+				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"),
+																			"NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", true, true);
 				table_section(2);
-				Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "&DS=1' class='button'", true, true);
+				Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"),
+																			"NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button'", true, true);
 				end_outer_table(1);
 			}
 			start_table('tablestyle ');

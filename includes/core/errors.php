@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -56,7 +57,10 @@
 		 * @var array
 		 */
 		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
-
+		/**
+		 * @var array
+		 */
+		public static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/**
 		 * @static
 		 *
@@ -79,7 +83,6 @@
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -88,7 +91,6 @@
 		static function error($msg) {
 			trigger_error($msg, E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
@@ -97,7 +99,6 @@
 		static function notice($msg) {
 			trigger_error($msg, E_USER_NOTICE);
 		}
-
 		/**
 		 * @static
 		 *
@@ -106,7 +107,6 @@
 		static function warning($msg) {
 			trigger_error($msg, E_USER_WARNING);
 		}
-
 		static function shutdown_handler() {
 			$Ajax = Ajax::i();
 			Config::store();
@@ -115,22 +115,29 @@
 			// Only show valid fatal errors
 			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
 				$Ajax->aCommands = array();
-				Errors::$fatal = true;
+				static::$fatal = true;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
 			}
 			if (Ajax::in_ajax()) {
 				Ajax::i()->run();
-			} elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
-				if (static::$fatal) ob_end_clean();
+			}
+			elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
+				if (static::$fatal) {
+					ob_end_clean();
+				}
 				echo static::JSONError(true);
+			}
+			elseif (static::$fatal) {
+				ob_end_clean();
+				static::format();
+				exit();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
 		}
-
 		public static function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
@@ -151,7 +158,6 @@
 			}
 			return $status;
 		}
-
 		/**
 		 * @static
 		 *
@@ -166,7 +172,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			// error_reporting==0 when messages are set off with @
-			if ($type > E_USER_NOTICE || $type == E_STRICT) {
+			if (in_array($type, static::$ignore)) {
 				return true;
 			}
 			if (static::$count > 5) {
@@ -182,7 +188,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -196,7 +201,6 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -204,8 +208,10 @@
 		static function format() {
 			$msg_class = array(
 				E_USER_ERROR => array('ERROR', 'err_msg'),
+				E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
 				E_USER_WARNING => array('WARNING', 'warn_msg'),
-				E_USER_NOTICE => array('USER', 'note_msg'));
+				E_USER_NOTICE => array('USER', 'note_msg')
+			);
 			$content = '';
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
@@ -216,7 +222,9 @@
 				$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
 				$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
 				$subject = 'Error log: ';
-				if (isset($_SESSION['current_user']))$subject .= $_SESSION['current_user']->username;
+				if (isset($_SESSION['current_user'])) {
+					$subject .= $_SESSION['current_user']->username;
+				}
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
@@ -231,8 +239,10 @@
 				$type = $msg['type'];
 				$str = $msg['message'];
 				if ($type < E_USER_ERROR && $type != null) {
-					if ($msg['file']) $str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					$str .= (!isset($msg['backtrace'])) ? '' : var_export($msg['backtrace']);
+					if ($msg['file']) {
+						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					}
+					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
 					$type = E_USER_ERROR;
 				}
 				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
@@ -243,7 +253,6 @@
 			}
 			return $content;
 		}
-
 		/**
 		 * @static
 		 *
@@ -254,7 +263,6 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
-
 		/**
 		 * @static
 		 *
@@ -276,7 +284,6 @@
 			static::$dberrors[] = $error;
 			static::handler(E_USER_ERROR, $error['message'], false, __LINE__);
 		}
-
 		/**
 		 * @static
 		 *
@@ -288,7 +295,8 @@
 				'message' => get_class($e) . ' ' . $e->getMessage(),
 				'file' => $e->getFile(),
 				'line' => $e->getLine(),
-				'backtrace' => $e->getTrace());
+				'backtrace' => $e->getTrace()
+			);
 			foreach ($data['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);

@@ -9,8 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_ITEM';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_ITEM;
+
 	Page::start(_($help_context = "Items"), Input::request('frame'));
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
@@ -334,7 +335,7 @@
 		check_row(_("Delete Image:"), 'del_image');
 	}
 	check_row(_("Exclude from sales:"), 'no_sale');
-	record_status_list_row(_("Item status:"), 'inactive');
+	check_row(_("Item status:"), 'inactive');
 	end_outer_table(1);
 	Display::div_end();
 	Display::div_start('controls');

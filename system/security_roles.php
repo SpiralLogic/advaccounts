@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = 'SA_SECROLES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SECROLES;
 	Page::start(_($help_context = "Access setup"));
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	// Following compare function is used for sorting areas
@@ -54,11 +54,11 @@
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
 		if (get_post('role') == $_SESSION['current_user']->access) {
-			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]]) || !isset($_POST['Section' . SS_SETUP])
+			if (!isset($_POST['Area' . $security_areas[SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
 			) {
 				Errors::error(_("Access level edition in Company setup section have to be enabled for your account."));
 				$input_error = 1;
-				JS::set_focus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]);
+				JS::set_focus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas[SA_SECROLES][0]);
 			}
 		}
 		if ($input_error == 0) {

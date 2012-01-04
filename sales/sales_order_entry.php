@@ -9,21 +9,22 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_SALESORDER;
+
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
-																														ST_SALESORDER => 'SA_SALESORDER',
-																														ST_SALESQUOTE => 'SA_SALESQUOTE',
-																														ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-																														ST_SALESINVOICE => 'SA_SALESINVOICE'
+																														ST_SALESORDER => SA_SALESORDER,
+																														ST_SALESQUOTE => SA_SALESQUOTE,
+																														ST_CUSTDELIVERY => SA_SALESDELIVERY,
+																														ST_SALESINVOICE => SA_SALESINVOICE
 																											 ), array(
-																															 'NewOrder' => 'SA_SALESORDER',
-																															 'ModifySalesOrder' => 'SA_SALESORDER',
-																															 'NewQuotation' => 'SA_SALESQUOTE',
-																															 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-																															 'NewDelivery' => 'SA_SALESDELIVERY',
-																															 'NewInvoice' => 'SA_SALESINVOICE'
+																															 Orders::NEW_ORDER => SA_SALESORDER,
+																															 Orders::MODIFY_ORDER => SA_SALESORDER,
+																															 Orders::NEW_QUOTE => SA_SALESQUOTE,
+																															 Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+																															 Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+																															 Orders::NEW_INVOICE => SA_SALESINVOICE
 																													));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
@@ -31,33 +32,30 @@
 		$_POST['customer_id'] = $_GET['customer_id'];
 		Ajax::i()->activate('customer_id');
 	}
-	if (Input::get('NewDelivery') > -1) {
+	if (Input::get(Orders::NEW_DELIVERY) > -1) {
 		$page_title = _($help_context = "Direct Sales Delivery");
-		$order = create_order(ST_CUSTDELIVERY, $_GET['NewDelivery']);
+		$order = create_order(ST_CUSTDELIVERY, $_GET[Orders::NEW_DELIVERY]);
 	}
-	if (Input::get('NewInvoice') > -1) {
+	if (Input::get(Orders::NEW_INVOICE) > -1) {
 		$page_title = _($help_context = "Direct Sales Invoice");
-		$order = create_order(ST_SALESINVOICE, $_GET['NewInvoice']);
+		$order = create_order(ST_SALESINVOICE, $_GET[Orders::NEW_INVOICE]);
 	}
-	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
+	elseif (Input::get(Orders::MODIFY_ORDER, Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Order';
-		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
-		$order = create_order(ST_SALESORDER, $_GET['ModifyOrderNumber']);
+		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET[Orders::MODIFY_ORDER]);
+		$order = create_order(ST_SALESORDER, $_GET[Orders::MODIFY_ORDER]);
 	}
-	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
+	elseif (Input::get(Orders::MODIFY_QUOTE, Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Quotation';
-		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
-		$order = create_order(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
+		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET[Orders::MODIFY_QUOTE]);
+		$order = create_order(ST_SALESQUOTE, $_GET[Orders::MODIFY_QUOTE]);
 	}
-	elseif (Input::get('NewOrder')) {
-		$order = create_order(ST_SALESORDER, 0);
-	}
-	elseif (Input::get('NewQuotation')) {
+	elseif (Input::get(Orders::NEW_QUOTE)) {
 		$page_title = _($help_context = "New Sales Quotation Entry");
 		$order = create_order(ST_SALESQUOTE, 0);
 	}
-	elseif (Input::get('NewQuoteToSalesOrder')) {
-		$order = create_order(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
+	elseif (Input::get(Orders::NEW_QUOTE_TO_ORDER)) {
+		$order = create_order(ST_SALESQUOTE, $_GET[Orders::NEW_QUOTE_TO_ORDER]);
 	}
 	elseif (Input::get('CloneOrder')) {
 		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
@@ -76,6 +74,11 @@
 	elseif (isset($_GET['restoreorder'])) {
 		$serial = Sales_Order::restore();
 		$order = create_order($serial, 0);
+	}
+	elseif (Input::get(Orders::NEW_ORDER)) {
+		$order = create_order(ST_SALESORDER, 0);
+	}else {
+		$order = create_order(ST_SALESORDER, 0);
 	}
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
@@ -106,7 +109,7 @@
 		Display::submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			Errors::notice(_("This sales quotation has been cancelled as requested."), 1);
-			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?".Orders::NEW_QUOTE."=Yes");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
@@ -235,7 +238,7 @@
 		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
-		if ($order->trans_no > 0 && User::get()->can_access('SA_VOIDTRANSACTION')) {
+		if ($order->trans_no > 0 && User::get()->can_access(SA_VOIDTRANSACTION)) {
 			submit_js_confirm('DeleteOrder', _('You are about to void this Document.\nDo you want to continue?'));
 			submit_center_first('DeleteOrder', $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
 			submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -249,8 +252,8 @@
 		else {
 			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
 		}
-		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
-			//UploadHandler::insert($_GET['ModifyOrderNumber']);
+		if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
+			//UploadHandler::insert($_GET[Orders::MODIFY_ORDER]);
 		}
 	}
 	else {
@@ -275,8 +278,8 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" :
-			 "ModifyQuotationNumber") . "=$order_no");
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
+			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
@@ -292,7 +295,7 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
+			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuote=1");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {
@@ -506,7 +509,7 @@
 	 * @return bool
 	 */
 	function check_item_data($order) {
-		if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
+		if (!User::get()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num(Disc, 0, 100))) {
 			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
@@ -517,7 +520,7 @@
 			return false;
 		}
 		elseif (!User::get()
-		 ->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST['LineNo']]->qty_done)
+		 ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
 		) {
 			JS::set_focus('qty');
 			Errors::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
@@ -619,8 +622,8 @@
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function create_order($type, $trans_no) {
-		if (isset($_GET['NewQuoteToSalesOrder'])) {
-			$trans_no = $_GET['NewQuoteToSalesOrder'];
+		if (isset($_GET[Orders::NEW_QUOTE_TO_ORDER])) {
+			$trans_no = $_GET[Orders::NEW_QUOTE_TO_ORDER];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
