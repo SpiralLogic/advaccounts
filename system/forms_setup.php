@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_FORMSETUP;
-
 	Page::start(_($help_context = "Forms Setup"));
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get();

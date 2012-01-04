@@ -9,15 +9,14 @@
 	include ('bootstrap.php');
 	$_GET['start'] = isset($_GET['start']) ? $_GET['start'] : 0;
 	echo '<html><head><style>
-body {
+body,table,img,td {
 margin:0;padding:0;
 }
 
 	td {
-	 height:68.5pt;
-	 max-height:68.5pt;
-	 min-height:68.5pt;
-padding:0;margin:0;
+	 height:70pt;
+	 max-height:70pt;
+	 min-height:70pt;
 overflow:hidden;
 font-size:8pt;
 text-align:left;
@@ -35,17 +34,13 @@ padding-left:5pt;
 	max-width:112.65pt;
 
 }
-img {
-padding-top:0;
-}
 div  { display:inline-block;
  }
 
 	 table{
 	 text-align:left;
  vertical-align: middle ;
-margin:0;
-padding:0;
+
 	 }
 	</style></head><body>';
 	$result = DB::select('s.stock_id', 's.description', 'sp.supp_name')->from('stock_master s,

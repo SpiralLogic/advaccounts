@@ -5,7 +5,7 @@
 	Session::i()->App->set_selected('Contacts');
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Debtor::seagrch($_GET['term']);
+			$data = Debtor::search($_GET['term']);
 			JS::renderJSON($data);
 		}
 	}

@@ -14,7 +14,11 @@
 	class Creditor_Trans
 	{
 		protected static $_instance = null;
-
+/***
+ * @static
+ * @param bool $reset_session
+ * @return Creditor_Trans
+ */
 		public static function i($reset_session = false) {
 			if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
 				static::$_instance = $_SESSION["Creditor_Trans"];

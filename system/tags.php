@@ -45,14 +45,6 @@
 	}
 	Page::start($_SESSION['page_title']);
 	Page::simple_mode(true);
-	function can_process() {
-		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The tag name cannot be empty."));
-			JS::set_focus('name');
-			return false;
-		}
-		return true;
-	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
@@ -70,17 +62,6 @@
 				$Mode = MODE_RESET;
 			}
 		}
-	}
-	function can_delete($selected_id) {
-		if ($selected_id == -1) {
-			return false;
-		}
-		$result = Tags::get_associated_records($selected_id);
-		if (DB::num_rows($result) > 0) {
-			Errors::error(_("Cannot delete this tag because records have been created referring to it."));
-			return false;
-		}
-		return true;
 	}
 
 	if ($Mode == MODE_DELETE) {
@@ -131,5 +112,25 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function can_process() {
+				if (strlen($_POST['name']) == 0) {
+					Errors::error(_("The tag name cannot be empty."));
+					JS::set_focus('name');
+					return false;
+				}
+				return true;
+			}
+
+		function can_delete($selected_id) {
+			if ($selected_id == -1) {
+				return false;
+			}
+			$result = Tags::get_associated_records($selected_id);
+			if (DB::num_rows($result) > 0) {
+				Errors::error(_("Cannot delete this tag because records have been created referring to it."));
+				return false;
+			}
+			return true;
+		}
 
 ?>

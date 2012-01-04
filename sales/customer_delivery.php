@@ -14,7 +14,6 @@
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESDELIVERY;
-
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {
@@ -179,17 +178,8 @@
 	start_table('tablestyle width90');
 	$new = $order->trans_no == 0;
 	$th = array(
-		_("Item Code"),
-		_("Item Description"),
-		$new ? _("Ordered") : _("Max. delivery"),
-		_("Units"),
-		$new ? _("Delivered") : _("Invoiced"),
-		_("This Delivery"),
-		_("Price"),
-		_("Tax Type"),
-		_("Discount"),
-		_("Total")
-	);
+		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"),
+		$new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	table_header($th);
 	$k = 0;
 	$has_marked = false;

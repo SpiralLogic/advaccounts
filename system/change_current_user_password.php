@@ -63,8 +63,7 @@
 	table_section_title(_("Enter your new password in the fields."));
 	$myrow = Users::get(User::get()->user);
 	label_row(_("User login:"), $myrow['user_id']);
-	$_POST['password'] = "";
-	$_POST['passwordConfirm'] = "";
+	$_POST['password'] = $_POST['passwordConfirm'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);
 	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 	end_table(1);

@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTRANSVIEW;
-
 	JS::open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
@@ -168,7 +167,9 @@
 	}
 	Display::heading(_("Line Details"));
 	start_table('tablestyle width95');
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
+	$th = array(
+		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"),
+		_("Quantity Delivered"));
 	table_header($th);
 	$k = 0; //row colour counter
 	foreach ($_SESSION['View']->line_items as $stock_item) {

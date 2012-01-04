@@ -123,21 +123,6 @@
 		$_POST['customer_id'] = $cust_id;
 		Ajax::i()->activate('_page_body');
 	}
-	function branch_email($row) {
-		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
-	}
-
-	function edit_link($row) {
-		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
-	}
-
-	function del_link($row) {
-		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
-	}
-
-	function select_link($row) {
-		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
-	}
 
 	start_form();
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
@@ -288,4 +273,20 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function branch_email($row) {
+		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
+	}
+
+	function edit_link($row) {
+		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
+	}
+
+	function del_link($row) {
+		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
+	}
+
+	function select_link($row) {
+		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
+	}
+
 ?>

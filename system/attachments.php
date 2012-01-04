@@ -137,52 +137,7 @@
 		unset($_POST['description']);
 		$selected_id = -1;
 	}
-	function viewing_controls() {
-		start_form();
-		start_table('tablestyle_noborder');
-		SysTypes::row(_("Type:"), 'filterType', null, true);
-		end_table(1);
-		end_form();
-	}
 
-	function get_attached_documents($type) {
-		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type) . " ORDER BY trans_no";
-		return DB::query($sql, "Could not retrieve attachments");
-	}
-
-	function get_attachment($id) {
-		$sql = "SELECT * FROM attachments WHERE id=" . DB::escape($id);
-		$result = DB::query($sql, "Could not retrieve attachments");
-		return DB::fetch($result);
-	}
-
-	function display_rows($type) {
-		$rows = get_attached_documents($type);
-		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
-		Display::div_start('transactions');
-		start_form();
-		start_table('tablestyle');
-		table_header($th);
-		$k = 0;
-		while ($row = DB::fetch($rows)) {
-			alt_table_row_color($k);
-			label_cell(GL_UI::trans_view($type, $row['trans_no']));
-			label_cell($row['description']);
-			label_cell($row['filename']);
-			label_cell($row['filesize']);
-			label_cell($row['filetype']);
-			label_cell(Dates::sql2date($row['tran_date']));
-			edit_button_cell("Edit" . $row['id'], _("Edit"));
-			button_cell("view" . $row['id'], _("View"), false, ICON_VIEW);
-			button_cell("download" . $row['id'], _("Download"), false, ICON_DOWN);
-			delete_button_cell("Delete" . $row['id'], _("Delete"));
-			end_row();
-		}
-		end_table(1);
-		hidden('filterType', $type);
-		end_form();
-		Display::div_end();
-	}
 
 	viewing_controls();
 	if (isset($_POST['filterType'])) {

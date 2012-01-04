@@ -14,6 +14,19 @@
 	$page_security = SA_VIEWPRINTTRANSACTION;
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "View or Print Transactions"));
+
+
+	if (isset($_POST['ProcessSearch'])) {
+		if (!check_valid_entries()) {
+			unset($_POST['ProcessSearch']);
+		}
+		Ajax::i()->activate('transactions');
+	}
+	start_form(false);
+	viewing_controls();
+	handle_search();
+	end_form(2);
+	Page::end();
 	function view_link($trans) {
 		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
@@ -103,17 +116,4 @@
 			DB_Pager::display($table);
 		}
 	}
-
-	if (isset($_POST['ProcessSearch'])) {
-		if (!check_valid_entries()) {
-			unset($_POST['ProcessSearch']);
-		}
-		Ajax::i()->activate('transactions');
-	}
-	start_form(false);
-	viewing_controls();
-	handle_search();
-	end_form(2);
-	Page::end();
-
 ?>
