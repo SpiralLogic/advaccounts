@@ -577,16 +577,6 @@
 			}
 		}
 		/**
-		 *
-		 */
-		public function store() {
-			$serial = serialize($this);
-			$sql = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			DB::query($sql);
-			$sql = "INSERT INTO `user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['current_user']->user . ",'" . $serial . "')";
-			DB::query($sql);
-		}
-		/**
 		 * @return int
 		 */
 		public function add() {
@@ -1346,17 +1336,6 @@
 		}
 		/**
 		 * @static
-		 * @return mixed
-		 */
-		public static function restore() {
-			$sql = "SELECT `data` FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			$result = DB::query($sql);
-			$serial = DB::fetch_assoc($result);
-			$serial = $serial['data'];
-			return unserialize($serial);
-		}
-		/**
-		 * @static
 		 *
 		 * @param $order_no
 		 * @param $trans_type
@@ -1468,7 +1447,7 @@
 		 *
 		 * @return string
 		 */
-		public static function	get_invoice_duedate($debtorno, $invdate) {
+		public static function get_invoice_duedate($debtorno, $invdate) {
 			if (!Dates::is_date($invdate)) {
 				return Dates::new_doc_date();
 			}

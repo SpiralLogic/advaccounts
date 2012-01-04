@@ -11,7 +11,7 @@
 		const NEW_ORDER = 'NewOrder';
 		const MODIFY_ORDER = 'ModifyOrder';
 		const NEW_QUOTE = 'NewQuote';
-		const NEW_QUOTE_TO_ORDER = 'NewQuoteToSalesOrder';
+		const QUOTE_TO_ORDER = 'QuoteToOrder';
 		const MODIFY_QUOTE = 'ModifyQuote';
 		const NEW_DELIVERY = 'NewDelivery';
 		const NEW_INVOICE = 'NewInvoice';

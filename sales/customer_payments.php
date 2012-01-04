@@ -124,8 +124,9 @@
 		start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount', 0);
-		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
-		amount_row(_("Amount:"), 'amount');
+		if (User::get()->can_access(SS_SALES)) {
+			check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
+		}amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
 		if ($cust_currency != $bank_currency) {

@@ -134,7 +134,7 @@
 	}
 
 	function order_link($row) {
-		return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
+		return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
 	}
 
 	function tmpl_checkbox($row) {

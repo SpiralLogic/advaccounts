@@ -264,7 +264,7 @@
 				$this->get_items($order_no, $view);
 			}
 		}
-		public function	 add_freight($date_) {
+		public function add_freight($date_) {
 			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $this->order_no . "," . DB::escape('freight') . "," . DB::escape('Freight Charges') . ",'" . Dates::date2sql($date_) . "'," . DB::escape($this->freight) . ", " . DB::escape(1) . ", " . DB::escape(0) . ")";
 			DB::query($sql, "One of the purchase order detail records could not be updated");
@@ -298,7 +298,7 @@
 				}
 				return $session_order;
 			}
-			return $order;
+			return $order?:false;
 		}
 		public function header() {
 			$editable = ($this->order_no == 0);
