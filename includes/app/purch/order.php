@@ -298,7 +298,7 @@
 				}
 				return $session_order;
 			}
-			return $order;
+			return $order?:false;
 		}
 		public function header() {
 			$editable = ($this->order_no == 0);
