@@ -36,7 +36,7 @@ padding-left:5pt;
 
 }
 img {
-padding-top:3pt;
+padding-top:0;
 }
 div  { display:inline-block;
  }

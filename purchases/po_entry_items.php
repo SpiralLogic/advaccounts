@@ -13,8 +13,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_PURCHASEORDER;
 	JS::open_window(900, 500);
-	if (isset($_GET['ModifyOrder'])) {
-		Page::start(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrder']);
+	if (isset($_GET[Orders::MODIFY_ORDER])) {
+		Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER]);
 	}
 	else {
 		Page::start(_($help_context = "Purchase Order Entry"));
@@ -65,13 +65,13 @@
 	if (isset($_POST['CancelUpdate'])) {
 		unset_form_variables();
 	}
-	if (isset($_GET['ModifyOrder']) && $_GET['ModifyOrder'] != "") {
-		$order = create_order($_GET['ModifyOrder']);
+	if (isset($_GET[Orders::MODIFY_ORDER]) && $_GET[Orders::MODIFY_ORDER] != "") {
+		$order = create_order($_GET[Orders::MODIFY_ORDER]);
 	}
 	elseif (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 		line_start_focus();
 	}
-	elseif (isset($_GET['NewOrder'])) {
+	elseif (isset($_GET[Orders::NEW_ORDER])) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
 			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe></div>";

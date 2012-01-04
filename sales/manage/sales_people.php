@@ -36,7 +36,9 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the delete code below*/
-				$sql = "UPDATE salesman SET salesman_name=" . DB::escape($_POST['salesman_name']) . ",
+				$sql = "UPDATE salesman SET salesman_name="
+				 . DB::escape($_POST['salesman_name']) . ",
+ 			user_id=" . DB::escape($_POST['user_id']) . ",
  			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
  			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
  			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
@@ -47,9 +49,17 @@
 			}
 			else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
+				$sql = "INSERT INTO salesman (salesman_name, user_id, salesman_phone, salesman_fax, salesman_email,
  			provision, break_pt, provision2)
- 			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . Validation::input_num('provision') . ", " . Validation::input_num('break_pt') . ", " . Validation::input_num('provision2') . ")";
+ 			VALUES ("
+				 . DB::escape($_POST['salesman_name']) . ", "
+				 . DB::escape($_POST['user_id']) . ", "
+				 . DB::escape($_POST['salesman_phone']) . ", "
+				 . DB::escape($_POST['salesman_fax']) . ", "
+				 . DB::escape($_POST['salesman_email']) . ", "
+				 . Validation::input_num('provision') . ", "
+				 . Validation::input_num('break_pt') . ", "
+				 . Validation::input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -84,20 +94,21 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	$sql = "SELECT * FROM salesman";
+	$sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
 	if (!check_value('show_inactive')) {
-		$sql .= " WHERE !inactive";
+		$sql .= " AND !s.inactive";
 	}
 	$result = DB::query($sql, "could not get sales persons");
 	start_form();
-	start_table('tablestyle width60');
-	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
+	start_table('tablestyle nowrap width80');
+	$th = array(_("Name"),_("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "","");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["salesman_name"]);
+		label_cell($myrow["user_id"]);
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);
 		email_cell($myrow["salesman_email"]);
@@ -119,6 +130,7 @@
 			$sql = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			$result = DB::query($sql, "could not get sales person");
 			$myrow = DB::fetch($result);
+			$_POST['user_id'] = $myrow["user_id"];
 			$_POST['salesman_name'] = $myrow["salesman_name"];
 			$_POST['salesman_phone'] = $myrow["salesman_phone"];
 			$_POST['salesman_fax'] = $myrow["salesman_fax"];
@@ -135,6 +147,7 @@
 		$_POST['provision2'] = Num::percent_format(0);
 	}
 	start_table('tablestyle2');
+	Users::row(_('User:'),'user_id');
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 	text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 	text_row_ex(_("Fax number:"), 'salesman_fax', 20);

@@ -8,7 +8,7 @@
 	 */
 	class Languages
 	{
-		function select($name, $selected_id = null) {
+		static public function select($name, $selected_id = null) {
 			$items = array();
 			$langs = Config::get('languages.installed');
 			foreach ($langs as $lang) {
@@ -17,7 +17,7 @@
 			return array_selector($name, $selected_id, $items);
 		}
 
-		function cells($label, $name, $selected_id = null) {
+		static public function cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -26,7 +26,7 @@
 			echo "</td>\n";
 		}
 
-		function row($label, $name, $selected_id = null) {
+		static public function row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Languages::cells(null, $name, $selected_id);
 			echo "</tr>\n";

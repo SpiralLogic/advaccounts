@@ -12,7 +12,6 @@
 
 	class User {
 		protected static $_instance = null;
-
 		/***
 		 * @static
 		 * @return User
@@ -25,7 +24,6 @@
 			}
 			return static::$_instance;
 		}
-
 		public $user;
 		public $loginname;
 		public $username;
@@ -206,7 +204,6 @@
 						 \npdec: " . static::price_dec() . "}\n";
 			JS::beforeload($js);
 		}
-
 
 		public static function	fallback() {
 			return static::get()->ui_mode == 0;
