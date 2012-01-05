@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	class Validation
 	{
-		const CUSTOMERS = "debtors_master";
+		const CUSTOMERS = "debtors";
 		const CURRENCIES = "currencies";
 		const SALES_TYPES = "sales_types";
 		const ITEM_TAX_TYPES = "item_tax_types";
 		const TAX_TYPES = "tax_types";
 		const TAX_GROUP = "tax_groups";
 		const MOVEMENT_TYPES = "movement_types";
-		const BRANCHES = "cust_branch WHERE debtor_no=";
-		const BRANCHES_ACTIVE = "cust_branch WHERE !inactive";
+		const BRANCHES = "branches WHERE debtor_no=";
+		const BRANCHES_ACTIVE = "branches WHERE !inactive";
 		const SALESPERSONS = "salesman";
 		const SALES_AREA = "areas";
 		const SHIPPERS = "shippers";

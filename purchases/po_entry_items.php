@@ -13,8 +13,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_PURCHASEORDER;
 	JS::open_window(900, 500);
-	if (isset($_GET['ModifyOrderNumber'])) {
-		Page::start(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber']);
+	if (isset($_GET[Orders::MODIFY_ORDER])) {
+		Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER]);
 	}
 	else {
 		Page::start(_($help_context = "Purchase Order Entry"));
@@ -33,7 +33,7 @@
 		}
 		Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
-		Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
+		Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
 		Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);
 		Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		Display::link_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
@@ -65,13 +65,13 @@
 	if (isset($_POST['CancelUpdate'])) {
 		unset_form_variables();
 	}
-	if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
-		$order = create_order($_GET['ModifyOrderNumber']);
+	if (isset($_GET[Orders::MODIFY_ORDER]) && $_GET[Orders::MODIFY_ORDER] != "") {
+		$order = create_order($_GET[Orders::MODIFY_ORDER]);
 	}
 	elseif (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 		line_start_focus();
 	}
-	elseif (isset($_GET['NewOrder'])) {
+	elseif (isset($_GET[Orders::NEW_ORDER])) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
 			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe></div>";
@@ -210,17 +210,17 @@
 				$stock[] = ' stock_id = ' . DB::escape($line_item->stock_id);
 			}
 			$sql = "SELECT AVG(price),supplier_id,COUNT(supplier_id) FROM purch_data WHERE " . implode(' OR ', $stock) . ' GROUP BY supplier_id ORDER BY AVG(price)';
-			FB::info($sql);
 			$result = DB::query($sql);
 			$row = DB::fetch($result);
 			$order->supplier_to_order($row['supplier_id']);
 			foreach ($sales_order->line_items as $line_no => $line_item) {
 				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 			}
-			if ($_GET[LOC_DROP_SHIP]) {
-				$item_info = Item::get(LOC_DROP_SHIP);
+			if (isset($_GET[LOC_DROP_SHIP])) {
+				$item_info = Item::get('DS');
 				$_POST['StkLocation'] = LOC_DROP_SHIP;
-				$order->add_to_order(count($sales_order->line_items), LOC_DROP_SHIP, 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '',
+														 Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
 					$address .= $sales_order->name . "\n";

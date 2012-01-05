@@ -37,7 +37,7 @@
 		public $sales_discount_account;
 		public $salesman;
 		public $tax_group_id = DEFAULT_TAX_GROUP;
-		protected $_table = 'cust_branch';
+		protected $_table = 'branches';
 		protected $_id_column = 'branch_code';
 
 		public function __construct($id = null) {
@@ -50,7 +50,7 @@
 
 		public function delete() {
 
-			DB::delete('cust_branch')->where('branch_code=',$this->branch_code)->exec();
+			DB::delete('branches')->where('branch_code=',$this->branch_code)->exec();
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
 		}
@@ -112,7 +112,7 @@
 				$params = array('branch_code' => $params);
 			}
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
-			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')->where(array(
+			 ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
 																																																'b.debtor_no=c.debtor_no',
 																																																'b.tax_group_id=t.id',
 																																																'b.area=a.area_code',
@@ -127,7 +127,7 @@
 
 		// BRANCHES
 		public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
-			$sql = "SELECT branch_code, branch_ref FROM cust_branch
+			$sql = "SELECT branch_code, branch_ref FROM branches
 			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 			if ($editkey) {
 				Display::set_editor('branch', $name, $editkey);

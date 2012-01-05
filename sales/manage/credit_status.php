@@ -33,17 +33,6 @@
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = MODE_RESET;
 	}
-	function can_delete($selected_id) {
-		$sql = "SELECT COUNT(*) FROM debtors_master
-		WHERE credit_status=" . DB::escape($selected_id);
-		$result = DB::query($sql, "could not query customers");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
-			return false;
-		}
-		return true;
-	}
 
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
@@ -99,5 +88,16 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function can_delete($selected_id) {
+			$sql = "SELECT COUNT(*) FROM debtors
+			WHERE credit_status=" . DB::escape($selected_id);
+			$result = DB::query($sql, "could not query customers");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+				return false;
+			}
+			return true;
+		}
 
 ?>

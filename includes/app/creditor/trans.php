@@ -14,7 +14,11 @@
 	class Creditor_Trans
 	{
 		protected static $_instance = null;
-
+/***
+ * @static
+ * @param bool $reset_session
+ * @return Creditor_Trans
+ */
 		public static function i($reset_session = false) {
 			if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
 				static::$_instance = $_SESSION["Creditor_Trans"];
@@ -148,7 +152,7 @@
 				$rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
 			}
 			$sql
-			 = "INSERT INTO supp_trans (trans_no, type, supplier_id, tran_date, due_date,
+			 = "INSERT INTO creditor_trans (trans_no, type, supplier_id, tran_date, due_date,
 				reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
 			$sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type) . ", " . DB::escape($supplier_id) . ", '$date', '$due_date',
 				" . DB::escape($reference) . ", " . DB::escape($supp_reference) . ", " . DB::escape($amount) . ", " . DB::escape($amount_tax) . ", " . DB::escape($rate) . ", " . DB::escape($discount) . ")";
@@ -162,7 +166,7 @@
 
 		public static function get($trans_no, $trans_type = -1) {
 			$sql
-			 = "SELECT supp_trans.*, (supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
+			 = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
 				suppliers.supp_name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
 			if ($trans_type == ST_SUPPAYMENT) {
 				// it's a payment so also get the bank account
@@ -171,15 +175,15 @@
 					bank_accounts.account_type AS BankTransType, bank_trans.amount AS BankAmount,
 					bank_trans.ref ";
 			}
-			$sql .= " FROM supp_trans, suppliers ";
+			$sql .= " FROM creditor_trans, suppliers ";
 			if ($trans_type == ST_SUPPAYMENT) {
 				// it's a payment so also get the bank account
 				$sql .= ", bank_trans, bank_accounts";
 			}
-			$sql .= " WHERE supp_trans.trans_no=" . DB::escape($trans_no) . "
-				AND supp_trans.supplier_id=suppliers.supplier_id";
+			$sql .= " WHERE creditor_trans.trans_no=" . DB::escape($trans_no) . "
+				AND creditor_trans.supplier_id=suppliers.supplier_id";
 			if ($trans_type > 0) {
-				$sql .= " AND supp_trans.type=" . DB::escape($trans_type);
+				$sql .= " AND creditor_trans.type=" . DB::escape($trans_type);
 			}
 			if ($trans_type == ST_SUPPAYMENT) {
 				// it's a payment so also get the bank account
@@ -205,7 +209,7 @@
 			if ($type == ST_SUPPRECEIVE) {
 				return Purch_GRN::exists($type_no);
 			}
-			$sql = "SELECT trans_no FROM supp_trans WHERE type=" . DB::escape($type) . "
+			$sql = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::escape($type) . "
 				AND trans_no=" . DB::escape($type_no);
 			$result = DB::query($sql, "Cannot retreive a supplier transaction");
 			return (DB::num_rows($result) > 0);
@@ -213,7 +217,7 @@
 
 		public static function void($type, $type_no) {
 			$sql
-			 = "UPDATE supp_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
+			 = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 			DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 		}
@@ -276,15 +280,15 @@
 			}
 		}
 
-		public static function get_duedate_from_terms($supp_trans) {
-			if (!Dates::is_date($supp_trans->tran_date)) {
-				$supp_trans->tran_date = Dates::Today();
+		public static function get_duedate_from_terms($creditor_trans) {
+			if (!Dates::is_date($creditor_trans->tran_date)) {
+				$creditor_trans->tran_date = Dates::Today();
 			}
-			if (substr($supp_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-				$supp_trans->due_date = Dates::add_days(Dates::end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
+			if (substr($creditor_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
+				$creditor_trans->due_date = Dates::add_days(Dates::end_month($creditor_trans->tran_date), (int)substr($creditor_trans->terms, 1));
 			}
 			else { /*Use the Days Before Due to add to the invoice date */
-				$supp_trans->due_date = Dates::add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
+				$creditor_trans->due_date = Dates::add_days($creditor_trans->tran_date, (int)substr($creditor_trans->terms, 1));
 			}
 		}
 	} /* end of class defintion */

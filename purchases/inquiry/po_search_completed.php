@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SUPPTRANSVIEW;
-
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Purchase Orders"), Input::request('frame'));
 	if (isset($_GET['order_number'])) {
@@ -64,41 +63,12 @@
 	else {
 		unset($selected_stock_item);
 	}
-	function trans_view($trans) {
-		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
-	}
-
-	function edit_link($row) {
-		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-	}
-
-	function prt_link($row) {
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-	}
-
-	function email_link($row) {
-		HTML::setReturn(true);
-		UI::button(false, 'Email', array(
-																		'class' => 'button email-button', 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
-															 ));
-		return HTML::setReturn(false);
-	}
-
-	function receive_link($row) {
-		if ($row['Received'] > 0) {
-			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-		}
-		elseif ($row['Invoiced'] > 0) {
-			return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
-		}
-		//advaccounts/purchases/supplier_invoice.php?New=1
-	}
-
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
 	}
-	$sql = "SELECT
+	$sql
+	 = "SELECT
 	porder.order_no, 
 	porder.reference, 
 	supplier.supp_name,
@@ -121,7 +91,8 @@
 				continue;
 			}
 			$ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-			$sql .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+			$sql
+			 .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		 OR porder.requisition_no LIKE $ajaxsearch
 		 OR location.location_name LIKE $ajaxsearch)";
@@ -133,7 +104,7 @@
 	else {
 		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= (Input::get(LOC_NOT_FAXED_YET) == 1) ? "'".LOC_NOT_FAXED_YET."'" : DB::quote($_POST['StockLocation']);
+			$sql .= (Input::get(LOC_NOT_FAXED_YET) == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : DB::quote($_POST['StockLocation']);
 		}
 		else {
 			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
@@ -148,21 +119,15 @@
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
 		_("#") => array(
-			'fun' => 'trans_view', 'ord' => ''
-		), _("Reference"), _("Supplier") => array(
-			'ord' => '', 'type' => 'id'
-		), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"), _("Order Date") => array(
-			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'
-		), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
-			'insert' => true, 'fun' => 'edit_link'
-		), array(
-			'insert' => true, 'fun' => 'email_link'
-		), array(
-			'insert' => true, 'fun' => 'prt_link'
-		), array(
-			'insert' => true, 'fun' => 'receive_link'
-		)
-	);
+			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array(
+			'ord' => '', 'type' => 'id'), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"),
+		_("Order Date") => array(
+			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'),
+		_("Order Total") => 'amount', array(
+			'insert' => true, 'fun' => 'edit_link'), array(
+			'insert' => true, 'fun' => 'email_link'), array(
+			'insert' => true, 'fun' => 'prt_link'), array(
+			'insert' => true, 'fun' => 'receive_link'));
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
@@ -173,4 +138,34 @@
 	UI::emailDialogue('s');
 	end_form();
 	Page::end();
+	function trans_view($trans) {
+		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
+	}
+
+	function edit_link($row) {
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrder=" . $row["order_no"], ICON_EDIT);
+	}
+
+	function prt_link($row) {
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+	}
+
+	function email_link($row) {
+		HTML::setReturn(true);
+		UI::button(false, 'Email', array(
+																		'class' => 'button email-button',
+																		'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
+		return HTML::setReturn(false);
+	}
+
+	function receive_link($row) {
+		if ($row['Received'] > 0) {
+			return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+		}
+		elseif ($row['Invoiced'] > 0) {
+			return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+		}
+		//advaccounts/purchases/supplier_invoice.php?New=1
+	}
+
 ?>

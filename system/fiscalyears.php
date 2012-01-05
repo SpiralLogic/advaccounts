@@ -15,6 +15,21 @@
 	$js = "";
 	Page::start(_($help_context = "Fiscal Years"));
 	Page::simple_mode(true);
+
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+		handle_submit();
+	}
+	if ($Mode == MODE_DELETE) {
+		global $selected_id;
+		handle_delete($selected_id);
+	}
+	if ($Mode == MODE_RESET) {
+		$selected_id = -1;
+	}
+	display_fiscalyears();
+	echo '<br>';
+	display_fiscalyear_edit($selected_id);
+	Page::end();
 	function is_date_in_fiscalyears($date) {
 		$date = Dates::date2sql($date);
 		$sql = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
@@ -219,7 +234,7 @@
 					delete_attachments_and_comments(ST_CUSTDELIVERY, $delivery);
 				}
 			}
-			$sql = "DELETE FROM cust_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
+			$sql = "DELETE FROM debtor_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
 			DB::query($sql, "Could not delete cust allocations");
 			$sql = "DELETE FROM debtor_trans_details WHERE debtor_trans_no = {$row['trans_no']} AND debtor_trans_type = {$row['type']}";
 			DB::query($sql, "Could not delete debtor trans details");
@@ -227,15 +242,15 @@
 			DB::query($sql, "Could not delete debtor trans");
 			delete_attachments_and_comments($row['type'], $row['trans_no']);
 		}
-		$sql = "SELECT trans_no, type FROM supp_trans WHERE tran_date <= '$to' AND
+		$sql = "SELECT trans_no, type FROM creditor_trans WHERE tran_date <= '$to' AND
 		ABS(ov_amount + ov_gst + ov_discount) = alloc";
 		$result = DB::query($sql, "Could not retrieve supp trans");
 		while ($row = DB::fetch($result)) {
-			$sql = "DELETE FROM supp_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
+			$sql = "DELETE FROM creditor_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
 			DB::query($sql, "Could not delete supp allocations");
-			$sql = "DELETE FROM supp_invoice_items WHERE supp_trans_no = {$row['trans_no']} AND supp_trans_type = {$row['type']}";
+			$sql = "DELETE FROM creditor_trans_details WHERE creditor_trans_no = {$row['trans_no']} AND creditor_trans_type = {$row['type']}";
 			DB::query($sql, "Could not delete supp invoice items");
-			$sql = "DELETE FROM supp_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
+			$sql = "DELETE FROM creditor_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
 			DB::query($sql, "Could not delete supp trans");
 			delete_attachments_and_comments($row['type'], $row['trans_no']);
 		}
@@ -409,20 +424,5 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 		end_form();
 	}
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit();
-	}
-	if ($Mode == MODE_DELETE) {
-		global $selected_id;
-		handle_delete($selected_id);
-	}
-	if ($Mode == MODE_RESET) {
-		$selected_id = -1;
-	}
-	display_fiscalyears();
-	echo '<br>';
-	display_fiscalyear_edit($selected_id);
-	Page::end();
 
 ?>

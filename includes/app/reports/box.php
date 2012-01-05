@@ -224,7 +224,7 @@
 					return Dimensions::select($name, null, true, _("No Dimension Filter"), false, true, 2);
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
-					$sql = "SELECT debtor_no, name FROM debtors_master";
+					$sql = "SELECT debtor_no, name FROM debtors";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
 						return select_box($name, '', $sql, 'debtor_no', 'name', array(
 																																				 'spec_option' => _("No Customer Filter"),
@@ -254,32 +254,32 @@
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 					$sql
 					 = "SELECT concat(debtor_trans.trans_no, '-',
-						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors_master.name) as IName
-						FROM debtors_master, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors.name) as IName
+						FROM debtors, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'DELIVERY':
 					$DN = _("DN");
 					$sql
 					 = "SELECT
 					concat(debtor_trans.trans_no, '-', debtor_trans.type) AS TNO, concat(debtor_trans.trans_no, ' $DN ',
-					 debtors_master.name) as IName
-						FROM debtors_master, debtor_trans
-						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+					 debtors.name) as IName
+						FROM debtors, debtor_trans
+						WHERE type=" . ST_CUSTDELIVERY . " AND debtors.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ORDERS':
 					$ref = (Config::get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
 					$sql
 					 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
-						debtors_master.name) as IName
-						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
+						debtors.name) as IName
+						FROM debtors, sales_orders WHERE debtors.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY sales_orders.order_no DESC";
 					return select_box($name, '', $sql, 'order_no', 'IName', array('order' => false));
 				case 'QUOTATIONS':
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
 					$sql
 					 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
-						debtors_master.name) as IName
-						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
+						debtors.name) as IName
+						FROM debtors, sales_orders WHERE debtors.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY sales_orders.order_no DESC";
 					return select_box($name, '', $sql, 'order_no', 'IName', array('order' => false));
 				case 'PO':
@@ -295,9 +295,9 @@
 					$CN = _("CN");
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 					$sql
-					 = "SELECT concat(supp_trans.trans_no, '-',
-						supp_trans.type) AS TNO, concat(supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
-						FROM suppliers, supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=supp_trans.supplier_id ORDER BY supp_trans.trans_no DESC";
+					 = "SELECT concat(creditor_trans.trans_no, '-',
+						creditor_trans.type) AS TNO, concat(creditor_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
+						FROM suppliers, creditor_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=creditor_trans.supplier_id ORDER BY creditor_trans.trans_no DESC";
 					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'RECEIPT':
 					$BD = _("BD");
@@ -306,8 +306,8 @@
 					$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 					$sql
 					 = "SELECT concat(debtor_trans.trans_no, '-',
-						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors_master.name) as IName
-						FROM debtors_master, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors.name) as IName
+						FROM debtors, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'REFUND':
 					$BD = _("BD");
@@ -317,8 +317,8 @@
 					$sql
 					 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
-						' $CP ', ' $CN ')), debtors_master.name) as IName
-						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						' $CP ', ' $CN ')), debtors.name) as IName
+						FROM debtors, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return select_box($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ITEMS':
 					return Item_UI::manufactured($name);

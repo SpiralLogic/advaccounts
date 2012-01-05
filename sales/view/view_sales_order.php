@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTRANSVIEW;
-
 	JS::open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
@@ -118,7 +117,7 @@
 		table_header($th);
 		$payments_total = 0;
 		if (count($inv_numbers)) {
-			$sql = "SELECT a.*, d.reference FROM cust_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
+			$sql = "SELECT a.*, d.reference FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
 			$result = DB::query($sql, "The related payments could not be retreived");
 			$k = 0;
 			while ($payment_row = DB::fetch($result)) {
@@ -168,7 +167,9 @@
 	}
 	Display::heading(_("Line Details"));
 	start_table('tablestyle width95');
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
+	$th = array(
+		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"),
+		_("Quantity Delivered"));
 	table_header($th);
 	$k = 0; //row colour counter
 	foreach ($_SESSION['View']->line_items as $stock_item) {
@@ -202,7 +203,7 @@
 	if (Input::get('frame')) {
 		return;
 	}
-	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
+	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrder" : "ModifyQuote");
 	if (ST_SALESORDER) {
 		Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
 	}

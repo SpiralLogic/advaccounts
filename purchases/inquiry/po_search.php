@@ -49,25 +49,6 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	function trans_view($trans) {
-		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
-	}
-
-	function edit_link($row) {
-		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-	}
-
-	function prt_link($row) {
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-	}
-
-	function receive_link($row) {
-		return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-	}
-
-	function check_overdue($row) {
-		return $row['OverDue'] == 1;
-	}
 
 	if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
 		$order_number = $_POST['order_number'];
@@ -143,4 +124,24 @@
 	Creditor::addInfoDialog('.pagerclick');
 	end_form();
 	Page::end();
+	function trans_view($trans) {
+		return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
+	}
+
+	function edit_link($row) {
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
+	}
+
+	function prt_link($row) {
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+	}
+
+	function receive_link($row) {
+		return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+	}
+
+	function check_overdue($row) {
+		return $row['OverDue'] == 1;
+	}
+
 ?>

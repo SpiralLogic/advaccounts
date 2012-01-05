@@ -205,11 +205,12 @@
 	}
 
 	function read_customer_data() {
-		$sql = "SELECT debtors_master.pymt_discount,
+		$sql
+		 = "SELECT debtors.pymt_discount,
 		credit_status.dissallow_invoices
-		FROM debtors_master, credit_status
-		WHERE debtors_master.credit_status = credit_status.id
-			AND debtors_master.debtor_no = " . DB::escape($_POST['customer_id']);
+		FROM debtors, credit_status
+		WHERE debtors.credit_status = credit_status.id
+			AND debtors.debtor_no = " . DB::escape($_POST['customer_id']);
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch($result);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];

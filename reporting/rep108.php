@@ -84,7 +84,7 @@
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
 			}
-			$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
+			$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM debtors";
 			if ($customer != ALL_NUMERIC) {
 				$sql .= " WHERE debtor_no = " . DB::escape($customer);
 			} else {

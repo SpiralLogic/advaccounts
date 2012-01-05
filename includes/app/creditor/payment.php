@@ -28,7 +28,7 @@
 			}
 			// it's a supplier payment
 			$trans_type = ST_SUPPAYMENT;
-			/* Create a supp_trans entry for the supplier payment */
+			/* Create a creditor_trans entry for the supplier payment */
 			$payment_id = Creditor_Trans::add($trans_type, $supplier_id, $date_, $date_,
 				$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 			// Now debit creditors account with payment + discount

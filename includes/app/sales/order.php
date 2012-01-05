@@ -577,16 +577,6 @@
 			}
 		}
 		/**
-		 *
-		 */
-		public function store() {
-			$serial = serialize($this);
-			$sql = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			DB::query($sql);
-			$sql = "INSERT INTO `user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['current_user']->user . ",'" . $serial . "')";
-			DB::query($sql);
-		}
-		/**
 		 * @return int
 		 */
 		public function add() {
@@ -942,9 +932,11 @@
 			if (count($this->line_items) > 0) {
 				start_outer_table('center width90');
 				table_section(1);
-				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", true, true);
+				Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"),
+																			"NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", true, true);
 				table_section(2);
-				Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "&DS=1' class='button'", true, true);
+				Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"),
+																			"NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button'", true, true);
 				end_outer_table(1);
 			}
 			start_table('tablestyle ');
@@ -1344,17 +1336,6 @@
 		}
 		/**
 		 * @static
-		 * @return mixed
-		 */
-		public static function restore() {
-			$sql = "SELECT `data` FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			$result = DB::query($sql);
-			$serial = DB::fetch_assoc($result);
-			$serial = $serial['data'];
-			return unserialize($serial);
-		}
-		/**
-		 * @static
 		 *
 		 * @param $order_no
 		 * @param $trans_type
@@ -1380,12 +1361,12 @@
 		 */
 		public static function get_header($order_no, $trans_type) {
 			$sql = "SELECT DISTINCT sales_orders.*,
-		 debtors_master.name,
-		 debtors_master.curr_code,
-		 debtors_master.email AS master_email,
+		 debtors.name,
+		 debtors.curr_code,
+		 debtors.email AS master_email,
 		 locations.location_name,
-		 debtors_master.payment_terms,
-		 debtors_master.discount,
+		 debtors.payment_terms,
+		 debtors.discount,
 		 sales_types.sales_type,
 		 sales_types.id AS sales_type_id,
 		 sales_types.tax_included,
@@ -1393,16 +1374,16 @@
 		 tax_groups.name AS tax_group_name ,
 		 tax_groups.id AS tax_group_id
 		FROM sales_orders,
-		debtors_master,
+		debtors,
 		sales_types,
 		tax_groups,
-		cust_branch,
+		branches,
 		locations,
 		shippers
 		WHERE sales_orders.order_type=sales_types.id
-			AND cust_branch.branch_code = sales_orders.branch_code
-			AND cust_branch.tax_group_id = tax_groups.id
-			AND sales_orders.debtor_no = debtors_master.debtor_no
+			AND branches.branch_code = sales_orders.branch_code
+			AND branches.tax_group_id = tax_groups.id
+			AND sales_orders.debtor_no = debtors.debtor_no
 			AND locations.loc_code = sales_orders.from_stk_loc
 			AND shippers.shipper_id = sales_orders.ship_via
 			AND sales_orders.trans_type = " . DB::escape($trans_type) . "
@@ -1466,13 +1447,13 @@
 		 *
 		 * @return string
 		 */
-		public static function	get_invoice_duedate($debtorno, $invdate) {
+		public static function get_invoice_duedate($debtorno, $invdate) {
 			if (!Dates::is_date($invdate)) {
 				return Dates::new_doc_date();
 			}
-			$sql = "SELECT debtors_master.debtor_no, debtors_master.payment_terms, payment_terms.* FROM debtors_master,
-			payment_terms WHERE debtors_master.payment_terms = payment_terms.terms_indicator AND
-			debtors_master.debtor_no = " . DB::escape($debtorno);
+			$sql = "SELECT debtors.debtor_no, debtors.payment_terms, payment_terms.* FROM debtors,
+			payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
+			debtors.debtor_no = " . DB::escape($debtorno);
 			$result = DB::query($sql, "The customer details could not be retrieved");
 			$myrow = DB::fetch($result);
 			if (DB::num_rows($result) == 0) {
@@ -1495,23 +1476,23 @@
 		 */
 		public static function get_customer($customer_id) {
 			// Now check to ensure this account is not on hold */
-			$sql = "SELECT debtors_master.name,
-		 debtors_master.address,
+			$sql = "SELECT debtors.name,
+		 debtors.address,
 		 credit_status.dissallow_invoices,
-		 debtors_master.sales_type AS salestype,
-		 debtors_master.dimension_id,
-		 debtors_master.dimension2_id,
+		 debtors.sales_type AS salestype,
+		 debtors.dimension_id,
+		 debtors.dimension2_id,
 		 sales_types.sales_type,
 		 sales_types.tax_included,
 		 sales_types.factor,
-		 debtors_master.curr_code,
-		 debtors_master.discount,
-		 debtors_master.pymt_discount,
-		 debtors_master.payment_terms
-			FROM debtors_master, credit_status, sales_types
-			WHERE debtors_master.sales_type=sales_types.id
-			AND debtors_master.credit_status=credit_status.id
-			AND debtors_master.debtor_no = " . DB::escape($customer_id);
+		 debtors.curr_code,
+		 debtors.discount,
+		 debtors.pymt_discount,
+		 debtors.payment_terms
+			FROM debtors, credit_status, sales_types
+			WHERE debtors.sales_type=sales_types.id
+			AND debtors.credit_status=credit_status.id
+			AND debtors.debtor_no = " . DB::escape($customer_id);
 			$result = DB::query($sql, "Customer Record Retreive");
 			return DB::fetch($result);
 		}
@@ -1524,16 +1505,16 @@
 		 * @return null|PDOStatement
 		 */
 		public static function get_branch($customer_id, $branch_id) {
-			// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
-			$sql = "SELECT cust_branch.br_name,
-	 cust_branch.br_address,
-	 cust_branch.city, cust_branch.state, cust_branch.postcode, cust_branch.contact_name, cust_branch.br_post_address, cust_branch.phone, cust_branch.email,
+			// the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
+			$sql = "SELECT branches.br_name,
+	 branches.br_address,
+	 branches.city, branches.state, branches.postcode, branches.contact_name, branches.br_post_address, branches.phone, branches.email,
 				 default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
-				FROM cust_branch, tax_groups, locations
-				WHERE cust_branch.tax_group_id = tax_groups.id
+				FROM branches, tax_groups, locations
+				WHERE branches.tax_group_id = tax_groups.id
 					AND locations.loc_code=default_location
-					AND cust_branch.branch_code=" . DB::escape($branch_id) . "
-					AND cust_branch.debtor_no = " . DB::escape($customer_id);
+					AND branches.branch_code=" . DB::escape($branch_id) . "
+					AND branches.debtor_no = " . DB::escape($customer_id);
 			return DB::query($sql, "Customer Branch Record Retreive");
 		}
 		/**

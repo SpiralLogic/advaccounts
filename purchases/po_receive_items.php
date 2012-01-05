@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_GRN;
-
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	if (isset($_GET['AddedID'])) {
@@ -63,7 +62,7 @@
 	Purch_GRN::display($order, true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items($order);
-	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $order->order_no);
+	Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
@@ -73,8 +72,8 @@
 		Display::div_start('grn_items');
 		start_table('tablestyle width90');
 		$th = array(
-			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total")
-		);
+			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"),
+			_('Discount %'), _("Total"));
 		table_header($th);
 		/*show the line items on the order with the quantity being received for modification */
 		$total = 0;
@@ -124,7 +123,8 @@
 		/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
 		// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 		// Otherwise if you try to fullfill item quantities separately will give error.
-		$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+		$sql
+		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 			FROM purch_order_details
 			WHERE order_no=" . DB::escape($order->order_no) . " ORDER BY po_detail_item";
 		$result = DB::query($sql, "could not query purch order details");
@@ -146,8 +146,11 @@
 
 	function can_process($order) {
 		if (count($order->line_items) <= 0) {
-			Errors::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
-			return false;
+			Errors::error(_("You are not currenty receiving an order."));
+
+			Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a purchase order to receive goods."));
+
+			Page::footer_exit();
 		}
 		if (!Dates::is_date($_POST['DefaultReceivedDate'])) {
 			Errors::error(_("The entered date is invalid."));
@@ -217,4 +220,3 @@
 	}
 
 ?>
-

@@ -9,6 +9,7 @@
 	class Page
 	{
 		protected $css = array();
+		/**@var Page null*/
 		protected static $i = null;
 		/** @var Renderer */
 		public $renderer = null;
@@ -210,7 +211,7 @@
 		}
 		protected function _end_page($hide_back_link) {
 			if ($this->frame) {
-				$is_index = $hide_back_link = $no_menu = true;
+			$hide_back_link = $no_menu = true;
 				$this->has_header = false;
 			}
 			if (($this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {

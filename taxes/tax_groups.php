@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_TAXGROUPS;
 	Page::start(_($help_context = "Tax Groups"));
@@ -69,7 +68,7 @@
 		if ($selected_id == -1) {
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

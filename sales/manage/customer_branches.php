@@ -47,7 +47,7 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				/* SelectedBranch could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the 	delete code below */
-				$sql = "UPDATE cust_branch SET br_name = " . DB::escape($_POST['br_name']) . ",
+				$sql = "UPDATE branches SET br_name = " . DB::escape($_POST['br_name']) . ",
 				branch_ref = " . DB::escape($_POST['br_ref']) . ",
 				br_address = " . DB::escape($_POST['br_address']) . ",
  	 phone=" . DB::escape($_POST['phone']) . ",
@@ -74,7 +74,7 @@
 			}
 			else {
 				/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-				$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address,
+				$sql = "INSERT INTO branches (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes)
@@ -107,7 +107,7 @@
 				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 			}
 			else {
-				$sql = "DELETE FROM cust_branch WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
+				$sql = "DELETE FROM branches WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
 				DB::query($sql, "could not delete branch");
 				Errors::notice(_('Selected customer branch has been deleted'));
 			}
@@ -123,21 +123,6 @@
 		$_POST['customer_id'] = $cust_id;
 		Ajax::i()->activate('_page_body');
 	}
-	function branch_email($row) {
-		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
-	}
-
-	function edit_link($row) {
-		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
-	}
-
-	function del_link($row) {
-		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
-	}
-
-	function select_link($row) {
-		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
-	}
 
 	start_form();
 	echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
@@ -147,7 +132,7 @@
 	if (Input::post('customer_id') > 0) {
 		$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
 		$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
-		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
+		FROM branches b, debtors c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
@@ -183,8 +168,8 @@
 			if (!Input::request('frame')) {
 				$cols[' '] = 'skip';
 			}
-			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
-			$table->set_inactive_ctrl('cust_branch', 'branch_code');
+			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
+			$table->set_inactive_ctrl('branches', 'branch_code');
 			//$table->width = "85%";
 			DB_Pager::display($table);
 		}
@@ -201,7 +186,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == MODE_EDIT) {
 			//editing an existing branch
-			$sql = "SELECT * FROM cust_branch
+			$sql = "SELECT * FROM branches
 			WHERE branch_code=" . DB::escape($_POST['branch_code']) . "
 			AND debtor_no=" . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "check failed");
@@ -234,7 +219,7 @@
 	elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
 		if (!$num_branches) {
 			$sql = "SELECT name, address, email, debtor_ref
-			FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
+			FROM debtors WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch($result);
 			$_POST['br_name'] = $myrow["name"];
@@ -288,4 +273,20 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function branch_email($row) {
+		return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
+	}
+
+	function edit_link($row) {
+		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
+	}
+
+	function del_link($row) {
+		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
+	}
+
+	function select_link($row) {
+		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
+	}
+
 ?>

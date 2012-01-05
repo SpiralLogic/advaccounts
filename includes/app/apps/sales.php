@@ -22,7 +22,7 @@ class Apps_Sales extends Application
 		$this->add_module(_("Quotations and Orders"));
 		$this->add_lapp_function(0, '', '');
 		$this->add_lapp_function(0, _("Sales &Quotation Entry"),
-								 "sales/sales_order_entry.php?NewQuotation=Yes", SA_SALESQUOTE);
+								 "sales/sales_order_entry.php?NewQuote=Yes", SA_SALESQUOTE);
 		$this->add_lapp_function(0, _("Sales Quotation I&nquiry"),
 								 "sales/inquiry/sales_orders_view.php?type=32", SA_SALESTRANSVIEW);
 		$this->add_lapp_function(0, '', '');

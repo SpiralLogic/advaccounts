@@ -27,14 +27,14 @@
 		$sql
 		 = "SELECT DISTINCT debtor_trans.*,
 		ov_amount+ov_discount AS InvoiceTotal,
-		debtors_master.name AS DebtorName, debtors_master.curr_code, cust_branch.br_name,
-		cust_branch.contact_name, salesman.*
-		FROM debtor_trans, debtors_master, sales_orders, cust_branch,
+		debtors.name AS DebtorName, debtors.curr_code, branches.br_name,
+		branches.contact_name, salesman.*
+		FROM debtor_trans, debtors, sales_orders, branches,
 			salesman
 		WHERE sales_orders.order_no=debtor_trans.order_
-		 AND sales_orders.branch_code=cust_branch.branch_code
-		 AND cust_branch.salesman=salesman.salesman_code
-		 AND debtor_trans.debtor_no=debtors_master.debtor_no
+		 AND sales_orders.branch_code=branches.branch_code
+		 AND branches.salesman=salesman.salesman_code
+		 AND debtor_trans.debtor_no=debtors.debtor_no
 		 AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
 		 AND debtor_trans.tran_date>='$fromdate'
 		 AND debtor_trans.tran_date<='$todate'

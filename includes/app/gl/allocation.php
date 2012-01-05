@@ -229,6 +229,9 @@
 		}
 		public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
+			if (!User::get()->salesmanid); {
+				Errors::error(_("You do not have a salesman id, this is needed to create an invoice."));
+			}
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->start();
 			$doc->trans_type = ST_SALESINVOICE;
@@ -241,6 +244,7 @@
 			$doc->Location = 'MEL';
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
+			$doc->salesman=User::get()->salesmanid;
 			$doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			$doc->finish();

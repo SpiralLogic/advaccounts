@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTRANSVIEW;
-
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
@@ -59,8 +58,7 @@
 	start_table('tablestyle width95');
 	if (DB::num_rows($result) > 0) {
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;

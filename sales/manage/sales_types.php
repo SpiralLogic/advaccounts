@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTYPES;
-
 	Page::start(_($help_context = "Sales Types"));
 	Page::simple_mode(true);
 	function can_process() {
@@ -34,7 +33,8 @@
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
-		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
+		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 :
+		 0, Validation::input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = MODE_RESET;
 	}
@@ -47,7 +47,7 @@
 			Errors::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		}
 		else {
-			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DB::escape($selected_id);
+			$sql = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
 			$result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {

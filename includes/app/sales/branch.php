@@ -15,9 +15,9 @@
 		public static function get($branch_id)
 			{
 				$sql
-				 = "SELECT cust_branch.*,salesman.salesman_name
-		FROM cust_branch, salesman
-		WHERE cust_branch.salesman=salesman.salesman_code
+				 = "SELECT branches.*,salesman.salesman_name
+		FROM branches, salesman
+		WHERE branches.salesman=salesman.salesman_code
 		AND branch_code=" . DB::escape($branch_id);
 				$result = DB::query($sql, "Cannot retreive a customer branch");
 				return DB::fetch($result);
@@ -27,7 +27,7 @@
 			{
 				$sql
 				 = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
-		FROM cust_branch WHERE branch_code=" . DB::escape($branch_id);
+		FROM branches WHERE branch_code=" . DB::escape($branch_id);
 				$result = DB::query($sql, "Cannot retreive a customer branch");
 				return DB::fetch($result);
 			}
@@ -35,7 +35,7 @@
 		public static function get_name($branch_id)
 			{
 				$sql
-				 = "SELECT br_name FROM cust_branch
+				 = "SELECT br_name FROM branches
 		WHERE branch_code = " . DB::escape($branch_id);
 				$result = DB::query($sql, "could not retreive name for branch" . $branch_id);
 				$myrow = DB::fetch_row($result);
@@ -45,7 +45,7 @@
 		public static function get_from_group($group_no)
 			{
 				$sql
-				 = "SELECT branch_code, debtor_no FROM cust_branch
+				 = "SELECT branch_code, debtor_no FROM branches
 		WHERE group_no = " . DB::escape($group_no);
 				return DB::query($sql, "could not retreive branches for group " . $group_no);
 			}
@@ -54,7 +54,7 @@
 			{
 				$sql
 				 = "SELECT *
- FROM cust_branch
+ FROM branches
  WHERE debtor_no={$customer_no}
  ORDER BY branch_code ";
 				$result = DB::query($sql, "Could not retrieve any branches");

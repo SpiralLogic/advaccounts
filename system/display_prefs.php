@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SETUPDISPLAY;
-
 	Page::start(_($help_context = "Display Setup"));
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {

@@ -106,7 +106,10 @@
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
-
+/***
+ * @param $order
+ * @return Sales_Order
+ */
 	function copy_to_cn($order) {
 		$order->Comments = $_POST['CreditText'];
 		$order->document_date = $_POST['OrderDate'];

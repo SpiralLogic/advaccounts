@@ -27,11 +27,11 @@
 			 = "SELECT debtor_trans.*,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
- 				debtors_master.name AS DebtorName, debtors_master.debtor_ref,
- 				debtors_master.curr_code, debtors_master.payment_terms, debtors_master.tax_id AS tax_id,
- 				debtors_master.email, debtors_master.address
- 			FROM debtor_trans, debtors_master
-				WHERE debtor_trans.debtor_no = debtors_master.debtor_no
+ 				debtors.name AS DebtorName, debtors.debtor_ref,
+ 				debtors.curr_code, debtors.payment_terms, debtors.tax_id AS tax_id,
+ 				debtors.email, debtors.address
+ 			FROM debtor_trans, debtors
+				WHERE debtor_trans.debtor_no = debtors.debtor_no
 				AND debtor_trans.type = " . DB::escape($type) . "
 				AND debtor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
@@ -48,7 +48,7 @@
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type
 		AND trans.debtor_no=" . DB::escape($debtor_id),
-				"cust_allocations as alloc");
+				"debtor_allocations as alloc");
 			$sql .= " ORDER BY trans_no";
 			return DB::query($sql, "Cannot retreive alloc to transactions");
 		}

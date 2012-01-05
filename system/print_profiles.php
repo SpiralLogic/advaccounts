@@ -14,62 +14,6 @@
 
 	Page::start(_($help_context = "Printing Profiles"));
 	$selected_id = get_post('profile_id', '');
-	// Returns array of defined reports
-	//
-	function get_reports() {
-		if (Config::get('debug') || !isset($_SESSION['reports'])) {
-			// to save time, store in session.
-			$paths = array(
-				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . '/reporting/'
-			);
-			$reports = array('' => _('Default printing destination'));
-			foreach ($paths as $dirno => $path) {
-				$repdir = opendir($path);
-				while (false !== ($fname = readdir($repdir))) {
-					// reports have filenames in form rep(repid).php
-					// where repid must contain at least one digit (reports_main.php is not ;)
-					if (is_file($path . $fname) //				&& preg_match('/.*[^0-9]([0-9]+)[.]php/', $fname, $match))
-							&& preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match)
-					) {
-						$repno = $match[1];
-						$title = '';
-						$line = file_get_contents($path . $fname);
-						if (preg_match('/.*(ADVReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
-							$title = trim($match[2]);
-						}
-						else // for any 3rd party printouts without ADVReport() class use
-						{
-							if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
-								$title = trim($match[2]);
-							}
-						}
-						$reports[$repno] = $title;
-					}
-				}
-				closedir();
-			}
-			ksort($reports);
-			$_SESSION['reports'] = $reports;
-		}
-		return $_SESSION['reports'];
-	}
-
-	function clear_form() {
-		global $selected_id;
-		$selected_id = '';
-		$_POST['name'] = '';
-		Ajax::i()->activate('_page_body');
-	}
-
-	function check_delete($name) {
-		// check if selected profile is used by any user
-		if ($name == '') {
-			return 0;
-		} // cannot delete system default profile
-		$sql = "SELECT * FROM users WHERE print_profile=" . DB::escape($name);
-		$res = DB::query($sql, 'cannot check printing profile usage');
-		return DB::num_rows($res);
-	}
 
 	if (get_post('submit')) {
 		$error = 0;
@@ -161,5 +105,61 @@
 	Display::div_end();
 	end_form();
 	Page::end();
+	// Returns array of defined reports
+	//
+	function get_reports() {
+		if (Config::get('debug') || !isset($_SESSION['reports'])) {
+			// to save time, store in session.
+			$paths = array(
+				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . '/reporting/'
+			);
+			$reports = array('' => _('Default printing destination'));
+			foreach ($paths as $dirno => $path) {
+				$repdir = opendir($path);
+				while (false !== ($fname = readdir($repdir))) {
+					// reports have filenames in form rep(repid).php
+					// where repid must contain at least one digit (reports_main.php is not ;)
+					if (is_file($path . $fname) //				&& preg_match('/.*[^0-9]([0-9]+)[.]php/', $fname, $match))
+							&& preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match)
+					) {
+						$repno = $match[1];
+						$title = '';
+						$line = file_get_contents($path . $fname);
+						if (preg_match('/.*(ADVReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
+							$title = trim($match[2]);
+						}
+						else // for any 3rd party printouts without ADVReport() class use
+						{
+							if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
+								$title = trim($match[2]);
+							}
+						}
+						$reports[$repno] = $title;
+					}
+				}
+				closedir();
+			}
+			ksort($reports);
+			$_SESSION['reports'] = $reports;
+		}
+		return $_SESSION['reports'];
+	}
+
+	function clear_form() {
+		global $selected_id;
+		$selected_id = '';
+		$_POST['name'] = '';
+		Ajax::i()->activate('_page_body');
+	}
+
+	function check_delete($name) {
+		// check if selected profile is used by any user
+		if ($name == '') {
+			return 0;
+		} // cannot delete system default profile
+		$sql = "SELECT * FROM users WHERE print_profile=" . DB::escape($name);
+		$res = DB::query($sql, 'cannot check printing profile usage');
+		return DB::num_rows($res);
+	}
 
 ?>

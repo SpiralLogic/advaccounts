@@ -78,84 +78,6 @@
 	else {
 		unset($selected_stock_item);
 	}
-	//	Query format functions
-	//
-	function check_overdue($row) {
-		global $trans_type;
-		if ($trans_type == ST_SALESQUOTE) {
-			return (Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])));
-		}
-		else {
-			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
-		}
-	}
-
-	function view_link($row, $order_no) {
-		return Debtor::trans_view($row['trans_type'], $order_no);
-	}
-
-	function prt_link($row) {
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink');
-	}
-
-	function prt_link2($row) {
-		return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT, 'button printlink');
-	}
-
-	function edit_link($row) {
-		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
-		return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
-	}
-
-	function email_link($row) {
-		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
-	}
-
-	function dispatch_link($row) {
-		if ($row['trans_type'] == ST_SALESORDER) {
-			return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
-		}
-		else {
-			return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
-		}
-	}
-
-	function invoice_link($row) {
-		if ($row['trans_type'] == ST_SALESORDER) {
-			return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
-		}
-		else {
-			return '';
-		}
-	}
-
-	function delivery_link($row) {
-		return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
-	}
-
-	function order_link($row) {
-		return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" . $row['order_no'], ICON_DOC);
-	}
-
-	function tmpl_checkbox($row) {
-		global $trans_type;
-		if ($trans_type == ST_SALESQUOTE) {
-			return '';
-		}
-		$name = "chgtpl" . $row['order_no'];
-		$value = $row['type'] ? 1 : 0;
-		// save also in hidden field for testing during 'Update'
-		return checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row
-		['order_no'] . ']', $value, false);
-	}
-
-	// Update db record if respective checkbox value has changed.
-	//
-	function change_tpl_flag($id) {
-		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-		DB::query($sql, "Can't change sales order type");
-		Ajax::i()->activate('orders_tbl');
-	}
 
 	$id = find_submit('_chgtpl');
 	if ($id != -1) {
@@ -224,7 +146,7 @@
 		debtor.curr_code,
 		Sum(line.qty_sent) AS TotDelivered,
 		Sum(line.quantity) AS TotQuantity
-	FROM sales_orders as sorder, sales_order_details as line, debtors_master as debtor, cust_branch as branch
+	FROM sales_orders as sorder, sales_order_details as line, debtors as debtor, branches as branch
 		WHERE sorder.order_no = line.order_no
 		AND sorder.trans_type = line.trans_type";
 	if (isset($searchArray) && $searchArray[0] == 'o') {
@@ -397,4 +319,83 @@
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
 	Page::end();
+		//	Query format functions
+	//
+	function check_overdue($row) {
+		global $trans_type;
+		if ($trans_type == ST_SALESQUOTE) {
+			return (Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])));
+		}
+		else {
+			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+		}
+	}
+
+	function view_link($row, $order_no) {
+		return Debtor::trans_view($row['trans_type'], $order_no);
+	}
+
+	function prt_link($row) {
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink');
+	}
+
+	function prt_link2($row) {
+		return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT, 'button printlink');
+	}
+
+	function edit_link($row) {
+		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrder" : "ModifyQuote");
+		return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+	}
+
+	function email_link($row) {
+		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
+	}
+
+	function dispatch_link($row) {
+		if ($row['trans_type'] == ST_SALESORDER) {
+			return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+		}
+		else {
+			return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+		}
+	}
+
+	function invoice_link($row) {
+		if ($row['trans_type'] == ST_SALESORDER) {
+			return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
+		}
+		else {
+			return '';
+		}
+	}
+
+	function delivery_link($row) {
+		return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
+	}
+
+	function order_link($row) {
+		return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
+	}
+
+	function tmpl_checkbox($row) {
+		global $trans_type;
+		if ($trans_type == ST_SALESQUOTE) {
+			return '';
+		}
+		$name = "chgtpl" . $row['order_no'];
+		$value = $row['type'] ? 1 : 0;
+		// save also in hidden field for testing during 'Update'
+		return checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row
+		['order_no'] . ']', $value, false);
+	}
+
+	// Update db record if respective checkbox value has changed.
+	//
+	function change_tpl_flag($id) {
+		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
+		DB::query($sql, "Can't change sales order type");
+		Ajax::i()->activate('orders_tbl');
+	}
+
 ?>

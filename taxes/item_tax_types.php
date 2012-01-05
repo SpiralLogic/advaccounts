@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_ITEMTAXTYPE;
 	Page::start(_($help_context = "Item Tax Types"));
@@ -33,25 +32,15 @@
 				}
 			}
 			if ($selected_id != -1) {
-				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
+				Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('Selected item tax type has been updated'));
 			}
 			else {
-				add($_POST['name'], $_POST['exempt'], $exempt_from);
+				Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('New item tax type has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
-	}
-	function can_delete($selected_id) {
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
-		$result = DB::query($sql, "could not query stock master");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
-			return false;
-		}
-		return true;
 	}
 
 	if ($Mode == MODE_DELETE) {
@@ -94,7 +83,7 @@
 	start_table('tablestyle2');
 	if ($selected_id != -1) {
 		if ($Mode == MODE_EDIT) {
-			$myrow = get($selected_id);
+			$myrow = Tax_ItemType::get($selected_id);
 			unset($_POST); // clear exemption checkboxes
 			$_POST['name'] = $myrow["name"];
 			$_POST['exempt'] = $myrow["exempt"];
@@ -129,5 +118,15 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function can_delete($selected_id) {
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query stock master");
+		$myrow = DB::fetch_row($result);
+		if ($myrow[0] > 0) {
+			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
+			return false;
+		}
+		return true;
+	}
 
 ?>

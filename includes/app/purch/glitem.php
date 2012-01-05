@@ -65,9 +65,9 @@
 			}
 
 
-		public	static function display_controls($supp_trans, $k)
+		public	static function display_controls($creditor_trans, $k)
 			{
-				$accs = Creditor::get_accounts_name($supp_trans->supplier_id);
+				$accs = Creditor::get_accounts_name($creditor_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
 				alt_table_row_color($k);
 				echo GL_UI::all('gl_code', null, true, true);
@@ -91,14 +91,14 @@
 		//		 = 1 display on invoice/credit page
 		//		 = 2 display on view invoice
 		//		 = 3 display on view credit
-		public	static function display_items($supp_trans, $mode = 0)
+		public	static function display_items($creditor_trans, $mode = 0)
 			{
 
 				// if displaying in form, and no items, exit
-				if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
+				if (($mode == 2 || $mode == 3) && count($creditor_trans->gl_codes) == 0) {
 					return 0;
 				}
-				if ($supp_trans->is_invoice) {
+				if ($creditor_trans->is_invoice) {
 					$heading = _("GL Items for this Invoice");
 				} else {
 					$heading = _("GL Items for this Credit Note");
@@ -144,8 +144,8 @@
 				table_header($th);
 				$total_gl_value = 0;
 				$i = $k = 0;
-				if (count($supp_trans->gl_codes) > 0) {
-					foreach ($supp_trans->gl_codes as $entered_gl_code) {
+				if (count($creditor_trans->gl_codes) > 0) {
+					foreach ($creditor_trans->gl_codes as $entered_gl_code) {
 						alt_table_row_color($k);
 						if ($mode == 3) {
 							$entered_gl_code->amount = -$entered_gl_code->amount;
@@ -179,7 +179,7 @@
 					}
 				}
 				if ($mode == 1) {
-					Purch_GLItem::display_controls($supp_trans, $k);
+					Purch_GLItem::display_controls($creditor_trans, $k);
 				}
 				$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
 				label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class='right bold'", "nowrap class='right bold'",

@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	class User {
+	class User
+	{
 		protected static $_instance = null;
 
 		/***
@@ -20,7 +20,8 @@
 		public static function get() {
 			if (isset($_SESSION["current_user"])) {
 				static::$_instance = $_SESSION["current_user"];
-			} elseif (static::$_instance === null) {
+			}
+			elseif (static::$_instance === null) {
 				static::$_instance = $_SESSION["current_user"] = new static;
 			}
 			return static::$_instance;
@@ -140,7 +141,8 @@
 			if (isset($security_areas[$page_level])) {
 				$code = $security_areas[$page_level][0];
 				$access = $code && in_array($code, $this->role_set);
-			} elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
+			}
+			elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
 				$access = in_array($page_level, $this->access_sections);
 			}
 			// only first registered company has site admin privileges
@@ -151,39 +153,15 @@
 			return $this->can_access($page_level);
 		}
 
-		public function update_prefs(
-			$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme,
-			$pagesize, $show_hints, $profile, $rep_popup,
-			$query_size, $graphic_links, $lang, $stickydate, $startup_tab
-		) {
+		public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 			$user = array(
-				'prices_dec' => $price_dec,
-				'qty_dec' => $qty_dec,
-				'rates_dec' => $exrate_dec,
-				'percent_dec' => $percent_dec,
-				'show_gl' => $showgl,
-				'show_codes' => $showcodes,
-				'date_format' => $date_format,
-				'date_sep' => $date_sep,
-				'tho_sep' => $tho_sep,
-				'dec_sep' => $dec_sep,
-				'theme' => $theme,
-				'page_size' => $pagesize,
-				'show_hints' => $show_hints,
-				'print_profile' => $profile,
-				'rep_popup' => $rep_popup,
-				'query_size' => $query_size,
-				'graphic_links' => $graphic_links,
-				'language' => $lang,
-				'sticky_doc_date' => $stickydate,
-				'startup_tab' => $startup_tab
-			);
+				'prices_dec' => $price_dec, 'qty_dec' => $qty_dec, 'rates_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
+				'show_gl' => $showgl, 'show_codes' => $showcodes, 'date_format' => $date_format, 'date_sep' => $date_sep,
+				'tho_sep' => $tho_sep, 'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $pagesize, 'show_hints' => $show_hints,
+				'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size, 'graphic_links' => $graphic_links,
+				'language' => $lang, 'sticky_doc_date' => $stickydate, 'startup_tab' => $startup_tab);
 			if (!Config::get('demo_mode')) {
-				Users::update_display_prefs(
-					$this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
-					$dec_sep, $theme, $pagesize, $show_hints,
-					$profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab
-				);
+				Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 			}
 			$this->prefs = new userPrefs(Users::get($this->user));
 		}
@@ -207,7 +185,6 @@
 			JS::beforeload($js);
 		}
 
-
 		public static function	fallback() {
 			return static::get()->ui_mode == 0;
 		}
@@ -228,8 +205,8 @@
 			$num = (float)$num;
 			if ($num == (int)$num) {
 				return (int)$num;
-			} else
-			{
+			}
+			else {
 				return $num;
 			}
 		}

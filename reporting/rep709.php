@@ -29,13 +29,13 @@
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM trans_tax_details taxrec
-		LEFT JOIN supp_trans strans
+		LEFT JOIN creditor_trans strans
 			ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
 		LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
 		LEFT JOIN debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
-		LEFT JOIN debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
-		LEFT JOIN cust_branch as branch ON dtrans.branch_code=branch.branch_code
+		LEFT JOIN debtors as debt ON dtrans.debtor_no=debt.debtor_no
+		LEFT JOIN branches as branch ON dtrans.branch_code=branch.branch_code
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
 			AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "
 			AND taxrec.tran_date >= '$fromdate'

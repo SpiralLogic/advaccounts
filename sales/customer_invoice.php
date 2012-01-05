@@ -16,7 +16,6 @@
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESINVOICE;
-
 	JS::open_window(900, 500);
 	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
@@ -236,8 +235,8 @@
 	Display::div_start('Items');
 	start_table('tablestyle width90');
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
-	);
+		_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"),
+		_("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
 		$th[] = "";

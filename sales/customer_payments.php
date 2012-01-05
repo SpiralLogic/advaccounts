@@ -12,7 +12,6 @@
 			* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESPAYMNT;
-
 	JS::open_window(900, 500);
 	JS::footerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
@@ -124,7 +123,9 @@
 		start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount', 0);
-		check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
+		if (User::get()->can_access(SS_SALES)) {
+			check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
+		}
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
@@ -136,7 +137,8 @@
 	}
 	Display::br();
 	end_form();
-	$js = <<<JS
+	$js
+	 = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();

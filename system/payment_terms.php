@@ -25,20 +25,7 @@
 			$inpug_error = 1;
 			Errors::error(_("The Terms description must be entered."));
 			JS::set_focus('terms');
-		} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
-		//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll'))
-		//{
-		//	$inpug_error = 1;
-		//	Errors::error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
-		//	JS::set_focus('DayNumber');
-		//}
-		// No constrain on day values, Joe Hunt 2010-06-18.
-		//elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll'))
-		//{
-		//	$inpug_error = 1;
-		//	Errors::error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
-		//	JS::set_focus('DayNumber');
-		//}
+		}
 		if ($_POST['DayNumber'] == '') {
 			$_POST['DayNumber'] = 0;
 		}
@@ -79,8 +66,8 @@
 		}
 	}
 	if ($Mode == MODE_DELETE) {
-		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DB::escape($selected_id);
+		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors
+		$sql = "SELECT COUNT(*) FROM debtors WHERE payment_terms = " . DB::escape($selected_id);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

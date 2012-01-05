@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESGROUP;
-
 	Page::start(_($help_context = "Sales Groups"));
 	Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -37,8 +36,8 @@
 	}
 	if ($Mode == MODE_DELETE) {
 		$cancel_delete = 0;
-		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DB::escape($selected_id);
+		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
+		$sql = "SELECT COUNT(*) FROM branches WHERE group_no=" . DB::escape($selected_id);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

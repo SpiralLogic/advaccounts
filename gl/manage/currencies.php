@@ -60,8 +60,8 @@
 			return false;
 		}
 		$curr = DB::escape($selected_id);
-		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-		$sql = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
+		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors
+		$sql = "SELECT COUNT(*) FROM debtors WHERE curr_code = $curr";
 		$result = DB::query($sql);
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {

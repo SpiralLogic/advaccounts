@@ -54,8 +54,8 @@
 		$page_title = _($help_context = "New Sales Quotation Entry");
 		$order = create_order(ST_SALESQUOTE, 0);
 	}
-	elseif (Input::get(Orders::NEW_QUOTE_TO_ORDER)) {
-		$order = create_order(ST_SALESQUOTE, $_GET[Orders::NEW_QUOTE_TO_ORDER]);
+	elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
+		$order = create_order(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
 	}
 	elseif (Input::get('CloneOrder')) {
 		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
@@ -70,10 +70,6 @@
 	}
 	elseif (Input::get('NewRemoteToSalesOrder')) {
 		$order = create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
-	}
-	elseif (isset($_GET['restoreorder'])) {
-		$serial = Sales_Order::restore();
-		$order = create_order($serial, 0);
 	}
 	elseif (Input::get(Orders::NEW_ORDER)) {
 		$order = create_order(ST_SALESORDER, 0);
@@ -278,8 +274,8 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" :
-			 "ModifyQuotationNumber") . "=$order_no");
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
+			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
@@ -294,8 +290,8 @@
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
-			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
+			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?QuoteToOrder=$order_no");
+			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuote=1");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {
@@ -308,7 +304,7 @@
 			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
-			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
+			$sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
 			$result = DB::query($sql, "could not retrieve customer allocation");
 			$row = DB::fetch($result);
 			if ($row !== false) {
@@ -622,8 +618,8 @@
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function create_order($type, $trans_no) {
-		if (isset($_GET[Orders::NEW_QUOTE_TO_ORDER])) {
-			$trans_no = $_GET[Orders::NEW_QUOTE_TO_ORDER];
+		if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
+			$trans_no = $_GET[Orders::QUOTE_TO_ORDER];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;

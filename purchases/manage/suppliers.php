@@ -80,8 +80,8 @@
 	elseif (isset($_POST['delete']) && $_POST['delete'] != "") {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
-		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
-		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
+		// PREVENT DELETES IF DEPENDENT RECORDS IN 'creditor_trans' , purch_orders
+		$sql = "SELECT COUNT(*) FROM creditor_trans WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
