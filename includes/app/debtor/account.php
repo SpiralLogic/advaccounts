@@ -12,7 +12,7 @@
 		public $branch_ref = 'accounts';
 
 		public	function __construct($id = null) {
-			$this->accounts_id = &$this->branch_code;
+			$this->accounts_id = &$this->branch_id;
 			$this->id = &$this->accounts_id;
 			parent::__construct($id);
 

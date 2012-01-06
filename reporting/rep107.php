@@ -59,7 +59,7 @@
 				$myrow = Debtor_Trans::get($i, $j);
 				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
-				$branch = Sales_Branch::get($myrow["branch_code"]);
+				$branch = Sales_Branch::get($myrow["branch_id"]);
 				$branch['disable_branch'] = $paylink; // helper
 				if ($j == ST_SALESINVOICE) {
 					$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);

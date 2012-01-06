@@ -183,7 +183,7 @@
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
 	start_outer_table('tablestyle2');
 	table_section(1);
-	hidden('branch_code', $currentBranch->branch_code);
+	hidden('branch_id', $currentBranch->branch_id);
 	table_section_title(_("Sales"));
 	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
 	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);

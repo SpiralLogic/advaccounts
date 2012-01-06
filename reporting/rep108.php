@@ -40,7 +40,7 @@
 				$sql .= " AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - debtor_trans.alloc) != 0";
 			}
-			$sql .= " ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
+			$sql .= " ORDER BY debtor_trans.branch_id, debtor_trans.tran_date";
 			return DB::query($sql, "No transactions were returned");
 		}
 
@@ -136,8 +136,8 @@
 					if (($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT) && !($incPayments || $incAllocations)) {
 						continue;
 					}
-					if ($prev_branch != $transactions[$i]['branch_code']) {
-						$rep->Header2($myrow, Sales_Branch::get($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
+					if ($prev_branch != $transactions[$i]['branch_id']) {
+						$rep->Header2($myrow, Sales_Branch::get($transactions[$i]['branch_id']), null, $baccount, ST_STATEMENT);
 						$rep->NewLine();
 						if ($rep->currency != $myrow['curr_code']) {
 							include(DOCROOT . "reporting/includes/doctext2.php");
@@ -148,7 +148,7 @@
 						$rep->TextCol(0, 8, $doc_Outstanding);
 						$rep->fontSize -= 2;
 						$rep->NewLine(2);
-						$prev_branch = $transactions[$i]['branch_code'];
+						$prev_branch = $transactions[$i]['branch_id'];
 					}
 					$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 					if ($myrow2['type'] == '10') {

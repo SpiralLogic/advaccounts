@@ -10,9 +10,9 @@
 				 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	$page_security = SA_CUSTOMER;
-	//$page_security = 3;
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$page_security = SA_CUSTOMER;
+
 	Page::start(_($help_context = "Customer Branches"), Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
@@ -23,11 +23,11 @@
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = strtoupper($_GET['debtor_no']);
 	}
-	$_POST['branch_code'] = $selected_id;
+	$_POST['branch_id'] = $selected_id;
 	if (isset($_GET['SelectedBranch'])) {
 		$br = Sales_Branch::get($_GET['SelectedBranch']);
 		$_POST['customer_id'] = $br['debtor_no'];
-		$selected_id = $_POST['branch_code'] = $br['branch_code'];
+		$selected_id = $_POST['branch_id'] = $br['branch_id'];
 		$Mode = MODE_EDIT;
 	}
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -68,7 +68,7 @@
 				group_no=" . DB::escape($_POST['group_no']) . ",
  	 default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
  notes=" . DB::escape($_POST['notes']) . "
- 	 WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
+ 	 WHERE branch_id =" . DB::escape($_POST['branch_id']) . "
  	 AND debtor_no=" . DB::escape($_POST['customer_id']);
 				$note = _('Selected customer branch has been updated');
 			}
@@ -86,28 +86,28 @@
 			Errors::notice($note);
 			$Mode = MODE_RESET;
 			if (Input::request('frame')) {
-				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
+				JS::set_focus("Select" . ($_POST['branch_id'] == -1 ? DB::insert_id() : $_POST['branch_id']));
 			}
 		}
 	}
 	elseif ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 		$result = DB::query($sql, "could not query debtortrans");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 		}
 		else {
-			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
+			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "could not query sales orders");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 			}
 			else {
-				$sql = "DELETE FROM branches WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
+				$sql = "DELETE FROM branches WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
 				DB::query($sql, "could not delete branch");
 				Errors::notice(_('Selected customer branch has been deleted'));
 			}
@@ -131,19 +131,20 @@
 	$num_branches = -0;
 	if (Input::post('customer_id') > 0) {
 		$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
-		$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
+		$sql = "SELECT  b.branch_id,  b.branch_ref,  b.br_name,  b.contact_name,  s.salesman_name,
+		 a.description,  b.phone,  b.fax,  b.email,  t.name AS tax_group_name,  b.inactive
 		FROM branches b, debtors c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code
-		AND b.debtor_no = " . DB::escape($_POST['customer_id']);
+		AND b.debtor_no = " . DB::quote($_POST['customer_id']);
 		if (!get_post('show_inactive')) {
 			$sql .= " AND !b.inactive";
 		}
 		if ($num_branches) {
 			$cols = array(
-				'branch_code' => 'skip',
+				'branch_id' => 'skip',
 				_("Short Name"),
 				_("Name"),
 				_("Contact"),
@@ -169,7 +170,7 @@
 				$cols[' '] = 'skip';
 			}
 			$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
-			$table->set_inactive_ctrl('branches', 'branch_code');
+			$table->set_inactive_ctrl('branches', 'branch_id');
 			//$table->width = "85%";
 			DB_Pager::display($table);
 		}
@@ -187,12 +188,12 @@
 		if ($Mode == MODE_EDIT) {
 			//editing an existing branch
 			$sql = "SELECT * FROM branches
-			WHERE branch_code=" . DB::escape($_POST['branch_code']) . "
+			WHERE branch_id=" . DB::escape($_POST['branch_id']) . "
 			AND debtor_no=" . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch($result);
 			JS::set_focus('br_name');
-			$_POST['branch_code'] = $myrow["branch_code"];
+			$_POST['branch_id'] = $myrow["branch_id"];
 			$_POST['br_name'] = $myrow["br_name"];
 			$_POST['br_ref'] = $myrow["branch_ref"];
 			$_POST['br_address'] = $myrow["br_address"];
@@ -228,7 +229,7 @@
 			$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
 			$_POST['email'] = $myrow['email'];
 		}
-		$_POST['branch_code'] = "";
+		$_POST['branch_id'] = "";
 		if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account'])) {
 			$company_record = DB_Company::get_prefs();
 			// We use the Item Sales Account as default!
@@ -240,7 +241,7 @@
 		}
 	}
 	hidden('selected_id', $selected_id);
-	hidden('branch_code');
+	hidden('branch_id');
 	hidden('frame', Input::request('frame'));
 	table_section_title(_("Name and Contact"));
 	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
@@ -278,15 +279,15 @@
 	}
 
 	function edit_link($row) {
-		return button("Edit" . $row["branch_code"], _("Edit"), '', ICON_EDIT);
+		return button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
 	}
 
 	function del_link($row) {
-		return button("Delete" . $row["branch_code"], _("Delete"), '', ICON_DELETE);
+		return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
 	}
 
 	function select_link($row) {
-		return button("Select" . $row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
+		return button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
 	}
 
 ?>

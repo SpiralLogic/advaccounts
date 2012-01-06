@@ -45,7 +45,7 @@
 			$branch = new Debtor_Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
-			$this->branches[$branch->branch_code] = $branch;
+			$this->branches[$branch->branch_id] = $branch;
 		}
 		public function delete() {
 			if ($this->_countTransactions() > 0) {
@@ -97,7 +97,7 @@
 		 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
 		 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-		 				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
+		 				ORDER BY debtor_trans.branch_id, debtor_trans.tran_date";
 			$result = DB::query($sql);
 			$results = array();
 			while ($row = DB::fetch_assoc($result)) {
@@ -115,10 +115,10 @@
 				return false;
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
-			foreach ($this->branches as $branch_code => $branch) {
+			foreach ($this->branches as $branch_id => $branch) {
 				$branch->save(array('debtor_no' => $this->id));
-				if ($branch_code == 0) {
-					$this->branches[$branch->branch_code] = $branch;
+				if ($branch_id == 0) {
+					$this->branches[$branch->branch_id] = $branch;
 					unset($this->branches[0]);
 				}
 			}
@@ -213,7 +213,7 @@
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
 			$branches = DB::fetch()->asClassLate('Debtor_Branch');
 			foreach ($branches as $branch) {
-				$this->branches[$branch->branch_code] = $branch;
+				$this->branches[$branch->branch_id] = $branch;
 			}
 			$this->defaultBranch = reset($this->branches)->id;
 		}
@@ -249,7 +249,7 @@
 			$this->credit_limit = Num::price_format($this->credit_limit);
 		}
 		protected function _setDefaults() {
-			$this->defaultBranch = reset($this->branches)->branch_code;
+			$this->defaultBranch = reset($this->branches)->branch_id;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}

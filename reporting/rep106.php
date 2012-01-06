@@ -32,7 +32,7 @@
 		FROM debtor_trans, debtors, sales_orders, branches,
 			salesman
 		WHERE sales_orders.order_no=debtor_trans.order_
-		 AND sales_orders.branch_code=branches.branch_code
+		 AND sales_orders.branch_id=branches.branch_id
 		 AND branches.salesman=salesman.salesman_code
 		 AND debtor_trans.debtor_no=debtors.debtor_no
 		 AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")

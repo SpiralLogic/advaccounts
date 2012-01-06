@@ -58,7 +58,7 @@
 				continue;
 			}
 			$myrow = Debtor_Trans::get($i, ST_CUSTDELIVERY);
-			$branch = Sales_Branch::get($myrow["branch_code"]);
+			$branch = Sales_Branch::get($myrow["branch_id"]);
 			$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
 				$rep = new ADVReport("", "", User::pagesize());

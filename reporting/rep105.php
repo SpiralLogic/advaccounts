@@ -27,7 +27,7 @@
 		$sql
 		 = "SELECT sales_orders.order_no,
 				sales_orders.debtor_no,
- sales_orders.branch_code,
+ sales_orders.branch_id,
  sales_orders.customer_ref,
  sales_orders.ord_date,
  sales_orders.from_stk_loc,
@@ -154,7 +154,7 @@
 				}
 				$rep->TextCol(0, 1, $myrow['order_no']);
 				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_no']));
-				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_code']));
+				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_id']));
 				$rep->TextCol(3, 4, $myrow['customer_ref']);
 				$rep->DateCol(4, 5, $myrow['ord_date'], true);
 				$rep->DateCol(5, 6, $myrow['delivery_date'], true);

@@ -10,9 +10,9 @@
 	$page_security = SA_CUSTOMER;
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
-		if (isset($_POST['branch_code'])) {
-			if ($_POST['branch_code'] > 0) {
-				$data['branch'] = new Debtor_Branch(array('branch_code' => $_POST['branch_code']));
+		if (isset($_POST['branch_id'])) {
+			if ($_POST['branch_id'] > 0) {
+				$data['branch'] = new Debtor_Branch(array('branch_id' => $_POST['branch_id']));
 			}
 			elseif ($_POST['id'] > 0) {
 				$data['branch'] = new Debtor_Branch(array('debtor_no' => $_POST['id']));

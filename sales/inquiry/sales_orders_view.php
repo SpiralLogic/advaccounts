@@ -162,7 +162,7 @@
 		$sql .= " AND sorder.trans_type = " . $trans_type;
 	}
 	$sql .= " AND sorder.debtor_no = debtor.debtor_no
-		AND sorder.branch_code = branch.branch_code
+		AND sorder.branch_id = branch.branch_id
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
 		$sql .= " AND sorder.debtor_no = " . DB::quote($_POST['customer_id']);
@@ -191,7 +191,7 @@
 		$sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
 				sorder.debtor_no,
-				sorder.branch_code,
+				sorder.branch_id,
 				sorder.customer_ref,
 				sorder.deliver_to";
 	}
@@ -224,7 +224,7 @@
 		$sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
 				sorder.debtor_no,
-				sorder.branch_code,
+				sorder.branch_id,
 				sorder.customer_ref,
 				sorder.deliver_to";
 	}

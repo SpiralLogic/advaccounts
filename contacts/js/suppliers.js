@@ -63,21 +63,21 @@ var Branches = function() {
 		},
 		add:function(data) {
 			$.each(data, function(key, value) {
-				list.append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
+				list.append('<option value="' + value.branch_id + '">' + value.br_name + '</option>');
 			});
 		},
 		setval:function(key, value) {
 			current[key] = value;
-			Customer.get().branches[current.branch_code][key] = value;
+			Customer.get().branches[current.branch_id][key] = value;
 		},
 		change:function(data) {
 			$.each(data, function(key, value) {
 				Adv.Forms.setFormValue('br_' + key, value);
 			});
 			resetHighlights();
-			list.val(data.branch_code);
+			list.val(data.branch_id);
 			current = data;
-			if (current.branch_code > 0) {
+			if (current.branch_id > 0) {
 				list.find("[value=0]").remove();
 				delete Customer.get().branches[0];
 				adding = false;
@@ -85,10 +85,10 @@ var Branches = function() {
 			}
 		},
 		New:function() {
-			$.post('search.php', {branch_code:0, debtor_no:Customer.get().id}, function(data) {
+			$.post('search.php', {branch_id:0, debtor_no:Customer.get().id}, function(data) {
 				Branches.add([data]);
 				Branches.change(data);
-				Customer.get().branches[data.branch_code] = data;
+				Customer.get().branches[data.branch_id] = data;
 				btn.hide();
 				adding = true;
 			}, 'json');
@@ -104,7 +104,7 @@ var Branches = function() {
 		},
 		btnBranchAdd:function() {
 			btn.unbind('click');
-			if (!adding && current.branch_code > 0 && Customer.get().id > 0) {
+			if (!adding && current.branch_id > 0 && Customer.get().id > 0) {
 				btn.button('option', 'label', 'Add New Branch').one('click',
 																														function(event) {
 																															event.stopImmediatePropagation();
@@ -113,7 +113,7 @@ var Branches = function() {
 																															return false
 																														}).show();
 			} else {
-				if (current.branch_code > 0) {
+				if (current.branch_id > 0) {
 					btn.show();
 				} else {
 					btn.hide();

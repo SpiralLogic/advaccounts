@@ -162,7 +162,7 @@
 				$trans_no = SysTypes::get_next_trans_no($trans_type);
 				$sql = "INSERT INTO debtor_trans (
 		trans_no, type,
-		debtor_no, branch_code,
+		debtor_no, branch_id,
 		tran_date, due_date,
 		reference, tpe,
 		order_, ov_amount, ov_discount,
@@ -179,7 +179,7 @@
 			}
 			else { // may be optional argument should stay unchanged ?
 				$sql = "UPDATE debtor_trans SET
-		debtor_no=" . DB::escape($debtor_no) . " , branch_code=" . DB::escape($branch_no) . ",
+		debtor_no=" . DB::escape($debtor_no) . " , branch_id=" . DB::escape($branch_no) . ",
 		tran_date='$SQLDate', due_date='$SQLDueDate',
 		reference=" . DB::escape($reference) . ", tpe=" . DB::escape($sales_type) . ", order_=" . DB::escape($order_no) . ",
 		ov_amount=$total, ov_discount=" . DB::escape($discount) . ", ov_gst=$tax,
@@ -221,7 +221,7 @@
 				}
 				$order->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);
 				$order->set_customer($myrow["debtor_no"], $myrow["DebtorName"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
-				$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+				$order->set_branch($myrow["branch_id"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 				$order->reference = $myrow["reference"];
 				$order->order_no = $myrow["order_"];
 				$order->trans_link = $myrow["trans_link"];
@@ -285,7 +285,7 @@
 				// it's an invoice so also get the shipper
 				$sql .= " AND shippers.shipper_id=debtor_trans.ship_via
 			AND sales_types.id = debtor_trans.tpe
-			AND branches.branch_code = debtor_trans.branch_code
+			AND branches.branch_id = debtor_trans.branch_id
 			AND branches.tax_group_id = tax_groups.id ";
 			}
 			$result = DB::query($sql, "Cannot retreive a debtor transaction");
@@ -330,7 +330,7 @@
 		FROM debtors,branches,debtor_trans
 		WHERE debtor_trans.type=" . DB::escape($type) . " AND debtor_trans.trans_no=" . DB::escape($type_no) . "
 		AND debtors.debtor_no = debtor_trans.debtor_no
-		AND	branches.branch_code = debtor_trans.branch_code";
+		AND	branches.branch_id = debtor_trans.branch_id";
 			$result = DB::query($sql, "could not get customer details from trans");
 			return DB::fetch($result);
 		}
