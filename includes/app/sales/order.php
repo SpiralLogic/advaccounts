@@ -803,6 +803,15 @@
 		/**
 		 *
 		 */
+		public static function update_version($order) {
+			foreach ($order as $so_num => $so_ver) {
+				$sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
+				DB::query($sql, 'Concurrent editing conflict while sales order update');
+			}
+		}
+		/**
+		 *
+		 */
 		public function update() {
 			$del_date = Dates::date2sql($this->due_date);
 			$ord_date = Dates::date2sql($this->document_date);
@@ -1094,7 +1103,7 @@
 				}
 			}
 			else {
-				//	Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
+				//Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
 				Debtor::newselect();
 				if ($this->customer_id != get_post('customer_id', -1)) {
 					// customer has changed
@@ -1368,15 +1377,6 @@
 			Display::div_end();
 		}
 
-		/**
-		 *
-		 */
-		public static function update_version($order) {
-			foreach ($order as $so_num => $so_ver) {
-				$sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
-				DB::query($sql, 'Concurrent editing conflict while sales order update');
-			}
-		}
 
 		/**
 		 * @static

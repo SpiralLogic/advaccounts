@@ -233,6 +233,7 @@ Adv.extend({Forms:(function () {
 					 });
 				 },
 				 select:function (event, ui) {
+
 					 Adv.o.autocomplete[id].data('default', null);
 					 if (callback(ui.item, event, this) === false)
 						 {return false;}

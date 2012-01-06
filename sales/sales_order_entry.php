@@ -50,7 +50,10 @@
 		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET[Orders::MODIFY_QUOTE]);
 		$order = create_order(ST_SALESQUOTE, $_GET[Orders::MODIFY_QUOTE]);
 	}
-	elseif (Input::get(Orders::NEW_QUOTE)) {
+	elseif (Input::get('NewOrder')) {
+		$order = create_order(ST_SALESORDER, 0);
+	}
+	elseif (Input::get('NewQuotation')) {
 		$page_title = _($help_context = "New Sales Quotation Entry");
 		$order = create_order(ST_SALESQUOTE, 0);
 	}
@@ -71,15 +74,10 @@
 	elseif (Input::get('NewRemoteToSalesOrder')) {
 		$order = create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
 	}
-	elseif (Input::get(Orders::NEW_ORDER)) {
-		$order = create_order(ST_SALESORDER, 0);
-	}else {
-		$order = create_order(ST_SALESORDER, 0);
-	}
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = Sales_Branch::get($_POST['branch_id']);
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		Ajax::i()->activate('customer_id');
 	}

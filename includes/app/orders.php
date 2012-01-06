@@ -70,11 +70,12 @@
 		 */
 		public static function session_get($id = null) {
 			if (is_null($id)) {
-				if (!isset($_POST['order_id'])) {
+				if (!isset($_POST['order_id'])){
 					return false;
 				}
 				$id = $_POST['order_id'];
 			}
+
 			list($type, $id) = explode('.', $id);
 			static::setup($type);
 			if (isset($_SESSION['orders'][$type][$id])) {
@@ -82,6 +83,7 @@
 			}
 			return false;
 		}
+
 		/**
 		 * @static
 		 *
