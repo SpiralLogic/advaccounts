@@ -177,7 +177,7 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	if (Input::request('frame')) {
-		Page::end(true, true, true);
+		Page::end(true);
 	}
 	else {
 		Page::end();

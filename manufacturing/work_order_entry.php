@@ -69,9 +69,8 @@
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}
 	}
-	function can_process() {
-		global $selected_id;
-		if (!isset($selected_id)) {
+	function can_process(&$selected_id=null) {
+		if (!is_null($selected_id)) {
 			if (!Ref::is_valid($_POST['wo_ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('wo_ref');
@@ -168,7 +167,7 @@
 		return true;
 	}
 
-	if (isset($_POST[ADD_ITEM]) && can_process()) {
+	if (isset($_POST[ADD_ITEM]) && can_process($selected_id)) {
 		if (!isset($_POST['cr_acc'])) {
 			$_POST['cr_acc'] = "";
 		}
@@ -179,7 +178,7 @@
 		Dates::new_doc_date($_POST['date_']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
-	if (isset($_POST[UPDATE_ITEM]) && can_process()) {
+	if (isset($_POST[UPDATE_ITEM]) && can_process($selected_id)) {
 		WO::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");

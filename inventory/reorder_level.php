@@ -73,7 +73,7 @@
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 	end_form();
 	if (Input::request('frame')) {
-		Page::end(true, true, true);
+		Page::end(true);
 	}
 	else {
 		Page::end();

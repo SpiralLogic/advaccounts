@@ -45,8 +45,8 @@
 		Display::div_end();
 	}
 
-	function update_component($kit_code, $selected_item) {
-		global $Mode, $selected_kit;
+	function update_component($Mode,$kit_code, $selected_item) {
+		global  $selected_kit;
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
@@ -112,7 +112,7 @@
 		Ajax::i()->activate('_page_body');
 	}
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		update_component($_POST['item_code'], $selected_id);
+		update_component($Mode,$_POST['item_code'], $selected_id);
 	}
 	if ($Mode == MODE_DELETE) {
 		// Before removing last component from selected kit check

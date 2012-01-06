@@ -15,14 +15,14 @@
 		protected $no_menu = false;
 		protected $is_index = false;
 		protected $header = false;
-	/** @var ADVAccounting */
-			protected $app;
+		/** @var ADVAccounting */
+		protected $app;
 		protected $sel_app;
 		public $has_header = true;
 		public $frame = false;
 		protected $title = '';
 		public static function simple_mode($numeric_id = true) {
-			global $Mode, $selected_id;
+
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
 			foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
@@ -32,8 +32,7 @@
 						$selected_id = $default;
 					}
 					unset($_POST['_focus']);
-
-					return  array($m,$selected_id);
+					return array($m, $selected_id);
 				}
 			}
 			foreach (array(MODE_EDIT, MODE_DELETE) as $m) {
@@ -42,11 +41,11 @@
 						unset($_POST['_focus']); // focus on first form entry
 						$selected_id = quoted_printable_decode(substr($p, strlen($m)));
 						Ajax::i()->activate('_page_body');
-						return  array($m,$selected_id);
+						return array($m, $selected_id);
 					}
 				}
 			}
-			return array('',$selected_id);
+			return array('', $selected_id);
 		}
 		public static function start($title, $no_menu = false, $is_index = false) {
 			if (static::$i === null) {
@@ -131,17 +130,18 @@
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '', '/' => '', '&' => 'And'
+																																												 ' ' => '', '/' => '',
+																																												 '&' => 'And'
 																																										))) . '&ctxhelp=1&lang=' . $country;
 		}
-		public function footer() {
+		protected function footer() {
 			$Validate = array();
-			$this->menu_footer($this->no_menu);
+			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
 			Ajax::i()->addScript('editors', $edits);
 			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
 			User::add_js_data();
-			if ($this->has_header) {
+			if ($this->header) {
 				Sidemenu::render();
 			}
 			Messages::show();
@@ -190,16 +190,16 @@
 		}
 		public static function footer_exit() {
 			Display::br(2);
-			static::$i->_end_page(false, false, true);
+			static::$i->_end_page(true);
 			exit;
 		}
-		public static function end($no_menu = false, $is_index = false, $hide_back_link = false) {
+		public static function end($hide_back_link = false) {
 			static::$i->_end_page($hide_back_link);
 		}
 		protected function _end_page($hide_back_link) {
 			if ($this->frame) {
-			$hide_back_link = $no_menu = true;
-				$this->has_header = false;
+				$hide_back_link = true;
+				$this->header = false;
 			}
 			if (($this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
 				Display::link_back(true, $this->no_menu);

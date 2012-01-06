@@ -118,7 +118,7 @@
 	Display::br();
 	end_form();
 	if (Input::request('frame')) {
-		Page::end(true, true, true);
+		Page::end(true);
 	}
 	else {
 		Page::end();

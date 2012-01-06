@@ -134,4 +134,4 @@
 			}
 			Adv.getFromWeb();
 JS);
-	Page::end(true, true, true);
+	Page::end(true);

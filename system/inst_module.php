@@ -27,7 +27,7 @@
 		}
 	}
 	if ($Mode == MODE_DELETE) {
-		handle_delete();
+		handle_delete($selected_id);
 		$Mode = MODE_RESET;
 	}
 	if (get_post('Update')) {
@@ -53,7 +53,7 @@
 	$set = get_post('extset', -1);
 	if ($set == -1) {
 		display_extensions();
-		display_ext_edit($selected_id);
+		display_ext_edit($Mode,$selected_id);
 	}
 	else {
 		company_extensions($set);
@@ -110,8 +110,8 @@
 		return true;
 	}
 
-	function handle_submit() {
-		global $selected_id, $next_extension_id;
+	function handle_submit($selected_id) {
+		global  $next_extension_id;
 		$extensions = DB_Company::get_company_extensions();
 		if (!check_data($selected_id, $extensions)) {
 			return false;
@@ -184,8 +184,8 @@
 		return true;
 	}
 
-	function handle_delete() {
-		global $selected_id;
+	function handle_delete($selected_id) {
+
 		$extensions = DB_Company::get_company_extensions();
 		$id = $selected_id;
 		$filename = PATH_TO_ROOT . ($extensions[$id]['type'] == 'plugin' ? "/modules/" : '/') . $extensions[$id]['path'];
@@ -261,8 +261,7 @@
 		submit_center('Update', _('Update'), true, false, 'default');
 	}
 
-	function display_ext_edit($selected_id) {
-		global $Mode;
+	function display_ext_edit($Mode,$selected_id) {
 		$extensions = DB_Company::get_company_extensions();
 		start_table('tablestyle2');
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {

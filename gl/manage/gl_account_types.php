@@ -14,8 +14,7 @@
 
 	Page::start(_($help_context = "GL Account Groups"));
 	list($Mode,$selected_id) = Page::simple_mode(true);
-	function can_process() {
-		global $selected_id;
+	function can_process(&$selected_id) {
 		if (!Validation::input_num('id')) {
 			Errors::error(_("The account id must be an integer and cannot be empty."));
 			JS::set_focus('id');
@@ -34,7 +33,7 @@
 	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		if (can_process()) {
+		if (can_process($selected_id)) {
 			if ($selected_id != -1) {
 				if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('Selected account type has been updated'));

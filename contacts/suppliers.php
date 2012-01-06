@@ -102,4 +102,4 @@
 	UI::button('btnCancel', 'Cancel', array(
 																				 'name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
 																		))->div;
-	Page::end(true, true);
+	Page::end();

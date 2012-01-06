@@ -25,5 +25,5 @@
 																										 ))->textarea->label->br;
 	UI::button('btnSend', 'Send Message');
 	HTML::_div();
-	Page::end(true, true);
+	Page::end();
 ?>

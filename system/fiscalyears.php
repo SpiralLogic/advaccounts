@@ -17,18 +17,17 @@
 	list($Mode,$selected_id) = Page::simple_mode(true);
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit();
+		handle_submit($Mode,$selected_id);
 	}
 	if ($Mode == MODE_DELETE) {
-		global $selected_id;
-		handle_delete($selected_id);
+		handle_delete($Mode,$selected_id);
 	}
 	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 	}
 	display_fiscalyears();
 	echo '<br>';
-	display_fiscalyear_edit($selected_id);
+	display_fiscalyear_edit($Mode,$selected_id);
 	Page::end();
 	function is_date_in_fiscalyears($date) {
 		$date = Dates::date2sql($date);
@@ -116,8 +115,8 @@
 		DB::commit();
 	}
 
-	function handle_submit() {
-		global $selected_id, $Mode;
+	function handle_submit(&$Mode,$selected_id) {
+
 		$ok = true;
 		if ($selected_id != -1) {
 			if ($_POST['closed'] == 1) {
@@ -345,8 +344,8 @@
 		DB::commit();
 	}
 
-	function handle_delete() {
-		global $selected_id, $Mode;
+	function handle_delete(&$Mode,$selected_id) {
+
 		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			delete_this_fiscalyear($selected_id);
@@ -398,8 +397,7 @@
 		Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	function display_fiscalyear_edit($selected_id) {
-		global $Mode;
+	function display_fiscalyear_edit($Mode,$selected_id) {
 		start_form();
 		start_table('tablestyle2');
 		if ($selected_id != -1) {

@@ -34,7 +34,7 @@
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
 				Errors::notice(_('New printing profile has been created'));
-				clear_form();
+				clear_form($selected_id);
 			}
 			else {
 				Errors::notice(_('Printing profile has been updated'));
@@ -45,7 +45,7 @@
 		if (!check_delete(get_post('name'))) {
 			Printer::delete_profile($selected_id);
 			Errors::notice(_('Selected printing profile has been deleted'));
-			clear_form();
+			clear_form($selected_id);
 		}
 	}
 	if (get_post('_profile_id_update')) {
@@ -145,8 +145,7 @@
 		return $_SESSION['reports'];
 	}
 
-	function clear_form() {
-		global $selected_id;
+	function clear_form(&$selected_id) {
 		$selected_id = '';
 		$_POST['name'] = '';
 		Ajax::i()->activate('_page_body');

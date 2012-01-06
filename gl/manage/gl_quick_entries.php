@@ -14,9 +14,8 @@
 
 	Page::start(_($help_context = "Quick Entries"));
 	list($Mode,$selected_id) = Page::simple_mode(true);
-	simple_page_mode2(true);
+	list($Mode2,$selected_id2) = simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true) {
-		global $Mode2, $selected_id2;
 		$default = $numeric_id ? -1 : '';
 		$selected_id2 = get_post('selected_id2', $default);
 		foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
@@ -25,8 +24,7 @@
 				if ($m == 'RESET2') {
 					$selected_id2 = $default;
 				}
-				$Mode2 = $m;
-				return;
+				return array($m,$selected_id2);
 			}
 		}
 		foreach (array('BEd', 'BDel') as $m) {
@@ -36,12 +34,13 @@
 					unset($_POST['_focus']); // focus on first form entry
 					$selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
 					Ajax::i()->activate('_page_body');
-					$Mode2 = $m;
-					return;
+					return array($m,$selected_id2);
+
 				}
 			}
 		}
-		$Mode2 = '';
+		return array('',$selected_id2);
+
 	}
 
 	function submit_add_or_update_center2($add = true, $title = false, $async = false) {

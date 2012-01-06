@@ -69,4 +69,4 @@
 <div class="spacer"></div>
 <?
 
-	Page::end(true, true);
+	Page::end();

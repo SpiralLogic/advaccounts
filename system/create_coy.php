@@ -28,7 +28,7 @@
 		$selected_id = -1;
 	}
 	if (isset($_GET['c']) && $_GET['c'] == 'u') {
-		if (handle_submit()) {
+		if (handle_submit($selected_id)) {
 			$selected_id = -1;
 		}
 	}
@@ -36,8 +36,7 @@
 	Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
 	Page::end();
-	function check_data() {
-			global $selected_id;
+	function check_data(&$selected_id) {
 			if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
 				return false;
 			}
@@ -53,10 +52,10 @@
 			return true;
 		}
 
-		function handle_submit() {
+		function handle_submit(&$selected_id) {
 			$comp_subdirs = Config::get('company_subdirs');
 			$error = false;
-			if (!check_data()) {
+			if (!check_data($selected_id)) {
 				return false;
 			}
 			$id = $_GET['id'];

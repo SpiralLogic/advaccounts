@@ -34,8 +34,7 @@
 		return true;
 	}
 
-	function handle_submit() {
-		global $selected_id;
+	function handle_submit(&$selected_id) {
 		if (!check_data()) {
 			return false;
 		}
@@ -49,8 +48,8 @@
 		clear_data();
 	}
 
-	function handle_delete() {
-		global $selected_id;
+	function handle_delete(&$selected_id) {
+
 		if ($selected_id == "") {
 			return;
 		}
@@ -70,8 +69,7 @@
 	function display_rates($curr_code) {
 	}
 
-	function display_rate_edit() {
-		global $selected_id;
+	function display_rate_edit(&$selected_id) {
 		start_table('tablestyle2');
 		if ($selected_id != "") {
 			//editing an existing exchange rate
@@ -104,10 +102,10 @@
 	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit();
+		handle_submit($selected_id);
 	}
 	if ($Mode == MODE_DELETE) {
-		handle_delete();
+		handle_delete($selected_id);
 	}
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
@@ -145,7 +143,7 @@
 		}
 		DB_Pager::display($table);
 		Display::br(1);
-		display_rate_edit();
+		display_rate_edit($selected_id);
 	}
 	end_form();
 	Page::end();

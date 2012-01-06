@@ -4,5 +4,5 @@
 	$page_security = SA_OPEN;
 
 	Page::start(_($help_context = "Websales to Accounting"), Input::request('frame'));
-	Page::end(true, true);
+	Page::end();
 ?>

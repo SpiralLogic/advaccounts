@@ -38,8 +38,8 @@
 		return true;
 	}
 
-	function handle_submit() {
-		global $selected_id, $Mode;
+	function handle_submit(&$Mode,$selected_id) {
+
 		if (!check_data()) {
 			return false;
 		}
@@ -54,8 +54,7 @@
 		$Mode = MODE_RESET;
 	}
 
-	function check_can_delete() {
-		global $selected_id;
+	function check_can_delete($selected_id) {
 		if ($selected_id == "") {
 			return false;
 		}
@@ -93,9 +92,8 @@
 		return true;
 	}
 
-	function handle_delete() {
-		global $selected_id, $Mode;
-		if (check_can_delete()) {
+	function handle_delete(&$Mode,$selected_id) {
+		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			GL_Currency::delete($selected_id);
 			Errors::notice(_('Selected currency has been deleted'));
@@ -141,8 +139,7 @@
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	function display_currency_edit($selected_id) {
-		global $Mode;
+	function display_currency_edit($Mode,$selected_id) {
 		start_table('tablestyle2');
 		if ($selected_id != '') {
 			if ($Mode == MODE_EDIT) {
@@ -173,7 +170,7 @@
 	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit();
+		handle_submit($Mode,$selected_id);
 	}
 	if ($Mode == MODE_DELETE) {
 		handle_delete();
@@ -186,7 +183,7 @@
 	}
 	start_form();
 	display_currencies();
-	display_currency_edit($selected_id);
+	display_currency_edit($Mode,$selected_id);
 	end_form();
 	Page::end();
 

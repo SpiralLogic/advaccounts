@@ -144,7 +144,7 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
-	(Input::request('frame')) ? Page::end() : Page::end(true, true, true);
+	(Input::request('frame')) ? Page::end() : Page::end(true);
 	function read_customer_data() {
 		$myrow = Debtor::get_habit($_POST['customer_id']);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];

@@ -35,7 +35,7 @@
 <br>\n";
 	session_unset();
 	session_destroy();
-	Page::end(false, false, true);
+	Page::end(true);
 ?>
 
 
