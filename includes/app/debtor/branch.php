@@ -9,7 +9,7 @@
 	class Debtor_Branch extends DB_abstract
 	{
 		public $post_address = '';
-		public $branch_code = 0;
+		public $branch_id = 0;
 		public $br_name = "New Address";
 		public $br_address = '';
 		public $city = '';
@@ -38,10 +38,10 @@
 		public $salesman;
 		public $tax_group_id = DEFAULT_TAX_GROUP;
 		protected $_table = 'branches';
-		protected $_id_column = 'branch_code';
+		protected $_id_column = 'branch_id';
 
 		public function __construct($id = null) {
-			$this->id = &$this->branch_code;
+			$this->id = &$this->branch_id;
 			parent::__construct($id);
 			$this->name = &$this->br_name;
 			$this->address = &$this->br_address;
@@ -50,7 +50,7 @@
 
 		public function delete() {
 
-			DB::delete('branches')->where('branch_code=',$this->branch_code)->exec();
+			DB::delete('branches')->where('branch_id=',$this->branch_id)->exec();
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
 		}
@@ -81,7 +81,7 @@
 
 		protected function _defaults() {
 			$company_record = DB_Company::get_prefs();
-			$this->branch_code = 0;
+			$this->branch_id = 0;
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];
@@ -109,7 +109,7 @@
 			}
 			$this->_defaults();
 			if (!is_array($params)) {
-				$params = array('branch_code' => $params);
+				$params = array('branch_id' => $params);
 			}
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
 			 ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
@@ -127,13 +127,13 @@
 
 		// BRANCHES
 		public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
-			$sql = "SELECT branch_code, branch_ref FROM branches
+			$sql = "SELECT branch_id, branch_ref FROM branches
 			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 			if ($editkey) {
 				Display::set_editor('branch', $name, $editkey);
 			}
 			$where = $enabled ? array("disable_trans = 0") : array();
-			return select_box($name, $selected_id, $sql, 'branch_code', 'br_name', array(
+			return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(
 																																									'where' => $where,
 																																									'order' => array('branch_ref'),
 																																									'spec_option' => $spec_option === true ? _('All branches') : $spec_option,

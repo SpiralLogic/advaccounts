@@ -94,7 +94,7 @@
 	$sql
 	 = "SELECT trans.trans_no,
 		debtor.name,
-		branch.branch_code,
+		branch.branch_id,
 		
 		sorder.contact_name,
 		sorder.deliver_to,
@@ -113,7 +113,7 @@
 			AND trans.type = " . ST_CUSTDELIVERY . "
 			AND line.debtor_trans_no = trans.trans_no
 			AND line.debtor_trans_type = trans.type
-			AND trans.branch_code = branch.branch_code
+			AND trans.branch_id = branch.branch_id
 			AND trans.debtor_no = branch.debtor_no ";
 	if ($_POST['OutstandingOnly'] == true) {
 		$sql .= " AND line.qty_done < line.quantity ";
@@ -139,7 +139,7 @@
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected
 	$cols = array(
-		_("Delivery #") => array('fun' => 'trans_view'), _("Customer"), _("branch_code") => 'skip', _("Contact"), _("Address"),
+		_("Delivery #") => array('fun' => 'trans_view'), _("Customer"), _("branch_id") => 'skip', _("Contact"), _("Address"),
 		_("Reference"), _("Cust Ref"), _("Delivery Date") => array(
 			'type' => 'date', 'ord' => ''), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
 			'type' => 'amount', 'ord' => ''), _("Currency") => array('align' => 'center'),
@@ -168,7 +168,7 @@
 		$name = "Sel_" . $row['trans_no'];
 		return $row['Done'] ? '' :
 		 "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
-			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
+			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
 	}
 
 	function edit_link($row) {

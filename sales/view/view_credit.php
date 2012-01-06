@@ -20,7 +20,7 @@
 		$trans_id = $_POST["trans_no"];
 	}
 	$myrow = Debtor_Trans::get($trans_id, ST_CUSTCREDIT);
-	$branch = Sales_Branch::get($myrow["branch_code"]);
+	$branch = Sales_Branch::get($myrow["branch_id"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 	start_table('tablestyle2 width95');

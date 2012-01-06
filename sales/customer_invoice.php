@@ -393,7 +393,7 @@
 		$shipping = 0;
 		foreach ($delivery_notes as $delivery_num) {
 			$myrow = Debtor_Trans::get($delivery_num, 13);
-			//$branch = Sales_Branch::get($myrow["branch_code"]);
+			//$branch = Sales_Branch::get($myrow["branch_id"]);
 			//$sales_order = Sales_Order::get_header($myrow["order_"]);
 			//$shipping += $sales_order['freight_cost'];
 			$shipping += $myrow['ov_freight'];

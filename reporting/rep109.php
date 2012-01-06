@@ -62,7 +62,7 @@
 				}
 				$baccount = Bank_Account::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
-				$branch = Sales_Branch::get($myrow["branch_code"]);
+				$branch = Sales_Branch::get($myrow["branch_id"]);
 				if ($email == 1) {
 					$rep = new ADVReport("", "", User::pagesize());
 					$rep->currency = $cur;
