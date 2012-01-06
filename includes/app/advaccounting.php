@@ -31,7 +31,7 @@
 		 */
 		public $applications = array();
 		/**
-		 * @var
+		 * @var Application
 		 */
 		public $selected;
 		/**
