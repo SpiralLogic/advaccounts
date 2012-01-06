@@ -93,7 +93,7 @@ Adv.extend({
 	 }),
 	showStatus:function (status) {
 		Adv.msgbox.empty();
-		if (status.status === 'redirect') return window.location.href = status.message;
+		if (status.status === 'redirect') {window.onunload=null; return window.location.href = status.message;}
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
 		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>');
 		window.scrollTo(0, element_pos(Adv.msgbox[0]).y - 40)
