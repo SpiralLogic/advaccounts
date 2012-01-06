@@ -14,7 +14,7 @@
 
 	Page::start(_($help_context = "Sales Kits & Alias Codes"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	/*
 	 if (isset($_GET['item_code']))
 	 {

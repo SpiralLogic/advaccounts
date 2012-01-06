@@ -13,7 +13,7 @@
 	$page_security = SA_GLACCOUNTCLASS;
 
 	Page::start(_($help_context = "GL Account Classes"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (!is_numeric($_POST['id'])) {
 			Errors::error(_("The account class ID must be numeric."));

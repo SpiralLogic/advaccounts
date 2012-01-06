@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_TAXRATES;
 	Page::start(_($help_context = "Tax Types"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM && can_process()) {
 		Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
 		Errors::notice(_('New tax type has been added'));

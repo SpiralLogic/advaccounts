@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Bill Of Materials"));
 	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
 	Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	$selected_component = $selected_id;
 	//if (isset($_GET["NewItem"]))
 	//{

@@ -12,25 +12,20 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_USERS;
 	Page::start(_($help_context = "Users"));
-	Page::simple_mode(true);
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		$user = null;
-		if ($_POST['password'] != "") {
-			$user = new Auth($_POST['user_id']);
-			$password = $user->hash_password($_POST['password']);
-		}
+	list($Mode,$selected_id) = list($Mode,$selected_id) = Page::simple_mode(true);
+	if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
+		$user = new Auth($_POST['user_id']);
 		if (can_process($user)) {
-			if ($selected_id != -1) {
+			$password = $user->hash_password($_POST['password']);
+			if ($Mode == UPDATE_ITEM) {
 				Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				Users::update_password($selected_id, $_POST['user_id'], $password);
 				Errors::notice(_("The selected user has been updated."));
 			}
 			else {
 				Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
-				$id = DB::insert_id();
 				// use current user display preferences as start point for new user
-				Users::update_display_prefs($id, User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
+				Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
 				Errors::notice(_("A new user has been added."));
 			}
 			$Mode = MODE_RESET;
@@ -51,7 +46,8 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", "");
+		_("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", ""
+	);
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
@@ -130,7 +126,8 @@
 	end_form();
 	Page::end();
 	/**
-	 * @param  $user
+	 * @param	$user
+	 *
 	 * @return bool
 	 */
 	function can_process($user) {

@@ -13,7 +13,7 @@
 	$page_security = SA_CURRENCY;
 
 	Page::start(_($help_context = "Currencies"));
-	Page::simple_mode(false);
+	list($Mode,$selected_id) = Page::simple_mode(false);
 	function check_data() {
 		if (strlen($_POST['Abbreviation']) == 0) {
 			Errors::error(_("The currency abbreviation must be entered."));

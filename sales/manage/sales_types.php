@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESTYPES;
 	Page::start(_($help_context = "Sales Types"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['sales_type']) == 0) {
 			Errors::error(_("The sales type description cannot be empty."));

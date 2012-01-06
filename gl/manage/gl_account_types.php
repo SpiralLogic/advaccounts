@@ -13,7 +13,7 @@
 	$page_security = SA_GLACCOUNTGROUP;
 
 	Page::start(_($help_context = "GL Account Groups"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		global $selected_id;
 		if (!Validation::input_num('id')) {

@@ -44,7 +44,7 @@
 			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 	Page::start($_SESSION['page_title']);
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {

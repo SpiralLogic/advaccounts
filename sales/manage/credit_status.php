@@ -13,7 +13,7 @@
 	$page_security = SA_CRSTATUS;
 
 	Page::start(_($help_context = "Credit Status"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['reason_description']) == 0) {
 			Errors::error(_("The credit status description cannot be empty."));

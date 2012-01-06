@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_POSSETUP;
 	Page::start(_($help_context = "POS settings"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
 			Errors::error(_("The POS name cannot be empty."));

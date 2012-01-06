@@ -13,7 +13,7 @@
 	$page_security = SA_QUICKENTRY;
 
 	Page::start(_($help_context = "Quick Entries"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true) {
 		global $Mode2, $selected_id2;
