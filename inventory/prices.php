@@ -15,7 +15,7 @@
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	$input_error = 0;
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];

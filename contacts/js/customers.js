@@ -115,14 +115,14 @@ var Branches = function () {
 			return this;
 		},
 		add:function (data) {
-			if (data.branch_code === undefined) {
+			if (data.branch_id === undefined) {
 				var toAdd;
 				$.each(data, function (key, value) {
-					toAdd += '<option value="' + value.branch_code + '">' + value.br_name + '</option>';
+					toAdd += '<option value="' + value.branch_id + '">' + value.br_name + '</option>';
 				});
 				list.append(toAdd);
 			} else {
-				list.append('<option value="' + data.branch_code + '">' + data.br_name + '</option>');
+				list.append('<option value="' + data.branch_id + '">' + data.br_name + '</option>');
 			}
 			return this;
 		},
@@ -131,7 +131,7 @@ var Branches = function () {
 		},
 		setval:function (key, value) {
 			current[key] = value;
-			Customer.get().branches[current.branch_code][key] = value;
+			Customer.get().branches[current.branch_id][key] = value;
 		},
 		change:function (data) {
 			if (typeof data !== 'object') {
@@ -141,9 +141,9 @@ var Branches = function () {
 				Adv.Forms.setFormValue('br_' + key, value);
 			});
 			Adv.resetHighlights();
-			list.val(data.branch_code);
+			list.val(data.branch_id);
 			current = data;
-			if (current.branch_code > 0) {
+			if (current.branch_id > 0) {
 				list.find("[value=0]").remove();
 				delete Customer.get().branches[0];
 				Branches.adding = false;
@@ -151,17 +151,17 @@ var Branches = function () {
 			}
 		},
 		New:function () {
-			$.post('search.php', {branch_code:0, id:Customer.get().id}, function (data) {
+			$.post('search.php', {branch_id:0, id:Customer.get().id}, function (data) {
 				data = data.branch;
 				Branches.add(data).change(data);
-				Customer.get().branches[data.branch_code] = data;
+				Customer.get().branches[data.branch_id] = data;
 				btn.hide();
 				Branches.adding = true;
 			}, 'json');
 		},
 		btnBranchAdd:function () {
 			btn.unbind('click');
-			if (!Branches.adding && current.branch_code > 0 && Customer.get().id > 0) {
+			if (!Branches.adding && current.branch_id > 0 && Customer.get().id > 0) {
 				btn.button('option', 'label', 'Add New Branch').one('click',
 																														function (event) {
 																															Branches.New();
@@ -169,7 +169,7 @@ var Branches = function () {
 																															return false
 																														}).show();
 			} else {
-				(current.branch_code > 0) ? btn.show() : btn.hide();
+				(current.branch_id > 0) ? btn.show() : btn.hide();
 			}
 			return false;
 		}

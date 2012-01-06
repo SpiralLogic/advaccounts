@@ -14,7 +14,7 @@
 
 	$js = "";
 	Page::start(_($help_context = "Exchange Rates"));
-	Page::simple_mode(false);
+	list($Mode,$selected_id) = Page::simple_mode(false);
 	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date is invalid."));

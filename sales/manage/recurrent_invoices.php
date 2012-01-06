@@ -13,7 +13,7 @@
 	$page_security = SA_SRECURRENT;
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Recurrent Invoices"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {

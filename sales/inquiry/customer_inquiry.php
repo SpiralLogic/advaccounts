@@ -83,7 +83,7 @@
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
 		FROM debtor_trans as trans, debtors as debtor, branches as branch
 		WHERE debtor.debtor_no = trans.debtor_no
-		AND trans.branch_code = branch.branch_code";
+		AND trans.branch_id = branch.branch_id";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$sql = "SELECT * FROM debtor_trans_view WHERE ";
 		foreach ($searchArray as $ajaxsearch) {

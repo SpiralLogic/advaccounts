@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SHIPPING;
 	Page::start(_($help_context = "Shipping Company"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)

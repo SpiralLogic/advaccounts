@@ -23,7 +23,7 @@
 			if ($myrow['debtor_no'] == 0) {
 				$cust = Sales_Branch::get_from_group($myrow['group_no']);
 				while ($row = DB::fetch($cust)) {
-					$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
+					$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_id'], $myrow['order_no'], $myrow['id']);
 				}
 			}
 			else {

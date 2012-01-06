@@ -26,7 +26,7 @@
 			debtors.name,
 			debtors.address,
 			sales_types.sales_type,
-			branches.branch_code,
+			branches.branch_id,
 			branches.br_name,
 			branches.br_address,
 			branches.contact_name,
@@ -64,7 +64,7 @@
 		 .= " ORDER BY description,
 			salesman.salesman_name,
 			debtors.debtor_no,
-			branches.branch_code";
+			branches.branch_id";
 		return DB::query($sql, "No transactions were returned");
 	}
 
@@ -75,7 +75,7 @@
 		 = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
 		WHERE debtor_no=" . DB::escape($debtorno) . "
-		AND branch_code=" . DB::escape($branchcode) . "
+		AND branch_id=" . DB::escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
 		$result = DB::query($sql, "No transactions were returned");
@@ -159,7 +159,7 @@
 		{
 			$printcustomer = true;
 			if ($more != '' || $less != '') {
-				$turnover = getTransactions($myrow['debtor_no'], $myrow['branch_code'], $from);
+				$turnover = getTransactions($myrow['debtor_no'], $myrow['branch_id'], $from);
 				if ($more != 0.0 && $turnover <= (double)$more) {
 					$printcustomer = false;
 				}

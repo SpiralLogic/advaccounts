@@ -13,7 +13,7 @@
 	$page_security = SA_PAYTERMS;
 
 	Page::start(_($help_context = "Payment Terms"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {

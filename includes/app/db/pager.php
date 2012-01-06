@@ -531,7 +531,7 @@
 
 		/**
 		 * @param $name - base name for pager controls and $_SESSION object name
-		 * -----------------------------------------------------------------------------
+		 * -----------------------------F------------------------------------------------
 		 * Creates new db_pager $_SESSION object on first page call.
 		 * Retrieves from $_SESSION var on subsequent $_POST calls
 		 *

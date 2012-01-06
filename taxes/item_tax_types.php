@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_ITEMTAXTYPE;
 	Page::start(_($help_context = "Item Tax Types"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {

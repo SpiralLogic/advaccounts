@@ -13,7 +13,7 @@
 	$page_security = SA_UOM;
 
 	Page::start(_($help_context = "Units of Measure"));
-	Page::simple_mode(false);
+	list($Mode,$selected_id) = Page::simple_mode(false);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;

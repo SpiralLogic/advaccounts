@@ -584,7 +584,7 @@
 			$order_no = SysTypes::get_next_trans_no($this->trans_type);
 			$del_date = Dates::date2sql($this->due_date);
 			$order_type = 0; // this is default on new order
-			$sql = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
+			$sql = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, ord_date,
 			order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 			contact_email, freight_cost, from_stk_loc, delivery_date)
 			VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->Location) . ", " . DB::escape($del_date) . ")";
@@ -658,7 +658,7 @@
 			$this->so_type = $myrow["type"];
 			$this->trans_no = array($order_no => $myrow["version"]);
 			$this->set_customer($myrow["debtor_no"], $myrow["name"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
-			$this->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
+			$this->set_branch($myrow["branch_id"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
 			$this->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
 			$this->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 			$this->set_delivery($myrow["ship_via"], $myrow["deliver_to"], $myrow["delivery_address"], $myrow["freight_cost"]);
@@ -786,7 +786,7 @@
 			DB::begin();
 			$sql = "UPDATE sales_orders SET type =" . DB::escape($this->so_type) . " ,
 					debtor_no = " . DB::escape($this->customer_id) . ",
-					branch_code = " . DB::escape($this->Branch) . ",
+					branch_id = " . DB::escape($this->Branch) . ",
 					customer_ref = " . DB::escape($this->cust_ref) . ",
 					reference = " . DB::escape($this->reference) . ",
 					salesman = " . DB::escape($this->salesman) . ",
@@ -1064,7 +1064,7 @@
 				}
 			}
 			else {
-				//Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
+			//	Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
 				Debtor::newselect();
 				if ($this->customer_id != get_post('customer_id', -1)) {
 					// customer has changed
@@ -1381,7 +1381,7 @@
 		locations,
 		shippers
 		WHERE sales_orders.order_type=sales_types.id
-			AND branches.branch_code = sales_orders.branch_code
+			AND branches.branch_id = sales_orders.branch_id
 			AND branches.tax_group_id = tax_groups.id
 			AND sales_orders.debtor_no = debtors.debtor_no
 			AND locations.loc_code = sales_orders.from_stk_loc
@@ -1513,7 +1513,7 @@
 				FROM branches, tax_groups, locations
 				WHERE branches.tax_group_id = tax_groups.id
 					AND locations.loc_code=default_location
-					AND branches.branch_code=" . DB::escape($branch_id) . "
+					AND branches.branch_id=" . DB::escape($branch_id) . "
 					AND branches.debtor_no = " . DB::escape($customer_id);
 			return DB::query($sql, "Customer Branch Record Retreive");
 		}

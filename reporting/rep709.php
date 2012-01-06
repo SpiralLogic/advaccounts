@@ -35,7 +35,7 @@
 		LEFT JOIN debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
 		LEFT JOIN debtors as debt ON dtrans.debtor_no=debt.debtor_no
-		LEFT JOIN branches as branch ON dtrans.branch_code=branch.branch_code
+		LEFT JOIN branches as branch ON dtrans.branch_id=branch.branch_id
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
 			AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "
 			AND taxrec.tran_date >= '$fromdate'

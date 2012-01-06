@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_PRINTERS;
 	Page::start(_($help_context = "Printer Locations"));
-	Page::simple_mode(true);
+	list($Mode,$selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$error = 0;
 		if (empty($_POST['name'])) {

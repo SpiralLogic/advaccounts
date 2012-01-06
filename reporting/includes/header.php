@@ -86,8 +86,8 @@
 		}
 
 	}
-	if (isset($branch['branch_code'])) {
-		$currentBranch = $companyto->branches[$branch['branch_code']];
+	if (isset($branch['branch_id'])) {
+		$currentBranch = $companyto->branches[$branch['branch_id']];
 		if (!isset($customer_branch_details)) {
 			$customer_branch_details = $currentBranch;
 		}
