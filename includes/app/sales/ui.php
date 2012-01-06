@@ -172,7 +172,9 @@
 				echo "<td>$label</td>\n";
 			}
 			echo Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array(
-																																																		 'cells' => true, 'description' => ''), $opts));
+																																																		 'cells' => true,
+																																																		 'description' => ''),
+																																																$opts));
 		}
 
 		public static function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
