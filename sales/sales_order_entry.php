@@ -50,10 +50,10 @@
 		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET[Orders::MODIFY_QUOTE]);
 		$order = create_order(ST_SALESQUOTE, $_GET[Orders::MODIFY_QUOTE]);
 	}
-	elseif (Input::get('NewOrder')) {
+	elseif (Input::get(Orders::NEW_ORDER)) {
 		$order = create_order(ST_SALESORDER, 0);
 	}
-	elseif (Input::get('NewQuotation')) {
+	elseif (Input::get(Orders::NEW_QUOTE)) {
 		$page_title = _($help_context = "New Sales Quotation Entry");
 		$order = create_order(ST_SALESQUOTE, 0);
 	}
@@ -62,17 +62,6 @@
 	}
 	elseif (Input::get('CloneOrder')) {
 		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
-	}
-	elseif (Input::get('remotecombine')) {
-		if ($order) {
-			foreach ($_SESSION['remote_order']->line_items as $item) {
-				$order->add_line($item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
-			}
-			unset($_SESSION['remote_order']);
-		}
-	}
-	elseif (Input::get('NewRemoteToSalesOrder')) {
-		$order = create_order(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
 	}
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
