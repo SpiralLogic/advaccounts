@@ -15,7 +15,7 @@
 		public  function menu() {
 			/** @var ADVAccounting $application  */
 			$application = Session::i()->App;
-
+ echo '<ul id="_tabs">';
 			foreach ($application->applications as $app) {
 				$acc = Display::access_string($app->name);
 				if ($app->direct) {
@@ -25,6 +25,7 @@
 					echo "<li " . ($application->selected->id == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 			}
+			echo '</ul>';
 		}
 		public  function display_application(ADVAccounting $application) {
 			if ($application->selected->direct) {
