@@ -9,7 +9,7 @@
 	class WO_Types
 	{
 		//------------------------------------------------------------------------------------------------
-		public static function select($name, $selected_id = null) {
+		static public function select($name, $selected_id = null) {
 			global $wo_types_array;
 			return array_selector(
 				$name, $selected_id, $wo_types_array, array(
@@ -19,7 +19,7 @@
 			);
 		}
 
-		public static function row($label, $name, $selected_id = null) {
+		static public function row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td><td>\n";
 			echo static::select($name, $selected_id);
 			echo "</td></tr>\n";

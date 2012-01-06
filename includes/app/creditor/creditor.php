@@ -8,7 +8,7 @@
 	 */
 	class Creditor extends Contact_Company
 	{
-		public static function search($terms) {
+		static public function search($terms) {
 			$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
 			$result = DB::query($sql, 'Couldn\'t Get Supplier');
 			$data = '';
@@ -141,7 +141,7 @@
 			DB::commit();
 			$this->_status(true, 'Saving', "A Supplier has been added.");
 		}
-		public static function get_to_trans($supplier_id, $to = null) {
+		static public function get_to_trans($supplier_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
 			}
@@ -209,7 +209,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function get_oweing($supplier_id, $date_from, $date_to) {
+		static public function get_oweing($supplier_id, $date_from, $date_to) {
 			$date_from = Dates::date2sql($date_from);
 			$date_to = Dates::date2sql($date_to);
 			// Sherifoz 22.06.03 Also get the description
@@ -229,23 +229,23 @@
 			$results = DB::fetch($result);
 			return $results['Total'];
 		}
-		public static function get($supplier_id) {
+		static public function get($supplier_id) {
 			$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 			$result = DB::query($sql, "could not get supplier");
 			return DB::fetch($result);
 		}
-		public static function get_name($supplier_id) {
+		static public function get_name($supplier_id) {
 			$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 			$result = DB::query($sql, "could not get supplier");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
-		public static function get_accounts_name($supplier_id) {
+		static public function get_accounts_name($supplier_id) {
 			$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 			$result = DB::query($sql, "could not get supplier");
 			return DB::fetch($result);
 		}
-		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		static public function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
 			$mode = DB_Company::get_pref('no_supplier_list');
 			if ($editkey) {
@@ -265,14 +265,14 @@
 																																										'show_inactive' => $all
 																																							 ));
 		}
-		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			if ($label != null) {
 				echo "<td class='label'>$label</td><td>\n";
 			}
 			echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
 			echo "</td>\n";
 		}
-		public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+		static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 			echo "<tr><td class='label' name='supplier_name'>$label</td><td>";
 			echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
 			echo "</td></tr>\n";

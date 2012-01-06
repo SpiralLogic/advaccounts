@@ -27,7 +27,7 @@
 		protected function addEmailGroup($name, $emails, $trans, $type) {
 		}
 
-		public static function addInfoDialog($selector, $id = false) {
+		static public function addInfoDialog($selector, $id = false) {
 			if ($id) {
 				$company = new static($id);
 			}
@@ -58,7 +58,7 @@ JS;
 			$details->show();
 		}
 
-		public static function getEmailDialogue($emailid) {
+		static public function getEmailDialogue($emailid) {
 			$emailid = explode('-', $emailid);
 			$id = $emailid[0];
 			$type = $emailid[1];

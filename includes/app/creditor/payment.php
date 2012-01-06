@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Creditor_Payment
 	{
-		public static function add($supplier_id, $date_, $bank_account,
+		static public function add($supplier_id, $date_, $bank_account,
 			$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
 			DB::begin();
 			$supplier_currency = Bank_Currency::for_creditor($supplier_id);
@@ -64,7 +64,7 @@
 			return $payment_id;
 		}
 
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);

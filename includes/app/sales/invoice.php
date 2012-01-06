@@ -13,7 +13,7 @@
 	//
 	class Sales_Invoice
 	{
-		public static function add($invoice) {
+		static public function add($invoice) {
 			$trans_no = $invoice->trans_no;
 			if (is_array($trans_no)) {
 				$trans_no = key($trans_no);
@@ -124,7 +124,7 @@
 			DB::commit();
 			return $invoice_no;
 		}
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);

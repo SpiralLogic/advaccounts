@@ -74,7 +74,7 @@
 		 *
 		 * @return void
 		 */
-		public static function setEnabled($Enabled)
+		static public function setEnabled($Enabled)
 			{
 				$instance = FirePHP::getInstance(true);
 				$instance->setEnabled($Enabled);
@@ -86,7 +86,7 @@
 		 * @see FirePHP->getEnabled()
 		 * @return boolean TRUE if enabled
 		 */
-		public static function getEnabled()
+		static public function getEnabled()
 			{
 				$instance = FirePHP::getInstance(true);
 				return $instance->getEnabled();
@@ -104,7 +104,7 @@
 		 *
 		 * @return void
 		 */
-		public static function setObjectFilter($Class, $Filter)
+		static public function setObjectFilter($Class, $Filter)
 			{
 				$instance = FirePHP::getInstance(true);
 				$instance->setObjectFilter($Class, $Filter);
@@ -119,7 +119,7 @@
 		 *
 		 * @return void
 		 */
-		public static function setOptions($Options)
+		static public function setOptions($Options)
 			{
 				$instance = FirePHP::getInstance(true);
 				$instance->setOptions($Options);
@@ -131,7 +131,7 @@
 		 * @see FirePHP->getOptions()
 		 * @return array The options
 		 */
-		public static function getOptions()
+		static public function getOptions()
 			{
 				$instance = FirePHP::getInstance(true);
 				return $instance->getOptions();
@@ -147,7 +147,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function send()
+		static public function send()
 			{
 				$instance = FirePHP::getInstance(true);
 				$args = func_get_args();
@@ -166,7 +166,7 @@
 		 *
 		 * @return true
 		 */
-		public static function group($Name, $Options = null)
+		static public function group($Name, $Options = null)
 			{
 				$instance = FirePHP::getInstance(true);
 				return $instance->group($Name, $Options);
@@ -178,7 +178,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function groupEnd()
+		static public function groupEnd()
 			{
 				return self::send(null, null, FirePHP::GROUP_END);
 			}
@@ -194,7 +194,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function log($Object, $Label = null)
+		static public function log($Object, $Label = null)
 			{
 				return self::send($Object, $Label, FirePHP::LOG);
 			}
@@ -210,7 +210,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function info($Object, $Label = null)
+		static public function info($Object, $Label = null)
 			{
 				return self::send($Object, $Label, FirePHP::INFO);
 			}
@@ -226,7 +226,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function warn($Object, $Label = null)
+		static public function warn($Object, $Label = null)
 			{
 				return self::send($Object, $Label, FirePHP::WARN);
 			}
@@ -242,7 +242,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function error($Object, $Label = null)
+		static public function error($Object, $Label = null)
 			{
 				return self::send($Object, $Label, FirePHP::ERROR);
 			}
@@ -258,7 +258,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function dump($Key, $Variable)
+		static public function dump($Key, $Variable)
 			{
 				return self::send($Variable, $Key, FirePHP::DUMP);
 			}
@@ -273,7 +273,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function trace($Label)
+		static public function trace($Label)
 			{
 				return self::send($Label, FirePHP::TRACE);
 			}
@@ -289,7 +289,7 @@
 		 * @return true
 		 * @throws Exception
 		 */
-		public static function table($Label, $Table)
+		static public function table($Label, $Table)
 			{
 				return self::send($Table, $Label, FirePHP::TABLE);
 			}

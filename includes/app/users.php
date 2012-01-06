@@ -22,7 +22,7 @@
 		 * @param $rep_popup
 		 * @param $pos
 		 */
-		public static function	add($user_id, $real_name, $password, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+		static public function	add($user_id, $real_name, $password, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
 			$sql = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
 				VALUES (" . DB::escape($user_id) . ",
 				" . DB::escape($real_name) . ", " . DB::escape($password) . "," . DB::escape($phone) . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . " )";
@@ -35,7 +35,7 @@
 		 * @param $user_id
 		 * @param $password
 		 */
-		public static function	update_password($id, $user_id, $password) {
+		static public function	update_password($id, $user_id, $password) {
 			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not update user password for $user_id");
@@ -55,7 +55,7 @@
 		 * @param $rep_popup
 		 * @param $pos
 		 */
-		public static function	update($id, $user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+		static public function	update($id, $user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
 			$sql = "UPDATE users SET real_name=" . DB::escape($real_name) . ", phone=" . DB::escape($phone) . ",
 				email=" . DB::escape($email) . ",
 				role_id=" . DB::escape($role_id) . ",
@@ -92,7 +92,7 @@
 		 * @param $stickydate
 		 * @param $startup_tab
 		 */
-		public static function	update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
+		static public function	update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 			$sql = "UPDATE users SET
 				prices_dec=" . DB::escape($price_dec) . ",
 				qty_dec=" . DB::escape($qty_dec) . ",
@@ -125,7 +125,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function	get_all($all = false) {
+		static public function	get_all($all = false) {
 			$sql = "SELECT u.*, r.role FROM users u, security_roles r
 				WHERE u.role_id=r.id";
 			if (!$all) {
@@ -140,12 +140,12 @@
 		 *
 		 * @return DB_Query_Result
 		 */
-		public static function	get($id) {
+		static public function	get($id) {
 			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get user $id");
 			return DB::fetch($result);
 		}
-		//	This public static function is necessary for admin prefs update after upgrade from 2.1
+		//	This static public function is necessary for admin prefs update after upgrade from 2.1
 		//
 		/**
 		 * @static
@@ -154,7 +154,7 @@
 		 *
 		 * @return DB_Query_Result
 		 */
-		public static function	get_by_login($user_id) {
+		static public function	get_by_login($user_id) {
 			$sql = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
 			$result = DB::query($sql, "could not get user $user_id");
 			return DB::fetch($result);
@@ -164,7 +164,7 @@
 		 *
 		 * @param $id
 		 */
-		public static function	delete($id) {
+		static public function	delete($id) {
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete user $id");
 		}
@@ -176,7 +176,7 @@
 		 *
 		 * @return bool|mixed
 		 */
-		public static function	get_for_login($user_id, $password) {
+		static public function	get_for_login($user_id, $password) {
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
 			$auth = new Auth($user_id);
@@ -187,7 +187,7 @@
 		 *
 		 * @param $user_id
 		 */
-		public static function	update_visitdate($user_id) {
+		static public function	update_visitdate($user_id) {
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
 				WHERE user_id=" . DB::escape($user_id);
 			DB::query($sql, "could not update last visit date for user $user_id");
@@ -199,7 +199,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function	check_activity($id) {
+		static public function	check_activity($id) {
 			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::escape($id);
 			$result = DB::query($sql, "Cant check user activity");
 			$ret = DB::fetch($result);
@@ -209,7 +209,7 @@
 		 * @static
 		 * @return string
 		 */
-		public static function	show_online() {
+		static public function	show_online() {
 			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
 				return "";
 			}
@@ -219,7 +219,7 @@
 		 * @static
 		 * @return int|mixed
 		 */
-		protected static function get_online() {
+		static protected function get_online() {
 			$usersonline = Cache::get('users_online');
 			if ($usersonline) {
 				return $usersonline;
@@ -244,11 +244,11 @@
 			Cache::set('users_online', $users, 300);
 			return $users;
 		}
-		public static function get_ip() {
+		static public function get_ip() {
 			/*
 																																		 This will find out if user is from behind proxy server.
 																																		 In that case, the script would count them all as 1 user.
-																																		 This public static function tryes to get real IP address.
+																																		 This static public function tryes to get real IP address.
 																																		 */
 			if (isset($_SERVER['HTTP_CLIENT_IP'])) {
 				$ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -277,7 +277,7 @@
 		 * @param			$name
 		 * @param null $value
 		 */
-		public static function themes_row($label, $name, $value = null) {
+		static public function themes_row($label, $name, $value = null) {
 			$themes = array();
 			$themedir = opendir(THEME_PATH);
 			while (false !== ($fname = readdir($themedir))) {
@@ -298,7 +298,7 @@
 		 * @param null $selected_id
 		 * @param bool $all
 		 */
-		public static function tabs_row($label, $name, $selected_id = null, $all = false) {
+		static public function tabs_row($label, $name, $selected_id = null, $all = false) {
 			global $installed_extensions;
 			$tabs = array();
 			foreach (Session::i()->App->applications as $app) {
@@ -325,7 +325,7 @@
 		 *
 		 * @return string
 		 */
-		public static function select($name, $selected_id = null, $spec_opt = false) {
+		static public function select($name, $selected_id = null, $spec_opt = false) {
 			$sql = "SELECT id, real_name, inactive FROM users";
 			return select_box($name, $selected_id, $sql, 'id', 'real_name', array(
 																																					 'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC
@@ -339,7 +339,7 @@
 		 * @param null $selected_id
 		 * @param bool $spec_opt
 		 */
-		public static function cells($label, $name, $selected_id = null, $spec_opt = false) {
+		static public function cells($label, $name, $selected_id = null, $spec_opt = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -355,7 +355,7 @@
 		 * @param null $selected_id
 		 * @param bool $spec_opt
 		 */
-		public static function row($label, $name, $selected_id = null, $spec_opt = false) {
+		static public function row($label, $name, $selected_id = null, $spec_opt = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Users::cells(null, $name, $selected_id, $spec_opt);
 			echo "</tr>\n";

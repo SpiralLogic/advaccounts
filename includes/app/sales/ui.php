@@ -9,13 +9,13 @@
 	class Sales_UI
 	{
 		// SALES PERSONS
-		public static function	persons($name, $selected_id = null, $spec_opt = false) {
+		static public function	persons($name, $selected_id = null, $spec_opt = false) {
 			$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
 			return select_box($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
 																																													'order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 		}
 
-		public static function	persons_cells($label, $name, $selected_id = null, $spec_opt = false) {
+		static public function	persons_cells($label, $name, $selected_id = null, $spec_opt = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -24,19 +24,19 @@
 			echo "</td>\n";
 		}
 
-		public static function	persons_row($label, $name, $selected_id = null, $spec_opt = false) {
+		static public function	persons_row($label, $name, $selected_id = null, $spec_opt = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::persons_cells(null, $name, $selected_id, $spec_opt);
 			echo "</tr>\n";
 		}
 
 		// SALES AREA
-		public static function	areas($name, $selected_id = null) {
+		static public function	areas($name, $selected_id = null) {
 			$sql = "SELECT area_code, description, inactive FROM areas";
 			return select_box($name, $selected_id, $sql, 'area_code', 'description', array());
 		}
 
-		public static function	areas_cells($label, $name, $selected_id = null) {
+		static public function	areas_cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -45,20 +45,20 @@
 			echo "</td>\n";
 		}
 
-		public static function	areas_row($label, $name, $selected_id = null) {
+		static public function	areas_row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::areas_cells(null, $name, $selected_id);
 			echo "</tr>\n";
 		}
 
-		public static function	groups($name, $selected_id = null, $special_option = false) {
+		static public function	groups($name, $selected_id = null, $special_option = false) {
 			$sql = "SELECT id, description, inactive FROM groups";
 			return select_box($name, $selected_id, $sql, 'id', 'description', array(
 																																						 'spec_option' => $special_option === true ? ' ' :
 																																							$special_option, 'order' => 'description', 'spec_id' => 0,));
 		}
 
-		public static function	groups_cells($label, $name, $selected_id = null, $special_option = false) {
+		static public function	groups_cells($label, $name, $selected_id = null, $special_option = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -67,18 +67,18 @@
 			echo "</td>\n";
 		}
 
-		public static function	groups_row($label, $name, $selected_id = null, $special_option = false) {
+		static public function	groups_row($label, $name, $selected_id = null, $special_option = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::groups_cells(null, $name, $selected_id, $special_option);
 			echo "</tr>\n";
 		}
 
-		public static function	shippers($name, $selected_id = null) {
+		static public function	shippers($name, $selected_id = null) {
 			$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
 			return select_box($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
 		}
 
-		public static function	shippers_cells($label, $name, $selected_id = null) {
+		static public function	shippers_cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -87,13 +87,13 @@
 			echo "</td>\n";
 		}
 
-		public static function	shippers_row($label, $name, $selected_id = null) {
+		static public function	shippers_row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::shippers_cells(null, $name, $selected_id);
 			echo "</tr>\n";
 		}
 
-		public static function	policy_cells($label, $name, $selected = null) {
+		static public function	policy_cells($label, $name, $selected = null) {
 			if ($label != null) {
 				label_cell($label);
 			}
@@ -103,13 +103,13 @@
 			echo "</td>\n";
 		}
 
-		public static function	policy_row($label, $name, $selected = null) {
+		static public function	policy_row($label, $name, $selected = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::policy_cells(null, $name, $selected);
 			echo "</tr>\n";
 		}
 
-		public static function templates($name, $selected_id = null, $special_option = false) {
+		static public function templates($name, $selected_id = null, $special_option = false) {
 			$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
 				FROM sales_orders as sorder, sales_order_details as line
 				WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
@@ -118,7 +118,7 @@
 				 ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,));
 		}
 
-		public static function templates_cells($label, $name, $selected_id = null, $special_option = false) {
+		static public function templates_cells($label, $name, $selected_id = null, $special_option = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -127,7 +127,7 @@
 			echo "</td>\n";
 		}
 
-		public static function templates_row($label, $name, $selected_id = null, $special_option = false) {
+		static public function templates_row($label, $name, $selected_id = null, $special_option = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_UI::templates_cells(null, $name, $selected_id, $special_option);
 			echo "</tr>\n";
@@ -146,7 +146,7 @@
 		 *
 		 * @return string|void
 		 */
-		public static function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false) {
+		static public function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false) {
 			// all sales codes
 			if (!$legacy) {
 				return Item::addSearchBox($name, array_merge(array(
@@ -167,7 +167,7 @@
 				$opts));
 		}
 
-		public static function items_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts) {
+		static public function items_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -177,11 +177,11 @@
 																																																$opts));
 		}
 
-		public static function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
+		static public function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
 			return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false), $legacy);
 		}
 
-		public static function local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
+		static public function local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
 			echo "<tr>";
 			if ($label != null) {
 				echo "<td class='label'>$label</td>\n<td>";
@@ -190,7 +190,7 @@
 			echo "</td></tr>";
 		}
 
-		public static function payment_cells($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function payment_cells($label, $name, $selected_id = null, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td class='label'>$label</td>\n";
 			}

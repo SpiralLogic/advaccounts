@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 class Reports_UI {
-	public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
+	static public function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
 		$sql = "SELECT profile FROM print_profiles GROUP BY profile";
 		$result = DB::query($sql, 'cannot get all profile names');
 		$profiles = array();
@@ -24,7 +24,7 @@ class Reports_UI {
 		echo "</td></tr>\n";
 	}
 
-	public static function printers($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
+	static public function printers($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 		static $printers; // query only once for page display
 		if (!$printers) {
 			$sql = "SELECT id, name, description FROM printers";
@@ -38,7 +38,7 @@ class Reports_UI {
 																															 'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''));
 	}
 
-	public static function pagesizes_row($label, $name, $value = null) {
+	static public function pagesizes_row($label, $name, $value = null) {
 		$items = array();
 		foreach (Config::get('formats_paper_size') as $pz) {
 			$items[$pz] = $pz;

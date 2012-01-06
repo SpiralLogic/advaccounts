@@ -10,7 +10,7 @@
 		/**
 		 * @var array
 		 */
-		protected static $instances = array();
+		static protected $instances = array();
 
 		/**
 		 * @static

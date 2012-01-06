@@ -12,7 +12,7 @@
 					* ********************************************************************* */
 	class Sales_Branch
 	{
-		public static function get($branch_id)
+		static public function get($branch_id)
 			{
 				$sql
 				 = "SELECT branches.*,salesman.salesman_name
@@ -23,7 +23,7 @@
 				return DB::fetch($result);
 			}
 
-		public static function get_accounts($branch_id)
+		static public function get_accounts($branch_id)
 			{
 				$sql
 				 = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
@@ -32,7 +32,7 @@
 				return DB::fetch($result);
 			}
 
-		public static function get_name($branch_id)
+		static public function get_name($branch_id)
 			{
 				$sql
 				 = "SELECT br_name FROM branches
@@ -42,7 +42,7 @@
 				return $myrow[0];
 			}
 
-		public static function get_from_group($group_no)
+		static public function get_from_group($group_no)
 			{
 				$sql
 				 = "SELECT branch_id, debtor_no FROM branches
@@ -50,7 +50,7 @@
 				return DB::query($sql, "could not retreive branches for group " . $group_no);
 			}
 
-		public static function get_main($customer_no)
+		static public function get_main($customer_no)
 			{
 				$sql
 				 = "SELECT *

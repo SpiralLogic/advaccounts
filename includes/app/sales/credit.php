@@ -23,7 +23,7 @@
 		 *
 		 * @return int
 		 */
-		public static function add($credit_note, $write_off_acc) {
+		static public function add($credit_note, $write_off_acc) {
 			$credit_invoice = is_array($credit_note->src_docs) ? reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 			$credit_date = $credit_note->document_date;
 			$tax_group_id = $credit_note->tax_group_id;
@@ -144,7 +144,7 @@
 		 * a reversing stock movement to show the write off
 		 *
 		 */
-		public static function add_movements($credit_note, $credit_line, $credit_type, $price, $credited_invoice = 0) {
+		static public function add_movements($credit_note, $credit_line, $credit_type, $price, $credited_invoice = 0) {
 			if ($credit_type == "Return") {
 				$reference = "Return ";
 				if ($credited_invoice) {
@@ -173,7 +173,7 @@
 		 *
 		 * @return float|int
 		 */
-		public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
+		static public function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
 			$stock_gl_codes = Item::get_gl_code($order_line->stock_id);
 			$customer = Debtor::get($order->customer_id);
 			// 2008-08-01. If there is a Customer Dimension, then override with this,
@@ -224,7 +224,7 @@
 		 *
 		 * @return mixed|string
 		 */
-		public static function header($order) {
+		static public function header($order) {
 			start_outer_table('tablestyle width90');
 			table_section(1);
 			$customer_error = "";
@@ -345,7 +345,7 @@
 		 * @param						 $title
 		 * @param Sales_Order $order
 		 */
-		public static function display_items($title, $order) {
+		static public function display_items($title, $order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
@@ -407,7 +407,7 @@
 		 * @param $rowcounter
 		 * @param $line_no
 		 */
-		public static function item_controls($order, $rowcounter, $line_no = -1) {
+		static public function item_controls($order, $rowcounter, $line_no = -1) {
 			alt_table_row_color($rowcounter);
 			$id = find_submit(MODE_EDIT);
 			if ($line_no != -1 && $line_no == $id) {
@@ -458,7 +458,7 @@
 		 *
 		 * @param $credit
 		 */
-		public static function option_controls($credit) {
+		static public function option_controls($credit) {
 			echo "<br>";
 			if (isset($_POST['_CreditType_update'])) {
 				Ajax::i()->activate('options');
@@ -489,7 +489,7 @@
 		 * @param null $selected
 		 * @param bool $submit_on_change
 		 */
-		public static function cells($label, $name, $selected = null, $submit_on_change = false) {
+		static public function cells($label, $name, $selected = null, $submit_on_change = false) {
 			if ($label != null) {
 				label_cell($label);
 			}
@@ -507,7 +507,7 @@
 		 * @param null $selected
 		 * @param bool $submit_on_change
 		 */
-		public static function row($label, $name, $selected = null, $submit_on_change = false) {
+		static public function row($label, $name, $selected = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_Credit::cells(null, $name, $selected, $submit_on_change);
 			echo "</tr>\n";

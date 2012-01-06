@@ -18,19 +18,19 @@
 		/**
 		 * @var array
 		 */
-		public static $messages = array(); // container for system messages
+		static public $messages = array(); // container for system messages
 		/**
 		 * @var array
 		 */
-		public static $errors = array(); // container for system messages
-		public static $dberrors = array(); // container for system messages
+		static public $errors = array(); // container for system messages
+		static public $dberrors = array(); // container for system messages
 		/**
 		 * @var bool
 		 */
-		public static $fatal = false; // container for system messages
-		public static $count = 0; // container for system messages
-		protected static $jsonerrorsent = false;
-		public static $levels = array(
+		static public $fatal = false; // container for system messages
+		static public $count = 0; // container for system messages
+		static protected $jsonerrorsent = false;
+		static public $levels = array(
 			0 => 'Error',
 			E_ERROR => 'Error',
 			E_WARNING => 'Warning',
@@ -48,19 +48,19 @@
 		/**
 		 * @var string
 		 */
-		public static $before_box = ''; // temporary container for output html data before error box
+		static public $before_box = ''; // temporary container for output html data before error box
 		/**
 		 * @var array
 		 */
-		public static $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
+		static public $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
 		/**
 		 * @var array
 		 */
-		public static $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+		static public $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/**
 		 * @var array
 		 */
-		public static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/**
 		 * @static
 		 *
@@ -138,7 +138,7 @@
 				ob_end_flush();
 			}
 		}
-		public static function JSONError($json = false) {
+		static public function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
 				$dberror = array_pop(Errors::$dberrors);
@@ -289,7 +289,7 @@
 		 *
 		 * @param Exception $e
 		 */
-		protected static function prepare_exception(\Exception $e) {
+		static protected function prepare_exception(\Exception $e) {
 			$data = array(
 				'type' => ($e->getCode()) ? $e->getCode() : E_USER_ERROR,
 				'message' => get_class($e) . ' ' . $e->getMessage(),

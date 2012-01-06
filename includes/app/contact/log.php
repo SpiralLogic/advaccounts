@@ -11,7 +11,7 @@
 		const SUPPLIER = 'S';
 		private static $dbTable = 'contact_log';
 
-		public static function add($contact_id, $contact_name, $type, $message) {
+		static public function add($contact_id, $contact_name, $type, $message) {
 			if (!isset($contact_id)) {
 				return false;
 			}
@@ -31,7 +31,7 @@
 			return DB::insert_id();
 		}
 
-		public static function read($contact_id, $type) {
+		static public function read($contact_id, $type) {
 			if (!isset($contact_id) || $contact_id == 0) {
 				return false;
 			}

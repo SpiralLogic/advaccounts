@@ -27,15 +27,15 @@
 		/**
 		 * @var int
 		 */
-		protected static $default_number = 0;
+		static protected $default_number = 0;
 		/**
 		 * @var string
 		 */
-		protected static $default_string = '';
+		static protected $default_string = '';
 		/**
 		 * @var bool
 		 */
-		protected static $default_bool = false;
+		static protected $default_bool = false;
 
 		/***
 		 * @static
@@ -46,7 +46,7 @@
 		 *
 		 * @return bool|int|string|object
 		 */
-		public static function post($var, $type = null, $default = null) {
+		static public function post($var, $type = null, $default = null) {
 			return static::_isset($_POST, $var, $type, $default);
 		}
 
@@ -60,7 +60,7 @@
 		 * @internal param mixed $public $_GET variable to return
 		 * @return bool|int|string|object
 		 */
-		public static function get($var, $type = null, $default = null) {
+		static public function get($var, $type = null, $default = null) {
 			return static::_isset($_GET, $var, $type, $default);
 		}
 
@@ -73,7 +73,7 @@
 		 *
 		 * @return bool|int|string|object
 		 */
-		public static function request($var, $type = null, $default = null) {
+		static public function request($var, $type = null, $default = null) {
 			return static::_isset($_REQUEST, $var, $type, $default);
 		}
 
@@ -86,7 +86,7 @@
 		 *
 		 * @return bool|int|string|object
 		 */
-		public static function get_post($var, $type = null, $default = null) {
+		static public function get_post($var, $type = null, $default = null) {
 			return static::get_post($_GET, $_POST, $var, $type, $default);
 		}
 
@@ -99,7 +99,7 @@
 		 *
 		 * @return bool|int|string|object
 		 */
-		public static function post_get($var, $type = null, $default = null) {
+		static public function post_get($var, $type = null, $default = null) {
 			return static::get_post($_POST, $_GET, $var, $type, $default);
 		}
 
@@ -112,7 +112,7 @@
 		 *
 		 * @return bool|int|string|object
 		 */
-		public static function session($var = array(), $type = null, $default = null) {
+		static public function session($var = array(), $type = null, $default = null) {
 			return (!isset($_SESSION)) ? false : static::_isset($_SESSION, $var, $type, $default);
 		}
 
@@ -123,7 +123,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function has_post($vars) {
+		static public function has_post($vars) {
 			if (is_null($vars)) {
 				return true;
 			}
@@ -137,7 +137,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function has_get($vars) {
+		static public function has_get($vars) {
 			if (is_null($vars)) {
 				return true;
 			}
@@ -151,7 +151,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function has($vars) {
+		static public function has($vars) {
 			if (is_null($vars)) {
 				return true;
 			}
@@ -165,7 +165,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function has_session($vars) {
+		static public function has_session($vars) {
 			if (is_null($vars)) {
 				return true;
 			}
@@ -183,7 +183,7 @@
 		 *
 		 * @return bool|int|null|string
 		 */
-		protected static function _get_post($first, $second, $var, $type = null, $default = null) {
+		static protected function _get_post($first, $second, $var, $type = null, $default = null) {
 			$array = (static::_has($first, $var)) ? $first : $second;
 			return static::_isset($array, $var, $type, $default);
 		}
@@ -196,7 +196,7 @@
 		 *
 		 * @return bool
 		 */
-		protected static function _has(array $array, $vars) {
+		static protected function _has(array $array, $vars) {
 			if (is_null($vars)) {
 				return true;
 			}
@@ -220,7 +220,7 @@
 		 *
 		 * @return bool|int|null|string
 		 */
-		protected static function _isset(array $array, $var, $type = null, $default = null) {
+		static protected function _isset(array $array, $var, $type = null, $default = null) {
 			$value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
 			switch ($type) {
 				case self::NUMERIC:

@@ -206,7 +206,7 @@ JS;
 			return HTML::setReturn(false);
 		}
 
-		public static function emailDialogue($contactType) {
+		static public function emailDialogue($contactType) {
 			static $loaded = false;
 			if ($loaded == true) {
 				return;

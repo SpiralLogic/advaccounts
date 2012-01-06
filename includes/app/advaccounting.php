@@ -109,11 +109,13 @@
 			$page->renderer->display_application($this);
 			Page::end();
 		}
+
+		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
 		/**
 		 * @static
 		 *
 		 */
-		public static function i() {
+		static public function i() {
 			require_once APPPATH . "main.php";
 			static::checkLogin();
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
@@ -130,7 +132,7 @@
 		/**
 		 *
 		 */
-		protected static function checkLogin() {
+		static protected function checkLogin() {
 			// logout.php is the only page we should have always
 			// accessable regardless of access level and current login status.
 			$currentUser = User::get();
@@ -157,7 +159,7 @@
 		/**
 		 *
 		 */
-		protected static function showLogin() {
+		static protected function showLogin() {
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array(
 				'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI']), 'post' => $_POST
@@ -174,7 +176,7 @@
 		/**
 		 *
 		 */
-		public static function loginFail() {
+		static public function loginFail() {
 			header("HTTP/1.1 401 Authorization Required");
 			echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
 			echo _("The user and password combination is not valid for the system.") . "<br><br>";
@@ -192,7 +194,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function write_extensions($extensions = null, $company = -1) {
+		static public function write_extensions($extensions = null, $company = -1) {
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
 				$extensions = $installed_extensions;
@@ -256,6 +258,5 @@
 			}
 			return true;
 		}
-		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
 	}
 

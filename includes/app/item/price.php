@@ -49,7 +49,7 @@
 			DB::update('prices')->where('stockid=', $this->stockid)->and_where('id=', $this->id)->exec($this);
 		}
 
-		public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $stockid = null) {
+		static public function add($stock_id, $sales_type_id, $curr_abrev, $price, $stockid = null) {
 			if ($stockid == null) {
 				$stockid = Item::get_stockid($stock_id);
 			}
@@ -58,19 +58,19 @@
 			DB::query($sql, "an item price could not be added");
 		}
 
-		public static function update($price_id, $sales_type_id, $curr_abrev, $price) {
+		static public function update($price_id, $sales_type_id, $curr_abrev, $price) {
 			$sql = "UPDATE prices SET sales_type_id=" . DB::escape($sales_type_id) . ",
 			curr_abrev=" . DB::escape($curr_abrev) . ",
 			price=" . DB::escape($price) . " WHERE id=" . DB::escape($price_id);
 			DB::query($sql, "an item price could not be updated");
 		}
 
-		public static function delete($price_id) {
+		static public function delete($price_id) {
 			$sql = "DELETE FROM prices WHERE id= " . DB::escape($price_id);
 			DB::query($sql, "an item price could not be deleted");
 		}
 
-		public static function get_all($stock_id) {
+		static public function get_all($stock_id) {
 			$sql = "SELECT sales_types.sales_type, prices.*
 			FROM prices, sales_types
 			WHERE prices.sales_type_id = sales_types.id
@@ -78,13 +78,13 @@
 			return DB::query($sql, "item prices could not be retreived");
 		}
 
-		public static function get($price_id) {
+		static public function get($price_id) {
 			$sql = "SELECT * FROM prices WHERE id=" . DB::escape($price_id);
 			$result = DB::query($sql, "price could not be retreived");
 			return DB::fetch($result);
 		}
 
-		public static function get_standard_cost($stock_id) {
+		static public function get_standard_cost($stock_id) {
 			$sql = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 				FROM stock_master s WHERE stock_id=" . DB::escape($stock_id);
 			$result = DB::query($sql, "The standard cost cannot be retrieved");
@@ -92,7 +92,7 @@
 			return $myrow[0];
 		}
 
-		public static function get_percent($stock_id, $add_pct) {
+		static public function get_percent($stock_id, $add_pct) {
 			$avg = static::get_standard_cost($stock_id);
 			if ($avg == 0) {
 				return 0;
@@ -100,7 +100,7 @@
 			return Num::round($avg * (1 + $add_pct / 100), User::price_dec());
 		}
 
-		public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
+		static public function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
 			if ($date == null) {
 				$date = Dates::new_doc_date();
 			}
@@ -179,7 +179,7 @@
 		 *
 		 * @return float|int
 		 */
-		public static function get_kit($item_code, $currency, $sales_type_id, $factor = null, $date = null, $std = false) {
+		static public function get_kit($item_code, $currency, $sales_type_id, $factor = null, $date = null, $std = false) {
 			$kit_price = 0.00;
 			if (!$std) {
 				$kit_price = static::get_calculated_price($item_code, $currency, $sales_type_id, $factor, $date);
@@ -202,7 +202,7 @@
 			return $kit_price;
 		}
 
-		public static function get_purchase($supplier_id, $stock_id) {
+		static public function get_purchase($supplier_id, $stock_id) {
 			$sql = "SELECT price, conversion_factor FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
@@ -215,7 +215,7 @@
 			}
 		}
 
-		public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
+		static public function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
 			$mb_flag = WO::get_mb_flag($stock_id);
 			if (Input::post('mb_flag') == STOCK_SERVICE) {
 				Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
@@ -249,7 +249,7 @@
 			return $update_no;
 		}
 
-		public static function to_words($amount, $document = 0) {
+		static public function to_words($amount, $document = 0) {
 			global $Hooks;
 			// use local Item_Price::to_words() if the hook is defined
 			if (method_exists($Hooks, 'price_in_words')) {

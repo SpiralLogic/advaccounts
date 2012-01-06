@@ -11,19 +11,19 @@
 	 ***********************************************************************/
 	class Inv_Movement
 	{
-		public static function add_type($name) {
+		static public function add_type($name) {
 			$sql = "INSERT INTO movement_types (name)
 		VALUES (" . DB::escape($name) . ")";
 			DB::query($sql, "could not add item movement type");
 		}
 
-		public static function update_type($type_id, $name) {
+		static public function update_type($type_id, $name) {
 			$sql = "UPDATE movement_types SET name=" . DB::escape($name) . "
 			WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not update item movement type");
 		}
 
-		public static function get_all_types($all = false) {
+		static public function get_all_types($all = false) {
 			$sql = "SELECT * FROM movement_types";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -31,18 +31,18 @@
 			return DB::query($sql, "could not get all item movement type");
 		}
 
-		public static function get_type($type_id) {
+		static public function get_type($type_id) {
 			$sql = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
 			$result = DB::query($sql, "could not get item movement type");
 			return DB::fetch($result);
 		}
 
-		public static function delete($type_id) {
+		static public function delete($type_id) {
 			$sql = "DELETE FROM movement_types WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not delete item movement type");
 		}
 
-		public static function get($type, $type_no, $visible = false) {
+		static public function get($type, $type_no, $visible = false) {
 			$sql = "SELECT stock_moves.*, stock_master.description, " . "stock_master.units,locations.location_name," . "stock_master.material_cost + " . "stock_master.labour_cost + " . "stock_master.overhead_cost AS FixedStandardCost
 				FROM stock_moves,locations,stock_master
 				WHERE stock_moves.stock_id = stock_master.stock_id
@@ -54,13 +54,13 @@
 			return DB::query($sql, "Could not get stock moves");
 		}
 
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			$sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
 				standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 			DB::query($sql, "Could not void stock moves");
 		}
 
-		public static function add($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1, $price = 0,
+		static public function add($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1, $price = 0,
 			$discount_percent = 0, $error_msg = "") {
 			// do not add a stock move if it's a non-inventory item
 			if (!Item::is_inventory_item($stock_id)) {
@@ -94,24 +94,24 @@
 		 *
 		 * @return mixed|null
 		 */
-		public static function add_for_debtor($type, $stock_id, $trans_id, $location, $date_, $reference, $quantity, $std_cost,
+		static public function add_for_debtor($type, $stock_id, $trans_id, $location, $date_, $reference, $quantity, $std_cost,
 			$show_or_hide = 1, $price = 0, $discount_percent = 0) {
 			return Inv_Movement::add($type, $stock_id, $trans_id, $location, $date_, $reference, $quantity, $std_cost, 0,
 				$show_or_hide, $price, $discount_percent, "The customer stock movement record cannot be inserted");
 		}
 
-		public static function row($label, $name, $selected_id = null) {
+		static public function row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Inv_Movement::types_cells(null, $name, $selected_id);
 			echo "</tr>\n";
 		}
 
-		public static function types($name, $selected_id = null) {
+		static public function types($name, $selected_id = null) {
 			$sql = "SELECT id, name FROM movement_types";
 			return select_box($name, $selected_id, $sql, 'id', 'name', array());
 		}
 
-		public static function types_cells($label, $name, $selected_id = null) {
+		static public function types_cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}

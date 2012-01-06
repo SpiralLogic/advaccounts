@@ -9,7 +9,7 @@
 	class Contact_Postcode {
 		private static $count = 1;
 
-		public static function render($city, $state, $postcode, $options = array()) {
+		static public function render($city, $state, $postcode, $options = array()) {
 			$o = array('url' => '/contacts/postcode.php');
 			extract(array_merge($o, $options));
 			HTML::tr(true)->td(array('class' => 'label '))
@@ -29,7 +29,7 @@
 			static::registerJS("#" . $city[0], "#" . $state[0],"#" . $postcode[0]);
 		}
 
-		public static function registerJS($city, $state,$postcode) {
+		static public function registerJS($city, $state,$postcode) {
 			if (static::$count == 1) {
 				static::initjs();
 			}
@@ -41,7 +41,7 @@ JS;
 			static::$count++;
 		}
 
-		public static function searchByCity($city = "*") {
+		static public function searchByCity($city = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
 			$result = DB::query($sql, "Could not find city");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
@@ -50,7 +50,7 @@ JS;
 			return $resultArray;
 		}
 
-		public static function searchByPostcode($postcode = "*") {
+		static public function searchByPostcode($postcode = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
 			$result = DB::query($sql, "Could not find postcode");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
@@ -59,7 +59,7 @@ JS;
 			return $resultArray;
 		}
 
-		protected static function initjs() {
+		static protected function initjs() {
 			$js = <<<JS
 						Adv.extend({
 						 postcode: (function() {

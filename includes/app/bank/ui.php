@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Bank_UI
 	{
-		public static function header($order) {
+		static public function header($order) {
 
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			Display::div_start('pmt_header');
@@ -90,7 +90,7 @@
 			Display::div_end();
 		}
 
-		public static function items($title, &$order) {
+		static public function items($title, &$order) {
 			$dim = DB_Company::get_pref('use_dimension');
 			$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 			Display::heading($title);
@@ -148,7 +148,7 @@
 			Display::div_end();
 		}
 
-		public static function item_controls($order, $dim, $Index = null) {
+		static public function item_controls($order, $dim, $Index = null) {
 
 			$payment = $order->trans_type == ST_BANKPAYMENT;
 			start_row();
@@ -215,13 +215,13 @@
 			end_row();
 		}
 
-		public static function option_controls() {
+		static public function option_controls() {
 			echo "<br><table class='center'>";
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);
 			echo "</table>";
 		}
 
-		public static function	reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+		static public function	reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 			$sql = "SELECT reconciled, reconciled FROM bank_trans
 							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL
 							GROUP BY reconciled";
@@ -229,7 +229,7 @@
 																																						'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'));
 		}
 
-		public static function	reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+		static public function	reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -238,14 +238,14 @@
 			echo "</td>\n";
 		}
 
-		public static function	balance_row($bank_acc, $parms = '') {
+		static public function	balance_row($bank_acc, $parms = '') {
 			$to = Dates::add_days(Dates::Today(), 1);
 			$bal = get_balance_before_for_bank_account($bank_acc, $to);
 			label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
 		}
 
-		public static function	cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
 						FROM bank_accounts
 						WHERE bank_accounts.account_type=3";
@@ -258,7 +258,7 @@
 			echo "</td></tr>\n";
 		}
 
-		public static function	trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static public function	trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			if ($label == "") {
 				$label = $trans_no;
 			}

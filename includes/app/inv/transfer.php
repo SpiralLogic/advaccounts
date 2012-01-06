@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Inv_Transfer
 	{
-		public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
+		static public function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
 			DB::begin();
 			$transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
 			foreach ($Items as $line_item) {
@@ -40,17 +40,17 @@
 		 * add 2 stock_moves entries for a stock transfer
 		 *
 		 */
-		public static function add_item($transfer_id, $stock_id, $location_from, $location_to, $date_, $type, $reference, $quantity) {
+		static public function add_item($transfer_id, $stock_id, $location_from, $location_to, $date_, $type, $reference, $quantity) {
 			Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from, $date_, $reference, -$quantity, 0, $type);
 			Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to, $date_, $reference, $quantity, 0, $type);
 		}
 
-		public static function get($trans_no) {
+		static public function get($trans_no) {
 			$result = Inv_Transfer::get_items($trans_no);
 			if (DB::num_rows($result) < 2) {
 				Errors::show_db_error("transfer with less than 2 items : $trans_no", "");
 			}
-			// this public static function is very bad that it assumes that 1st record and 2nd record contain the
+			// this static public function is very bad that it assumes that 1st record and 2nd record contain the
 			// from and to locations - if get_stock_moves uses a different ordering than trans_no then
 			// it will bomb
 			$move1 = DB::fetch($result);
@@ -63,7 +63,7 @@
 			}
 		}
 
-		public static function get_items($trans_no) {
+		static public function get_items($trans_no) {
 			$result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
 			if (DB::num_rows($result) == 0) {
 				return null;
@@ -71,11 +71,11 @@
 			return $result;
 		}
 
-		public static function void($type_no) {
+		static public function void($type_no) {
 			Inv_Movement::void(ST_LOCTRANSFER, $type_no);
 		}
 
-		public static function update_pid($type, $stock_id, $from, $to, $pid, $cost) {
+		static public function update_pid($type, $stock_id, $from, $to, $pid, $cost) {
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
 			$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
@@ -83,7 +83,7 @@
 			DB::query($sql, "The stock movement standard_cost cannot be updated");
 		}
 
-		public static function header() {
+		static public function header() {
 			start_outer_table('tablestyle width70');
 			table_section(1);
 			Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
@@ -96,7 +96,7 @@
 			end_outer_table(1); // outer table
 		}
 
-		public static function display_items($title, $order) {
+		static public function display_items($title, $order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
@@ -128,7 +128,7 @@
 			Display::div_end();
 		}
 
-		public static function item_controls($order, $line_no = -1) {
+		static public function item_controls($order, $line_no = -1) {
 
 			start_row();
 			$id = find_submit(MODE_EDIT);
@@ -164,7 +164,7 @@
 			end_row();
 		}
 
-		public static function option_controls() {
+		static public function option_controls() {
 			echo "<br>";
 			start_table();
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);

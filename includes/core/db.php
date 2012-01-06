@@ -58,37 +58,37 @@
 		/**
 		 * @var array
 		 */
-		protected static $connections = array();
+		static protected $connections = array();
 		/**
 		 * @var bool
 		 */
 		/**
 		 * @var array
 		 */
-		protected static $data = array();
+		static protected $data = array();
 		/***
 		 * @var string
 		 */
-		public static $queryString = array();
+		static public $queryString = array();
 		/***
 		 * @var PDOStatement
 		 */
-		protected static $prepared = null;
+		static protected $prepared = null;
 		/**
 		 * @var null
 		 */
-		protected static $debug = null;
+		static protected $debug = null;
 		/**
 		 * @var bool
 		 */
-		protected static $nested = false;
+		static protected $nested = false;
 		/**
 		 * @var DB_Query
 		 */
-		protected static $query = false;
-		protected static $results = false;
-		protected static $errorSql = false;
-		protected static $errorInfo = false;
+		static protected $query = false;
+		static protected $results = false;
+		static protected $errorSql = false;
+		static protected $errorInfo = false;
 		/**
 		 * @var
 		 */
@@ -117,7 +117,7 @@
 		/**
 		 * @var DB
 		 */
-		protected static $i = null;
+		static protected $i = null;
 		/***
 		 * @static
 		 *
@@ -126,7 +126,7 @@
 		 * @internal PDO $conn
 		 * @return DB
 		 */
-		protected static function i($config = array()) {
+		static protected function i($config = array()) {
 			if (static::$i === null) {
 				$config = $config ? : Config::get('db_default');
 				static::$i = new static($config);
@@ -167,7 +167,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function query($sql, $err_msg = null, $cache = false) {
+		static public function query($sql, $err_msg = null, $cache = false) {
 			static::$prepared = null;
 			if ($cache) {
 				$md5 = md5($sql);
@@ -201,7 +201,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function quote($value, $type = null) {
+		static public function quote($value, $type = null) {
 			return static::i()->conn->quote($value, $type);
 		}
 		/**
@@ -214,7 +214,7 @@
 		 *
 		 * @return bool|mixed|string
 		 */
-		public static function escape($value, $null = false) {
+		static public function escape($value, $null = false) {
 			$value = trim($value);
 			//check for null/unset/empty strings
 			if (!isset($value) || is_null($value) || $value === "") {
@@ -277,7 +277,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function prepare($sql, $debug = false) {
+		static public function prepare($sql, $debug = false) {
 			static::$prepared = static::i()->_prepare($sql, $debug);
 			return static::$prepared;
 		}
@@ -288,7 +288,7 @@
 		 *
 		 * @return array|bool
 		 */
-		public static function execute($data) {
+		static public function execute($data) {
 			if (!static::$prepared) {
 				return false;
 			}
@@ -306,7 +306,7 @@
 		 * @static
 		 * @return string
 		 */
-		public static function insert_id() {
+		static public function insert_id() {
 			return static::i()->conn->lastInsertId();
 		}
 		/***
@@ -314,7 +314,7 @@
 		 *
 		 * @return DB_Query_Select
 		 */
-		public static function select($columns = null) {
+		static public function select($columns = null) {
 			static::$prepared = null;
 			$columns = (is_string($columns)) ? func_get_args() : array();
 			static::$query = new DB_Query_Select($columns, static::i());
@@ -327,7 +327,7 @@
 		 *
 		 * @return DB_Query_Update
 		 */
-		public static function update($into) {
+		static public function update($into) {
 			static::$prepared = null;
 			static::$query = new DB_Query_Update($into, static::i());
 			return static::$query;
@@ -339,7 +339,7 @@
 		 *
 		 * @return DB_Query_Insert
 		 */
-		public static function insert($into) {
+		static public function insert($into) {
 			static::$prepared = null;
 			static::$query = new DB_Query_Insert($into, static::i());
 			return static::$query;
@@ -351,7 +351,7 @@
 		 *
 		 * @return DB_Query_Delete
 		 */
-		public static function delete($into) {
+		static public function delete($into) {
 			static::$prepared = null;
 			static::$query = new DB_Query_Delete($into, static::i());
 			return static::$query;
@@ -363,7 +363,7 @@
 		 *
 		 * @return DB_Query_Result|Array This is something
 		 */
-		public static function fetch($result = null) {
+		static public function fetch($result = null) {
 			if ($result !== null) {
 				return $result->fetch();
 			}
@@ -376,21 +376,21 @@
 		 * @static
 		 * @return mixed
 		 */
-		public static function fetch_row() {
+		static public function fetch_row() {
 			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
 		/**
 		 * @static
 		 * @return mixed
 		 */
-		public static function fetch_assoc() {
+		static public function fetch_assoc() {
 			return static::$prepared->fetch(PDO::FETCH_ASSOC);
 		}
 		/**
 		 * @static
 		 * @return array
 		 */
-		public static function fetch_all($fetch_type = PDO::FETCH_ASSOC) {
+		static public function fetch_all($fetch_type = PDO::FETCH_ASSOC) {
 			$results = static::$results;
 			if (!static::$results) {
 				$results = static::$prepared->fetchAll($fetch_type);
@@ -402,7 +402,7 @@
 		 * @static
 		 * @return mixed
 		 */
-		public static function error_no() {
+		static public function error_no() {
 			$info = static::errorInfo();
 			return $info[1];
 		}
@@ -410,7 +410,7 @@
 		 * @static
 		 * @return mixed
 		 */
-		public static function errorInfo() {
+		static public function errorInfo() {
 			if (static::$errorInfo) {
 				return static::$errorInfo;
 			}
@@ -423,7 +423,7 @@
 		 * @static
 		 * @return mixed
 		 */
-		public static function error_msg() {
+		static public function error_msg() {
 			$info = static::errorInfo();
 			return isset($info[2]) ? $info[2] : false;
 		}
@@ -434,14 +434,14 @@
 		 *
 		 * @return mixed
 		 */
-		public static function getAttribute(PDO $value) {
+		static public function getAttribute(PDO $value) {
 			return static::i()->conn->getAttribute($value);
 		}
 		/**
 		 * @static
 		 * @return bool
 		 */
-		public static function free_result() {
+		static public function free_result() {
 			$result = (static::$prepared) ? static::$prepared->closeCursor() : false;
 			static::$errorSql = static::$errorInfo = static::$prepared = null;
 			static::$data = array();
@@ -454,7 +454,7 @@
 		 *
 		 * @return int
 		 */
-		public static function num_rows($sql = null) {
+		static public function num_rows($sql = null) {
 			if ($sql === null) {
 				return static::$prepared->rowCount();
 			}
@@ -473,14 +473,14 @@
 		 * @static
 		 * @return int
 		 */
-		public static function num_fields() {
+		static public function num_fields() {
 			return static::$prepared->columnCount();
 		}
 		/**
 		 * @static
 		 *
 		 */
-		public static function begin() {
+		static public function begin() {
 			if (!static::i()->conn->inTransaction() && !static::i()->intransaction) {
 				try {
 					static::i()->conn->beginTransaction();
@@ -494,7 +494,7 @@
 		 * @static
 		 *
 		 */
-		public static function commit() {
+		static public function commit() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
 				static::i()->intransaction = false;
 				try {
@@ -508,7 +508,7 @@
 		 * @static
 		 *
 		 */
-		public static function cancel() {
+		static public function cancel() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
 				try {
 					static::i()->intransaction = false;
@@ -532,7 +532,7 @@
 		 *
 		 * @return \DB_Query_Result
 		 */
-		public static function update_record_status($id, $status, $table, $key) {
+		static public function update_record_status($id, $status, $table, $key) {
 			try {
 				static::update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
 			} catch (DBUpdateException $e) {
@@ -549,7 +549,7 @@
 		 *
 		 * @return DB_Query_Result
 		 */
-		public static function insert_record_status($id, $status, $table, $key) {
+		static public function insert_record_status($id, $status, $table, $key) {
 			try {
 				static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
 			} catch (DBInsertException $e) {
@@ -595,13 +595,13 @@
 			static::$data = array();
 			return false;
 		}
-		protected static function namedValues($sql, array $data) {
+		static protected function namedValues($sql, array $data) {
 			foreach ($data as $k => $v) {
 				$sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
-		protected static function placeholderValues($sql, array $data) {
+		static protected function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
 				$sql = preg_replace('/\?/i', "'$v[0]'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}

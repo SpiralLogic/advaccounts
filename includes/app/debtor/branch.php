@@ -126,7 +126,7 @@
 		}
 
 		// BRANCHES
-		public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		static public function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			$sql = "SELECT branch_id, branch_ref FROM branches
 			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 			if ($editkey) {
@@ -143,7 +143,7 @@
 																																						 ));
 		}
 
-		public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		static public function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -152,7 +152,7 @@
 			echo "</td>\n";
 		}
 
-		public static function row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
+		static public function row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Debtor_Branch::cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
 			echo "</tr>";

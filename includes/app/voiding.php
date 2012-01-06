@@ -8,7 +8,7 @@
 	 */
 	class Voiding
 	{
-		public static function void($type, $type_no, $date_, $memo_) {
+		static public function void($type, $type_no, $date_, $memo_) {
 			$void_entry = static::get($type, $type_no);
 			if ($void_entry != null) {
 				return false;
@@ -102,17 +102,17 @@
 			static::add($type, $type_no, $date_, $memo_);
 			return true;
 		}
-		public static function get($type, $type_no) {
+		static public function get($type, $type_no) {
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
 			$result = DB::query($sql, "could not query voided transaction table");
 			return DB::fetch($result);
 		}
-		public static function has($type, $type_no) {
+		static public function has($type, $type_no) {
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
 			$result = DB::query($sql, "could not query voided transaction table");
 			return DB::num_rows($result);
 		}
-		public static function add($type, $type_no, $date_, $memo_) {
+		static public function add($type, $type_no, $date_, $memo_) {
 			$date = Dates::date2sql($date_);
 			$sql = "INSERT INTO voided (type, id, date_, memo_)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", " . DB::escape($date) . ", " . DB::escape($memo_) . ")";

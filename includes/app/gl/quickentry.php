@@ -10,7 +10,7 @@
 	{
 
 
-		public static function add($description, $type, $base_amount, $base_desc) {
+		static public function add($description, $type, $base_amount, $base_desc) {
 			$sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
 		VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", "
 			 . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
@@ -20,7 +20,7 @@
 
 
 
-		public static function update($selected_id, $description, $type, $base_amount, $base_desc) {
+		static public function update($selected_id, $description, $type, $base_amount, $base_desc) {
 			$sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
 			type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount)
 			 . ", base_desc=" . DB::escape($base_desc) . "
@@ -31,7 +31,7 @@
 
 
 
-		public static function delete($selected_id) {
+		static public function delete($selected_id) {
 			$sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
 			DB::query($sql, "could not delete quick entry $selected_id");
@@ -39,7 +39,7 @@
 
 
 
-		public static function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
+		static public function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
 			$sql = "INSERT INTO quick_entry_lines
 			(qid, action, dest_id, amount, dimension_id, dimension2_id)
 		VALUES
@@ -51,7 +51,7 @@
 
 
 
-		public static function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
+		static public function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
 			$sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid)
 			 . ", action=" . DB::escape($action) . ",
 			dest_id=" . DB::escape($dest_id) . ", amount=" . DB::escape($amount)
@@ -63,7 +63,7 @@
 
 
 
-		public static function delete_line($selected_id) {
+		static public function delete_line($selected_id) {
 			$sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
 			DB::query($sql, "could not delete quick entry line $selected_id");
@@ -71,7 +71,7 @@
 
 
 
-		public static function has($type = null) {
+		static public function has($type = null) {
 			$sql = "SELECT id FROM quick_entries";
 			if ($type != null)
 				$sql .= " WHERE type=" . DB::escape($type);
@@ -80,7 +80,7 @@
 			return DB::num_rows($result) > 0;
 		}
 
-		public static function get_all($type = null) {
+		static public function get_all($type = null) {
 			$sql = "SELECT * FROM quick_entries";
 			if ($type != null)
 				$sql .= " WHERE type=" . DB::escape($type);
@@ -89,7 +89,7 @@
 			return DB::query($sql, "could not retreive quick entries");
 		}
 
-		public static function get($selected_id) {
+		static public function get($selected_id) {
 			$sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
 			$result = DB::query($sql, "could not retreive quick entry $selected_id");
@@ -97,7 +97,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_lines($qid) {
+		static public function get_lines($qid) {
 			$sql = "SELECT quick_entry_lines.*, chart_master.account_name,
 				tax_types.name as tax_name
 			FROM quick_entry_lines
@@ -111,7 +111,7 @@
 			return DB::query($sql, "could not retreive quick entries");
 		}
 
-		public static function has_lines($qid) {
+		static public function has_lines($qid) {
 			$sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
 
 			$result = DB::query($sql, "could not retreive quick entries");
@@ -120,7 +120,7 @@
 
 
 
-		public static function has_line($selected_id) {
+		static public function has_line($selected_id) {
 			$sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
 			$result = DB::query($sql, "could not retreive quick entry for $selected_id");
@@ -133,7 +133,7 @@
 				//	Expands selected quick entry $id into GL posings and adds to order.
 				//		returns calculated amount posted to bank GL account.
 				//
-				public static function show_menu(&$order, $id, $base, $type, $descr = '')
+				static public function show_menu(&$order, $id, $base, $type, $descr = '')
 				{
 					$bank_amount = 0;
 					if (!isset($id) || $id == null || $id == "") {
@@ -264,7 +264,7 @@
 		 * Time: 2:00 PM
 		 * To change this template use File | Settings | File Templates.
 		 */
-		public static function select($name, $selected_id = null, $type = null, $submit_on_change = false) {
+		static public function select($name, $selected_id = null, $type = null, $submit_on_change = false) {
 			$where = false;
 			$sql = "SELECT id, description FROM quick_entries";
 			if ($type != null) {
@@ -274,7 +274,7 @@
 																																							'spec_id' => '', 'order' => 'description', 'select_submit' => $submit_on_change, 'async' => false));
 		}
 
-		public static function cells($label, $name, $selected_id = null, $type, $submit_on_change = false) {
+		static public function cells($label, $name, $selected_id = null, $type, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -283,20 +283,20 @@
 			echo "</td>";
 		}
 
-		public static function row($label, $name, $selected_id = null, $type, $submit_on_change = false) {
+		static public function row($label, $name, $selected_id = null, $type, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			GL_QuickEntry::cells(null, $name, $selected_id, $type, $submit_on_change);
 			echo "</tr>\n";
 		}
 
-		public static function actions($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function actions($label, $name, $selected_id = null, $submit_on_change = false) {
 			global $quick_actions;
 			echo "<tr><td class='label'>$label</td><td>";
 			echo array_selector($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
 			echo "</td></tr>\n";
 		}
 
-		public static function types($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function types($label, $name, $selected_id = null, $submit_on_change = false) {
 			global $quick_entry_types;
 			echo "<tr><td class='label'>$label</td><td>";
 			echo array_selector($name, $selected_id, $quick_entry_types, array('select_submit' => $submit_on_change));

@@ -11,14 +11,14 @@
 	 ***********************************************************************/
 	class Tax_Types
 	{
-		public static function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
+		static public function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
 			$sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
 		VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
 			 . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
 			DB::query($sql, "could not add tax type");
 		}
 
-		public static function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
+		static public function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
 			$sql = "UPDATE tax_types SET name=" . DB::escape($name) . ",
 		sales_gl_code=" . DB::escape($sales_gl_code) . ",
 		purchasing_gl_code=" . DB::escape($purchasing_gl_code) . ",
@@ -27,7 +27,7 @@
 			DB::query($sql, "could not update tax type");
 		}
 
-		public static function get_all($all = false) {
+		static public function get_all($all = false) {
 			$sql = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
 		Chart2.account_name AS PurchasingAccountName
@@ -41,12 +41,12 @@
 			return DB::query($sql, "could not get all tax types");
 		}
 
-		public static function get_all_simple() {
+		static public function get_all_simple() {
 			$sql = "SELECT * FROM tax_types";
 			return DB::query($sql, "could not get all tax types");
 		}
 
-		public static function get($type_id) {
+		static public function get($type_id) {
 			$sql = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
 		Chart2.account_name AS PurchasingAccountName
@@ -58,14 +58,14 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_default_rate($type_id) {
+		static public function get_default_rate($type_id) {
 			$sql = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
 			$result = DB::query($sql, "could not get tax type rate");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function delete($type_id) {
+		static public function delete($type_id) {
 			DB::begin();
 			$sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
 			DB::query($sql, "could not delete tax type");
@@ -81,7 +81,7 @@
 		than selected tax type.
 		Necessary for pre-2.2 installations.
 		 */
-		public static function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
+		static public function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
 			$purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
 			$sql = "SELECT count(*) FROM "
 			 . "tax_types
@@ -95,13 +95,13 @@
 			return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
 		}
 
-		public static function select($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+		static public function select($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
 			return select_box($name, $selected_id, $sql, 'id', 'name', array(
 																																			'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 		}
 
-		public static function cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+		static public function cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -110,7 +110,7 @@
 			echo "</td>\n";
 		}
 
-		public static function row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
+		static public function row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Tax_Types::cells(null, $name, $selected_id, $none_option, $submit_on_change);
 			echo "</tr>\n";

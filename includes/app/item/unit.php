@@ -17,7 +17,7 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 ***********************************************************************/
-		public static function write($selected, $abbr, $description, $decimals) {
+		static public function write($selected, $abbr, $description, $decimals) {
 			if ($selected != '') {
 				$sql
 				 = "UPDATE item_units SET
@@ -36,32 +36,32 @@
 			DB::query($sql, "an item unit could not be updated");
 		}
 
-		public static function delete($unit) {
+		static public function delete($unit) {
 			$sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
 			DB::query($sql, "an unit of measure could not be deleted");
 		}
 
-		public static function get($unit) {
+		static public function get($unit) {
 			$sql = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
 			$result = DB::query($sql, "an unit of measure could not be retrieved");
 			return DB::fetch($result);
 		}
 
-		public static function desc($unit) {
+		static public function desc($unit) {
 			$sql = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
 			$result = DB::query($sql, "could not unit description");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function used($unit) {
+		static public function used($unit) {
 			$sql = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
 			$result = DB::query($sql, "could not query stock master");
 			$myrow = DB::fetch_row($result);
 			return ($myrow[0] > 0);
 		}
 
-		public static function get_all($all = false) {
+		static public function get_all($all = false) {
 			$sql = "SELECT * FROM item_units";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -70,7 +70,7 @@
 			return DB::query($sql, "could not get stock categories");
 		}
 
-		public static function get_decimal($stock_id) {
+		static public function get_decimal($stock_id) {
 			$sql
 			 = "SELECT decimals FROM item_units,	stock_master
 		WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
@@ -79,7 +79,7 @@
 			return $row[0];
 		}
 
-		public static function row($label, $name, $value = null, $enabled = true) {
+		static public function row($label, $name, $value = null, $enabled = true) {
 			$result = Item_Unit::get_all();
 			echo "<tr>";
 			if ($label != null) {
@@ -93,7 +93,7 @@
 			echo "</td></tr>\n";
 		}
 
-		public static function select($name, $value = null, $enabled = true) {
+		static public function select($name, $value = null, $enabled = true) {
 			$result = Item_Unit::get_all();
 			$units=array();
 			while ($unit = DB::fetch($result)) {

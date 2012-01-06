@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class WO_Produce
 	{
-		public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
+		static public function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
 			DB::begin();
 			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
@@ -44,7 +44,7 @@
 			DB::commit();
 		}
 
-		public static function get($id) {
+		static public function get($id) {
 			$sql = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
 		FROM wo_manufacture, workorders, stock_master
 		WHERE wo_manufacture.workorder_id=workorders.id
@@ -54,18 +54,18 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_all($woid) {
+		static public function get_all($woid) {
 			$sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
 			return DB::query($sql, "The work order issues could not be retrieved");
 		}
 
-		public static function exists($id) {
+		static public function exists($id) {
 			$sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "Cannot retreive a wo production");
 			return (DB::num_rows($result) > 0);
 		}
 
-		public static function void($type_no) {
+		static public function void($type_no) {
 			DB::begin();
 			$row = WO_Produce::get($type_no);
 			// deduct the quantity of this production from the parent work order
@@ -81,7 +81,7 @@
 			DB::commit();
 		}
 
-		public static function display($woid) {
+		static public function display($woid) {
 			$result = WO_Produce::get_all($woid);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Productions for this Order."), 1, 1);

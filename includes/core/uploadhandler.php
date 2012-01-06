@@ -365,7 +365,7 @@
 		 *
 		 * @param $id
 		 */
-		public static function insert($id) {
+		static public function insert($id) {
 			if (!self::$inserted) {
 				JS::footerFile(array('/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'));
 				self::$inserted = true;

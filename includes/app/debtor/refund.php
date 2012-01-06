@@ -14,7 +14,7 @@
 		 */
 	class Debtor_Refund
 	{
-		public static function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
+		static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
 			$amount = $amount * -1;
 			DB::begin();
 			$company_record = DB_Company::get_prefs();
@@ -56,7 +56,7 @@
 			DB::commit();
 			return $refund_no;
 		}
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);

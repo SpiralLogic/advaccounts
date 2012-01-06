@@ -11,26 +11,26 @@
 	 ***********************************************************************/
 	class GL_Account
 	{
-		public static function add($account_code, $account_name, $account_type, $account_code2) {
+		static public function add($account_code, $account_name, $account_type, $account_code2) {
 			$sql = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
 		VALUES (" . DB::escape($account_code) . ", " . DB::escape($account_code2) . ", "
 			 . DB::escape($account_name) . ", " . DB::escape($account_type) . ")";
 			return DB::query($sql);
 		}
 
-		public static function update($account_code, $account_name, $account_type, $account_code2) {
+		static public function update($account_code, $account_name, $account_type, $account_code2) {
 			$sql = "UPDATE chart_master SET account_name=" . DB::escape($account_name)
 			 . ",account_type=" . DB::escape($account_type) . ", account_code2=" . DB::escape($account_code2)
 			 . " WHERE account_code = " . DB::escape($account_code);
 			return DB::query($sql);
 		}
 
-		public static function delete($code) {
+		static public function delete($code) {
 			$sql = "DELETE FROM chart_master WHERE account_code=" . DB::escape($code);
 			DB::query($sql, "could not delete gl account");
 		}
 
-		public static function get_all($from = null, $to = null, $type = null) {
+		static public function get_all($from = null, $to = null, $type = null) {
 			$sql = "SELECT chart_master.*,chart_types.name AS AccountTypeName
 				FROM chart_master,chart_types
 				WHERE chart_master.account_type=chart_types.id";
@@ -47,13 +47,13 @@
 			return DB::query($sql, "could not get gl accounts");
 		}
 
-		public static function get($code) {
+		static public function get($code) {
 			$sql = "SELECT * FROM chart_master WHERE account_code=" . DB::escape($code);
 			$result = DB::query($sql, "could not get gl account");
 			return DB::fetch($result);
 		}
 
-		public static function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
+		static public function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
 			$sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
 			 . " WHERE id=" . DB::escape($reconcile_id);
 			DB::query($sql, "Can't change reconciliation status");
@@ -65,7 +65,7 @@
 			DB::query($sql2, "Error updating reconciliation information");
 		}
 
-		public static function get_max_reconciled($date, $bank_account) {
+		static public function get_max_reconciled($date, $bank_account) {
 			$date = Dates::date2sql($date);
 			// temporary fix to enable fix of invalid entries made in 2.2RC
 			if ($date == 0) {
@@ -81,7 +81,7 @@
 			return DB::query($sql, "Cannot retrieve reconciliation data");
 		}
 
-		public static function get_ending_reconciled($bank_account, $bank_date) {
+		static public function get_ending_reconciled($bank_account, $bank_date) {
 			$sql = "SELECT ending_reconcile_balance
 		FROM bank_accounts WHERE id=" . DB::escape($bank_account)
 			 . " AND last_reconciled_date=" . DB::escape($bank_date);
@@ -89,7 +89,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_sql_for_reconcile($bank_account, $date) {
+		static public function get_sql_for_reconcile($bank_account, $date) {
 			$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
@@ -100,7 +100,7 @@
 			return $sql;
 		}
 
-		public static function reset_sql_for_reconcile($bank_account, $date) {
+		static public function reset_sql_for_reconcile($bank_account, $date) {
 			$sql = "UPDATE	reconciled
 		FROM bank_trans
 		WHERE bank_trans.bank_act = " . DB::escape($bank_account) . "
@@ -109,7 +109,7 @@
 			$result = DB::query($sql);
 		}
 
-		public static function is_balancesheet($code) {
+		static public function is_balancesheet($code) {
 			$sql = "SELECT chart_class.ctype FROM chart_class, "
 			 . "chart_types, chart_master
 		WHERE chart_master.account_type=chart_types.id AND
@@ -120,7 +120,7 @@
 			return $row[0] > 0 && $row[0] < CL_INCOME;
 		}
 
-		public static function get_name($code) {
+		static public function get_name($code) {
 			$sql = "SELECT account_name from chart_master WHERE account_code=" . DB::escape($code);
 			$result = DB::query($sql, "could not retreive the account name for $code");
 			if (DB::num_rows($result) == 1) {

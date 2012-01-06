@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Item_Category
 	{
-		public static function add($description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
+		static public function add($description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
 			$sql = "INSERT INTO stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act,
 			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act,
@@ -20,36 +20,36 @@
 			DB::query($sql, "an item category could not be added");
 		}
 
-		public static function update($id, $description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
+		static public function update($id, $description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
 			$sql = "UPDATE stock_category SET " . "description = " . DB::escape($description) . "," . "dflt_tax_type = " . DB::escape($tax_type_id) . "," . "dflt_units = " . DB::escape($units) . "," . "dflt_mb_flag = " . DB::escape($mb_flag) . "," . "dflt_sales_act = " . DB::escape($sales_account) . "," . "dflt_cogs_act = " . DB::escape($cogs_account) . "," . "dflt_inventory_act = " . DB::escape($inventory_account) . "," . "dflt_adjustment_act = " . DB::escape($adjustment_account) . "," . "dflt_assembly_act = " . DB::escape($assembly_account) . "," . "dflt_dim1 = " . DB::escape($dim1) . "," . "dflt_dim2 = " . DB::escape($dim2) . "," . "dflt_no_sale = " . DB::escape($no_sale) . "WHERE category_id = " . DB::escape($id);
 			DB::query($sql, "an item category could not be updated");
 		}
 
-		public static function delete($id) {
+		static public function delete($id) {
 			$sql = "DELETE FROM stock_category WHERE category_id=" . DB::escape($id);
 			DB::query($sql, "an item category could not be deleted");
 		}
 
-		public static function get($id) {
+		static public function get($id) {
 			$sql = "SELECT * FROM stock_category WHERE category_id=" . DB::escape($id);
 			$result = DB::query($sql, "an item category could not be retrieved");
 			return DB::fetch($result);
 		}
 
-		public static function get_name($id) {
+		static public function get_name($id) {
 			$sql = "SELECT description FROM stock_category WHERE category_id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
+		static public function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 			$sql = "SELECT category_id, description, inactive FROM stock_category";
 			return select_box($name, $selected_id, $sql, 'category_id', 'description', array(
 																																											 'order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 		}
 
-		public static function cells($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
+		static public function cells($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -58,7 +58,7 @@
 			echo "</td>\n";
 		}
 
-		public static function row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
+		static public function row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Item_Category::cells(null, $name, $selected_id, $spec_opt, $submit_on_change);
 			echo "</tr>\n";

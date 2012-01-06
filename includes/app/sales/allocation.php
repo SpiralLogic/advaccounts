@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	class Sales_Allocation {
-	public static function add($amount, $trans_type_from, $trans_no_from,
+	static public function add($amount, $trans_type_from, $trans_no_from,
 															 $trans_type_to, $trans_no_to) {
 		$sql
 		 = "INSERT INTO debtor_allocations (
@@ -23,13 +23,13 @@
 	}
 
 
-	public static function delete($trans_id) {
+	static public function delete($trans_id) {
 		$sql = "DELETE FROM debtor_allocations WHERE id = " . DB::escape($trans_id);
 		return DB::query($sql, "The existing allocation $trans_id could not be deleted");
 	}
 
 
-	public static function get_balance($trans_type, $trans_no) {
+	static public function get_balance($trans_type, $trans_no) {
 		$sql
 		 = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
 		FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
@@ -39,7 +39,7 @@
 	}
 
 
-	public static function update($trans_type, $trans_no, $alloc) {
+	static public function update($trans_type, $trans_no, $alloc) {
 		$sql
 		 = "UPDATE debtor_trans SET alloc = alloc + $alloc
 		WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
@@ -47,7 +47,7 @@
 	}
 
 
-	public static function void($type, $type_no, $date = "") {
+	static public function void($type, $type_no, $date = "") {
 
 		// clear any allocations for this transaction
 		$sql
@@ -77,7 +77,7 @@
 	}
 
 
-	public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
+	static public function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
 		$sql
 		 = "SELECT
 		trans.type,
@@ -107,7 +107,7 @@
 	}
 
 
-	public static function get_allocatable_sql($customer_id, $settled) {
+	static public function get_allocatable_sql($customer_id, $settled) {
 		$settled_sql = "";
 		if (!$settled) {
 			$settled_sql = " AND (round(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc,6) > 0)";
@@ -122,7 +122,7 @@
 	}
 
 
-	public static function get_to_trans($customer_id, $trans_no = null, $type = null) {
+	static public function get_to_trans($customer_id, $trans_no = null, $type = null) {
 		if ($trans_no != null and $type != null) {
 			$sql = Sales_Allocation::get_sql("amt", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to

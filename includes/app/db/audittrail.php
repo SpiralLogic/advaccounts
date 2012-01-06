@@ -17,7 +17,7 @@
 		 * @param $trans_date
 		 * @param string $descr
 		 */
-		public static function add($trans_type, $trans_no, $trans_date, $descr = '') {
+		static public function add($trans_type, $trans_no, $trans_date, $descr = '') {
 			$insertid = DB::insert('audit_trail')
 			 ->values(array(
 				'type' => $trans_type,
@@ -41,7 +41,7 @@
 		 * @static
 		 * @param $todate
 		 */
-		public static function close_transactions($todate) {
+		static public function close_transactions($todate) {
 			$errors = 0;
 			$sql = "SELECT DISTINCT a.id, a.gl_date, a.fiscal_year"
 			 . " FROM gl_trans gl"
@@ -78,7 +78,7 @@
 		 * @param $trans_no
 		 * @return array
 		 */
-		public static function get_all($trans_type, $trans_no) {
+		static public function get_all($trans_type, $trans_no) {
 			$result = DB::select()->from('audit_trail')->where('type=', $trans_type)->and_where('trans_no-', $trans_no)->fetch()
 			 ->all();
 			return $result;
@@ -90,7 +90,7 @@
 		 * @param $trans_no
 		 * @return mixed
 		 */
-		public static function get_last($trans_type, $trans_no) {
+		static public function get_last($trans_type, $trans_no) {
 			$result = DB::select()->from('audit_trail')->where('type=', $trans_type)->and_where('trans_no-', $trans_no)
 			 ->and_where("NOT ISNULL(gl_seq)")->fetch()->one();
 			return $result;
@@ -102,7 +102,7 @@
 		 * @param $trans_no
 		 * @return int
 		 */
-		public static function is_closed_trans($type, $trans_no) {
+		static public function is_closed_trans($type, $trans_no) {
 			$sql = "SELECT	gl_seq FROM audit_trail"
 			 . " WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($trans_no)
@@ -117,7 +117,7 @@
 		 * @static
 		 * @param $fromdate
 		 */
-		public static function open_transactions($fromdate) {
+		static public function open_transactions($fromdate) {
 			$sql = "SELECT a.id, a.gl_date, a.fiscal_year"
 			 . " FROM gl_trans gl"
 			 . " LEFT JOIN audit_trail a ON

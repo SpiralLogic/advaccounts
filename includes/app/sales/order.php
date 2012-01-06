@@ -626,11 +626,11 @@
 			foreach ($this->line_items as $line) {
 				if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 					$sql
-					 = "SELECT loc_stock.*, locations.location_name, locations.email
-					FROM loc_stock, locations
-					WHERE loc_stock.loc_code=locations.loc_code
-					AND loc_stock.stock_id = '" . $line->stock_id . "'
-					AND loc_stock.loc_code = '" . $this->Location . "'";
+					 = "SELECT stock_location.*, locations.location_name, locations.email
+					FROM stock_location, locations
+					WHERE stock_location.loc_code=locations.loc_code
+					AND stock_location.stock_id = '" . $line->stock_id . "'
+					AND stock_location.loc_code = '" . $this->Location . "'";
 					$res = DB::query($sql, "a location could not be retreived");
 					$loc = DB::fetch($res);
 					if ($loc['email'] != "") {
@@ -803,7 +803,7 @@
 		/**
 		 *
 		 */
-		public static function update_version($order) {
+		static public function update_version($order) {
 			foreach ($order as $so_num => $so_ver) {
 				$sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
 				DB::query($sql, 'Concurrent editing conflict while sales order update');
@@ -851,11 +851,11 @@
 			foreach ($this->line_items as $line) {
 				if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 					$sql
-					 = "SELECT loc_stock.*, locations.location_name, locations.email
-							FROM loc_stock, locations
-							WHERE loc_stock.loc_code=locations.loc_code
-							 AND loc_stock.stock_id = " . DB::escape($line->stock_id) . "
-							 AND loc_stock.loc_code = " . DB::escape($this->Location);
+					 = "SELECT stock_location.*, locations.location_name, locations.email
+							FROM stock_location, locations
+							WHERE stock_location.loc_code=locations.loc_code
+							 AND stock_location.stock_id = " . DB::escape($line->stock_id) . "
+							 AND stock_location.loc_code = " . DB::escape($this->Location);
 					$res = DB::query($sql, "a location could not be retreived");
 					$loc = DB::fetch($res);
 					if ($loc['email'] != "") {
@@ -1384,7 +1384,7 @@
 		 * @param $order_no
 		 * @param $trans_type
 		 */
-		public static function delete($order_no, $trans_type) {
+		static public function delete($order_no, $trans_type) {
 			DB::begin();
 			$sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
 			DB::query($sql, "order Header Delete");
@@ -1404,7 +1404,7 @@
 		 * @return DB_Query_Result|void
 		 * @throws DBException
 		 */
-		public static function get_header($order_no, $trans_type) {
+		static public function get_header($order_no, $trans_type) {
 			$sql
 			 = "SELECT DISTINCT sales_orders.*,
 		 debtors.name,
@@ -1453,7 +1453,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function get_details($order_no, $trans_type) {
+		static public function get_details($order_no, $trans_type) {
 			$sql
 			 = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
 			 discount_percent,
@@ -1471,7 +1471,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function has_deliveries($order_no) {
+		static public function has_deliveries($order_no) {
 			$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
 			$result = DB::query($sql, "could not query for sales order usage");
 			$row = DB::fetch_row($result);
@@ -1483,7 +1483,7 @@
 		 *
 		 * @param $order_no
 		 */
-		public static function close($order_no) {
+		static public function close($order_no) {
 			// set the quantity of each item to the already sent quantity. this will mark item as closed.
 			$sql
 			 = "UPDATE sales_order_details
@@ -1499,7 +1499,7 @@
 		 *
 		 * @return string
 		 */
-		public static function get_invoice_duedate($debtorno, $invdate) {
+		static public function get_invoice_duedate($debtorno, $invdate) {
 			if (!Dates::is_date($invdate)) {
 				return Dates::new_doc_date();
 			}
@@ -1528,7 +1528,7 @@
 		 *
 		 * @return DB_Query_Result
 		 */
-		public static function get_customer($customer_id) {
+		static public function get_customer($customer_id) {
 			// Now check to ensure this account is not on hold */
 			$sql
 			 = "SELECT debtors.name,
@@ -1560,7 +1560,7 @@
 		 *
 		 * @return null|PDOStatement
 		 */
-		public static function get_branch($customer_id, $branch_id) {
+		static public function get_branch($customer_id, $branch_id) {
 			// the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
 			$sql
 			 = "SELECT branches.br_name,
@@ -1582,7 +1582,7 @@
 		 *
 		 * @return false|Purch_Order|Sales_Order
 		 */
-		public static function check_edit_conflicts($order) {
+		static public function check_edit_conflicts($order) {
 			if (!isset($_POST['order_id'])) {
 				$_POST['order_id'] = $order->order_id;
 			}
@@ -1608,7 +1608,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function update_parent_line($doc_type, $line_id, $qty_dispatched) {
+		static public function update_parent_line($doc_type, $line_id, $qty_dispatched) {
 			$doc_type = Debtor_Trans::get_parent_type($doc_type);
 			//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 			if ($doc_type == 0) {

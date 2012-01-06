@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	class WO_Cost {
-		public static function add_material($stock_id, $qty, $date_) {
+		static public function add_material($stock_id, $qty, $date_) {
 			$m_cost = 0;
 			$result = WO::get_bom($stock_id);
 			while ($bom_item = DB::fetch($result)) {
@@ -36,7 +36,7 @@
 			DB::query($sql, "The cost details for the inventory item could not be updated");
 		}
 
-		public static function add_overhead($stock_id, $qty, $date_, $costs) {
+		static public function add_overhead($stock_id, $qty, $date_, $costs) {
 			$dec = User::price_dec();
 			Num::price_decimal($costs, $dec);
 			if ($qty != 0) {
@@ -59,7 +59,7 @@
 			DB::query($sql, "The cost details for the inventory item could not be updated");
 		}
 
-		public static function add_labour($stock_id, $qty, $date_, $costs) {
+		static public function add_labour($stock_id, $qty, $date_, $costs) {
 			$dec = User::price_dec();
 			Num::price_decimal($costs, $dec);
 			if ($qty != 0) {
@@ -82,7 +82,7 @@
 			DB::query($sql, "The cost details for the inventory item could not be updated");
 		}
 
-		public static function add_issue($stock_id, $qty, $date_, $costs) {
+		static public function add_issue($stock_id, $qty, $date_, $costs) {
 			if ($qty != 0) {
 				$costs /= $qty;
 			}

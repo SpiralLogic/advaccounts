@@ -13,7 +13,7 @@
 	class GL_ExchangeRate
 	{
 
-		public static function get($rate_id)
+		static public function get($rate_id)
 			{
 				$sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 				$result = DB::query($sql, "could not get exchange rate for $rate_id");
@@ -21,7 +21,7 @@
 			}
 
 		// Retrieves buy exchange rate for given currency/date, zero if no result
-		public static function get_date($curr_code, $date_)
+		static public function get_date($curr_code, $date_)
 			{
 				$date = Dates::date2sql($date_);
 				$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
@@ -35,7 +35,7 @@
 			}
 
 
-		public static function update($curr_code, $date_, $buy_rate, $sell_rate)
+		static public function update($curr_code, $date_, $buy_rate, $sell_rate)
 			{
 				if (Bank_Currency::is_company($curr_code)) {
 					Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
@@ -47,7 +47,7 @@
 			}
 
 
-		public static function add($curr_code, $date_, $buy_rate, $sell_rate)
+		static public function add($curr_code, $date_, $buy_rate, $sell_rate)
 			{
 				if (Bank_Currency::is_company($curr_code)) {
 					Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
@@ -60,7 +60,7 @@
 			}
 
 
-		public static function delete($rate_id)
+		static public function delete($rate_id)
 			{
 				$sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 				DB::query($sql, "could not delete exchange rate $rate_id");
@@ -69,7 +69,7 @@
 
 		//	Retrieve exchange rate as of date $date from external source (usually inet)
 		//
-		public static function retrieve($curr_b, $date)
+		static public function retrieve($curr_b, $date)
 			{
 				global $Hooks;
 				if (method_exists($Hooks, 'retrieve_exrate')) {
@@ -82,7 +82,7 @@
 			}
 
 
-		public static function get_external($curr_b, $provider = 'ECB', $date)
+		static public function get_external($curr_b, $provider = 'ECB', $date)
 			{
 				$curr_a = DB_Company::get_pref('curr_default');
 				if ($provider == 'ECB') {

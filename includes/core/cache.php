@@ -11,17 +11,17 @@ class Cache
     /**
      * @var Memcached
      */
-    protected static $i = null;
+    static protected $i = null;
     /**
      * @var bool
      */
-    protected static $connected = false;
+    static protected $connected = false;
 
     /**
      * @static
      * @return Memcached
      */
-    protected static function i()
+    static protected function i()
     {
         if (static::$i === null) {
             if (class_exists('Memcached', false)) {
@@ -54,7 +54,7 @@ class Cache
      *
      * @return mixed
      */
-    public static function set($key, $value, $expires = 86400)
+    static public function set($key, $value, $expires = 86400)
     {
         if (static::i() !== false) {
             static::i()->set($key, $value, time() + $expires);
@@ -72,7 +72,7 @@ class Cache
      *
      * @return mixed
      */
-    public static function get($key)
+    static public function get($key)
     {
         if (static::i() !== false) {
             $result = static::i()->get($key);
@@ -94,7 +94,7 @@ class Cache
      * @static
      * @return mixed
      */
-    public static function getStats()
+    static public function getStats()
     {
         return (static::$connected) ? static::i()->getStats() : false;
     }
@@ -103,7 +103,7 @@ class Cache
      * @static
      * @return mixed
      */
-    public static function getVersion()
+    static public function getVersion()
     {
         return (static::$connected) ? static::i()->getVersion() : false;
     }
@@ -112,7 +112,7 @@ class Cache
      * @static
      * @return mixed
      */
-    public static function getServerList()
+    static public function getServerList()
     {
         return (static::$connected) ? static::i()->getServerList() : false;
     }
@@ -122,7 +122,7 @@ class Cache
      *
      * @param int $time
      */
-    public static function flush($time = 0)
+    static public function flush($time = 0)
     {
         if (static::i()) {
             static::i()->flush($time);

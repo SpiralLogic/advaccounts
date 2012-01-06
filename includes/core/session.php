@@ -21,7 +21,7 @@ class SessionException extends Exception {};
 		 * @static
 		 * @return Session|mixed
 		 */
-		public static function i() {
+		static public function i() {
 			(static::$i === null) and static::$i = new static;
 			return static::$i;
 		}
@@ -29,14 +29,14 @@ class SessionException extends Exception {};
 		 * @static
 		 *
 		 */
-		public static function kill() {
+		static public function kill() {
 			session_unset();
 			session_destroy();
 		}
 		/**
 		 * @static
 		 */
-		public static function regenerate() {
+		static public function regenerate() {
 			session_regenerate_id();
 		}
 		/**
@@ -46,7 +46,7 @@ class SessionException extends Exception {};
 		/***
 		 * @var gettextNativeSupport|gettext_php_support
 		 */
-		public static $get_text;
+		static public $get_text;
 		/**
 		 * @var array
 		 */

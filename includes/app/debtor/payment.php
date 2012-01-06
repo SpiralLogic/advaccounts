@@ -14,7 +14,7 @@
 		 */
 	class Debtor_Payment
 	{
-		public static function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
+		static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
 			DB::begin();
 			$company_record = DB_Company::get_prefs();
 			$payment_no = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -63,7 +63,7 @@
 			DB::commit();
 			return $payment_no;
 		}
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
@@ -71,11 +71,11 @@
 			Debtor_Trans::void($type, $type_no);
 			DB::commit();
 		}
-		public static function credit_row($customer, $credit, $parms = '') {
+		static public function credit_row($customer, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " >" . Num::price_format($credit) . "</a>", $parms);
 		}
-		public static function allocations_select($label, $name, $selected = null) {
+		static public function allocations_select($label, $name, $selected = null) {
 			if ($label != null) {
 				label_cell($label);
 			}

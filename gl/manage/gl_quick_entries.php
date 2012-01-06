@@ -11,10 +11,9 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_QUICKENTRY;
-
 	Page::start(_($help_context = "Quick Entries"));
-	list($Mode,$selected_id) = Page::simple_mode(true);
-	list($Mode2,$selected_id2) = simple_page_mode2(true);
+	list($Mode, $selected_id) = Page::simple_mode(true);
+	list($Mode2, $selected_id2) = simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true) {
 		$default = $numeric_id ? -1 : '';
 		$selected_id2 = get_post('selected_id2', $default);
@@ -24,7 +23,7 @@
 				if ($m == 'RESET2') {
 					$selected_id2 = $default;
 				}
-				return array($m,$selected_id2);
+				return array($m, $selected_id2);
 			}
 		}
 		foreach (array('BEd', 'BDel') as $m) {
@@ -34,13 +33,11 @@
 					unset($_POST['_focus']); // focus on first form entry
 					$selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
 					Ajax::i()->activate('_page_body');
-					return array($m,$selected_id2);
-
+					return array($m, $selected_id2);
 				}
 			}
 		}
-		return array('',$selected_id2);
-
+		return array('', $selected_id2);
 	}
 
 	function submit_add_or_update_center2($add = true, $title = false, $async = false) {

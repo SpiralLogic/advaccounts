@@ -15,7 +15,7 @@
 		 *
 		 * @return array
 		 */
-		public static function get_access($id) {
+		static public function get_access($id) {
 			global $installed_extensions;
 			$ext = $installed_extensions[$id];
 			$security_sections = $security_areas = array();
@@ -29,7 +29,7 @@
 		 * @static
 		 *
 		 */
-		public static function add_access() {
+		static public function add_access() {
 			global $security_areas, $security_sections;
 			$installed_extensions = Config::get('extensions.installed');
 			/** @noinspection PhpUnusedLocalVariableInspection */
@@ -72,7 +72,7 @@
 		 *
 		 * @return string
 		 */
-		public static function view($name, $value = null, $submit_on_change = false) {
+		static public function view($name, $value = null, $submit_on_change = false) {
 			$items = array();
 			foreach (Config::get_all('db') as $comp) {
 				$items[] = sprintf(_("Activated for '%s'"), $comp['name']);

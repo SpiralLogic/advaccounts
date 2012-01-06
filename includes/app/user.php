@@ -11,13 +11,13 @@
 	 ***********************************************************************/
 	class User
 	{
-		protected static $_instance = null;
+		static protected $_instance = null;
 
 		/***
 		 * @static
 		 * @return User
 		 */
-		public static function get() {
+		static public function get() {
 			if (isset($_SESSION["current_user"])) {
 				static::$_instance = $_SESSION["current_user"];
 			}
@@ -166,11 +166,11 @@
 			$this->prefs = new userPrefs(Users::get($this->user));
 		}
 
-		public static function prefs() {
+		static public function prefs() {
 			return static::get()->prefs;
 		}
 
-		public static function add_js_data() {
+		static public function add_js_data() {
 			$js
 			 = "\nvar user = {
 						 \n theme: '/themes/" . static::theme() . "/',
@@ -185,11 +185,11 @@
 			JS::beforeload($js);
 		}
 
-		public static function	fallback() {
+		static public function	fallback() {
 			return static::get()->ui_mode == 0;
 		}
 
-		public static function	numeric($input) {
+		static public function	numeric($input) {
 			$num = trim($input);
 			$sep = Config::get('separators_thousands', static::tho_sep());
 			if ($sep != '') {
@@ -211,91 +211,91 @@
 			}
 		}
 
-		public static function	pos() {
+		static public function	pos() {
 			return static::get()->pos;
 		}
 
-		public static function	language() {
+		static public function	language() {
 			return static::prefs()->language();
 		}
 
-		public static function	qty_dec() {
+		static public function	qty_dec() {
 			return static::prefs()->qty_dec();
 		}
 
-		public static function	price_dec() {
+		static public function	price_dec() {
 			return static::prefs()->price_dec();
 		}
 
-		public static function	exrate_dec() {
+		static public function	exrate_dec() {
 			return static::prefs()->exrate_dec();
 		}
 
-		public static function	percent_dec() {
+		static public function	percent_dec() {
 			return static::prefs()->percent_dec();
 		}
 
-		public static function	show_gl_info() {
+		static public function	show_gl_info() {
 			return static::prefs()->show_gl_info();
 		}
 
-		public static function	show_codes() {
+		static public function	show_codes() {
 			return static::prefs()->show_codes();
 		}
 
-		public static function	date_format() {
+		static public function	date_format() {
 			return static::prefs()->date_format();
 		}
 
-		public static function	date_display() {
+		static public function	date_display() {
 			return static::prefs()->date_display();
 		}
 
-		public static function	date_sep() {
+		static public function	date_sep() {
 			return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : 0;
 		}
 
-		public static function	tho_sep() {
+		static public function	tho_sep() {
 			return static::prefs()->tho_sep();
 		}
 
-		public static function	dec_sep() {
+		static public function	dec_sep() {
 			return static::prefs()->dec_sep();
 		}
 
-		public static function	theme() {
+		static public function	theme() {
 			return static::prefs()->get_theme();
 		}
 
-		public static function	pagesize() {
+		static public function	pagesize() {
 			return static::prefs()->get_pagesize();
 		}
 
-		public static function	hints() {
+		static public function	hints() {
 			return static::prefs()->show_hints();
 		}
 
-		public static function	print_profile() {
+		static public function	print_profile() {
 			return static::prefs()->print_profile();
 		}
 
-		public static function	rep_popup() {
+		static public function	rep_popup() {
 			return static::prefs()->rep_popup();
 		}
 
-		public static function	query_size() {
+		static public function	query_size() {
 			return static::prefs()->query_size();
 		}
 
-		public static function	graphic_links() {
+		static public function	graphic_links() {
 			return static::prefs()->graphic_links();
 		}
 
-		public static function	sticky_date() {
+		static public function	sticky_date() {
 			return static::prefs()->sticky_date();
 		}
 
-		public static function	startup_tab() {
+		static public function	startup_tab() {
 			return static::prefs()->start_up_tab();
 		}
 	}

@@ -9,11 +9,11 @@
 		/**
 		 * @var HTML
 		 */
-		protected static $_instance = null;
+		static protected $_instance = null;
 		/**
 		 * @var bool
 		 */
-		protected static $_return = false;
+		static protected $_return = false;
 
 		/**
 		 * @param $func

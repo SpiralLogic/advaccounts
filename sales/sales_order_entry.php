@@ -11,7 +11,6 @@
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_SALESORDER;
-
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
 																														ST_SALESORDER => SA_SALESORDER,
@@ -63,6 +62,9 @@
 	elseif (Input::get('CloneOrder')) {
 		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
 	}
+	if (!$order) {
+		create_order(ST_SALESORDER, 0);
+	}
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -92,7 +94,7 @@
 		Display::submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			Errors::notice(_("This sales quotation has been cancelled as requested."), 1);
-			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?".Orders::NEW_QUOTE."=Yes");
+			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?" . Orders::NEW_QUOTE . "=Yes");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
@@ -261,13 +263,15 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
+			 "ModifyOrder" :
 			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+			 ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}

@@ -11,7 +11,7 @@
 		/**
 		 * @var DB_Query
 		 */
-		protected static $query = null;
+		static protected $query = null;
 		/**
 		 * @var bool
 		 */

@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class WO_Issue
 	{
-		public static function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_) {
+		static public function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_) {
 			DB::begin();
 			$details = WO::get($woid);
 			if (strlen($details[0]) == 0) {
@@ -47,12 +47,12 @@
 			DB::commit();
 		}
 
-		public static function get_all($woid) {
+		static public function get_all($woid) {
 			$sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid) . " ORDER BY issue_no";
 			return DB::query($sql, "The work order issues could not be retrieved");
 		}
 
-		public static function get_additional($woid) {
+		static public function get_additional($woid) {
 			$sql = "SELECT wo_issues.*, wo_issue_items.*
 		FROM wo_issues, wo_issue_items
 		WHERE wo_issues.issue_no=wo_issue_items.issue_id
@@ -60,7 +60,7 @@
 			return DB::query($sql, "The work order issues could not be retrieved");
 		}
 
-		public static function get($issue_no) {
+		static public function get($issue_no) {
 			$sql = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
 		stock_master.description, locations.location_name, " . "workcentres.name AS WorkCentreName
 		FROM wo_issues, workorders, stock_master, " . "locations, workcentres
@@ -73,7 +73,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_details($issue_no) {
+		static public function get_details($issue_no) {
 			$sql = "SELECT wo_issue_items.*," . "stock_master.description, stock_master.units
 		FROM wo_issue_items, stock_master
 		WHERE issue_id=" . DB::escape($issue_no) . "
@@ -82,13 +82,13 @@
 			return DB::query($sql, "The work order issue items could not be retrieved");
 		}
 
-		public static function exists($issue_no) {
+		static public function exists($issue_no) {
 			$sql = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
 			$result = DB::query($sql, "Cannot retreive a wo issue");
 			return (DB::num_rows($result) > 0);
 		}
 
-		public static 	function display($woid) {
+		static public 	function display($woid) {
 			$result = WO_Issue::get_all($woid);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("There are no Issues for this Order."), 0, 1);
@@ -108,7 +108,7 @@
 			}
 		}
 
-		public static function void($type_no) {
+		static public function void($type_no) {
 			DB::begin();
 			// void the actual issue items and their quantities
 			$sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id=" . DB::escape($type_no);
@@ -120,7 +120,7 @@
 			DB::commit();
 		}
 
-		public static function add_to($order, $new_item, $new_item_qty, $standard_cost) {
+		static public function add_to($order, $new_item, $new_item_qty, $standard_cost) {
 			if ($order->find_order_item($new_item)) {
 				Errors::error(_("For Part: '") . $new_item . "' This item is already on this issue. You can change the quantity issued of the existing line if necessary.");
 			} else {
@@ -128,7 +128,7 @@
 			}
 		}
 
-		public static function display_items($title, &$order) {
+		static public function display_items($title, &$order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
@@ -166,7 +166,7 @@
 			Display::div_end();
 		}
 
-		public static function edit_controls($order, $line_no = -1) {
+		static public function edit_controls($order, $line_no = -1) {
 
 			start_row();
 			$id = find_submit(MODE_EDIT);
@@ -207,7 +207,7 @@
 			end_row();
 		}
 
-		public static function option_controls() {
+		static public function option_controls() {
 			echo "<br>";
 			start_table();
 			ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));

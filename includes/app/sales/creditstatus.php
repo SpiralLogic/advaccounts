@@ -11,20 +11,20 @@
 	 ***********************************************************************/
 	class Sales_CreditStatus
 	{
-		public static function add($description, $disallow_invoicing) {
+		static public function add($description, $disallow_invoicing) {
 			$sql
 			 = "INSERT INTO credit_status (reason_description, dissallow_invoices)
 		VALUES (" . DB::escape($description) . "," . DB::escape($disallow_invoicing) . ")";
 			DB::query($sql, "could not add credit status");
 		}
 
-		public static function update($status_id, $description, $disallow_invoicing) {
+		static public function update($status_id, $description, $disallow_invoicing) {
 			$sql = "UPDATE credit_status SET reason_description=" . DB::escape($description) . ",
 		dissallow_invoices=" . DB::escape($disallow_invoicing) . " WHERE id=" . DB::escape($status_id);
 			DB::query($sql, "could not update credit status");
 		}
 
-		public static function get_all($all = false) {
+		static public function get_all($all = false) {
 			$sql = "SELECT * FROM credit_status";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -32,18 +32,18 @@
 			return DB::query($sql, "could not get all credit status");
 		}
 
-		public static function get($status_id) {
+		static public function get($status_id) {
 			$sql = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
 			$result = DB::query($sql, "could not get credit status");
 			return DB::fetch($result);
 		}
 
-		public static function delete($status_id) {
+		static public function delete($status_id) {
 			$sql = "DELETE FROM credit_status WHERE id=" . DB::escape($status_id);
 			DB::query($sql, "could not delete credit status");
 		}
 
-		public static function select($name, $selected_id = null, $disabled = null) {
+		static public function select($name, $selected_id = null, $disabled = null) {
 			if ($disabled === null) {
 				$disabled = (!$_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT));
 			}
@@ -51,7 +51,7 @@
 			return select_box($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
 		}
 
-		public static function cells($label, $name, $selected_id = null, $disabled = null) {
+		static public function cells($label, $name, $selected_id = null, $disabled = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -60,7 +60,7 @@
 			echo "</td>\n";
 		}
 
-		public static function row($label, $name, $selected_id = null, $disabled = null) {
+		static public function row($label, $name, $selected_id = null, $disabled = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Sales_CreditStatus::cells(null, $name, $selected_id, $disabled);
 			echo "</tr>\n";

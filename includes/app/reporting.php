@@ -30,7 +30,7 @@
 		 *
 		 * @return string
 		 */
-		public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
+		static public function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
 			$id = '', $email = 0, $extra = 0) {
 			$url = '/reporting/prn_redirect.php?';
 			$options = static::print_option_array($type_no, $doc_no, $email, $extra);
@@ -39,7 +39,7 @@
 			return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
 		}
 
-		public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
+		static public function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
 			$ar = array();
 			$rep = '';
 			switch ($type_no) {
@@ -109,7 +109,7 @@
 			return array($ar, $rep);
 		}
 
-		public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '',
+		static public function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '',
 			$emails = array(), $extra = 0, $return = false) {
 			if (empty($emails)) {
 				return false;
@@ -158,7 +158,7 @@ JS;
 //
 //	Universal link to any kind of report.
 //
-		public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink',
+		static public function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink',
 			$id = '') {
 			$url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
 			$id = JS::default_focus($id);

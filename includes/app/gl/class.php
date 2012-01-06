@@ -1,18 +1,18 @@
 <?php
 	class GL_Class {
-		public static function add($id, $name, $ctype) {
+		static public function add($id, $name, $ctype) {
 			$sql = "INSERT INTO chart_class (cid, class_name, ctype)
 		VALUES (" . DB::escape($id) . ", " . DB::escape($name) . ", " . DB::escape($ctype) . ")";
 			return DB::query($sql);
 		}
 
-		public static function update($id, $name, $ctype) {
+		static public function update($id, $name, $ctype) {
 			$sql = "UPDATE chart_class SET class_name=" . DB::escape($name) . ",
 		ctype=" . DB::escape($ctype) . " WHERE cid = " . DB::escape($id);
 			return DB::query($sql);
 		}
 
-		public static function get_all($all = false, $balance = -1) {
+		static public function get_all($all = false, $balance = -1) {
 			$sql = "SELECT * FROM chart_class";
 			if (!$all) {
 				$sql .= " WHERE !inactive";
@@ -28,31 +28,31 @@
 			return DB::query($sql, "could not get account classes");
 		}
 
-		public static function get($id) {
+		static public function get($id) {
 			$sql = "SELECT * FROM chart_class WHERE cid = " . DB::escape($id);
 			$result = DB::query($sql, "could not get account type");
 			return DB::fetch($result);
 		}
 
-		public static function get_name($id) {
+		static public function get_name($id) {
 			$sql = "SELECT class_name FROM chart_class WHERE cid =" . DB::escape($id);
 			$result = DB::query($sql, "could not get account type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function delete($id) {
+		static public function delete($id) {
 			$sql = "DELETE FROM chart_class WHERE cid = " . DB::escape($id);
 			DB::query($sql, "could not delete account type");
 		}
 
-		public static function	select($name, $selected_id = null, $submit_on_change = false) {
+		static public function	select($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT cid, class_name FROM chart_class";
 			return select_box($name, $selected_id, $sql, 'cid', 'class_name', array(
 				'select_submit' => $submit_on_change, 'async' => false));
 		}
 
-		public static function	cells($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	cells($label, $name, $selected_id = null, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -61,13 +61,13 @@
 			echo "</td>\n";
 		}
 
-		public static function	row($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	row($label, $name, $selected_id = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			GL_Class::cells(null, $name, $selected_id, $submit_on_change);
 			echo "</tr>\n";
 		}
 
-		public static function	types_row($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	types_row($label, $name, $selected_id = null, $submit_on_change = false) {
 			global $class_types;
 			echo "<tr><td class='label'>$label</td><td>";
 			echo array_selector($name, $selected_id, $class_types, array('select_submit' => $submit_on_change));

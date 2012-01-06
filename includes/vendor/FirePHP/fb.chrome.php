@@ -129,7 +129,7 @@
 		/**
 		 * @var ChromePhp
 		 */
-		protected static $_instance;
+		static protected $_instance;
 
 		/**
 		 * Prevent recursion when working with objects referring to each other
@@ -153,7 +153,7 @@
 		 *
 		 * @return ChromePhp
 		 */
-		public static function getInstance() {
+		static public function getInstance() {
 			if (self::$_instance === null) {
 				self::$_instance = new FB();
 			}
@@ -168,7 +168,7 @@
 		 * @param string severity ChromePhp::LOG || ChromePhp::WARN || ChromePhp::ERROR
 		 * @return void
 		 */
-		public static function log() {
+		static public function log() {
 			$args = func_get_args();
 			$severity = count($args) == 3 ? array_pop($args) : '';
 			$args = array_reverse($args);
@@ -186,7 +186,7 @@
 		 * @param mixed value
 		 * @return void
 		 */
-		public static function warn() {
+		static public function warn() {
 			return self::_log(func_get_args() + array('type' => self::WARN));
 		}
 
@@ -197,7 +197,7 @@
 		 * @param mixed value
 		 * @return void
 		 */
-		public static function error() {
+		static public function error() {
 			return self::_log(func_get_args() + array('type' => self::ERROR));
 		}
 
@@ -206,7 +206,7 @@
 		 *
 		 * @param string value
 		 */
-		public static function group() {
+		static public function group() {
 			return self::_log(func_get_args() + array('type' => self::GROUP));
 		}
 
@@ -215,7 +215,7 @@
 		 *
 		 * @param mixed value
 		 */
-		public static function info() {
+		static public function info() {
 			return self::_log(func_get_args() + array('type' => self::INFO));
 		}
 
@@ -224,7 +224,7 @@
 		 *
 		 * @param string value
 		 */
-		public static function groupCollapsed() {
+		static public function groupCollapsed() {
 			return self::_log(func_get_args() + array('type' => self::GROUP_COLLAPSED));
 		}
 
@@ -233,7 +233,7 @@
 		 *
 		 * @param string value
 		 */
-		public static function groupEnd() {
+		static public function groupEnd() {
 			return self::_log(func_get_args() + array('type' => self::GROUP_END));
 		}
 
@@ -244,7 +244,7 @@
 		 * @internal param mixed $type
 		 * @return void
 		 */
-		protected static function _log(array $args) {
+		static protected function _log(array $args) {
 			$type = $args['type'];
 			unset($args['type']);
 			// nothing passed in, don't do anything
@@ -500,7 +500,7 @@
 		 * @param string path to directory on disk to keep log files
 		 * @param string url path to url to access the files
 		 */
-		public static function useFile($path, $url) {
+		static public function useFile($path, $url) {
 			$logger = self::getInstance();
 			$logger->addSetting(self::LOG_PATH, rtrim($path, '/'));
 			$logger->addSetting(self::URL_PATH, rtrim($url, '/'));

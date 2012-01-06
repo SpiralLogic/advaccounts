@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class GL_Bank
 	{
-		protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = null, $person_id = "") {
+		static protected function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = null, $person_id = "") {
 			if (Bank_Currency::is_company($currency)) {
 				return;
 			}
@@ -55,7 +55,7 @@
 		//	$from_account - source bank account id
 		//	$to_account -	target bank account id
 		//
-		public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
+		static public function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
 			DB::begin();
 			$trans_type = ST_BANKTRANSFER;
 			$currency = Bank_Currency::for_company($from_account);
@@ -94,7 +94,7 @@
 		// $person_detail_id - customer branch id or not used
 		//
 		// returns an array of (inserted trans type, trans no)
-		public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true) {
+		static public function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true) {
 			// we can only handle type 1 (payment)and type 2 (deposit)
 			if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {
 				Errors::show_db_error("Invalid type ($trans_type) sent to add_bank_transaction");

@@ -8,6 +8,6 @@
 	 */
 	class Events
 	{
-		public static function shutdown() {
+		static public function shutdown() {
 		}
 	}

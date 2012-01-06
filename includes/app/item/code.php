@@ -6,7 +6,7 @@
 			 item_codes table is used to store both multiply foreign codes and
 			 sale kits definition.
 		 */
-		public static function	update($id, $item_code, $stock_id, $description, $category, $qty, $foreign = 0)
+		static public function	update($id, $item_code, $stock_id, $description, $category, $qty, $foreign = 0)
 		{
 			$sql
 			 = "UPDATE item_codes SET
@@ -29,7 +29,7 @@
 			DB::query($sql, "an item code could not be updated");
 		}
 
-		public static function	add($item_code, $stock_id, $description, $category, $qty, $foreign = 0)
+		static public function	add($item_code, $stock_id, $description, $category, $qty, $foreign = 0)
 		{
 			$sql
 			 = "INSERT INTO item_codes
@@ -40,20 +40,20 @@
 			DB::query($sql, "an item code could not be added");
 		}
 
-		public static function	delete($id)
+		static public function	delete($id)
 		{
 			$sql = "DELETE FROM item_codes WHERE id=" . DB::escape($id);
 			DB::query($sql, "an item code could not be deleted");
 		}
 
-		public static function	get($id)
+		static public function	get($id)
 		{
 			$sql = "SELECT * FROM item_codes WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "item code could not be retrieved");
 			return DB::fetch($result);
 		}
 
-		public static function	get_all($stock_id, $foreign = 1)
+		static public function	get_all($stock_id, $foreign = 1)
 		{
 			$sql = "SELECT i.*, c.description as cat_name FROM "
 			 . "item_codes as i,"
@@ -65,13 +65,13 @@
 			return $result;
 		}
 
-		public static function	delete_kit($item_code)
+		static public function	delete_kit($item_code)
 		{
 			$sql = "DELETE FROM item_codes WHERE item_code=" . DB::escape($item_code);
 			DB::query($sql, "an item kit could not be deleted");
 		}
 
-		public static function	get_kit($item_code)
+		static public function	get_kit($item_code)
 		{
 			$sql
 			 = "SELECT DISTINCT kit.*, item.units, comp.description as comp_name
@@ -89,7 +89,7 @@
 			return $result;
 		}
 
-		public static function	is_kit($item_code)
+		static public function	is_kit($item_code)
 		{
 			$sql = "SELECT * FROM item_codes WHERE item_code=" . DB::escape($item_code);
 			return DB::query($sql, "Could not do shit for some reason");
@@ -98,7 +98,7 @@
 		//
 		//	Check if kit contains given item, optionally recursive.
 		//
-		public static function	is_item_in_kit($old_id, $kit_code, $item_code, $recurse = false)
+		static public function	is_item_in_kit($old_id, $kit_code, $item_code, $recurse = false)
 		{
 			$result = static::get_kit($kit_code);
 			if ($result != 0) {
@@ -120,7 +120,7 @@
 			return 0;
 		}
 
-		public static function	get_kit_props($kit_code)
+		static public function	get_kit_props($kit_code)
 		{
 			$sql = "SELECT description, category_id FROM item_codes "
 			 . " WHERE item_code=" . DB::escape($kit_code);
@@ -128,7 +128,7 @@
 			return DB::fetch($res);
 		}
 
-		public static function	update_kit_props($kit_code, $name, $category)
+		static public function	update_kit_props($kit_code, $name, $category)
 		{
 			$sql = "UPDATE item_codes SET description="
 			 . DB::escape($name) . ",category_id=" . DB::escape($category)
@@ -136,7 +136,7 @@
 			DB::query($sql, "kit name update failed");
 		}
 
-		public static function	get_defaults($stock_id)
+		static public function	get_defaults($stock_id)
 		{
 			$sql
 			 = "SELECT units, decimals, description, category_id
@@ -146,7 +146,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function	get_where_used($item_code)
+		static public function	get_where_used($item_code)
 		{
 			$sql = "SELECT item_code, description FROM "
 			 . "item_codes "

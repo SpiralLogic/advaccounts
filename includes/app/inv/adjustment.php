@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Inv_Adjustment
 	{
-		public static function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
+		static public function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
 			DB::begin();
 			$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
 			foreach ($items as $line_item) {
@@ -28,12 +28,12 @@
 			return $adj_id;
 		}
 
-		public static function void($type_no) {
+		static public function void($type_no) {
 			GL_Trans::void(ST_INVADJUST, $type_no);
 			Inv_Movement::void(ST_INVADJUST, $type_no);
 		}
 
-		public static function get($trans_no) {
+		static public function get($trans_no) {
 			$result = Inv_Movement::get(ST_INVADJUST, $trans_no);
 			if (DB::num_rows($result) == 0) {
 				return null;
@@ -41,7 +41,7 @@
 			return $result;
 		}
 
-		public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
+		static public function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
 			$mb_flag = WO::get_mb_flag($stock_id);
 			if (Input::post('mb_flag') == STOCK_SERVICE) {
 				Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
@@ -59,7 +59,7 @@
 			}
 		}
 
-		public static function header($order) {
+		static public function header($order) {
 			start_outer_table('tablestyle2 width70'); // outer table
 			table_section(1);
 			Inv_Location::row(_("Location:"), 'StockLocation', null);
@@ -75,7 +75,7 @@
 			end_outer_table(1); // outer table
 		}
 
-		public static function display_items($title, $order) {
+		static public function display_items($title, $order) {
 			Display::heading($title);
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
@@ -113,7 +113,7 @@
 			Display::div_end();
 		}
 
-		public static function item_controls($order, $line_no = -1) {
+		static public function item_controls($order, $line_no = -1) {
 
 			start_row();
 			$dec2 = 0;
@@ -158,7 +158,7 @@
 			end_row();
 		}
 
-		public static function option_controls() {
+		static public function option_controls() {
 			echo "<br>";
 			start_table('center');
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);

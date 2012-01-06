@@ -487,7 +487,7 @@
 		 * @static
 		 * @access public
 		 */
-		public static function ValidateAddress($address)
+		static public function ValidateAddress($address)
 		{
 			if (function_exists('filter_var')) { //Introduced in PHP 5.2
 				if (filter_var($address, FILTER_VALIDATE_EMAIL) === FALSE) {
@@ -1829,7 +1829,7 @@
 		 * @return string
 		 * @static
 		 */
-		public static function RFCDate()
+		static public function RFCDate()
 		{
 			$tz = date('Z');
 			$tzs = ($tz < 0) ? '-' : '+';
@@ -1954,7 +1954,7 @@
 		 * @return string MIME type of ext
 		 * @static
 		 */
-		public static function _mime_types($ext = '')
+		static public function _mime_types($ext = '')
 		{
 			$mimes = array('hqx' => 'application/mac-binhex40', 'cpt' => 'application/mac-compactpro', 'doc' => 'application/msword', 'bin' => 'application/macbinary', 'dms' => 'application/octet-stream', 'lha' => 'application/octet-stream', 'lzh' => 'application/octet-stream',
 				'exe' => 'application/octet-stream', 'class' => 'application/octet-stream', 'psd' => 'application/octet-stream', 'so' => 'application/octet-stream', 'sea' => 'application/octet-stream', 'dll' => 'application/octet-stream', 'oda' => 'application/oda', 'pdf' => 'application/pdf',

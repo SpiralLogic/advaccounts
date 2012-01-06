@@ -7,13 +7,13 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	class Tags {
-		public static function add($type, $name, $description) {
+		static public function add($type, $name, $description) {
 			$sql = "INSERT INTO tags (type, name, description)
  		VALUES (" . DB::escape($type) . ", " . DB::escape($name) . ", " . DB::escape($description) . ")";
 			return DB::query($sql);
 		}
 
-		public static function update($id, $name, $description, $type = null) {
+		static public function update($id, $name, $description, $type = null) {
 			$sql = "UPDATE tags SET name=" . DB::escape($name) . ", description=" . DB::escape($description);
 			if ($type != null) {
 				$sql .= ", type=" . DB::escape($type);
@@ -22,7 +22,7 @@
 			return DB::query($sql);
 		}
 
-		public static function get_all($type, $all = false) {
+		static public function get_all($type, $all = false) {
 			$sql = "SELECT * FROM tags WHERE type=" . DB::escape($type);
 			if (!$all) {
 				$sql .= " AND !inactive";
@@ -31,39 +31,39 @@
 			return DB::query($sql, "could not get tags");
 		}
 
-		public static function get($id) {
+		static public function get($id) {
 			$sql = "SELECT * FROM tags WHERE id = " . DB::escape($id);
 			$result = DB::query($sql, "could not get tag");
 			return DB::fetch($result);
 		}
 
-		public static function get_type($id) {
+		static public function get_type($id) {
 			$sql = "SELECT type FROM tags WHERE id = " . DB::escape($id);
 			$result = DB::query($sql, "could not get tag type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function get_name($id) {
+		static public function get_name($id) {
 			$sql = "SELECT name FROM tags WHERE id = " . DB::escape($id);
 			$result = DB::query($sql, "could not get tag name");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function get_description($id) {
+		static public function get_description($id) {
 			$sql = "SELECT description FROM tags WHERE id = " . DB::escape($id);
 			$result = DB::query($sql, "could not get tag description");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
-		public static function delete($id) {
+		static public function delete($id) {
 			$sql = "DELETE FROM tags WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not delete tag");
 		}
 
-		public static function add_associations($recordid, $tagids) {
+		static public function add_associations($recordid, $tagids) {
 			foreach ($tagids as $tagid) {
 				if (!$tagid) {
 					continue;
@@ -74,7 +74,7 @@
 			}
 		}
 
-		public static function update_associations($type, $recordid, $tagids) {
+		static public function update_associations($type, $recordid, $tagids) {
 			// Delete the old associations
 			Tags::delete_associations($type, $recordid, false);
 			// Add the new associations
@@ -84,7 +84,7 @@
 		// To delete tag associations, we need to specify the tag type.
 		// Otherwise we may inadvertantly delete records for another type of tag
 		//
-		public static function delete_associations($type, $recordid, $all = false) {
+		static public function delete_associations($type, $recordid, $all = false) {
 			/* multiply table DELETE syntax available since MySQL 4.0.0:
 					$sql = "DELETE ta FROM ".''."tag_associations ta
 								INNER JOIN ".''."tags tags ON tags.id = ta.tag_id
@@ -105,7 +105,7 @@
 			}
 		}
 
-		public static function get_associated_records($id) {
+		static public function get_associated_records($id) {
 			// Which table we query is based on the tag type
 			$type = Tags::get_type($id);
 			$table = $key = '';
@@ -126,14 +126,14 @@
 			return DB::query($sql, "could not get tag associations for tag");
 		}
 
-		public static function get_all_associated_with_record($type, $recordid) {
+		static public function get_all_associated_with_record($type, $recordid) {
 			$sql = "SELECT tags.* FROM tag_associations AS ta
  				INNER JOIN tags AS tags ON tags.id = ta.tag_id
  				WHERE tags.type = $type	AND ta.record_id = " . DB::escape($recordid);
 			return DB::query($sql, "could not get tags associations for record");
 		}
 
-		public static function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
+		static public function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
 			// Get tags
 			$results = Tags::get_all($type, $all);
 			while ($tag = DB::fetch($results)) {
@@ -147,7 +147,7 @@
 				'multi' => $multi, 'height' => $height, 'spec_option' => $spec_opt, 'spec_id' => -1,));
 		}
 
-		public static function cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
+		static public function cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -156,7 +156,7 @@
 			echo "</td>\n";
 		}
 
-		public static function row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
+		static public function row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Tags::cells(null, $name, $height, $type, $mult, $all, $spec_opt);
 			echo "</tr>\n";

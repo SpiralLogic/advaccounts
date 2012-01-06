@@ -43,7 +43,7 @@
 		const QUICK_ENTRIES = "quick_entries";
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
-		public static function check($validate, $msg = '', $extra = null) {
+		static public function check($validate, $msg = '', $extra = null) {
 			if ($extra === false) {
 				return 0;
 			}
@@ -75,7 +75,7 @@
 		//	Integer input check
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
-		public static function is_int($postname, $min = null, $max = null) {
+		static public function is_int($postname, $min = null, $max = null) {
 			if (!isset($_POST) || !isset($_POST[$postname])) {
 				return 0;
 			}
@@ -94,7 +94,7 @@
 		//	Return 1 if number has proper form and is within <min, max> range
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
-		public static function is_num($postname, $min = null, $max = null, $default = 0) {
+		static public function is_num($postname, $min = null, $max = null, $default = 0) {
 			if (!isset($_POST) || !isset($_POST[$postname])) {
 				$_POST[$postname] = $default;
 			}
@@ -118,7 +118,7 @@
 		 *
 		 * @return bool|float|int|mixed|string
 		 */
-		public static function input_num($postname = null, $default = 0, $min = null, $max = null) {
+		static public function input_num($postname = null, $default = 0, $min = null, $max = null) {
 			if (!isset($_POST) || !isset($_POST[$postname])) {
 				$_POST[$postname] = $default;
 			}

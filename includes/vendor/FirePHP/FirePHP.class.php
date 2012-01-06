@@ -151,7 +151,7 @@
 		 *
 		 * @var FirePHP
 		 */
-		protected static $instance = null;
+		static protected $instance = null;
 		/**
 		 * Flag whether we are logging from within the exception handler
 		 *
@@ -239,7 +239,7 @@
 		 *
 		 * @return FirePHP
 		 */
-		public static function getInstance($AutoCreate = false)
+		static public function getInstance($AutoCreate = false)
 			{
 				if ($AutoCreate === true && !self::$instance) {
 					self::init();
@@ -252,7 +252,7 @@
 		 *
 		 * @return FirePHP
 		 */
-		public static function init()
+		static public function init()
 			{
 				return self::setInstance(new self());
 			}
@@ -264,7 +264,7 @@
 		 *
 		 * @return FirePHP
 		 */
-		public static function setInstance($instance)
+		static public function setInstance($instance)
 			{
 				return self::$instance = $instance;
 			}
@@ -672,7 +672,7 @@
 		 *
 		 * @see Insight_Helper::to()
 		 */
-		public static function to()
+		static public function to()
 			{
 				$instance = self::getInstance();
 				if (!method_exists($instance, "_to")) {
@@ -687,7 +687,7 @@
 		 *
 		 * @see Insight_Helper::plugin()
 		 */
-		public static function plugin()
+		static public function plugin()
 			{
 				$instance = self::getInstance();
 				if (!method_exists($instance, "_plugin")) {
@@ -1130,7 +1130,7 @@
 		 *
 		 * @return array
 		 */
-		public static function getAllRequestHeaders()
+		static public function getAllRequestHeaders()
 			{
 				static $_cached_headers = false;
 				if ($_cached_headers !== false) {
@@ -1353,7 +1353,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected static function is_utf8($str)
+		static protected function is_utf8($str)
 			{
 				if (function_exists('mb_detect_encoding')) {
 					return (@mb_detect_encoding($str) == 'UTF-8');

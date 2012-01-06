@@ -52,7 +52,7 @@
 		 *
 		 * @param $type
 		 */
-		protected static function setup($type) {
+		static protected function setup($type) {
 			if (!isset($_SESSION['orders'])) {
 				$_SESSION['orders'] = array();
 			}
@@ -68,7 +68,7 @@
 		 * @internal param $id
 		 * @return Sales_Order|Purch_Order
 		 */
-		public static function session_get($id = null) {
+		static public function session_get($id = null) {
 			if (is_null($id)) {
 				if (!isset($_POST['order_id'])){
 					return false;
@@ -91,7 +91,7 @@
 		 *
 		 * @return Sales_Order|Purch_Order
 		 */
-		public static function session_set($order) {
+		static public function session_set($order) {
 			list($type, $id) = explode('.', $order->order_id);
 			static::setup($type);
 			$_SESSION['orders'][$type][$id] = $order;
@@ -102,7 +102,7 @@
 		 *
 		 * @param $order
 		 */
-		public static function session_start($order) {
+		static public function session_start($order) {
 		}
 		/**
 		 * @static
@@ -111,7 +111,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function session_exists($order) {
+		static public function session_exists($order) {
 			list($type, $id) = explode('.', $order->order_id);
 			static::setup($type);
 			return isset($_SESSION['orders'][$type][$id]);
@@ -121,7 +121,7 @@
 		 *
 		 * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
 		 */
-		public static function session_delete($id) {
+		static public function session_delete($id) {
 			if (is_object($id)) {
 				$id = $id->order_id;
 			}

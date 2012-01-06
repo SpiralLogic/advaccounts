@@ -25,12 +25,12 @@
 		/**
 		 * @var bool
 		 */
-		protected static $i = false;
+		static protected $i = false;
 		/**
 		 * @static
 		 * @return mixed
 		 */
-		public static function i() {
+		static public function i() {
 			if (static::$i === true) {
 				return;
 			}
@@ -52,7 +52,7 @@
 		 * @return mixed
 		 * @throws Config_Exception
 		 */
-		protected static function load($group = 'config') {
+		static protected function load($group = 'config') {
 			$file = DOCROOT . "config" . DS . $group . '.php';
 			$group_name = $group;
 			if (is_array($group)) {
@@ -79,7 +79,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function set($var, $value, $group = 'config') {
+		static public function set($var, $value, $group = 'config') {
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
@@ -92,7 +92,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function get($var, $array_key = null, $group = null) {
+		static public function get($var, $array_key = null, $group = null) {
 			static::i();
 			if (!strstr($var, '.')) {
 				$group = 'config';
@@ -118,7 +118,7 @@
 		 * @param				$var
 		 * @param string $group
 		 */
-		public static function remove($var, $group = 'config') {
+		static public function remove($var, $group = 'config') {
 			if (array_key_exists($var, static::$_vars[$group])) {
 				unset(static::$_vars[$group][$var]);
 			}
@@ -127,7 +127,7 @@
 		 * @static
 		 *
 		 */
-		public static function store() {
+		static public function store() {
 			Cache::set('config', static::$_vars);
 		}
 		/**
@@ -137,7 +137,7 @@
 		 *
 		 * @return mixed
 		 */
-		public static function get_all($group = 'config') {
+		static public function get_all($group = 'config') {
 			static::i();
 			(isset(static::$_vars[$group])) or static::load($group);
 			return static::$_vars[$group];
@@ -146,7 +146,7 @@
 		 * @static
 		 *
 		 */
-		protected static function js() {
+		static protected function js() {
 			JS::headerFile(static::get('assets.header'));
 			JS::footerFile(static::get('assets.footer'));
 		}

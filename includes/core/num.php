@@ -15,7 +15,7 @@
 		 *
 		 * @return int|string
 		 */
-		public static function	price_format($number) {
+		static public function	price_format($number) {
 			return Num::format($number, User::prefs()->price_dec());
 		}
 
@@ -27,7 +27,7 @@
 		 *
 		 * @return int|string
 		 */
-		public static function	price_decimal($number, &$dec) {
+		static public function	price_decimal($number, &$dec) {
 			$dec = User::price_dec();
 			$str = strval($number);
 			$pos = strpos($str, '.');
@@ -48,7 +48,7 @@
 		 *
 		 * @return float
 		 */
-		public static function	round($number, $decimals = 0) {
+		static public function	round($number, $decimals = 0) {
 			return round($number, $decimals, PHP_ROUND_HALF_EVEN);
 		}
 
@@ -60,7 +60,7 @@
 		 *
 		 * @return int|string
 		 */
-		public static function	format($number, $decimals = 0) {
+		static public function	format($number, $decimals = 0) {
 			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
 			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
 			//return number_format($number, $decimals, $dsep,	$tsep);
@@ -76,7 +76,7 @@
 		 *
 		 * @return int|string
 		 */
-		public static function	exrate_format($number) {
+		static public function	exrate_format($number) {
 			return Num::format($number, User::prefs()->exrate_dec());
 		}
 
@@ -87,7 +87,7 @@
 		 *
 		 * @return int|string
 		 */
-		public static function	percent_format($number) {
+		static public function	percent_format($number) {
 			return Num::format($number, User::prefs()->percent_dec());
 		}
 
@@ -99,7 +99,7 @@
 		 *
 		 * @return float|int
 		 */
-		public static function round_to_nearest($price, $round_to) {
+		static public function round_to_nearest($price, $round_to) {
 			if ($price == 0) {
 				return 0;
 			}
@@ -127,7 +127,7 @@
 		 * Simple English version of number to words conversion.
 		 *
 		 */
-		public static function to_words($number) {
+		static public function to_words($number) {
 			$Bn = floor($number / 1000000000); /* Billions (giga) */
 			$number -= $Bn * 1000000000;
 			$Gn = floor($number / 1000000); /* Millions (mega) */

@@ -9,12 +9,12 @@
 	class Purch_UI
 	{
 		// SUPPLIERS
-		public static function credit_row($supplier, $credit, $parms = '') {
+		static public function credit_row($supplier, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>", $parms);
 		}
 
-		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static public function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "purchases/view/";
 			switch ($type) {
 				case ST_PURCHORDER:

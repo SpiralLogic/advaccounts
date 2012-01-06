@@ -14,7 +14,7 @@
 		// add a bank transaction
 		// $amount is in $currency
 		// $date_ is display date (non-sql)
-		public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
+		static public function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
 			$sqlDate = Dates::date2sql($date_);
 			// convert $amount to the bank's currency
 			if ($currency != "") {
@@ -42,12 +42,12 @@
 			}
 			DB::query($sql, $err_msg);
 		}
-		public static function exists($type, $type_no) {
+		static public function exists($type, $type_no) {
 			$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 			$result = DB::query($sql, "Cannot retreive a bank transaction");
 			return (DB::num_rows($result) > 0);
 		}
-		public static function get($type, $trans_no = null, $person_type_id = null, $person_id = null) {
+		static public function get($type, $trans_no = null, $person_type_id = null, $person_id = null) {
 			$sql = "SELECT *, bank_account_name, account_code, bank_curr_code
 		FROM bank_trans, bank_accounts
 		WHERE bank_accounts.id=bank_trans.bank_act ";
@@ -66,7 +66,7 @@
 			$sql .= " ORDER BY trans_date, bank_trans.id";
 			return DB::query($sql, "query for bank transaction");
 		}
-		public static function void($type, $type_no, $nested = false) {
+		static public function void($type, $type_no, $nested = false) {
 			if (!$nested) {
 				DB::begin();
 			}

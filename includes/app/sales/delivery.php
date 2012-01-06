@@ -21,7 +21,7 @@
 		 *
 		 * @return int
 		 */
-		public static function add($delivery, $bo_policy) {
+		static public function add($delivery, $bo_policy) {
 			$trans_no = $delivery->trans_no;
 			if (is_array($trans_no)) {
 				$trans_no = key($trans_no);
@@ -102,7 +102,7 @@
 			DB::commit();
 			return $delivery_no;
 		}
-		public static function void($type, $type_no) {
+		static public function void($type, $type_no) {
 			DB::begin();
 			GL_Trans::void($type, $type_no, true);
 			// reverse all the changes in the sales order

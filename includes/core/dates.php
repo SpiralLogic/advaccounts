@@ -727,7 +727,7 @@
 		 *
 		 * @return float|string
 		 */
-		public static function getReadableTime($time) {
+		static public function getReadableTime($time) {
 			$ret = $time;
 			$formatter = 0;
 			$formats = array('ms', 's', 'm');

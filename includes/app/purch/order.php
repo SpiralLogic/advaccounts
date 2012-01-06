@@ -284,7 +284,7 @@
 	 Check if the order was not destroyed during opening the edition page in
 	 another browser tab.
 	 */
-		public static function check_edit_conflicts($order) {
+		static public function check_edit_conflicts($order) {
 			if (!isset($_POST['order_id'])) {
 				$_POST['order_id'] = $order->order_id;
 			}
@@ -512,14 +512,14 @@
 			}
 			end_row();
 		}
-		public static function get_data($supplier_id, $stock_id) {
+		static public function get_data($supplier_id, $stock_id) {
 			$sql = "SELECT * FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
 			$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
 			return DB::fetch($result);
 		}
-		public static function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
+		static public function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
 			$data = static::get_data($supplier_id, $stock_id);
 			if ($data === false) {
 				$supplier_code = $stock_id;

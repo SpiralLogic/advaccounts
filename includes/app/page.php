@@ -10,7 +10,7 @@
 	{
 		protected $css = array();
 		/**@var Page null*/
-		protected static $i = null;
+		static protected $i = null;
 		public $renderer = null;
 		protected $no_menu = false;
 		protected $is_index = false;
@@ -21,8 +21,7 @@
 		public $has_header = true;
 		public $frame = false;
 		protected $title = '';
-		public static function simple_mode($numeric_id = true) {
-
+		static public function simple_mode($numeric_id = true) {
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
 			foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
@@ -47,74 +46,13 @@
 			}
 			return array('', $selected_id);
 		}
-		public static function start($title, $no_menu = false, $is_index = false) {
+		static public function start($title, $no_menu = false, $is_index = false) {
 			if (static::$i === null) {
 				static::$i = new static($title, $no_menu, $is_index);
 			}
 			return static::$i;
 		}
-		protected function __construct($title, $no_menu, $index) {
-			global $page_security;
-			if (empty($page_security)) {
-				$page_security = 'SA_OPEN';
-			}
-			$this->title = $title;
-			$this->app = $_SESSION['App'];
-			$this->sel_app = $this->app->selected;
-			$this->frame = isset($_GET['frame']);
-			$this->no_menu = $no_menu;
-			$this->renderer = new Renderer();
-			$this->theme = User::theme();
-			if (AJAX_REFERRER || Ajax::in_ajax()) {
-				$this->no_menu = true;
-			}
-			else {
-				$this->header();
-				if ($this->no_menu) {
-					$this->header = false;
-				}
-				else {
-					$this->menu_header();
-				}
-			}
-			Errors::error_box();
-			if ($title && !$index && !$this->frame) {
-				$this->header = false;
-				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
-			}
-			Security::check_page($page_security);
-			Display::div_start('_page_body');
-		}
-		protected function menu_header() {
-			echo "<div id='top'>\n";
-			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
-			echo "<ul>\n";
-			" <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
-			if (Config::get('help_baseurl') != null) {
-				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
-			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>" . "<div id='logo'><h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'>" . "<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>" . "</span></h1></div>" . '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
-			$this->renderer->menu();
-			echo "</ul></div></div>" . "<div id='wrapper'>";
-		}
-		protected function header() {
-			JS::open_window(900, 500);
-			$encoding = $_SESSION['Language']->encoding;
-			if (!headers_sent()) {
-				header("Content-type: text/html; charset='$encoding'");
-			}
-			echo "<!DOCTYPE HTML>\n";
-			echo "<html class='" . strtolower($this->sel_app->id) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
-			echo "<head><title>" . $this->title . "</title>";
-			echo "<meta charset='$encoding'>";
-			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
-			$this->css += Config::get('assets.css');
-			$this->send_css();
-			JS::renderHeader();
-			echo "</head><body" . ($this->no_menu ? ' class="lite">' : '>');
-			echo "<div id='content'>\n";
-		}
-		public static function help_url($context = null) {
+		static public function help_url($context = null) {
 			global $help_context;
 			$country = $_SESSION['Language']->code;
 			$clean = 0;
@@ -180,7 +118,7 @@
 			}
 			echo $row . "</table>";
 		}
-		public static function add_css($file = false) {
+		static public function add_css($file = false) {
 			static::$i->css[] = $file;
 		}
 		protected function send_css() {
@@ -188,12 +126,12 @@
 			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
 		}
-		public static function footer_exit() {
+		static public function footer_exit() {
 			Display::br(2);
 			static::$i->_end_page(true);
 			exit;
 		}
-		public static function end($hide_back_link = false) {
+		static public function end($hide_back_link = false) {
 			static::$i->_end_page($hide_back_link);
 		}
 		protected function _end_page($hide_back_link) {
@@ -206,6 +144,67 @@
 			}
 			Display::div_end(); // end of _page_body section
 			$this->footer();
+		}
+		protected function __construct($title, $no_menu, $index) {
+			global $page_security;
+			if (empty($page_security)) {
+				$page_security = 'SA_OPEN';
+			}
+			$this->title = $title;
+			$this->app = $_SESSION['App'];
+			$this->sel_app = $this->app->selected;
+			$this->frame = isset($_GET['frame']);
+			$this->no_menu = $no_menu;
+			$this->renderer = new Renderer();
+			$this->theme = User::theme();
+			if (AJAX_REFERRER || Ajax::in_ajax()) {
+				$this->no_menu = true;
+			}
+			else {
+				$this->header();
+				if ($this->no_menu) {
+					$this->header = false;
+				}
+				else {
+					$this->menu_header();
+				}
+			}
+			Errors::error_box();
+			if ($title && !$index && !$this->frame) {
+				$this->header = false;
+				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
+			}
+			Security::check_page($page_security);
+			Display::div_start('_page_body');
+		}
+		protected function menu_header() {
+			echo "<div id='top'>\n";
+			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
+			echo "<ul>\n";
+			" <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+			if (Config::get('help_baseurl') != null) {
+				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+			}
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>" . "<div id='logo'><h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'>" . "<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>" . "</span></h1></div>" . '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
+			$this->renderer->menu();
+			echo "</ul></div></div>" . "<div id='wrapper'>";
+		}
+		protected function header() {
+			JS::open_window(900, 500);
+			$encoding = $_SESSION['Language']->encoding;
+			if (!headers_sent()) {
+				header("Content-type: text/html; charset='$encoding'");
+			}
+			echo "<!DOCTYPE HTML>\n";
+			echo "<html class='" . strtolower($this->sel_app->id) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<head><title>" . $this->title . "</title>";
+			echo "<meta charset='$encoding'>";
+			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
+			$this->css += Config::get('assets.css');
+			$this->send_css();
+			JS::renderHeader();
+			echo "</head><body" . ($this->no_menu ? ' class="lite">' : '>');
+			echo "<div id='content'>\n";
 		}
 	}
 

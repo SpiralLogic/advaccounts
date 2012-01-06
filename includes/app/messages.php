@@ -8,13 +8,13 @@
 	 */
 	class Messages
 	{
-		protected static $messages = '';
-		protected static $count = 0;
+		static protected $messages = '';
+		static protected $count = 0;
 
 		public function __construct() {
 		}
 
-		public static function	get($userid = false) {
+		static public function	get($userid = false) {
 			if (!$userid) {
 				return false;
 			}
@@ -38,13 +38,13 @@
 			return static::$count;
 		}
 
-		public static function set($userid, $subject, $message) {
+		static public function set($userid, $subject, $message) {
 			$sql = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1)";
 			$result = DB::query($sql, "Couldn't add message for $userid");
 			return $result;
 		}
 
-		public static function show($user = false) {
+		static public function show($user = false) {
 			if (!$user && isset($_SESSION['current_user'])) {
 				$user = $_SESSION['current_user']->user;
 			}
@@ -53,7 +53,7 @@
 			}
 		}
 
-		public static function makeDialog() {
+		static public function makeDialog() {
 			$dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
 			$dialog->addButtons(array('Close' => '$(this).dialog("close");'));
 			$dialog->setOptions(array(

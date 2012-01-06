@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Purch_Allocation
 	{
-		public static function add($amount, $trans_type_from, $trans_no_from,
+		static public function add($amount, $trans_type_from, $trans_no_from,
 			$trans_type_to, $trans_no_to, $date_) {
 			$date = Dates::date2sql($date_);
 			$sql = "INSERT INTO creditor_allocations (
@@ -23,12 +23,12 @@
 			DB::query($sql, "A supplier allocation could not be added to the database");
 		}
 
-		public static function delete($trans_id) {
+		static public function delete($trans_id) {
 			$sql = "DELETE FROM creditor_allocations WHERE id = " . DB::escape($trans_id);
 			DB::query($sql, "The existing allocation $trans_id could not be deleted");
 		}
 
-		public static function get_balance($trans_type, $trans_no) {
+		static public function get_balance($trans_type, $trans_no) {
 			$sql = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
 		FROM creditor_trans WHERE trans_no="
 			 . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
@@ -37,17 +37,17 @@
 			return $myrow[0];
 		}
 
-		public static function update($trans_type, $trans_no, $alloc) {
+		static public function update($trans_type, $trans_no, $alloc) {
 			$sql = "UPDATE creditor_trans SET alloc = alloc + " . DB::escape($alloc) . "
 		WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
 			DB::query($sql, "The supp transaction record could not be modified for the allocation against it");
 		}
 
-		public static function void($type, $type_no, $date = "") {
+		static public function void($type, $type_no, $date = "") {
 			return Purch_Allocation::clear($type, $type_no, $date);
 		}
 
-		public static function clear($type, $type_no, $date = "") {
+		static public function clear($type, $type_no, $date = "") {
 			// clear any allocations for this transaction
 			$sql = "SELECT * FROM creditor_allocations
 		WHERE (trans_type_from=$type AND trans_no_from=$type_no)
@@ -75,7 +75,7 @@
 			DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 		}
 
-		public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
+		static public function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
 			$sql = "SELECT
 		trans.type,
 		trans.trans_no,
@@ -107,7 +107,7 @@
 			return $sql;
 		}
 
-		public static function get_allocatable_sql($supplier_id, $settled) {
+		static public function get_allocatable_sql($supplier_id, $settled) {
 			$settled_sql = "";
 			if (!$settled) {
 				$settled_sql = "AND round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0";
@@ -121,7 +121,7 @@
 			return $sql;
 		}
 
-		public static function get_allocatable_to_trans($supplier_id, $trans_no = null, $type = null) {
+		static public function get_allocatable_to_trans($supplier_id, $trans_no = null, $type = null) {
 			if ($trans_no != null && $type != null) {
 				$sql = Purch_Allocation::get_sql("amt, supp_reference", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
@@ -137,7 +137,7 @@
 			return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
 		}
 
-		public static function row($name, $selected = null) {
+		static public function row($name, $selected = null) {
 			echo "<td>\n";
 			$allocs = array(
 				ALL_TEXT => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes"));

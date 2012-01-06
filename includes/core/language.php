@@ -40,7 +40,7 @@
 		/**
 		 * @var Language
 		 */
-		protected static $i = null;
+		static protected $i = null;
 		/**
 		 * @var
 		 */
@@ -61,7 +61,7 @@
 		 * @static
 		 * @return Language|null
 		 */
-		public static function i() {
+		static public function i() {
 			return static::$i;
 		}
 		/**
@@ -92,7 +92,7 @@
 		/**
 		 *
 		 */
-		public static function set() {
+		static public function set() {
 			if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
 				$l = Arr::search_value(Config::get('defaults.lang'), Config::get('languages.installed'), 'code');
 				static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');

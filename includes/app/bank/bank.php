@@ -18,7 +18,7 @@
 	//
 	class Bank
 	{
-		public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
+		static public function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
 			//	echo "converting from $from_curr_code to $to_curr_code <BR>";
 			if ($from_curr_code == $to_curr_code) {
 				return 1.0000;
@@ -33,12 +33,12 @@
 			// neither from or to are the home currency
 			return static::get_exchange_rate_to_home_currency($from_curr_code, $date_) / static::get_exchange_rate_to_home_currency($to_curr_code, $date_);
 		}
-		public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
+		static public function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
 			$ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
 			return $amount / $ex_rate;
 		}
 		// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
-		public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false) {
+		static public function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false) {
 			global $systypes_array;
 			if ($person_type == PT_CUSTOMER) {
 				$trans = Debtor_Trans::get($trans_no, $type);
@@ -83,7 +83,7 @@
 				}
 			}
 		}
-		public static function payment_person_has_items($type) {
+		static public function payment_person_has_items($type) {
 			switch ($type) {
 				case PT_MISC :
 					return true;
@@ -100,7 +100,7 @@
 					return false;
 			}
 		}
-		public static function payment_person_name($type, $person_id, $full = true, $trans_no = null) {
+		static public function payment_person_name($type, $person_id, $full = true, $trans_no = null) {
 			global $payment_person_types;
 			switch ($type) {
 				case PT_MISC :

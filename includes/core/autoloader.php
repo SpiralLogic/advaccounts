@@ -18,19 +18,19 @@
 		/**
 		 * @var array
 		 */
-		protected static $loaded = array();
+		static protected $loaded = array();
 		/**
 		 * @var array
 		 */
-		protected static $loadperf = array();
+		static protected $loadperf = array();
 		/**
 		 * @var int
 		 */
-		protected static $time = 0;
+		static protected $time = 0;
 		/**
 		 * @var array
 		 */
-		protected static $classes = array();
+		static protected $classes = array();
 
 		/**
 		 * @static
@@ -83,7 +83,7 @@
 		 * @param array $classes
 		 * @param			 $type
 		 */
-		protected static function add_classes(array $classes, $type) {
+		static protected function add_classes(array $classes, $type) {
 			$classes = array_flip(array_diff_key(array_flip($classes), (array)static::$loaded));
 			foreach ($classes as $dir => $class) {
 				if (!is_string($dir)) $dir='';
@@ -107,7 +107,7 @@
 		 *
 		 * @return string
 		 */
-		protected static function tryPath($path) {
+		static protected function tryPath($path) {
 			$filepath = realpath(str_replace(strtolower(DOCROOT), DOCROOT, strtolower($path)));
 			if (empty($filepath)) {
 				$filepath = realpath($path);
@@ -125,7 +125,7 @@
 		 * @return bool|void
 		 * @throws Autoload_Exception
 		 */
-		public static function load($classname) {
+		static public function load($classname) {
 			static::$time = microtime(true);
 			$class = $classname;
 			if (isset(static::$loaded[$class])) {
@@ -177,7 +177,7 @@
 		 *
 		 * @throws Autoload_Exception
 		 */
-		protected static function includeFile($filepath, $class) {
+		static protected function includeFile($filepath, $class) {
 			try {
 				if (empty($filepath)) {
 					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $filepath);
@@ -199,7 +199,7 @@
 		 * @static
 		 * @return array
 		 */
-		public static function getPerf() {
+		static public function getPerf() {
 			array_walk(static::$loadperf, function(&$v) {
 				$v[1] = Files::convert_size($v[1]);
 				$v[2] = Dates::getReadableTime($v[2]);
@@ -212,7 +212,7 @@
 		 * @static
 		 * @return array
 		 */
-		public static function getLoaded() {
+		static public function getLoaded() {
 			return static::$loaded;
 		}
 	}

@@ -8,7 +8,7 @@
  */
 class Printer
 {
-    public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout)
+    static public function write_def($id, $name, $descr, $queue, $host, $port, $timeout)
     {
         if ($id > 0) {
             $sql = "UPDATE printers SET description=" . DB::escape($descr) . ",name=" . DB::escape($name) . ",queue=" . DB::escape($queue) . ",host=" . DB::escape($host) . ",port=" . DB::escape($port) . ",timeout=" . DB::escape($timeout) . " WHERE id=" . DB::escape($id);
@@ -19,13 +19,13 @@ class Printer
         return DB::query($sql, "could not write printer definition");
     }
 
-    public static function get_all()
+    static public function get_all()
     {
         $sql = "SELECT * FROM printers";
         return DB::query($sql, "could not get printer definitions");
     }
 
-    public static function get($id)
+    static public function get($id)
     {
         $sql = "SELECT * FROM printers WHERE id=" . DB::escape($id);
         $result = DB::query($sql, "could not get printer definition");
@@ -33,9 +33,9 @@ class Printer
     }
 
     //============================================================================
-    // printer profiles public static functions
+    // printer profiles static public functions
     //
-    public static function update_profile($name, $dest)
+    static public function update_profile($name, $dest)
     {
         foreach ($dest as $rep => $printer) {
             if ($printer != '' || $rep == '') {
@@ -55,7 +55,7 @@ class Printer
     //
     //	Get destination for report defined in given printing profile.
     //
-    public static function get_report($profile, $report)
+    static public function get_report($profile, $report)
     {
         $sql = "SELECT printer FROM print_profiles WHERE profile=" . DB::quote($profile) . " AND report=" . DB::quote($report);
         $result = DB::query($sql, 'report printer lookup failed');
@@ -76,7 +76,7 @@ class Printer
         return static::get($ret['printer']);
     }
 
-    public static function delete_profile($name)
+    static public function delete_profile($name)
     {
         $sql = "DELETE FROM print_profiles WHERE profile=" . DB::escape($name);
         return DB::query($sql, "could not delete printing profile");
@@ -85,7 +85,7 @@ class Printer
     //
     // Get all report destinations for given profile.
     //
-    public static function get_profile($name)
+    static public function get_profile($name)
     {
         $sql = "SELECT	* FROM print_profiles WHERE profile=" . DB::escape($name);
         return DB::query($sql, "could not get printing profile");

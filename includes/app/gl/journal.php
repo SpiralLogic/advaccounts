@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	class GL_Journal {
-		public static function header($order) {
+		static public function header($order) {
 
 			$qes = GL_QuickEntry::has(QE_JOURNAL);
 			$new = $order->order_id == 0;
@@ -50,7 +50,7 @@
  * @param Item_Order $order
  */
 
-		public static function items($title, &$order) {
+		static public function items($title, &$order) {
 			Display::heading($title);
 			$dim = DB_Company::get_pref('use_dimension');
 			Display::div_start('items_table');
@@ -113,7 +113,7 @@
 		}
 
 
-		public static function item_controls($order, $dim, $Index = null) {
+		static public function item_controls($order, $dim, $Index = null) {
 
 			start_row();
 			$id = find_submit(MODE_EDIT);
@@ -183,13 +183,13 @@
 		}
 
 
-		public static function option_controls() {
+		static public function option_controls() {
 			echo "<br><table class='center'>";
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);
 			echo "</table>";
 		}
 
-		public static function	view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static public function	view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
 				$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 			} else {
@@ -201,7 +201,7 @@
 			return Display::viewer_link($label, $viewer, $class, $id, $icon);
 		}
 
-		public static function	cells($label, $name, $value = null, $submit_on_change = false) {
+		static public function	cells($label, $name, $value = null, $submit_on_change = false) {
 			global $systypes_array;
 			if ($label != null) {
 				echo "<td>$label</td>\n";
@@ -219,7 +219,7 @@
 
 		// Write/update journal entries.
 				//
-				public static function write($order, $reverse, $use_transaction = true)
+				static public function write($order, $reverse, $use_transaction = true)
 				{
 					$date_ = $order->tran_date;
 					$ref = $order->reference;
@@ -278,7 +278,7 @@
 					return $trans_id;
 				}
 
-				public static function void($type, $type_no, $use_transaction = true)
+				static public function void($type, $type_no, $use_transaction = true)
 				{
 					if ($use_transaction) {
 						DB::begin();

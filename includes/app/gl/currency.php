@@ -13,7 +13,7 @@
 class GL_Currency {
 
 
-	public static function update($curr_abrev, $symbol, $currency, $country,
+	static public function update($curr_abrev, $symbol, $currency, $country,
 													 $hundreds_name, $auto_update) {
 		$sql = "UPDATE currencies SET currency=" . DB::escape($currency)
 		 . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country)
@@ -26,7 +26,7 @@ class GL_Currency {
 
 
 
-	public static function add($curr_abrev, $symbol, $currency, $country,
+	static public function add($curr_abrev, $symbol, $currency, $country,
 												$hundreds_name, $auto_update) {
 		$sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
 			country, hundreds_name, auto_update)
@@ -39,7 +39,7 @@ class GL_Currency {
 
 
 
-	public static function delete($curr_code) {
+	static public function delete($curr_code) {
 		$sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
 		DB::query($sql, "could not delete currency	$curr_code");
 
@@ -49,7 +49,7 @@ class GL_Currency {
 
 
 
-	public static function get($curr_code) {
+	static public function get($curr_code) {
 		$sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
 		$result = DB::query($sql, "could not get currency $curr_code");
 
@@ -59,7 +59,7 @@ class GL_Currency {
 
 
 
-	public static function get_all($all = false) {
+	static public function get_all($all = false) {
 		$sql = "SELECT * FROM currencies";
 		if (!$all) $sql .= " WHERE !inactive";
 		return DB::query($sql, "could not get currencies");
@@ -67,14 +67,14 @@ class GL_Currency {
 
 
 		// CURRENCIES
-	public static function select($name, $selected_id = null, $submit_on_change = false) {
+	static public function select($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
 			// default to the company currency
 			return select_box($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
 																																									 'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => false));
 		}
 
-	public static function cells($label, $name, $selected_id = null, $submit_on_change = false) {
+	static public function cells($label, $name, $selected_id = null, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -83,7 +83,7 @@ class GL_Currency {
 			echo "</td>\n";
 		}
 
-	public static function row($label, $name, $selected_id = null, $submit_on_change = false) {
+	static public function row($label, $name, $selected_id = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			GL_Currency::cells(null, $name, $selected_id, $submit_on_change);
 			echo "</tr>\n";

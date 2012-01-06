@@ -16,14 +16,14 @@
 	{
 		public $aCommands = array();
 		public $triggers = array();
-		protected static $i = null;
+		static protected $i = null;
 		/***
 		 * @static
 		 * @return Ajax
 		 *
 		 * Returns Ajax Instance
 		 */
-		public static function i() {
+		static public function i() {
 			(static::$i === null) and	static::$i = new static;
 			return static::$i;
 		}

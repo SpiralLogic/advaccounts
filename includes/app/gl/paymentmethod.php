@@ -8,14 +8,14 @@
 	 */
 	class GL_PaymentMethod
 	{
-		public static function add($payment_method, $undeposited, $inactive = 0)
+		static public function add($payment_method, $undeposited, $inactive = 0)
 			{
 				DB::insert('payment_methods')
 				 ->values(array('name' => $payment_method, 'undeposited' => $undeposited, 'inactive' => $inactive))->exec();
 			}
 
 
-		public static function update($id, $payment_method, $undeposited, $inactive = 0)
+		static public function update($id, $payment_method, $undeposited, $inactive = 0)
 			{
 				DB::update('payment_methods')
 				 ->values(array('name' => $payment_method, 'undeposited' => $undeposited, 'inactive' => $inactive))
@@ -24,18 +24,18 @@
 			}
 
 
-		public static function delete($id)
+		static public function delete($id)
 			{
 				DB::delete('payment_methods')->where('id=', $id)->exec();
 			}
 
-		public static function get($id)
+		static public function get($id)
 			{
 				$sql = "SELECT * FROM payment_methods WHERE id=" . DB::escape($id);
 				$result = DB::query($sql, "could not retreive bank account for $id");
 				return DB::fetch($result);
 			}
-		public static function select($name, $selected_id = null) {
+		static public function select($name, $selected_id = null) {
 			$result = DB::select('name')->from('payment_methods')->where('inactive=', 0);
 			while ($row = DB::fetch($result)) {
 				$payment_methods[] = $row['name'];
@@ -43,7 +43,7 @@
 			return array_selector($name, $selected_id, $payment_methods);
 		}
 
-		public static function cells($label, $name, $selected_id = null) {
+		static public function cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -52,7 +52,7 @@
 			echo "</td>\n";
 		}
 
-		public static 	function row($label, $name, $selected_id = null) {
+		static public 	function row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Bank_Account::type_cells(null, $name, $selected_id);
 			echo "</tr>\n";

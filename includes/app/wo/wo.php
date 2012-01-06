@@ -11,10 +11,10 @@
 	 ***********************************************************************/
 	class WO
 	{
-		public static $bom_list = array();
-		public static $qoh_stock = NULL;
+		static public $bom_list = array();
+		static public $qoh_stock = NULL;
 
-		protected static function load_stock_levels($location = '') {
+		static protected function load_stock_levels($location = '') {
 			$date = Dates::date2sql(Dates::Today());
 			$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
 			if ($location != '') {
@@ -27,7 +27,7 @@
 			}
 		}
 
-		protected static function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level = 0) {
+		static protected function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level = 0) {
 			$demand = 0.0;
 			if ($level > 10) {
 				Errors::warning("BOM Too many Manufacturing levels deep $level");
@@ -84,7 +84,7 @@
 			return $demand;
 		}
 
-		public static function get_demand_asm_qty($stock_id, $location) {
+		static public function get_demand_asm_qty($stock_id, $location) {
 			$demand_qty = 0.0;
 			$sql = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
 				 AS Demmand
@@ -108,7 +108,7 @@
 			return $demand_qty;
 		}
 
-		public static function get_on_porder_qty($stock_id, $location) {
+		static public function get_on_porder_qty($stock_id, $location) {
 			$sql = "SELECT SUM(purch_order_details.quantity_ordered - "
 			 . "purch_order_details.quantity_received) AS qoo
 		FROM purch_order_details INNER JOIN "
@@ -128,7 +128,7 @@
 			return $qoo;
 		}
 
-		public static function get_on_worder_qty($stock_id, $location) {
+		static public function get_on_worder_qty($stock_id, $location) {
 			$sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
 		(wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
 		FROM wo_requirements INNER JOIN workorders
@@ -165,7 +165,7 @@
 			return $qoo;
 		}
 
-		public static function get_mb_flag($stock_id) {
+		static public function get_mb_flag($stock_id) {
 			$sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
 			 . DB::escape($stock_id);
 			$result = DB::query($sql, "retreive mb_flag from item");
@@ -176,7 +176,7 @@
 			return $myrow[0];
 		}
 
-		public static function get_bom($item) {
+		static public function get_bom($item) {
 			$sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
  	stock_master.description, stock_master.mb_flag AS ResourceType,
  	stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
@@ -188,12 +188,12 @@
 			return DB::query($sql, "The bill of material could not be retrieved");
 		}
 
-		public static function has_bom($item) {
+		static public function has_bom($item) {
 			$result = WO::get_bom($item);
 			return (DB::num_rows($result) != 0);
 		}
 
-		public static function display_bom($item_check) {
+		static public function display_bom($item_check) {
 			$result = WO::get_bom($item_check);
 			if (DB::num_rows($result) == 0) {
 				Display::note(_("The bill of material for this item is empty."), 0, 1);
@@ -230,11 +230,11 @@
 			}
 		}
 
-		public static function has_stock_holding($mb_flag) {
+		static public function has_stock_holding($mb_flag) {
 			return $mb_flag == STOCK_PURCHASED || $mb_flag == STOCK_MANUFACTURE;
 		}
 
-		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static public function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "manufacturing/view/";
 			if ($type == ST_MANUISSUE) {
 				$viewer .= "wo_issue_view.php";
@@ -255,7 +255,7 @@
 			return viewer_link($label, $viewer, $class, $id, $icon);
 		}
 
-		public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $required_by, $memo_, $costs, $cr_acc,
+		static public function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $required_by, $memo_, $costs, $cr_acc,
 			$labour, $cr_lab_acc) {
 			if (!($type == WO_ADVANCED)) {
 				return WO_Quick::add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
@@ -278,7 +278,7 @@
 			return $woid;
 		}
 
-		public static function update($woid, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_) {
+		static public function update($woid, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_) {
 			DB::begin();
 			WO_Cost::add_material($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
 			WO_Cost::add_material($stock_id, $units_reqd, $date_);
@@ -295,7 +295,7 @@
 			DB::commit();
 		}
 
-		public static function delete($woid) {
+		static public function delete($woid) {
 			DB::begin();
 			WO_Cost::add_material($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
 			// delete the work order requirements
@@ -308,7 +308,7 @@
 			DB::commit();
 		}
 
-		public static function get($woid, $allow_null = false) {
+		static public function get($woid, $allow_null = false) {
 			$sql = "SELECT workorders.*, stock_master.description As StockItemName,
 				locations.location_name, locations.delivery_address
 				FROM workorders, stock_master, locations
@@ -323,26 +323,26 @@
 			return DB::fetch($result);
 		}
 
-		public static function has_productions($woid) {
+		static public function has_productions($woid) {
 			$sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
 			$result = DB::query($sql, "query work order for productions");
 			$myrow = DB::fetch_row($result);
 			return ($myrow[0] > 0);
 		}
 
-		public static function has_issues($woid) {
+		static public function has_issues($woid) {
 			$sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
 			$result = DB::query($sql, "query work order for issues");
 			$myrow = DB::fetch_row($result);
 			return ($myrow[0] > 0);
 		}
 
-		public static function has_payments($woid) {
+		static public function has_payments($woid) {
 			$result = GL_Trans::get_wo_cost($woid);
 			return (DB::num_rows($result) != 0);
 		}
 
-		public static function release($woid, $releaseDate, $memo_) {
+		static public function release($woid, $releaseDate, $memo_) {
 			DB::begin();
 			$myrow = WO::get($woid);
 			$stock_id = $myrow["stock_id"];
@@ -357,26 +357,26 @@
 			DB::commit();
 		}
 
-		public static function close($woid) {
+		static public function close($woid) {
 			$sql = "UPDATE workorders SET closed=1 WHERE id = " . DB::escape($woid);
 			DB::query($sql, "could not close work order");
 		}
 
-		public static function is_closed($woid) {
+		static public function is_closed($woid) {
 			$sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
 			$result = DB::query($sql, "could not query work order");
 			$row = DB::fetch_row($result);
 			return ($row[0] > 0);
 		}
 
-		public static function update_finished_quantity($woid, $quantity, $force_close = 0) {
+		static public function update_finished_quantity($woid, $quantity, $force_close = 0) {
 			$sql = "UPDATE workorders SET units_issued = units_issued + " . DB::escape($quantity) . ",
 				closed = ((units_issued >= units_reqd) OR " . DB::escape($force_close) . ")
 				WHERE id = " . DB::escape($woid);
 			DB::query($sql, "The work order issued quantity couldn't be updated");
 		}
 
-		public static function void($woid) {
+		static public function void($woid) {
 			DB::begin();
 			$work_order = WO::get($woid);
 			if (!($work_order["type"] == WO_ADVANCED)) {
@@ -452,7 +452,7 @@
 			DB::commit();
 		}
 
-		public static function get_gl($woid, $cost_type) {
+		static public function get_gl($woid, $cost_type) {
 			$cost = 0;
 			$result = GL_Trans::get_wo_cost($woid, $cost_type);
 			while ($row = DB::fetch($result)) {
@@ -461,7 +461,7 @@
 			return $cost;
 		}
 
-		public static function display_payments($woid) {
+		static public function display_payments($woid) {
 			global $wo_cost_types;
 			//$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
 			$result = GL_Trans::get_wo_cost($woid);
@@ -485,7 +485,7 @@
 			}
 		}
 
-		public static function display($woid, $suppress_view_link = false) {
+		static public function display($woid, $suppress_view_link = false) {
 			global $wo_types_array;
 			$myrow = WO::get($woid);
 			if (strlen($myrow[0]) == 0) {

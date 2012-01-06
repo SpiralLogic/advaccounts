@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = SA_TAXRATES;
 	Page::start(_($help_context = "Tax Types"));
-	list($Mode,$selected_id) = Page::simple_mode(true);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM && can_process($selected_id)) {
 		Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
 		Errors::notice(_('New tax type has been added'));
@@ -41,7 +41,8 @@
 	Errors::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
 	start_table('tablestyle');
 	$th = array(
-		_("Description"), _("Default Rate (%)"), _("Sales GL Account"), _("Purchasing GL Account"), "", "");
+		_("Description"), _("Default Rate (%)"), _("Sales GL Account"), _("Purchasing GL Account"), "", ""
+	);
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;

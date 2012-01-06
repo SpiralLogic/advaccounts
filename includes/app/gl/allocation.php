@@ -151,7 +151,7 @@
 			}
 			DB::commit();
 		}
-		public static function show_allocatable($show_totals) {
+		static public function show_allocatable($show_totals) {
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
@@ -199,7 +199,7 @@
 			}
 			hidden('TotalNumberOfAllocs', $counter);
 		}
-		public static function check() {
+		static public function check() {
 			$total_allocated = 0;
 			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
 				if (!Validation::is_num('amount' . $counter, 0)) {
@@ -227,7 +227,7 @@
 			}
 			return true;
 		}
-		public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
+		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
 			if (!User::get()->salesmanid); {
 				Errors::error(_("You do not have a salesman id, this is needed to create an invoice."));
@@ -250,7 +250,7 @@
 			$doc->finish();
 			$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 		}
-		public static function display($alloc_result, $total) {
+		static public function display($alloc_result, $total) {
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
 				return;
@@ -285,7 +285,7 @@
 			end_row();
 			end_table(1);
 		}
-		public static function from($person_type, $person_id, $type, $type_no, $total) {
+		static public function from($person_type, $person_id, $type, $type_no, $total) {
 			switch ($person_type) {
 				case PT_CUSTOMER :
 					$alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);

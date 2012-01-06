@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Bank_Account
 	{
-		public static function add($account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
+		static public function add($account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
 			if ($dflt_curr_act) // only one default account for any currency
 			{
 				Bank_Currency::clear_default($bank_curr_code);
@@ -23,7 +23,7 @@
 			DB::query($sql, "could not add a bank account for $account_code");
 		}
 
-		public static function update($id, $account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
+		static public function update($id, $account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act) {
 			if ($dflt_curr_act) // only one default account for any currency
 			{
 				Bank_Currency::clear_default($bank_curr_code);
@@ -37,25 +37,25 @@
 			DB::query($sql, "could not update bank account for $account_code");
 		}
 
-		public static function delete($id) {
+		static public function delete($id) {
 			$sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete bank account for $id");
 		}
 
-		public static function get($id) {
+		static public function get($id) {
 			$sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not retreive bank account for $id");
 			return DB::fetch($result);
 		}
 
-		public static function get_gl($id) {
+		static public function get_gl($id) {
 			$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not retreive bank account for $id");
 			$bank_account = DB::fetch($result);
 			return $bank_account['account_code'];
 		}
 
-		public static function get_default($curr) {
+		static public function get_default($curr) {
 			/* default bank account is selected as first found account from:
 									 . default account in $curr if any
 									 . first defined account in $curr if any
@@ -69,7 +69,7 @@
 			return DB::fetch($result);
 		}
 
-		public static function get_customer_default($cust_id) {
+		static public function get_customer_default($cust_id) {
 			$sql = "SELECT curr_code FROM debtors WHERE debtor_no=" . DB::escape($cust_id);
 			$result = DB::query($sql, "could not retreive default customer currency code");
 			$row = DB::fetch_row($result);
@@ -77,7 +77,7 @@
 			return $ba['id'];
 		}
 
-		public static function is($account_code) {
+		static public function is($account_code) {
 			$sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
 			$result = DB::query($sql, "checking account is bank account");
 			if (DB::num_rows($result) > 0) {
@@ -88,7 +88,7 @@
 			}
 		}
 
-		public static function	select($name, $selected_id = null, $submit_on_change = false) {
+		static public function	select($name, $selected_id = null, $submit_on_change = false) {
 			$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
 												FROM bank_accounts";
 			return select_box($name, $selected_id, $sql, 'id', 'bank_account_name', array(
@@ -98,7 +98,7 @@
 																																							));
 		}
 
-		public static function	cells($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	cells($label, $name, $selected_id = null, $submit_on_change = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -107,18 +107,18 @@
 			echo "</td>\n";
 		}
 
-		public static function	row($label, $name, $selected_id = null, $submit_on_change = false) {
+		static public function	row($label, $name, $selected_id = null, $submit_on_change = false) {
 			echo "<tr><td class='label'>$label</td>";
 			Bank_Account::cells(null, $name, $selected_id, $submit_on_change);
 			echo "</tr>\n";
 		}
 
-		public static function	type($name, $selected_id = null) {
+		static public function	type($name, $selected_id = null) {
 			global $bank_account_types;
 			return array_selector($name, $selected_id, $bank_account_types);
 		}
 
-		public static function	type_cells($label, $name, $selected_id = null) {
+		static public function	type_cells($label, $name, $selected_id = null) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -127,7 +127,7 @@
 			echo "</td>\n";
 		}
 
-		public static function	type_row($label, $name, $selected_id = null) {
+		static public function	type_row($label, $name, $selected_id = null) {
 			echo "<tr><td class='label'>$label</td>";
 			Bank_Account::type_cells(null, $name, $selected_id);
 			echo "</tr>\n";

@@ -253,7 +253,7 @@
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
-		public static function addEditDialog() {
+		static public function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
@@ -267,10 +267,10 @@
 JS;
 			JS::addLiveEvent('#customer_id_label', 'click', $js);
 		}
-		public static function addSearchBox($id, $options = array()) {
+		static public function addSearchBox($id, $options = array()) {
 			echo UI::searchLine($id, '/contacts/search.php', $options);
 		}
-		public static function search($terms) {
+		static public function search($terms) {
 			$data = array();
 			$sql = DB::select('debtor_no as id', 'name as label', 'name as value',"IF(name LIKE '".trim($terms)."%',0,5) as weight")->from('debtors')->where('name LIKE ', "$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
@@ -282,7 +282,7 @@ JS;
 			}
 			return $data;
 		}
-		public static function searchOrder($term, $options = array()) {
+		static public function searchOrder($term, $options = array()) {
 			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
 			$term = explode(' ', $term);
@@ -304,7 +304,7 @@ JS;
 			}
 			return $data;
 		}
-		public static function get_details($customer_id, $to = null) {
+		static public function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
 			}
@@ -369,18 +369,18 @@ JS;
 			}
 			return $customer_record;
 		}
-		public static function get($customer_id) {
+		static public function get($customer_id) {
 			$sql = "SELECT * FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			return DB::fetch($result);
 		}
-		public static function get_name($customer_id) {
+		static public function get_name($customer_id) {
 			$sql = "SELECT name FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
-		public static function get_habit($customer_id) {
+		static public function get_habit($customer_id) {
 			$sql = "SELECT debtors.pymt_discount,
 				 credit_status.dissallow_invoices
 				FROM debtors, credit_status
@@ -389,27 +389,27 @@ JS;
 			$result = DB::query($sql, "could not query customers");
 			return DB::fetch($result);
 		}
-		public static function get_area($id) {
+		static public function get_area($id) {
 			$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
-		public static function get_salesman_name($id) {
+		static public function get_salesman_name($id) {
 			$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
-		public static function get_credit($customer_id) {
+		static public function get_credit($customer_id) {
 			$custdet = Debtor::get_details($customer_id);
 			return ($customer_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 		}
-		public static function is_new($id) {
+		static public function is_new($id) {
 			$tables = array('branches', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
 		}
-		public static function newselect($value = null) {
+		static public function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td nowrap>";
 			if (!$value && isset($_POST['customer'])) {
 				$value = $_POST['customer'];
@@ -431,7 +431,7 @@ JS;
 			var customer = document.getElementById('customer');customer.value=data.value;
 			JsHttpRequest.request(customer)}");
 		}
-		public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+		static public function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors ";
 			$mode = DB_Company::get_pref('no_customer_list');
 			if ($editkey) {
@@ -453,7 +453,7 @@ JS;
 																																						 'show_inactive' => $show_inactive
 																																				));
 		}
-		public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
+		static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
@@ -461,12 +461,12 @@ JS;
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
 			echo "</td>\n";
 		}
-		public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+		static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 			echo "</td>\n</tr>\n";
 		}
-		public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static public function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "sales/view/";
 			switch ($type) {
 				case ST_SALESINVOICE:
