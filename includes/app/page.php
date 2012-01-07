@@ -14,7 +14,7 @@
 		public $renderer = null;
 		protected $no_menu = false;
 		protected $is_index = false;
-		protected $header = false;
+		protected $header = true;
 		/** @var ADVAccounting */
 		protected $app;
 		protected $sel_app;
