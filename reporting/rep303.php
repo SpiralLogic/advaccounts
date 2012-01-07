@@ -23,7 +23,7 @@
 		{
 			$sql
 			 = "SELECT stock_master.category_id,
-			stock_category.description AS cat_description,
+			stock_category.description AS cat_name,
 			stock_master.stock_id,
 			stock_master.description, stock_master.inactive,
 			IF(stock_moves.stock_id IS NULL, '', stock_moves.loc_code) AS loc_code,
@@ -156,14 +156,14 @@
 				if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0) {
 					continue;
 				}
-				if ($catt != $trans['cat_description']) {
+				if ($catt != $trans['cat_name']) {
 					if ($catt != '') {
 						$rep->Line($rep->row - 2);
 						$rep->NewLine(2, 3);
 					}
 					$rep->TextCol(0, 1, $trans['category_id']);
-					$rep->TextCol(1, 2, $trans['cat_description']);
-					$catt = $trans['cat_description'];
+					$rep->TextCol(1, 2, $trans['cat_name']);
+					$catt = $trans['cat_name'];
 					$rep->NewLine();
 				}
 				$rep->NewLine();

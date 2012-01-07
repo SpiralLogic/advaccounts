@@ -21,7 +21,6 @@ function set_mark(img) {
 function disp_msg(msg, cl) {
 	var box = document.getElementById('msgbox');
 	box.innerHTML = "<div class='" + (cl || 'err_msg') + "'>" + msg + '</div>';
-	console.log(msg, cl);
 	if (msg != '') window.scrollTo(0, element_pos(box).y - 10);
 }
 

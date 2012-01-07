@@ -87,7 +87,7 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
-		echo "<div class='center'>" . _("Item:") . "&nbsp;";
+		echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:").'</span>';
 		echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
 		echo "<hr></div>";
 	}

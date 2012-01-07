@@ -356,59 +356,102 @@
 			});
 			return $data;
 		}
+		static public function searchSale($terms) {
+			$terms = explode(' ', trim($terms));
+			$stockid = array_shift($terms);
+			$where = 'OR (s.long_description LIKE ? ';
+			$finalterms = array($stockid, $stockid . '%', '%' . $stockid . '%', '%' . $stockid . '%');
+			foreach ($terms as $t) {
+				$where .= ' AND s.long_description LIKE ? ';
+				$finalterms[] = '%' . trim($t) . '%';
+			}
+			$sql
+			 = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
+s.category_id,   editable, 0 as kit,
+										IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + 0 as weight FROM item_codes i,
+										stock_master s
+										WHERE (s.stock_id LIKE ? $where))  AND s.inactive = 0  AND s.no_sale =0 AND i.item_code=i.stock_id AND i
+										.stockid=s.id
+										AND !i.is_foreign ORDER BY weight
+										LIMIT 20)";
+			$where = 'OR (i.description LIKE ? ';
+			$finalterms[] = $stockid;
+			$finalterms[] = $stockid . '%';
+			$finalterms[] = '%' . $stockid . '%';
+			$finalterms[] = '%' . $stockid . '%';
+			foreach ($terms as $t) {
+				if (strlen(trim($t)) == 0) {
+					continue;
+				}
+				$where .= ' AND s.long_description LIKE ? ';
+				$finalterms[] = '%' . trim($t) . '%';
+			}
+			$sql
+			 .= "UNION (SELECT i.item_code as stock_id, i.id, i.description,
+						 i.description as long_description, i.category_id, 1 as editable, 1 as kit,
+						 IF(i.item_code LIKE ?, 0,20) + IF(i.item_code LIKE ?,0,5) as weight FROM item_codes i
+						 WHERE (i.item_code LIKE ? $where))  AND !i.is_foreign AND i.item_code!=i.stock_id
+						 AND i.inactive = 0 GROUP BY  i.item_code ORDER BY weight
+						 LIMIT 5)) as s , stock_category c, prices p WHERE  s.id = p.item_code_id AND p.sales_type_id =1  AND
+						 s.category_id = c.category_id GROUP BY s.stock_id ORDER BY s.weight, s.category_id, s.stock_id ";
+			DB::prepare($sql, true);
+			DB::execute($finalterms, true);
+			var_dump(DB::$queryString);
+			exit();
+		}
 		static public function searchOrder($term, $UniqueID) {
 			$o = Cache::get($UniqueID);
 			$term = explode(' ', trim($term));
-			$stock_id = trim(array_shift($term));
-			$terms = array($stock_id, '%' . $stock_id . '%');
-			$terms = array($stock_id, $stock_id . '%', $terms[1], $terms[1], $terms[1]);
-			$termswhere = ' OR s.long_description LIKE ? ';
+			$item_code = trim(array_shift($term));
+			$terms = array($item_code, '%' . $item_code . '%');
+			$terms = array($item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]);
+			$termswhere = ' OR i.long_description LIKE ? ';
 			$where = '';
 			foreach ($term as $t) {
-				$where .= ' AND s.long_description LIKE ? ';
+				$where .= ' AND i.long_description LIKE ? ';
 				$terms[] = '%' . trim($t) . '%';
 			}
-			$where .= ($o['inactive'] ? '' : ' AND s.inactive = 0 ') . ($o['no_sale'] ? '' : ' AND s.no_sale =0 ');
+			$where .= ($o['inactive'] ? '' : ' AND s.inactive = 0 ') . ($o['no_sale'] ? '' : ' AND i.no_sale =0 ');
 			$where2 = (!empty($o['where']) ? ' AND ' . $o['where'] : ' ');
 			if ($o['type'] == 'local') {
-				$where2 .= " AND !i.is_foreign ";
+				$where2 .= " AND !s.is_foreign ";
 			}
-			$where2 .= ' AND s.id = i.stockid ';
+			$where2 .= ' AND i.id = s.stockid ';
 			$sales_type = $prices = '';
 			if ($o['purchase']) {
-				array_unshift($terms, $stock_id);
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
+				array_unshift($terms, $item_code);
+				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
 				if (Input::session('supplier_id', Input::NUMERIC)) {
 					array_unshift($terms, $_SESSION['supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
-				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';
-				$prices = " LEFT OUTER JOIN purch_data p ON s.id = p.stockid ";
+				$item_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price ';
+				$prices = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
 			}
 			elseif ($o['sale']) {
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + IF(s.stock_id LIKE ?,0,5) as weight';
-
-				$stock_id = " s.stock_id, p.price ";
+				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
+				$item_code = " s.item_code as stock_id, p.price ";
 				$prices = ", prices p";
-				$where .= " AND i.id = p.item_code_id ";
+				$where .= " AND s.id = p.item_code_id ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			}
 			else {
-				$stock_id = " s.stock_id";
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + IF(s.stock_id LIKE ?,0,5) as weight';
+				$item_code = " s.item_code as stock_id";
+				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql
-			 = "SELECT $select $stock_id ,s.description, c.description as category, s.long_description , editable,
-							$weight FROM stock_category c, item_codes i, stock_master s $prices
-							WHERE (s.stock_id LIKE ? $termswhere) $where
-							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
-							ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
-			DB::prepare($sql, true);
+			 = "SELECT $select $item_code ,i.description as name, c.description as category, i.long_description as description , editable,
+							$weight FROM stock_category c, item_codes s, stock_master i $prices
+							WHERE (s.item_code LIKE ? $termswhere) $where
+							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
+							ORDER BY weight, s.category_id, s.item_code LIMIT 30";
+			DB::prepare($sql);
 			return DB::execute($terms);
+
 		}
 		static public function addEditDialog($options = array()) {
 			$default = array('page' => 0);
@@ -429,6 +472,29 @@ JS;
 			JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
 			JS::addLiveEvent('label.stock', 'click', $action, "wrapper", true);
 		}
+		/**
+		 * @static
+		 * @param $id
+		 * @param array $options 'description' => false,<br>
+		 				'disabled' => false,<br>
+		 				'editable' => true,<br>
+		 				'selected' => '',<br>
+		 				'label' => false,<br>
+		 				'cells' => false,<br>
+		 				'inactive' => false,<br>
+		 				'purchase' => false,<br>
+		 				'sale' => false,<br>
+		 				'js' => '',<br>
+		 				'selectjs' => '',<br>
+		 				'submitonselect' => '',<br>
+		 				'sales_type' => 1,<br>
+		 				'no_sale' => false,<br>
+		 				'select' => false,<br>
+		 				'type' => 'local',<br>
+		 				'kits'=>true,<br>
+		 				'where' => '',<br>
+		 				'size'=>'20px'<br>
+		 */
 		static public function addSearchBox($id, $options = array()) {
 			echo UI::searchLine($id, '/items/search.php', $options);
 		}

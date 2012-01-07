@@ -24,9 +24,9 @@ Adv.extend({
 								 $(this).val(feild.val()).addClass("ui-state-highlight");
 							 });
 							 if (Items.get().id === null || Items.get().id === 0) {
-								      Adv.btnItem.button("option", "label", "Save New Item").show();
+								      Adv.btnSave.button("option", "label", "Save New Item").show();
 							 } else {
-								    Adv.btnItem.button("option", "label", "Save Changes").show();
+								    Adv.btnSave.button("option", "label", "Save Changes").show();
 							 }
 							 Items.set(fieldname, feild.val());
 							 window.onbeforeunload = function () {
@@ -105,7 +105,10 @@ $(function () {
 	Adv.extend({btnCancel:$("#btnCancel").button().click(function () {
 		(	!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 		return false;
-	}),
+	}),btnSave:$("#btnSave").button().click(function () {
+		Items.save();
+			return false;
+		}),
 							 tabs:$("#tabs0")});
 	Adv.tabs.delegate(":input", "change", function (event) {
 		event.stopImmediatePropagation();

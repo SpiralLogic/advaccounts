@@ -68,15 +68,11 @@
 		 * @param array $options
 		 */
 		static public function autocomplete($id, $callback, $url = false, $options = array()) {
-			$o = array('focus' => false);
-			$o = array_merge($o, $options);
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
 			self::$_onload[] = "Adv.Forms.autocomplete('$id','$url',$callback);";
-			if ($o['focus']) {
-				self::setFocus("autocomplete.$id", true);
-			}
+
 		}
 		/**
 		 * @static

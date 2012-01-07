@@ -25,7 +25,7 @@
 		$to = Dates::date2sql($to);
 		$sql
 		 = "SELECT stock_master.category_id,
-			stock_category.description AS cat_description,
+			stock_category.description AS cat_name,
 			stock_master.stock_id,
 			stock_master.description, stock_master.inactive,
 			stock_moves.loc_code,
@@ -146,7 +146,7 @@
 		$catt = '';
 		while ($trans = DB::fetch($res))
 		{
-			if ($catt != $trans['cat_description']) {
+			if ($catt != $trans['cat_name']) {
 				if ($catt != '') {
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 4, _('Total'));
@@ -159,8 +159,8 @@
 					$total = $total1 = $total2 = 0.0;
 				}
 				$rep->TextCol(0, 1, $trans['category_id']);
-				$rep->TextCol(1, 6, $trans['cat_description']);
-				$catt = $trans['cat_description'];
+				$rep->TextCol(1, 6, $trans['cat_name']);
+				$catt = $trans['cat_name'];
 				$rep->NewLine();
 			}
 			$curr = Bank_Currency::for_debtor($trans['debtor_no']);

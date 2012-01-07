@@ -266,6 +266,7 @@
 				$prepared = false;
 				$this->_error($e);
 			}
+			if ($debug) static::$queryString = $sql;
 			static::$data = array();
 			return $prepared;
 		}
@@ -288,10 +289,11 @@
 		 *
 		 * @return array|bool
 		 */
-		static public function execute($data) {
+		static public function execute($data,$debug=false) {
 			if (!static::$prepared) {
 				return false;
 			}
+			if ($debug) static::$queryString=static::$i->placeholderValues(static::$queryString,$data);
 			static::$data = $data;
 			try {
 				static::$prepared->execute($data);
@@ -299,6 +301,7 @@
 			} catch (PDOException $e) {
 				$result = static::i()->_error($e);
 			}
+
 			static::$data = array();
 			return $result;
 		}
@@ -603,7 +606,8 @@
 		}
 		static protected function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
-				$sql = preg_replace('/\?/i', "'$v[0]'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+				if (is_array($v)) $v=$v[0];
+				$sql = preg_replace('/\?/i', "'$v'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}

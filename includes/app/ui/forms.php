@@ -262,7 +262,8 @@
 				if (in_array((string)$value, $selected_id, true)) {
 					$sel = 'selected';
 					$found = $value;
-					$edit = $opts['editable'] && $contact_row['editable'] && (@$_POST[$search_box] == $value) ? $contact_row[1] : false; // get non-formatted description
+					$edit = $opts['editable'] && $contact_row['editable'] && (Input::post($search_box) == $value) ? $contact_row[1] :
+					false; // get non-formatted description
 					if ($edit) {
 						break; // selected field is editable - abandon list construction
 					}
@@ -708,7 +709,6 @@
 	}
 
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
-		JS::default_focus($name);
 		if ($label != null) {
 			label_cell($label, $labparams);
 		}
@@ -1012,7 +1012,6 @@
 	}
 
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-		JS::default_focus($name);
 		if ($label != null) {
 			echo "<td $params>$label</td>\n";
 		}

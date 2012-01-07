@@ -2,7 +2,7 @@ Adv.extend({
 
 						 resetHighlights:function () {
 							 $(".ui-state-highlight").removeClass("ui-state-highlight");
-							 Adv.o.custsearch.removeClass('hide');
+							 Adv.o.custsearch.prop('disabled',false);
 							 Adv.btnCustomer.hide();
 							 Adv.btnCancel.button('option', 'label', 'New Customer');
 							 Branches.btnBranchAdd();
@@ -24,7 +24,7 @@ Adv.extend({
 						 },
 						 stateModified:function (feild) {
 							 if (feild.prop('disabled')) return;
-							 Adv.o.custsearch.addClass('hide');
+							 Adv.o.custsearch.prop('disabled',true);
 							 Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
 							 var fieldname = feild.addClass("ui-state-highlight").attr('name');
 							 $("[name='" + fieldname + "']").each(function () {
@@ -302,8 +302,8 @@ $(function () {
 							 btnUseShipAddress:$("#useShipAddress").button().click(function () {
 								 Adv.accFields.each(function () {
 									 var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
-									 $(this).val(newVal);
-									 Customer.set($(this).attr('name'), newVal);
+									 $(this).val(newVal).trigger('change');
+									  Customer.set($(this).attr('name'), newVal);
 
 								 });
 								 return false;

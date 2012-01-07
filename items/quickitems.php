@@ -65,6 +65,9 @@ JS;
 <label for="stock_id"><span>Code:</span><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></label>
 <label for="name"><span>Name:</span><input id="name" type="text" value="\${name}" maxlength="10"></label>
 <label for="long_description"><span>Description:</span><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></label>
+<label for="no_sale"><span>Not for sale:</span><input id="no_sale" type="checkbox" value='\${no_sale}' /></label>
+<label for="inactive"><span>inactive:</span><input id="inactive" type="checkbox" value='\${inactive}'/></label>
+
 <label for="category_id"><span>Category:</span>$stock_cats</label>
 <label for="uom"><span>Units of Mesasure:</span>$units</label>
 </div><div class="center">
@@ -75,7 +78,7 @@ JS;
 </div>
 HTML;
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	UI::button('btnItem', 'Save', array("style" => "display:none"));
+	UI::button('btnSave', 'Save', array("style" => "display:none"));
 	$menu->endTab();
 	$menu->startTab("Accounts", "Accounts");
 	echo <<<HTML

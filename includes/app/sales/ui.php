@@ -141,7 +141,26 @@
 		 * @param bool	 $all_option
 		 * @param bool	 $submit_on_change
 		 * @param string $type
-		 * @param array	$opts
+		 * @param array	$opts 'description' => false,<br>
+		 		 				'disabled' => false,<br>
+		 		 				'editable' => true,<br>
+		 		 				'selected' => '',<br>
+		 		 				'label' => false,<br>
+		 		 				'cells' => false,<br>
+		 		 				'inactive' => false,<br>
+		 		 				'purchase' => false,<br>
+		 		 				'sale' => false,<br>
+		 		 				'js' => '',<br>
+		 		 				'selectjs' => '',<br>
+		 		 				'submitonselect' => '',<br>
+		 		 				'sales_type' => 1,<br>
+		 		 				'no_sale' => false,<br>
+		 		 				'select' => false,<br>
+		 		 				'type' => 'local',<br>
+		 		 				'kits'=>true,<br>
+		 		 				'where' => '',<br>
+		 		 				'size'=>'20px'<br>'
+		 *
 		 * @param bool	 $legacy
 		 *
 		 * @return string|void
@@ -150,7 +169,8 @@
 			// all sales codes
 			if (!$legacy) {
 				return Item::addSearchBox($name, array_merge(array(
-																													'selected' => $selected_id, 'type' => $type, 'cells' => true, 'sale' => true), $opts));
+																													'selected' => $selected_id, 'type' => $type, 'cells' => true,
+				'sale' => true), $opts));
 			}
 			$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
 			if ($type == 'kits') {

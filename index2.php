@@ -17,7 +17,9 @@
 	if ($_SESSION['barcodefile'] != $_POST['unique']) {
 		$id = uniqid();
 		$_SESSION['barcodefile'] = $id;
-		echo '<form method="post" enctype="multipart/form-data"  action="#"><input type="hidden" name="go" value=1 /><input type="hidden" name="unique" value="' . $id . '" /> <input type="file" name="csvitems" /><button>Go</button></form>';
+		echo '<form method="post" enctype="multipart/form-data"  action="#"><input type="hidden" name="go" value=1 /><input
+		type="hidden" name="unique" value="' . $id . '" /> <input type="file" name="csvitems" autofocus
+		/><button>Go</button></form>';
 	}
 	else {
 		unset($_SESSION['barcodefile']);
@@ -32,55 +34,56 @@
 			echo "fucked the job!\n";
 			exit();
 		}
+		ini_set('auto_detect_line_endings',1);
 		echo '<html><head><style>
-	body,table,img,td,div {
-		margin:0;padding:0;border-width: 0;
-	}
-	table {
-		border-collapse: collapse;
-	}
-	td {
-		height:68pt;
-		max-height:68pt;
-		min-height:68pt;
-		overflow:hidden;
-		font-size:8pt;
-		text-align:left;
-		background-color:rgba(0,0,0,.1);
-	}
-	td.barcode {
-		text-align:center;
-		width:68pt;
-		min-width:68pt;
-		max-width:68pt;
-	}
-	td.space{
-		width:4pt;
-	}
-	td.desc {
-		width:109.5pt;
-		min-width:109.5pt;
-		max-width:109.5pt;
-	}
-	td.desc span {
-		font-weight: bold;
-		font-size: larger;
-	}
-	div  {
-		left:-10pt;
-		padding-top:11pt;
-	}
-	table{
-		text-align:left;
-		vertical-align: middle;
-	}
-	</style></head><body>';
+			body,table,img,td,div {
+				margin:0;padding:0;border-width: 0;
+			}
+			table {
+				border-collapse: collapse;
+			}
+			td {
+				height:68pt;
+				max-height:68pt;
+				min-height:68pt;
+				overflow:hidden;
+				font-size:8pt;
+				text-align:left;
+				background-color:rgba(0,0,0,.1);
+			}
+			td.barcode {
+				text-align:center;
+				width:68pt;
+				min-width:68pt;
+				max-width:68pt;
+			}
+			td.space{
+				width:4pt;
+			}
+			td.desc {
+				width:109.5pt;
+				min-width:109.5pt;
+				max-width:109.5pt;
+			}
+			td.desc span {
+				font-weight: bold;
+				font-size: larger;
+			}
+			div  {
+				left:-10pt;
+				padding-top:11pt;
+			}
+			table{
+				text-align:left;
+				vertical-align: middle;
+			}
+			</style></head><body>';
 		$csvitems = array();
 		$file = fopen($file, 'r');
 		$result = DB::select('s.stock_id', 's.description')->from('stock_master s');
 		while (($item = fgetcsv($file, 1000, ',')) !== false) {
-			$result->or_where("s.stock_id = ", $item[0]);
-			$csvitems[$item[0]] = $item[1];
+			$result->or_where("s.stock_id LIKE ", $item[0]);
+			$csvitems[strtolower($item[0])] = $item[1];
 		}
 		$result = $result->fetch()->all();
 		$i = 0;
@@ -88,7 +91,7 @@
 		$count = 1;
 		echo '<div class="page-break"><table ><tbody><tr>';
 		while ($item = array_pop($result)) {
-			if ($count < $csvitems[$item['stock_id']]) {
+			if ($count < $csvitems[strtolower($item['stock_id'])]) {
 				array_push($result, $item);
 				$count++;
 			}
@@ -125,4 +128,3 @@ breakeveryheader();
 	</script></html>';
 	}
 ?>
-

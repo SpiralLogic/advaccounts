@@ -96,10 +96,11 @@ Adv.extend({
 		if (status.status === 'redirect') {window.onunload=null; return window.location.href = status.message;}
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
 		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>');
+		window.setTimeout(Adv.hideStatus,10000);
 		window.scrollTo(0, element_pos(Adv.msgbox[0]).y - 40)
 	},
 	hideStatus:function () {
-		Adv.msgbox.removeClass().empty();
+		Adv.msgbox.fadeOut('slow',function() {$(this).removeClass()});
 	},
 	openWindow:function (url, title, width, height) {
 		var left = (screen.width - width) / 2;
@@ -204,9 +205,8 @@ Adv.extend({Forms:(function () {
 			})
 		},
 		autocomplete:function (id, url, callback) {
-			Adv.o.autocomplete[id] = $('#' + id)
+			Adv.o.autocomplete[id] = $this = $('#' + id)
 			 .autocomplete({
-				 autoFocus:true,
 				 minLength:1,
 				 delay:200,
 				 source:function (request, response) {
@@ -252,7 +252,8 @@ Adv.extend({Forms:(function () {
 				 $this.data('default', null)
 			 })
 			 .focus(
-			 function () { $(this).data('active', true)}).css({'z-index':'2'})
+			 function () { $(this).data('active', true)}).css({'z-index':'2'});
+			if (document.activeElement===$this[0]) $this.data('active',true);
 		}
 	}
 })()});

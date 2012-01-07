@@ -31,9 +31,9 @@
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
-		echo "<div class='center'>" . _("Item:") . "&nbsp;";
-		echo Sales_UI::items('stock_id', $_POST['stock_id'], false, true, '', array(), true);
-		echo "<hr></div>";
+		echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:").'</span>';
+		echo Sales_UI::items('stock_id', $_POST['stock_id'], false, true, '', array('submitonselect'=>true,'size'=>40));
+		echo "<br><br><hr></div>";
 	}
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {

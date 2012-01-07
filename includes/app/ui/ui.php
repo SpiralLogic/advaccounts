@@ -79,7 +79,7 @@
 			if (($o['value'])) {
 				$input_attr['value'] = htmlentities($o['value']);
 			}
-			$options['focus'] = $o['focus'];
+			if (			$o['focus']			)$input_attr['autofocus']=true;
 			HTML::input($id, $input_attr);
 			if (!($o['nodiv'])) {
 				HTML::div();
@@ -88,7 +88,31 @@
 			JS::autocomplete($id, $callback, $url, $options);
 			return static::$_instance;
 		}
-
+/**
+ * @static
+ * @param $id
+ * @param string $url
+ * @param array $options 'description' => false,<br>
+ 		 				'disabled' => false,<br>
+ 		 				'editable' => true,<br>
+ 		 				'selected' => '',<br>
+ 		 				'label' => false,<br>
+ 		 				'cells' => false,<br>
+ 		 				'inactive' => false,<br>
+ 		 				'purchase' => false,<br>
+ 		 				'sale' => false,<br>
+ 		 				'js' => '',<br>
+ 		 				'selectjs' => '',<br>
+ 		 				'submitonselect' => '',<br>
+ 		 				'sales_type' => 1,<br>
+ 		 				'no_sale' => false,<br>
+ 		 				'select' => false,<br>
+ 		 				'type' => 'local',<br>
+ 		 				'kits'=>true,<br>
+ 		 				'where' => '',<br>
+ 		 				'size'=>'20px'<br>
+ * @return HTML|string
+ */
 		static function searchLine($id, $url = '#', $options = array()) {
 			$defaults = array(
 				'description' => false,
@@ -172,15 +196,14 @@ JS;
 								if ( xhr === Adv.lastXhr ) {
 								if (!Adv.o.stock_id.data('active')) {
 								var value = data[0];
-								value.description = value.long_description;
-								Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
+							Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
 								$.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
 									$desc_js
-								return false;
+										return false;
 								}
 										response($.map( data, function( item ) {
 												return {
-														label: item.stock_id+": "+item.description,
+														label: item.stock_id+": "+item.name,
 														value: item,
 														category: item.category
 												}
@@ -191,7 +214,6 @@ JS;
  					select: function( event, ui ) {
  var value = ui.item.value;
  $selectjs
-											 value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
 								$.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
 									$desc_js

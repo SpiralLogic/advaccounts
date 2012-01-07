@@ -77,7 +77,7 @@
 			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
 			Ajax::i()->addScript('editors', $edits);
-			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
+			JS::beforeload("d_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
 			User::add_js_data();
 			if ($this->header) {
 				Sidemenu::render();

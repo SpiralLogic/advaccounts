@@ -82,6 +82,7 @@
 			foreach (
 				$attr as $key => $value
 			) {
+				if (is_bool($value) ) {$attrs .= ' '.$key;continue;}
 				$attrs .= (empty($value) || $key == 'content') ? '' : ' '.$key.'="'.$value.'"';
 			}
 			echo	'<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
