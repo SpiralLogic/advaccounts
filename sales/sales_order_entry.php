@@ -62,9 +62,7 @@
 	elseif (Input::get('CloneOrder')) {
 		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
 	}
-	if (!$order) {
-		create_order(ST_SALESORDER, 0);
-	}
+
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -91,14 +89,13 @@
 		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
 	}
 	elseif (isset($_GET['RemovedID'])) {
-		Display::submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 		if ($_GET['Type'] == ST_SALESQUOTE) {
-			Errors::notice(_("This sales quotation has been cancelled as requested."), 1);
+			Errors::notice(_("This sales quotation has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?" . Orders::NEW_QUOTE . "=Yes");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
-			Errors::notice(_("This sales order has been cancelled as requested."), 1);
+			Errors::notice(_("This sales order has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
@@ -213,9 +210,9 @@
 		$corder = _("Commit Order Changes");
 	}
 	start_form();
-	hidden('order_id', $_POST['order_id']);
 	$customer_error = (!$order) ? _("There is no order currently being edited") : $order->header($idate);
 	if ($customer_error == "") {
+		hidden('order_id', $_POST['order_id']);
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
@@ -243,6 +240,7 @@
 	}
 	else {
 		Errors::warning($customer_error);
+		Page::footer_exit();
 	}
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');

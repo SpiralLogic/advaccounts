@@ -49,12 +49,13 @@
 			DB::update('prices')->where('stockid=', $this->stockid)->and_where('id=', $this->id)->exec($this);
 		}
 
-		static public function add($stock_id, $sales_type_id, $curr_abrev, $price, $stockid = null) {
-			if ($stockid == null) {
-				$stockid = Item::get_stockid($stock_id);
+		static public function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = null) {
+			if ($item_code_id == null) {
+				$item_code_id = Item_Code::get_id($stock_id);
+
 			}
-			$sql = "INSERT INTO prices (stockid, stock_id, sales_type_id, curr_abrev, price)
-			VALUES (" . DB::escape($stockid) . ", " . DB::escape($stock_id) . ", " . DB::escape($sales_type_id) . ", " . DB::escape($curr_abrev) . ", " . DB::escape($price) . ")";
+			$sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+			VALUES (" . DB::escape($item_code_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($sales_type_id) . ", " . DB::escape($curr_abrev) . ", " . DB::escape($price) . ")";
 			DB::query($sql, "an item price could not be added");
 		}
 

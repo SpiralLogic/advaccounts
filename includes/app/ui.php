@@ -107,6 +107,7 @@
 				'no_sale' => false,
 				'select' => false,
 				'type' => 'local',
+				'kits'=>true,
 				'where' => '',
 				'size'=>'20px'
 			);
