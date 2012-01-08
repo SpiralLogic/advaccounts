@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(800, 500);
-Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
+	Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	// Ajax updates
 	//

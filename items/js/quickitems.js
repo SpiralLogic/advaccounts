@@ -60,7 +60,7 @@ var Items = function () {
 			}, 'json');
 		},
 		getFrames:function (id) {
-			if (id===0){
+			if (!id){
 			Adv.o.tabs.tabs0.tabs('option','disabled',[2,3,4,5]);
 				return;
 			}
@@ -68,7 +68,7 @@ var Items = function () {
 			$buyFrame.attr('src', $buyFrameSrc + '&stock_id=' + id);
 			$sellFrame.attr('src', $sellFrameSrc + '&stock_id=' + id);
 			$locationFrame.attr('src', $locationFrameSrc + '&stock_id=' + id);
-			$webFrame.attr('src', $webFrame.data('srcpre')+ id+$webFrame.data('srcpost'));
+	/*		$webFrame.attr('src', $webFrame.data('srcpre')+ id+$webFrame.data('srcpost'));*/
 		},
 		set:function (feildname, val) {
 			item[feildname] = val;
@@ -86,7 +86,10 @@ var Items = function () {
 			$stockLevels.show().find('tbody').html($.tmpl('stockrow', data.stockLevels));}
 			$('select').each(function () {
 				this.value = data.item[this.name];
-			})
+			});
+			 $('input:checkbox').each(function() {
+				 this.checked = !!data.item[this.name];
+			 })
 		},
 		get:function () {
 			return item;

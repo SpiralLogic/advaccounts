@@ -1,15 +1,15 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-echo "<pre>";
-$sql = "SELECT * FROM debtor_balances WHERE Balance>0";
-$result = DB::query($sql, "The customer details could not be retrieved");
-echo "<table id='table'>";
-echo "<tr><th>Name</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";
-while ($row = DB::fetch($result)) {
-    echo "<tr><td><input class='email' type='checkbox' value='" . $row['debtor_no'] . "' checked></input> </td><td>" . $row['name'] . "</td><td>" . $row['Balance'] . "</td><td>" . $row['Due'] . "</td><td>" . $row['Overdue1'] . "</td><td>" . $row['Overdue2'] . "</td></tr>";
-}
-echo "</table><button id='send'>Send Emails</button>";
-$js = <<<JS
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	echo "<pre>";
+	$sql = "SELECT * FROM debtor_balances WHERE Balance>0";
+	$result = DB::query($sql, "The customer details could not be retrieved");
+	echo "<table id='table'>";
+	echo "<tr><th>Name</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";
+	while ($row = DB::fetch($result)) {
+		echo "<tr><td><input class='email' type='checkbox' value='" . $row['debtor_no'] . "' checked></input> </td><td>" . $row['name'] . "</td><td>" . $row['Balance'] . "</td><td>" . $row['Due'] . "</td><td>" . $row['Overdue1'] . "</td><td>" . $row['Overdue2'] . "</td></tr>";
+	}
+	echo "</table><button id='send'>Send Emails</button>";
+	$js = <<<JS
 
 
 $(function() {
@@ -48,5 +48,5 @@ function toArray(obj) {
  return array;
 }
 JS;
-JS::beforeload($js);
-JS::render();
+	JS::beforeload($js);
+	JS::render();

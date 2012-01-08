@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	$js = "";
-Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
+	Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
 	// Ajax updates
 	if (get_post('Show')) {
 		Ajax::i()->activate('pl_tbl');
@@ -29,6 +28,11 @@ Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
+	start_form();
+	inquiry_controls();
+	display_profit_and_loss();
+	end_form();
+	Page::end();
 	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT) {
 		global $levelptr, $k;
 		$code_per_balance = 0;
@@ -229,11 +233,5 @@ Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
 		end_table(1); // outer table
 		Display::div_end();
 	}
-
-	start_form();
-	inquiry_controls();
-	display_profit_and_loss();
-	end_form();
-	Page::end();
 
 ?>

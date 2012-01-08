@@ -13,8 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
 	JS::footerFile('/js/payalloc.js');
-
-	Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT,Input::request('frame'));
+	Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (list_updated('BranchID')) {
@@ -137,8 +136,7 @@
 	}
 	Display::br();
 	end_form();
-	$js
-	 = <<<JS
+	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();

@@ -65,8 +65,8 @@ JS;
 <label for="stock_id"><span>Code:</span><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></label>
 <label for="name"><span>Name:</span><input id="name" type="text" value="\${name}" maxlength="10"></label>
 <label for="long_description"><span>Description:</span><textarea id="long_description" rows="6" cols="36">\${long_description} </textarea></label>
-<label for="no_sale"><span>Not for sale:</span><input id="no_sale" type="checkbox" value='\${no_sale}' /></label>
-<label for="inactive"><span>inactive:</span><input id="inactive" type="checkbox" value='\${inactive}'/></label>
+<label for="no_sale"><span>Not for sale:</span><input id="no_sale" value=1 type="checkbox" /></label>
+<label for="inactive"><span>inactive:</span><input id="inactive" value=1 type="checkbox" /></label>
 
 <label for="category_id"><span>Category:</span>$stock_cats</label>
 <label for="uom"><span>Units of Mesasure:</span>$units</label>

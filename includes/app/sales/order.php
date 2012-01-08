@@ -65,11 +65,12 @@
 		public $payment_terms; // cached payment terms
 		public $credit;
 		protected $uniqueid;
+		public $view_only=false;
 
 		//
 		// $trans_no==0 => open new/direct document
-		// $trans_no!=0 && $view==false => read for view
-		// $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
+		// $trans_no!=0 && $this->view_only==false => read for view
+		// $trans_no!=0 && $this->view_only==true => read for edit (qty update from parent doc)
 		//
 		/***
 		 * @param						$type
@@ -80,6 +81,7 @@
 			/*Constructor function initialises a new shopping order */
 			$this->line_items = array();
 			$this->sales_type = "";
+			$this->view_only = $view;
 			if ($type == ST_SALESQUOTE) {
 				$this->trans_type = $type;
 			}
@@ -88,7 +90,7 @@
 			}
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
-			$this->read($type, $trans_no, $view);
+			$this->read($type, $trans_no);
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
 		}
@@ -96,9 +98,8 @@
 		/**
 		 * @param			$type
 		 * @param int	$trans_no
-		 * @param bool $view
 		 */
-		public function read($type, $trans_no = 0, $view = false) {
+		public function read($type, $trans_no = 0) {
 			if (!is_array($trans_no)) {
 				$trans_no = array($trans_no);
 			}
@@ -106,7 +107,7 @@
 			{
 				if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 					$this->get($trans_no[0], $type);
-					if ($view) { // prepare for DN/IV entry
+					if ($this->view_only) { // prepare for DN/IV entry
 						for ($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 							$line = &$this->line_items[$line_no];
 							$line->src_id = $line->id; // save src line ids for update
@@ -126,7 +127,7 @@
 						$this->delivery_address = $sodata["delivery_address"];
 					}
 					// old derivative transaction edit
-					if (!$view && ($type != ST_CUSTCREDIT || $this->trans_link != 0)) {
+					if (!$this->view_only && ($type != ST_CUSTCREDIT || $this->trans_link != 0)) {
 						$src_type = Debtor_Trans::get_parent_type($type);
 						if ($src_type == ST_SALESORDER && isset($sodata)) { // get src data from sales_orders
 							$this->src_docs = array($sodata['order_no'] => $sodata['version']);
@@ -1587,7 +1588,7 @@
 				$_POST['order_id'] = $order->order_id;
 			}
 			$session_order = Orders::session_get();
-			if ($session_order && $session_order->uniqueid != $order->uniqueid) {
+			if (!$order->view_only && $session_order && $session_order->uniqueid != $order->uniqueid) {
 				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
 					Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
 				}

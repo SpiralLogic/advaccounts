@@ -16,8 +16,8 @@
 	JS::open_window(900, 500);
 
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
-	if (isset($_GET['ModifyDelivery'])) {
-		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
+	if (isset($_GET[Orders::MODIFY_DELIVERY])) {
+		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
 		$help_context = "Modifying Delivery Note";
 	}
 	Page::start($page_title,SA_SALESDELIVERY);
@@ -62,7 +62,7 @@
 		$order->document_date = Dates::new_doc_date();
 		copy_from_order($order);
 	}
-	elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
+	elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
 		$order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 		copy_from_order($order);
 		if ($order->count_items() == 0) {

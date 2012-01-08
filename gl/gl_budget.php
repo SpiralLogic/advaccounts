@@ -10,47 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::headerFile('budget.js');
-Page::start(_($help_context = "Budget Entry"), SA_BUDGETENTRY);
+	Page::start(_($help_context = "Budget Entry"), SA_BUDGETENTRY);
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
-	function exists_gl_budget($date_, $account, $dimension, $dimension2) {
-		$sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account) . " AND tran_date='$date_' AND
-		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
-		$result = DB::query($sql, "Cannot retreive a gl transaction");
-		return (DB::num_rows($result) > 0);
-	}
-
-	function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
-		$date = Dates::date2sql($date_);
-		if (exists_gl_budget($date, $account, $dimension, $dimension2)) {
-			$sql = "UPDATE budget_trans SET amount=" . DB::escape($amount) . " WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
-		}
-		else {
-			$sql = "INSERT INTO budget_trans (tran_date,
-			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
-			" . DB::escape($account) . ", " . DB::escape($dimension) . ", " . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
-		}
-		DB::query($sql, "The GL budget transaction could not be saved");
-	}
-
-	function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
-		$date = Dates::date2sql($date_);
-		$sql = "DELETE FROM budget_trans WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
-		DB::query($sql, "The GL budget transaction could not be deleted");
-	}
-
-	function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
-		$from = Dates::date2sql($from_date);
-		$to = Dates::date2sql($to_date);
-		$sql = "SELECT SUM(amount) FROM budget_trans
-		WHERE account=" . DB::escape($account) . " AND tran_date >= '$from' AND tran_date <= '$to'
-		 AND dimension_id = " . DB::escape($dimension) . " AND dimension2_id = " . DB::escape($dimension2);
-		$result = DB::query($sql, "No budget accounts were returned");
-		$row = DB::fetch_row($result);
-		return $row[0];
-	}
-
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
 		DB::begin();
 		for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++) {
@@ -159,5 +121,41 @@ Page::start(_($help_context = "Budget Entry"), SA_BUDGETENTRY);
 	}
 	end_form();
 	Page::end();
+	function exists_gl_budget($date_, $account, $dimension, $dimension2) {
+		$sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account) . " AND tran_date='$date_' AND
+		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
+		$result = DB::query($sql, "Cannot retreive a gl transaction");
+		return (DB::num_rows($result) > 0);
+	}
+
+	function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
+		$date = Dates::date2sql($date_);
+		if (exists_gl_budget($date, $account, $dimension, $dimension2)) {
+			$sql = "UPDATE budget_trans SET amount=" . DB::escape($amount) . " WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
+		}
+		else {
+			$sql = "INSERT INTO budget_trans (tran_date,
+			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
+			" . DB::escape($account) . ", " . DB::escape($dimension) . ", " . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
+		}
+		DB::query($sql, "The GL budget transaction could not be saved");
+	}
+
+	function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
+		$date = Dates::date2sql($date_);
+		$sql = "DELETE FROM budget_trans WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
+		DB::query($sql, "The GL budget transaction could not be deleted");
+	}
+
+	function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
+		$sql = "SELECT SUM(amount) FROM budget_trans
+		WHERE account=" . DB::escape($account) . " AND tran_date >= '$from' AND tran_date <= '$to'
+		 AND dimension_id = " . DB::escape($dimension) . " AND dimension2_id = " . DB::escape($dimension2);
+		$result = DB::query($sql, "No budget accounts were returned");
+		$row = DB::fetch_row($result);
+		return $row[0];
+	}
 
 ?>

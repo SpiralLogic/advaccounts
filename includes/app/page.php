@@ -11,7 +11,7 @@
 		/**@var Page null*/
 		public $renderer = null;
 		protected $frame = false;
-		protected $no_menu = false;
+		protected $menu = true;
 		protected $is_index = false;
 		protected $css = array();
 		protected $header = true;
@@ -50,7 +50,7 @@
 		static public function start($title, $security=SA_OPEN, $no_menu = false, $is_index = false) {
 			static::set_security($security);
 			if (static::$i === null) {
-				static::$i = new static($title, $no_menu, $is_index);
+				static::$i = new static($title, !$no_menu, $is_index);
 			}
 			return static::$i;
 		}
@@ -108,7 +108,7 @@
 		}
 		protected function menu_footer() {
 			echo "</div>";
-			if ($this->no_menu == false && !AJAX_REFERRER) {
+			if (!$this->menu && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
@@ -143,31 +143,31 @@
 				$hide_back_link = true;
 				$this->header = false;
 			}
-			if (($this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
-				Display::link_back(true, $this->no_menu);
+			if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
+				Display::link_back(true, !$this->menu);
 			}
 			Display::div_end(); // end of _page_body section
 			$this->footer();
 		}
-		protected function __construct($title, $no_menu, $index) {
+		protected function __construct($title, $menu, $index) {
 
 			$this->title = $title;
 			$this->app = $_SESSION['App'];
 			$this->sel_app = $this->app->selected;
 			$this->frame = isset($_GET['frame']);
-			$this->no_menu = $no_menu;
+			$this->menu = $this->frame?false:$menu;
 			$this->renderer = new Renderer();
 			$this->theme = User::theme();
 			if (AJAX_REFERRER || Ajax::in_ajax()) {
-				$this->no_menu = true;
+				$this->menu = false;
 			}
 			else {
 				$this->header();
-				if ($this->no_menu) {
-					$this->header = false;
+				if ($this->menu) {
+					$this->menu_header();
 				}
 				else {
-					$this->menu_header();
+					$this->header = true;
 				}
 			}
 			Errors::error_box();
@@ -204,7 +204,7 @@
 			$this->css += Config::get('assets.css');
 			$this->send_css();
 			JS::renderHeader();
-			echo "</head><body" . ($this->no_menu ? ' class="lite">' : '>');
+			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
 	}

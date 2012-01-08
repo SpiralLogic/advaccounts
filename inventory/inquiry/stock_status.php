@@ -26,10 +26,9 @@ Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
-	echo "<div class='center'> ";
-	echo Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
-	echo "<br>";
-	echo "<hr></div>";
+	echo "<div class='center bold pad10 font13'> ";
+	Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
+	echo "</div>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = WO::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
@@ -39,6 +38,7 @@ Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
+
 	start_table('tablestyle');
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
@@ -52,6 +52,7 @@ Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
 	$dec = Item::qty_dec($_POST['stock_id']);
 	$j = 1;
 	$k = 0; //row colour counter
+
 	while ($myrow = DB::fetch($loc_details)) {
 		alt_table_row_color($k);
 		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);

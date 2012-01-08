@@ -96,8 +96,7 @@
 			return false;
 		}
 		$type = DB::escape($selected_id);
-		$sql
-		 = "SELECT COUNT(*) FROM chart_master
+		$sql = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 		$result = DB::query($sql, "could not query chart master");
 		$myrow = DB::fetch_row($result);
@@ -105,8 +104,7 @@
 			Errors::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
-		$sql
-		 = "SELECT COUNT(*) FROM chart_types
+		$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
 		$result = DB::query($sql, "could not query chart types");
 		$myrow = DB::fetch_row($result);

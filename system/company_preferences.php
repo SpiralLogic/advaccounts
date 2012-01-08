@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "Company Setup"), SA_SETUPCOMPANY);
+	Page::start(_($help_context = "Company Setup"), SA_SETUPCOMPANY);
 	if (isset($_POST['update']) && $_POST['update'] != "") {
 		$input_error = 0;
 		if (!Validation::is_num('login_tout', 10)) {

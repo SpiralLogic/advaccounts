@@ -10,7 +10,6 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
 																														ST_SALESORDER => SA_SALESORDER,
@@ -59,10 +58,9 @@
 	elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
 		$order = create_order(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
 	}
-	elseif (Input::get('CloneOrder')) {
-		$order = create_order(ST_SALESORDER, Input::get('CloneOrder'));
+	elseif (Input::get(Orders::CLONE_ORDER)) {
+		$order = create_order(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
 	}
-
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -261,15 +259,13 @@
 		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
-			 "ModifyOrder" :
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
 			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-			 ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
@@ -616,8 +612,8 @@
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
 		}
-		elseif (isset($_Get['CloneOrder'])) {
-			$trans_no = $_GET['CloneOrder'];
+		elseif (isset($_Get[Orders::CLONE_ORDER])) {
+			$trans_no = $_GET[Orders::CLONE_ORDER];
 			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;

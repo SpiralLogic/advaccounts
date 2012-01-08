@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	/** @noinspection PhpIncludeInspection */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET[Orders::MODIFY_ORDER])) {
-Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
+		Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
 	}
 	else {
-		Page::start(_($help_context = "Purchase Order Entry"),SA_PURCHASEORDER);
+		Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
 	}
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
@@ -218,8 +218,7 @@ Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_
 			if (isset($_GET[LOC_DROP_SHIP])) {
 				$item_info = Item::get('DS');
 				$_POST['StkLocation'] = LOC_DROP_SHIP;
-				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '',
-														 Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
 					$address .= $sales_order->name . "\n";

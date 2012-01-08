@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(800, 500);
-Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
+	Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
@@ -25,6 +24,13 @@ Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER
 	if (isset($_POST['_DatePaid_changed'])) {
 		Ajax::i()->activate('_ex_rate');
 	}
+	if (isset($_POST['AddPayment'])) {
+		if (check_valid_entries() == true) {
+			handle_add_deposit();
+		}
+	}
+	gl_payment_controls();
+	Page::end();
 	function gl_payment_controls() {
 		$home_currency = Bank_Currency::for_company();
 		start_form();
@@ -99,11 +105,4 @@ Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
 	}
 
-	if (isset($_POST['AddPayment'])) {
-		if (check_valid_entries() == true) {
-			handle_add_deposit();
-		}
-	}
-	gl_payment_controls();
-	Page::end();
 ?>

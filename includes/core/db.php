@@ -366,21 +366,21 @@
 		 *
 		 * @return DB_Query_Result|Array This is something
 		 */
-		static public function fetch($result = null) {
+		static public function fetch($result = null,$fetch_mode=PDO::FETCH_BOTH) {
 			if ($result !== null) {
-				return $result->fetch();
+				return $result->fetch($fetch_mode);
 			}
 			if (static::$prepared === null) {
-				return static::$query->fetch();
+				return static::$query->fetch($fetch_mode);
 			}
-			return static::$prepared->fetch(PDO::FETCH_BOTH);
+			return static::$prepared->fetch($fetch_mode);
 		}
 		/**
 		 * @static
 		 * @return mixed
 		 */
-		static public function fetch_row() {
-			return static::$prepared->fetch(PDO::FETCH_NUM);
+		static public function fetch_row($result = null) {
+			return static::fetch($result,PDO::FETCH_NUM);
 		}
 		/**
 		 * @static

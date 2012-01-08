@@ -14,8 +14,8 @@
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
-	if (isset($_GET['ModifyCredit'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
+	if (isset($_GET[Orders::MODIFY_CREDIT])) {
+		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
 		$help_context = "Modifying Credit Invoice";
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
@@ -54,8 +54,8 @@
 		}
 		copy_from_order($ci);
 	}
-	elseif (isset($_GET['ModifyCredit']) && $_GET['ModifyCredit'] > 0) {
-		$ci = new Sales_Order(ST_CUSTCREDIT, $_GET['ModifyCredit']);
+	elseif (isset($_GET[Orders::MODIFY_CREDIT]) && $_GET[Orders::MODIFY_CREDIT] > 0) {
+		$ci = new Sales_Order(ST_CUSTCREDIT, $_GET[Orders::MODIFY_CREDIT]);
 		copy_from_order($ci);
 	}
 	elseif (!Sales_Order::active()) {

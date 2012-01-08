@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
+	Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
 	function can_process() {
 		if (strlen($_POST['password']) < 4) {
 			Errors::error(_("The password entered must be at least 4 characters long."));

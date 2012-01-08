@@ -10,7 +10,7 @@
 		JS::renderJSON($data);
 	}
 	JS::footerFile("js/messages.js");
-	Page::start(_($help_context = "Messages"),SA_OPEN, Input::request('frame'));
+	Page::start(_($help_context = "Messages"), SA_OPEN, Input::request('frame'));
 	HTML::div(array('style' => 'margin:0 auto;text-align:center'));
 	Users::row(_("User:"), 'user_id');
 	HTML::br(false)->label(array(

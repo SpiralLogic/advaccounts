@@ -10,8 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(900, 600);
-Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESINVOICE);
+	JS::open_window(900, 600);
+	Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESINVOICE);
 	if (isset($_GET['recurrent'])) {
 		$date = Dates::Today();
 		if (Dates::is_date_in_fiscalyear($date)) {
@@ -38,8 +38,14 @@ Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESIN
 			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
-					'PARAM_0' => $min . "-" . ST_SALESINVOICE, 'PARAM_1' => $max . "-" . ST_SALESINVOICE, 'PARAM_2' => "", 'PARAM_3' => 0,
-					'PARAM_4' => 0, 'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
+					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
+					'PARAM_1' => $max . "-" . ST_SALESINVOICE,
+					'PARAM_2' => "",
+					'PARAM_3' => 0,
+					'PARAM_4' => 0,
+					'PARAM_5' => "",
+					'PARAM_6' => ST_SALESINVOICE
+				);
 				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
 				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
@@ -53,8 +59,8 @@ Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESIN
 	$result = DB::query($sql, "could not get recurrent invoices");
 	start_table('tablestyle width70');
 	$th = array(
-		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"),
-		_("End"), _("Last Created"), "");
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
+	);
 	table_header($th);
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);

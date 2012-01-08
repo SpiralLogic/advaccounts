@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "Chart of Accounts"), SA_GLACCOUNT);
+	Page::start(_($help_context = "Chart of Accounts"), SA_GLACCOUNT);
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
 	if (isset($_POST['_AccountList_update'])) {
 		$_POST['selected_account'] = $_POST['AccountList'];
@@ -69,96 +68,6 @@ Page::start(_($help_context = "Chart of Accounts"), SA_GLACCOUNT);
 			}
 			Ajax::i()->activate('_page_body');
 		}
-	}
-	function can_delete($selected_account) {
-		if ($selected_account == "") {
-			return false;
-		}
-		$acc = DB::escape($selected_account);
-		$sql = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
-		$result = DB::query($sql, "Couldn't test for existing transactions");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because transactions have been created using this account."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
-		OR pyt_discount_act=$acc
-		OR creditors_act=$acc 
-		OR bank_charge_act=$acc 
-		OR exchange_diff_act=$acc
-		OR profit_loss_year_act=$acc
-		OR retained_earnings_act=$acc
-		OR freight_act=$acc
-		OR default_sales_act=$acc 
-		OR default_sales_discount_act=$acc
-		OR default_prompt_payment_act=$acc
-		OR default_inventory_act=$acc
-		OR default_cogs_act=$acc
-		OR default_adj_act=$acc
-		OR default_inv_sales_act=$acc
-		OR default_assembly_act=$acc";
-		$result = DB::query($sql, "Couldn't test for default company GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
-		$result = DB::query($sql, "Couldn't test for bank accounts");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by a bank account."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE
-		inventory_account=$acc 
-		OR cogs_account=$acc
-		OR adjustment_account=$acc 
-		OR sales_account=$acc";
-		$result = DB::query($sql, "Couldn't test for existing stock GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by one or more Items."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
-		$result = DB::query($sql, "Couldn't test for existing tax GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by one or more Taxes."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM branches WHERE
-		sales_account=$acc 
-		OR sales_discount_account=$acc
-		OR receivables_account=$acc
-		OR payment_discount_account=$acc";
-		$result = DB::query($sql, "Couldn't test for existing cust branch GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE
-		purchase_account=$acc
-		OR payment_discount_account=$acc
-		OR payable_account=$acc";
-		$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by one or more suppliers."));
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM quick_entry_lines WHERE
-		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
-		$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
-			return false;
-		}
-		return true;
 	}
 
 	if (isset($_POST['delete'])) {
@@ -229,5 +138,95 @@ Page::start(_($help_context = "Chart of Accounts"), SA_GLACCOUNT);
 	}
 	end_form();
 	Page::end();
+	function can_delete($selected_account) {
+			if ($selected_account == "") {
+				return false;
+			}
+			$acc = DB::escape($selected_account);
+			$sql = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
+			$result = DB::query($sql, "Couldn't test for existing transactions");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because transactions have been created using this account."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
+			OR pyt_discount_act=$acc
+			OR creditors_act=$acc
+			OR bank_charge_act=$acc
+			OR exchange_diff_act=$acc
+			OR profit_loss_year_act=$acc
+			OR retained_earnings_act=$acc
+			OR freight_act=$acc
+			OR default_sales_act=$acc
+			OR default_sales_discount_act=$acc
+			OR default_prompt_payment_act=$acc
+			OR default_inventory_act=$acc
+			OR default_cogs_act=$acc
+			OR default_adj_act=$acc
+			OR default_inv_sales_act=$acc
+			OR default_assembly_act=$acc";
+			$result = DB::query($sql, "Couldn't test for default company GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
+			$result = DB::query($sql, "Couldn't test for bank accounts");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by a bank account."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM stock_master WHERE
+			inventory_account=$acc
+			OR cogs_account=$acc
+			OR adjustment_account=$acc
+			OR sales_account=$acc";
+			$result = DB::query($sql, "Couldn't test for existing stock GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by one or more Items."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
+			$result = DB::query($sql, "Couldn't test for existing tax GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by one or more Taxes."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM branches WHERE
+			sales_account=$acc
+			OR sales_discount_account=$acc
+			OR receivables_account=$acc
+			OR payment_discount_account=$acc";
+			$result = DB::query($sql, "Couldn't test for existing cust branch GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM suppliers WHERE
+			purchase_account=$acc
+			OR payment_discount_account=$acc
+			OR payable_account=$acc";
+			$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by one or more suppliers."));
+				return false;
+			}
+			$sql = "SELECT COUNT(*) FROM quick_entry_lines WHERE
+			dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
+			$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
+				return false;
+			}
+			return true;
+		}
 
 ?>

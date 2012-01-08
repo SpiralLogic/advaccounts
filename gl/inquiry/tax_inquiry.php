@@ -10,10 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::set_focus('account');
 	JS::open_window(800, 500);
-Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
+	Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
 	// Ajax updates
 	//
 	if (get_post('Show')) {
@@ -29,6 +28,9 @@ Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
 		$_POST["TransFromDate"] = $bdate;
 		$_POST["TransToDate"] = $edate;
 	}
+	tax_inquiry_controls();
+	show_results();
+	Page::end();
 	function tax_inquiry_controls() {
 		start_form();
 		//start_table('tablestyle2');
@@ -86,9 +88,5 @@ Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
 		end_table(2);
 		Display::div_end();
 	}
-
-	tax_inquiry_controls();
-	show_results();
-	Page::end();
 
 ?>

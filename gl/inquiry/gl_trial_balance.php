@@ -10,14 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	$js = "";
-Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
+	Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
 	// Ajax updates
 	//
 	if (get_post('Show')) {
 		Ajax::i()->activate('balance_tbl');
 	}
+	gl_inquiry_controls();
+	display_trial_balance();
+	Page::end();
 	function gl_inquiry_controls() {
 		start_form();
 		start_table('tablestyle_noborder');
@@ -114,10 +116,6 @@ Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
 		end_table(1);
 		Display::div_end();
 	}
-
-	gl_inquiry_controls();
-	display_trial_balance();
-	Page::end();
 
 ?>
 

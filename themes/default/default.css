@@ -146,10 +146,13 @@ div#content {
 }
 
 #iframePopup {
+-moz-box-shadow: 0 0 10em black;
+-webkit-box-shadow: 0 0 10em black;
+box-shadow: 0 0 10em black;
+
 	position:   fixed;
 	text-align: center;
-
-	background: white url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
+		background: white url("/themes/default/images/ajax-loader2.gif") no-repeat center center;
 }
 
 #sidemenu {
@@ -1229,7 +1232,19 @@ div.note_msg {
 .pointer {
 	cursor: pointer;
 }
+.font13 {
+font-size:13px;
+}
+.font11 {
+font-size:11px;
+}
+.font9 {
+font-size:9px;
+}
 
+.font10 {
+font-size:10px;
+}
 .font7 {
 	font-size: 7px;
 }
@@ -1246,9 +1261,6 @@ div.note_msg {
 	font-size: 4px;
 }
 
-.font10 {
-font-size:10px;
-}
 .font15 {
 font-size:15px;
 }

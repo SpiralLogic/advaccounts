@@ -10,20 +10,10 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(800, 500);
 	JS::footerFile('/js/reconcile.js');
-Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
+	Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	function check_date() {
-		if (!Dates::is_date(get_post('deposit_date'))) {
-			Errors::error(_("Invalid deposit date format"));
-			JS::setFocus('deposit_date');
-			return false;
-		}
-		return true;
-	}
-
 	if (isset($_SESSION['undeposited'])) {
 		foreach ($_SESSION['undeposited'] as $rowid => $row) {
 			if (isset($_POST["_" . $rowid . '_update'])) {
@@ -34,82 +24,7 @@ Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request
 			$_POST[$rowid] = 1;
 		}
 	}
-	//
-	//	This function can be used directly in table pager
-	//	if we would like to change page layout.
-	//	if we would like to change page layout.
-	//
-	function dep_checkbox($row) {
-		$name = "dep_" . $row['id'];
-		$hidden = 'amount_' . $row['id'];
-		$value = $row['amount'];
-		$chk_value = check_value("dep_" . $row['id']);
-		// save also in hidden field for testing during 'Reconcile'
-		return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
-	}
-
-	function systype_name($dummy, $type) {
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
-
-	function trans_view($trans) {
-		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-	}
-
-	function gl_view($row) {
-		return GL_UI::view($row["type"], $row["trans_no"]);
-	}
-
-	function fmt_debit($row) {
-		$value = $row["amount"];
-		return $value >= 0 ? Num::price_format($value) : '';
-	}
-
-	function fmt_credit($row) {
-		$value = -$row["amount"];
-		return $value > 0 ? Num::price_format($value) : '';
-	}
-
-	function fmt_person($row) {
-		return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
-	}
-
 	$update_pager = false;
-	function update_data() {
-		global $update_pager;
-		Ajax::i()->activate('summary');
-		$update_pager = true;
-	}
-
-	// Update db record if respective checkbox value has changed.
-	//
-	function change_tpl_flag($deposit_id) {
-		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
-		{
-			return false;
-		}
-		if (get_post('bank_date') == '') // new reconciliation
-		{
-			Ajax::i()->activate('bank_date');
-		}
-		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
-		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-										 ." WHERE id=".DB::escape($deposit_id);
-
-										DB::query($sql, "Can't change undeposited status");*/
-		// save last reconcilation status (date, end balance)
-		if (check_value("dep_" . $deposit_id)) {
-			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
-			$_POST['deposited'] = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
-		}
-		else {
-			unset($_SESSION['undeposited']["dep_" . $deposit_id]);
-			$_POST['deposited'] = $_POST['to_deposit'] - get_post('amount_' . $deposit_id);
-		}
-		return true;
-	}
-
 	if (list_updated('deposit_date')) {
 		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
 		update_data();
@@ -228,5 +143,88 @@ Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
 	Page::end();
+	function check_date() {
+		if (!Dates::is_date(get_post('deposit_date'))) {
+			Errors::error(_("Invalid deposit date format"));
+			JS::setFocus('deposit_date');
+			return false;
+		}
+		return true;
+	}
+
+	//
+	//	This function can be used directly in table pager
+	//	if we would like to change page layout.
+	//	if we would like to change page layout.
+	//
+	function dep_checkbox($row) {
+		$name = "dep_" . $row['id'];
+		$hidden = 'amount_' . $row['id'];
+		$value = $row['amount'];
+		$chk_value = check_value("dep_" . $row['id']);
+		// save also in hidden field for testing during 'Reconcile'
+		return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
+	}
+
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
+
+	function trans_view($trans) {
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
+
+	function gl_view($row) {
+		return GL_UI::view($row["type"], $row["trans_no"]);
+	}
+
+	function fmt_debit($row) {
+		$value = $row["amount"];
+		return $value >= 0 ? Num::price_format($value) : '';
+	}
+
+	function fmt_credit($row) {
+		$value = -$row["amount"];
+		return $value > 0 ? Num::price_format($value) : '';
+	}
+
+	function fmt_person($row) {
+		return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
+	}
+
+	function update_data() {
+		global $update_pager;
+		Ajax::i()->activate('summary');
+		$update_pager = true;
+	}
+
+	// Update db record if respective checkbox value has changed.
+	//
+	function change_tpl_flag($deposit_id) {
+		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
+		{
+			return false;
+		}
+		if (get_post('bank_date') == '') // new reconciliation
+		{
+			Ajax::i()->activate('bank_date');
+		}
+		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
+		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
+										 ." WHERE id=".DB::escape($deposit_id);
+
+										DB::query($sql, "Can't change undeposited status");*/
+		// save last reconcilation status (date, end balance)
+		if (check_value("dep_" . $deposit_id)) {
+			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
+			$_POST['deposited'] = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
+		}
+		else {
+			unset($_SESSION['undeposited']["dep_" . $deposit_id]);
+			$_POST['deposited'] = $_POST['to_deposit'] - get_post('amount_' . $deposit_id);
+		}
+		return true;
+	}
 
 ?>

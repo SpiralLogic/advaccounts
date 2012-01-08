@@ -18,18 +18,18 @@
 	JS::open_window(900, 500);
 
 	$page_title = 'Sales Invoice Complete';
-	if (isset($_GET['ModifyInvoice'])) {
-		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
+	if (isset($_GET[Orders::MODIFY_INVOICE])) {
+		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
 		$help_context = "Modifying Sales Invoice";
 	}
 	elseif (isset($_GET['DeliveryNumber'])) {
 		$page_title = _($help_context = "Issue an Invoice for Delivery Note");
 	}
-	elseif (isset($_GET['BatchInvoice'])) {
+	elseif (isset($_GET[Orders::BATCH_INVOICE])) {
 		$page_title = _($help_context = "Issue Batch Invoice for Delivery Notes");
 	}
-	elseif (isset($_GET['ViewInvoice'])) {
-		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
+	elseif (isset($_GET[Orders::VIEW_INVOICE])) {
+		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET[Orders::VIEW_INVOICE]);
 	}
 	Page::start($page_title,SA_SALESINVOICE);
 	$order = Orders::session_get() ? : null;
@@ -76,8 +76,8 @@
 		$sources = $order->src_docs;
 		unset($sources[$_GET['RemoveDN']]);
 	}
-	if ((isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0)) || isset($_GET['BatchInvoice'])) {
-		if (isset($_GET['BatchInvoice'])) {
+	if ((isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0)) || isset($_GET[Orders::BATCH_INVOICE])) {
+		if (isset($_GET[Orders::BATCH_INVOICE])) {
 			$src = $_SESSION['DeliveryBatch'];
 			unset($_SESSION['DeliveryBatch']);
 		}
@@ -97,22 +97,22 @@
 		$order->due_date = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
 		copy_from_order($order);
 	}
-	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
-		if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+	elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
+		if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
 			echo"<div class='center'><br><span class='bold'>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in ADV Accounts version prior to 2.0
 		and therefore can not be modified.") . "</span></div>";
 			Page::footer_exit();
 		}
-		$order = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]);
 		$order->start();
 		copy_from_order($order);
 		if ($order->count_items() == 0) {
 			echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</span></div>";
 		}
 	}
-	elseif (isset($_GET['ViewInvoice']) && $_GET['ViewInvoice'] > 0) {
-		$order = new Sales_Order(ST_SALESINVOICE, $_GET['ViewInvoice']);
+	elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::VIEW_INVOICE]);
 		$order->start();
 		copy_from_order($order);
 	}
@@ -169,7 +169,6 @@
 		$lastdn = $line->src_no;
 	}
 	$dspans[] = $spanlen;
-	$viewing = isset($_GET['ViewInvoice']);
 	$is_batch_invoice = count($order->src_docs) > 1;
 	$is_edition = $order->trans_type == ST_SALESINVOICE && $order->trans_no != 0;
 	start_form();
@@ -194,8 +193,8 @@
 	if (!isset($_POST['ship_via'])) {
 		$_POST['ship_via'] = $order->ship_via;
 	}
-	label_cell(_("Shipping Company"), "class='tableheader2'");
-	if (!$viewing || !isset($order->ship_via)) {
+	label_cell(_("Shipping Company"), "class='label'");
+	if (!$order->view_only || !isset($order->ship_via)) {
 		Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
 	}
 	else {
@@ -207,20 +206,20 @@
 			$_POST['InvoiceDate'] = Dates::end_fiscalyear();
 		}
 	}
-	if (!$viewing) {
+	if (!$order->view_only) {
 		date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tableheader2'", true);
 	}
 	else {
-		label_cell($_POST['InvoiceDate']);
+		label_cells(_('Invoice Date:'),$_POST['InvoiceDate']);
 	}
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
 	}
-	if (!$viewing) {
+	if (!$order->view_only) {
 		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 	}
 	else {
-		label_cell($_POST['due_date']);
+		label_cells(_('Due Date'),$_POST['due_date']);
 	}
 	end_row();
 	end_table();
@@ -250,12 +249,12 @@
 	$show_qoh = true;
 	$dn_line_cnt = 0;
 	foreach ($order->line_items as $line_no => $line) {
-		if (!$viewing && $line->quantity == $line->qty_done) {
+		if (!$order->view_only && $line->quantity == $line->qty_done) {
 			continue; // this line was fully invoiced
 		}
 		alt_table_row_color($k);
 		Item_UI::status_cell($line->stock_id);
-		if (!$viewing) {
+		if (!$order->view_only) {
 			textarea_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
 		}
 		else {
@@ -271,7 +270,7 @@
 			hidden('Line' . $line_no, $line->qty_dispatched);
 			echo Num::format($line->qty_dispatched, $dec) . '</td>';
 		}
-		elseif ($viewing) {
+		elseif ($order->view_only) {
 			hidden('viewing');
 			qty_cell($line->quantity, false, $dec);
 		}
@@ -316,8 +315,8 @@
 	}
 	$colspan = 9;
 	start_row();
-	label_cell(_("Shipping Cost"), "colspan=$colspan class='right'");
-	if (!$viewing) {
+	label_cell(_("Shipping Cost"), "colspan=$colspan class='right bold'");
+	if (!$order->view_only) {
 		small_amount_cells(null, 'ChargeFreightCost', null);
 	}
 	else {
@@ -329,26 +328,29 @@
 	end_row();
 	$inv_items_total = $order->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class=right", $is_batch_invoice ? 2 : 0);
 	$taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Invoice Total"), $display_total, "colspan=$colspan class='right'", "class=right", $is_batch_invoice ? 2 : 0);
+	label_row(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);
 	Display::div_end();
 	start_table('tablestyle2');
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	start_table('center red bold');
-	label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO MODE_EDIT ANYTHING IN THE FUTURE ON THIS INVOICE"));
+	if (!$order->view_only) label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO MODE_EDIT ANYTHING IN THE
+	FUTURE ON THIS
+	INVOICE"));
 	end_table();
-	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
+
+	if (!$order->view_only) {submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
 	start_table('center red bold');
-	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO MODE_EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
+	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO MODE_EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');}
 	end_table();
 	end_form();
-	Page::end();
+	Page::end(false);
 	/**
 	 * @param $order
 	 *
@@ -419,8 +421,10 @@
 	 * @param $order
 	 */
 	function copy_from_order($order) {
+		$order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
+
 		$order = Sales_Order::check_edit_conflicts($order);
-		if (!isset($_POST['viewing'])) {
+		if (!$order->view_only) {
 			$_POST['ship_via'] = $order->ship_via;
 			$_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
 			$_POST['InvoiceDate'] = $order->document_date;

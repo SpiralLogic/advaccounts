@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	$js = "";
-Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
+	Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
 	// Ajax updates
 	if (get_post('Show')) {
 		Ajax::i()->activate('balance_tbl');
@@ -26,6 +25,11 @@ Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
+	start_form();
+	inquiry_controls();
+	display_balance_sheet();
+	end_form();
+	Page::end();
 	function display_type($type, $typename, $from, $to, $convert, $drilldown) {
 		global $levelptr, $k;
 		$dimension = $dimension2 = 0;
@@ -174,12 +178,6 @@ Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
 		end_table(1); // outer table
 		Display::div_end();
 	}
-
-	start_form();
-	inquiry_controls();
-	display_balance_sheet();
-	end_form();
-	Page::end();
 
 ?>
 

@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	$page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT :
-	 SA_DEPOSIT;
+	$page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT : SA_DEPOSIT;
 	JS::open_window(800, 500);
 	if (isset($_GET['NewPayment'])) {
 		$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
@@ -23,18 +22,13 @@
 			handle_new_order(ST_BANKDEPOSIT);
 		}
 	}
-	Page::start($_SESSION['page_title'],$page_security);
+	Page::start($_SESSION['page_title'], $page_security);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (list_updated('PersonDetailID')) {
 		$br = Sales_Branch::get(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		Ajax::i()->activate('person_id');
 	}
-	function line_start_focus() {
-		Ajax::i()->activate('items_table');
-		JS::set_focus('_code_id_edit');
-	}
-
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
@@ -56,19 +50,6 @@
 	if (isset($_POST['_date__changed'])) {
 		Ajax::i()->activate('_ex_rate');
 	}
-	function handle_new_order($type) {
-		if (isset($_SESSION['pay_items'])) {
-			unset ($_SESSION['pay_items']);
-		}
-		//session_register("pay_items");
-		$_SESSION['pay_items'] = new Item_Order($type);
-		$_POST['date_'] = Dates::new_doc_date();
-		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			$_POST['date_'] = Dates::end_fiscalyear();
-		}
-		$_SESSION['pay_items']->tran_date = $_POST['date_'];
-	}
-
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['pay_items']->count_gl_items() < 1) {
@@ -112,6 +93,45 @@
 		unset($_SESSION['pay_items']);
 		Display::meta_forward($_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
 	} /*end of process credit note */
+	$id = find_submit(MODE_DELETE);
+	if ($id != -1) {
+		handle_delete_item($id);
+	}
+	if (isset($_POST['AddItem'])) {
+		handle_new_item();
+	}
+	if (isset($_POST['UpdateItem'])) {
+		handle_update_item();
+	}
+	if (isset($_POST['CancelItemChanges'])) {
+		line_start_focus();
+	}
+	if (isset($_POST['go'])) {
+		GL_QuickEntry::show_menu($_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'), $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
+		 QE_PAYMENT : QE_DEPOSIT);
+		$_POST['total_amount'] = Num::price_format(0);
+		Ajax::i()->activate('total_amount');
+		line_start_focus();
+	}
+	start_form();
+	Bank_UI::header($_SESSION['pay_items']);
+	start_table('tablesstyle2 width90 pad10');
+	start_row();
+	echo "<td>";
+	Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']);
+	Bank_UI::option_controls();
+	echo "</td>";
+	end_row();
+	end_table(1);
+	submit_center_first('Update', _("Update"), '', null);
+	submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
+	end_form();
+	Page::end();
+	function line_start_focus() {
+		Ajax::i()->activate('items_table');
+		JS::set_focus('_code_id_edit');
+	}
+
 	function check_item_data() {
 		//if (!Validation::is_num('amount', 0))
 		//{
@@ -158,39 +178,17 @@
 		line_start_focus();
 	}
 
-	$id = find_submit(MODE_DELETE);
-	if ($id != -1) {
-		handle_delete_item($id);
+	function handle_new_order($type) {
+		if (isset($_SESSION['pay_items'])) {
+			unset ($_SESSION['pay_items']);
+		}
+		//session_register("pay_items");
+		$_SESSION['pay_items'] = new Item_Order($type);
+		$_POST['date_'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+			$_POST['date_'] = Dates::end_fiscalyear();
+		}
+		$_SESSION['pay_items']->tran_date = $_POST['date_'];
 	}
-	if (isset($_POST['AddItem'])) {
-		handle_new_item();
-	}
-	if (isset($_POST['UpdateItem'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['CancelItemChanges'])) {
-		line_start_focus();
-	}
-	if (isset($_POST['go'])) {
-		GL_QuickEntry::show_menu($_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'), $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
-		 QE_PAYMENT : QE_DEPOSIT);
-		$_POST['total_amount'] = Num::price_format(0);
-		Ajax::i()->activate('total_amount');
-		line_start_focus();
-	}
-	start_form();
-	Bank_UI::header($_SESSION['pay_items']);
-	start_table('tablesstyle2 width90 pad10');
-	start_row();
-	echo "<td>";
-	Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']);
-	Bank_UI::option_controls();
-	echo "</td>";
-	end_row();
-	end_table(1);
-	submit_center_first('Update', _("Update"), '', null);
-	submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
-	end_form();
-	Page::end();
 
 ?>

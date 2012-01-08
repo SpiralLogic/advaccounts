@@ -7,7 +7,6 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_id'])) {
@@ -20,6 +19,6 @@
 		}
 		JS::renderJSON($data);
 	}
-	Page::start(_($help_context = "Items"), SA_CUSTOMER,Input::request('frame'));
+	Page::start(_($help_context = "Items"), SA_CUSTOMER, Input::request('frame'));
 	Debtor::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	Page::end();

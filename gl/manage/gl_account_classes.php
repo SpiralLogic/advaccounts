@@ -10,26 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
-	list($Mode,$selected_id) = Page::simple_mode(true);
-	function can_process() {
-		if (!is_numeric($_POST['id'])) {
-			Errors::error(_("The account class ID must be numeric."));
-			JS::set_focus('id');
-			return false;
-		}
-		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The account class name cannot be empty."));
-			JS::set_focus('name');
-			return false;
-		}
-		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
-			$_POST['Balance'] = check_value('Balance');
-		}
-		return true;
-	}
-
+	Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
 			if ($selected_id != -1) {
@@ -45,21 +27,6 @@ Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
 			}
 		}
 	}
-	function can_delete($selected_id) {
-		if ($selected_id == -1) {
-			return false;
-		}
-		$sql = "SELECT COUNT(*) FROM chart_types
-		WHERE class_id=$selected_id";
-		$result = DB::query($sql, "could not query chart master");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account class because GL account types have been created referring to it."));
-			return false;
-		}
-		return true;
-	}
-
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			GL_Class::delete($selected_id);
@@ -131,5 +98,36 @@ Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	Page::end();
+	function can_process() {
+		if (!is_numeric($_POST['id'])) {
+			Errors::error(_("The account class ID must be numeric."));
+			JS::set_focus('id');
+			return false;
+		}
+		if (strlen($_POST['name']) == 0) {
+			Errors::error(_("The account class name cannot be empty."));
+			JS::set_focus('name');
+			return false;
+		}
+		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+			$_POST['Balance'] = check_value('Balance');
+		}
+		return true;
+	}
+
+	function can_delete($selected_id) {
+		if ($selected_id == -1) {
+			return false;
+		}
+		$sql = "SELECT COUNT(*) FROM chart_types
+		WHERE class_id=$selected_id";
+		$result = DB::query($sql, "could not query chart master");
+		$myrow = DB::fetch_row($result);
+		if ($myrow[0] > 0) {
+			Errors::error(_("Cannot delete this account class because GL account types have been created referring to it."));
+			return false;
+		}
+		return true;
+	}
 
 ?>

@@ -11,93 +11,11 @@
 	 ***********************************************************************/
 	/* Author Rob Mallon */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(800, 500);
 	JS::footerFile('/js/reconcile.js');
-Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
+	Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	function check_date() {
-		if (!Dates::is_date(get_post('reconcile_date'))) {
-			Errors::error(_("Invalid reconcile date format"));
-			JS::set_focus('reconcile_date');
-			return false;
-		}
-		return true;
-	}
-
-	function rec_checkbox($row) {
-		$name = "rec_" . $row['id'];
-		$hidden = 'last[' . $row['id'] . ']';
-		$value = $row['reconciled'] != '';
-		// save also in hidden field for testing during 'Reconcile'
-		return checkbox(null, $name, $value, true, _('Reconcile this transaction')) . hidden($hidden, $value, false);
-	}
-
-	function ungroup($row) {
-		if ($row['type'] != 15) {
-			return;
-		}
-		return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
- class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
-	}
-
-	function systype_name($dummy, $type) {
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
-
-	function trans_view($trans) {
-		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-	}
-
-	function gl_view($row) {
-		if ($row['type'] != 15) {
-			return GL_UI::view($row["type"], $row["trans_no"]);
-		}
-	}
-
-	function fmt_debit($row) {
-		$value = $row["amount"];
-		return $value >= 0 ? Num::price_format($value) : '';
-	}
-
-	function fmt_credit($row) {
-		$value = -$row["amount"];
-		return $value > 0 ? Num::price_format($value) : '';
-	}
-
-	function fmt_person($row) {
-		return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
-	}
-
 	$update_pager = false;
-	function update_data() {
-		global $update_pager;
-		unset($_POST["beg_balance"]);
-		unset($_POST["end_balance"]);
-		Ajax::i()->activate('summary');
-		$update_pager = true;
-	}
-
-	// Update db record if respective checkbox value has changed.
-	//
-	function change_tpl_flag($reconcile_id) {
-		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
-		{
-			return false;
-		}
-		if (get_post('bank_date') == '') // new reconciliation
-		{
-			Ajax::i()->activate('bank_date');
-		}
-		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
-		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
-		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
-		Ajax::i()->activate('reconciled');
-		Ajax::i()->activate('difference');
-		return true;
-	}
-
 	if (Input::post('reset')) {
 		GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 		update_data();
@@ -251,5 +169,85 @@ Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
 JS;
 	JS::onload($js);
 	Page::end();
+	function check_date() {
+		if (!Dates::is_date(get_post('reconcile_date'))) {
+			Errors::error(_("Invalid reconcile date format"));
+			JS::set_focus('reconcile_date');
+			return false;
+		}
+		return true;
+	}
+
+	function rec_checkbox($row) {
+		$name = "rec_" . $row['id'];
+		$hidden = 'last[' . $row['id'] . ']';
+		$value = $row['reconciled'] != '';
+		// save also in hidden field for testing during 'Reconcile'
+		return checkbox(null, $name, $value, true, _('Reconcile this transaction')) . hidden($hidden, $value, false);
+	}
+
+	function ungroup($row) {
+		if ($row['type'] != 15) {
+			return;
+		}
+		return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+ class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
+	}
+
+	function systype_name($dummy, $type) {
+		global $systypes_array;
+		return $systypes_array[$type];
+	}
+
+	function trans_view($trans) {
+		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+	}
+
+	function gl_view($row) {
+		if ($row['type'] != 15) {
+			return GL_UI::view($row["type"], $row["trans_no"]);
+		}
+	}
+
+	function fmt_debit($row) {
+		$value = $row["amount"];
+		return $value >= 0 ? Num::price_format($value) : '';
+	}
+
+	function fmt_credit($row) {
+		$value = -$row["amount"];
+		return $value > 0 ? Num::price_format($value) : '';
+	}
+
+	function fmt_person($row) {
+		return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
+	}
+
+	function update_data() {
+		global $update_pager;
+		unset($_POST["beg_balance"]);
+		unset($_POST["end_balance"]);
+		Ajax::i()->activate('summary');
+		$update_pager = true;
+	}
+
+	// Update db record if respective checkbox value has changed.
+	//
+	function change_tpl_flag($reconcile_id) {
+		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
+		{
+			return false;
+		}
+		if (get_post('bank_date') == '') // new reconciliation
+		{
+			Ajax::i()->activate('bank_date');
+		}
+		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
+		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
+		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
+		Ajax::i()->activate('reconciled');
+		Ajax::i()->activate('difference');
+		return true;
+	}
 
 ?>

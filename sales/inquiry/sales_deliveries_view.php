@@ -29,7 +29,7 @@
 	else {
 		$selected_customer = -1;
 	}
-	if (isset($_POST['BatchInvoice'])) {
+	if (isset($_POST[Orders::BATCH_INVOICE])) {
 		// checking batch integrity
 		$del_count = 0;
 		foreach ($_POST['Sel_'] as $delivery => $branch) {
@@ -143,7 +143,7 @@
 		_("Reference"), _("Cust Ref"), _("Delivery Date") => array(
 			'type' => 'date', 'ord' => ''), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
 			'type' => 'amount', 'ord' => ''), _("Currency") => array('align' => 'center'),
-		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing")) => array(
+		submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing")) => array(
 			'insert' => true, 'fun' => 'batch_checkbox', 'align' => 'center'), array(
 			'insert' => true, 'fun' => 'edit_link'), array(
 			'insert' => true, 'fun' => 'invoice_link'), array(

@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
 		$help_context = "Modifying Journal Entry";
@@ -18,12 +18,7 @@
 	else {
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
-	Page::start($_SESSION['page_title'],SA_JOURNALENTRY);
-	function line_start_focus() {
-		Ajax::i()->activate('items_table');
-		JS::set_focus('_code_id_edit');
-	}
-
+	Page::start($_SESSION['page_title'], SA_JOURNALENTRY);
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
@@ -52,42 +47,6 @@
 		}
 		create_order($_GET['trans_type'], $_GET['trans_no']);
 	}
-	function create_order($type = ST_JOURNAL, $trans_no = 0) {
-		if (isset($_SESSION['journal_items'])) {
-			unset ($_SESSION['journal_items']);
-		}
-		$order = new Item_Order($type);
-		$order->order_id = $trans_no;
-		if ($trans_no) {
-			$result = GL_Trans::get_many($type, $trans_no);
-			if ($result) {
-				while ($row = DB::fetch($result)) {
-					if ($row['amount'] == 0) {
-						continue;
-					}
-					$date = $row['tran_date'];
-					$order->add_gl_item($row['account'], $row['dimension_id'], $row['dimension2_id'], $row['amount'], $row['memo_']);
-				}
-			}
-			$order->memo_ = DB_Comments::get_string($type, $trans_no);
-			$order->tran_date = Dates::sql2date($date);
-			$order->reference = Ref::get($type, $trans_no);
-			$_POST['ref_original'] = $order->reference; // Store for comparison when updating
-		}
-		else {
-			$order->reference = Ref::get_next(ST_JOURNAL);
-			$order->tran_date = Dates::new_doc_date();
-			if (!Dates::is_date_in_fiscalyear($order->tran_date)) {
-				$order->tran_date = Dates::end_fiscalyear();
-			}
-			$_POST['ref_original'] = -1;
-		}
-		$_POST['memo_'] = $order->memo_;
-		$_POST['ref'] = $order->reference;
-		$_POST['date_'] = $order->tran_date;
-		$_SESSION['journal_items'] = &$order;
-	}
-
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['journal_items']->count_gl_items() < 1) {
@@ -144,6 +103,38 @@
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 		}
 	}
+	$id = find_submit(MODE_DELETE);
+	if ($id != -1) {
+		handle_delete_item($id);
+	}
+	if (isset($_POST['AddItem'])) {
+		handle_new_item();
+	}
+	if (isset($_POST['UpdateItem'])) {
+		handle_update_item();
+	}
+	if (isset($_POST['CancelItemChanges'])) {
+		line_start_focus();
+	}
+	if (isset($_POST['go'])) {
+		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('total_amount'), QE_JOURNAL);
+		$_POST['total_amount'] = Num::price_format(0);
+		Ajax::i()->activate('total_amount');
+		line_start_focus();
+	}
+	start_form();
+	GL_Journal::header($_SESSION['journal_items']);
+	start_table('tables_style2 width90 pad10');
+	start_row();
+	echo "<td>";
+	GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
+	GL_Journal::option_controls();
+	echo "</td>";
+	end_row();
+	end_table(1);
+	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
+	end_form();
+	Page::end();
 	function check_item_data() {
 		if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && Dimensions::is_closed($_POST['dimension_id'])) {
 			Errors::error(_("Dimension is closed."));
@@ -216,37 +207,45 @@
 		line_start_focus();
 	}
 
-	$id = find_submit(MODE_DELETE);
-	if ($id != -1) {
-		handle_delete_item($id);
+	function create_order($type = ST_JOURNAL, $trans_no = 0) {
+		if (isset($_SESSION['journal_items'])) {
+			unset ($_SESSION['journal_items']);
+		}
+		$order = new Item_Order($type);
+		$order->order_id = $trans_no;
+		if ($trans_no) {
+			$result = GL_Trans::get_many($type, $trans_no);
+			if ($result) {
+				while ($row = DB::fetch($result)) {
+					if ($row['amount'] == 0) {
+						continue;
+					}
+					$date = $row['tran_date'];
+					$order->add_gl_item($row['account'], $row['dimension_id'], $row['dimension2_id'], $row['amount'], $row['memo_']);
+				}
+			}
+			$order->memo_ = DB_Comments::get_string($type, $trans_no);
+			$order->tran_date = Dates::sql2date($date);
+			$order->reference = Ref::get($type, $trans_no);
+			$_POST['ref_original'] = $order->reference; // Store for comparison when updating
+		}
+		else {
+			$order->reference = Ref::get_next(ST_JOURNAL);
+			$order->tran_date = Dates::new_doc_date();
+			if (!Dates::is_date_in_fiscalyear($order->tran_date)) {
+				$order->tran_date = Dates::end_fiscalyear();
+			}
+			$_POST['ref_original'] = -1;
+		}
+		$_POST['memo_'] = $order->memo_;
+		$_POST['ref'] = $order->reference;
+		$_POST['date_'] = $order->tran_date;
+		$_SESSION['journal_items'] = &$order;
 	}
-	if (isset($_POST['AddItem'])) {
-		handle_new_item();
+
+	function line_start_focus() {
+		Ajax::i()->activate('items_table');
+		JS::set_focus('_code_id_edit');
 	}
-	if (isset($_POST['UpdateItem'])) {
-		handle_update_item();
-	}
-	if (isset($_POST['CancelItemChanges'])) {
-		line_start_focus();
-	}
-	if (isset($_POST['go'])) {
-		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('total_amount'), QE_JOURNAL);
-		$_POST['total_amount'] = Num::price_format(0);
-		Ajax::i()->activate('total_amount');
-		line_start_focus();
-	}
-	start_form();
-	GL_Journal::header($_SESSION['journal_items']);
-	start_table('tables_style2 width90 pad10');
-	start_row();
-	echo "<td>";
-	GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
-	GL_Journal::option_controls();
-	echo "</td>";
-	end_row();
-	end_table(1);
-	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
-	end_form();
-	Page::end();
 
 ?>

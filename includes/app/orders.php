@@ -14,7 +14,15 @@
 		const QUOTE_TO_ORDER = 'QuoteToOrder';
 		const MODIFY_QUOTE = 'ModifyQuote';
 		const NEW_DELIVERY = 'NewDelivery';
+		const MODIFY_DELIVERY = 'ModifyDelivery';
 		const NEW_INVOICE = 'NewInvoice';
+		const MODIFY_INVOICE = 'ModifyInvoice';
+		const CLONE_ORDER = 'CloneOrder';
+		const BATCH_INVOICE = 'BatchInvoice';
+		const VIEW_INVOICE = 'ViewInvoice';
+		const MODIFY_CREDIT = 'ModifyCredit';
+		const NEW_CREDIT = 'NewCredit';
+
 		/**
 		 * @var
 		 */

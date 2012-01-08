@@ -10,10 +10,55 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	$js = "";
-Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
-	list($Mode,$selected_id) = Page::simple_mode(false);
+	Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
+	list($Mode, $selected_id) = Page::simple_mode(false);
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+		handle_submit($selected_id);
+	}
+	if ($Mode == MODE_DELETE) {
+		handle_delete($selected_id);
+	}
+	start_form();
+	if (!isset($_POST['curr_abrev'])) {
+		$_POST['curr_abrev'] = Session::i()->global_curr_code;
+	}
+	echo "<div class='center'>";
+	echo _("Select a currency :") . " ";
+	echo GL_Currency::select('curr_abrev', null, true);
+	echo "</div>";
+	// if currency sel has changed, clear the form
+	if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
+		clear_data();
+		$selected_id = "";
+	}
+	Session::i()->global_curr_code = $_POST['curr_abrev'];
+	$sql = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
+	 ORDER BY date_ DESC";
+	$cols = array(
+		_("Date to Use From") => 'date', _("Exchange Rate") => 'rate', array(
+			'insert' => true, 'fun' => 'edit_link'
+		), array(
+			'insert' => true, 'fun' => 'del_link'
+		),
+	);
+	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
+		Errors::warning(_("The selected currency is the company currency."), 2);
+		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+	}
+	else {
+		Display::br(1);
+		$table->width = "40%";
+		if ($table->rec_count == 0) {
+			$table->ready = false;
+		}
+		DB_Pager::display($table);
+		Display::br(1);
+		display_rate_edit($selected_id);
+	}
+	end_form();
+	Page::end();
 	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date is invalid."));
@@ -48,7 +93,6 @@ Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
 	}
 
 	function handle_delete(&$selected_id) {
-
 		if ($selected_id == "") {
 			return;
 		}
@@ -99,52 +143,5 @@ Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
 		unset($_POST['date_']);
 		unset($_POST['BuyRate']);
 	}
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit($selected_id);
-	}
-	if ($Mode == MODE_DELETE) {
-		handle_delete($selected_id);
-	}
-	start_form();
-	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = Session::i()->global_curr_code;
-	}
-	echo "<div class='center'>";
-	echo _("Select a currency :") . " ";
-	echo GL_Currency::select('curr_abrev', null, true);
-	echo "</div>";
-	// if currency sel has changed, clear the form
-	if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
-		clear_data();
-		$selected_id = "";
-	}
-	Session::i()->global_curr_code = $_POST['curr_abrev'];
-	$sql = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
-	 ORDER BY date_ DESC";
-	$cols = array(
-		_("Date to Use From") => 'date', _("Exchange Rate") => 'rate', array(
-			'insert' => true, 'fun' => 'edit_link'
-		), array(
-			'insert' => true, 'fun' => 'del_link'
-		),
-	);
-	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
-		Errors::warning(_("The selected currency is the company currency."), 2);
-		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
-	}
-	else {
-		Display::br(1);
-		$table->width = "40%";
-		if ($table->rec_count == 0) {
-			$table->ready = false;
-		}
-		DB_Pager::display($table);
-		Display::br(1);
-		display_rate_edit($selected_id);
-	}
-	end_form();
-	Page::end();
 
 ?>

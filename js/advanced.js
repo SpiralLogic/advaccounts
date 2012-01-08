@@ -93,14 +93,18 @@ Adv.extend({
 	 }),
 	showStatus:function (status) {
 		Adv.msgbox.empty();
-		if (status.status === 'redirect') {window.onunload=null; return window.location.href = status.message;}
+		if (status.status === 'redirect')
+			{
+				window.onunload = null;
+				return window.location.href = status.message;
+			}
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
 		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
-		window.setTimeout(Adv.hideStatus,10000);
+		window.setTimeout(Adv.hideStatus, 10000);
 		window.scrollTo(0, element_pos(Adv.msgbox[0]).y - 40)
 	},
 	hideStatus:function () {
-		Adv.msgbox.fadeOut('slow',function() {$(this).removeClass()});
+		Adv.msgbox.fadeOut('slow', function () {$(this).removeClass()});
 	},
 	openWindow:function (url, title, width, height) {
 		var left = (screen.width - width) / 2;
@@ -124,37 +128,41 @@ Adv.extend({
 					 }
 				 if (e.type == 'mouseenter')
 					 {
-
-						 if (Adv.o.popupCurrent) window.clearTimeout(Adv.o.popupCurrent);
+						 if (Adv.o.popupCurrent)
+							 {window.clearTimeout(Adv.o.popupCurrent);}
 						 Adv.o.popupEl = this;
 						 Adv.o.popupParent = $(this).parent();
 						 Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
 					 }
 				 if (e.type == 'mouseleave')
-					 {
-						 window.clearTimeout(Adv.o.popupCurrent);
-					 }
+					 { window.clearTimeout(Adv.o.popupCurrent);}
 
 			 })
+		},
+		loaded:function () {
+			Adv.o.popupWindow.show();
+			var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight;
+			var top = ($(window).height() / 2 - (height / 2));
+			if (height>Adv.hoverWindow.height){top=20;height=Adv.hoverWindow.height};
+			var left = ($(window).width() /2-Adv.hoverWindow.width/2);
+			Adv.o.popupWindow.css('height', height);
+			Adv.o.popupDiv.css({width:Adv.hoverWindow.width,'height':height,'left':left, 'top':top});
 		}},
 	popupWindow:function () {
-		if (Adv.o.order_details)
-			{Adv.o.order_details.parent().remove();}
-		var my = "left center", at = "right top";
-		if (Adv.o.popupParent.is('div'))
-			{
-				my = "center center";
-				at = "center top";
-			}
-		Adv.o.order_details = $("<iframe>",
-		 {src:Adv.o.popupEl.href + '&frame=1', width:Adv.hoverWindow.width, height:Adv.hoverWindow.height, onload:'Adv.o.order_details.show()'})
-		 .css({background:'white'}).hide();
-		$('<div>', {id:'iframePopup', width:Adv.hoverWindow.width, height:Adv.hoverWindow.height}).html(Adv.o.order_details)
-		 .position({my:my, at:at, of:Adv.o.popupParent}).css('top', 20)
-		 .on('mouseleave',
-		 function () {
-			 $(this).remove();
-		 }).appendTo(Adv.o.wrapper);
+		if (Adv.o.popupWindow)
+			{Adv.o.popupWindow.parent().remove();}
+		Adv.o.popupWindow = $("<iframe>", {
+			src:Adv.o.popupEl.href + '&frame=1',
+			width:Adv.hoverWindow.width,
+			onload:'Adv.hoverWindow.loaded()'
+		}).css({background:'white'}).hide();
+		Adv.o.popupDiv = $('<div>', {
+			 id:'iframePopup',
+			 width:100,
+			 height:100}
+		).html(Adv.o.popupWindow).on('mouseleave',
+		 function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center",at:"center center",of:document.body});
+
 	}
 
 
@@ -205,8 +213,7 @@ Adv.extend({Forms:(function () {
 			})
 		},
 		autocomplete:function (id, url, callback) {
-			Adv.o.autocomplete[id] = $this = $('#' + id)
-			 .autocomplete({
+			Adv.o.autocomplete[id] = $this = $('#' + id).autocomplete({
 				 minLength:1,
 				 delay:200,
 				 source:function (request, response) {
@@ -253,7 +260,7 @@ Adv.extend({Forms:(function () {
 			 })
 			 .focus(
 			 function () { $(this).data('active', true)}).css({'z-index':'2'});
-			if (document.activeElement===$this[0]) $this.data('active',true);
+			if (document.activeElement === $this[0]) $this.data('active', true);
 		}
 	}
 })()});

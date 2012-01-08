@@ -13,57 +13,6 @@
 	Page::start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	list($Mode2, $selected_id2) = simple_page_mode2(true);
-	function simple_page_mode2($numeric_id = true) {
-		$default = $numeric_id ? -1 : '';
-		$selected_id2 = get_post('selected_id2', $default);
-		foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
-			if (isset($_POST[$m])) {
-				Ajax::i()->activate('_page_body');
-				if ($m == 'RESET2') {
-					$selected_id2 = $default;
-				}
-				return array($m, $selected_id2);
-			}
-		}
-		foreach (array('BEd', 'BDel') as $m) {
-			foreach ($_POST as $p => $pvar) {
-				if (strpos($p, $m) === 0) {
-					//				$selected_id2 = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
-					unset($_POST['_focus']); // focus on first form entry
-					$selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
-					Ajax::i()->activate('_page_body');
-					return array($m, $selected_id2);
-				}
-			}
-		}
-		return array('', $selected_id2);
-	}
-
-	function submit_add_or_update_center2($add = true, $title = false, $async = false) {
-		echo "<div class='center'>";
-		if ($add) {
-			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
-		}
-		else {
-			submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
-			submit('RESET2', _("Cancel"), true, $title, $async);
-		}
-		echo "</div>";
-	}
-
-	function can_process() {
-		if (strlen($_POST['description']) == 0) {
-			Errors::error(_("The Quick Entry description cannot be empty."));
-			JS::set_focus('description');
-			return false;
-		}
-		if (strlen($_POST['base_desc']) == 0) {
-			Errors::error(_("The base amount description cannot be empty."));
-			JS::set_focus('base_desc');
-			return false;
-		}
-		return true;
-	}
 
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
@@ -265,5 +214,56 @@
 		end_form();
 	}
 	Page::end();
+	function simple_page_mode2($numeric_id = true) {
+		$default = $numeric_id ? -1 : '';
+		$selected_id2 = get_post('selected_id2', $default);
+		foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
+			if (isset($_POST[$m])) {
+				Ajax::i()->activate('_page_body');
+				if ($m == 'RESET2') {
+					$selected_id2 = $default;
+				}
+				return array($m, $selected_id2);
+			}
+		}
+		foreach (array('BEd', 'BDel') as $m) {
+			foreach ($_POST as $p => $pvar) {
+				if (strpos($p, $m) === 0) {
+					//				$selected_id2 = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
+					unset($_POST['_focus']); // focus on first form entry
+					$selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
+					Ajax::i()->activate('_page_body');
+					return array($m, $selected_id2);
+				}
+			}
+		}
+		return array('', $selected_id2);
+	}
+
+	function submit_add_or_update_center2($add = true, $title = false, $async = false) {
+		echo "<div class='center'>";
+		if ($add) {
+			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
+		}
+		else {
+			submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
+			submit('RESET2', _("Cancel"), true, $title, $async);
+		}
+		echo "</div>";
+	}
+
+	function can_process() {
+		if (strlen($_POST['description']) == 0) {
+			Errors::error(_("The Quick Entry description cannot be empty."));
+			JS::set_focus('description');
+			return false;
+		}
+		if (strlen($_POST['base_desc']) == 0) {
+			Errors::error(_("The base amount description cannot be empty."));
+			JS::set_focus('base_desc');
+			return false;
+		}
+		return true;
+	}
 
 ?>

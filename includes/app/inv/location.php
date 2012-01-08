@@ -58,11 +58,16 @@
 			$sql = "SELECT stock_location.*, locations.location_name
 		FROM stock_location, locations
 		WHERE stock_location.loc_code=locations.loc_code
-		AND stock_location.stock_id = " . DB::escape($stock_id) . "AND stock_location.loc_code <> '" . LOC_DROP_SHIP . "' AND stock_location.loc_code <> '" . LOC_NOT_FAXED_YET . "' ORDER BY stock_location.loc_code";
+		AND stock_location.stock_id = "
+						 . DB::escape($stock_id) . " AND stock_location.loc_code <> "
+						 . DB::escape(LOC_DROP_SHIP) . " AND stock_location.loc_code <> "
+						 . DB::escape(LOC_NOT_FAXED_YET) .  " ORDER BY stock_location.loc_code";
 			return DB::query($sql, "an item reorder could not be retreived");
 		}
 
 		static public function get_name($loc_code) {
+
+
 			$sql = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
 			$result = DB::query($sql, "could not retreive the location name for $loc_code");
 			if (DB::num_rows($result) == 1) {

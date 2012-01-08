@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(900, 500);
-Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
+	Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];

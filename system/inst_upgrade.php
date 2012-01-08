@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
+	Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
 	//
 	//	Checks $field existence in $table with given field $properties
 	//	$table - table name without prefix
@@ -19,7 +18,6 @@ Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
 	// $properties - optional properties of field defined by MySQL:
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
-
 	$installers = get_installers();
 	if (get_post('Upgrade')) {
 		$ret = true;

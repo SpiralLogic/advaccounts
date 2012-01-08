@@ -79,9 +79,9 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	}
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
-		FROM debtor_trans as trans, debtors as debtor, branches as branch
-		WHERE debtor.debtor_no = trans.debtor_no
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as delivered
+		FROM debtor_trans as trans, debtors as debtor, branches as branch, debtor_trans_details as details
+		WHERE debtor.debtor_no = trans.debtor_no AND trans.trans_no=details.debtor_trans_no AND trans.type = details.debtor_trans_type
 		AND trans.branch_id = branch.branch_id";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$sql = "SELECT * FROM debtor_trans_view WHERE ";
@@ -147,36 +147,29 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today'
 				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +
-				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
+				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
 		}
 	}
 	DB::query("set @bal:=0");
 	$cols = array(
-		_("Type") => array(
-			'fun' => 'systype_name', 'ord' => ''
-		), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''
-		), _("Order") => array('fun' => 'order_view'), _("Reference") => array('ord' => ''), _("Date") => array(
-			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
-		), _("Due Date") => array(
-			'type' => 'date', 'fun' => 'due_date'
-		), _("Customer") => array('ord' => 'asc'), _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Debit") => array(
-			'align' => 'right', 'fun' => 'fmt_debit'
-		), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
-		), _("RB") => array(
-			'align' => 'right', 'type' => 'amount'
-		), array(
-			'insert' => true, 'fun' => 'gl_view'
-		), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'credit_link'
-		), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'edit_link'
-		), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'email_link'
-		), array(
-			'insert' => true, 'align' => 'center', 'fun' => 'prt_link'
-		)
+		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
+		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+		_("Order") => array('fun' => 'order_view'),
+		_("Reference") => array('ord' => ''),
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
+		_("Customer") => array('ord' => 'asc'),
+		_("Branch") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
+		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
+		array('type'=>'skip'),
+		_("RB") => array('align' => 'right', 'type' => 'amount'),
+		array('insert' => true, 'fun' => 'gl_view'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'prt_link')
 	);
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';
@@ -185,6 +178,7 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	if (isset($_POST['filterType']) && $_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch'])) {
 		$cols[_("RB")] = 'skip';
 	}
+	$sql .= " GROUP BY details.debtor_trans_no,  details.debtor_trans_type";
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
@@ -327,6 +321,7 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				}
 				break;
 			case ST_CUSTDELIVERY:
+				if ($row['delivered']==0) continue;
 				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
 					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
 				}

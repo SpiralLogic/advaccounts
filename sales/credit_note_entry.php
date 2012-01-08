@@ -16,13 +16,13 @@
 
 
 	JS::open_window(900, 500);
-	if (isset($_GET['NewCredit'])) {
+	if (isset($_GET[Orders::NEW_CREDIT])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		$order = handle_new_credit(0);
 	}
-	elseif (isset($_GET['ModifyCredit'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
-		$order = handle_new_credit($_GET['ModifyCredit']);
+	elseif (isset($_GET[Orders::MODIFY_CREDIT])) {
+		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET[Orders::MODIFY_CREDIT]);
+		$order = handle_new_credit($_GET[Orders::MODIFY_CREDIT]);
 		$help_context = "Modifying Customer Credit Note";
 	}
 	else {

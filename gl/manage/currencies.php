@@ -10,9 +10,25 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
-Page::start(_($help_context = "Currencies"), SA_CURRENCY);
-	list($Mode,$selected_id) = Page::simple_mode(false);
+	Page::start(_($help_context = "Currencies"), SA_CURRENCY);
+	list($Mode, $selected_id) = Page::simple_mode(false);
+	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+		handle_submit($Mode, $selected_id);
+	}
+	if ($Mode == MODE_DELETE) {
+		handle_delete();
+	}
+	if ($Mode == MODE_RESET) {
+		$selected_id = '';
+		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
+		$_POST['CurrencyName'] = $_POST['country'] = '';
+		$_POST['hundreds_name'] = '';
+	}
+	start_form();
+	display_currencies();
+	display_currency_edit($Mode, $selected_id);
+	end_form();
+	Page::end();
 	function check_data() {
 		if (strlen($_POST['Abbreviation']) == 0) {
 			Errors::error(_("The currency abbreviation must be entered."));
@@ -37,8 +53,7 @@ Page::start(_($help_context = "Currencies"), SA_CURRENCY);
 		return true;
 	}
 
-	function handle_submit(&$Mode,$selected_id) {
-
+	function handle_submit(&$Mode, $selected_id) {
 		if (!check_data()) {
 			return false;
 		}
@@ -91,7 +106,7 @@ Page::start(_($help_context = "Currencies"), SA_CURRENCY);
 		return true;
 	}
 
-	function handle_delete(&$Mode,$selected_id) {
+	function handle_delete(&$Mode, $selected_id) {
 		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			GL_Currency::delete($selected_id);
@@ -138,7 +153,7 @@ Page::start(_($help_context = "Currencies"), SA_CURRENCY);
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	function display_currency_edit($Mode,$selected_id) {
+	function display_currency_edit($Mode, $selected_id) {
 		start_table('tablestyle2');
 		if ($selected_id != '') {
 			if ($Mode == MODE_EDIT) {
@@ -167,23 +182,5 @@ Page::start(_($help_context = "Currencies"), SA_CURRENCY);
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
-
-	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		handle_submit($Mode,$selected_id);
-	}
-	if ($Mode == MODE_DELETE) {
-		handle_delete();
-	}
-	if ($Mode == MODE_RESET) {
-		$selected_id = '';
-		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
-		$_POST['CurrencyName'] = $_POST['country'] = '';
-		$_POST['hundreds_name'] = '';
-	}
-	start_form();
-	display_currencies();
-	display_currency_edit($Mode,$selected_id);
-	end_form();
-	Page::end();
 
 ?>

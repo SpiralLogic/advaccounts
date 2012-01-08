@@ -133,5 +133,6 @@
 				});
 			}
 			Adv.getFromWeb();
-JS);
+JS
+);
 	Page::end(true);
