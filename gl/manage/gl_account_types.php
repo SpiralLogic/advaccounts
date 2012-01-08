@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_GLACCOUNTGROUP;
-	Page::start(_($help_context = "GL Account Groups"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "GL Account Groups"), SA_GLACCOUNTGROUP);
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process($selected_id)) {

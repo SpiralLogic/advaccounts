@@ -9,12 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SHIPPING;
-	Page::start(_($help_context = "Shipping Company"));
-	list($Mode,$selected_id) = Page::simple_mode(true);
-
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Shipping Company"), SA_SHIPPING);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM && can_process()) {
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
@@ -116,12 +113,12 @@
 	end_form();
 	Page::end();
 	function can_process() {
-			if (strlen($_POST['shipper_name']) == 0) {
-				Errors::error(_("The shipping company name cannot be empty."));
-				JS::set_focus('shipper_name');
-				return false;
-			}
-			return true;
+		if (strlen($_POST['shipper_name']) == 0) {
+			Errors::error(_("The shipping company name cannot be empty."));
+			JS::set_focus('shipper_name');
+			return false;
 		}
+		return true;
+	}
 
 ?>

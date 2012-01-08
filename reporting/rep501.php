@@ -9,14 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = SA_DIMENSIONREP;
-	// ----------------------------------------------------------------
-	// $ Revision:	2.0 $
-	// Creator:	Joe Hunt
-	// date_:	2005-05-19
-	// Title:	Dimension Summary
-	// ----------------------------------------------------------------
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+Page::set_security(SA_DIMENSIONREP);
 
 	print_dimension_summary();
 	function getTransactions($from, $to)

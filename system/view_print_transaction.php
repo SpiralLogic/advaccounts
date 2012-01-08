@@ -10,10 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_VIEWPRINTTRANSACTION;
-	JS::open_window(800, 500);
-	Page::start(_($help_context = "View or Print Transactions"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+		JS::open_window(800, 500);
+Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSACTION);
 
 
 	if (isset($_POST['ProcessSearch'])) {

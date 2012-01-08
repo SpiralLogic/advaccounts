@@ -8,11 +8,9 @@
 	 */
 	class Page
 	{
-
 		/**@var Page null*/
 		public $renderer = null;
-		public $has_header = true;
-		public $frame = false;
+		protected $frame = false;
 		protected $no_menu = false;
 		protected $is_index = false;
 		protected $css = array();
@@ -21,7 +19,9 @@
 		protected $app;
 		protected $sel_app;
 		protected $title = '';
+		/** @var Page */
 		static protected $i = null;
+		static protected $security = null;
 		static public function simple_mode($numeric_id = true) {
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
@@ -47,7 +47,8 @@
 			}
 			return array('', $selected_id);
 		}
-		static public function start($title, $no_menu = false, $is_index = false) {
+		static public function start($title, $security=SA_OPEN, $no_menu = false, $is_index = false) {
+			static::set_security($security);
 			if (static::$i === null) {
 				static::$i = new static($title, $no_menu, $is_index);
 			}
@@ -58,32 +59,34 @@
 		}
 		static public function footer_exit() {
 			Display::br(2);
-			static::$i->_end_page(true);
+			static::$i->end_page(true);
 			exit;
 		}
+		static public function set_security($security) {
+			static::$security = $security;
+		}
 		static public function end($hide_back_link = false) {
-			static::$i->_end_page($hide_back_link);
+			if (static::$i) static::$i->end_page($hide_back_link);
 		}
 		protected function help_url($context = null) {
-					global $help_context;
-					$country = $_SESSION['Language']->code;
-					$clean = 0;
-					if ($context != null) {
-						$help_page_url = $context;
-					}
-					elseif (isset($help_context)) {
-						$help_page_url = $help_context;
-					}
-					else // main menu
-					{
-						$help_page_url = Session::i()->App->applications[Session::i()->App->selected->id]->help_context;
-						$help_page_url = Display::access_string($help_page_url, true);
-					}
-					return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																														 ' ' => '', '/' => '',
-																																														 '&' => 'And'
-																																												))) . '&ctxhelp=1&lang=' . $country;
-				}
+			global $help_context;
+			$country = $_SESSION['Language']->code;
+			$clean = 0;
+			if ($context != null) {
+				$help_page_url = $context;
+			}
+			elseif (isset($help_context)) {
+				$help_page_url = $help_context;
+			}
+			else // main menu
+			{
+				$help_page_url = Session::i()->App->applications[Session::i()->App->selected->id]->help_context;
+				$help_page_url = Display::access_string($help_page_url, true);
+			}
+			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+																																												 ' ' => '', '/' => '', '&' => 'And'
+																																										))) . '&ctxhelp=1&lang=' . $country;
+		}
 		protected function footer() {
 			$Validate = array();
 			$this->menu_footer();
@@ -135,7 +138,7 @@
 			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
 		}
-		protected function _end_page($hide_back_link) {
+		protected function end_page($hide_back_link) {
 			if ($this->frame) {
 				$hide_back_link = true;
 				$this->header = false;
@@ -147,10 +150,7 @@
 			$this->footer();
 		}
 		protected function __construct($title, $no_menu, $index) {
-			global $page_security;
-			if (empty($page_security)) {
-				$page_security = 'SA_OPEN';
-			}
+
 			$this->title = $title;
 			$this->app = $_SESSION['App'];
 			$this->sel_app = $this->app->selected;
@@ -175,7 +175,7 @@
 				$this->header = false;
 				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
 			}
-			Security::check_page($page_security);
+			Security::check_page(static::$security);
 			Display::div_start('_page_body');
 		}
 		protected function menu_header() {

@@ -1,7 +1,7 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_CUSTOMER;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 
 	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
@@ -26,7 +26,7 @@
 		JS::renderJSON($data, JSON_NUMERIC_CHECK);
 	}
 	JS::footerFile("js/quickitems.js");
-	Page::start(_($help_context = "Items"), isset($_GET['frame']));
+	Page::start(_($help_context = "Items"), SA_CUSTOMER,isset($_GET['frame']));
 	$stock_cats = Item_Category::select('category_id');
 	$units = Item_Unit::select('uom');
 	$tax_itemtype = Tax_ItemType::select('tax_type_id');

@@ -1,7 +1,7 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_CUSTOMER;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 	Session::i()->App->set_selected('Contacts');
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
@@ -27,7 +27,7 @@
 		JS::renderJSON($data);
 	}
 	JS::footerFile("js/customers.js");
-	Page::start(_($help_context = "Customers"), Input::request('frame'));
+	Page::start(_($help_context = "Customers"), SA_CUSTOMER, Input::request('frame'));
 
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));

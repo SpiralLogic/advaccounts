@@ -10,10 +10,9 @@
 				 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_CUSTOMER;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-	Page::start(_($help_context = "Customer Branches"), Input::request('frame'));
+Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));

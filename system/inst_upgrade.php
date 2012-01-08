@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SOFTWAREUPGRADE;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-	Page::start(_($help_context = "Software Upgrade"));
+Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
 	//
 	//	Checks $field existence in $table with given field $properties
 	//	$table - table name without prefix

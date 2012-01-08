@@ -14,9 +14,9 @@
 	//	Entry/Modify Sales Invoice against single delivery
 	//	Entry/Modify Batch Sales Invoice against batch of deliveries
 	//
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESINVOICE;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
+
 	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
 		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
@@ -31,7 +31,7 @@
 	elseif (isset($_GET['ViewInvoice'])) {
 		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
-	Page::start($page_title);
+	Page::start($page_title,SA_SALESINVOICE);
 	$order = Orders::session_get() ? : null;
 	if (isset($_GET['AddedID'])) {
 		$order = new Sales_Order(ST_SALESINVOICE, $_GET['AddedID']);

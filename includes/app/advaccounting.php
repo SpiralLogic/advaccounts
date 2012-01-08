@@ -105,7 +105,7 @@
 		 *
 		 */
 		public function display() {
-			$page = Page::start(_($help_context = "Main Menu"), false, true);
+			$page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
 			$page->renderer->display_application($this);
 			Page::end();
 		}

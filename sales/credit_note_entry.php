@@ -12,8 +12,8 @@
 	//
 	//	Entry/Modify free hand Credit Note
 	//
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESCREDIT;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 
 	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
@@ -28,7 +28,7 @@
 	else {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
-	Page::start($_SESSION['page_title']);
+	Page::start($_SESSION['page_title'],SA_SALESCREDIT);
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 	if (list_updated('branch_id')) {

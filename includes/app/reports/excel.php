@@ -49,8 +49,8 @@
 		public $formatAmount = array();
 		public $sheet;
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
-			global $page_security;
-			if (!User::get()->can_access_page($page_security)) {
+
+			if (!User::get()->can_access_page(Page::get_security())) {
 				Errors::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
 				exit;

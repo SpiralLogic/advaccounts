@@ -9,10 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_JOURNALENTRY;
-
-	JS::open_window(800, 500);
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+		JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
 		$help_context = "Modifying Journal Entry";
@@ -20,7 +18,7 @@
 	else {
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
-	Page::start($_SESSION['page_title']);
+	Page::start($_SESSION['page_title'],SA_JOURNALENTRY);
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');

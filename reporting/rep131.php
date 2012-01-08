@@ -9,16 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
-	 SA_SALESTRANSVIEW : SA_SALESBULKREP;
-	// ----------------------------------------------------------------
-	// $ Revision:	2.0 $
-	// Creator:	Joe Hunt
-	// date_:	2005-05-19
-	// Title:	Print Sales Quotations
-	// ----------------------------------------------------------------
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ?	 SA_SALESTRANSVIEW : SA_SALESBULKREP);
 	print_sales_quotations();
 	function print_sales_quotations()
 		{

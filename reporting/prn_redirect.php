@@ -13,10 +13,9 @@
 	 Print request redirector. This file is fired via print link or
 	 print button in reporting module.
  */
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_OPEN; // this level is later overriden in rep file
-
-	function find_report_file($rep)
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::set_security(SA_OPEN);
+			function find_report_file($rep)
 	{
 		global $installed_extensions;
 		// customized per company versions

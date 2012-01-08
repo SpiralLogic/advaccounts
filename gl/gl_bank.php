@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	$page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT :
 	 SA_DEPOSIT;
-	$js = '';
 	JS::open_window(800, 500);
 	if (isset($_GET['NewPayment'])) {
 		$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
@@ -24,7 +23,7 @@
 			handle_new_order(ST_BANKDEPOSIT);
 		}
 	}
-	Page::start($_SESSION['page_title']);
+	Page::start($_SESSION['page_title'],$page_security);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (list_updated('PersonDetailID')) {
 		$br = Sales_Branch::get(get_post('PersonDetailID'));

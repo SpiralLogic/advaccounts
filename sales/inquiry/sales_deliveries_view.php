@@ -9,16 +9,16 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESINVOICE;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 	JS::open_window(900, 600);
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
-		Page::start(_($help_context = "Search Not Invoiced Deliveries"));
+		Page::start(_($help_context = "Search Not Invoiced Deliveries"),SA_SALESINVOICE);
 	}
 	else {
 		$_POST['OutstandingOnly'] = false;
-		Page::start(_($help_context = "Search All Deliveries"));
+		Page::start(_($help_context = "Search All Deliveries"),SA_SALESINVOICE);
 	}
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];

@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_PRINTERS;
-	Page::start(_($help_context = "Printer Locations"));
-	list($Mode,$selected_id) = Page::simple_mode(true);
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Printer Locations"), SA_PRINTERS);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$error = 0;
 		if (empty($_POST['name'])) {
@@ -30,8 +29,7 @@
 		}
 		if ($error != 1) {
 			Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
-			Errors::notice($selected_id == -1 ? _('New printer definition has been created') :
-											_('Selected printer definition has been updated'));
+			Errors::notice($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
 			$Mode = MODE_RESET;
 		}
 	}

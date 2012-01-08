@@ -1,8 +1,6 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_OPEN;
-
-	Page::start(_($help_context = "Websales to Accounting"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Websales to Accounting"), SA_OPEN);
 	Page::end();
 ?>

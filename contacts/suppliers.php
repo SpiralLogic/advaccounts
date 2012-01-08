@@ -16,8 +16,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SUPPLIER;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
@@ -39,7 +39,7 @@
 		JS::renderJSON($data);
 	}
 	JS::footerFile("js/suppliers.js");
-	Page::start(_($help_context = "Suppliers"), Input::request('frame'));
+	Page::start(_($help_context = "Suppliers"), SA_SUPPLIER,Input::request('frame'));
 	if (isset($_GET['id'])) {
 		$supplier = new Creditor($_GET['id']);
 	}

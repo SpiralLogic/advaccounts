@@ -10,14 +10,13 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	/** @noinspection PhpIncludeInspection */
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_PURCHASEORDER;
-	JS::open_window(900, 500);
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+		JS::open_window(900, 500);
 	if (isset($_GET[Orders::MODIFY_ORDER])) {
-		Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER]);
+Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
 	}
 	else {
-		Page::start(_($help_context = "Purchase Order Entry"));
+		Page::start(_($help_context = "Purchase Order Entry"),SA_PURCHASEORDER);
 	}
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);

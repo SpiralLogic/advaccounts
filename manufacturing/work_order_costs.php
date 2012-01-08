@@ -9,11 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_WORKORDERCOST;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
 	JS::open_window(900, 500);
-	Page::start(_($help_context = "Work Order Additional Costs"));
+Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}

@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESTYPES;
-	Page::start(_($help_context = "Sales Types"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Sales Types"), SA_SALESTYPES);
 	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['sales_type']) == 0) {

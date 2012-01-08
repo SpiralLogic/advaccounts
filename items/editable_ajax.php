@@ -6,7 +6,7 @@
 	 * Time: 3:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	$item = array('id' => $_POST['row_id']);
 	$q = DB::update('stock')->where('id=', $item['id']);
 	switch ($_POST['column']) {

@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_ITEMTAXTYPE;
-	Page::start(_($help_context = "Item Tax Types"));
-	list($Mode,$selected_id) = Page::simple_mode(true);
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
@@ -42,7 +41,6 @@
 			$Mode = MODE_RESET;
 		}
 	}
-
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			delete($selected_id);

@@ -12,8 +12,7 @@
 	//
 	//	Entry/Modify Credit Note for selected Sales Invoice
 	//
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESCREDITINV;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
 	if (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
@@ -22,7 +21,8 @@
 	elseif (isset($_GET['InvoiceNumber'])) {
 		$page_title = _($help_context = "Credit all or part of an Invoice");
 	}
-	Page::start($page_title);
+
+	Page::start($page_title,SA_SALESCREDITINV);
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;

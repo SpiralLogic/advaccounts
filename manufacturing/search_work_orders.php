@@ -9,18 +9,16 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_MANUFTRANSVIEW;
-
-	JS::open_window(800, 500);
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+		JS::open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
-		Page::start(_($help_context = "Search Outstanding Work Orders"));
+		Page::start(_($help_context = "Search Outstanding Work Orders"),SA_MANUFTRANSVIEW);
 	}
 	else {
 		$outstanding_only = 0;
-		Page::start(_($help_context = "Search Work Orders"));
+		Page::start(_($help_context = "Search Work Orders"),SA_MANUFTRANSVIEW);
 	}
 	// Ajax updates
 	//

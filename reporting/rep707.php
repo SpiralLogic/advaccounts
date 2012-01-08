@@ -9,14 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = SA_GLANALYTIC;
-	// ----------------------------------------------------------------
-	// $ Revision:	2.0 $
-	// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
-	// date_:	2005-05-19
-	// Title:	Profit and Loss Statement
-	// ----------------------------------------------------------------
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::set_security(SA_GLANALYTIC);
 
 	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
 	{

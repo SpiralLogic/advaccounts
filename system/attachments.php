@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_ATTACHDOCUMENT;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 
 	if (isset($_GET['vw'])) {
 		$view_id = $_GET['vw'];
@@ -62,7 +62,7 @@
 		}
 	}
 	JS::open_window(800, 500);
-	Page::start(_($help_context = "Attach Documents"));
+	Page::start(_($help_context = "Attach Documents"),SA_ATTACHDOCUMENT);
 	list($Mode,$selected_id) = Page::simple_mode(true);
 	if (isset($_GET['filterType'])) // catch up external links
 	{

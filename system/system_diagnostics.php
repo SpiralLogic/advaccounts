@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SETUPCOMPANY;
-	Page::start(_($help_context = "System Diagnostics"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "System Diagnostics"), SA_SETUPCOMPANY);
 	// Type of requirement for positive test result
 	$test_level = array(
 		0 => _('Info'), 1 => _('Optional'), 2 => _('Recomended'), 3 => _('Required ')

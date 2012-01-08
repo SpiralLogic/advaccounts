@@ -9,11 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_GLANALYTIC;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
 	$js = "";
-	Page::start(_($help_context = "Balance Sheet Drilldown"));
+Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
 	// Ajax updates
 	if (get_post('Show')) {
 		Ajax::i()->activate('balance_tbl');

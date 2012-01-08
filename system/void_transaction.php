@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_VOIDTRANSACTION;
-	JS::open_window(800, 500);
-	Page::start(_($help_context = "Void a Transaction"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+		JS::open_window(800, 500);
+Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::Today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {

@@ -9,16 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP;
-	// ----------------------------------------------------------------
-	// $ Revision:	2.0 $
-	// Creator:	Janusz Dobrowolski
-	// date_:	2008-01-14
-	// Title:	Print Workorders
-	// draft version!
-	// ----------------------------------------------------------------
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP);
 	print_workorders();
 
 	function print_workorders()

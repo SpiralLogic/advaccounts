@@ -9,10 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_GLSETUP;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-	Page::start(_($help_context = "System and General GL Setup"));
+Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 
 	if (isset($_POST['submit']) && can_process()) {
 		$_POST['allow_negative_stock'] = check_value('allow_negative_stock');

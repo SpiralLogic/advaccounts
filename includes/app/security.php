@@ -24,17 +24,17 @@
 					 Before the call $page_security should be set to default page_security value.
 				 */
 		static function set_page($value = null, $trans = array(), $gtrans = array()) {
-			global $page_security;
+
 			// first check is this is not start page call
 			foreach ($gtrans as $key => $area) {
 				if (isset($_GET[$key])) {
-					$page_security = $area;
+					Page::set_security($area);
 					return;
 				}
 			}
 			// then check session value
 			if (isset($trans[$value])) {
-				$page_security = $trans[$value];
+				Page::set_security($trans[$value]);
 				return;
 			}
 		}

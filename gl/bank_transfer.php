@@ -9,11 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_BANKTRANSFER;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
 	JS::open_window(800, 500);
-	Page::start(_($help_context = "Transfer between Bank Accounts"));
+Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];

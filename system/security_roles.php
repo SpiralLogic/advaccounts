@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SECROLES;
-	Page::start(_($help_context = "Access setup"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Access setup"), SA_SECROLES);
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	// Following compare function is used for sorting areas
 	// in such a way that security areas defined by module/plugin

@@ -9,15 +9,15 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	// For tag constants
 	// Set up page security based on what type of tags we're working with
-	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
-		$page_security = SA_GLACCOUNTTAGS;
+	if (Input::get('type') == "account" || get_post('type') == TAG_ACCOUNT) {
+		Page::set_security(SA_GLACCOUNTTAGS);
 	}
 	else {
-		if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
-			$page_security = SA_DIMTAGS;
+		if (Input::get('type') == "dimension" || get_post('type') == TAG_DIMENSION) {
+			Page::set_security(SA_DIMTAGS);
 		}
 	}
 	// We use Input::post('type') throughout this script, so convert $_GET vars
@@ -44,8 +44,7 @@
 			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 	Page::start($_SESSION['page_title']);
-	list($Mode,$selected_id) = Page::simple_mode(true);
-
+	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (can_process()) {
 			if ($selected_id != -1) {
@@ -63,7 +62,6 @@
 			}
 		}
 	}
-
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tags::delete($selected_id);
@@ -113,24 +111,24 @@
 	end_form();
 	Page::end();
 	function can_process() {
-				if (strlen($_POST['name']) == 0) {
-					Errors::error(_("The tag name cannot be empty."));
-					JS::set_focus('name');
-					return false;
-				}
-				return true;
-			}
-
-		function can_delete($selected_id) {
-			if ($selected_id == -1) {
-				return false;
-			}
-			$result = Tags::get_associated_records($selected_id);
-			if (DB::num_rows($result) > 0) {
-				Errors::error(_("Cannot delete this tag because records have been created referring to it."));
-				return false;
-			}
-			return true;
+		if (strlen($_POST['name']) == 0) {
+			Errors::error(_("The tag name cannot be empty."));
+			JS::set_focus('name');
+			return false;
 		}
+		return true;
+	}
+
+	function can_delete($selected_id) {
+		if ($selected_id == -1) {
+			return false;
+		}
+		$result = Tags::get_associated_records($selected_id);
+		if (DB::num_rows($result) > 0) {
+			Errors::error(_("Cannot delete this tag because records have been created referring to it."));
+			return false;
+		}
+		return true;
+	}
 
 ?>

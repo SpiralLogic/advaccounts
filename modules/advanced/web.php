@@ -123,7 +123,7 @@
 		}
 		exit();
 	}
-	Page::start('Get From Web', true);
+	Page::start('Get From Web', SA_OPEN, true);
 	JS::beforeload(<<<JS
 			Adv.getFromWeb = function () {
 				$.get('#', function (data) {

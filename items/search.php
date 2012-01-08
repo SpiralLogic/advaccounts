@@ -1,9 +1,6 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_ITEM;
-
-	Session::i()->App->selected_application = 'Items';
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Item::searchOrder($_GET['term'], $_GET['UniqueID']);

@@ -9,12 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESTRANSVIEW;
-	$help_context = "";
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
-	Page::start(_($help_context), true);
+Page::start("", SA_SALESTRANSVIEW, true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
 	}

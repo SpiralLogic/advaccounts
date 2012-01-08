@@ -9,14 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = SA_CUSTBULKREP;
-	// ----------------------------------------------------------------
-	// $ Revision:	2.0 $
-	// Creator:	Joe Hunt
-	// date_:	2005-05-19
-	// Title:	Customer Details Listing
-	// ----------------------------------------------------------------
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::set_security(SA_CUSTBULKREP);
 
 	print_customer_details_listing();
 	function get_customer_details_for_report($area = 0, $salesid = 0)

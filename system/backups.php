@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_BACKUP;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 
 	if (get_post('view')) {
 		if (!get_post('backups')) {
@@ -35,7 +35,7 @@
 		download_file(BACKUP_PATH . get_post('backups'));
 		exit;
 	}
-	Page::start(_($help_context = "Backup and Restore Database"), false, false, '', '');
+	Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
 	check_paths();
 	$db_name = User::get()->company;
 	$connections = Config::get_all('db');

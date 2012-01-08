@@ -16,8 +16,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_ITEM;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
 
 	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
@@ -32,7 +32,7 @@
 	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
-	Page::start(_($help_context = "Items"), Input::request('frame'));
+	Page::start(_($help_context = "Items"), SA_ITEM,Input::request('frame'));
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">

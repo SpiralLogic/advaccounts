@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_CREATEMODULES;
-	Page::start(_($help_context = "Install/Activate extensions"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Install/Activate extensions"), SA_CREATEMODULES);
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (handle_submit()) {
@@ -248,8 +247,7 @@
 		foreach ($mods as $i => $mod) {
 			alt_table_row_color($k);
 			label_cell($mod['name']);
-			label_cell($mod['type'] == 'module' ? $mod['title'] :
-									Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true));
+			label_cell($mod['type'] == 'module' ? $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, true));
 			$ttl = Display::access_string($mod['title']);
 			label_cell($ttl[0]);
 			check_cells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");

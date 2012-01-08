@@ -12,15 +12,15 @@
 	//
 	//	Entry/Modify Delivery Note against Sales Order
 	//
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_SALESDELIVERY;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
+
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
 	}
-	Page::start($page_title);
+	Page::start($page_title,SA_SALESDELIVERY);
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
 		Errors::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));

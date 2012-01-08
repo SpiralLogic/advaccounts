@@ -9,9 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_QUICKENTRY;
-	Page::start(_($help_context = "Quick Entries"));
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+	Page::start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	list($Mode2, $selected_id2) = simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true) {

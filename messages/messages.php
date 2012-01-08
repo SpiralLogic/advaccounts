@@ -1,8 +1,6 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_OPEN;
-
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Session::i()->App->selected_application = 'messages';
 	if (AJAX_REFERRER) {
 		$data['post'] = $_POST;
@@ -12,7 +10,7 @@
 		JS::renderJSON($data);
 	}
 	JS::footerFile("js/messages.js");
-	Page::start(_($help_context = "Messages"), Input::request('frame'));
+	Page::start(_($help_context = "Messages"),SA_OPEN, Input::request('frame'));
 	HTML::div(array('style' => 'margin:0 auto;text-align:center'));
 	Users::row(_("User:"), 'user_id');
 	HTML::br(false)->label(array(

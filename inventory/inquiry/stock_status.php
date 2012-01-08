@@ -9,12 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$page_security = SA_ITEMSSTATVIEW;
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
-		Page::start(_($help_context = "Inventory Item Status"), true);
+Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
 	}
 	else {
 		Page::start(_($help_context = "Inventory Item Status"));
