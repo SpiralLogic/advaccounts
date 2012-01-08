@@ -8,19 +8,20 @@
 	 */
 	class Page
 	{
-		protected $css = array();
+
 		/**@var Page null*/
-		static protected $i = null;
 		public $renderer = null;
+		public $has_header = true;
+		public $frame = false;
 		protected $no_menu = false;
 		protected $is_index = false;
+		protected $css = array();
 		protected $header = true;
 		/** @var ADVAccounting */
 		protected $app;
 		protected $sel_app;
-		public $has_header = true;
-		public $frame = false;
 		protected $title = '';
+		static protected $i = null;
 		static public function simple_mode($numeric_id = true) {
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
@@ -52,32 +53,43 @@
 			}
 			return static::$i;
 		}
-		static public function help_url($context = null) {
-			global $help_context;
-			$country = $_SESSION['Language']->code;
-			$clean = 0;
-			if ($context != null) {
-				$help_page_url = $context;
-			}
-			elseif (isset($help_context)) {
-				$help_page_url = $help_context;
-			}
-			else // main menu
-			{
-				$help_page_url = Session::i()->App->applications[Session::i()->App->selected->id]->help_context;
-				$help_page_url = Display::access_string($help_page_url, true);
-			}
-			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '', '/' => '',
-																																												 '&' => 'And'
-																																										))) . '&ctxhelp=1&lang=' . $country;
+		static public function add_css($file = false) {
+			static::$i->css[] = $file;
 		}
+		static public function footer_exit() {
+			Display::br(2);
+			static::$i->_end_page(true);
+			exit;
+		}
+		static public function end($hide_back_link = false) {
+			static::$i->_end_page($hide_back_link);
+		}
+		protected function help_url($context = null) {
+					global $help_context;
+					$country = $_SESSION['Language']->code;
+					$clean = 0;
+					if ($context != null) {
+						$help_page_url = $context;
+					}
+					elseif (isset($help_context)) {
+						$help_page_url = $help_context;
+					}
+					else // main menu
+					{
+						$help_page_url = Session::i()->App->applications[Session::i()->App->selected->id]->help_context;
+						$help_page_url = Display::access_string($help_page_url, true);
+					}
+					return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+																																														 ' ' => '', '/' => '',
+																																														 '&' => 'And'
+																																												))) . '&ctxhelp=1&lang=' . $country;
+				}
 		protected function footer() {
 			$Validate = array();
 			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
 			Ajax::i()->addScript('editors', $edits);
-			JS::beforeload("d_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
+			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
 			User::add_js_data();
 			if ($this->header) {
 				Sidemenu::render();
@@ -118,21 +130,10 @@
 			}
 			echo $row . "</table>";
 		}
-		static public function add_css($file = false) {
-			static::$i->css[] = $file;
-		}
 		protected function send_css() {
 			$path = DS . "themes" . DS . $this->theme . DS;
 			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
-		}
-		static public function footer_exit() {
-			Display::br(2);
-			static::$i->_end_page(true);
-			exit;
-		}
-		static public function end($hide_back_link = false) {
-			static::$i->_end_page($hide_back_link);
 		}
 		protected function _end_page($hide_back_link) {
 			if ($this->frame) {
@@ -183,7 +184,7 @@
 			echo "<ul>\n";
 			" <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 			if (Config::get('help_baseurl') != null) {
-				echo " <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
 			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>" . "<div id='logo'><h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'>" . "<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>" . "</span></h1></div>" . '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
 			$this->renderer->menu();

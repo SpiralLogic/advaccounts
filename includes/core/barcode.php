@@ -68,7 +68,7 @@
 		}
 
 		// convert a bit string to an array of array of bit char
-		private static function bitStringTo2DArray($digit) {
+		static private function bitStringTo2DArray($digit) {
 			$d = array();
 			$len = strlen($digit);
 			for ($i = 0; $i < $len; $i++) {
@@ -78,7 +78,7 @@
 		}
 
 		// GD barcode renderer
-		private static function digitToGDRenderer($gd, $color, $xi, $yi, $angle, $mw, $mh, $digit) {
+		static private function digitToGDRenderer($gd, $color, $xi, $yi, $angle, $mw, $mh, $digit) {
 			$lines = count($digit);
 			$columns = count($digit[0]);
 			$angle = deg2rad(-$angle);

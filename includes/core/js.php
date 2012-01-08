@@ -8,36 +8,36 @@
 		/**
 		 * @var array
 		 */
-		private static $_beforeload = array();
+		static private $_beforeload = array();
 		/**
 		 * @var array
 		 */
-		private static $_onload = array();
+		static private $_onload = array();
 		/**
 		 * @var array
 		 */
-		private static $_onlive = array();
+		static private $_onlive = array();
 		/**
 		 * @var array
 		 */
-		private static $_toclean = array();
+		static private $_toclean = array();
 		/**
 		 * @var array
 		 */
-		private static $_headerFiles = array();
+		static private $_headerFiles = array();
 		/**
 		 * @var array
 		 */
-		private static $_footerFiles = array();
+		static private $_footerFiles = array();
 		/**
 		 * @var bool
 		 */
-		private static $_focus = false;
+		static private $_focus = false;
 		static public $outputted = false;
 		/**
 		 * @var bool
 		 */
-		private static $_openWindow = false;
+		static private $_openWindow = false;
 		/**
 		 *
 		 */

@@ -18,7 +18,7 @@
 		/**
 		 * @var
 		 */
-		private static $inserted;
+		static private $inserted;
 
 		/**
 		 * @param $order_no

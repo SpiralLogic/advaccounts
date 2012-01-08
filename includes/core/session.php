@@ -42,7 +42,7 @@ class SessionException extends Exception {};
 		/**
 		 * @var Session
 		 */
-		private static $i = null;
+		static private $i = null;
 		/***
 		 * @var gettextNativeSupport|gettext_php_support
 		 */

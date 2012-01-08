@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	class Contact_Postcode {
-		private static $count = 1;
+		static private $count = 1;
 
 		static public function render($city, $state, $postcode, $options = array()) {
 			$o = array('url' => '/contacts/postcode.php');

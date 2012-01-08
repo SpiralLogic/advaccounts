@@ -9,7 +9,7 @@
 	class Contact_Log {
 		const CUSTOMER = 'C';
 		const SUPPLIER = 'S';
-		private static $dbTable = 'contact_log';
+		static private $dbTable = 'contact_log';
 
 		static public function add($contact_id, $contact_name, $type, $message) {
 			if (!isset($contact_id)) {
