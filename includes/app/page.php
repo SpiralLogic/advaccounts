@@ -108,7 +108,7 @@
 		}
 		protected function menu_footer() {
 			echo "</div>";
-			if (!$this->menu && !AJAX_REFERRER) {
+			if ($this->menu && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
@@ -149,8 +149,8 @@
 			Display::div_end(); // end of _page_body section
 			$this->footer();
 		}
-		protected function __construct($title, $menu, $index) {
-
+		protected function __construct($title, $menu, $index=false) {
+$this->is_index=$index;
 			$this->title = $title;
 			$this->app = $_SESSION['App'];
 			$this->sel_app = $this->app->selected;
@@ -171,7 +171,7 @@
 				}
 			}
 			Errors::error_box();
-			if ($title && !$index && !$this->frame) {
+			if ($title && !$this->is_index && !$this->frame) {
 				$this->header = false;
 				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'></span>" : '') . "</div>";
 			}
