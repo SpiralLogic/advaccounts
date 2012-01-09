@@ -80,9 +80,9 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as delivered
-		FROM debtor_trans as trans, debtors as debtor, branches as branch, debtor_trans_details as details
-		WHERE debtor.debtor_no = trans.debtor_no AND trans.trans_no=details.debtor_trans_no AND trans.type = details.debtor_trans_type
-		AND trans.branch_id = branch.branch_id";
+		FROM debtors as debtor, branches as branch,debtor_trans as trans
+		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_no =
+		trans.debtor_no AND trans.branch_id = branch.branch_id";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$sql = "SELECT * FROM debtor_trans_view WHERE ";
 		foreach ($searchArray as $ajaxsearch) {
@@ -150,7 +150,7 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
 		}
 	}
-	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY details.debtor_trans_no,  details.debtor_trans_type";
+	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY trans.trans_no,  trans.type";
 	}
 	DB::query("set @bal:=0");
 	$cols = array(
