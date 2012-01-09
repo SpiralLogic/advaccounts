@@ -88,24 +88,31 @@
 		 *
 		 * @param $msg
 		 */
-		static function error($msg) {
-			trigger_error($msg, E_USER_ERROR);
+		static function error($message) {
+			//Get the caller of the calling function and details about it
+			$source = next(debug_backtrace());
+			//Trigger appropriate error
+			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
 		}
 		/**
 		 * @static
 		 *
 		 * @param $msg
 		 */
-		static function notice($msg) {
-			trigger_error($msg, E_USER_NOTICE);
+		static function notice($message) {
+			$source = next(debug_backtrace());
+			//Trigger appropriate error
+			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
 		}
 		/**
 		 * @static
 		 *
 		 * @param $msg
 		 */
-		static function warning($msg) {
-			trigger_error($msg, E_USER_WARNING);
+		static function warning($message) {
+			$source = next(debug_backtrace());
+			//Trigger appropriate error
+			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}
 		static function shutdown_handler() {
 			$Ajax = Ajax::i();
@@ -169,9 +176,9 @@
 		 * @return bool
 		 */
 		static function handler($type, $message, $file = null, $line = null) {
-			// skip well known warnings we don't care about.
-			// Please use restrainedly to not risk loss of important messages
-			// error_reporting==0 when messages are set off with @
+			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
+				list($message, $file, $line) = explode('||', $message);
+			}
 			if (in_array($type, static::$ignore)) {
 				return true;
 			}
