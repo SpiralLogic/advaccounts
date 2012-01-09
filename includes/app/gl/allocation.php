@@ -252,7 +252,7 @@
 		}
 		static public function display($alloc_result, $total) {
 			global $systypes_array;
-			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
+			if (!$alloc_result || DB::num_rows() == 0) {
 				return;
 			}
 			Display::heading(_("Allocations"));

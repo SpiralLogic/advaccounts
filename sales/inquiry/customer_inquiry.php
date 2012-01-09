@@ -150,6 +150,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
 		}
 	}
+	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY details.debtor_trans_no,  details.debtor_trans_type";
+	}
 	DB::query("set @bal:=0");
 	$cols = array(
 		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
@@ -178,7 +180,6 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	if (isset($_POST['filterType']) && $_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch'])) {
 		$cols[_("RB")] = 'skip';
 	}
-	$sql .= " GROUP BY details.debtor_trans_no,  details.debtor_trans_type";
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";

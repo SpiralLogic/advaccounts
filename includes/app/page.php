@@ -207,5 +207,6 @@ $this->is_index=$index;
 			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
+		public static function get_security() {return static::$security; }
 	}
 
