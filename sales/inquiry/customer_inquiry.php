@@ -160,7 +160,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 		_("Reference") => array('ord' => ''),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-		_("Customer") => array('ord' => 'asc'),
+		_("Customer") => array('ord' => 'asc'),		array('type'=>'skip'),
+
 		_("Branch") => array('ord' => ''),
 		_("Currency") => array('align' => 'center'),
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),

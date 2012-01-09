@@ -444,7 +444,7 @@ s.category_id,   editable, 0 as kit,
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql
-			 = "SELECT $select $item_code ,i.description as name, c.description as category, i.long_description as description , editable,
+			 = "SELECT $select $item_code ,i.description as item_name, c.description as category, i.long_description as description , editable,
 							$weight FROM stock_category c, item_codes s, stock_master i $prices
 							WHERE (s.item_code LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code

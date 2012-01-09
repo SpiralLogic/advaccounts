@@ -203,7 +203,7 @@ JS;
 								}
 										response($.map( data, function( item ) {
 												return {
-														label: item.stock_id+": "+item.name,
+														label: item.stock_id+": "+item.item_name,
 														value: item,
 														category: item.category
 												}
