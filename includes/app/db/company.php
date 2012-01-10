@@ -105,6 +105,9 @@
 		public $add_pct;
 		public $round_to;
 		public $login_tout;
+		/***
+		 * @var DB_Company
+		 */
 		static protected $i = null;
 		/***
 		 * @static
@@ -256,9 +259,9 @@
 			static::i()->save($data);
 		}
 		static public function update_setup(array $data = null) {
-			if ($f_year == null) {
-				$f_year = 0;
+			if (static::i()->f_year == null) {
+				static::$i->f_year = 0;
 			}
-			static::i()->save($data);
+			static::$i->save($data);
 		}
 	}
