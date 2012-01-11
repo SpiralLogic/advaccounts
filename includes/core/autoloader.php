@@ -126,6 +126,11 @@
 		 * @throws Autoload_Exception
 		 */
 		static public function load($classname) {
+			if (strpos($classname,'Modules')!==false) {
+				return static::loadModules($classname);
+			}
+
+
 			static::$time = microtime(true);
 			$class = $classname;
 			if (isset(static::$loaded[$class])) {
@@ -194,7 +199,15 @@
 				Errors::exception_handler($e);
 			}
 		}
-
+static protected function loadModules($classname) {
+	$class = explode("\\",$classname);
+	$mainclass = array_pop($class);
+	$class[] = (count($class)>1)?'classes':$mainclass;
+	$class[] = $mainclass;
+	$class = implode(DS,$class);
+	$filepath = static::trypath(DOCROOT.$class.'.php');
+	static::includeFile($filepath,$classname);
+}
 		/**
 		 * @static
 		 * @return array

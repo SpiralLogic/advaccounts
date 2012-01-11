@@ -79,7 +79,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	}
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as delivered
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as
+			still_to_deliver
 		FROM debtors as debtor, branches as branch,debtor_trans as trans
 		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_no =
 		trans.debtor_no AND trans.branch_id = branch.branch_id";
@@ -323,7 +324,7 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				}
 				break;
 			case ST_CUSTDELIVERY:
-				if ($row['delivered']==0) continue;
+				if ($row['still_to_deliver']==0) continue;
 				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
 					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
 				}

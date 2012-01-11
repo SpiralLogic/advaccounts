@@ -10,7 +10,7 @@
 	var $current, Searchboxtimeout, menuTimeout, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
 	 .attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickMenu = $('#quickCustomer');
 	(function () {
-		var $this = this, $wrapper = $("#wrapper"), $results = $wrapper.clone();
+		var $this = this, $wrapper = $("#wrapper"), previous;
 		this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).draggable().show();
 		this.sidemenuHide = function () {
 			$this.menu.clearQueue().animate({right:'-10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});
@@ -28,8 +28,7 @@
 		this.sidemenuOff = function () {
 			$this.menu.unbind('mouseenter mouseleave').accordion("disable");
 			$this.menu.find("h3").one("click", function () {
-				$results.detach();
-				$wrapper.show();
+				$wrapper.empty().append(previous);
 			})
 		};
 		this.doSearch = function () {
@@ -37,14 +36,14 @@
 			Adv.lastXhr = $.post(searchInput.data("url"), { 'ajaxsearch':term, limit:true }, $this.showSearch);
 		};
 		this.showSearch = function (data) {
-			$results.empty().append(data).insertBefore($wrapper);
-			$wrapper.hide();
+			previous = $wrapper.contents().detach();
+			$wrapper.html(data);
+			Adv.msgbox.prependTo($wrapper);
 		}
 		$search.delegate("li", "click", function (event) {
 			searchInput.trigger('blur');
 			$current = $(this).hide();
 			$this.sidemenuOff();
-
 			searchInput.data({'id':$current.data('href'), url:$current.data('href')}).insertBefore($current).focus();
 			return false;
 		});

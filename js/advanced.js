@@ -81,7 +81,8 @@ Adv.extend({
 			 message:"Request failed: " + settings.url + "<br>"
 		 };
 		 Adv.showStatus(status);
-	 }).ajaxComplete(function (event, request) {
+	 })
+	 .ajaxComplete(function (event, request) {
 		 Behaviour.apply();
 		 try
 			 {
@@ -99,9 +100,11 @@ Adv.extend({
 				return window.location.href = status.message;
 			}
 		status.class = (status.status) ? 'note_msg' : 'err_msg';
-		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>').show();
+		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>');
+		Adv.msgbox.show();
 		window.setTimeout(Adv.hideStatus, 10000);
-		window.scrollTo(0, element_pos(Adv.msgbox[0]).y - 40)
+		try {var y = element_pos(Adv.msgbox[0]).y - 40;
+		}catch(e){};if ($.isNumeric(y)) {window.scrollTo(0,y);}
 	},
 	hideStatus:function () {
 		Adv.msgbox.fadeOut('slow', function () {$(this).removeClass()});
@@ -164,8 +167,6 @@ Adv.extend({
 		 function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center",at:"center center",of:document.body});
 
 	}
-
-
 });
 Adv.extend({Forms:(function () {
 	if (0 < document.getElementsByClassName('datepicker').length)

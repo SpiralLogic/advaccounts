@@ -37,7 +37,10 @@ function disp_msg(msg, cl) {
 JsHttpRequest.request = function (trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 15000;	// default timeout value
-	try {Adv.loader.on(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');}catch(e){};
+	try
+		{Adv.loader.on(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');} catch (e)
+		{}
+	;
 	JsHttpRequest._request(trigger, form, tout, 0);
 }
 
@@ -304,14 +307,15 @@ function price_format(post, num, dec, label, color) {
 }
 
 function get_amount(doc, label) {
+	var val;
 	if (label)
 		{
-			var val = document.getElementById(doc).innerHTML;
+			val = document.getElementById(doc).innerHTML;
 		}
 	else
 		{
-			var val = typeof(doc) == "string" ?
-								document.getElementsByName(doc)[0].value : doc.value;
+			val = typeof(doc) == "string" ?
+						document.getElementsByName(doc)[0].value : doc.value;
 		}
 
 	val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
@@ -319,12 +323,8 @@ function get_amount(doc, label) {
 	return isNaN(val) ? 0 : val;
 }
 
-function goBack() {
-	((window.history.length <= 1) ? window.close() : window.history.go(-1));
-}
-
 function setFocus(name, byId) {
-var el;
+	var el;
 	if (typeof(name) == 'object')
 		{
 			el = name;

@@ -16,7 +16,6 @@
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
-
 	define('DS', DIRECTORY_SEPARATOR);
 	/**
 	 *
@@ -42,7 +41,8 @@
 	 *
 	 */
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-	define('IS_JSON_REQUEST', (strpos($_SERVER['HTTP_ACCEPT'],'application/json')!==false));
+	/**	*/
+	define('IS_JSON_REQUEST', (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
 	/**
 	 *
 	 */
@@ -81,17 +81,13 @@
 		 */
 		function adv_ob_flush_handler($text) {
 			return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
-
 		}
 	}
 	Session::i();
 	Config::i();
 	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-	array_walk($_POST, /**
-		 * @param $v
-		 */
-		function(&$v) {
-			$v = is_string($v) ? trim($v) : $v;
-		});
+	array_walk($_POST, function(&$v) {
+		$v = is_string($v) ? trim($v) : $v;
+	});
 	ADVAccounting::i();

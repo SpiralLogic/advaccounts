@@ -139,13 +139,13 @@
 																														'style' => 'margin:20px', 'data-url' => $url))->p;
 			$js = <<<JS
 		$('#EmailButton$type_no').button().click(function() {
-
 			var email = $("#EmailSelect$type_no").val();
 			$.get($(this).data('url') + "&Email="+email,function(response) {
-				var status = {message:response};
-				Adv.showStatus(status);
-			});
+
+			Adv.showStatus(response);
+			},'json');
 			\$emailBox.dialog("close");
+		return false;
 		});
 JS;
 			if ($return) {

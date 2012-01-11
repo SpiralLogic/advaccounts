@@ -1192,7 +1192,7 @@ body.lite {
 	color: gray;
 }
 
-#msgbox {
+#msgbox,.msgbox {
 	width:       80%;
 	margin:      10px auto;
 	font-weight: bolder;

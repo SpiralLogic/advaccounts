@@ -16,53 +16,66 @@
 		 */
 		const DB_DUPLICATE_ERROR_CODE = 1062;
 		/**
-		 * @var array
+		 * @var array Container for the system messages
 		 */
-		static public $messages = array(); // container for system messages
+		static public $messages = array();
 		/**
-		 * @var array
+		 * @var array Container for the system errors
 		 */
-		static public $errors = array(); // container for system messages
-		static public $dberrors = array(); // container for system messages
+		static public $errors = array();
 		/**
-		 * @var bool
+		 * @var array Container for DB errors
 		 */
-		static public $fatal = false; // container for system messages
-		static public $count = 0; // container for system messages
+		static public $dberrors = array();
+		/**
+		 * @var bool Whether a fatal error has occuered
+		 */
+		static public $fatal = false;
+		/**
+		 * @var int How many messages have currently been recorded
+		 */
+		static public $count = 0;
+		/***
+		 * @var bool	Wether the json error status has been sent
+		 */
 		static protected $jsonerrorsent = false;
-		static public $levels = array(
-			0 => 'Error',
-			E_ERROR => 'Error',
-			E_WARNING => 'Warning',
-			E_PARSE => 'Parsing Error',
-			E_NOTICE => 'Notice',
-			E_CORE_ERROR => 'Core Error',
-			E_CORE_WARNING => 'Core Warning',
-			E_COMPILE_ERROR => 'Compile Error',
-			E_COMPILE_WARNING => 'Compile Warning',
-			E_USER_ERROR => 'User Error',
-			E_USER_WARNING => 'User Warning',
-			E_USER_NOTICE => 'User Notice',
-			E_STRICT => 'Runtime Notice'
-		);
 		/**
-		 * @var string
+		 * @var array Error constants to text
 		 */
-		static public $before_box = ''; // temporary container for output html data before error box
+		static public $levels
+		 = array(
+			 0 => 'Error',
+			 E_ERROR => 'Error',
+			 E_WARNING => 'Warning',
+			 E_PARSE => 'Parsing Error',
+			 E_NOTICE => 'Notice',
+			 E_CORE_ERROR => 'Core Error',
+			 E_CORE_WARNING => 'Core Warning',
+			 E_COMPILE_ERROR => 'Compile Error',
+			 E_COMPILE_WARNING => 'Compile Warning',
+			 E_USER_ERROR => 'User Error',
+			 E_USER_WARNING => 'User Warning',
+			 E_USER_NOTICE => 'User Notice',
+			 E_STRICT => 'Runtime Notice'
+		 );
 		/**
-		 * @var array
+		 * @var string	temporary container for output html data before error box
+		 */
+		static public $before_box = '';
+		/**
+		 * @var array Errors which terminate execution
 		 */
 		static public $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
 		/**
-		 * @var array
+		 * @var array Errors where execution can continue
 		 */
 		static public $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/**
-		 * @var array
+		 * @var array Errors to ignore comeletely
 		 */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/**
-		 * @static
+		 * @static Initialiser
 		 *
 		 */
 		static function init() {
@@ -86,7 +99,7 @@
 		/**
 		 * @static
 		 *
-		 * @param $msg
+		 * @param $message Error message
 		 */
 		static function error($message) {
 			//Get the caller of the calling function and details about it
@@ -97,7 +110,7 @@
 		/**
 		 * @static
 		 *
-		 * @param $msg
+		 * @param $msg Notice message
 		 */
 		static function notice($message) {
 			$source = next(debug_backtrace());
@@ -107,13 +120,17 @@
 		/**
 		 * @static
 		 *
-		 * @param $msg
+		 * @param $msg Warning message
 		 */
 		static function warning($message) {
 			$source = next(debug_backtrace());
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}
+		/**
+		 * @static Shutdown handler
+		 *
+		 */
 		static function shutdown_handler() {
 			$Ajax = Ajax::i();
 			Config::store();
@@ -145,6 +162,13 @@
 				ob_end_flush();
 			}
 		}
+		/**
+		 * @static
+		 *
+		 * @param bool $json
+		 *
+		 * @return array|bool|string
+		 */
 		static public function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
@@ -265,7 +289,7 @@
 		 *
 		 */
 		static function error_box() {
-			echo "<div id='msgbox'>";
+			printf("<div  %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
 			static::$before_box = ob_get_clean(); // save html content before error box
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
@@ -277,7 +301,6 @@
 		 * @param null			 $sql_statement
 		 *
 		 * @internal param bool $exit
-		 *
 		 * @throws DBException
 		 */
 		static function show_db_error($error, $sql = null, $data = array()) {
