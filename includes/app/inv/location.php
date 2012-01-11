@@ -22,11 +22,15 @@
 		}
 
 		static public function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
-			$sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ",
- 	delivery_address=" . DB::escape($delivery_address) . ",
- 	phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ",
- 	email=" . DB::escape($email) . ", contact=" . DB::escape($contact) . "
- 	WHERE loc_code = " . DB::escape($loc_code);
+			$sql = "UPDATE locations SET location_name="
+			 . DB::escape($location_name)
+			 . ", delivery_address=" . DB::escape($delivery_address)
+			 . ", phone="  . DB::escape($phone)
+			 . ", phone2=" . DB::escape($phone2)
+			 . ", fax=" . DB::escape($fax)
+			 . ", email=" . DB::escape($email)
+			 . ", contact=" . DB::escape($contact)
+			 . " WHERE loc_code = " . DB::escape($loc_code);
 			DB::query($sql, "a location could not be updated");
 		}
 
@@ -98,10 +102,11 @@
 
 		static public function select($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
-			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name', array(
-																																										 'spec_option' => $all_option === true ?
-																																											_("All Locations") :
-																																											$all_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change));
+			if ($selected_id==null) $selected_id = Config::get('defaults.location');
+			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name',
+												array( 'spec_option' => $all_option === true ?  _("All Locations") : $all_option,
+														 'spec_id' => ALL_TEXT,
+														 'select_submit' => $submit_on_change));
 		}
 
 		static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {

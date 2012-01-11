@@ -125,10 +125,8 @@
 				return;
 			}
 			foreach ($changes as $key => $value) {
-				if (is_object($value)) {
-					$value = (array)$value;
-				}
-				if (!is_array($value)) {
+
+				if (!is_array($value) && !is_object($value)) {
 					$value = (trim($value) == null) ? '' : trim($value);
 				}
 				if (property_exists($this, $key)) {

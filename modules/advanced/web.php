@@ -73,12 +73,15 @@
 			$c->tax_id = $row["TaxID"];
 			$c->webid = $row["CustomerID"];
 			$c->contact_name = $row["FirstName"];
+
 			$c->save();
 			$status = $c->getStatus();
 			$dup = ((substr($status['message'], 0, 9) == "Duplicate"));
 			if ($dup) {
 				$result2 = DB::select('debtor_no')->from('debtors')->where('name LIKE', $c->name)->fetch()->assoc()->one();
-				$c->id = $result2['debtor_no'];
+			if (!$result2) continue;
+
+					$c->id = $result2['debtor_no'];
 				$d = new Debtor((array)$c);
 				$d->save();
 			}
@@ -91,6 +94,7 @@
 	}
 
 	if (AJAX_REFERRER) {
+
 		$products = getProducts();
 		if ($products) {
 			foreach ($products as $product) {
@@ -106,7 +110,7 @@
 		$customers = getCustomers();
 		if ($customers) {
 			foreach ($customers as $customer) {
-				If (!isset($customer['CompanyName'])) {
+				if (!isset($customer['CompanyName'])) {
 					continue;
 				}
 				$name = $customer['CompanyName'];
@@ -124,7 +128,7 @@
 		exit();
 	}
 	Page::start('Get From Web', SA_OPEN, true);
-	JS::beforeload(<<<JS
+JS::beforeload(<<<JS
 			Adv.getFromWeb = function () {
 				$.get('#', function (data) {
 					$(data).prependTo('#wrapper');
@@ -135,4 +139,6 @@
 			Adv.getFromWeb();
 JS
 );
+
 	Page::end(true);
+

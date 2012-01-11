@@ -37,7 +37,7 @@ function disp_msg(msg, cl) {
 JsHttpRequest.request = function (trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 15000;	// default timeout value
-	Adv.loader.on(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');
+	try {Adv.loader.on(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');}catch(e){};
 	JsHttpRequest._request(trigger, form, tout, 0);
 }
 

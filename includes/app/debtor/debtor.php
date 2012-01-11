@@ -19,9 +19,15 @@
 		public $defaultContact = 0;
 		public $branches = array();
 		public $contacts = array();
+		/**
+		 * @var Debtor_Account
+		 */
 		public $accounts;
 		public $transactions;
 		public $webid = null;
+		public $email;
+		public $inactive;
+		public $notes;
 		protected $_table = 'debtors';
 		protected $_id_column = 'debtor_no';
 		public function __construct($id = null) {
@@ -36,6 +42,7 @@
 				$this->_status->append($branch->getStatus());
 			}
 			foreach ($this->contacts as $contact) {
+				/** @var Contact $contact */
 				$this->_status->append($contact->getStatus());
 			}
 			$this->_status->append($this->accounts->getStatus());
@@ -85,7 +92,7 @@
 		}
 		public function getTransactions() {
 			if ($this->id == 0) {
-				return;
+				return array();
 			}
 			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
@@ -116,6 +123,7 @@
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
 			foreach ($this->branches as $branch_id => $branch) {
+				/** @var Debtor_Branch $branch */
 				$branch->save(array('debtor_no' => $this->id));
 				if ($branch_id == 0) {
 					$this->branches[$branch->branch_id] = $branch;
@@ -175,19 +183,19 @@
 		}
 		protected function _countBranches() {
 			DB::select('COUNT(*)')->from('branches')->where('debtor_no=', $this->id);
-			return DB::rowCount();
+			return DB::num_rows();
 		}
 		protected function _countContacts() {
 			DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
-			return DB::rowCount();
+			return DB::num_rows();
 		}
 		protected function _countOrders() {
 			DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
-			return DB::rowCount();
+			return DB::num_rows();
 		}
 		protected function _countTransactions() {
 			DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
-			return DB::rowCount();
+			return DB::num_rows();
 		}
 		protected function _defaults() {
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
@@ -199,14 +207,14 @@
 		}
 		protected function _getAccounts() {
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
-			$this->accounts = DB::fetch()->asClassLate('Debtor_Account')->all();
+			$this->accounts = DB::fetch()->asClassLate('Debtor_Account')->one();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts = clone($this->branches[$this->defaultBranch]);
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
 			}
 			else {
-				$this->accounts = $this->accounts[0];
+				$this->accounts = new Debtor_Account();
 			}
 		}
 		protected function _getBranches() {

@@ -33,7 +33,7 @@ Page::start(_($help_context = "Inventory Locations"), SA_INVENTORYLOCATION);
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				Inv_Location::update($selected_id, $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
+				Inv_Location::update($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
 				Errors::notice(_('Selected location has been updated'));
 			}
 			else {
