@@ -419,9 +419,12 @@
 			return false;
 		}
 		if (count($order->line_items) == 0) {
+			if (!empty($_POST['stock_id'])) {
+				handle_new_item($order);
+			}else{
 			Errors::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('AddItem');
-			return false;
+			return false;}
 		}
 		if ($order->trans_no == 0 && !empty($_POST['cust_ref']) && !$order->check_cust_ref($_POST['cust_ref'])
 		) {
