@@ -213,9 +213,6 @@
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
 			}
-			else {
-				$this->accounts = new Debtor_Account();
-			}
 		}
 		protected function _getBranches() {
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
