@@ -113,7 +113,7 @@
 		/***
 		 * @var PDO
 		 */
-		protected $conn;
+		protected $conn=false;
 		/**
 		 * @var DB
 		 */
@@ -137,27 +137,38 @@
 		 * @param $config
 		 */
 		protected function __construct($config) {
-			$this->name = $config['name'];
-			$this->user = $config['user'];
-			$this->pass = $config['pass'];
-			$this->host = $config['host'];
-			$this->port = $config['port'];
 			static::$debug = false;
-			$this->_connect();
+			$this->_connect($config);
 		}
 		/**
 		 *
 		 * @return bool
 		 */
-		protected function _connect() {
+		protected function _connect($config) {
 			try {
-				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
-				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				$this->conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
+				$conn = new PDO('mysql:host=' . $config['host']  . ';dbname=' . $config['dbname'],$config['user'] ,$config['pass'] ,array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
+
+				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
+				static::$connections[$config['name']]=$conn;
+				if ($this->conn===false)$this->conn=$conn;
 				return true;
-			} catch (PDOException $e) {
-				return $this->_error($e, true);
 			}
+			catch (PDOException $e) {
+				throw new DBException($e);
+			}
+		}
+		static public function change_connection($name=false) {
+			$name = $name?:reset(static::$connections);
+			if (isset(static::$connections[$name])) {
+				static::i()->conn = static::$connections[$name];
+			}
+			else {
+				throw new DBException("There is no connection with this name");
+			}
+		}
+		static public function connect($config) {
+			static::i()->_connect($config);
 		}
 		/**
 		 * @static
@@ -180,10 +191,12 @@
 				static::$prepared = static::i()->_prepare($sql);
 				try {
 					static::$prepared->execute();
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e, " (execute) " . $err_msg);
 				}
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				static::i()->_error($e, " (prepare) " . $err_msg);
 			}
 			static::$data = array();
@@ -262,11 +275,14 @@
 					$prepared->bindValue($k, $v[0], $v[1]);
 					$k++;
 				}
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				$prepared = false;
 				$this->_error($e);
 			}
-			if ($debug) static::$queryString = $sql;
+			if ($debug) {
+				static::$queryString = $sql;
+			}
 			static::$data = array();
 			return $prepared;
 		}
@@ -289,16 +305,19 @@
 		 *
 		 * @return array|bool
 		 */
-		static public function execute($data,$debug=false) {
+		static public function execute($data, $debug = false) {
 			if (!static::$prepared) {
 				return false;
 			}
-			if ($debug) static::$queryString=static::$i->placeholderValues(static::$queryString,$data);
+			if ($debug) {
+				static::$queryString = static::$i->placeholderValues(static::$queryString, $data);
+			}
 			static::$data = $data;
 			try {
 				static::$prepared->execute($data);
 				$result = static::$prepared->fetchAll(PDO::FETCH_ASSOC);
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				$result = static::i()->_error($e);
 			}
 
@@ -366,7 +385,7 @@
 		 *
 		 * @return DB_Query_Result|Array This is something
 		 */
-		static public function fetch($result = null,$fetch_mode=PDO::FETCH_BOTH) {
+		static public function fetch($result = null, $fetch_mode = PDO::FETCH_BOTH) {
 			if ($result !== null) {
 				return $result->fetch($fetch_mode);
 			}
@@ -380,7 +399,7 @@
 		 * @return mixed
 		 */
 		static public function fetch_row($result = null) {
-			return static::fetch($result,PDO::FETCH_NUM);
+			return static::fetch($result, PDO::FETCH_NUM);
 		}
 		/**
 		 * @static
@@ -488,7 +507,8 @@
 				try {
 					static::i()->conn->beginTransaction();
 					static::i()->intransaction = true;
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -502,7 +522,8 @@
 				static::i()->intransaction = false;
 				try {
 					static::i()->conn->commit();
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -516,7 +537,8 @@
 				try {
 					static::i()->intransaction = false;
 					static::i()->conn->rollBack();
-				} catch (PDOException $e) {
+				}
+				catch (PDOException $e) {
 					static::i()->_error($e);
 				}
 			}
@@ -538,7 +560,8 @@
 		static public function update_record_status($id, $status, $table, $key) {
 			try {
 				static::update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
-			} catch (DBUpdateException $e) {
+			}
+			catch (DBUpdateException $e) {
 				static::insert_record_status($id, $status, $table, $key);
 			}
 		}
@@ -555,7 +578,8 @@
 		static public function insert_record_status($id, $status, $table, $key) {
 			try {
 				static::insert($table)->values(array('inactive' => $status, $key => $id))->exec();
-			} catch (DBInsertException $e) {
+			}
+			catch (DBInsertException $e) {
 				throw new DBUpdateException('Could not update record inactive status');
 			}
 		}
@@ -582,7 +606,8 @@
 						$prepared->execute($data);
 						return true;
 				}
-			} catch (PDOException $e) {
+			}
+			catch (PDOException $e) {
 				$this->_error($e);
 				switch ($type) {
 					case DB::SELECT:
@@ -606,7 +631,9 @@
 		}
 		static protected function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
-				if (is_array($v)) $v=$v[0];
+				if (is_array($v)) {
+					$v = $v[0];
+				}
 				$sql = preg_replace('/\?/i', "'$v'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
@@ -631,7 +658,7 @@
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
-			if ($this->conn->inTransaction() || $this->intransaction) {
+			if (is_a($this->conn,'PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
 				$this->conn->rollBack();
 				$this->intransaction = false;
 			}

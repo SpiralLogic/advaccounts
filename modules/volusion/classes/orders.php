@@ -1,12 +1,45 @@
 <?php
-	namespace Modules\Volusion; /**
+	namespace Modules\Volusion;
+
+	/**
 	 *
-	 */ class Orders implements \Iterator, \Countable
+	 */
+
+	class Orders implements \Iterator, \Countable
 	{
 		protected $data;
 		protected $current = -1;
+		protected $table = 'WebOrders';
+		protected $idcolumn = 'OrderID';
+		protected $_classname;
+	static	public $shipping_types = array(
+			 502 => "Pickup", //
+			 902 => "To be calculated", //
+			 903 => "Use own courier", //
+			 998 => "Installation",//
+			 1006 => "Medium Courier (VIC Metro)", //
+			 1009 => "Small Parcel (0.5m,5kg)",//
+			 1010 => "Medium Courier (1m,25kg)", //
+			 1011 => "Medium Courier Rural (1.8m,25kg)"
+		 );
+		static	public $payment_types = array(
+			 1 => "Account", //
+			 2 => "Cheque/Money Order", //
+			 5 => "Visa/Mastercard", //
+			 7 => "American Express", //
+			 18 => "PayPal",//
+			 23 => "Direct Deposit", //
+			 24 => "Wait for Freight Quotation",//
+			 26 => "Credit Card"//
+		 );
+
+		/**
+		 * @var OrderDetails
+		 */
 		public $details;
+		public $status;
 		function __construct() {
+			$this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
 			if (isset($_SESSION['weborders']) && $_SESSION['weborders'] > 0) {
 				$this->data = $_SESSION['weborders'];
 			}
@@ -25,20 +58,62 @@
 			$url .= '&SELECT_Columns=*';
 			return file_get_contents($url);
 		}
-		function store() {
-			$_SESSION['weborders'] = $this->data;
-		}
 		function get() {
 			$XML = $this->getXML();
 			if (!$XML) {
 				return false;
 			}
 			$this->data = $_SESSION['weborders'] = \XMLParser::XMLtoArray($XML);
+			return true;
+		}
+		function process() {
+			$this->save();
+			/** @var OrderDetails $detail */
+			foreach ($this->details as $detail) {
+				$this->details->save();
+				/** @var \Modules\Volusion\OrderOptions $option */
+				if ($orders->details->options) {
+					foreach ($orders->details->options as $option) {
+						$orders->details->options->save();
+					}
+				}
+			}
+		}
+
+		function save() {
+			$current = $this->current();
+			if ($this->exists()) {
+				try {
+					\DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
+					$this->status = 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
+					return true;
+				}
+				catch (\DBUpdateException $e) {
+					$this->status = 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
+					return false;
+				}
+			}
+			else {
+				try {
+					\DB::insert($this->table)->values($current)->exec();
+					$this->status = 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
+					return true;
+				}
+				catch (\DBInsertException $e) {
+					$this->status = 'Could not insert ' . $this->_classname;
+					return false;
+				}
+				catch (\DBDuplicateException $e) {
+					$this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
+					return false;
+				}
+			}
 		}
 		function exists() {
-			$current=  $this->current();
-			$results = \DB::select('OrderID')->from('WebOrders')->where('OrderID=',$current['OrderID'])->fetch()->all();
-			return (count($results)>0);
+			$current = $this->current();
+			$results = \DB::select()->from($this->table)
+			 ->where($this->idcolumn . '=', $current[$this->idcolumn])->fetch()->all();
+			return (count($results) > 0);
 		}
 		function next() {
 			$this->current++;
@@ -110,8 +185,15 @@
 		/**
 		 * @var OrderOptions
 		 */
+		protected $table = 'WebOrderDetails';
+		protected $idcolumn = 'OrderDetailID';
+		/**
+		 * @var OrderOptions
+		 */
 		public $options;
 		function __construct($data) {
+			$this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
+
 			if (is_array($data)) {
 				$this->data = (!is_array(reset($data))) ? array($data) : $data;
 			}
@@ -136,8 +218,26 @@
 		}
 	}
 
-	class OrderOptions extends OrderDetails
+	class OrderOptions extends OrderDetails implements \Iterator, \Countable
 	{
+		protected $table = 'WebOrderDetails_Options';
+		protected $idcolumn = 'OptionID';
+		function __construct($data) {
+			$this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
+			if (is_array($data)) {
+				$this->data = (!is_array(reset($data))) ? array($data) : $data;
+			}
+			$this->next();
+		}
+		function exists() {
+			$current = $this->current();
+			$results = \DB::select()->from($this->table)
+			 ->where($this->idcolumn . '=', $current[$this->idcolumn])
+			 ->and_where('OrderDetailID=', $current['OrderDetailID'])
+			 ->fetch()
+			 ->all();
+			return (count($results) > 0);
+		}
 		function next() {
 			$this->current++;
 		}
@@ -148,5 +248,3 @@
 			return $this->data[$this->current]['OrderDetailID'];
 		}
 	}
-
-	;

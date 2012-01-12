@@ -54,12 +54,26 @@
 		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'), 'graphs_skin' => 1,
 		'db_default' => array(
 			'name' => 'fa', //
+			'dbname' => 'fa', //
 			'user' => 'fa', //
-			'pass' => //
-			'1willenberg', //
+			'pass' => '1willenberg', //
 			'host' => 'localhost', //
 			'port' => 3306, //
-			'debug' => false), 'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
+			'debug' => false
+		),
+		'db_jobsboard'=>array (
+			'name'=>'jobsboard',
+			'dbname'=>'jobsboard',
+			'user'=>'fa',
+			'pass'=>'1willenberg',
+			'host'=>'localhost',
+			'port'=>3306,
+			'debug'=>false,
+		),
+
+
+
+		'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
 		'separators_thousands' => array(",", ".", " "), 'separators_decimal' => array(".", ","),
 		'separators_date' => array('/', ".", "-", " "), 'formats_paper_size' => array("Letter", "A4"),
 		'store_product_url' => 'http://www.advancedroadsigns.com.au/-p/', 'store_url_extension' => '.htm',
