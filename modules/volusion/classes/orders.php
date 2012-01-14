@@ -5,32 +5,35 @@
 	 *
 	 */
 
-	class Orders implements \Iterator, \Countable {
+	class Orders implements \Iterator, \Countable
+	{
 		protected $data;
 		protected $current = -1;
 		protected $table = 'WebOrders';
 		protected $idcolumn = 'OrderID';
 		protected $_classname;
-		static public $shipping_types = array(
-			502 => "Pickup", //
-			902 => "To be calculated", //
-			903 => "Use own courier", //
-			998 => "Installation", //
-			1006 => "Medium Courier (VIC Metro)", //
-			1009 => "Small Parcel (0.5m,5kg)", //
-			1010 => "Medium Courier (1m,25kg)", //
-			1011 => "Medium Courier Rural (1.8m,25kg)"
-		);
-		static public $payment_types = array(
-			1 => "Account", //
-			2 => "Cheque/Money Order", //
-			5 => "Visa/Mastercard", //
-			7 => "American Express", //
-			18 => "PayPal", //
-			23 => "Direct Deposit", //
-			24 => "Wait for Freight Quotation", //
-			26 => "Credit Card" //
-		);
+		static public $shipping_types
+		 = array(
+			 502 => "Pickup", //
+			 902 => "To be calculated", //
+			 903 => "Use own courier", //
+			 998 => "Installation", //
+			 1006 => "Medium Courier (VIC Metro)", //
+			 1009 => "Small Parcel (0.5m,5kg)", //
+			 1010 => "Medium Courier (1m,25kg)", //
+			 1011 => "Medium Courier Rural (1.8m,25kg)"
+		 );
+		static public $payment_types
+		 = array(
+			 1 => "Account", //
+			 2 => "Cheque/Money Order", //
+			 5 => "Visa/Mastercard", //
+			 7 => "American Express", //
+			 18 => "PayPal", //
+			 23 => "Direct Deposit", //
+			 24 => "Wait for Freight Quotation", //
+			 26 => "Credit Card" //
+		 );
 
 		/**
 		 * @var OrderDetails
@@ -40,9 +43,15 @@
 
 		function __construct() {
 			$this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
+			if (!isset($_SESSION['weborders']) || !is_array($_SESSION['weborders']) || count($_SESSION['weborders']) == 0) {
 
+				echo 'Getting from Volusion<br>';
 				$this->get();
-
+			}
+			else {
+				echo 'Getting from Session<br>';
+				$this->data = $_SESSION['weborders'];
+			}
 			$this->next();
 		}
 
@@ -71,7 +80,7 @@
 				$this->status = "No new web order";
 				return false;
 			}
-			$this->save();					echo "Websale successfully added to Jobs Board with Job Number !";
+			$this->save();
 
 			/** @var OrderDetails $detail */
 			foreach ($this->details as $detail) {
@@ -87,31 +96,31 @@
 
 		function save() {
 			$current = $this->current();
-			if ($this->exists()) {
+			$exists = $this->exists();
+			if ($exists) {
+				echo $this->_classname.' already exists, updating changes<br>';
 				try {
 					\DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
-					$this->status = 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
-					return true;
+					return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
 				}
 				catch (\DBUpdateException $e) {
-					$this->status = 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
-					return false;
+					return 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
 				}
 				catch (\DBDuplicateException $e) {
 					$this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
 				}
 			}
 			else {
+				echo $this->_classname.' doesn\'t exist, adding<br>';
 				try {
 					\DB::insert($this->table)->values($current)->exec();
-					$this->status = 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
-					return true;
+					return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
 				}
 				catch (\DBInsertException $e) {
-					$this->status = 'Could not insert ' . $this->_classname;
+					return 'Could not insert ' . $this->_classname;
 				}
 				catch (\DBDuplicateException $e) {
-					$this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
+					return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
 				}
 			}
 			return false;
@@ -119,9 +128,9 @@
 
 		function exists() {
 			$current = $this->current();
-			$results = \DB::select()->from($this->table)
-			 ->where($this->idcolumn . '=', $current[$this->idcolumn])->fetch()->all();
-			return (count($results) > 0);
+			$results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=',
+																																				 $current[$this->idcolumn])->fetch()->one();
+			return (count($results) > 0) ? $results[$this->idcolumn] : false;
 		}
 
 		function next() {
@@ -194,7 +203,8 @@
 		}
 	}
 
-	class OrderDetails extends Orders implements \Iterator, \Countable {
+	class OrderDetails extends Orders implements \Iterator, \Countable
+	{
 		/**
 		 * @var OrderOptions
 		 */
@@ -235,7 +245,8 @@
 		}
 	}
 
-	class OrderOptions extends OrderDetails implements \Iterator, \Countable {
+	class OrderOptions extends OrderDetails implements \Iterator, \Countable
+	{
 		protected $table = 'WebOrderDetails_Options';
 		protected $idcolumn = 'OptionID';
 
