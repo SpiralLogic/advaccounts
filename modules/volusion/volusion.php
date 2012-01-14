@@ -16,29 +16,32 @@
 		}
 
 		function doWebsales() {
-			echo "\n\nRetrieving new webWales from Volusion\n";
+			echo "<br><br>Retrieving new webWales from Volusion<br>";
+
 			$result = $this->getNewWebsales();
+
 			if ($result) {
-				echo "\n\nJamming all new orders in local database to Jobs Board\n";
+				echo "<br><br>Jamming all new orders in local database to Jobs Board<br>";
 			}
 			else {
-				echo "\n\nNo new websales, checking for local strays\n";
+				echo "<br><br>No new websales, checking for local strays<br>";
 			}
 			$result = $this->notOnJobsboard();
 			if ($result) {
-				echo "\n\nNew orders successfully added!\n";
+				echo "<br><br>New orders successfully added!<br>";
 			}
+			\DB::change_connection();
 		}
 		protected function getNewWebsales() {
 			$orders = new Orders();
 			if (!$orders) {
-				echo "\nNo Orders Retrieved";
+				echo "<br>No Orders Retrieved";
 				return false;
 			}
 			$results = array();
 			foreach ($orders as $order) {
 				$orders->process();
-				$results[] = "Status of adding order: " . $order['OrderID'] . ": <strong>" . $orders->status . "</strong>\n";
+				$results[] = "Status of adding order: " . $order['OrderID'] . ": <strong>" . $orders->status . "</strong><br>";
 			}
 			return $results;
 		}

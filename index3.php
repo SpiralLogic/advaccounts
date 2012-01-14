@@ -1,7 +1,7 @@
 <?php
 
 	require 'bootstrap.php';
-	echo '<pre>';
-
+Page::start('Websales',SA_OPEN);
 $webstore = new Modules\Volusion();
-$webstore->doWebsales();
+	$webstore->doWebsales();
+Page::end();

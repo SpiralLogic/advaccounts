@@ -106,13 +106,12 @@
 				$file = $line = null;
 				$headersSent = version_compare(PHP_VERSION, "4.3.0") < 0 ? headers_sent() : headers_sent($file, $line);
 				if ($headersSent) {
-					trigger_error(
+					Errors::error(
 						"HTTP headers are already sent" . ($line !== null ? " in $file on line $line"
 						 : " somewhere in the script") . ". "
 						 . "Possibly you have an extra space (or a newline) before the first line of the script or any library. "
 						 . "Please note that JsHttpRequest uses its own Content-Type header and fails if "
-						 . "this header cannot be set. See header() function documentation for more details",
-						E_USER_ERROR
+						 . "this header cannot be set. See header() function documentation for more details"
 					);
 					exit();
 				}

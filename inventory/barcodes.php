@@ -6,7 +6,9 @@
 	 * Time: 3:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include ('bootstrap.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
+	Page::start(_($help_context="Barcode Generator"),SA_INVENTORYLOCATION);
 	$file = DOCROOT . 'tmp/test.csv';
 	if (!isset($_SESSION['barcodefile'])) {
 		$_SESSION['barcodefile'] = '1';
@@ -17,7 +19,7 @@
 	if ($_SESSION['barcodefile'] != $_POST['unique']) {
 		$id = uniqid();
 		$_SESSION['barcodefile'] = $id;
-		echo '<form method="post" enctype="multipart/form-data"  action="#"><input type="hidden" name="go" value=1 /><input
+		echo '<form method="post" enctype="multipart/form-data" target="_blank"  action="#"><input type="hidden" name="go" value=1 /><input
 		type="hidden" name="unique" value="' . $id . '" /> <input type="file" name="csvitems" autofocus
 		/><button>Go</button></form>';
 	}
@@ -31,8 +33,8 @@
 		}
 		else {
 			$status = false;
-			echo "fucked the job!\n";
-			exit();
+			echo "fucked the job!\n<br>Couldn't move the uploaded file check permissions";
+			Page::footer_exit();
 		}
 		ini_set('auto_detect_line_endings',1);
 		echo '<html><head><style>

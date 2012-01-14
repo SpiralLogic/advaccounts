@@ -118,6 +118,8 @@
 		 * @var DB
 		 */
 		static protected $i = null;
+		static $default_connection;
+
 		/***
 		 * @static
 		 *
@@ -147,11 +149,10 @@
 		protected function _connect($config) {
 			try {
 				$conn = new PDO('mysql:host=' . $config['host']  . ';dbname=' . $config['dbname'],$config['user'] ,$config['pass'] ,array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
-
 				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
 				static::$connections[$config['name']]=$conn;
-				if ($this->conn===false)$this->conn=$conn;
+				if ($this->conn===false){$this->conn=$conn;static::$default_connection=$config['name'];}
 				return true;
 			}
 			catch (PDOException $e) {
@@ -159,7 +160,7 @@
 			}
 		}
 		static public function change_connection($name=false) {
-			$name = $name?:reset(static::$connections);
+			$name = $name?:static::$default_connection;
 			if (isset(static::$connections[$name])) {
 				static::i()->conn = static::$connections[$name];
 			}
@@ -619,6 +620,8 @@
 					case DB::DELETE:
 						throw new DBDeleteException('Could not delete from database.');
 				}
+			}catch (DBDuplicateException $e) {
+				throw new DBDuplicateException($e->getMessage());
 			}
 			static::$data = array();
 			return false;

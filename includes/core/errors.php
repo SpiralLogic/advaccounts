@@ -331,7 +331,7 @@
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
 				}
-				elseif ($trace['file'] == __FILE__) {
+				elseif ($trace['file'] == __FILE__ || $trace['function']=='shutdown_handler') {
 					unset($data['backtrace'][$key]);
 				}
 			}
