@@ -42,7 +42,8 @@
 		/**
 		 * @var array Error constants to text
 		 */
-		static public $levels = array(
+		static public $levels
+		 = array(
 			 0 => 'Error',
 			 E_ERROR => 'Error',
 			 E_WARNING => 'Warning',
@@ -153,7 +154,8 @@
 			}
 			elseif (static::$fatal) {
 				ob_end_clean();
-				exit(static::format());
+				Page::error_exit(static::format());
+				exit();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {

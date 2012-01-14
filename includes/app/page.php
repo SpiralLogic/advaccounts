@@ -211,5 +211,23 @@ $this->is_index=$index;
 			echo "<div id='content'>\n";
 		}
 		public static function get_security() {return static::$security; }
+		public static function error_exit($text) {
+		echo	"<html><head><title>".APP_TITLE.": Error!</title><meta charset='utf-8'>
+			<style>
+			#msgbox,.msgbox {
+				width:    80%;
+				margin:   10px auto;
+				font-weight: bolder;
+			}
+			div.err_msg {
+				margin:      10px;
+				padding:     3px;
+				border:      1px solid #cc3300;
+				background-color: #ffcccc;
+				color:      #dd2200;
+				text-align:    center;
+			}
+			</style></head><body><div id='msgbox'>$text</div></body></html>";
+		}
 	}
 

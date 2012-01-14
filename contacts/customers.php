@@ -104,7 +104,6 @@
 										 ));
 	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
 	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
-	HTML::td()->tr;
 	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
@@ -119,14 +118,14 @@
 																 ));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
+	hidden('accounts_id', $customer->accounts->accounts_id);
 	start_outer_table('tablestyle2');
 	table_section(1);
-	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
-	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled=\"\"");
+	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled=\"\"");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled=\"\"");
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);

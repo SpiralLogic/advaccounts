@@ -892,7 +892,8 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
-		small_amount_row($label, $name . '" ' . $params, $_POST[$name], null, "%", User::percent_dec());
+		if ($params) $name.=' ' . $params;
+		small_amount_row($label, $name , $_POST[$name], null, "%", User::percent_dec());
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
@@ -932,7 +933,7 @@
 		else {
 			echo "class='amount' ";
 		}
-		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" data-dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
+		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "'\\>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
