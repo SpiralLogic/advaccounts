@@ -6,7 +6,7 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends Exception
+	class DBException extends PDOException
 	{
 	}
 
@@ -89,31 +89,12 @@
 		static protected $results = false;
 		static protected $errorSql = false;
 		static protected $errorInfo = false;
-		/**
-		 * @var
-		 */
-		protected $name;
-		/**
-		 * @var
-		 */
-		protected $user;
-		/**
-		 * @var
-		 */
-		protected $pass;
-		/**
-		 * @var
-		 */
-		protected $host;
-		/**
-		 * @var
-		 */
-		protected $port;
+
 		protected $intransaction = false;
 		/***
 		 * @var PDO
 		 */
-		protected $conn=false;
+		protected $conn = false;
 		/**
 		 * @var DB
 		 */
@@ -148,19 +129,22 @@
 		 */
 		protected function _connect($config) {
 			try {
-				$conn = new PDO('mysql:host=' . $config['host']  . ';dbname=' . $config['dbname'],$config['user'] ,$config['pass'] ,array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
+				$conn = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
 				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
-				static::$connections[$config['name']]=$conn;
-				if ($this->conn===false){$this->conn=$conn;static::$default_connection=$config['name'];}
+				static::$connections[$config['name']] = $conn;
+				if ($this->conn === false) {
+					$this->conn = $conn;
+					static::$default_connection = $config['name'];
+				}
 				return true;
 			}
 			catch (PDOException $e) {
 				throw new DBException($e);
 			}
 		}
-		static public function change_connection($name=false) {
-			$name = $name?:static::$default_connection;
+		static public function change_connection($name = false) {
+			$name = $name ? : static::$default_connection;
 			if (isset(static::$connections[$name])) {
 				static::i()->conn = static::$connections[$name];
 			}
@@ -613,15 +597,17 @@
 				switch ($type) {
 					case DB::SELECT:
 						throw new DBSelectException('Could not select from database.');
+						break;
 					case DB::INSERT:
 						throw new DBInsertException('Could not insert into database.');
+						break;
 					case DB::UPDATE:
 						throw new DBUpdateException('Could not update database.');
+						break;
 					case DB::DELETE:
 						throw new DBDeleteException('Could not delete from database.');
+						break;
 				}
-			}catch (DBDuplicateException $e) {
-				throw new DBDuplicateException($e->getMessage());
 			}
 			static::$data = array();
 			return false;
@@ -661,7 +647,7 @@
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
-			if (is_a($this->conn,'PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
+			if (is_a($this->conn, 'PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
 				$this->conn->rollBack();
 				$this->intransaction = false;
 			}

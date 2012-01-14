@@ -8,11 +8,11 @@
 	 */
 	return array(
 		'debug' => false, //
-	'debug_sql' => false,//
-	'debug_pdf' => false, //
-	'debug_email' => true, //
-	'debug_query_log' => false,
-		'debug_select_log' => false,//
+		'debug_sql' => false, //
+		'debug_pdf' => false, //
+		'debug_email' => true, //
+		'debug_query_log' => false,
+		'debug_select_log' => false, //
 		'errors_throttling' => 10, // Log file for error/warning messages. Should be set to any location
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
@@ -61,23 +61,22 @@
 			'port' => 3306, //
 			'debug' => false
 		),
-		'db_jobsboard'=>array (
-			'name'=>'jobsboard',
-			'dbname'=>'jobsboard',
-			'user'=>'fa',
-			'pass'=>'1willenberg',
-			'host'=>'localhost',
-			'port'=>3306,
-			'debug'=>false,
+		'db_jobsboard' => array(
+			'name' => 'jobsboard',
+			'dbname' => 'jobsboard',
+			'user' => 'fa',
+			'pass' => '1willenberg',
+			'host' => 'localhost',
+			'port' => 3306,
+			'debug' => false,
 		),
-
-
 
 		'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
 		'separators_thousands' => array(",", ".", " "), 'separators_decimal' => array(".", ","),
 		'separators_date' => array('/', ".", "-", " "), 'formats_paper_size' => array("Letter", "A4"),
 		'store_product_url' => 'http://www.advancedroadsigns.com.au/-p/', 'store_url_extension' => '.htm',
-		'session_lifetime' => 3600,);
+		'session_lifetime' => 3600,
+	);
 /* Whether to display the demo login and password or not */
 /* for uploaded item pictures */
 /* skin for Business Graphics, 1, 2 or 3 */

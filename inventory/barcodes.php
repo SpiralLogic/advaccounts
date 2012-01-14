@@ -8,7 +8,6 @@
 	 */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-	Page::start(_($help_context="Barcode Generator"),SA_INVENTORYLOCATION);
 	$file = DOCROOT . 'tmp/test.csv';
 	if (!isset($_SESSION['barcodefile'])) {
 		$_SESSION['barcodefile'] = '1';
@@ -17,11 +16,14 @@
 		$_POST['unique'] = '0';
 	}
 	if ($_SESSION['barcodefile'] != $_POST['unique']) {
+		Page::start(_($help_context="Barcode Generator"),SA_INVENTORYLOCATION);
+
 		$id = uniqid();
 		$_SESSION['barcodefile'] = $id;
-		echo '<form method="post" enctype="multipart/form-data" target="_blank"  action="#"><input type="hidden" name="go" value=1 /><input
-		type="hidden" name="unique" value="' . $id . '" /> <input type="file" name="csvitems" autofocus
-		/><button>Go</button></form>';
+		echo "<form method='post' enctype='multipart/form-data' target='_blank'  action='#'><div class='center'><input
+		type='hidden'  name='go' value=1 /><input
+		type='hidden' name='unique' value='$id' /> <input type='file' name='csvitems' autofocus/><button>Go</button></div></form>";
+		Page::end();
 	}
 	else {
 		unset($_SESSION['barcodefile']);
