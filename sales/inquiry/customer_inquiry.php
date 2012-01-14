@@ -151,7 +151,7 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
 		}
 	}
-	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY trans.trans_no,  trans.type";
+	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY trans.trans_no, trans.type";
 	}
 	DB::query("set @bal:=0");
 	$cols = array(

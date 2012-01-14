@@ -59,7 +59,7 @@
 		label_cell($myrow["real_name"]);
 		label_cell($myrow["phone"]);
 		email_cell($myrow["email"]);
-		label_cell($last_visit_date, "nowrap");
+		label_cell($last_visit_date, ' class="nowrap"');
 		label_cell($myrow["role"]);
 		if ($not_me) {
 			inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');

@@ -177,10 +177,10 @@
 		/***
 		 * @static
 		 *
-		 * @param      $items
-		 * @param      $prices
-		 * @param      $shipping_cost
-		 * @param      $tax_group
+		 * @param $items
+		 * @param $prices
+		 * @param $shipping_cost
+		 * @param $tax_group
 		 * @param null $tax_included
 		 * @param null $tax_items_array
 		 *
@@ -280,16 +280,16 @@
 			) {
 				if ($tax_included) {
 					label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
-						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns  style='background:inherit; text-align:right;'", "class=right", $leftspan);
+						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
 				}
 				else {
 					$total += Num::round($taxitem['Value'], User::price_dec());
 					label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns  style='background:inherit; text-align:right;'", "class=right", $leftspan);
+						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
 				}
 			}
 			if ($tax_correcting) {
-				label_cell(_("Tax Correction"), "colspan=$columns  style='background:inherit; text-align:right; width:90%'");
+				label_cell(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
 				small_amount_cells(null, 'ChgTax', Num::price_format(get_post('ChgTax'), 2));
 				end_row();
 				$total += get_post('ChgTax');

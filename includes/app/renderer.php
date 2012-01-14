@@ -12,10 +12,10 @@
 		* ********************************************************************* */
 	class Renderer
 	{
-		public  function menu() {
-			/** @var ADVAccounting $application  */
+		public function menu() {
+			/** @var ADVAccounting $application */
 			$application = Session::i()->App;
- echo '<ul id="_tabs">';
+ echo '<ul class="menu" id="_tabs">';
 			foreach ($application->applications as $app) {
 				$acc = Display::access_string($app->name);
 				if ($app->direct) {
@@ -27,7 +27,7 @@
 			}
 			echo '</ul>';
 		}
-		public  function display_application(ADVAccounting $application) {
+		public function display_application(ADVAccounting $application) {
 			if ($application->selected->direct) {
 				Display::meta_forward($application->selected->direct);
 			}
@@ -36,7 +36,8 @@
 				echo "<table class='width100'><tr>";
 				echo "<td class='menu_group top'>";
 				echo "<table class='width100'>";
-				echo "<tr><td class='menu_group' colspan=2>";
+				$colspan=(count($module->rappfunctions)>0) ?'colspan=2':'';
+				echo "<tr><td class='menu_group' ".$colspan.">";
 				echo $module->name;
 				echo "</td></tr><tr>";
 				echo "<td class='width50 menu_group_items'>";

@@ -108,7 +108,7 @@
 			if ($id == -1) {
 				Inv_Adjustment::item_controls($order);
 			}
-			label_row(_("Total"), Num::format($total, User::price_dec()), "class=right colspan=5", "class=right", 2);
+			label_row(_("Total"), Num::format($total, User::price_dec()), "class=right colspan=5", "class='right'", 2);
 			end_table();
 			Display::div_end();
 		}
@@ -126,7 +126,7 @@
 				$_POST['units'] = $order->line_items[$id]->units;
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
-				label_cell($order->line_items[$id]->description, 'nowrap');
+				label_cell($order->line_items[$id]->description, ' class="nowrap"');
 				Ajax::i()->activate('items_table');
 			} else {
 				Item_UI::costable_cells(null, 'stock_id', null, false, true);

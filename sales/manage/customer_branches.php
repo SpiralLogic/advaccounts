@@ -130,8 +130,8 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 	$num_branches = -0;
 	if (Input::post('customer_id') > 0) {
 		$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
-		$sql = "SELECT  b.branch_id,  b.branch_ref,  b.br_name,  b.contact_name,  s.salesman_name,
-		 a.description,  b.phone,  b.fax,  b.email,  t.name AS tax_group_name,  b.inactive
+		$sql = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
+		 a.description, b.phone, b.fax, b.email, t.name AS tax_group_name, b.inactive
 		FROM branches b, debtors c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id

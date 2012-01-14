@@ -135,7 +135,7 @@
 					label_cell('');
 				}
 				elseif ($act_type == '%') {
-					label_cell(Num::format($myrow['amount'], User::exrate_dec()), "nowrap class=right ");
+					label_cell(Num::format($myrow['amount'], User::exrate_dec()), ' class="right nowrap"');
 				}
 				else {
 					amount_cell($myrow['amount']);

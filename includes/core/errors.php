@@ -289,7 +289,7 @@
 		 *
 		 */
 		static function error_box() {
-			printf("<div  %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
+			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
 			static::$before_box = ob_get_clean(); // save html content before error box
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";

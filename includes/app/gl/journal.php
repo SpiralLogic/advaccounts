@@ -248,7 +248,7 @@
 					}
 					if ($new) {
 						DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
-						Ref::save($trans_type,  $ref);
+						Ref::save($trans_type, $ref);
 					} else {
 						DB_Comments::update($trans_type, $trans_id, null, $memo_);
 						Ref::update($trans_type, $trans_id, $ref);
@@ -269,7 +269,7 @@
 							GL_Trans::add_gl_tax_details($journal_item->code_id, ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
 						}
 						DB_Comments::add($trans_type, $trans_id_reverse, $reversingDate, $memo_);
-						Ref::save($trans_type,  $ref);
+						Ref::save($trans_type, $ref);
 						DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
 					}
 					if ($use_transaction) {

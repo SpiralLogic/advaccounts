@@ -258,8 +258,8 @@
 			if ($center) {
 				echo "<div class='center margin20'>";
 			}
-			echo "<td class=center><a class='button' href='javascript:(window.history.length <= 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ?
-			 _("Close") : _("Back")) . "</a></td>\n";
+			echo "<a class='button' href='javascript:(window.history.length <= 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ?
+			 _("Close") : _("Back")) . "</a>\n";
 			if ($center) {
 				echo "</div>";
 			}

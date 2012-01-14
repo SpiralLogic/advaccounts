@@ -8,7 +8,7 @@
 	 */
 	function amount_decimal_cell($label, $params = "", $id = null) {
 		$dec = 0;
-		label_cell(Num::price_decimal($label, $dec), "nowrap class=right " . $params, $id);
+		label_cell(Num::price_decimal($label, $dec), ' class="right nowrap"' . $params, $id);
 	}
 
 	function amount_cell($label, $bold = false, $params = "", $id = null) {
@@ -70,9 +70,9 @@
 
 	function percent_cell($label, $bold = false, $id = null) {
 		if ($bold) {
-			label_cell("<span class='bold'>" . Num::percent_format($label) . "</span>", "nowrap class=right", $id);
+			label_cell("<span class='bold'>" . Num::percent_format($label) . "</span>", ' class="right nowrap"', $id);
 		} else {
-			label_cell(Num::percent_format($label), "nowrap class=right", $id);
+			label_cell(Num::percent_format($label), ' class="right nowrap"', $id);
 		}
 	}
 
@@ -81,17 +81,17 @@
 			$dec = User::qty_dec();
 		}
 		if ($bold) {
-			label_cell("<span class='bold'>" . Num::format($label, $dec) . "</span>", "nowrap class=right", $id);
+			label_cell("<span class='bold'>" . Num::format($label, $dec) . "</span>", ' class="right nowrap"', $id);
 		} else {
-			label_cell(Num::format(Num::round($label), $dec), "nowrap class=right", $id);
+			label_cell(Num::format(Num::round($label), $dec), ' class="right nowrap"', $id);
 		}
 	}
 
 	function unit_amount_cell($label, $bold = false, $params = "", $id = null) {
 		if ($bold) {
-			label_cell("<span class='bold'>" . unit_price_format($label) . "</span>", "nowrap class=right " . $params, $id);
+			label_cell("<span class='bold'>" . unit_price_format($label) . "</span>", ' class="right nowrap"' . $params, $id);
 		} else {
-			label_cell(unit_price_format($label), "nowrap class=right " . $params, $id);
+			label_cell(unit_price_format($label), ' class="right nowrap"' . $params, $id);
 		}
 	}
 
@@ -110,12 +110,12 @@
 	}
 
 	function table_header($labels, $params = '') {
-		echo '<thead>';
+		echo '<thead><tr>';
 		$labels = (array)$labels;
 		foreach ($labels as $label) {
 			labelheader_cell($label, $params);
 		}
-		echo '</thead>';
+		echo '</tr></thead>';
 	}
 
 	function start_row($param = "") {

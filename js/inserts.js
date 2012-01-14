@@ -240,7 +240,7 @@ var inserts = {
 					}
 			}
 	},
-	'input.combo2,input[aspect="fallback"]':function (e) {
+	'input.combo2,input[data-aspect="fallback"]':function (e) {
 		// this hides search button for js enabled browsers
 		e.style.display = 'none';
 	},
@@ -252,7 +252,7 @@ var inserts = {
 	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
 		e.onclick = function () {
 			save_focus(e);
-			var asp = e.getAttribute('aspect')
+			var asp = e.getAttribute('data-aspect');
 			if (asp && asp.indexOf('process') !== -1)
 				{
 					JsHttpRequest.request(this, null, 60000);
@@ -293,7 +293,7 @@ var inserts = {
 		if (e.onblur == undefined)
 			{
 				e.onblur = function () {
-					var dec = this.getAttribute("dec");
+					var dec = this.getAttribute("data-dec");
 					price_format(this.name, get_amount(this.name), dec);
 				};
 			}
@@ -302,7 +302,7 @@ var inserts = {
 		if (e.onblur == undefined)
 			{
 				e.onblur = function () {
-					var dec = this.getAttribute("dec");
+					var dec = this.getAttribute("data-dec");
 					price_format(this.name, get_amount(this.name), dec, '2');
 				};
 			}
@@ -320,7 +320,7 @@ var inserts = {
 				 }
 		 }
 	 },
-	'button[aspect="selector"], input[aspect="selector"]':function (e) {
+	'button[data-aspect="selector"], input[data-aspect="selector"]':function (e) {
 		e.onclick = function () {
 			passBack(this.getAttribute('rel'));
 			return false;
@@ -460,7 +460,7 @@ function stopEv(ev) {
  var form = this.forms[j];
  for (var i = 0; i < form.elements.length; i++) {
  var el = form.elements[i];
- var asp = el.getAttribute('aspect');
+ var asp = el.getAttribute('data-aspect');
 
  if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
  passBack(key == 13 ? el.getAttribute('rel') : false);

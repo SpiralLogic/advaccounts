@@ -367,10 +367,10 @@
 			}
 			$sql
 			 = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
-s.category_id,   editable, 0 as kit,
+s.category_id, editable, 0 as kit,
 										IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + 0 as weight FROM item_codes i,
 										stock_master s
-										WHERE (s.stock_id LIKE ? $where))  AND s.inactive = 0  AND s.no_sale =0 AND i.item_code=i.stock_id AND i
+										WHERE (s.stock_id LIKE ? $where)) AND s.inactive = 0 AND s.no_sale =0 AND i.item_code=i.stock_id AND i
 										.stockid=s.id
 										AND !i.is_foreign ORDER BY weight
 										LIMIT 20)";
@@ -390,9 +390,9 @@ s.category_id,   editable, 0 as kit,
 			 .= "UNION (SELECT i.item_code as stock_id, i.id, i.description,
 						 i.description as long_description, i.category_id, 1 as editable, 1 as kit,
 						 IF(i.item_code LIKE ?, 0,20) + IF(i.item_code LIKE ?,0,5) as weight FROM item_codes i
-						 WHERE (i.item_code LIKE ? $where))  AND !i.is_foreign AND i.item_code!=i.stock_id
-						 AND i.inactive = 0 GROUP BY  i.item_code ORDER BY weight
-						 LIMIT 5)) as s , stock_category c, prices p WHERE  s.id = p.item_code_id AND p.sales_type_id =1  AND
+						 WHERE (i.item_code LIKE ? $where)) AND !i.is_foreign AND i.item_code!=i.stock_id
+						 AND i.inactive = 0 GROUP BY i.item_code ORDER BY weight
+						 LIMIT 5)) as s , stock_category c, prices p WHERE s.id = p.item_code_id AND p.sales_type_id =1 AND
 						 s.category_id = c.category_id GROUP BY s.stock_id ORDER BY s.weight, s.category_id, s.stock_id ";
 			DB::prepare($sql, true);
 			DB::execute($finalterms, true);

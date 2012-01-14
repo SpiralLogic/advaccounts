@@ -69,6 +69,9 @@
 		(!class_exists('Errors', false)) and	include(COREPATH . 'errors.php');
 		return \Errors::exception_handler($e);
 	});
+	if (!function_exists('e')) {
+		function e($string){return Security::htmlentities($string);}
+	}
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
 		\Errors::shutdown_handler();

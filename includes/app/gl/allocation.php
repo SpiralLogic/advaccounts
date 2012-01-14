@@ -164,8 +164,8 @@
 					alt_table_row_color($k);
 					label_cell($systypes_array[$alloc_item->type]);
 					label_cell(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
-					label_cell($alloc_item->date_, "class=right");
-					label_cell($alloc_item->due_date, "class=right");
+					label_cell($alloc_item->date_, "class='right'");
+					label_cell($alloc_item->due_date, "class='right'");
 					amount_cell($alloc_item->amount);
 					amount_cell($alloc_item->amount_allocated);
 					$_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
@@ -179,7 +179,7 @@
 					$counter++;
 				}
 				if ($show_totals) {
-					label_row(_("Total Allocated"), Num::price_format($total_allocated), "colspan=6 class=right", "class=right id='total_allocated'", 3);
+					label_row(_("Total Allocated"), Num::price_format($total_allocated), "colspan=6 class='right'", "class=right id='total_allocated'", 3);
 					$amount = $_SESSION['alloc']->amount;
 					if ($_SESSION['alloc']->type == ST_SUPPCREDIT || $_SESSION['alloc']->type == ST_SUPPAYMENT || $_SESSION['alloc']->type == ST_BANKPAYMENT
 					) {
@@ -193,7 +193,7 @@
 						$font1 = $font2 = "";
 					}
 					$left_to_allocate = Num::price_format($amount - $total_allocated);
-					label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class=right", "nowrap class=right id='left_to_allocate'", 3);
+					label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='right'", " class='right nowrap' id='left_to_allocate'", 3);
 				}
 				end_table(1);
 			}

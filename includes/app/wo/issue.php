@@ -42,7 +42,7 @@
 			if ($memo_) {
 				DB_Comments::add(ST_MANUISSUE, $number, $date_, $memo_);
 			}
-			Ref::save(ST_MANUISSUE,  $ref);
+			Ref::save(ST_MANUISSUE, $ref);
 			DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
 			DB::commit();
 		}
@@ -161,7 +161,7 @@
 			if ($id == -1) {
 				WO_Issue::edit_controls($order);
 			}
-			//	label_row(_("Total"), Num::format($total,User::price_dec()), "colspan=5", "class=right");
+			//	label_row(_("Total"), Num::format($total,User::price_dec()), "colspan=5", "class='right'");
 			end_table();
 			Display::div_end();
 		}

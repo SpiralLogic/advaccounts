@@ -61,16 +61,16 @@
 		/***
 		 * @static
 		 *
-		 * @param        $type
-		 * @param        $trans_id
-		 * @param        $date_
-		 * @param        $account
-		 * @param        $dimension
-		 * @param        $dimension2
-		 * @param        $memo_
-		 * @param        $amount
-		 * @param null   $person_type_id
-		 * @param null   $person_id
+		 * @param $type
+		 * @param $trans_id
+		 * @param $date_
+		 * @param $account
+		 * @param $dimension
+		 * @param $dimension2
+		 * @param $memo_
+		 * @param $amount
+		 * @param null $person_type_id
+		 * @param null $person_id
 		 * @param string $err_msg
 		 *
 		 * @return float|int
@@ -89,10 +89,10 @@
 		/***
 		 * @static
 		 *
-		 * @param      $type
-		 * @param      $trans_id
-		 * @param      $date_
-		 * @param      $amount
+		 * @param $type
+		 * @param $trans_id
+		 * @param $date_
+		 * @param $amount
 		 * @param null $person_type_id
 		 * @param null $person_id
 		 *

@@ -1013,7 +1013,7 @@
 						alt_table_row_color($k);
 					}
 					label_cell($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
-					//label_cell($stock_item->description, "nowrap" );
+					//label_cell($stock_item->description, ' class="nowrap"' );
 					description_cell($stock_item->description);
 					$dec = Item::qty_dec($stock_item->stock_id);
 					qty_cell($stock_item->qty_dispatched, false, $dec);
@@ -1046,11 +1046,12 @@
 			start_row();
 			label_cell(_("Shipping Charge"), "colspan=$colspan class='right'");
 			small_amount_cells(null, 'freight_cost', Num::price_format(get_post('freight_cost', 0)));
-			label_cell('', 'colspan=2');
+			label_cell('', '');
 			end_row();
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
-			label_cells(_("Total Discount"), $total_discount, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right");
+			label_cells(_("Total Discount"), $total_discount, "colspan=".$colspan." style='background:inherit; text-align:right;'",
+			"class='right'");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1059,13 +1060,13 @@
 				$(\"[name='_discountall']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
 			JS::addLiveEvent('#discountall', 'click', $action);
 			end_row();
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right", 2);
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 1);
 			$taxes = $this->get_taxes(Validation::input_num('freight_cost'));
-			$tax_total = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
+			$tax_total = Tax::edit_items($taxes, $colspan, $this->tax_included, 1);
 			$display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
 			start_row();
-			label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class=right");
-			submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
+			label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class='right'");
+			submit_cells('update', _("Update"), "", _("Refresh"), true);
 			end_row();
 			end_table();
 			if ($has_marked) {
@@ -1191,7 +1192,7 @@
 				 $_POST['OrderDate'] : $this->document_date));
 			}
 			table_section(3);
-			Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
+			if ($_POST['customer_id']) Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
 			if ($editable) {
 				Sales_Type::row(_("Price List"), 'sales_type', null, true);
 			}
@@ -1316,7 +1317,7 @@
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+				submit_cells('AddItem', _("Add Item"),'', _('Add new item to document'), true);
 			}
 			end_row();
 		}

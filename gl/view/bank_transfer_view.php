@@ -47,7 +47,7 @@ Page::start(_($help_context = "View Bank Transfer"), SA_BANKTRANSVIEW, true);
 	if ($show_currencies) {
 		label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
+	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "class='right'");
 	if ($show_currencies) {
 		end_row();
 		start_row();
@@ -57,7 +57,7 @@ Page::start(_($help_context = "View Bank Transfer"), SA_BANKTRANSVIEW, true);
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
 	if ($show_both_amounts) {
-		label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
+		label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class='right'");
 	}
 	end_row();
 	start_row();

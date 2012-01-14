@@ -225,7 +225,7 @@
 				}
 				//end of while
 				label_row("<span class='bold'>" . _("Total Cost") . "</span>", "<span class='bold'>" . Num::format($total_cost, User::price_dec()) . "</span>",
-					"colspan=6 class=right", "nowrap class=right");
+					"colspan=6 class='right'", ' class="right nowrap"');
 				end_table();
 			}
 		}

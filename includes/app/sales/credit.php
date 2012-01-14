@@ -364,7 +364,7 @@
 				if ($id != $line_no) {
 					alt_table_row_color($k);
 					label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
-					label_cell($line->description, "nowrap");
+					label_cell($line->description, ' class="nowrap"');
 					qty_cell($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
 					label_cell($line->units);
 					amount_cell($line->price);
@@ -384,7 +384,7 @@
 			}
 			$colspan = 6;
 			$display_sub_total = Num::price_format($subtotal);
-			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class=right", 2);
+			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", 2);
 			if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
 				$_POST['ChargeFreightCost'] = 0;
 			}
@@ -418,7 +418,7 @@
 				$_POST['units'] = $order->line_items[$id]->units;
 				hidden('stock_id', $_POST['stock_id']);
 				label_cell($_POST['stock_id']);
-				label_cell($order->line_items[$id]->description, "nowrap");
+				label_cell($order->line_items[$id]->description, ' class="nowrap"');
 				Ajax::i()->activate('items_table');
 			}
 			else {

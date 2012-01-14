@@ -77,8 +77,8 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
-		label_cell($myrow["name"], "nowrap");
-		label_cell($myrow["undeposited"], "nowrap");
+		label_cell($myrow["name"], ' class="nowrap"');
+		label_cell($myrow["undeposited"], ' class="nowrap"');
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));

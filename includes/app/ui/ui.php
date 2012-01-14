@@ -133,7 +133,7 @@
 				'type' => 'local',
 				'kits'=>true,
 				'where' => '',
-				'size'=>'20px'
+				'size'=>'20'
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
@@ -144,13 +144,13 @@
 				HTML::td(true);
 			}
 			if ($o['label']) {
-				HTML::label(null, $o['label'], array('for' => $id));
+				HTML::label(null, $o['label'], array('for' => $id),false);
 			}
 			HTML::input($id, array('value' => $o['selected'], 'name' => $id,'size'=>$o['size']));
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
 					'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-				));
+				),false);
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {

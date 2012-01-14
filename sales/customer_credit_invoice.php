@@ -256,11 +256,11 @@
 		end_row();
 		$inv_items_total = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
 		$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right");
+		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
 		$taxes = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
 		$tax_total = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
 		$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class=right");
+		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
 		end_table();
 		Display::div_end();
 	}

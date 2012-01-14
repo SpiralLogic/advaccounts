@@ -118,7 +118,7 @@
 						echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
 						$amount = Validation::input_num('total_amount', $qid['base_amount']);
 						$dec = User::price_dec();
-						echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
+						echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
 						submit('go', _("Go"), true, false, true);
 						echo "</div>";
 					}

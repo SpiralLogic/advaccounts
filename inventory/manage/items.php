@@ -351,11 +351,11 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 	}
 	if (get_post('stock_id')) {
 		Session::i()->global_stock_id = get_post('stock_id');
-		echo "<iframe src='/inventory/purchasing_data.php?frame=1'  style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+		echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	if (get_post('stock_id')) {
 		Session::i()->global_stock_id = get_post('stock_id');
-		echo "<iframe src='/inventory/prices.php?frame=1'   style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+		echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	Display::div_end();
 	hidden('frame', Input::request('frame'));

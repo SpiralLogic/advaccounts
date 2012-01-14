@@ -627,7 +627,7 @@
 			$dim = DB_Company::get_pref('use_dimension');
 			$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
 			start_table('tablestyle2 width90');
-			label_row(_("Sub-total:"), Num::price_format($creditor_trans->ov_amount), "colspan=$colspan class='right bold'", "class=right");
+			label_row(_("Sub-total:"), Num::price_format($creditor_trans->ov_amount), "colspan=$colspan class='right bold'", "class='right'");
 			$taxes = $creditor_trans->get_taxes($creditor_trans->tax_group_id);
 			$tax_total = Tax::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
 			label_cell(_("Total Correction"), "colspan=$colspan class='right' style='width:90%'");
@@ -642,7 +642,7 @@
 				label_row(
 					_("Credit Note Total"), Num::price_format($total),
 					"colspan=$colspan class='bold red right'",
-				 "nowrap class=right id='invoiceTotal' data-total=" . $total . " class='bold red'"
+				 " class='right nowrap' id='invoiceTotal' data-total=" . $total . " class='bold red'"
 				);
 			}
 			end_table(1);

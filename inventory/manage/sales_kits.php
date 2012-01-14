@@ -45,7 +45,7 @@ Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
 	}
 
 	function update_component(&$Mode,$kit_code, $selected_item) {
-		global  $selected_kit;
+		global $selected_kit;
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');

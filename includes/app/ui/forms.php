@@ -302,7 +302,7 @@
 			$selected_id = array($first_id);
 		}
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-		$selector = "<select id='$name' autocomplete='off' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
+		$selector = "<select id='$name' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
 		 '') . "$disabled name='$name" . ($multi ? '[]' : '') . "' class='$class' title='" . $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
 		if ($by_id && ($search_box != false || $opts['editable'])) {
 			// on first display show selector list
@@ -331,7 +331,7 @@
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		// if selectable or editable list is used - add select button
 		if ($select_submit != false || $search_button) {
-			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
+			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		// ------ make combo ----------
@@ -340,7 +340,7 @@
 			$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $opts['size'] . "' maxlength='" . $opts['max'] . "' value='$txt' class='$class' rel='$name' autocomplete='off' title='" . $opts['box_hint'] . "'" . (!User::fallback() && !$by_id ?
 			 " style=display:none;" : '') . ">\n";
 			if ($search_submit != false || $opts['editable']) {
-				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
+				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/%s/images/locate.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
 				$edit_entry .= sprintf($_search_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), $search_submit ? $search_submit :
 				 "_{$name}_button") . "\n";
 			}
@@ -435,7 +435,8 @@
 		Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		if ($select_submit != false) { // if submit on change is used - add select button
-			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
+			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
+			(/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		JS::default_focus($name);
@@ -471,15 +472,15 @@
 	function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
 		$aspect = '';
 		if ($atype === null) {
-			$aspect = User::fallback() ? " aspect='fallback'" : " style='display:none;'";
+			$aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
 		}
 		elseif (!is_bool($atype)) { // necessary: switch uses '=='
-			$aspect = "aspect='$atype' ";
+			$aspect = " data-aspect='$atype' ";
 			$types = explode(' ', $atype);
 			foreach ($types as $type) {
 				switch ($type) {
 					case 'selector':
-						$aspect = " aspect='selector' rel = '$value'";
+						$aspect = " data-aspect='selector' rel='$value'";
 						$value = _("Select");
 						if ($icon === false) {
 							$icon = ICON_SUBMIT;
@@ -499,8 +500,10 @@
 			}
 		}
 		$submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-		 $atype) . "\" type=\"submit\"" . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ?
-		 "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" . "</button>\n";
+		 $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'"
+		 : '') . ">" . ($icon ?
+		 "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" .
+		 "</button>\n";
 		if ($echo) {
 			echo $submit_str;
 		}
@@ -635,13 +638,13 @@
 			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
 																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
 																																													 ))) . "' value='1'" . ($title ? " title='$title'" :
-			 " title='$value'") . ($aspect ? " aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
+			 " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		}
 		else {
 			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
 																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
 																																													))) . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
-			 " aspect='$aspect'" : '') . $rel . " />\n";
+			 " data-aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
 
@@ -840,7 +843,7 @@
 		}
 		echo "<td>";
 		$class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
-		$aspect = $check ? 'aspect="cdate"' : '';
+		$aspect = $check ? ' data-aspect="cdate"' : '';
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
@@ -929,14 +932,14 @@
 		else {
 			echo "class='amount' ";
 		}
-		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
+		echo "type=\"text\" name=\"$name\" maxlength=\"$max\" data-dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
 		}
 		echo "</td>\n";
 		Ajax::i()->addUpdate($name, $name, $_POST[$name]);
-		Ajax::i()->addAssign($name, $name, 'dec', $dec);
+		Ajax::i()->addAssign($name, $name, 'data-dec', $dec);
 	}
 
 	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
