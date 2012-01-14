@@ -441,7 +441,7 @@
 		 *
 		 * @return mixed
 		 */
-		static public function getAttribute(PDO $value) {
+		static public function getAttribute($value) {
 			return static::i()->conn->getAttribute($value);
 		}
 		/**
