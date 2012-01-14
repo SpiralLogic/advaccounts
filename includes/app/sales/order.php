@@ -1062,7 +1062,7 @@
 			end_row();
 			label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 1);
 			$taxes = $this->get_taxes(Validation::input_num('freight_cost'));
-			$tax_total = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
+			$tax_total = Tax::edit_items($taxes, $colspan, $this->tax_included, 1);
 			$display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
 			start_row();
 			label_cells(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class='right'");
@@ -1192,7 +1192,7 @@
 				 $_POST['OrderDate'] : $this->document_date));
 			}
 			table_section(3);
-			Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
+			if ($_POST['customer_id']) Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
 			if ($editable) {
 				Sales_Type::row(_("Price List"), 'sales_type', null, true);
 			}

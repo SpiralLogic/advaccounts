@@ -36,7 +36,8 @@
 				echo "<table class='width100'><tr>";
 				echo "<td class='menu_group top'>";
 				echo "<table class='width100'>";
-				echo "<tr><td class='menu_group' colspan=2>";
+				$colspan=(count($module->rappfunctions)>0) ?'colspan=2':'';
+				echo "<tr><td class='menu_group' ".$colspan.">";
 				echo $module->name;
 				echo "</td></tr><tr>";
 				echo "<td class='width50 menu_group_items'>";

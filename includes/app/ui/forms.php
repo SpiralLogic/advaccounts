@@ -475,7 +475,7 @@
 			$aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
 		}
 		elseif (!is_bool($atype)) { // necessary: switch uses '=='
-			$aspect = "aspect='$atype' ";
+			$aspect = " data-aspect='$atype' ";
 			$types = explode(' ', $atype);
 			foreach ($types as $type) {
 				switch ($type) {
@@ -843,7 +843,7 @@
 		}
 		echo "<td>";
 		$class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
-		$aspect = $check ? 'aspect="cdate"' : '';
+		$aspect = $check ? ' data-aspect="cdate"' : '';
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}

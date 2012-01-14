@@ -219,6 +219,8 @@ Adv.extend({Forms:(function () {
 				 delay:200,
 				 source:function (request, response) {
 					 var $this = Adv.o.autocomplete[id];
+					 $this.off('change.autocomplete');
+					 console.log('changeoff');
 					 $this.data('default', null);
 					 if ($this.data().autocomplete.previous == $this.val())
 						 {return false;}
@@ -241,13 +243,11 @@ Adv.extend({Forms:(function () {
 					 });
 				 },
 				 select:function (event, ui) {
-
-					 Adv.o.autocomplete[id].data('default', null);
+					 $this.data('default', null);
 					 if (callback(ui.item, event, this) === false)
 						 {return false;}
 				 },
-				 focus:function () {return false;}
-			 })
+				 focus:function () {return false;}})
 			 .blur(function () {$(this).data('active', false); })
 			 .bind('autocompleteclose',
 			 function () {
@@ -260,7 +260,9 @@ Adv.extend({Forms:(function () {
 				 $this.data('default', null)
 			 })
 			 .focus(
-			 function () { $(this).data('active', true)}).css({'z-index':'2'});
+			 function () { $(this).data('active', true).on('change.autocomplete',function(){console.log('changed');
+			 				 $(this).autocomplete('search',$this.val());})
+			 			 }).css({'z-index':'2'});
 			if (document.activeElement === $this[0]) $this.data('active', true);
 		}
 	}
