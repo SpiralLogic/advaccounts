@@ -165,10 +165,8 @@
 				//\DB::insert('Job_List')->values($newJob);
 				var_dump($newJob);
 				return $result;
-
-
 			}
-		\DB::change_connection();
+			\DB::change_connection();
 		}
 	}
 
