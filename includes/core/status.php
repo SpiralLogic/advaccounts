@@ -18,10 +18,10 @@
 		protected $_errors = array();
 
 		/**
-		 * @param null   $status
-		 * @param null   $process
+		 * @param null $status
+		 * @param null $process
 		 * @param string $message
-		 * @param null   $var
+		 * @param null $var
 		 */
 		public function __construct($status = null, $process = null, $message = '', $var = null) {
 			$this->set($status, $process, $message, $var);

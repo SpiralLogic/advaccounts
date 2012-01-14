@@ -64,7 +64,7 @@
 	$k = 0;
 	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
-		label_cell($myrow["pos_name"], "nowrap");
+		label_cell($myrow["pos_name"], ' class="nowrap"');
 		label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
 		label_cell($myrow['cash_sale'] ? _('Yes') : _('No'));
 		label_cell($myrow["location_name"], "");

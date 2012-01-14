@@ -39,7 +39,7 @@
 			if ($memo_) {
 				DB_Comments::add(ST_MANURECEIVE, $id, $date_, $memo_);
 			}
-			Ref::save(ST_MANURECEIVE,  $ref);
+			Ref::save(ST_MANURECEIVE, $ref);
 			DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
 			DB::commit();
 		}
@@ -101,7 +101,7 @@
 					end_row();
 				}
 				//end of while
-				label_row(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", "nowrap class=right");
+				label_row(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", ' class="right nowrap"');
 				end_table();
 			}
 		}

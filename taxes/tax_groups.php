@@ -161,7 +161,7 @@
 		Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-			label_cell(Num::percent_format($default_rate), "nowrap class=right");
+			label_cell(Num::percent_format($default_rate), ' class="right nowrap"');
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			//	$_POST['rate' . $i] = Num::percent_format($default_rate);

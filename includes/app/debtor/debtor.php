@@ -279,7 +279,7 @@ JS;
 			$data = array();
 			$sql = DB::select('debtor_no as id', 'name as label', 'name as value',"IF(name LIKE '".trim($terms)."%',0,5) as weight")->from('debtors')->where('name LIKE ', "$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
-			 if  (is_numeric($terms)) $sql->or_where('debtor_no LIKE', "$terms%");
+			 if (is_numeric($terms)) $sql->or_where('debtor_no LIKE', "$terms%");
 			$sql->orderby( 'weight,name')->limit(20);
 			$results = DB::fetch();
 			foreach ($results as $result) {
@@ -415,7 +415,7 @@ JS;
 			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
 		}
 		static public function newselect($value = null) {
-			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td nowrap>";
+			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
 			if (!$value && isset($_POST['customer'])) {
 				$value = $_POST['customer'];
 				JS::set_focus('stock_id');
@@ -462,12 +462,12 @@ JS;
 			if ($label != null) {
 				echo "<td>$label</td>\n";
 			}
-			echo "<td nowrap>";
+			echo "<td class='nowrap'>";
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
 			echo "</td>\n";
 		}
 		static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
-			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
+			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td class='nowrap'>";
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 			echo "</td>\n</tr>\n";
 		}

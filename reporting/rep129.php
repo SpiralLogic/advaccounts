@@ -11,7 +11,7 @@
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ?  SA_SALESTRANSVIEW : SA_SALESBULKREP);
+	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
 
 	print_sales_orders();
 	$print_as_quote = 0;

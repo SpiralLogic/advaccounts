@@ -240,7 +240,7 @@ var inserts = {
 					}
 			}
 	},
-	'input.combo2,input[aspect="fallback"]':function (e) {
+	'input.combo2,input[data-aspect="fallback"]':function (e) {
 		// this hides search button for js enabled browsers
 		e.style.display = 'none';
 	},
@@ -293,7 +293,7 @@ var inserts = {
 		if (e.onblur == undefined)
 			{
 				e.onblur = function () {
-					var dec = this.getAttribute("dec");
+					var dec = this.getAttribute("data-dec");
 					price_format(this.name, get_amount(this.name), dec);
 				};
 			}
@@ -302,7 +302,7 @@ var inserts = {
 		if (e.onblur == undefined)
 			{
 				e.onblur = function () {
-					var dec = this.getAttribute("dec");
+					var dec = this.getAttribute("data-dec");
 					price_format(this.name, get_amount(this.name), dec, '2');
 				};
 			}

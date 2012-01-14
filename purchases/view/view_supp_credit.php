@@ -41,11 +41,11 @@ Page::start(_($help_context = "View Supplier Credit Note"), SA_SUPPTRANSVIEW, tr
 	$total_grn = Purch_GRN::display_items($creditor_trans, 2);
 	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
 	start_table('tablestyle width95');
-	label_row(_("Sub Total"), $display_sub_tot, "class=right", "nowrap class=right width=17%");
+	label_row(_("Sub Total"), $display_sub_tot, "class='right'", " class='nowrap right width17' ");
 	$tax_items = GL_Trans::get_tax_details(ST_SUPPCREDIT, $trans_no);
 	Creditor_Trans::trans_tax_details($tax_items, 1);
 	$display_total = Num::format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::price_dec());
-	label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class=right", "nowrap class=right");
+	label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class='right'", ' class="right nowrap"');
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
 	if (!$voided) {

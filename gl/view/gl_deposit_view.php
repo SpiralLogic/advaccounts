@@ -43,7 +43,7 @@ Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, true);
 	if ($show_currencies) {
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class=right");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class='right'");
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
@@ -104,7 +104,7 @@ Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, true);
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class=right", "class=right");
+		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class='right'", "class='right'");
 		end_table(1);
 		GL_Allocation::from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}

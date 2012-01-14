@@ -48,7 +48,7 @@
 	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
-		label_cell(Num::percent_format($myrow["rate"]), "class=right");
+		label_cell(Num::percent_format($myrow["rate"]), "class='right'");
 		label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 		label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');

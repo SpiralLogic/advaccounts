@@ -44,8 +44,8 @@ Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='label'");
 	end_row();
 	start_row();
-	label_cells(_("Invoice Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
-	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
+	label_cells(_("Invoice Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", ' class="nowrap"');
+	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", ' class="nowrap"');
 	label_cells(_("Deliveries"), Debtor::trans_view(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
 	DB_Comments::display_row(ST_SALESINVOICE, $trans_id);
@@ -76,9 +76,9 @@ Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
 			qty_cell($myrow2["quantity"], false, Item::qty_dec($myrow2["stock_id"]));
-			label_cell($myrow2["units"], "class=right");
+			label_cell($myrow2["units"], "class='right'");
 			amount_cell($myrow2["unit_price"]);
-			label_cell($display_discount, "nowrap class=right");
+			label_cell($display_discount, ' class="right nowrap"');
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
@@ -89,12 +89,12 @@ Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
 	$display_sub_tot = Num::price_format($sub_total);
 	$display_freight = Num::price_format($myrow["ov_freight"]);
 	/*Print out the invoice text entered */
-	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 class=right", "nowrap class=right width=15%");
-	label_row(_("Shipping"), $display_freight, "colspan=6 class=right", "nowrap class=right");
+	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 class='right'", " class='right nowrap width15'");
+	label_row(_("Shipping"), $display_freight, "colspan=6 class='right'", ' class="right nowrap"');
 	$tax_items = GL_Trans::get_tax_details(ST_SALESINVOICE, $trans_id);
 	Debtor_Trans::display_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
-	label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 class=right", "nowrap class=right");
+	label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 class='right'", ' class="right nowrap"');
 	end_table(1);
 	Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 	if (Input::get('frame')) {

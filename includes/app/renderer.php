@@ -12,10 +12,10 @@
 		* ********************************************************************* */
 	class Renderer
 	{
-		public  function menu() {
-			/** @var ADVAccounting $application  */
+		public function menu() {
+			/** @var ADVAccounting $application */
 			$application = Session::i()->App;
- echo '<ul id="_tabs">';
+ echo '<ul class="menu" id="_tabs">';
 			foreach ($application->applications as $app) {
 				$acc = Display::access_string($app->name);
 				if ($app->direct) {
@@ -27,7 +27,7 @@
 			}
 			echo '</ul>';
 		}
-		public  function display_application(ADVAccounting $application) {
+		public function display_application(ADVAccounting $application) {
 			if ($application->selected->direct) {
 				Display::meta_forward($application->selected->direct);
 			}

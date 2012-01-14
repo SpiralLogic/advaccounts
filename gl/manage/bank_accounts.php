@@ -83,12 +83,12 @@
 	global $bank_account_types;
 	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
-		label_cell($myrow["bank_account_name"], "nowrap");
-		label_cell($bank_account_types[$myrow["account_type"]], "nowrap");
-		label_cell($myrow["bank_curr_code"], "nowrap");
-		label_cell($myrow["account_code"] . " " . $myrow["account_name"], "nowrap");
-		label_cell($myrow["bank_name"], "nowrap");
-		label_cell($myrow["bank_account_number"], "nowrap");
+		label_cell($myrow["bank_account_name"], ' class="nowrap"');
+		label_cell($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
+		label_cell($myrow["bank_curr_code"], ' class="nowrap"');
+		label_cell($myrow["account_code"] . " " . $myrow["account_name"], ' class="nowrap"');
+		label_cell($myrow["bank_name"], ' class="nowrap"');
+		label_cell($myrow["bank_account_number"], ' class="nowrap"');
 		label_cell($myrow["bank_address"]);
 		if ($myrow["dflt_curr_act"]) {
 			label_cell(_("Yes"));

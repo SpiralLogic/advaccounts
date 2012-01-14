@@ -102,12 +102,12 @@
 			if (AJAX_REFERRER) {
 				return;
 			}
-			echo "</div></body>";
+			echo "</div></body>"; //End content div
 			JS::get_websales();
 			echo	 "</html>\n";
 		}
 		protected function menu_footer() {
-			echo "</div>";
+			echo "</div>"; //end wrapper div
 			if ($this->menu && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
@@ -122,7 +122,7 @@
 			if (Config::get('debug')) {
 				$this->display_loaded();
 			}
-			echo "</div></div>\n";
+			echo "</div>\n";//end footer div
 		}
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
@@ -186,9 +186,12 @@ $this->is_index=$index;
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>" . "<div id='logo'><h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'>" . "<img id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>" . "</span></h1></div>" . '<div id="_tabs2"><div class="menu_container"><ul class="menu">';
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div>" . "<div
+			id='logo'><h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'>" . "<img alt='Ajax Loading'
+			id='ajaxmark'
+			src='/themes/" . User::theme() . "/images/ajax-loader.gif' class='center' style='visibility:hidden;'>" . "</span></h1></div>" . '<div id="_tabs2"><div class="menu_container">';
 			$this->renderer->menu();
-			echo "</ul></div></div>" . "<div id='wrapper'>";
+			echo "</div></div>" . "<div id='wrapper'>";
 		}
 		protected function header() {
 			JS::open_window(900, 500);

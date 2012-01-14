@@ -54,7 +54,7 @@ Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
 		$total += $line_total;
 	}
 	$display_total = Num::format($total, User::price_dec());
-	label_row(_("Total Excluding Tax/Shipping"), $display_total, "class=right colspan=6", "nowrap class=right", 3);
+	label_row(_("Total Excluding Tax/Shipping"), $display_total, "class=right colspan=6", ' class="right nowrap"', 3);
 	end_table();
 	if ($overdue_items) {
 		Errors::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");

@@ -111,8 +111,8 @@ Page::start(_($help_context = "Inventory Item Movement"), SA_ITEMSTRANSVIEW);
 			$person = "";
 		}
 		label_cell($person);
-		label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap class=right");
-		label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap class=right");
+		label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), ' class="right nowrap"');
+		label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), ' class="right nowrap"');
 		qty_cell($after_qty, false, $dec);
 		end_row();
 		$j++;

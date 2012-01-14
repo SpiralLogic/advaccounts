@@ -99,10 +99,10 @@
 				qty_cell($line->qty_received, false, $dec);
 				qty_cell($qty_outstanding, false, $dec);
 				if ($qty_outstanding > 0) {
-					qty_cells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class=right", null, $dec);
+					qty_cells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
 				}
 				else {
-					label_cell(Num::format($line->receive_qty, $dec), "class=right");
+					label_cell(Num::format($line->receive_qty, $dec), "class='right'");
 				}
 				amount_decimal_cell($line->price);
 				percent_cell($line->discount * 100);
@@ -110,10 +110,10 @@
 				end_row();
 			}
 		}
-		label_cell(_("Freight"), "colspan=9 class=right");
+		label_cell(_("Freight"), "colspan=9 class='right'");
 		small_amount_cells(null, 'freight', Num::price_format($order->freight));
 		$display_total = Num::format($total + $_POST['freight'], User::price_dec());
-		label_row(_("Total value of items received"), $display_total, "colspan=9 class=right", "nowrap class=right");
+		label_row(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
 		end_table();
 		Display::div_end();
 	}

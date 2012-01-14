@@ -28,8 +28,8 @@
 		 */
 		public $access;
 		/**
-		 * @param        $label
-		 * @param        $link
+		 * @param $label
+		 * @param $link
 		 * @param string $access
 		 */
 		function app_function($label, $link, $access = SA_OPEN) {
@@ -61,7 +61,7 @@
 		 */
 		public $rappfunctions;
 		/**
-		 * @param      $name
+		 * @param $name
 		 * @param null $icon
 		 */
 		public function module($name, $icon = null) {
@@ -71,7 +71,7 @@
 			$this->rappfunctions = array();
 		}
 		/**
-		 * @param        $label
+		 * @param $label
 		 * @param string $link
 		 * @param string $access
 		 *
@@ -84,7 +84,7 @@
 			return $appfunction;
 	}
 		/**
-		 * @param        $label
+		 * @param $label
 		 * @param string $link
 		 * @param string $access
 		 * @return app_function
@@ -127,8 +127,8 @@
 	 */
 		public $enabled;
 	/**
-	 * @param      $id
-	 * @param      $name
+	 * @param $id
+	 * @param $name
 	 * @param bool $enabled
 	 */
 		public function __construct($id, $name, $enabled = true) {
@@ -138,7 +138,7 @@
 			$this->modules = array();
 	}
 	/**
-	 * @param      $name
+	 * @param $name
 	 * @param null $icon
 	 * @return module
 	 */
@@ -150,8 +150,8 @@
 	}
 	/**
 	 *
-	 * @param        $level
-	 * @param        $label
+	 * @param $level
+	 * @param $label
 	 * @param string $link
 	 * @param string $access
 	 */
@@ -159,8 +159,8 @@
 			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
 	}
 	/**
-	 * @param        $level
-	 * @param        $label
+	 * @param $level
+	 * @param $label
 	 * @param string $link
 	 * @param string $access
 	 */

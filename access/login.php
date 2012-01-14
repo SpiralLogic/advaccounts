@@ -41,7 +41,8 @@
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	Display::div_start('_page_body');
 	Display::br(2);
-	start_form(false, $_SESSION['timeout']['uri'], "loginform");
+	start_form(false, $_SESSION['timeout']['uri'], "loginform");	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . User::get()->ui_mode . "' />\n";
+
 	start_table('login');
 	start_row();
 	echo "<td class='center' colspan=2>";
@@ -52,7 +53,6 @@
 	}
 	echo "</td>\n";
 	end_row();
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . User::get()->ui_mode . "' />\n";
 	if (!$login_timeout) {
 		table_section_title(_("Version") . VERSION . " Build " . BUILD_VERSION . " - " . _("Login"));
 	}

@@ -215,7 +215,7 @@
 		$line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
 		amount_cell($line->price);
 		label_cell($line->tax_type_name);
-		label_cell($display_discount_percent, "nowrap class=right");
+		label_cell($display_discount_percent, ' class="right nowrap"');
 		amount_cell($line_total);
 		end_row();
 	}
@@ -227,11 +227,11 @@
 	end_row();
 	$inv_items_total = $order->get_items_total_dispatch();
 	$display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class=right");
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
 	$taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
 	$tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included);
 	$display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-	label_row(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class=right");
+	label_row(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
 	end_table(1);
 	if ($has_marked) {
 		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");

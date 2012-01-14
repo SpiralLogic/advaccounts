@@ -103,9 +103,9 @@
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);
 		email_cell($myrow["salesman_email"]);
-		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap class=right");
+		label_cell(Num::percent_format($myrow["provision"]) . " %", ' class="right nowrap"');
 		amount_cell($myrow["break_pt"]);
-		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap class=right");
+		label_cell(Num::percent_format($myrow["provision2"]) . " %", ' class="right nowrap"');
 		inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
 		edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));

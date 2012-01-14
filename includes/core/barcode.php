@@ -1,28 +1,28 @@
 <?php
 	/*
-	 *  BarCode Coder Library (BCC Library)
-	 *  BCCL Version 2.0.1
-	 *  Porting : Barcode PHP
-	 *            DEMONTE Jean-Baptiste
-	 *  Date    : September 25, 2010
+	 * BarCode Coder Library (BCC Library)
+	 * BCCL Version 2.0.1
+	 * Porting : Barcode PHP
+	 * DEMONTE Jean-Baptiste
+	 * Date : September 25, 2010
 	 *
 	 *
-	 *  Author  : DEMONTE Jean-Baptiste (firejocker)
-	 *            HOUREZ Jonathan
-	 *  Contact : jbdemonte @ gmail.com
-	 *  Web site: http://barcode-coder.com/
-	 *  dual licence :  http://www.cecill.info/licences/Licence_CeCILL_V2-fr.html
-	 *                  http://www.gnu.org/licenses/gpl.html
+	 * Author : DEMONTE Jean-Baptiste (firejocker)
+	 * HOUREZ Jonathan
+	 * Contact : jbdemonte @ gmail.com
+	 * Web site: http://barcode-coder.com/
+	 * dual licence : http://www.cecill.info/licences/Licence_CeCILL_V2-fr.html
+	 * http://www.gnu.org/licenses/gpl.html
 	 *
-	 *  Managed :
+	 * Managed :
 	 *
 
-	 *    datamatrix (datamatrix)
+	 * datamatrix (datamatrix)
 	 *
-	 *  Output :
+	 * Output :
 	 *
-	 *    GD
-	 *    FPDF
+	 * GD
+	 * FPDF
 	 */
 	class Barcode {
 		static public function			 create($datas) {

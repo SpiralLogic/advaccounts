@@ -163,10 +163,10 @@
 							label_cell($cell, "width=40");
 							break;
 						case 'date':
-							label_cell(Dates::sql2date($cell), "class='center' nowrap");
+							label_cell(Dates::sql2date($cell), ' class="center nowrap"');
 							break;
 						case 'dstamp': // time stamp displayed as date
-							label_cell(Dates::sql2date(substr($cell, 0, 10)), "class='center' nowrap");
+							label_cell(Dates::sql2date(substr($cell, 0, 10)), ' class="center nowrap"');
 							break;
 						case 'tstamp': // time stamp - FIX user format
 							label_cell(

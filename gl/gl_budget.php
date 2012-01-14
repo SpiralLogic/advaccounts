@@ -95,13 +95,13 @@
 			amount_cells(null, 'amount' . $i, null, 15, null, 0);
 			if ($showdims) {
 				$d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-				label_cell(Num::format($d, 0), "nowrap class=right");
+				label_cell(Num::format($d, 0), ' class="right nowrap"');
 				$btotal += $d;
 			}
 			$lamount = GL_Trans::get_from_to(Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 			$total += Validation::input_num('amount' . $i);
 			$ltotal += $lamount;
-			label_cell(Num::format($lamount, 0), "nowrap class=right");
+			label_cell(Num::format($lamount, 0), ' class="right nowrap"');
 			$date_ = Dates::add_months($date_, 1);
 			end_row();
 		}
@@ -109,9 +109,9 @@
 		label_cell("<span class='bold'>" . _("Total") . "</span>");
 		label_cell(Num::format($total, 0), 'class="right bold" ', 'Total');
 		if ($showdims) {
-			label_cell("<span class='bold'>" . Num::format($btotal, 0) . "</span>", "nowrap class=right");
+			label_cell("<span class='bold'>" . Num::format($btotal, 0) . "</span>", ' class="right nowrap"');
 		}
-		label_cell("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", "nowrap class=right");
+		label_cell("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", ' class="right nowrap"');
 		end_row();
 		end_table(1);
 		Display::div_end();

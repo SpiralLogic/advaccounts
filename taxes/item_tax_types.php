@@ -107,7 +107,7 @@
 		while ($myrow = DB::fetch($tax_types)) {
 			alt_table_row_color($k);
 			label_cell($myrow["name"]);
-			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap class=right");
+			label_cell(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
 			check_cells("", 'ExemptTax' . $myrow["id"], null);
 			end_row();
 		}

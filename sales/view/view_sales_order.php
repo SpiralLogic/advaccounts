@@ -82,7 +82,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 			amount_cell($this_total);
 			end_row();
 		}
-		label_row(null, Num::price_format($delivery_total), " ", "colspan=4 class=right");
+		label_row(null, Num::price_format($delivery_total), " ", "colspan=4 class='right'");
 		end_table();
 		echo "</td><td class='top'>";
 		start_table('tablestyle width90');
@@ -107,7 +107,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 				end_row();
 			}
 		}
-		label_row(null, Num::price_format($invoices_total), " ", "colspan=4 class=right");
+		label_row(null, Num::price_format($invoices_total), " ", "colspan=4 class='right'");
 		end_table();
 		echo "</td><td class='top'>";
 		start_table('tablestyle width90');
@@ -130,7 +130,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 				end_row();
 			}
 		}
-		label_row(null, Num::price_format($payments_total), " ", "colspan=4 class=right");
+		label_row(null, Num::price_format($payments_total), " ", "colspan=4 class='right'");
 		end_table();
 		echo "</td><td class='top'>";
 		start_table('tablestyle width90');
@@ -155,7 +155,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 				end_row();
 			}
 		}
-		label_row(null, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 class=right");
+		label_row(null, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 class='right'");
 		end_table();
 		echo "</td></tr>";
 		end_table();
@@ -190,14 +190,14 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 		return ($line->quantity - $line->qty_done);
 	}, $_SESSION['View']->line_items));
 	$items_total = $_SESSION['View']->get_items_total();
-	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", "nowrap class=right", 1);
+	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", ' class="right nowrap"', 1);
 	$taxes = $view->get_taxes_for_order();
 	foreach ($taxes as $tax) {
 		$display_total += $tax['Value'];
-		label_row(_("Tax: " . $tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", "nowrap class=right", 1);
+		label_row(_("Tax: " . $tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", ' class="right nowrap"', 1);
 	}
 	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
-	label_row(_("Total Order Value"), $display_total, "class=right colspan=6", "nowrap class=right", 1);
+	label_row(_("Total Order Value"), $display_total, "class=right colspan=6", ' class="right nowrap"', 1);
 	end_table(2);
 	if (Input::get('frame')) {
 		return;

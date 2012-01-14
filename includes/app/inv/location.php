@@ -25,7 +25,7 @@
 			$sql = "UPDATE locations SET location_name="
 			 . DB::escape($location_name)
 			 . ", delivery_address=" . DB::escape($delivery_address)
-			 . ", phone="  . DB::escape($phone)
+			 . ", phone=" . DB::escape($phone)
 			 . ", phone2=" . DB::escape($phone2)
 			 . ", fax=" . DB::escape($fax)
 			 . ", email=" . DB::escape($email)
@@ -54,7 +54,7 @@
 		}
 
 				static public function set_shelves($stock_id, $loc_code, $primary_location, $secondary_location) {
-					$sql = "UPDATE stock_location SET shelf_primary =  " . DB::escape($primary_location) . " ,  shelf_secondary =  " . DB::escape($secondary_location) . "   WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
+					$sql = "UPDATE stock_location SET shelf_primary = " . DB::escape($primary_location) . " , shelf_secondary = " . DB::escape($secondary_location) . " WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
 					DB::query($sql, "an item reorder could not be set");
 				}
 
@@ -65,7 +65,7 @@
 		AND stock_location.stock_id = "
 						 . DB::escape($stock_id) . " AND stock_location.loc_code <> "
 						 . DB::escape(LOC_DROP_SHIP) . " AND stock_location.loc_code <> "
-						 . DB::escape(LOC_NOT_FAXED_YET) .  " ORDER BY stock_location.loc_code";
+						 . DB::escape(LOC_NOT_FAXED_YET) . " ORDER BY stock_location.loc_code";
 			return DB::query($sql, "an item reorder could not be retreived");
 		}
 
@@ -104,7 +104,7 @@
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
 			if ($selected_id==null && !isset($_POST[$name])) $selected_id = Config::get('defaults.location');
 			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name',
-												array( 'spec_option' => $all_option === true ?  _("All Locations") : $all_option,
+												array( 'spec_option' => $all_option === true ? _("All Locations") : $all_option,
 														 'spec_id' => ALL_TEXT,
 														 'select_submit' => $submit_on_change));
 		}

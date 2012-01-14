@@ -28,14 +28,14 @@ Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
 	start_table('tablestyle width100');
 	$th = array(_("Customer"));
 	table_header($th);
-	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
+	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), ' class="nowrap"');
 	end_table();
 	/*end of the small table showing charge to account details */
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width100');
 	$th = array(_("Branch"));
 	table_header($th);
-	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
+	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), ' class="nowrap"');
 	end_table();
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width100');
@@ -77,9 +77,9 @@ Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
 			qty_cell($myrow2["quantity"], false, Item::qty_dec($myrow2["stock_id"]));
-			label_cell($myrow2["units"], "class=right");
+			label_cell($myrow2["units"], "class='right'");
 			amount_cell($myrow2["unit_price"]);
-			label_cell($display_discount, "class=right");
+			label_cell($display_discount, "class='right'");
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
@@ -93,12 +93,12 @@ Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
 	$display_total = Num::price_format($credit_total);
 	/*Print out the invoice text entered */
 	if ($sub_total != 0) {
-		label_row(_("Sub Total"), $display_sub_tot, "colspan=6 class=right", "nowrap class=right width=15%");
+		label_row(_("Sub Total"), $display_sub_tot, "colspan=6 class='right'", " class='nowrap right width15'");
 	}
-	label_row(_("Shipping"), $display_freight, "colspan=6 class=right", "nowrap class=right");
+	label_row(_("Shipping"), $display_freight, "colspan=6 class='right'", ' class="right nowrap"');
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
 	Debtor_Trans::display_tax_details($tax_items, 6);
-	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class=right", "nowrap class=right");
+	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class='right'", ' class="right nowrap"');
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
