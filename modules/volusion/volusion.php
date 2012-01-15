@@ -189,7 +189,7 @@
 					echo 'Added line ' . $line['line_id'] . ' for job ' . $jobid;
 				}
 				catch (\DBDuplicateException $e) {
-					\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid);
+					\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
 					echo 'Updating line ' . $line['line_id'] . ' for job ' . $jobid;
 				}
 			}

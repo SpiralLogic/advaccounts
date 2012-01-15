@@ -149,6 +149,7 @@
 		 * @return mixed Can return any type.
 		 */
 		public function current() {
+if (!$this->valid()) return false;
 			return $this->data[$this->current];
 		}
 
@@ -173,7 +174,7 @@
 		 *			 Returns true on success or false on failure.
 		 */
 		public function valid() {
-			return $this->current < count($this->data);
+			return ( !isset($this->data[$this->current]) || !$this->data[$this->current] || $this->current < count($this->data));
 		}
 
 		/**
