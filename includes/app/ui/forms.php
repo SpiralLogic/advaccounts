@@ -281,6 +281,7 @@
 				}
 				$cat = $contact_row[$opts['category']];
 				if ($opts['category'] !== false && $cat != $lastcat) {
+					if (isset($lastcat)) $selector .= "</optgroup>";
 					$selector .= "<optgroup label='" . $cat . "'>\n";
 					$lastcat = $cat;
 				}
@@ -297,7 +298,7 @@
 			$sel = $found === false ? 'selected' : '';
 			$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
 			$selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
-		}
+		}if (isset($lastcat)) {$selector.='</optgroup>';}
 		if ($found === false) {
 			$selected_id = array($first_id);
 		}
@@ -933,7 +934,7 @@
 		else {
 			echo "class='amount' ";
 		}
-		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "'\\>";
+		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "'>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);

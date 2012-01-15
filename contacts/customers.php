@@ -124,7 +124,7 @@
 	table_section_title(_("Accounts Details:"), 2);
 	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
-	 " disabled=\"\"");
+	 " disabled");
 	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
@@ -138,31 +138,16 @@
 	}
 	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
 	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
-	$dim = DB_Company::get_pref('use_dimension');
-	if ($dim >= 1) {
-		Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
-	}
-	if ($dim > 1) {
-		Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
-	}
-	if ($dim < 1) {
-		hidden('dimension_id', 0);
-	}
-	if ($dim < 2) {
-		hidden('dimension2_id', 0);
-	}
+
 	table_section(2);
-	table_section_title(_("Contact log:"), 2);
+	table_section_title(_("Contact log:"),1);
 	start_row();
 	HTML::td(array(
-								'class' => 'ui-widget-content center', 'colspan' => 2
-					 ));
-	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea('messageLog', array(
-																																																									'cols' => 50, 'rows' => 20
-																																																						 ));
+								'class' => 'ui-widget-content center'));
+	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array( 'cols' => 50, 'rows' => 20 ));
 	Contact_Log::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
-	HTML::textarea()->td->td;
+	HTML::textarea()->td->tr;
 	end_outer_table(1);
 	$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
 	HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
@@ -180,9 +165,9 @@
 	text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 	HTML::td()->tr->table->script->div->div;
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table('tablestyle2');
+	start_outer_table('tablestyle2');	hidden('branch_id', $currentBranch->branch_id);
+
 	table_section(1);
-	hidden('branch_id', $currentBranch->branch_id);
 	table_section_title(_("Sales"));
 	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
 	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
@@ -201,21 +186,21 @@
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
 	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
-	HTML::div('transactions');
+	HTML::div('transactions',false);
 	$menu->endTab()->render();
 	hidden('frame', Input::request('frame'));
 	end_form();
 	HTML::div('contactLog', array(
 															 'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
 													));
-	HTML::p('New log entry:', array('class' => 'validateTips'));
+	hidden('type', Contact_Log::CUSTOMER);
+
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	hidden('type', Contact_Log::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
-	HTML::p()->div->div(array('class' => 'center width50'));
+	HTML::div()->div(array('class' => 'center width50'));
 	UI::button('btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
 																																											 'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
 																																									));
@@ -225,7 +210,7 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();
 	if (!Input::get('frame')) {
-		HTML::_div()->div('shortcuts', array('class' => 'width50 center'));
+		HTML::div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
 		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=');
 		$shortcuts->endTab();
