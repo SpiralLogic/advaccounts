@@ -36,7 +36,7 @@
 					continue;
 				}
 				$c = new \Debtor();
-				$c->name = $row["CompanyName"];
+				$c->name = $c->debtor_ref = $row["CompanyName"];
 				$c->branches[0]->post_address = $row["BillingAddress2"];
 				$c->branches[0]->br_address = $row["BillingAddress1"];
 				$c->branches[0]->city = $row["City"];
