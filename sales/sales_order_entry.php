@@ -207,8 +207,9 @@
 		$porder = _("Place Order");
 		$corder = _("Commit Order Changes");
 	}
-	start_form();
-	$customer_error = (!$order) ? _("There is no order currently being edited") : $order->header($idate);
+
+
+	$customer_error = (!$order) ? _("There is no order currently being edited") : start_form().$order->header($idate);
 	if ($customer_error == "") {
 		hidden('order_id', $_POST['order_id']);
 		start_table('tablesstyle center width90 pad10');
@@ -238,6 +239,8 @@
 	}
 	else {
 		Errors::warning($customer_error);
+					Session::i()->global_customer = null;
+
 		Page::footer_exit();
 	}
 	end_form();

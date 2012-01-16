@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(900, 500);
-Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset($_GET['customer_id']));
+	Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset($_GET['customer_id']));
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
@@ -61,7 +60,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 			$filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
 		}
 	}
-	$sql = "SELECT
+	$sql
+	 = "SELECT
  		trans.type,
 		trans.trans_no,
 		trans.order_,
@@ -77,7 +77,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 	}
-	$sql .= "trans.alloc AS Allocated,
+	$sql
+	 .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as
 			still_to_deliver
@@ -107,7 +108,9 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 			}
 			$ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
 			$sql .= " name LIKE $ajaxsearch ";
-			if (is_numeric($ajaxsearch)) $sql .= " OR trans_no LIKE $ajaxsearch OR order_ LIKE $ajaxsearch ";
+			if (is_numeric($ajaxsearch)) {
+				$sql .= " OR trans_no LIKE $ajaxsearch OR order_ LIKE $ajaxsearch ";
+			}
 			$sql .= " OR reference LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
 		if (isset($filter) && $filter) {
@@ -115,7 +118,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 		}
 	}
 	else {
-		$sql .= " AND trans.tran_date >= '$date_after'
+		$sql
+		 .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 	}
 	if ($_POST['reference'] != ALL_TEXT) {
@@ -146,12 +150,14 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 		}
 		if ($_POST['filterType'] == '2') {
 			$today = Dates::date2sql(Dates::Today());
-			$sql .= " AND trans.due_date < '$today'
+			$sql
+			 .= " AND trans.due_date < '$today'
 				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
 		}
 	}
-	if (!AJAX_REFERRER) { 	$sql .= " GROUP BY trans.trans_no, trans.type";
+	if (!AJAX_REFERRER) {
+		$sql .= " GROUP BY trans.trans_no, trans.type";
 	}
 	DB::query("set @bal:=0");
 	$cols = array(
@@ -161,13 +167,12 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 		_("Reference") => array('ord' => ''),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-		_("Customer") => array('ord' => 'asc'),		array('type'=>'skip'),
-
+		_("Customer") => array('ord' => 'asc'), array('type' => 'skip'),
 		_("Branch") => array('ord' => ''),
 		_("Currency") => array('align' => 'center'),
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
 		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		array('type'=>'skip'),
+		array('type' => 'skip'),
 		_("RB") => array('align' => 'right', 'type' => 'amount'),
 		array('insert' => true, 'fun' => 'gl_view'),
 		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
@@ -324,7 +329,9 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 				}
 				break;
 			case ST_CUSTDELIVERY:
-				if ($row['still_to_deliver']==0) continue;
+				if ($row['still_to_deliver'] == 0) {
+					continue;
+				}
 				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
 					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
 				}
@@ -363,7 +370,8 @@ Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset
 		}
 		HTML::setReturn(true);
 		UI::button(false, 'Email', array(
-																		'class' => 'button email-button', 'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
+																		'class' => 'button email-button',
+																		'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
 															 ));
 		return HTML::setReturn(false);
 	}

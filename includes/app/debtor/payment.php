@@ -73,7 +73,7 @@
 		}
 		static public function credit_row($customer, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' :
-			 '') . " href='".e('/sales/inquiry/customer_inquiry.php?frame=1&customer_id="' . $customer) . "'>" . Num::price_format
+			 '') . " href='".e('/sales/inquiry/customer_inquiry.php?frame=1&customer_id=' . $customer) . "'>" . Num::price_format
 			($credit) . "</a>", $parms);
 		}
 		static public function allocations_select($label, $name, $selected = null) {

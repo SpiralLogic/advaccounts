@@ -93,14 +93,21 @@ Adv.extend({
 			 { Adv.hideStatus()}
 	 }),
 	showStatus:function (status) {
+		var text;
 		Adv.msgbox.empty();
 		if (status.status === 'redirect')
 			{
 				window.onunload = null;
 				return window.location.href = status.message;
 			}
-		status.class = (status.status) ? 'note_msg' : 'err_msg';
-		Adv.msgbox.html('<div class="' + status.class + '">' + status.message + '</div>');
+
+		if (status.html) {
+			 text = status.html;
+		}else { 		status.class = (status.status) ? 'note_msg' : 'err_msg';
+		 text = '<div class="' + status.class + '">' + status.message + '</div>';
+
+		}
+		Adv.msgbox.html(text);
 		Adv.msgbox.show();
 		window.setTimeout(Adv.hideStatus, 10000);
 		try {var y = element_pos(Adv.msgbox[0]).y - 40;

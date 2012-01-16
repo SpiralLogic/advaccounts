@@ -1109,7 +1109,7 @@
 				Debtor::newselect();
 				if ($this->customer_id != get_post('customer_id', -1)) {
 					// customer has changed
-					Ajax::i()->activate('branch_id');
+					Ajax::i()->activate('_page_body');
 				}
 				Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 				if (($this->Branch != get_post('branch_id', -1))) {
