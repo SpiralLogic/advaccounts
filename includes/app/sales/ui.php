@@ -8,7 +8,6 @@
 	 */
 	class Sales_UI
 	{
-		// SALES PERSONS
 		static public function	persons($name, $selected_id = null, $spec_opt = false) {
 			$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
 			return select_box($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
@@ -30,7 +29,6 @@
 			echo "</tr>\n";
 		}
 
-		// SALES AREA
 		static public function	areas($name, $selected_id = null) {
 			$sql = "SELECT area_code, description, inactive FROM areas";
 			return select_box($name, $selected_id, $sql, 'area_code', 'description', array());
@@ -168,9 +166,7 @@
 		static public function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false) {
 			// all sales codes
 			if (!$legacy) {
-				return Item::addSearchBox($name, array_merge(array(
-																													'selected' => $selected_id, 'type' => $type, 'cells' => true,
-				'sale' => true), $opts));
+				return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cells' => true,'sale' => true), $opts));
 			}
 			$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
 			if ($type == 'kits') {
@@ -197,8 +193,9 @@
 																																																$opts));
 		}
 
-		static public function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {
-			return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false), $legacy);
+		static public function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
+			return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false,
+																																															 'sale'=>false,'kits'=>false));
 		}
 
 		static public function local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {

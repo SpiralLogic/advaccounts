@@ -109,6 +109,6 @@ Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
 	}
 	/* end of check to see that there was an invoice record to print */
 	Display::submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
-	Page::end(true);
+	Page::end();
 
 ?>

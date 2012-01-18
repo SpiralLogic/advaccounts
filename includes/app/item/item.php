@@ -396,7 +396,6 @@ s.category_id, editable, 0 as kit,
 						 s.category_id = c.category_id GROUP BY s.stock_id ORDER BY s.weight, s.category_id, s.stock_id ";
 			DB::prepare($sql, true);
 			DB::execute($finalterms, true);
-			var_dump(DB::$queryString);
 			exit();
 		}
 		static public function searchOrder($term, $UniqueID) {
@@ -438,8 +437,11 @@ s.category_id, editable, 0 as kit,
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			}
+			elseif ($o['kits']) {
+				$where .= " AND s.stock_id!=i.stock_id ";
+				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
+			}
 			else {
-				$item_code = " s.item_code as stock_id";
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
@@ -451,7 +453,6 @@ s.category_id, editable, 0 as kit,
 							ORDER BY weight, s.category_id, s.item_code LIMIT 30";
 			DB::prepare($sql);
 			return DB::execute($terms);
-
 		}
 		static public function addEditDialog($options = array()) {
 			$default = array('page' => 0);
@@ -474,26 +475,27 @@ JS;
 		}
 		/**
 		 * @static
-		 * @param $id
+		 *
+		 * @param       $id
 		 * @param array $options 'description' => false,<br>
-		 				'disabled' => false,<br>
-		 				'editable' => true,<br>
-		 				'selected' => '',<br>
-		 				'label' => false,<br>
-		 				'cells' => false,<br>
-		 				'inactive' => false,<br>
-		 				'purchase' => false,<br>
-		 				'sale' => false,<br>
-		 				'js' => '',<br>
-		 				'selectjs' => '',<br>
-		 				'submitonselect' => '',<br>
-		 				'sales_type' => 1,<br>
-		 				'no_sale' => false,<br>
-		 				'select' => false,<br>
-		 				'type' => 'local',<br>
-		 				'kits'=>true,<br>
-		 				'where' => '',<br>
-		 				'size'=>'20px'<br>
+		'disabled' => false,<br>
+		'editable' => true,<br>
+		'selected' => '',<br>
+		'label' => false,<br>
+		'cells' => false,<br>
+		'inactive' => false,<br>
+		'purchase' => false,<br>
+		'sale' => false,<br>
+		'js' => '',<br>
+		'selectjs' => '',<br>
+		'submitonselect' => '',<br>
+		'sales_type' => 1,<br>
+		'no_sale' => false,<br>
+		'select' => false,<br>
+		'type' => 'local',<br>
+		'kits'=>true,<br>
+		'where' => '',<br>
+		'size'=>'20px'<br>
 		 */
 		static public function addSearchBox($id, $options = array()) {
 			echo UI::searchLine($id, '/items/search.php', $options);

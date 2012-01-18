@@ -55,5 +55,5 @@ Page::start("", SA_SALESTRANSVIEW, true);
 		return;
 	}
 	Display::submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
-	Page::end(true);
+	Page::end();
 ?>

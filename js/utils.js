@@ -180,7 +180,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 						 JsHttpRequest.clearTimeout(tcheck);
 					 }
 				 // Write errors to the debug div.
-				 Adv.showStatus({html:errors});
+			if (errors)	 Adv.showStatus({html:errors});
 				 set_mark();
 
 				 Behaviour.apply();

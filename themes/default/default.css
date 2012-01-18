@@ -926,18 +926,31 @@ input.amount, td.amount {
 	box-shadow:  none;
 	color:   #333;
 	line-height:  1.4;
-
 	text-shadow:  0 1px 0;
 }
-
-.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover {
+.ajaxsubmit, .inputsubmit, .editbutton, button, .button {
+	font-size:  11px;
+	padding:   3px 4px;
+	font-weight:  bold;
+	border-radius: 3px 3px 3px 3px;
+	box-shadow:  0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	filter:   progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:   1px solid #7096AB;
+	box-shadow:  none;
+	color:   #333;
+	line-height:  1.4;
+	text-shadow:  0 1px 0;
+}
+.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover, button:hover {
 	color:    #1c4257;
 	-moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	box-shadow:   0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus, .button-large:focus {
+.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus, .button-large:focus, button:focus {
 	outline:   none;
 	color:    #1c4257;
 	border-color:  #7096ab;
@@ -949,7 +962,7 @@ input.amount, td.amount {
 	box-shadow:     0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active {
+.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active, button:active {
 	color:       #1c4257;
 	border-color:    #7096ab;
 	background-image:  -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
@@ -959,7 +972,7 @@ input.amount, td.amount {
 	box-shadow:     none;
 }
 
-.button {
+.button, button {
 	padding:   4px;
 	font:    bold 1em Arial, Sans-Serif;
 	margin:   1px;

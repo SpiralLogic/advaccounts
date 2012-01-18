@@ -201,7 +201,7 @@
 		 */
 		static function handler($type, $message, $file = null, $line = null) {
 			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
-				list($message, $file, $line) = explode('||', $message);
+				list($message, $file, $line) = explode('||', array_pad($message,3,null));
 			}
 			if (in_array($type, static::$ignore)) {
 				return true;

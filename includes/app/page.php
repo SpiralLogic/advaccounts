@@ -47,7 +47,7 @@
 			}
 			return array('', $selected_id);
 		}
-		static public function start($title, $security=SA_OPEN, $no_menu = false, $is_index = false) {
+		static public function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false) {
 			static::set_security($security);
 			if (static::$i === null) {
 				static::$i = new static($title, !$no_menu, $is_index);
@@ -66,7 +66,9 @@
 			static::$security = $security;
 		}
 		static public function end($hide_back_link = false) {
-			if (static::$i) static::$i->end_page($hide_back_link);
+			if (static::$i) {
+				static::$i->end_page($hide_back_link);
+			}
 		}
 		protected function help_url($context = null) {
 			global $help_context;
@@ -94,7 +96,7 @@
 			Ajax::i()->addScript('editors', $edits);
 			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
 			User::add_js_data();
-			if ($this->header) {
+			if ($this->header && $this->menu) {
 				Sidemenu::render();
 			}
 			Messages::show();
@@ -122,7 +124,7 @@
 			if (Config::get('debug')) {
 				$this->display_loaded();
 			}
-			echo "</div>\n";//end footer div
+			echo "</div>\n"; //end footer div
 		}
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
@@ -149,13 +151,13 @@
 			Display::div_end(); // end of _page_body section
 			$this->footer();
 		}
-		protected function __construct($title, $menu, $index=false) {
-$this->is_index=$index;
+		protected function __construct($title, $menu, $index = false) {
+			$this->is_index = $index;
 			$this->title = $title;
 			$this->app = $_SESSION['App'];
 			$this->sel_app = $this->app->selected;
 			$this->frame = isset($_GET['frame']);
-			$this->menu = $this->frame?false:$menu;
+			$this->menu = $this->frame ? false : $menu;
 			$this->renderer = new Renderer();
 			$this->theme = User::theme();
 			if (AJAX_REFERRER || Ajax::in_ajax()) {
@@ -210,24 +212,6 @@ $this->is_index=$index;
 			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
-		public static function get_security() {return static::$security; }
-		public static function error_exit($text) {
-		echo	"<html><head><title>".APP_TITLE.": Error!</title><meta charset='utf-8'>
-			<style>
-			#msgbox,.msgbox {
-				width:    80%;
-				margin:   10px auto;
-				font-weight: bolder;
-			}
-			div.err_msg {
-				margin:      10px;
-				padding:     3px;
-				border:      1px solid #cc3300;
-				background-color: #ffcccc;
-				color:      #dd2200;
-				text-align:    center;
-			}
-			</style></head><body><div id='msgbox'>$text</div></body></html>";
-		}
+		public static function get_security() { return static::$security; }
 	}
 

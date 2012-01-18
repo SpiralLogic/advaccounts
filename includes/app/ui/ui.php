@@ -15,7 +15,7 @@
 				$attr['name'] = $id;
 			}
 			if (!isset($attr['class'])) {
-				$attr['class'] = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+				$attr['class'] = 'button';
 			}
 			HTML::button($id, $content, $attr, false);
 			return static::$_instance;
