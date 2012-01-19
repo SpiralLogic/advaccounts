@@ -14,7 +14,7 @@
 		public $debtor_ref = '';
 		public $credit_status;
 		public $payment_discount = 0;
-		public $pymt_discount;
+		public $pymt_discount=0;
 		public $defaultBranch = 0;
 		public $defaultContact = 0;
 		public $branches = array();

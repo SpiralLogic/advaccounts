@@ -889,15 +889,14 @@
 		echo "</tr>\n";
 	}
 
-	function percent_row($label, $name, $init = null, $params = '') {
+	function percent_row($label, $name, $init = null, $cellparams = '',$inputparams='') {
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
-		if ($params) $name.=' ' . $params;
-		small_amount_row($label, $name , $_POST[$name], null, "%", User::percent_dec());
+		small_amount_row($label, $name , $_POST[$name], null, "%", User::percent_dec(),0,$inputparams);
 	}
 
-	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
+	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null,$inputparams='') {
 		if (!isset($dec)) {
 			$dec = User::price_dec();
 		}
@@ -911,7 +910,7 @@
 		}
 		if ($label != null) {
 			if ($params == null) {
-				$params = "class='label'";
+				$params = " class='label'";
 			}
 			label_cell($label, $params);
 		}
@@ -934,7 +933,7 @@
 		else {
 			echo "class='amount' ";
 		}
-		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "'>";
+		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
@@ -971,9 +970,9 @@
 		echo "</tr>\n";
 	}
 
-	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0) {
+	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0,$inputparams='') {
 		echo "<tr>";
-		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
+		small_amount_cells($label, $name, $init, $params, $post_label, $dec,$inputparams);
 		if ($leftfill != 0) {
 			echo "<td colspan=$leftfill></td>";
 		}
@@ -1005,8 +1004,8 @@
 		echo "</tr>\n";
 	}
 
-	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
+	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams='') {
+		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec,null,$inputparams);
 	}
 
 	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {

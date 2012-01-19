@@ -172,12 +172,12 @@
 		static public function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
-				$dberror = array_pop(Errors::$dberrors);
+				$dberror = end(Errors::$dberrors);
 				$status['status'] = false;
 				$status['message'] = $dberror['message'];
 			}
 			elseif (count(Errors::$messages) > 0) {
-				$message = array_pop(Errors::$messages);
+				$message = end(Errors::$messages);
 				$status['status'] = false;
 				$status['message'] = $message['message'];
 				$status['var'] = basename($message['file']) . $message['line'];
@@ -201,7 +201,7 @@
 		 */
 		static function handler($type, $message, $file = null, $line = null) {
 			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
-				list($message, $file, $line) = explode('||', array_pad($message,3,null));
+				list($message, $file, $line) = explode('||', $message);
 			}
 			if (in_array($type, static::$ignore)) {
 				return true;
@@ -282,6 +282,7 @@
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
+
 			return $content;
 		}
 		/**
@@ -312,7 +313,7 @@
 			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
 			$error['backtrace'] = var_export(debug_backtrace(), true);
 			static::$dberrors[] = $error;
-			static::handler(E_USER_ERROR, $error['message'], false, __LINE__);
+			static::error($error['message'], E_USER_ERROR );
 		}
 		/**
 		 * @static

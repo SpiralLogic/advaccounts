@@ -17,7 +17,6 @@
 	}
 	if ($_SESSION['barcodefile'] != $_POST['unique']) {
 		Page::start(_($help_context="Barcode Generator"),SA_INVENTORYLOCATION);
-
 		$id = uniqid();
 		$_SESSION['barcodefile'] = $id;
 		echo "<form method='post' enctype='multipart/form-data' target='_blank'  action='#'><div class='center'><input
