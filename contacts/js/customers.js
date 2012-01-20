@@ -4,7 +4,7 @@ Adv.extend({
 							 $(".ui-state-highlight").removeClass("ui-state-highlight");
 							 Adv.o.custsearch.prop('disabled',false);
 							 Adv.btnCustomer.hide();
-							 Adv.btnCancel.button('option', 'label', 'New Customer');
+							 Adv.btnCancel.text('New Customer');
 							 Branches.btnBranchAdd();
 
 							 Adv.fieldsChanged = 0;
@@ -25,15 +25,15 @@ Adv.extend({
 						 stateModified:function (feild) {
 							 if (feild.prop('disabled')) return;
 							 Adv.o.custsearch.prop('disabled',true);
-							 Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
+							 Adv.btnCancel.text('Cancel Changes').show();
 							 var fieldname = feild.addClass("ui-state-highlight").attr('name');
 							 $("[name='" + fieldname + "']").each(function () {
 								 $(this).addClass("ui-state-highlight");
 							 });
 							 if (Customer.get().id == null || Customer.get().id == 0) {
-								 Adv.btnCustomer.button("option", "label", "Save New Customer").show();
+								 Adv.btnCustomer.text("Save New Customer").show();
 							 } else {
-								 Adv.btnCustomer.button("option", "label", "Save Changes").show();
+								 Adv.btnCustomer.text("Save Changes").show();
 							 }
 							 Customer.set(fieldname, feild.val());
 							 Adv.Events.onLeave("Continue without saving changes?");
@@ -60,7 +60,7 @@ Adv.extend({
 						 }
 					 });
 var Contacts = function () {
-	var blank, count = 0, adding = false, btn = $("#btnContact").button(), $Contacts = $("#Contacts");
+	var blank, count = 0, adding = false, btn = $("#btnContact"), $Contacts = $("#Contacts");
 	$('#contact').template('contact');
 	return {
 		list:function () {
@@ -99,7 +99,7 @@ var Contacts = function () {
 	};
 }();
 var Branches = function () {
-	var current = {}, list = $("#branchList"), btn = $("#addBranch").button();
+	var current = {}, list = $("#branchList"), btn = $("#addBranch");
 	return {
 		adding:false,
 		init:function () {
@@ -162,7 +162,7 @@ var Branches = function () {
 		btnBranchAdd:function () {
 			btn.unbind('click');
 			if (!Branches.adding && current.branch_id > 0 && Customer.get().id > 0) {
-				btn.button('option', 'label', 'Add New Branch').one('click',
+				btn.text('Add New Branch').one('click',
 																														function (event) {
 																															Branches.New();
 																															Branches.adding = true;
@@ -247,11 +247,11 @@ var Customer = function () {
 			}, 'json')
 		}, Save:function () {
 			Branches.btnBranchAdd();
-			Adv.btnCustomer.button('disable');
+			Adv.btnCustomer.prop('disabled',true);
 			$.post('customers.php', Customer.get(), function (data) {
 				if (data.status) {
 					Adv.showStatus(data.status);
-					Adv.btnCustomer.button('enable');
+					Adv.btnCustomer.prop('disabled',false);
 					if (!data.status.status) {return;}
 				}
 				Adv.resetHighlights();
@@ -290,16 +290,16 @@ $(function () {
 																								selected:-1
 																							}),
 							 accFields:$("[name^='acc_']"),
-							 btnCustomer:$("#btnCustomer").button().click(function () {
+							 btnCustomer:$("#btnCustomer").click(function () {
 								 Customer.Save();
 								 return false;
 							 }),
-							 btnCancel:$("#btnCancel").button().click(function () {
+							 btnCancel:$("#btnCancel").click(function () {
 								 (	!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 								 return false;
 							 }),
 
-							 btnUseShipAddress:$("#useShipAddress").button().click(function () {
+							 btnUseShipAddress:$("#useShipAddress").click(function () {
 								 Adv.accFields.each(function () {
 									 var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
 									 $(this).val(newVal).trigger('change');
@@ -311,6 +311,12 @@ $(function () {
 							 ContactLog:$("#contactLog").hide()
 						 });
 	Adv.o.custsearch = $('#custsearch');
+	$("#addLog").click(function (event) {
+		event.stopImmediatePropagation();
+		Adv.ContactLog.dialog("open");
+		return false;
+	});
+
 	Adv.ContactLog.dialog({
 													autoOpen:false,
 													show:"slide",
@@ -344,7 +350,6 @@ $(function () {
 												}).click(function () {
 																	 $(this).dialog("open");
 																 });
-
 	Adv.tabs.delegate(":input", "change keypress", function (event) {
 		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList') {
 			return;
@@ -364,11 +369,6 @@ $(function () {
 	})
 	$("[name='messageLog']").keypress(function (event) {
 		event.stopImmediatePropagation();
-		return false;
-	});
-	$("#addLog").button().click(function (event) {
-		event.stopImmediatePropagation();
-		Adv.ContactLog.dialog("open");
 		return false;
 	});
 	$("#id").prop('disabled', true);

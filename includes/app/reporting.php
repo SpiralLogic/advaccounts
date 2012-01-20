@@ -140,10 +140,7 @@
 			$js = <<<JS
 		$('#EmailButton$type_no').click(function() {
 			var email = $("#EmailSelect$type_no").val();
-			$.get($(this).data('url') + "&Email="+email,function(response) {
-
-			Adv.showStatus(response);
-			},'json');
+			$.getJSON($(this).data('url') + "&Email="+email);
 			\$emailBox.dialog("close");
 		return false;
 		});
