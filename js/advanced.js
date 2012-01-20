@@ -84,7 +84,8 @@ Adv.extend({
 																var data = $.parseJSON(request.responseText);
 																(data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
 															}
-															catch (e) { console.log(e); Adv.hideStatus()}
+															catch (e) {}							 setTimeout(Adv.hideStatus, 10000);
+
 														}),
 						 showStatus:function (status) {
 							 Adv.msgbox.empty();

@@ -150,6 +150,7 @@
 				if (static::$fatal) {
 					ob_end_clean();
 				}
+
 				echo static::JSONError(true);
 			}
 			elseif (static::$fatal) {

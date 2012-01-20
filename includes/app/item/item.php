@@ -16,18 +16,18 @@
 		public $stock_id;
 		public $tax_type_id = 1;
 		public $mb_flag = STOCK_MANUFACTURE;
-		public $sales_account = 4010;
-		public $inventory_accounts = 1200;
-		public $cogs_account = 5050;
-		public $adjustment_account = 1205;
-		public $assembly_account = 5110;
+		public $sales_account = null;
+		public $inventory_accounts = null;
+		public $cogs_account = null;
+		public $adjustment_account = null;
+		public $assembly_account = null;
 		public $dimension_id = 0;
 		public $dimension2_id = 0;
 		public $actual_cost = 0;
 		public $last_cost = 0;
 		public $material_cost = 0;
 		public $labour_cost = 0;
-		public $overhead_cost = false;
+		public $overhead_cost = 0;
 		public $inactive = false;
 		public $no_sale = false;
 		public $editable = 0;
@@ -71,10 +71,10 @@
 			$this->tax_type_id = 1;
 			$this->mb_flag = STOCK_PURCHASED;
 			$this->sales_account = DB_Company::i()->default_inv_sales_act;
-			$this->inventory_accounts = DB_Company::i()->default_inventory_act;
+			if (STOCK_MANUFACTURE || STOCK_PURCHASED) $this->inventory_accounts = DB_Company::i()->default_inventory_act;
 			$this->cogs_account = DB_Company::i()->default_cogs_act;
 			$this->adjustment_account = DB_Company::i()->default_adj_act;
-			$this->assembly_account = DB_Company::i()->default_assembly_act;
+			if (STOCK_MANUFACTURE ) $this->assembly_account = DB_Company::i()->default_assembly_act;
 			$this->actual_cost = 0;
 			$this->last_cost = 0;
 			$this->material_cost = 0;
@@ -417,6 +417,8 @@ s.category_id, editable, 0 as kit,
 			}
 			$where2 .= ' AND i.id = s.stockid ';
 			$sales_type = $prices = '';
+			$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
+			$item_code = " i.id,i.stock_id";
 			if ($o['purchase']) {
 				array_unshift($terms, $item_code);
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
@@ -439,11 +441,7 @@ s.category_id, editable, 0 as kit,
 			}
 			elseif ($o['kits']) {
 				$where .= " AND s.stock_id!=i.stock_id ";
-				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-			}
-			else {
-				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-			}
+				}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql
 			 = "SELECT $select $item_code ,i.description as item_name, c.description as category, i.long_description as description , editable,

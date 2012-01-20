@@ -943,8 +943,8 @@
 		Ajax::i()->addAssign($name, $name, 'data-dec', $dec);
 	}
 
-	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
-		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id);
+	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null,$inputparams='') {
+		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id,$inputparams);
 	}
 
 	/**
@@ -964,9 +964,9 @@
 		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec + 2);
 	}
 
-	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams='') {
 		echo "<tr>";
-		amount_cells($label, $name, $init, $params, $post_label, $dec);
+		amount_cells($label, $name, $init, $params, $post_label, $dec,$inputparams);
 		echo "</tr>\n";
 	}
 

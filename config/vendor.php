@@ -15,7 +15,7 @@
 		'Crypt_Rijndael', //
 		'Crypt_RSA', //
 		'Crypt_TripleDES', //
-		'Firephp'=>'FB', //
+		'FirePHP'=>'FB', //
 		'gettextNativeSupport', //
 		'PHPMailer', //
 		'SMTP', //
