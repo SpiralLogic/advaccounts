@@ -202,7 +202,7 @@
 				header("Content-type: text/html; charset='$encoding'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html class='" . strtolower($this->sel_app->id) . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<html " . (is_object($this->sel_app)?"class='".strtolower($this->sel_app->id)."'":'') . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 			echo "<head><title>" . $this->title . "</title>";
 			echo "<meta charset='$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";

@@ -418,14 +418,14 @@ s.category_id, editable, 0 as kit,
 			$where2 .= ' AND i.id = s.stockid ';
 			$sales_type = $prices = '';
 			$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-			$item_code = " i.id,i.stock_id";
+			//$item_code = " i.id,i.stock_id";
 			if ($o['purchase']) {
 				array_unshift($terms, $item_code);
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
 				if (Input::session('supplier_id', Input::NUMERIC)) {
 					array_unshift($terms, $_SESSION['supplier_id']);
-					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
+					$weight = ' IF(p.supplier_id = ?,0,20) + ' . $weight;
 				}
 				$item_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price ';
 				$prices = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
@@ -449,8 +449,10 @@ s.category_id, editable, 0 as kit,
 							WHERE (s.item_code LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
 							ORDER BY weight, s.category_id, s.item_code LIMIT 30";
-			DB::prepare($sql);
-			return DB::execute($terms);
+			DB::prepare($sql,true);
+
+
+			return DB::execute($terms,true);
 		}
 		static public function addEditDialog($options = array()) {
 			$default = array('page' => 0);

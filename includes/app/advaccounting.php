@@ -16,8 +16,7 @@
 	/**
 	 *
 	 */
-	class ADVAccounting
-	{
+	class ADVAccounting {
 		/**
 		 * @var
 		 */
@@ -38,6 +37,7 @@
 		 * @var \Menu
 		 */
 		public $menu;
+
 		/**
 		 *
 		 */
@@ -64,6 +64,7 @@
 			$this->add_application(new Apps_System());
 			$this->get_selected();
 		}
+
 		/**
 		 * @param $app
 		 */
@@ -73,6 +74,7 @@
 				$this->applications[strtolower($app->id)] = $app;
 			}
 		}
+
 		/**
 		 * @param $id
 		 *
@@ -84,6 +86,7 @@
 			}
 			return null;
 		}
+
 		/**
 		 * @return null
 		 */
@@ -93,14 +96,15 @@
 			}
 			$path = explode('/', $_SERVER['SCRIPT_NAME']);
 			$app_id = $path[0];
-			$this->selected=$this->get_application($app_id);
+			$this->selected = $this->get_application($app_id);
 			if (!$this->selected) {
 				$app_id = User::get()->startup_tab();
-				$this->selected=$this->get_application($app_id);
+				$this->selected = $this->get_application($app_id);
 			}
 
 			return $this->selected;
 		}
+
 		/**
 		 *
 		 */
@@ -111,51 +115,58 @@
 		}
 
 		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
+
 		/**
 		 * @static
 		 *
 		 */
 		static public function i() {
 			require_once APPPATH . "main.php";
-			static::checkLogin();
+			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
+				static::checkLogin();
+			}
+
+			if (!isset($_SESSION["App"])) {
+				$_SESSION["App"] = new ADVAccounting();
+			}
+			return $_SESSION["App"];
+		}
+
+		/**
+		 *
+		 */
+		static protected function checkLogin() {
+
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 					$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 					static::showLogin();
 				}
 			}
-			if (!isset($_SESSION["App"])) {
-				$_SESSION["App"] = new ADVAccounting();
-			}
-			return $_SESSION["App"];
-		}
-		/**
-		 *
-		 */
-		static protected function checkLogin() {
 			// logout.php is the only page we should have always
 			// accessable regardless of access level and current login status.
+
 			$currentUser = User::get();
-			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-				if (Input::post("user_name_entry_field")) {
-					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
-					// select full vs fallback ui mode on login
-					$currentUser->ui_mode = $_POST['ui_mode'];
-					if (!$succeed) {
-						// Incorrect password
-						static::loginFail();
-					}
-					Session::regenerate();
-					Language::i()->set_language($_SESSION['Language']->code);
+			if (Input::post("user_name_entry_field")) {
+				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+				// select full vs fallback ui mode on login
+				$currentUser->ui_mode = $_POST['ui_mode'];
+				if (!$succeed) {
+					// Incorrect password
+					static::loginFail();
 				}
-				elseif (!$currentUser->logged_in()) {
-					static::showLogin();
-				}
-				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-					Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
-				}
+				Session::regenerate();
+				Language::i()->set_language($_SESSION['Language']->code);
+			}
+			elseif (!$currentUser->logged_in()) {
+				static::showLogin();
+			}
+			if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+				Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 			}
 		}
+
+
 		/**
 		 *
 		 */
@@ -173,6 +184,7 @@
 			}
 			exit();
 		}
+
 		/**
 		 *
 		 */
@@ -186,6 +198,7 @@
 			Session::kill();
 			die();
 		}
+
 		/**
 		 * @static
 		 *
