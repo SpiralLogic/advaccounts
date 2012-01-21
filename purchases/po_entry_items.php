@@ -73,7 +73,7 @@
 	elseif (isset($_GET[Orders::NEW_ORDER])) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
-			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' style='width:90%' height='350' frameborder='0'></iframe></div>";
+			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' style='width:90%; height:350px' frameborder='0'></iframe></div>";
 		}
 	}
 	start_form();
@@ -217,7 +217,7 @@
 			}
 			if (isset($_GET[LOC_DROP_SHIP])) {
 				$item_info = Item::get('DS');
-				$_POST['StkLocation'] = LOC_DROP_SHIP;
+				$_POST['StkLocation'] = $order->Location =  LOC_DROP_SHIP;
 				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {

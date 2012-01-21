@@ -138,12 +138,9 @@
 			UI::button('EmailButton' . $type_no, $link_text, array(
 																														'style' => 'margin:20px', 'data-url' => $url))->p;
 			$js = <<<JS
-		$('#EmailButton$type_no').button().click(function() {
+		$('#EmailButton$type_no').click(function() {
 			var email = $("#EmailSelect$type_no").val();
-			$.get($(this).data('url') + "&Email="+email,function(response) {
-
-			Adv.showStatus(response);
-			},'json');
+			$.getJSON($(this).data('url') + "&Email="+email);
 			\$emailBox.dialog("close");
 		return false;
 		});

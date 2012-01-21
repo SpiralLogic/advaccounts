@@ -218,6 +218,6 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
-	Page::end(true);
+	Page::end();
 
 ?>

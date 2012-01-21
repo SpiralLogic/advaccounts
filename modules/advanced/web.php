@@ -7,6 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	require $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
+
 	function getCustomers() {
 		$customersXML = getCustomersXML();
 		if (!$customersXML) {
@@ -73,15 +75,15 @@
 			$c->tax_id = $row["TaxID"];
 			$c->webid = $row["CustomerID"];
 			$c->contact_name = $row["FirstName"];
-
 			$c->save();
 			$status = $c->getStatus();
 			$dup = ((substr($status['message'], 0, 9) == "Duplicate"));
 			if ($dup) {
 				$result2 = DB::select('debtor_no')->from('debtors')->where('name LIKE', $c->name)->fetch()->assoc()->one();
-			if (!$result2) continue;
-
-					$c->id = $result2['debtor_no'];
+				if (!$result2) {
+					continue;
+				}
+				$c->id = $result2['debtor_no'];
 				$d = new Debtor((array)$c);
 				$d->save();
 			}
@@ -94,7 +96,6 @@
 	}
 
 	if (AJAX_REFERRER) {
-
 		$products = getProducts();
 		if ($products) {
 			foreach ($products as $product) {
@@ -128,17 +129,16 @@
 		exit();
 	}
 	Page::start('Get From Web', SA_OPEN, true);
-JS::beforeload(<<<JS
+	JS::beforeload(<<<JS
 			Adv.getFromWeb = function () {
 				$.get('#', function (data) {
 					$(data).prependTo('#wrapper');
-					if (data) return Adv.getFromWeb();
-					$('<div>Finished</div>').prependTo('#wrapper');
+					if (data) {return Adv.getFromWeb();}
+					$("<div>Finished</div>").prependTo('#wrapper');
 				});
 			}
 			Adv.getFromWeb();
 JS
 );
-
 	Page::end(true);
 

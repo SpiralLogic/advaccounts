@@ -71,7 +71,9 @@
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[] = "Adv.Forms.autocomplete('$id','$url',$callback);";
+			$js= "Adv.Forms.autocomplete('$id','$url',$callback);";
+			$clean = "Adv.o.autocomplete['$id'].autocomplete('destroy');";
+				static::addLive($js, $clean);
 
 		}
 		/**

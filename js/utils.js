@@ -180,7 +180,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 						 JsHttpRequest.clearTimeout(tcheck);
 					 }
 				 // Write errors to the debug div.
-				 document.getElementById('msgbox').innerHTML = errors;
+			if (errors)	 Adv.showStatus({html:errors});
 				 set_mark();
 
 				 Behaviour.apply();

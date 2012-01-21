@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -74,6 +73,7 @@
 		 * @var array Errors to ignore comeletely
 		 */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+
 		/**
 		 * @static Initialiser
 		 *
@@ -96,6 +96,7 @@
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -107,6 +108,7 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
 		}
+
 		/**
 		 * @static
 		 *
@@ -117,6 +119,7 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
 		}
+
 		/**
 		 * @static
 		 *
@@ -127,6 +130,7 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}
+
 		/**
 		 * @static Shutdown handler
 		 *
@@ -147,14 +151,12 @@
 				Ajax::i()->run();
 			}
 			elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
-				if (static::$fatal) {
 					ob_end_clean();
-				}
 				echo static::JSONError(true);
 			}
 			elseif (static::$fatal) {
 				ob_end_clean();
-				static::format();
+				Page::error_exit(static::format());
 				exit();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
@@ -162,6 +164,7 @@
 				ob_end_flush();
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -172,15 +175,15 @@
 		static public function JSONError($json = false) {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
-				$dberror = array_pop(Errors::$dberrors);
+				$dberror = end(Errors::$dberrors);
 				$status['status'] = false;
 				$status['message'] = $dberror['message'];
 			}
 			elseif (count(Errors::$messages) > 0) {
-				$message = array_pop(Errors::$messages);
-				$status['status'] = false;
+				$message = end(Errors::$messages);
+				$status['status'] = ($message['type']==E_USER_NOTICE);
 				$status['message'] = $message['message'];
-				$status['var'] = basename($message['file']) . $message['line'];
+				if (Config::get('debug'))$status['var'] = 'file: '.basename($message['file']) . ' line: '.$message['line'];
 				$status['process'] = '';
 			}
 			static::$jsonerrorsent = true;
@@ -189,6 +192,7 @@
 			}
 			return $status;
 		}
+
 		/**
 		 * @static
 		 *
@@ -219,6 +223,7 @@
 			}
 			return true;
 		}
+
 		/**
 		 * @static
 		 *
@@ -232,6 +237,7 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
+
 		/**
 		 * @static
 		 * @return string
@@ -282,8 +288,10 @@
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
+
 			return $content;
 		}
+
 		/**
 		 * @static
 		 *
@@ -294,6 +302,7 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
+
 		/**
 		 * @static
 		 *
@@ -310,10 +319,17 @@
 				$error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
 			}
 			$error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
-			$error['backtrace'] = var_export(debug_backtrace(), true);
+			$backtrace = debug_backtrace();
+			$error['source'] = array_shift($backtrace);
+			$error['backtrace'] = var_export($backtrace, true);
 			static::$dberrors[] = $error;
-			static::handler(E_USER_ERROR, $error['message'], false, __LINE__);
+			$db_source_file = $error['source']['file'];
+			while ($error['source']['file'] == $db_source_file) {
+				$error['source'] = array_shift($backtrace);
+			}
+			trigger_error($error['message'] . '||' . $error['source']['file'] . '||' . $error['source']['line'] . '||', E_USER_ERROR);
 		}
+
 		/**
 		 * @static
 		 *
@@ -331,7 +347,7 @@
 				if (!isset($trace['file'])) {
 					unset($data['backtrace'][$key]);
 				}
-				elseif ($trace['file'] == __FILE__ || $trace['function']=='shutdown_handler') {
+				elseif ($trace['file'] == __FILE__ || $trace['function'] == 'shutdown_handler') {
 					unset($data['backtrace'][$key]);
 				}
 			}
@@ -341,3 +357,4 @@
 	}
 
 	Errors::init();
+

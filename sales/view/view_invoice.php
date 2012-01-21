@@ -104,6 +104,6 @@ Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
 	$emails = $customer->getEmailAddresses();
 	Display::submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
 	Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
-	Page::end(true);
+	Page::end();
 
 ?>

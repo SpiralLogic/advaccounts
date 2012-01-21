@@ -101,4 +101,4 @@ Page::start(_($help_context = "View Sales Dispatch"), SA_SALESTRANSVIEW, true);
 		return;
 	}
 	Display::submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
-	Page::end(true);
+	Page::end();
