@@ -86,9 +86,9 @@ HTML;
 	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
 		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
 		<label for="sales_account"><span>Sales Account:</span>$sales_account</label>
-<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>
+		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>
 	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
-	<label for="adjustment_account"><span>Adjustments Account:</span>$adjustment_account</label>
+	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments Account:</span>$adjustment_account</label> {{/if}}
 	<label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label></div>
 HTML;
 	$menu->endTab();

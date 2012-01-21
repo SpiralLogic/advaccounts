@@ -16,6 +16,7 @@
 	require_once("bootstrap.php");
 	/** @var ADVAccounting $app */
 	$app = Session::i()->App;
+
 	Extensions::add_access();
 	if (Input::get('application')) {
 		$app->set_selected ($_GET['application']);

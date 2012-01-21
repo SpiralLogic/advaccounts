@@ -93,7 +93,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = WO::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
-		Errors::error(_("Entered item is not defined. Please re-enter."));
+		Errors::warning(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
 	}
 	else {
