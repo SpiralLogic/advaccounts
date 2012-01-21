@@ -17,3 +17,4 @@ sor4.xml
 tmp/chromelogs
 tmp/test.csv
 .idea
+tmp/chromelogs/last_run.json
