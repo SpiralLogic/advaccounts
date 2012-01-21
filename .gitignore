@@ -14,7 +14,8 @@ company/pdf_files/*
 .git/*
 settings.jar
 sor4.xml
-tmp/chromelogs/*
 tmp/chromelogs
 tmp/test.csv
 .idea
+
+tmp/chromelogs/last_run.json
