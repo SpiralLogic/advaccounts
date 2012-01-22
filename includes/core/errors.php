@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -73,7 +74,6 @@
 		 * @var array Errors to ignore comeletely
 		 */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-
 		/**
 		 * @static Initialiser
 		 *
@@ -96,7 +96,6 @@
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -108,7 +107,6 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
@@ -119,7 +117,6 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
 		}
-
 		/**
 		 * @static
 		 *
@@ -130,7 +127,6 @@
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}
-
 		/**
 		 * @static Shutdown handler
 		 *
@@ -150,9 +146,9 @@
 			if (Ajax::in_ajax()) {
 				Ajax::i()->run();
 			}
-			elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
-					ob_end_clean();
-				echo static::JSONError(true);
+			elseif (AJAX_REFERRER && IS_JSON_REQUEST &&!static::$jsonerrorsent) {
+				ob_end_clean();
+				echo static::getJSONError();
 			}
 			elseif (static::$fatal) {
 				ob_end_clean();
@@ -164,7 +160,6 @@
 				ob_end_flush();
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -172,7 +167,7 @@
 		 *
 		 * @return array|bool|string
 		 */
-		static public function JSONError($json = false) {
+		static public function JSONError() {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
 				$dberror = end(Errors::$dberrors);
@@ -181,18 +176,19 @@
 			}
 			elseif (count(Errors::$messages) > 0) {
 				$message = end(Errors::$messages);
-				$status['status'] = ($message['type']==E_USER_NOTICE);
+				$status['status'] = ($message['type'] == E_USER_NOTICE);
 				$status['message'] = $message['message'];
-				if (Config::get('debug'))$status['var'] = 'file: '.basename($message['file']) . ' line: '.$message['line'];
+				if (Config::get('debug')) {
+					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
+				}
 				$status['process'] = '';
 			}
 			static::$jsonerrorsent = true;
-			if ($json && $status) {
-				return json_encode(array('status' => $status));
-			}
 			return $status;
 		}
-
+		static public function getJSONError() {
+			return json_encode(array('status' => $status));
+		}
 		/**
 		 * @static
 		 *
@@ -223,7 +219,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -237,7 +232,6 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -288,10 +282,8 @@
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
-
 			return $content;
 		}
-
 		/**
 		 * @static
 		 *
@@ -302,7 +294,6 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
-
 		/**
 		 * @static
 		 *
@@ -329,7 +320,6 @@
 			}
 			trigger_error($error['message'] . '||' . $error['source']['file'] . '||' . $error['source']['line'] . '||', E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *

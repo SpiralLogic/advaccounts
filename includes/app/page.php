@@ -184,7 +184,8 @@
 			echo "<div id='top'>\n";
 			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
 			echo "<ul>\n";
-			" <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+			echo	 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
+		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
@@ -202,7 +203,8 @@
 				header("Content-type: text/html; charset='$encoding'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html " . (is_object($this->sel_app)?"class='".strtolower($this->sel_app->id)."'":'') . "' dir='" . $_SESSION['Language']->dir . "' >\n";
+			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
+			 '') . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 			echo "<head><title>" . $this->title . "</title>";
 			echo "<meta charset='$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";

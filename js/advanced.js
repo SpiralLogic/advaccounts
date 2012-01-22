@@ -27,7 +27,7 @@ jQuery.fn.quickEach = (function () {
 		delete jq[0];
 		return this;
 	};
-}());
+}())
 (function (window, $, undefined) {
 	//noinspection LocalVariableNamingConventionJS
 	var Adv = {
@@ -39,13 +39,13 @@ jQuery.fn.quickEach = (function () {
 		o:{tabs:{}}
 	};
 	(function () {
-		var extender = jQuery.extend;
+		var extender = $.extend;
 		this.o.wrapper = $("#wrapper");
 		this.o.autocomplete = {};
 		$(this.loader)
 		 .ajaxStart(function () {
 									Adv.loader.on();
-									if (Adv.debug.ajax) console.time('ajax')
+									if (Adv.debug.ajax) {console.time('ajax')}
 								})
 		 .ajaxStop(function () {
 								 Adv.loader.off();
@@ -60,7 +60,7 @@ jQuery.fn.quickEach = (function () {
 			on:function (img) {
 				Adv.loader.tout = Adv.loader.tout || 15000;	// default timeout value
 				img = Adv.loader.tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
-				if (img) Adv.loader.src = user.theme + 'images/' + img;
+				if (img) {Adv.loader.src = user.theme + 'images/' + img;}
 				Adv.loader.style.visibility = 'visible';
 			}
 		})
@@ -169,9 +169,9 @@ Adv.extend({
 						 }
 					 });
 Adv.extend({Forms:(function () {
-	if (0 < document.getElementsByClassName('datepicker').length) {
+	if (document.getElementsByClassName('datepicker').length > 0) {
 		Adv.o.wrapper.on('focus', ".datepicker",
-										 function (event) { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+										 function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 	}
 	var _setFormValue = function (el, value, disabled) {
 		if (!el) {return;}
@@ -188,7 +188,7 @@ Adv.extend({Forms:(function () {
 		if (el.type === 'checkbox') {
 			el.checked = !!value;
 		}
-		if (0 === String(value).length) {
+		if (String(value).length === 0) {
 			value = '';
 		}
 		el.value = value;

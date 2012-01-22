@@ -46,14 +46,14 @@
 				}
 				else {
 					$auth->update_password($_SESSION['current_user']->user, $_POST['password']);
-					unset($_SESSION['change_password']);
+					User::get()->change_password=false;
 					Errors::notice(_("Password Changed"));
 				}
 			}
 			Ajax::i()->activate('_page_body');
 		}
 	}
-	elseif (Input::session('change_password')) {
+	elseif (User::get()->change_password) {
 		Errors::warning('You are required to change your password!');
 	}
 	start_form();
