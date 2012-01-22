@@ -27,7 +27,7 @@ jQuery.fn.quickEach = (function () {
 		delete jq[0];
 		return this;
 	};
-}())
+}());
 (function (window, $, undefined) {
 	//noinspection LocalVariableNamingConventionJS
 	var Adv = {
@@ -39,7 +39,7 @@ jQuery.fn.quickEach = (function () {
 		o:{tabs:{}}
 	};
 	(function () {
-		var extender = $.extend;
+		var extender = jQuery.extend;
 		this.o.wrapper = $("#wrapper");
 		this.o.autocomplete = {};
 		$(this.loader)
