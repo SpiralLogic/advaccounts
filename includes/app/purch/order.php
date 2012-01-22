@@ -417,7 +417,7 @@
 		}
 		public function summary($is_self = false, $editable = false) {
 			start_table('tablestyle2 width90');
-			echo "<tr class='tableheader2 top'><th colspan=4>";
+			echo "<tr class='tablerowhead top'><th colspan=4>";
 			Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 			echo "</td></tr>";
 			start_row();

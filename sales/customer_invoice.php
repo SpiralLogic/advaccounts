@@ -175,19 +175,19 @@
 	hidden('order_id');
 	start_table('tablestyle2 width90 pad5');
 	start_row();
-	label_cells(_("Customer"), $order->customer_name, "class='tableheader2'");
-	label_cells(_("Branch"), Sales_Branch::get_name($order->Branch), "class='tableheader2'");
-	label_cells(_("Currency"), $order->customer_currency, "class='tableheader2'");
+	label_cells(_("Customer"), $order->customer_name, "class='tablerowhead'");
+	label_cells(_("Branch"), Sales_Branch::get_name($order->Branch), "class='tablerowhead'");
+	label_cells(_("Currency"), $order->customer_currency, "class='tablerowhead'");
 	end_row();
 	start_row();
 	if ($order->trans_no == 0) {
-		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+		ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
 	}
 	else {
-		label_cells(_("Reference"), $order->reference, "class='tableheader2'");
+		label_cells(_("Reference"), $order->reference, "class='tablerowhead'");
 	}
-	label_cells(_("Delivery Notes:"), Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tableheader2'");
-	label_cells(_("Sales Type"), $order->sales_type_name, "class='tableheader2'");
+	label_cells(_("Delivery Notes:"), Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
+	label_cells(_("Sales Type"), $order->sales_type_name, "class='tablerowhead'");
 	end_row();
 	start_row();
 	if (!isset($_POST['ship_via'])) {
@@ -207,7 +207,7 @@
 		}
 	}
 	if (!$order->view_only) {
-		date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tableheader2'", true);
+		date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
 	}
 	else {
 		label_cells(_('Invoice Date:'),$_POST['InvoiceDate']);
@@ -216,7 +216,7 @@
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
 	}
 	if (!$order->view_only) {
-		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
 	}
 	else {
 		label_cells(_('Due Date'),$_POST['due_date']);

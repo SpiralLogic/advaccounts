@@ -36,18 +36,18 @@
 		Display::div_start('balance_tbl');
 		start_table('tablestyle');
 		$tableheader = "<tr>
- <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
- <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
-		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
-		<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
-		<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
+ <td rowspan=2 class='tablehead'>" . _("Account") . "</td>
+ <td rowspan=2 class='tablehead'>" . _("Account Name") . "</td>
+		<td colspan=2 class='tablehead'>" . _("Brought Forward") . "</td>
+		<td colspan=2 class='tablehead'>" . _("This Period") . "</td>
+		<td colspan=2 class='tablehead'>" . _("Balance") . "</td>
 		</tr><tr>
-		<td class='tableheader'>" . _("Debit") . "</td>
- <td class='tableheader'>" . _("Credit") . "</td>
-		<td class='tableheader'>" . _("Debit") . "</td>
-		<td class='tableheader'>" . _("Credit") . "</td>
- <td class='tableheader'>" . _("Debit") . "</td>
- <td class='tableheader'>" . _("Credit") . "</td>
+		<td class='tablehead'>" . _("Debit") . "</td>
+ <td class='tablehead'>" . _("Credit") . "</td>
+		<td class='tablehead'>" . _("Debit") . "</td>
+		<td class='tablehead'>" . _("Credit") . "</td>
+ <td class='tablehead'>" . _("Debit") . "</td>
+ <td class='tablehead'>" . _("Credit") . "</td>
  </tr>";
 		echo $tableheader;
 		$k = 0;

@@ -66,10 +66,10 @@ Page::start(_($help_context = "Inventory Item Cost Update"), SA_STANDARDCOST);
 	$_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
 	$_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);
 	$_POST['overhead_cost'] = Num::price_decimal($myrow["overhead_cost"], $dec3);
-	amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
+	amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tablerowhead'", null, $dec1);
 	if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
-		amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
-		amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
+		amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tablerowhead'", null, $dec2);
+		amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tablerowhead'", null, $dec3);
 	}
 	else {
 		hidden("labour_cost", 0);

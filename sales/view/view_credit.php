@@ -40,13 +40,13 @@ Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width100');
 	start_row();
-	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
-	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
-	label_cells(_("Currency"), $myrow["curr_code"], "class='tableheader2'");
+	label_cells(_("Ref"), $myrow["reference"], "class='tablerowhead'");
+	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tablerowhead'");
+	label_cells(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
 	end_row();
 	start_row();
-	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
-	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
+	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tablerowhead'");
+	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tablerowhead'");
 	end_row();
 	DB_Comments::display_row(ST_CUSTCREDIT, $trans_id);
 	end_table();

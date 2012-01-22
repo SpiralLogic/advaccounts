@@ -191,33 +191,33 @@
 		echo "<tr><td>"; // outer table
 		start_table('tablestyle width100');
 		start_row();
-		label_cells(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tableheader2'");
-		label_cells(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tableheader2'");
-		label_cells(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tableheader2'");
+		label_cells(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
+		label_cells(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
+		label_cells(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
 		end_row();
 		start_row();
 		if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-			ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+			ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
 		}
 		else {
-			label_cells(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tableheader2'");
+			label_cells(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
 		}
-		label_cells(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tableheader2'");
+		label_cells(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
 		if (!isset($_POST['ShipperID'])) {
 			$_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
 		}
-		label_cell(_("Shipping Company"), "class='tableheader2'");
+		label_cell(_("Shipping Company"), "class='tablerowhead'");
 		Sales_UI::shippers_cells(null, 'ShipperID', $_POST['ShipperID']);
 		//	if (!isset($_POST['sales_type_id']))
 		//	 $_POST['sales_type_id'] = Orders::session_get($_POST['order_id'])->sales_type;
-		//	label_cell(_("Sales Type"), "class='tableheader2'");
+		//	label_cell(_("Sales Type"), "class='tablerowhead'");
 		//	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
 		end_row();
 		end_table();
 		echo "</td><td>"; // outer table
 		start_table('tablestyle width100');
-		label_row(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tableheader2'");
-		date_row(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tableheader2'");
+		label_row(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
+		date_row(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tablerowhead'");
 		end_table();
 		echo "</td></tr>";
 		end_table(1); // outer table

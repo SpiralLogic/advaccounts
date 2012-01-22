@@ -22,7 +22,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	}
 	$_SESSION['View'] = $view = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
 	start_table('tablesstyle2 pad0 width95');
-	echo "<tr class='tableheader2 top'><th colspan=4>";
+	echo "<tr class='tablerowhead top'><th colspan=4>";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	}

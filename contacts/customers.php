@@ -155,7 +155,7 @@
 		'class' => '', 'style' => 'display:inline-block'
 	))->tr(true)->td(array(
 		'content' => '${name}',
-		'class' => 'tableheader',
+		'class' => 'tablehead',
 		'colspan' => 2
 	))->td->tr;
 	text_row("Name:", 'con_name-${id}', '${name}', 35, 40);

@@ -178,7 +178,7 @@
 			$m = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
 			//			 Errors::error(sprintf("Bad section %X:", $m));
-			label_row($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='tableheader2'", "class='tableheader'");
+			label_row($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='tablerowhead'", "class='tablehead'");
 		}
 		if (check_value('Section' . $m)) {
 			alt_table_row_color($k);

@@ -166,10 +166,10 @@
 		Display::div_start('pl_tbl');
 		start_table('tablestyle width50');
 		$tableheader = "<tr>
- <td class='tableheader'>" . _("Group/Account Name") . "</td>
- <td class='tableheader'>" . _("Period") . "</td>
-		<td class='tableheader'>" . $sel[$compare] . "</td>
-		<td class='tableheader'>" . _("Achieved %") . "</td>
+ <td class='tablehead'>" . _("Group/Account Name") . "</td>
+ <td class='tablehead'>" . _("Period") . "</td>
+		<td class='tablehead'>" . $sel[$compare] . "</td>
+		<td class='tablehead'>" . _("Achieved %") . "</td>
  </tr>";
 		if (!$drilldown) //Root Level
 		{

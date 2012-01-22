@@ -23,7 +23,7 @@ Page::start(_($help_context = "View Sales Dispatch"), SA_SALESTRANSVIEW, true);
 	$branch = Sales_Branch::get($myrow["branch_id"]);
 	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
 	start_table('tablestyle2 width90');
-	echo "<tr class='tableheader2 top'><th colspan=6>";
+	echo "<tr class='tablerowhead top'><th colspan=6>";
 	Display::heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
 	echo "</td></tr>";
 	echo "<tr class='top'><td colspan=3>";

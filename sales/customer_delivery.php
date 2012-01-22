@@ -131,7 +131,7 @@
 	else {
 		label_cells(_("Reference"), $order->reference, "class='label'");
 	}
-	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tableheader2'");
+	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
 	label_cells(_("Sales Type"), $order->sales_type_name, "class='label'");
 	end_row();
 	start_row();
