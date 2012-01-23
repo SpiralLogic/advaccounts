@@ -154,6 +154,7 @@
 						}
 						$result = GL_QuickEntry::get_lines($id);
 						$totrate = 0;
+						$qe_lines=array();
 						while ($row = DB::fetch($result)) {
 							$qe_lines[] = $row;
 							switch (strtolower($row['action'])) {
@@ -167,9 +168,12 @@
 						}
 						$first = true;
 						$taxbase = 0;
-						foreach (
-							$qe_lines as $qe_line
-						) {
+						if (!count($qe_lines)) {
+						Errors::error(_('There are no lines for this quick entry!'));
+						Page::footer_exit();
+						}
+
+						foreach ($qe_lines as $qe_line) {
 							switch (strtolower($qe_line['action'])) {
 							case "=": // post current base amount to GL account
 								$part = $base;

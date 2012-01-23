@@ -133,8 +133,6 @@
 		 */
 		static function shutdown_handler() {
 			$Ajax = Ajax::i();
-			Config::store();
-			Cache::set('autoloads', Autoloader::getLoaded());
 			$last_error = error_get_last();
 			// Only show valid fatal errors
 			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
@@ -159,7 +157,11 @@
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
-		}
+			fastcgi_finish_request();
+			Config::store();
+			Cache::set('autoloads', Autoloader::getLoaded());
+			static::send_debug_email();
+			}
 		/**
 		 * @static
 		 *
@@ -244,6 +246,26 @@
 				E_USER_NOTICE => array('USER', 'note_msg')
 			);
 			$content = '';
+
+			foreach (static::$messages as $msg) {
+				$type = $msg['type'];
+				$str = $msg['message'];
+				if ($type < E_USER_ERROR && $type != null) {
+					if ($msg['file']) {
+						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					}
+					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
+					$type = E_USER_ERROR;
+				}
+				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
+					$type = E_USER_WARNING;
+				}
+				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
+				$content .= "<div class='$class[1]'>$str</div>\n\n";
+			}
+			return $content;
+		}
+		static function send_debug_email() {
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
@@ -266,23 +288,6 @@
 					static::handler(E_ERROR, $success, __FILE__, __LINE__);
 				}
 			}
-			foreach (static::$messages as $msg) {
-				$type = $msg['type'];
-				$str = $msg['message'];
-				if ($type < E_USER_ERROR && $type != null) {
-					if ($msg['file']) {
-						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					}
-					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
-					$type = E_USER_ERROR;
-				}
-				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
-					$type = E_USER_WARNING;
-				}
-				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
-				$content .= "<div class='$class[1]'>$str</div>\n\n";
-			}
-			return $content;
 		}
 		/**
 		 * @static
