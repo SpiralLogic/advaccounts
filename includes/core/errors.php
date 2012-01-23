@@ -157,6 +157,8 @@
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+			
+			//
 	//		fastcgi_finish_request();
 			Config::store();
 			Cache::set('autoloads', Autoloader::getLoaded());
