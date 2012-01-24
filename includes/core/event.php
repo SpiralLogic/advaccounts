@@ -59,7 +59,7 @@
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
-			fastcgi_finish_request();
+		fastcgi_finish_request();
 			foreach (static::$shutdown_objects as $object) {
 				if (method_exists($object, '_shutdown')) {
 
