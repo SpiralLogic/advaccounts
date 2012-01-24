@@ -95,74 +95,7 @@
 			else {
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
-		}
-
-		/**
-		 * @static
-		 *
-		 * @param $message Error message
-		 */
-		static function error($message) {
-			//Get the caller of the calling function and details about it
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
-		}
-
-		/**
-		 * @static
-		 *
-		 * @param $msg Notice message
-		 */
-		static function notice($message) {
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
-		}
-
-		/**
-		 * @static
-		 *
-		 * @param $msg Warning message
-		 */
-		static function warning($message) {
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
-		}
-
-		/**
-		 * @static Shutdown handler
-		 *
-		 */
-		static function shutdown_handler() {
-			$Ajax = Ajax::i();
-			Config::store();
-			Cache::set('autoloads', Autoloader::getLoaded());
-			$last_error = error_get_last();
-			// Only show valid fatal errors
-			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
-				$Ajax->aCommands = array();
-				static::$fatal = true;
-				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
-				static::exception_handler($error);
-			}
-			if (Ajax::in_ajax()) {
-				Ajax::i()->run();
-			}
-			elseif (AJAX_REFERRER && IS_JSON_REQUEST) {
-					ob_end_clean();
-				echo static::JSONError(true);
-			}
-			elseif (static::$fatal) {
-				ob_end_clean();
-				Page::error_exit(static::format());
-				exit();
-			}
-			// flush all output buffers (works also with exit inside any div levels)
-			while (ob_get_level()) {
-				ob_end_flush();
-			}
+			Event::register_shutdown(__CLASS__);
 		}
 
 		/**
@@ -172,7 +105,7 @@
 		 *
 		 * @return array|bool|string
 		 */
-		static public function JSONError($json = false) {
+		static public function JSONError() {
 			$status = false;
 			if (count(Errors::$dberrors) > 0) {
 				$dberror = end(Errors::$dberrors);
@@ -181,16 +114,19 @@
 			}
 			elseif (count(Errors::$messages) > 0) {
 				$message = end(Errors::$messages);
-				$status['status'] = ($message['type']==E_USER_NOTICE);
+				$status['status'] = ($message['type'] == E_USER_NOTICE);
 				$status['message'] = $message['message'];
-				if (Config::get('debug'))$status['var'] = 'file: '.basename($message['file']) . ' line: '.$message['line'];
+				if (Config::get('debug')) {
+					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
+				}
 				$status['process'] = '';
 			}
 			static::$jsonerrorsent = true;
-			if ($json && $status) {
-				return json_encode(array('status' => $status));
-			}
 			return $status;
+		}
+
+		static public function getJSONError() {
+			return json_encode(array('status' => $status));
 		}
 
 		/**
@@ -250,6 +186,31 @@
 				E_USER_NOTICE => array('USER', 'note_msg')
 			);
 			$content = '';
+
+			foreach (static::$messages as $msg) {
+				$type = $msg['type'];
+				$str = $msg['message'];
+				if ($type < E_USER_ERROR && $type != null) {
+					if ($msg['file']) {
+						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					}
+					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
+					$type = E_USER_ERROR;
+				}
+				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
+					$type = E_USER_WARNING;
+				}
+				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
+				$content .= "<div class='$class[1]'>$str</div>\n\n";
+			}
+			return $content;
+		}
+
+		static public function _shutdown() {
+return 			static::send_debug_email();
+		}
+
+		static function send_debug_email() {
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
@@ -272,24 +233,6 @@
 					static::handler(E_ERROR, $success, __FILE__, __LINE__);
 				}
 			}
-			foreach (static::$messages as $msg) {
-				$type = $msg['type'];
-				$str = $msg['message'];
-				if ($type < E_USER_ERROR && $type != null) {
-					if ($msg['file']) {
-						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					}
-					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
-					$type = E_USER_ERROR;
-				}
-				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
-					$type = E_USER_WARNING;
-				}
-				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
-				$content .= "<div class='$class[1]'>$str</div>\n\n";
-			}
-
-			return $content;
 		}
 
 		/**
@@ -353,6 +296,35 @@
 			}
 			static::$messages[] = $data;
 			static::$errors[] = $data;
+		}
+
+		public static function process() {
+			$last_error = error_get_last();
+			// Only show valid fatal errors
+			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
+				$Ajax->aCommands = array();
+				static::$fatal = true;
+				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
+				static::exception_handler($error);
+			}
+			if (Ajax::in_ajax()) {
+				Ajax::i()->run();
+			}
+			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
+				ob_end_clean();
+				echo static::getJSONError();
+			}
+			elseif (static::$fatal) {
+				static::fatal();
+			}
+		}
+
+		static public function fatal() {
+			ob_end_clean();
+			$content = static::format();
+			static::send_debug_email();
+			Page::error_exit($content);
+
 		}
 	}
 

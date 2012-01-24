@@ -36,7 +36,7 @@
 	}
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
-		Errors::notice(_("Payment has been sucessfully entered"));
+		Event::notice(_("Payment has been sucessfully entered"));
 		Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 		Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
@@ -84,14 +84,14 @@
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
 	if ($bank_currency != $supplier_currency) {
-		Errors::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
+		Event::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
 	end_form();
 	Page::end();
 	function check_inputs() {
 		if (!get_post('supplier_id')) {
-			Errors::error(_("There is no supplier selected."));
+			Event::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
 			return false;
 		}
@@ -99,25 +99,25 @@
 			$_POST['amount'] = Num::price_format(0);
 		}
 		if (!Validation::is_num('amount', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero."));
+			Event::error(_("The entered amount is invalid or less than zero."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero."));
+			Event::error(_("The entered amount is invalid or less than zero."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (GL_Account::get($charge_acct) == false) {
-				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;
 			}
 		}
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			Errors::error(_("The exchange rate must be numeric and greater than zero."));
+			Event::error(_("The exchange rate must be numeric and greater than zero."));
 			JS::set_focus('_ex_rate');
 			return false;
 		}
@@ -125,28 +125,28 @@
 			$_POST['discount'] = 0;
 		}
 		if (!Validation::is_num('discount', 0)) {
-			Errors::error(_("The entered discount is invalid or less than zero."));
+			Event::error(_("The entered discount is invalid or less than zero."));
 			JS::set_focus('amount');
 			return false;
 		}
 		//if (Validation::input_num('amount') - Validation::input_num('discount') <= 0)
 		if (Validation::input_num('amount') <= 0) {
-			Errors::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+			Event::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (!Dates::is_date($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}

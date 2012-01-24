@@ -61,7 +61,7 @@ Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SU
 				submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 			}
 			else {
-				Errors::warning(_("There are no unsettled transactions to allocate."), 0, 1);
+				Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
 				submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 			}
 			Display::div_end();

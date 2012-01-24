@@ -18,17 +18,17 @@
 		//first off validate inputs sensible
 		if (Input::post('id')) {
 			$input_error = 1;
-			Errors::error(_("The payment method cannot be empty."));
+			Event::error(_("The payment method cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				GL_PaymentMethod::update($selected_id, $_POST['name'], $_POST['undeposited']);
-				Errors::notice(_('Payment method has been updated'));
+				Event::notice(_('Payment method has been updated'));
 			}
 			else {
 				GL_PaymentMethod::add($_POST['name'], $_POST['undeposited']);
-				Errors::notice(_('New payment method has been added'));
+				Event::notice(_('New payment method has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -43,18 +43,18 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this payment method because transactions have been created using this account."));
+			Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM bank_trans WHERE payment_method=$payment_method";
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this payment method because transactions have been created using this account."));
+			Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
 		}
 		if (!$cancel_delete) {
 			GL_PaymentMethod::delete($selected_id);
-			Errors::notice(_('Selected payment method has been deleted'));
+			Event::notice(_('Selected payment method has been deleted'));
 		} //end if Delete bank account
 		$Mode = MODE_RESET;
 	}

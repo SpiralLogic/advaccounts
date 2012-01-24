@@ -171,7 +171,7 @@ JS;
 	Page::end();
 	function check_date() {
 		if (!Dates::is_date(get_post('reconcile_date'))) {
-			Errors::error(_("Invalid reconcile date format"));
+			Event::error(_("Invalid reconcile date format"));
 			JS::set_focus('reconcile_date');
 			return false;
 		}
@@ -247,6 +247,7 @@ JS;
 		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
 		Ajax::i()->activate('reconciled');
 		Ajax::i()->activate('difference');
+		JS::reset_focus();
 		return true;
 	}
 

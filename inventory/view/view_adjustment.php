@@ -25,10 +25,10 @@ Page::start(_($help_context = "View Inventory Adjustment"), SA_ITEMSTRANSVIEW, t
 			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
 			start_table('tablestyle2 width90');
 			start_row();
-			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
-			label_cells(_("Reference"), $adjustment['reference'], "class='tableheader2'", "colspan=6");
-			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
-			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
+			label_cells(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
+			label_cells(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
+			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tablerowhead'");
+			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
 			end_row();
 			DB_Comments::display_row(ST_INVADJUST, $trans_no);
 			end_table();

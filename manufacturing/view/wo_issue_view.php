@@ -41,7 +41,7 @@ Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, true)
 	function display_wo_issue_details($issue_no) {
 		$result = WO_Issue::get_details($issue_no);
 		if (DB::num_rows($result) == 0) {
-			Errors::warning(_("There are no items for this issue."));
+			Event::warning(_("There are no items for this issue."));
 		}
 		else {
 			start_table('tablestyle');

@@ -360,4 +360,5 @@
 			Users::cells(null, $name, $selected_id, $spec_opt);
 			echo "</tr>\n";
 		}
+
 	}

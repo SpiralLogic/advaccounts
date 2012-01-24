@@ -39,7 +39,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 	Page::end();
 	function check_data() {
 			if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
-				Errors::error(_("Language name, code nor encoding cannot be empty"));
+				Event::error(_("Language name, code nor encoding cannot be empty"));
 				return false;
 			}
 			return true;
@@ -153,7 +153,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 				end_row();
 			}
 			end_table();
-			Errors::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+			Event::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 		}
 
 		function display_language_edit($selected_id) {
@@ -194,7 +194,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 			file_row(_("Language File") . " (PO)", 'uploadfile');
 			file_row(_("Language File") . " (MO)", 'uploadfile2');
 			end_table(0);
-			Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
+			Event::warning(_("Select your language files from your local harddisk."), 0, 1);
 			echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
 			end_form();
 		}

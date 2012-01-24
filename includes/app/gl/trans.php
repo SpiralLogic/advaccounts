@@ -271,7 +271,7 @@
 			}
 			// we have to restore net amount as we cannot know the base amount
 			if ($tax['rate'] == 0) {
-				//		Errors::warning(_("You should not post gl transactions
+				//		Event::warning(_("You should not post gl transactions
 				//			to tax account with	zero tax rate."));
 				$net_amount = 0;
 			} else {
@@ -336,7 +336,7 @@
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
-			//Errors::error($sql);
+			//Event::error($sql);
 			return DB::query($sql, "Cannot retrieve tax summary");
 		}
 

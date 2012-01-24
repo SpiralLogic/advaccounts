@@ -16,12 +16,12 @@
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {
 			$inpug_error = 1;
-			Errors::error(_("The number of days or the day in the following month must be numeric."));
+			Event::error(_("The number of days or the day in the following month must be numeric."));
 			JS::set_focus('DayNumber');
 		}
 		elseif (strlen($_POST['terms']) == 0) {
 			$inpug_error = 1;
-			Errors::error(_("The Terms description must be entered."));
+			Event::error(_("The Terms description must be entered."));
 			JS::set_focus('terms');
 		}
 		if ($_POST['DayNumber'] == '') {
@@ -59,7 +59,7 @@
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The payment term could not be added or updated");
-			Errors::notice($note);
+			Event::notice($note);
 			$Mode = MODE_RESET;
 		}
 	}
@@ -69,20 +69,20 @@
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
+			Event::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
-				Errors::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
+				Event::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 			}
 			else {
 				//only delete if used in neither customer or supplier accounts
 				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
 				DB::query($sql, "could not delete a payment terms");
-				Errors::notice(_('Selected payment terms have been deleted'));
+				Event::notice(_('Selected payment terms have been deleted'));
 			}
 		}
 		//end if payment terms used in customer or supplier accounts

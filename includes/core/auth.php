@@ -31,8 +31,10 @@
 		 * @param $password
 		 */
 		public function update_password($id, $password) {
+
 			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)
 			 ->value('change_password', 0)->where('id=', $id)->exec();
+
 			session_regenerate_id();
 		}
 		/**
@@ -40,36 +42,24 @@
 		 *
 		 * @return string
 		 */
-		public function hash_password($password) {
-			return base64_encode($this->hasher()->pbkdf2($password, Config::get('auth_salt'), 10000, 32));
+		public function hash_password(&$password) {
+			$password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
+	return $password;
 		}
-		/**
-		 * Returns the hash object and creates it if necessary
-		 *
-		 * @return	Crypt_Hash
-		 */
-		public function hasher() {
-			is_null($this->hasher) and $this->hasher = new Crypt_Hash();
-			return $this->hasher;
-		}
+
 
 		public function check_user_password($user_id, $password) {
 			$result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
-			$hashed_password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
-			if ($result['change_password']) {
-				$_SESSION['change_password'] = true;
-			}
-			if ($result['password'] == $hashed_password) {
-			}
-			elseif ((substr($result['password'], 0, 1) != '$' && $result['password'] == $this->hash_password($password)) || (strlen($result['password']) == 32 && $result['password'] == md5($password))) {
-				DB::update('users')->value('password', $hashed_password)->value('change_password', 0)->where('user_id=', $user_id)
-				 ->exec();
-			}
-			else {
+			$this->hash_password($password);
+
+			if ($result['password'] != $password) {
 				$result = false;
+			}else {
+				unset($result['password']);
 			}
 			DB::insert('user_login_log')->values(array(
 																								'user' => $user_id, 'IP' => Users::get_ip(), 'success' => (bool)$result))->exec();
+
 			return $result;
 		}
 		/**

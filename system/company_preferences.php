@@ -14,13 +14,13 @@
 	if (isset($_POST['update']) && $_POST['update'] != "") {
 		$input_error = 0;
 		if (!Validation::is_num('login_tout', 10)) {
-			Errors::error(_("Login timeout must be positive number not less than 10."));
+			Event::error(_("Login timeout must be positive number not less than 10."));
 			JS::set_focus('login_tout');
 			$input_error = 1;
 		}
 		if (strlen($_POST['coy_name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The company name must be entered."));
+			Event::error(_("The company name must be entered."));
 			JS::set_focus('coy_name');
 		}
 		if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
@@ -33,21 +33,21 @@
 			//But check for the worst
 			if (!in_array((substr(trim($_FILES['pic']['name']), -3)), array('jpg', 'JPG', 'png', 'PNG'))
 			) {
-				Errors::error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
+				Event::error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
-				Errors::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
+				Event::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
-				Errors::error(_('Only graphics files can be uploaded'));
+				Event::error(_('Only graphics files can be uploaded'));
 				$input_error = 1;
 			}
 			elseif (file_exists($filename)) {
 				$result = unlink($filename);
 				if (!$result) {
-					Errors::error(_('The existing image could not be removed'));
+					Event::error(_('The existing image could not be removed'));
 					$input_error = 1;
 				}
 			}
@@ -55,7 +55,7 @@
 				$result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 				$_POST['coy_logo'] = $_FILES['pic']['name'];
 				if (!$result) {
-					Errors::error(_('Error uploading logo file'));
+					Event::error(_('Error uploading logo file'));
 				}
 			}
 		}
@@ -64,7 +64,7 @@
 			if (file_exists($filename)) {
 				$result = unlink($filename);
 				if (!$result) {
-					Errors::error(_('The existing image could not be removed'));
+					Event::error(_('The existing image could not be removed'));
 					$input_error = 1;
 				}
 				else {
@@ -81,7 +81,7 @@
 		if ($input_error != 1) {
 			DB_Company::update_setup($_POST);
 			$_SESSION['current_user']->timeout = $_POST['login_tout'];
-			Errors::notice(_("Company setup has been updated."));
+			Event::notice(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');
 		Ajax::i()->activate('_page_body');

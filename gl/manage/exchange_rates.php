@@ -44,8 +44,8 @@
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	if (Bank_Currency::is_company($_POST['curr_abrev'])) {
-		Errors::warning(_("The selected currency is the company currency."), 2);
-		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+		Event::warning(_("The selected currency is the company currency."), 2);
+		Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	}
 	else {
 		Display::br(1);
@@ -61,17 +61,17 @@
 	Page::end();
 	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (Validation::input_num('BuyRate') <= 0) {
-			Errors::error(_("The exchange rate cannot be zero or a negative number."));
+			Event::error(_("The exchange rate cannot be zero or a negative number."));
 			JS::set_focus('BuyRate');
 			return false;
 		}
 		if (GL_ExchangeRate::get_date($_POST['curr_abrev'], $_POST['date_'])) {
-			Errors::error(_("The exchange rate for the date is already there."));
+			Event::error(_("The exchange rate for the date is already there."));
 			JS::set_focus('date_');
 			return false;
 		}
@@ -135,7 +135,7 @@
 		small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
-		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
+		Event::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
 	function clear_data() {

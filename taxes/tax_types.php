@@ -14,18 +14,18 @@
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM && can_process($selected_id)) {
 		Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
-		Errors::notice(_('New tax type has been added'));
+		Event::notice(_('New tax type has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process($selected_id)) {
 		Tax_Types::update($selected_id, $_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate'));
-		Errors::notice(_('Selected tax type has been updated'));
+		Event::notice(_('Selected tax type has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tax_Types::delete($selected_id);
-			Errors::notice(_('Selected tax type has been deleted'));
+			Event::notice(_('Selected tax type has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -37,7 +37,7 @@
 	}
 	$result = Tax_Types::get_all(check_value('show_inactive'));
 	start_form();
-	Errors::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
+	Event::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
 	start_table('tablestyle');
 	$th = array(
 		_("Description"), _("Default Rate (%)"), _("Sales GL Account"), _("Purchasing GL Account"), "", ""
@@ -83,7 +83,7 @@
 		$result = DB::query($sql, "could not query tax groups");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this tax type because tax groups been created referring to it."));
+			Event::error(_("Cannot delete this tax type because tax groups been created referring to it."));
 			return false;
 		}
 		return true;
@@ -91,17 +91,17 @@
 
 	function can_process($selected_id) {
 		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The tax type name cannot be empty."));
+			Event::error(_("The tax type name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
 		elseif (!Validation::is_num('rate', 0)) {
-			Errors::error(_("The default tax rate must be numeric and not less than zero."));
+			Event::error(_("The default tax rate must be numeric and not less than zero."));
 			JS::set_focus('rate');
 			return false;
 		}
 		if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
-			Errors::error(_("Selected GL Accounts cannot be used by another tax type."));
+			Event::error(_("Selected GL Accounts cannot be used by another tax type."));
 			JS::set_focus('sales_gl_code');
 			return false;
 		}

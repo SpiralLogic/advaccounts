@@ -1980,7 +1980,7 @@
 			 */
 			function Error($msg) {
 				//Fatal error
-				Errors::error('<strong>TCPDF error: </strong>' . $msg);
+				Event::error('<strong>TCPDF error: </strong>' . $msg);
 				exit;
 			}
 

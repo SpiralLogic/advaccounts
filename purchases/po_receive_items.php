@@ -15,7 +15,7 @@
 	if (isset($_GET['AddedID'])) {
 		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
-		Errors::notice(_("Purchase Order Delivery has been processed"));
+		Event::notice(_("Purchase Order Delivery has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));
 		Display::link_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
@@ -26,7 +26,7 @@
 		$order = new Purch_Order($_GET['PONumber']);
 	}
 	elseif ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_POST['order_id'])) {
-		Errors::error(_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
+		Event::error(_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
 		Page::footer_exit();
 	}
 	$order = Purch_Order::check_edit_conflicts($order);
@@ -144,22 +144,22 @@
 
 	function can_process($order) {
 		if (count($order->line_items) <= 0) {
-			Errors::error(_("You are not currenty receiving an order."));
+			Event::error(_("You are not currenty receiving an order."));
 			Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a purchase order to receive goods."));
 			Page::footer_exit();
 		}
 		if (!Dates::is_date($_POST['DefaultReceivedDate'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('DefaultReceivedDate');
 			return false;
 		}
 		if (!Validation::is_num('freight', 0)) {
-			Errors::error(_("The freight entered must be numeric and not less than zero."));
+			Event::error(_("The freight entered must be numeric and not less than zero."));
 			JS::set_focus('freight');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
@@ -182,11 +182,11 @@
 			}
 		}
 		if ($something_received == 0) { /*Then dont bother proceeding cos nothing to do ! */
-			Errors::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+			Event::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		}
 		elseif ($delivery_qty_too_large == 1) {
-			Errors::error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . DB_Company::get_pref('po_over_receive') . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
+			Event::error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . DB_Company::get_pref('po_over_receive') . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
 			return false;
 		}
 		return true;
@@ -197,7 +197,7 @@
 			return;
 		}
 		if (check_po_changed($order)) {
-			Errors::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+			Event::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
 			unset($order->line_items);

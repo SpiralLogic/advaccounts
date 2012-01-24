@@ -24,7 +24,7 @@
 		foreach (Config::get_all('db') as $conn) {
 			// connect to database
 			if (!($db = db_open($conn))) {
-				Errors::error(_("Cannot connect to database for company") . " '" . $conn['name'] . "'");
+				Event::error(_("Cannot connect to database for company") . " '" . $conn['name'] . "'");
 				continue;
 			}
 			// create security backup
@@ -33,7 +33,7 @@
 			foreach ($installers as $i => $inst) {
 				$ret = upgrade_step($i, $conn);
 				if (!$ret) {
-					Errors::error(sprintf(_("Database upgrade to version %s failed for company '%s'."), $inst->version, $conn['name']) . '<br>' . _('You should restore company database from latest backup file'));
+					Event::error(sprintf(_("Database upgrade to version %s failed for company '%s'."), $inst->version, $conn['name']) . '<br>' . _('You should restore company database from latest backup file'));
 				}
 			}
 			// 		db_close($conn); ?
@@ -44,7 +44,7 @@
 		if ($ret) { // re-read the prefs
 			$user = Users::get_by_login(User::get()->username);
 			User::get()->prefs = new userPrefs($user);
-			Errors::notice(_('All companies data has been successfully updated'));
+			Event::notice(_('All companies data has been successfully updated'));
 		}
 		Ajax::i()->activate('_page_body');
 	}
@@ -83,7 +83,7 @@
 	}
 	end_table(1);
 	if ($partial != 0) {
-		Errors::warning(_("Database upgrades marked as partially installed cannot be installed automatically.
+		Event::warning(_("Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."));
 		Display::br();
 	}
@@ -162,7 +162,7 @@ You have to clean database manually to enable them, or try to perform forced upg
 			}
 			else {
 				if ($state !== true) {
-					Errors::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+					Event::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
 					$ret = false;
 				}
 			}

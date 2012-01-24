@@ -27,15 +27,15 @@ Page::start(_($help_context = "View Supplier Invoice"), SA_SUPPTRANSVIEW, true);
 	echo "<br>";
 	start_table('tablestyle width95');
 	start_row();
-	label_cells(_("Supplier"), $creditor_trans->supplier_name, "class='tableheader2'");
-	label_cells(_("Reference"), $creditor_trans->reference, "class='tableheader2'");
-	label_cells(_("Supplier's Reference"), $creditor_trans->supp_reference, "class='tableheader2'");
+	label_cells(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
+	label_cells(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
+	label_cells(_("Supplier's Reference"), $creditor_trans->supp_reference, "class='tablerowhead'");
 	end_row();
 	start_row();
-	label_cells(_("Invoice Date"), $creditor_trans->tran_date, "class='tableheader2'");
-	label_cells(_("Due Date"), $creditor_trans->due_date, "class='tableheader2'");
+	label_cells(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
+	label_cells(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
 	if (!Bank_Currency::is_company($supplier_curr_code)) {
-		label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
+		label_cells(_("Currency"), $supplier_curr_code, "class='tablerowhead'");
 	}
 	end_row();
 	DB_Comments::display_row(ST_SUPPINVOICE, $trans_no);

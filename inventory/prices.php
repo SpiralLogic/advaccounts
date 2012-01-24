@@ -38,7 +38,7 @@ Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Inp
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
-			Errors::error(_("The price entered must be numeric."));
+			Event::error(_("The price entered must be numeric."));
 			JS::set_focus('price');
 		}
 		if ($input_error != 1) {
@@ -51,14 +51,14 @@ Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Inp
 				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
-			Errors::notice($msg);
+			Event::notice($msg);
 			$Mode = MODE_RESET;
 		}
 	}
 	if ($Mode == MODE_DELETE) {
 		//the link to delete a selected record was clicked
 		Item_Price::delete($selected_id);
-		Errors::notice(_("The selected price has been deleted."));
+		Event::notice(_("The selected price has been deleted."));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {
@@ -101,7 +101,7 @@ Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Inp
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
 		}
-		Errors::warning(_("There are no prices set up for this part."), 1);
+		Event::warning(_("There are no prices set up for this part."), 1);
 	}
 	Display::div_end();
 	echo "<br>";
@@ -123,7 +123,7 @@ Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Inp
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
 	end_table(1);
 	if ($calculated) {
-		Errors::warning(_("The price is calculated."), 0, 1);
+		Event::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	Display::div_end();

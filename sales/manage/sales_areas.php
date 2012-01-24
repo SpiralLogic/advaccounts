@@ -16,7 +16,7 @@
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The area description cannot be empty."));
+			Event::error(_("The area description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
@@ -29,7 +29,7 @@
 				$note = _('New sales area has been added');
 			}
 			DB::query($sql, "The sales area could not be updated or added");
-			Errors::notice($note);
+			Event::notice($note);
 			$Mode = MODE_RESET;
 		}
 	}
@@ -41,12 +41,12 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this area because customer branches have been created using this area."));
+			Event::error(_("Cannot delete this area because customer branches have been created using this area."));
 		}
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM areas WHERE area_code=" . DB::escape($selected_id);
 			DB::query($sql, "could not delete sales area");
-			Errors::notice(_('Selected sales area has been deleted'));
+			Event::notice(_('Selected sales area has been deleted'));
 		} //end if Delete area
 		$Mode = MODE_RESET;
 	}

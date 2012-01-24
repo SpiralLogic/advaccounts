@@ -47,7 +47,7 @@
 		 * @return int
 		 */
 		public function raise_error($str) {
-			Errors::error($str);
+			Event::error($str);
 			return 1;
 		}
 
@@ -418,7 +418,7 @@
 		 * @return int
 		 */
 		public function raise_error($str) {
-			Errors::error($str);
+			Event::error($str);
 			return 1;
 		}
 
@@ -513,7 +513,7 @@
 		 * @return int
 		 */
 		public function raise_error($str) {
-			Errors::error($str);
+			Event::error($str);
 			return 1;
 		}
 

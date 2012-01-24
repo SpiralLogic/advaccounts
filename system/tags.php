@@ -49,12 +49,12 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
-					Errors::notice(_('Selected tag settings have been updated'));
+					Event::notice(_('Selected tag settings have been updated'));
 				}
 			}
 			else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
-					Errors::notice(_('New tag has been added'));
+					Event::notice(_('New tag has been added'));
 				}
 			}
 			if ($ret) {
@@ -65,7 +65,7 @@
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tags::delete($selected_id);
-			Errors::notice(_('Selected tag has been deleted'));
+			Event::notice(_('Selected tag has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -112,7 +112,7 @@
 	Page::end();
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The tag name cannot be empty."));
+			Event::error(_("The tag name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
@@ -125,7 +125,7 @@
 		}
 		$result = Tags::get_associated_records($selected_id);
 		if (DB::num_rows($result) > 0) {
-			Errors::error(_("Cannot delete this tag because records have been created referring to it."));
+			Event::error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
 		return true;

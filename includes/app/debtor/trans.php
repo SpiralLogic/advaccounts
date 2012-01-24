@@ -291,12 +291,12 @@
 			$result = DB::query($sql, "Cannot retreive a debtor transaction");
 			if (DB::num_rows($result) == 0) {
 				// can't return nothing
-				Errors::error("no debtor trans found for given params", $sql, true);
+				Event::error("no debtor trans found for given params", $sql, true);
 				exit;
 			}
 			if (DB::num_rows($result) > 1) {
 				// can't return multiple
-				Errors::error("duplicate debtor transactions found for given params", $sql, true);
+				Event::error("duplicate debtor transactions found for given params", $sql, true);
 				exit;
 			}
 			//return DB::fetch($result);

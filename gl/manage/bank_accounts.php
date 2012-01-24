@@ -18,17 +18,17 @@
 		//first off validate inputs sensible
 		if (strlen($_POST['bank_account_name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The bank account name cannot be empty."));
+			Event::error(_("The bank account name cannot be empty."));
 			JS::set_focus('bank_account_name');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Bank_Account::update($selected_id, $_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
-				Errors::notice(_('Bank account has been updated'));
+				Event::notice(_('Bank account has been updated'));
 			}
 			else {
 				Bank_Account::add($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
-				Errors::notice(_('New bank account has been added'));
+				Event::notice(_('New bank account has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -43,18 +43,18 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this bank account because transactions have been created using this account."));
+			Event::error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+			Event::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
 			Bank_Account::delete($selected_id);
-			Errors::notice(_('Selected bank account has been deleted'));
+			Event::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = MODE_RESET;
 	}

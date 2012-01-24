@@ -143,7 +143,7 @@
 
 		static public function add_line($order, $new_item, $new_item_qty, $standard_cost) {
 			if ($order->find_order_item($new_item)) {
-				Errors::error(_("For Part: '") . $new_item . "' This item is already on this order. You can change the quantity ordered of the existing line if necessary.");
+				Event::error(_("For Part: '") . $new_item . "' This item is already on this order. You can change the quantity ordered of the existing line if necessary.");
 			} else {
 				$order->add_to_order(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 			}

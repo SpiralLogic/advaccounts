@@ -25,10 +25,10 @@
 		$trans_type = ST_PURCHORDER;
 		$supplier = new Creditor(Session::i()->supplier_id);
 		if (!isset($_GET['Updated'])) {
-			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
+			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			Errors::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
+			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
 		}
 		Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
@@ -164,7 +164,7 @@
 			unset_form_variables();
 		}
 		else {
-			Errors::error(_("This item cannot be deleted because some of it has already been received."));
+			Event::error(_("This item cannot be deleted because some of it has already been received."));
 		}
 		line_start_focus();
 	}
@@ -177,7 +177,7 @@
 	function handle_cancel_po($order) {
 		//need to check that not already dispatched or invoiced by the supplier
 		if (($order->order_no != 0) && $order->any_already_received() == 1) {
-			Errors::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
+			Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 			return;
 		}
 		Orders::session_delete($order);
@@ -188,7 +188,7 @@
 			Display::meta_forward('/index.php', 'application=Purchases');
 		}
 		Orders::session_delete($order);
-		Errors::notice(_("This purchase order has been cancelled."));
+		Event::notice(_("This purchase order has been cancelled."));
 		Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
 		Page::end();
@@ -246,22 +246,22 @@
 		$min = 1 / pow(10, $dec);
 		if (!Validation::is_num('qty', $min)) {
 			$min = Num::format($min, $dec);
-			Errors::error(_("The quantity of the order item must be numeric and not less than ") . $min);
+			Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('price', 0)) {
-			Errors::error(_("The price entered must be numeric and not less than zero."));
+			Event::error(_("The price entered must be numeric and not less than zero."));
 			JS::set_focus('price');
 			return false;
 		}
 		if (!Validation::is_num('discount', 0, 100)) {
-			Errors::error(_("Discount percent can not be less than 0 or more than 100."));
+			Event::error(_("Discount percent can not be less than 0 or more than 100."));
 			JS::set_focus('discount');
 			return false;
 		}
 		if (!Dates::is_date($_POST['req_del_date'])) {
-			Errors::error(_("The date entered is in an invalid format."));
+			Event::error(_("The date entered is in an invalid format."));
 			JS::set_focus('req_del_date');
 			return false;
 		}
@@ -277,7 +277,7 @@
 		$allow_update = check_data();
 		if ($allow_update) {
 			if ($order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
-				Errors::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+				Event::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 				JS::set_focus('qty');
 				return;
 			}
@@ -308,7 +308,7 @@
 					$_POST['stock_id'] = "";
 				}
 				else {
-					Errors::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
+					Event::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
 				}
 			} /* end of if not already on the order and allow input was true*/
 		}
@@ -322,41 +322,41 @@
 	 */
 	function can_commit($order) {
 		if (!$order) {
-			Errors::error(_("You are not currently editing an order."));
+			Event::error(_("You are not currently editing an order."));
 			Page::footer_exit();
 		}
 		if (!get_post('supplier_id')) {
-			Errors::error(_("There is no supplier selected."));
+			Event::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
 			return false;
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
-			Errors::error(_("The entered order date is invalid."));
+			Event::error(_("The entered order date is invalid."));
 			JS::set_focus('OrderDate');
 			return false;
 		}
 		if (get_post('delivery_address') == '') {
-			Errors::error(_("There is no delivery address specified."));
+			Event::error(_("There is no delivery address specified."));
 			JS::set_focus('delivery_address');
 			return false;
 		}
 		if (!Validation::is_num('freight', 0)) {
-			Errors::error(_("The freight entered must be numeric and not less than zero."));
+			Event::error(_("The freight entered must be numeric and not less than zero."));
 			JS::set_focus('freight');
 			return false;
 		}
 		if (get_post('StkLocation') == '') {
-			Errors::error(_("There is no location specified to move any items into."));
+			Event::error(_("There is no location specified to move any items into."));
 			JS::set_focus('StkLocation');
 			return false;
 		}
 		if ($order->order_has_items() == false) {
-			Errors::error(_("The order cannot be placed because there are no lines entered on this order."));
+			Event::error(_("The order cannot be placed because there are no lines entered on this order."));
 			return false;
 		}
 		if (!$order->order_no) {
 			if (!Ref::is_valid(get_post('ref'))) {
-				Errors::error(_("There is no reference entered for this purchase order."));
+				Event::error(_("There is no reference entered for this purchase order."));
 				JS::set_focus('ref');
 				return false;
 			}

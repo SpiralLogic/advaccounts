@@ -41,6 +41,7 @@
 				static::$_vars = array();
 				static::load();
 			}
+			Event::register_shutdown(__CLASS__);
 			static::$i = true;
 			static::js();
 		}
@@ -127,8 +128,8 @@
 		 * @static
 		 *
 		 */
-		static public function store() {
-			Cache::set('config', static::$_vars);
+		static public function _shutdown() {
+			static::set('config', static::$_vars);
 		}
 		/**
 		 * @staticx

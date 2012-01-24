@@ -17,7 +17,7 @@
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPCREDIT;
 		echo "<div class='center'>";
-		Errors::notice(_("Supplier credit note has been processed."));
+		Event::notice(_("Supplier credit note has been processed."));
 		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Credit Note")));
 		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
@@ -42,7 +42,7 @@
 		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
 		$result = DB::query($sql, "get account information");
 		if (DB::num_rows($result) == 0) {
-			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+			Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
@@ -50,13 +50,13 @@
 			$myrow = DB::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
-				Errors::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+				Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 				JS::set_focus('amount');
 				$input_error = true;
 			}
 		}
 		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
-			Errors::error(_("Cannot post to GL account used by more than one tax type."));
+			Event::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
@@ -133,12 +133,12 @@
 	function check_data() {
 		global $total_grn_value, $total_gl_value;
 		if (!Creditor_Trans::i()->is_valid_trans_to_post()) {
-			Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
+			Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
 			JS::set_focus('');
 			return false;
 		}
 		if (!Ref::is_valid(Creditor_Trans::i()->reference)) {
-			Errors::error(_("You must enter an credit note reference."));
+			Event::error(_("You must enter an credit note reference."));
 			JS::set_focus('reference');
 			return false;
 		}
@@ -146,27 +146,27 @@
 			Creditor_Trans::i()->reference = Ref::get_next(ST_SUPPCREDIT);
 		}
 		if (!Ref::is_valid(Creditor_Trans::i()->supp_reference)) {
-			Errors::error(_("You must enter a supplier's credit note reference."));
+			Event::error(_("You must enter a supplier's credit note reference."));
 			JS::set_focus('supp_reference');
 			return false;
 		}
 		if (!Dates::is_date(Creditor_Trans::i()->tran_date)) {
-			Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+			Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			JS::set_focus('tran_date');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('tran_date');
 			return false;
 		}
 		if (!Dates::is_date(Creditor_Trans::i()->due_date)) {
-			Errors::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+			Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			JS::set_focus('due_date');
 			return false;
 		}
 		if (Creditor_Trans::i()->ov_amount < ($total_gl_value + $total_grn_value)) {
-			Errors::error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
+			Event::error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
 			return false;
 		}
 		return true;
@@ -212,12 +212,12 @@
 	 */
 	function check_item_data($n) {
 		if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
-			Errors::error(_("The quantity to credit must be numeric and greater than zero."));
+			Event::error(_("The quantity to credit must be numeric and greater than zero."));
 			JS::set_focus('This_QuantityCredited' . $n);
 			return false;
 		}
 		if (!Validation::is_num('ChgPrice' . $n, 0)) {
-			Errors::error(_("The price is either not numeric or negative."));
+			Event::error(_("The price is either not numeric or negative."));
 			JS::set_focus('ChgPrice' . $n);
 			return false;
 		}

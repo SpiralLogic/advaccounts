@@ -35,7 +35,7 @@
 			else {
 				$min = $max = 0;
 			}
-			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+			Event::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
 					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
@@ -46,13 +46,13 @@
 					'PARAM_5' => "",
 					'PARAM_6' => ST_SALESINVOICE
 				);
-				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Event::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
-				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Event::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
 		}
 		else {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 		}
 	}
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
@@ -110,10 +110,10 @@
 	}
 	end_table();
 	if ($due) {
-		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
+		Event::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
 	}
 	else {
-		Errors::warning(_("No recurrent invoices are due."), 1, 0);
+		Event::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
 	Page::end();

@@ -415,10 +415,10 @@ s.category_id, editable, 0 as kit,
 			if ($o['type'] == 'local') {
 				$where2 .= " AND !s.is_foreign ";
 			}
+			$stock_code = " s.item_code as stock_id,";
 			$where2 .= ' AND i.id = s.stockid ';
 			$sales_type = $prices = '';
 			$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-			//$item_code = " i.id,i.stock_id";
 			if ($o['purchase']) {
 				array_unshift($terms, $item_code);
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
@@ -427,12 +427,12 @@ s.category_id, editable, 0 as kit,
 					array_unshift($terms, $_SESSION['supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,20) + ' . $weight;
 				}
-				$item_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price ';
+				$stock_code= ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
 				$prices = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
 			}
 			elseif ($o['sale']) {
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-				$item_code = " s.item_code as stock_id, p.price ";
+				$stock_code= " s.item_code as stock_id, p.price,";
 				$prices = ", prices p";
 				$where .= " AND s.id = p.item_code_id ";
 				if (isset($o['sales_type'])) {
@@ -444,7 +444,7 @@ s.category_id, editable, 0 as kit,
 				}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql
-			 = "SELECT $select $item_code ,i.description as item_name, c.description as category, i.long_description as description , editable,
+			 = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
 							$weight FROM stock_category c, item_codes s, stock_master i $prices
 							WHERE (s.item_code LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code

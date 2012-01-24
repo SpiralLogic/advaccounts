@@ -16,20 +16,20 @@
 		$error = 0;
 		if (empty($_POST['name'])) {
 			$error = 1;
-			Errors::error(_("Printer name cannot be empty."));
+			Event::error(_("Printer name cannot be empty."));
 			JS::set_focus('name');
 		}
 		elseif (empty($_POST['host'])) {
-			Errors::notice(_("You have selected printing to server at user IP."));
+			Event::notice(_("You have selected printing to server at user IP."));
 		}
 		elseif (!Validation::is_num('tout', 0, 60)) {
 			$error = 1;
-			Errors::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
+			Event::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
 			JS::set_focus('tout');
 		}
 		if ($error != 1) {
 			Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
-			Errors::notice($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
+			Event::notice($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
 			$Mode = MODE_RESET;
 		}
 	}
@@ -39,12 +39,12 @@
 		$result = DB::query($sql, "check printers relations failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this printer definition, because print profile have been created using it."));
+			Event::error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		}
 		else {
 			$sql = "DELETE FROM printers WHERE id=" . DB::escape($selected_id);
 			DB::query($sql, "could not delete printer definition");
-			Errors::notice(_('Selected printer definition has been deleted'));
+			Event::notice(_('Selected printer definition has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}

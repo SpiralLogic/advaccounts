@@ -26,7 +26,7 @@
 	$rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
 	$js = "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
 	if (!$login_timeout) {
-		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . User::get()->company . "].selected = true;})()";
+		$js .= "(function defaultCompany(){document.forms[0].login_company.options[" . User::get()->company . "].selected = true;})()";
 	}
 	JS::beforeload($js);
 	echo "<!DOCTYPE HTML>\n";
@@ -57,18 +57,18 @@
 		table_section_title(_("Version") . VERSION . " Build " . BUILD_VERSION . " - " . _("Login"));
 	}
 	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
-	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
+	text_row(_("User name"), "user_name", $value, 20, 30);
 	$password = Config::get('demo_mode') ? "password" : "";
 	password_row(_("Password:"), 'password', $password);
 	if ($login_timeout) {
-		hidden('company_login_name', User::get()->company);
+		hidden('login_company', User::get()->company);
 	} else {
 		if (isset($_SESSION['current_user']->company)) {
 			$coy = $_SESSION['current_user']->company;
 		} else {
 			$coy = Config::get('company_default');
 		}
-		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='company_login_name'>\n";
+		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='login_company'>\n";
 		for (
 			$i = 1; $i < count(Config::get_all('db')) + 1; $i++
 		) {
@@ -85,7 +85,7 @@
 		$_SESSION['timeout']['post'] as $p => $val
 	) {
 		// add all request variables to be resend together with login data
-		if (!in_array($p, array('ui_mode', 'user_name_entry_field', 'password', 'SubmitUser', 'company_login_name'))) {
+		if (!in_array($p, array('ui_mode', 'user_name', 'password', 'SubmitUser', 'login_company'))) {
 			echo "<input type='hidden' name='$p' value='$val'>";
 		}
 	}
@@ -109,8 +109,8 @@
 	echo "</tr>\n";
 	echo "</table><br><br>\n";
 	echo "<script>//<![CDATA[<!--
-	 document.forms[0].user_name_entry_field.select();
-	 document.forms[0].user_name_entry_field.focus();
+	 document.forms[0].user_name.select();
+	 document.forms[0].user_name.focus();
 	 //--> //]]></script>";
 	echo "</body></html>\n";
 ?>

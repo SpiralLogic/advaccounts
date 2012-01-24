@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	// Link to printing single document with bulk report template file.
 	// Ex. label_cell(static::print_doc_link($myrow['order_no'], _("Print")), $type);
-	// or Errors::warning(static::print_doc_link($order_no, _("Print this order")));
+	// or Event::warning(static::print_doc_link($order_no, _("Print this order")));
 	// You only need full parameter list for invoices/credit notes
 	class Reporting
 	{

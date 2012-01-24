@@ -13,8 +13,8 @@
 	Page::start(_($help_context = "Display Setup"), SA_SETUPDISPLAY);
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
-			Errors::error($_POST['query_size']);
-			Errors::error(_("Query size must be integer and greater than zero."));
+			Event::error($_POST['query_size']);
+			Event::error(_("Query size must be integer and greater than zero."));
 			JS::set_focus('query_size');
 		}
 		else {
@@ -34,10 +34,10 @@
 				Display::meta_forward($_SERVER['PHP_SELF']);
 			}
 			if (Config::get('demo_mode')) {
-				Errors::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
+				Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 			}
 			else {
-				Errors::notice(_("Display settings have been updated."));
+				Event::notice(_("Display settings have been updated."));
 			}
 		}
 	}

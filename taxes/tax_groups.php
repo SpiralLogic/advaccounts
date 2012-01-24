@@ -18,7 +18,7 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The tax group name cannot be empty."));
+			Event::error(_("The tax group name cannot be empty."));
 			JS::set_focus('name');
 		}
 		/* Editable rate has been removed 090920 Joe Hunt
@@ -31,7 +31,7 @@
 							 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
 							 !Validation::is_num('rate' . $i, 0))
 						 {
-						 Errors::error( _("An entered tax rate is invalid or less than zero."));
+						 Event::error( _("An entered tax rate is invalid or less than zero."));
 							 $input_error = 1;
 						 JS::set_focus('rate');
 						 break;
@@ -54,11 +54,11 @@
 			}
 			if ($selected_id != -1) {
 				Tax_Groups::update($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				Errors::notice(_('Selected tax group has been updated'));
+				Event::notice(_('Selected tax group has been updated'));
 			}
 			else {
 				Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				Errors::notice(_('New tax group has been added'));
+				Event::notice(_('New tax group has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -71,14 +71,14 @@
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
+			Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query suppliers");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
+			Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
 		}
 		return true;
@@ -87,7 +87,7 @@
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Tax_Groups::delete($selected_id);
-			Errors::notice(_('Selected tax group has been deleted'));
+			Event::notice(_('Selected tax group has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -147,7 +147,7 @@
 	text_row_ex(_("Description:"), 'name', 40);
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 	end_table();
-	Errors::warning(_("Select the taxes that are included in this group."), 1);
+	Event::warning(_("Select the taxes that are included in this group."), 1);
 	start_table('tablestyle2');
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt

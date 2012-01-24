@@ -33,7 +33,7 @@
 	}
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
-		Errors::notice(_("The customer payment has been successfully entered."));
+		Event::notice(_("The customer payment has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
@@ -93,7 +93,7 @@
 	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
-		Errors::error(_("This customer account is on hold."));
+		Event::error(_("This customer account is on hold."));
 	}
 	else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
@@ -152,27 +152,27 @@ JS;
 
 	function can_process() {
 		if (!get_post('customer_id')) {
-			Errors::error(_("There is no customer selected."));
+			Event::error(_("There is no customer selected."));
 			JS::set_focus('customer_id');
 			return false;
 		}
 		if (!get_post('BranchID')) {
-			Errors::error(_("This customer has no branch defined."));
+			Event::error(_("This customer has no branch defined."));
 			JS::set_focus('BranchID');
 			return false;
 		}
 		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
-			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
+			Event::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			JS::set_focus('DateBanked');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DateBanked');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
@@ -180,25 +180,25 @@ JS;
 			$_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
 		}
 		if (!Validation::is_num('amount', 0)) {
-			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
+			Event::error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
+			Event::error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (GL_Account::get($charge_acct) == false) {
-				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;
 			}
 		}
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			Errors::error(_("The exchange rate must be numeric and greater than zero."));
+			Event::error(_("The exchange rate must be numeric and greater than zero."));
 			JS::set_focus('_ex_rate');
 			return false;
 		}
@@ -206,13 +206,13 @@ JS;
 			$_POST['discount'] = 0;
 		}
 		if (!Validation::is_num('discount')) {
-			Errors::error(_("The entered discount is not a valid number."));
+			Event::error(_("The entered discount is not a valid number."));
 			JS::set_focus('discount');
 			return false;
 		}
 		//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
 		if (Validation::input_num('amount', 0, 0) <= 0) {
-			Errors::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
+			Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 			JS::set_focus('discount');
 			return false;
 		}

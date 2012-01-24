@@ -32,25 +32,25 @@ Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, tru
 	echo "<br>";
 	start_table('tablestyle2 width90');
 	start_row();
-	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
-	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
-	label_cells(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
+	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
+	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
+	label_cells(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tablerowhead'");
 	end_row();
 	start_row();
 	if ($show_currencies) {
-		label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
+		label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
 	}
-	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tableheader2'");
-	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
+	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tablerowhead'");
 	end_row();
 	start_row();
 	if ($show_currencies) {
-		label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tableheader2'");
+		label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tablerowhead'");
 	}
 	if ($show_both_amounts) {
-		label_cells(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tableheader2'");
+		label_cells(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
 	}
-	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
+	label_cells(_("Reference"), $receipt['ref'], "class='tablerowhead'");
 	end_row();
 	DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
 	end_table(1);

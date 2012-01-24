@@ -20,18 +20,18 @@ Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRE
 		$selected_id = $_POST["selected_id"];
 	}
 	else {
-		Errors::warning("This page must be called with a work order reference");
+		Event::warning("This page must be called with a work order reference");
 		exit;
 	}
 	function can_process($myrow) {
 		if ($myrow['released']) {
-			Errors::error(_("This work order has already been released."));
+			Event::error(_("This work order has already been released."));
 			JS::set_focus('released');
 			return false;
 		}
 		// make sure item has components
 		if (!WO::has_bom($myrow['stock_id'])) {
-			Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+			Event::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
 			JS::set_focus('stock_id');
 			return false;
 		}
@@ -40,7 +40,7 @@ Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRE
 
 	if (isset($_POST['release'])) {
 		WO::release($selected_id, $_POST['released_date'], $_POST['memo_']);
-		Errors::notice(_("The work order has been released to manufacturing."));
+		Event::notice(_("The work order has been released to manufacturing."));
 		Display::note(GL_UI::trans_view(ST_WORKORDER, $selected_id, _("View this Work Order")));
 		Display::link_no_params("search_work_orders.php", _("Select another &work order"));
 		Ajax::i()->activate('_page_body');

@@ -105,7 +105,7 @@
 		}
 	}
 
-	function table_section_title($msg, $colspan = 2, $class = 'tableheader') {
+	function table_section_title($msg, $colspan = 2, $class = 'tablehead') {
 		echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
 	}
 
@@ -178,6 +178,4 @@
 		echo "</td></tr>\n";
 		end_table($breaks);
 	}
-
-
 

@@ -39,26 +39,26 @@ Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, true);
 		$colspan2 = 6;
 	}
 	start_row();
-	label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tableheader2'");
+	label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tablerowhead'");
 	if ($show_currencies) {
-		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
+		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
 	}
-	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "class='right'");
-	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='right'");
+	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tablerowhead'");
 	end_row();
 	start_row();
-	label_cells(_("From"), Bank::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
-	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
+	label_cells(_("From"), Bank::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
+	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tablerowhead'");
 	end_row();
 	start_row();
-	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
+	label_cells(_("Reference"), $to_trans['ref'], "class='tablerowhead'", "colspan=$colspan2");
 	end_row();
 	DB_Comments::display_row(ST_BANKDEPOSIT, $trans_no);
 	end_table(1);
 	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = GL_Trans::get_many(ST_BANKDEPOSIT, $trans_no);
 	if (DB::num_rows($items) == 0) {
-		Errors::warning(_("There are no items for this deposit."));
+		Event::warning(_("There are no items for this deposit."));
 	}
 	else {
 		Display::heading(_("Items for this Deposit"));

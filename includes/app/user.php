@@ -12,7 +12,6 @@
 	class User
 	{
 		static protected $_instance = null;
-
 		/***
 		 * @static
 		 * @return User
@@ -26,7 +25,6 @@
 			}
 			return static::$_instance;
 		}
-
 		public $user;
 		public $loginname;
 		public $username;
@@ -46,14 +44,13 @@
 		 * @var \userPrefs
 		 */
 		public $prefs;
-
+		public $change_password = false;
 		function __construct() {
 			$this->loginname = $this->username = $this->name = "";
 			$this->company = Config::get('company_default') ? Config::get('company_default') : 1;
 			$this->logged = false;
 			$this->prefs = new userPrefs();
 		}
-
 		public function set_salesman($salesmanid = null) {
 			if ($salesmanid == null) {
 				$salesman_name = $this->name;
@@ -68,16 +65,13 @@
 				$this->salesmanid = $salesmanid;
 			}
 		}
-
 		public function logged_in() {
 			$this->timeout();
 			return $this->logged;
 		}
-
 		public function set_company($company) {
 			$this->company = $company;
 		}
-
 		public function login($company, $loginname, $password) {
 			$this->set_company($company);
 			$this->logged = false;
@@ -99,25 +93,21 @@
 						}
 					}
 				}
-				if ($myrow['change_password']) {
-					$_SESSION['change_password'] = true;
-				}
+				$this->change_password = $myrow['change_password'];
+				$this->logged = true;
 				$this->name = $myrow["real_name"];
 				$this->pos = $myrow["pos"];
-				$this->loginname = $loginname;
-				$this->username = $this->loginname;
+				$this->username = $this->loginname = $loginname;
 				$this->prefs = new userPrefs($myrow);
 				$this->user = $myrow["id"];
-				Users::update_visitdate($this->username);
-				$this->logged = true;
 				$this->last_act = time();
 				$this->timeout = DB_Company::get_pref('login_tout');
-				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 				$this->set_salesman();
+				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
+				Users::update_visitdate($this->username);
 			}
 			return $this->logged;
 		}
-
 		public function timeout() {
 			// skip timeout on logout page
 			if ($this->logged) {
@@ -128,7 +118,6 @@
 				$this->last_act = time();
 			}
 		}
-
 		public function can_access($page_level) {
 			global $security_areas;
 			if ($page_level === SA_OPEN) {
@@ -148,28 +137,25 @@
 			// only first registered company has site admin privileges
 			return $access && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
 		}
-
 		public function can_access_page($page_level) {
 			return $this->can_access($page_level);
 		}
-
 		public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 			$user = array(
 				'prices_dec' => $price_dec, 'qty_dec' => $qty_dec, 'rates_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
 				'show_gl' => $showgl, 'show_codes' => $showcodes, 'date_format' => $date_format, 'date_sep' => $date_sep,
 				'tho_sep' => $tho_sep, 'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $pagesize, 'show_hints' => $show_hints,
 				'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size, 'graphic_links' => $graphic_links,
-				'language' => $lang, 'sticky_doc_date' => $stickydate, 'startup_tab' => $startup_tab);
+				'language' => $lang, 'sticky_doc_date' => $stickydate, 'startup_tab' => $startup_tab
+			);
 			if (!Config::get('demo_mode')) {
 				Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 			}
 			$this->prefs = new userPrefs(Users::get($this->user));
 		}
-
 		static public function prefs() {
 			return static::get()->prefs;
 		}
-
 		static public function add_js_data() {
 			$js
 			 = "\nvar user = {
@@ -184,11 +170,9 @@
 						 \npdec: " . static::price_dec() . "}\n";
 			JS::beforeload($js);
 		}
-
 		static public function	fallback() {
 			return static::get()->ui_mode == 0;
 		}
-
 		static public function	numeric($input) {
 			$num = trim($input);
 			$sep = Config::get('separators_thousands', static::tho_sep());
@@ -210,91 +194,69 @@
 				return $num;
 			}
 		}
-
 		static public function	pos() {
 			return static::get()->pos;
 		}
-
 		static public function	language() {
 			return static::prefs()->language();
 		}
-
 		static public function	qty_dec() {
 			return static::prefs()->qty_dec();
 		}
-
 		static public function	price_dec() {
 			return static::prefs()->price_dec();
 		}
-
 		static public function	exrate_dec() {
 			return static::prefs()->exrate_dec();
 		}
-
 		static public function	percent_dec() {
 			return static::prefs()->percent_dec();
 		}
-
 		static public function	show_gl_info() {
 			return static::prefs()->show_gl_info();
 		}
-
 		static public function	show_codes() {
 			return static::prefs()->show_codes();
 		}
-
 		static public function	date_format() {
 			return static::prefs()->date_format();
 		}
-
 		static public function	date_display() {
 			return static::prefs()->date_display();
 		}
-
 		static public function	date_sep() {
 			return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : 0;
 		}
-
 		static public function	tho_sep() {
 			return static::prefs()->tho_sep();
 		}
-
 		static public function	dec_sep() {
 			return static::prefs()->dec_sep();
 		}
-
 		static public function	theme() {
 			return static::prefs()->get_theme();
 		}
-
 		static public function	pagesize() {
 			return static::prefs()->get_pagesize();
 		}
-
 		static public function	hints() {
 			return static::prefs()->show_hints();
 		}
-
 		static public function	print_profile() {
 			return static::prefs()->print_profile();
 		}
-
 		static public function	rep_popup() {
 			return static::prefs()->rep_popup();
 		}
-
 		static public function	query_size() {
 			return static::prefs()->query_size();
 		}
-
 		static public function	graphic_links() {
 			return static::prefs()->graphic_links();
 		}
-
 		static public function	sticky_date() {
 			return static::prefs()->sticky_date();
 		}
-
 		static public function	startup_tab() {
 			return static::prefs()->start_up_tab();
 		}

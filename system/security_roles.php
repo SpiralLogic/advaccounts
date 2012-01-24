@@ -43,19 +43,19 @@
 		$input_error = 0;
 		if ($_POST['description'] == '') {
 			$input_error = 1;
-			Errors::error(_("Role description cannot be empty."));
+			Event::error(_("Role description cannot be empty."));
 			JS::set_focus('description');
 		}
 		elseif ($_POST['name'] == '') {
 			$input_error = 1;
-			Errors::error(_("Role name cannot be empty."));
+			Event::error(_("Role name cannot be empty."));
 			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
 		if (get_post('role') == $_SESSION['current_user']->access) {
 			if (!isset($_POST['Area' . $security_areas[SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
 			) {
-				Errors::error(_("Access level edition in Company setup section have to be enabled for your account."));
+				Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
 				$input_error = 1;
 				JS::set_focus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas[SA_SECROLES][0]);
 			}
@@ -79,12 +79,12 @@
 			$sections = array_values($sections);
 			if ($new_role) {
 				Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
-				Errors::notice(_("New security role has been added."));
+				Event::notice(_("New security role has been added."));
 			}
 			else {
 				Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
 				DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
-				Errors::notice(_("Security role has been updated."));
+				Event::notice(_("Security role has been updated."));
 			}
 			$new_role = true;
 			clear_data();
@@ -93,11 +93,11 @@
 	}
 	if (get_post('delete')) {
 		if (Security::check_role_used(get_post('role'))) {
-			Errors::error(_("This role is currently assigned to some users and cannot be deleted"));
+			Event::error(_("This role is currently assigned to some users and cannot be deleted"));
 		}
 		else {
 			Security::get_profile(get_post('role'));
-			Errors::notice(_("Security role has been sucessfully deleted."));
+			Event::notice(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
 		}
 		Ajax::i()->activate('_page_body');
@@ -177,8 +177,8 @@
 			$sec = $newsec;
 			$m = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
-			//			 Errors::error(sprintf("Bad section %X:", $m));
-			label_row($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='tableheader2'", "class='tableheader'");
+			//			 Event::error(sprintf("Bad section %X:", $m));
+			label_row($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='tablerowhead'", "class='tablehead'");
 		}
 		if (check_value('Section' . $m)) {
 			alt_table_row_color($k);

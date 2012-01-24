@@ -137,7 +137,7 @@
 				{
 					$bank_amount = 0;
 					if (!isset($id) || $id == null || $id == "") {
-						Errors::error(_("No Quick Entries are defined."));
+						Event::error(_("No Quick Entries are defined."));
 						JS::set_focus('total_amount');
 					}
 					else {
@@ -154,6 +154,7 @@
 						}
 						$result = GL_QuickEntry::get_lines($id);
 						$totrate = 0;
+						$qe_lines=array();
 						while ($row = DB::fetch($result)) {
 							$qe_lines[] = $row;
 							switch (strtolower($row['action'])) {
@@ -167,9 +168,12 @@
 						}
 						$first = true;
 						$taxbase = 0;
-						foreach (
-							$qe_lines as $qe_line
-						) {
+						if (!count($qe_lines)) {
+						Event::error(_('There are no lines for this quick entry!'));
+						Page::footer_exit();
+						}
+
+						foreach ($qe_lines as $qe_line) {
 							switch (strtolower($qe_line['action'])) {
 							case "=": // post current base amount to GL account
 								$part = $base;
@@ -228,7 +232,7 @@
 								}
 								$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 								if (!Tax_Types::is_tax_gl_unique($gl_code)) {
-									Errors::error(_("Cannot post to GL account used by more than one tax type."));
+									Event::error(_("Cannot post to GL account used by more than one tax type."));
 									break 2;
 								}
 								if ($type != QE_SUPPINV) {

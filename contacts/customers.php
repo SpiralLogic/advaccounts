@@ -40,7 +40,7 @@
 	if (isset($_POST['delete'])) {
 		$customer->delete();
 		$status = $customer->getStatus();
-		Errors::notice($status['message']);
+		Event::notice($status['message']);
 	}
 	if (!Input::get('frame') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */
@@ -155,7 +155,7 @@
 		'class' => '', 'style' => 'display:inline-block'
 	))->tr(true)->td(array(
 		'content' => '${name}',
-		'class' => 'tableheader',
+		'class' => 'tablehead',
 		'colspan' => 2
 	))->td->tr;
 	text_row("Name:", 'con_name-${id}', '${name}', 35, 40);

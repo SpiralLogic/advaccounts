@@ -43,7 +43,7 @@ Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSAC
 	}
 
 	function viewing_controls() {
-		Errors::warning(_("Only documents can be printed."));
+		Event::warning(_("Only documents can be printed."));
 		start_table('tablestyle_noborder');
 		start_row();
 		SysTypes::cells(_("Type:"), 'filterType', null, true);
@@ -62,11 +62,11 @@ Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSAC
 
 	function check_valid_entries() {
 		if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
-			Errors::error(_("The starting transaction number is expected to be numeric and greater than zero."));
+			Event::error(_("The starting transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 		if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0) {
-			Errors::error(_("The ending transaction number is expected to be numeric and greater than zero."));
+			Event::error(_("The ending transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 		return true;

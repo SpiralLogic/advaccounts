@@ -203,14 +203,14 @@
 			$total_allocated = 0;
 			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
 				if (!Validation::is_num('amount' . $counter, 0)) {
-					Errors::error(_("The entry for one or more amounts is invalid or negative."));
+					Event::error(_("The entry for one or more amounts is invalid or negative."));
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
 				/*Now check to see that the AllocAmt is no greater than the
 																							 amount left to be allocated against the transaction under review */
 				if (Validation::input_num('amount' . $counter) > Validation::input_num('un_allocated' . $counter)) {
-					Errors::error(_("At least one transaction is overallocated."));
+					Event::error(_("At least one transaction is overallocated."));
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
@@ -222,7 +222,7 @@
 				$amount = -$amount;
 			}
 			if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts_allocation_allowance')) {
-				Errors::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
+				Event::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 				return false;
 			}
 			return true;
@@ -230,7 +230,7 @@
 		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
 			if (!User::get()->salesmanid); {
-				Errors::error(_("You do not have a salesman id, this is needed to create an invoice."));
+				Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
 			}
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->start();

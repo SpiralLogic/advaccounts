@@ -14,7 +14,7 @@
 		public $debtor_ref = '';
 		public $credit_status;
 		public $payment_discount = 0;
-		public $pymt_discount=0;
+		public $pymt_discount = 0;
 		public $defaultBranch = 0;
 		public $defaultContact = 0;
 		public $branches = array();
@@ -94,7 +94,8 @@
 			if ($this->id == 0) {
 				return array();
 			}
-			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
+			$sql
+			 = "SELECT debtor_trans.*, sales_orders.customer_ref,
 						(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
@@ -151,7 +152,7 @@
 					$this->contacts[$id] = new Contact($contact);
 				}
 			}
-			$this->credit_limit=str_replace(',','',$this->credit_limit);
+			$this->credit_limit = str_replace(',', '', $this->credit_limit);
 		}
 		protected function _canProcess() {
 			if (strlen($this->name) == 0) {
@@ -263,10 +264,12 @@
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true
+																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715',
+																		'resizeable' => true
 															 ));
 			$customerBox->show();
-			$js = <<<JS
+			$js
+			 = <<<JS
 							var val = $("#customer_id").val();
 							$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -277,10 +280,13 @@ JS;
 		}
 		static public function search($terms) {
 			$data = array();
-			$sql = DB::select('debtor_no as id', 'name as label', 'name as value',"IF(name LIKE '".trim($terms)."%',0,5) as weight")->from('debtors')->where('name LIKE ', "$terms%")
+			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE '" . trim($terms) . "%',0,5) as weight")
+			 ->from('debtors')->where('name LIKE ', "$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
-			 if (is_numeric($terms)) $sql->or_where('debtor_no LIKE', "$terms%");
-			$sql->orderby( 'weight,name')->limit(20);
+			if (is_numeric($terms)) {
+				$sql->or_where('debtor_no LIKE', "$terms%");
+			}
+			$sql->orderby('weight,name')->limit(20);
 			$results = DB::fetch();
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);
@@ -296,7 +302,8 @@ JS;
 				return trim($v);
 			}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
-			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+			$sql
+			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 									UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors
 									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
 			$result = DB::query($sql, 'Couldn\'t Get Customers');
@@ -319,10 +326,12 @@ JS;
 			$past1 = DB_Company::get_pref('past_due_days');
 			$past2 = 2 * $past1;
 			// removed - debtor_trans.alloc from all summations
-			$value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+			$value
+			 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
 		-1, 1) *" . "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
 			$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-			$sql = "SELECT debtors.name, debtors.curr_code, payment_terms.terms,		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
+			$sql
+			 = "SELECT debtors.name, debtors.curr_code, payment_terms.terms,		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
 			Sum(" . $value . ") AS Balance,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
@@ -350,7 +359,8 @@ JS;
 			if (DB::num_rows($result) == 0) {
 				/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 				$nil_balance = true;
-				$sql = "SELECT debtors.name, debtors.curr_code, debtors.debtor_no, payment_terms.terms,
+				$sql
+				 = "SELECT debtors.name, debtors.curr_code, debtors.debtor_no, payment_terms.terms,
 	 		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
 	 		FROM debtors,
 	 		 payment_terms,
@@ -386,7 +396,8 @@ JS;
 			return $row[0];
 		}
 		static public function get_habit($customer_id) {
-			$sql = "SELECT debtors.pymt_discount,
+			$sql
+			 = "SELECT debtors.pymt_discount,
 				 credit_status.dissallow_invoices
 				FROM debtors, credit_status
 				WHERE debtors.credit_status = credit_status.id
@@ -425,6 +436,7 @@ JS;
 				$focus = false;
 			}
 			else {
+				JS::set_focus('customer');
 				$focus = true;
 			}
 			hidden('customer_id');
@@ -448,7 +460,8 @@ JS;
 																																						 'search_box' => $mode != 0,
 																																						 'type' => 1,
 																																						 'size' => 20,
-																																						 'spec_option' => $spec_option === true ? _("All Customers") : $spec_option,
+																																						 'spec_option' => $spec_option === true ?
+																																							_("All Customers") : $spec_option,
 																																						 'spec_id' => ALL_TEXT,
 																																						 'select_submit' => $submit_on_change,
 																																						 'async' => $async,

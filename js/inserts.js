@@ -17,35 +17,24 @@ var _hotkeys = {
 function save_focus(e) {
 	_focus = e.name || e.id;
 	var h = document.getElementById('hints');
-	if (h)
-		{
-			h.style.display = e.title && e.title.length ? 'inline' : 'none';
-			h.innerHTML = e.title ? e.title : '';
-		}
+	if (h) {
+		h.style.display = e.title && e.title.length ? 'inline' : 'none';
+		h.innerHTML = e.title ? e.title : '';
+	}
 }
 
 function _expand(tabobj) {
-
 	var ul = tabobj.parentNode.parentNode;
 	var alltabs = ul.getElementsByTagName("input");
-	var frm = tabobj.form;
-
-	if (ul.getAttribute("rel"))
-		{
-			for (var i = 0; i < alltabs.length; i++)
-				{
-					alltabs[i].className = "ajaxbutton"  //deselect all tabs
-				}
-			tabobj.className = "current";
-			JsHttpRequest.request(tabobj)
+	if (ul.getAttribute("rel")) {
+		for (var i = 0; i < alltabs.length; i++) {
+			alltabs[i].className = "ajaxbutton"  //deselect all tabs
 		}
+		tabobj.className = "current";
+		JsHttpRequest.request(tabobj)
+	}
 }
 
-//interface for selecting a tab (plus expand corresponding content)
-function expandtab(tabcontentid, tabnumber) {
-	var tabs = document.getElementById(tabcontentid);
-	_expand(tabs.getElementsByTagName("input")[tabnumber]);
-}
 function _set_combo_input(e) {
 	e.setAttribute('_last', e.value);
 	e.onblur = function () {
@@ -56,47 +45,40 @@ function _set_combo_input(e) {
 // submit request if there is submit_on_change option set and
 // search field has changed.
 
-		if (button && (this.value != this.getAttribute('_last')))
-			{
-				JsHttpRequest.request(button);
-			} else
-			{
-				if (this.className == 'combo2')
-					{
-						this.style.display = 'none';
-						select.style.display = 'inline';
-						setFocus(select);
-					}
+		if (button && (this.value != this.getAttribute('_last'))) {
+			JsHttpRequest.request(button);
+		} else {
+			if (this.className == 'combo2') {
+				this.style.display = 'none';
+				select.style.display = 'inline';
+				setFocus(select);
 			}
+		}
 		return false;
 	};
 	e.onkeyup = function (ev) {
 		var select = document.getElementsByName(this.getAttribute('rel'))[0];
-		if (select && select.selectedIndex >= 0)
-			{
-				var len = select.length;
-				var byid = this.className == 'combo';
-				var ac = this.value.toUpperCase();
-				select.options[select.selectedIndex].selected = false;
-				for (i = 0; i < len; i++)
-					{
-						var txt = byid ? select.options[i].value : select.options[i].text;
-						if (txt.toUpperCase().indexOf(ac) >= 0)
-							{
-								select.options[i].selected = true;
-								break;
-							}
-					}
+		if (select && select.selectedIndex >= 0) {
+			var len = select.length;
+			var byid = this.className == 'combo';
+			var ac = this.value.toUpperCase();
+			select.options[select.selectedIndex].selected = false;
+			for (i = 0; i < len; i++) {
+				var txt = byid ? select.options[i].value : select.options[i].text;
+				if (txt.toUpperCase().indexOf(ac) >= 0) {
+					select.options[i].selected = true;
+					break;
+				}
 			}
+		}
 	};
 	e.onkeydown = function (ev) {
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
-		if (key == 13)
-			{
-				this.blur();
-				return false;
-			}
+		if (key == 13) {
+			this.blur();
+			return false;
+		}
 	}
 }
 
@@ -104,17 +86,15 @@ function _update_box(s) {
 	var byid = s.className == 'combo';
 	var rel = s.getAttribute('rel');
 	var box = document.getElementsByName(rel)[0];
-	if (box && s.selectedIndex >= 0)
-		{
-			var opt = s.options[s.selectedIndex];
-			if (box)
-				{
-					var old = box.value;
-					box.value = byid ? opt.value : opt.text;
-					box.setAttribute('_last', box.value);
-					return old != box.value
-				}
+	if (box && s.selectedIndex >= 0) {
+		var opt = s.options[s.selectedIndex];
+		if (box) {
+			var old = box.value;
+			box.value = byid ? opt.value : opt.text;
+			box.setAttribute('_last', box.value);
+			return old != box.value
 		}
+	}
 }
 
 function _set_combo_select(e) {
@@ -126,41 +106,36 @@ function _set_combo_select(e) {
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
 //			if(this.className=='combo')
 //			    _update_box(this);
-		if ((this.selectedIndex != this.getAttribute('_last')) || (this.className == 'combo' && _update_box(this)))
-			{
-				this.onchange();
-			}
+		if ((this.selectedIndex != this.getAttribute('_last')) || (this.className == 'combo' && _update_box(this))) {
+			this.onchange();
+		}
 	}
 	e.onchange = function () {
 		var s = this;
 		this.setAttribute('_last', this.selectedIndex);
-		if (s.className == 'combo')
-			{
-				_update_box(s);
+		if (s.className == 'combo') {
+			_update_box(s);
+		}
+		if (s.selectedIndex >= 0) {
+			var sname = '_' + s.name + '_update';
+			var update = document.getElementsByName(sname)[0];
+			if (update) {
+				JsHttpRequest.request(update);
 			}
-		if (s.selectedIndex >= 0)
-			{
-				var sname = '_' + s.name + '_update';
-				var update = document.getElementsByName(sname)[0];
-				if (update)
-					{
-						JsHttpRequest.request(update);
-					}
-			}
+		}
 		return true;
 	}
 	e.onkeydown = function (event) {
 		event = event || window.event;
 		key = event.keyCode || event.which;
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
-		if (box && key == 32 && this.className == 'combo2')
-			{
-				this.style.display = 'none';
-				box.style.display = 'inline';
-				box.value = '';
-				setFocus(box);
-				return false;
-			}
+		if (box && key == 32 && this.className == 'combo2') {
+			this.style.display = 'none';
+			box.style.display = 'inline';
+			box.value = '';
+			setFocus(box);
+			return false;
+		}
 	}
 }
 
@@ -168,37 +143,32 @@ var _w;
 
 function callEditor(key) {
 	var el = document.getElementsByName(editors[key][1])[0];
-	if (_w)
-		{
-			_w.close();
-		} // this is really necessary to have window on top in FF2 :/
+	if (_w) {
+		_w.close();
+	} // this is really necessary to have window on top in FF2 :/
 	_w = open(editors[key][0] + el.value + '&popup=1', "edit", "Scrollbars=0,resizable=0,width=800,height=600");
-	if (_w.opener == null)
-		{
-			_w.opener = self;
-		}
+	if (_w.opener === null) {
+		_w.opener = self;
+	}
 	editors._call = key; // store call point for passBack
 	_w.focus();
 }
 
 function passBack(value) {
 	var o = opener;
-	if (value != false)
-		{
-			var back = o.editors[o.editors._call]; // form input bindings
-			var to = o.document.getElementsByName(back[1])[0];
-			if (to)
-				{
-					if (to[0] != undefined)
-						{
-							to[0].value = value;
-						} // ugly hack to set selector to any value
-					to.value = value;
-					// update page after item selection
-					o.JsHttpRequest.request('_' + to.name + '_update', to.form);
-					o.setFocus(to.name);
-				}
+	if (!value ) {
+		var back = o.editors[o.editors._call]; // form input bindings
+		var to = o.document.getElementsByName(back[1])[0];
+		if (to) {
+			if (to[0] != undefined) {
+				to[0].value = value;
+			} // ugly hack to set selector to any value
+			to.value = value;
+			// update page after item selection
+			o.JsHttpRequest.request('_' + to.name + '_update', to.form);
+			o.setFocus(to.name);
 		}
+	}
 	close();
 }
 
@@ -207,38 +177,31 @@ function passBack(value) {
  */
 var inserts = {
 	'input':function (e) {
-		if (e.onfocus == undefined)
-			{
-				e.onfocus = function () {
-					save_focus(this);
-					if (this.className == 'combo')
-						{
-							this.select();
+		if (e.onfocus == undefined) {
+			e.onfocus = function () {
+				save_focus(this);
+				if (this.className == 'combo') {
+					this.select();
+				}
+			};
+		}
+		if (e.className == 'combo' || e.className == 'combo2') {
+			_set_combo_input(e);
+		} else {
+			if (e.type == 'text') {
+				e.onkeydown = function (ev) {
+					ev = ev || window.event;
+					key = ev.keyCode || ev.which;
+					if (key == 13) {
+						if (e.className == 'searchbox') {
+							e.onblur();
 						}
-				};
-			}
-		if (e.className == 'combo' || e.className == 'combo2')
-			{
-				_set_combo_input(e);
-			} else
-			{
-				if (e.type == 'text')
-					{
-						e.onkeydown = function (ev) {
-							ev = ev || window.event;
-							key = ev.keyCode || ev.which;
-							if (key == 13)
-								{
-									if (e.className == 'searchbox')
-										{
-											e.onblur();
-										}
-									return false;
-								}
-							return true;
-						}
+						return false;
 					}
+					return true;
+				}
 			}
+		}
 	},
 	'input.combo2,input[data-aspect="fallback"]':function (e) {
 		// this hides search button for js enabled browsers
@@ -253,59 +216,49 @@ var inserts = {
 		e.onclick = function () {
 			save_focus(e);
 			var asp = e.getAttribute('data-aspect');
-			if (asp && asp.indexOf('process') !== -1)
-				{
-					JsHttpRequest.request(this, null, 60000);
-				} else
-				{
-					JsHttpRequest.request(this);
-				}
+			if (asp && asp.indexOf('process') !== -1) {
+				JsHttpRequest.request(this, null, 60000);
+			} else {
+				JsHttpRequest.request(this);
+			}
 			return false;
 		}
 	},
 	'button':function (e) {
-		if (e.name)
-			{
-				var func = _validate[e.name];
-				var old = e.onclick;
-				if (func)
-					{
-						if (typeof old != 'function' || old == func)
-							{ // prevent multiply binding on ajax update
-								e.onclick = func;
-							} else
-							{
-								e.onclick = function () {
-									if (func())
-										{
-											old();
-											return true;
-										} else
-										{
-											return false;
-										}
-								}
-							}
+		if (e.name) {
+			var func = _validate[e.name];
+			var old = e.onclick;
+			if (func) {
+				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
+					e.onclick = func;
+				} else {
+					e.onclick = function () {
+						if (func()) {
+							old();
+							return true;
+						} else {
+							return false;
+						}
 					}
+				}
 			}
+		}
 	},
 	'.amount':function (e) {
-		if (e.onblur == undefined)
-			{
-				e.onblur = function () {
-					var dec = this.getAttribute("data-dec");
-					price_format(this.name, get_amount(this.name), dec);
-				};
-			}
+		if (e.onblur == undefined) {
+			e.onblur = function () {
+				var dec = this.getAttribute("data-dec");
+				price_format(this.name, get_amount(this.name), dec);
+			};
+		}
 	},
 	'.freight':function (e) {
-		if (e.onblur == undefined)
-			{
-				e.onblur = function () {
-					var dec = this.getAttribute("data-dec");
-					price_format(this.name, get_amount(this.name), dec, '2');
-				};
-			}
+		if (e.onblur == undefined) {
+			e.onblur = function () {
+				var dec = this.getAttribute("data-dec");
+				price_format(this.name, get_amount(this.name), dec, '2');
+			};
+		}
 	},
 	'.searchbox':// emulated onchange event handling for text inputs
 	 function (e) {
@@ -313,11 +266,10 @@ var inserts = {
 		 e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
 		 e.onblur = function () {
 			 var val = this.getAttribute('_last_val');
-			 if (val != this.value)
-				 {
-					 this.setAttribute('_last_val', this.value);
-					 JsHttpRequest.request('_' + this.name + '_changed', this.form);
-				 }
+			 if (val != this.value) {
+				 this.setAttribute('_last_val', this.value);
+				 JsHttpRequest.request('_' + this.name + '_changed', this.form);
+			 }
 		 }
 	 },
 	'button[data-aspect="selector"], input[data-aspect="selector"]':function (e) {
@@ -327,17 +279,15 @@ var inserts = {
 		}
 	},
 	'select':function (e) {
-		if (e.onfocus == undefined)
-			{
-				e.onfocus = function () {
-					save_focus(this);
-				};
-				var c = e.className;
-				if (c == 'combo' || c == 'combo2')
-					{
-						_set_combo_select(e);
-					}
+		if (e.onfocus == undefined) {
+			e.onfocus = function () {
+				save_focus(this);
+			};
+			var c = e.className;
+			if (c == 'combo' || c == 'combo2') {
+				_set_combo_select(e);
 			}
+		}
 	},
 	'a.printlink':function (l) {
 		l.onclick = function () {
@@ -350,29 +300,26 @@ var inserts = {
 		e.onkeydown = function (ev) {
 			ev = ev || window.event;
 			key = ev.keyCode || ev.which;
-			if (key == 37 || key == 38 || key == 39 || key == 40)
-				{
-					move_focus(key, e, document.links);
-					ev.returnValue = false;
-					return false;
-				}
+			if (key == 37 || key == 38 || key == 39 || key == 40) {
+				move_focus(key, e, document.links);
+				ev.returnValue = false;
+				return false;
+			}
 		}
 	},
 	'ul.ajaxtabs':function (ul) {
 		var ulist = ul.getElementsByTagName("li");
-		for (var x = 0; x < ulist.length; x++)
-			{ //loop through each LI e
-				var ulistlink = ulist[x].getElementsByTagName("input")[0];
-				if (ulistlink.onclick == undefined)
-					{
+		for (var x = 0; x < ulist.length; x++) { //loop through each LI e
+			var ulistlink = ulist[x].getElementsByTagName("input")[0];
+			if (ulistlink.onclick == undefined) {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
-						var url = ulistlink.form.action
-						ulistlink.onclick = function () {
-							_expand(this);
-							return false;
-						}
-					}
+				var url = ulistlink.form.action
+				ulistlink.onclick = function () {
+					_expand(this);
+					return false;
+				}
 			}
+		}
 	}
 	/*	'tr.editrow': function(e) {
 	 e.onkeydown = function(ev) {
@@ -402,16 +349,14 @@ var inserts = {
 };
 
 function stopEv(ev) {
-	if (ev.preventDefault)
-		{
-			ev.preventDefault();
-			ev.stopPropagation();
-		} else
-		{
-			ev.returnValue = false;
-			ev.cancelBubble = true;
-			window.keycode = 0;
-		}
+	if (ev.preventDefault) {
+		ev.preventDefault();
+		ev.stopPropagation();
+	} else {
+		ev.returnValue = false;
+		ev.cancelBubble = true;
+		window.keycode = 0;
+	}
 	return false;
 }
 /*
