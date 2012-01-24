@@ -19,20 +19,20 @@
 			if ($Mode == UPDATE_ITEM) {
 				Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				Users::update_password($selected_id, $_POST['user_id'], $password);
-				Errors::notice(_("The selected user has been updated."));
+				Event::notice(_("The selected user has been updated."));
 			}
 			else {
 				Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				// use current user display preferences as start point for new user
 				Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
-				Errors::notice(_("A new user has been added."));
+				Event::notice(_("A new user has been added."));
 			}
 			$Mode = MODE_RESET;
 		}
 	}
 	if ($Mode == MODE_DELETE) {
 		Users::delete($selected_id);
-		Errors::notice(_("User has been deleted."));
+		Event::notice(_("User has been deleted."));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {
@@ -131,28 +131,28 @@
 	 */
 	function can_process($user) {
 		if (strlen($_POST['user_id']) < 4) {
-			Errors::error(_("The user login entered must be at least 4 characters long."));
+			Event::error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
 			return false;
 		}
 		if ($_POST['password'] != "") {
 			if (strlen($_POST['password']) < 4) {
-				Errors::error(_("The password entered must be at least 4 characters long."));
+				Event::error(_("The password entered must be at least 4 characters long."));
 				JS::set_focus('password');
 				return false;
 			}
 			if (strstr($_POST['password'], $_POST['user_id']) != false) {
-				Errors::error(_("The password cannot contain the user login."));
+				Event::error(_("The password cannot contain the user login."));
 				JS::set_focus('password');
 				return false;
 			}
 			$check = ($user !== null) ? Auth::checkPasswordStrength($_POST['password']) : false;
 			if (!$check && $check['error'] > 0) {
-				Errors::error($check['text']);
+				Event::error($check['text']);
 				return false;
 			}
 			if (!$check && $check['strength'] < 3) {
-				Errors::error(_("Password Too Weeak!"));
+				Event::error(_("Password Too Weeak!"));
 				return false;
 			}
 		}

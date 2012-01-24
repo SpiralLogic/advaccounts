@@ -25,12 +25,12 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 		//first off validate inputs sensible
 		if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") {
 			$input_error = 1;
-			Errors::error(_("The supplier name must be entered."));
+			Event::error(_("The supplier name must be entered."));
 			JS::set_focus('supp_name');
 		}
 		if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") {
 			$input_error = 1;
-			Errors::error(_("The supplier short name must be entered."));
+			Event::error(_("The supplier short name must be entered."));
 			JS::set_focus('supp_ref');
 		}
 		if ($input_error != 1) {
@@ -61,7 +61,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 				DB::query($sql, "The supplier could not be updated");
 				DB::update_record_status($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
 				Ajax::i()->activate('supplier_id'); // in case of status change
-				Errors::notice(_("Supplier has been updated."));
+				Event::notice(_("Supplier has been updated."));
 			}
 			else {
 				$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
@@ -71,7 +71,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 				DB::query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = DB::insert_id();
 				$new_supplier = false;
-				Errors::notice(_("A new supplier has been added."));
+				Event::notice(_("A new supplier has been added."));
 				Ajax::i()->activate('_page_body');
 			}
 		}
@@ -85,7 +85,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+			Event::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
@@ -93,7 +93,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				Errors::error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+				Event::error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
 			}
 		}
 		if ($cancel_delete == 0) {

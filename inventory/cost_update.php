@@ -23,17 +23,17 @@ Page::start(_($help_context = "Inventory Item Cost Update"), SA_STANDARDCOST);
 		$should_update = true;
 		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost') || !Validation::is_num('overhead_cost')
 		) {
-			Errors::error(_("The entered cost is not numeric."));
+			Event::error(_("The entered cost is not numeric."));
 			JS::set_focus('material_cost');
 			$should_update = false;
 		}
 		elseif ($old_cost == $new_cost) {
-			Errors::error(_("The new cost is the same as the old cost. Cost was not updated."));
+			Event::error(_("The new cost is the same as the old cost. Cost was not updated."));
 			$should_update = false;
 		}
 		if ($should_update) {
 			$update_no = Item_Price::update_cost($_POST['stock_id'], Validation::input_num('material_cost'), Validation::input_num('labour_cost'), Validation::input_num('overhead_cost'), $old_cost);
-			Errors::notice(_("Cost has been updated."));
+			Event::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
 				Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}

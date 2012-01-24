@@ -74,7 +74,7 @@
 	}
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-		\Errors::shutdown_handler();
+		\Event::shutdown();
 	});
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**

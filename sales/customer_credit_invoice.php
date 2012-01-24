@@ -26,7 +26,7 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		Errors::notice(_("Credit Note has been processed"));
+		Event::notice(_("Credit Note has been processed"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -35,7 +35,7 @@
 	elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
-		Errors::notice(_("Credit Note has been updated"));
+		Event::notice(_("Credit Note has been updated"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -63,7 +63,7 @@
 		die (_("This page can only be opened if an invoice has been selected for crediting."));
 	}
 	elseif (!check_quantities()) {
-		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+		Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		$new_credit = (Orders::session_get($_POST['order_id'])->trans_no == 0);
@@ -129,18 +129,18 @@
 
 	function can_process() {
 		if (!Dates::is_date($_POST['CreditDate'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
-				Errors::error(_("You must enter a reference."));
+				Event::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
@@ -149,12 +149,12 @@
 			}
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			Errors::error(_("The entered shipping cost is invalid or less than zero."));
+			Event::error(_("The entered shipping cost is invalid or less than zero."));
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if (!check_quantities()) {
-			Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+			Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 			return false;
 		}
 		return true;

@@ -145,7 +145,7 @@
 	Page::end();
 	function check_date() {
 		if (!Dates::is_date(get_post('deposit_date'))) {
-			Errors::error(_("Invalid deposit date format"));
+			Event::error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
 			return false;
 		}

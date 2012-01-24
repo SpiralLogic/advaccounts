@@ -17,18 +17,18 @@
 		$input_error = 0;
 		if (strlen($_POST['salesman_name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The sales person name cannot be empty."));
+			Event::error(_("The sales person name cannot be empty."));
 			JS::set_focus('salesman_name');
 		}
 		$pr1 = Validation::is_num('provision', 0, 100);
 		if (!$pr1 || !Validation::is_num('provision2', 0, 100)) {
 			$input_error = 1;
-			Errors::error(_("Salesman provision cannot be less than 0 or more than 100%."));
+			Event::error(_("Salesman provision cannot be less than 0 or more than 100%."));
 			JS::set_focus(!$pr1 ? 'provision' : 'provision2');
 		}
 		if (!Validation::is_num('break_pt', 0)) {
 			$input_error = 1;
-			Errors::error(_("Salesman provision breakpoint must be numeric and not less than 0."));
+			Event::error(_("Salesman provision breakpoint must be numeric and not less than 0."));
 			JS::set_focus('break_pt');
 		}
 		if ($input_error != 1) {
@@ -54,10 +54,10 @@
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
-				Errors::notice(_('Selected sales person data have been updated'));
+				Event::notice(_('Selected sales person data have been updated'));
 			}
 			else {
-				Errors::notice(_('New sales person data have been added'));
+				Event::notice(_('New sales person data have been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -69,12 +69,12 @@
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
+			Event::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
 		}
 		else {
 			$sql = "DELETE FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			DB::query($sql, "The sales-person could not be deleted");
-			Errors::notice(_('Selected sales person data have been deleted'));
+			Event::notice(_('Selected sales person data have been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}

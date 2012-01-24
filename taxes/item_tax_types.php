@@ -16,7 +16,7 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The item tax type description cannot be empty."));
+			Event::error(_("The item tax type description cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
@@ -32,11 +32,11 @@
 			}
 			if ($selected_id != -1) {
 				Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-				Errors::notice(_('Selected item tax type has been updated'));
+				Event::notice(_('Selected item tax type has been updated'));
 			}
 			else {
 				Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
-				Errors::notice(_('New item tax type has been added'));
+				Event::notice(_('New item tax type has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -44,7 +44,7 @@
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			delete($selected_id);
-			Errors::notice(_('Selected item tax type has been deleted'));
+			Event::notice(_('Selected item tax type has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -99,7 +99,7 @@
 	yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
 	end_table(1);
 	if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
-		Errors::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
+		Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
 		start_table('tablestyle2');
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
@@ -121,7 +121,7 @@
 		$result = DB::query($sql, "could not query stock master");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
+			Event::error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
 		}
 		return true;

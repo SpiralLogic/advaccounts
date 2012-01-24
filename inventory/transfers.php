@@ -18,7 +18,7 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
-		Errors::notice(_("Inventory transfer has been processed"));
+		Event::notice(_("Inventory transfer has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();
@@ -28,12 +28,12 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 		$tr = &$_SESSION['transfer_items'];
 		$input_error = 0;
 		if (count($tr->line_items) == 0) {
-			Errors::error(_("You must enter at least one non empty item line."));
+			Event::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('stock_id');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
@@ -41,17 +41,17 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 			$_POST['ref'] = Ref::get_next(ST_LOCTRANSFER);
 		}
 		elseif (!Dates::is_date($_POST['AdjDate'])) {
-			Errors::error(_("The entered date for the adjustment is invalid."));
+			Event::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation']) {
-			Errors::error(_("The locations to transfer from and to must be different."));
+			Event::error(_("The locations to transfer from and to must be different."));
 			JS::set_focus('FromStockLocation');
 			$input_error = 1;
 		}
@@ -59,7 +59,7 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 			$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 			if ($failed_item >= 0) {
 				$line = $tr->line_items[$failed_item];
-				Errors::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
+				Event::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
 				echo "<br>";
 				$_POST[MODE_EDIT . $failed_item] = 1; // enter edit mode
 				$input_error = 1;
@@ -109,7 +109,7 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 	Page::end();
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
-			Errors::error(_("The quantity entered must be a positive number."));
+			Event::error(_("The quantity entered must be a positive number."));
 			JS::set_focus('qty');
 			return false;
 		}

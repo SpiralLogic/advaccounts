@@ -730,7 +730,7 @@
 				if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 					foreach ($this->line_items as $order_item) {
 						if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-							Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
+							Event::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 							break;
 						}
 					}
@@ -769,7 +769,7 @@
 					// check duplicate stock item
 					foreach ($this->line_items as $this_item) {
 						if (strcasecmp($this_item->stock_id, $item['stock_id']) == 0) {
-							Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
+							Event::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 							break;
 						}
 					}
@@ -1070,10 +1070,10 @@
 			end_row();
 			end_table();
 			if ($has_marked) {
-				Errors::notice(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
+				Event::notice(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
 			}
 			if ($this->trans_type != 30 && !DB_Company::get_pref('allow_negative_stock')) {
-				Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+				Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 			}
 			Display::div_end();
 		}
@@ -1444,7 +1444,7 @@
 			if ($num == 1) {
 				return DB::fetch($result);
 			}
-			return Errors::error("Database returned nothing!", E_USER_ERROR);
+			return Event::error("Database returned nothing!", E_USER_ERROR);
 		}
 
 		/**
@@ -1591,10 +1591,10 @@
 			$session_order = Orders::session_get();
 			if (!$order->view_only && $session_order && $session_order->uniqueid != $order->uniqueid) {
 				if (!$session_order->trans_no && count($session_order->line_items) > 0) {
-					Errors::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
+					Event::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
 				}
 				elseif ($session_order->trans_no) {
-					Errors::warning(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
+					Event::warning(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
 				}
 				return $session_order;
 			}

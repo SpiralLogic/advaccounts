@@ -36,7 +36,7 @@ Page::set_security(SA_TAXREP);
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
-		//Errors::error($sql);
+		//Event::error($sql);
 		return DB::query($sql, "No transactions were returned");
 	}
 

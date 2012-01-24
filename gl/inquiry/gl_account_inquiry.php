@@ -192,7 +192,7 @@
 			}
 			end_table(2);
 			if (DB::num_rows($result) == 0) {
-				Errors::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+				Event::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 			}
 		}
 ?>

@@ -26,10 +26,10 @@
 		}
 		DB::commit();
 		if (isset($_POST['add'])) {
-			Errors::notice(_("The Budget has been saved."));
+			Event::notice(_("The Budget has been saved."));
 		}
 		else {
-			Errors::notice(_("The Budget has been deleted."));
+			Event::notice(_("The Budget has been deleted."));
 		}
 		//Display::meta_forward($_SERVER['PHP_SELF']);
 		Ajax::i()->activate('budget_tbl');

@@ -22,17 +22,17 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			Errors::error(_("There is no item selected."));
+			Event::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
 		elseif (!Validation::is_num('price', 0)) {
 			$input_error = 1;
-			Errors::error(_("The price entered was not numeric."));
+			Event::error(_("The price entered was not numeric."));
 			JS::set_focus('price');
 		}
 		elseif (!Validation::is_num('conversion_factor')) {
 			$input_error = 1;
-			Errors::error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+			Event::error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 			JS::set_focus('conversion_factor');
 		}
 		if ($input_error == 0) {
@@ -41,7 +41,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
  			conversion_factor, supplier_description) VALUES (";
 				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
-				Errors::notice(_("This supplier purchasing data has been added."));
+				Event::notice(_("This supplier purchasing data has been added."));
 			}
 			else {
 				$sql = "UPDATE purch_data SET price=" . Validation::input_num('price', 0) . ",
@@ -51,7 +51,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
 				supplier_id=" . DB::escape($selected_id);
 				DB::query($sql, "The supplier purchasing details could not be updated");
-				Errors::notice(_("Supplier purchasing data has been updated."));
+				Event::notice(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -63,7 +63,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 		$sql = "MODE_DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
 		DB::query($sql, "could not delete purchasing data");
-		Errors::notice(_("The purchasing data item has been sucessfully deleted."));
+		Event::notice(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {
@@ -93,7 +93,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = WO::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
-		Errors::warning(_("Entered item is not defined. Please re-enter."));
+		Event::warning(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
 	}
 	else {
@@ -104,7 +104,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 		$result = DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		Display::div_start('price_table');
 		if (DB::num_rows($result) == 0) {
-			Errors::warning(_("There is no supplier prices set up for the product selected"));
+			Event::warning(_("There is no supplier prices set up for the product selected"));
 		}
 		else {
 			if (Input::request('frame')) {

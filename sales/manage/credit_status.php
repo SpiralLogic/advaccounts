@@ -15,7 +15,7 @@ Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
 	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['reason_description']) == 0) {
-			Errors::error(_("The credit status description cannot be empty."));
+			Event::error(_("The credit status description cannot be empty."));
 			JS::set_focus('reason_description');
 			return false;
 		}
@@ -24,11 +24,11 @@ Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
-		Errors::notice(_('New credit status has been added'));
+		Event::notice(_('New credit status has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
-		Errors::notice(_('Selected credit status has been updated'));
+		Event::notice(_('Selected credit status has been updated'));
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = MODE_RESET;
 	}
@@ -36,7 +36,7 @@ Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			Sales_CreditStatus::delete($selected_id);
-			Errors::notice(_('Selected credit status has been deleted'));
+			Event::notice(_('Selected credit status has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -93,7 +93,7 @@ Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
 			$result = DB::query($sql, "could not query customers");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
-				Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+				Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 				return false;
 			}
 			return true;

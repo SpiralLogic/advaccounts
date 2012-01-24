@@ -106,7 +106,7 @@
 				$file = $line = null;
 				$headersSent = version_compare(PHP_VERSION, "4.3.0") < 0 ? headers_sent() : headers_sent($file, $line);
 				if ($headersSent) {
-					Errors::error(
+					Event::error(
 						"HTTP headers are already sent" . ($line !== null ? " in $file on line $line"
 						 : " somewhere in the script") . ". "
 						 . "Possibly you have an extra space (or a newline) before the first line of the script or any library. "

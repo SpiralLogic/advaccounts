@@ -18,7 +18,7 @@
 			Ref::save($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 		DB::commit();
-		Errors::notice(_("Forms settings have been updated."));
+		Event::notice(_("Forms settings have been updated."));
 	}
 	start_form();
 	start_outer_table('tablestyle2');

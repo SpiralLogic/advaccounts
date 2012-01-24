@@ -18,7 +18,7 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
-		Errors::notice(_("Items adjustment has been processed"));
+		Event::notice(_("Items adjustment has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
@@ -66,12 +66,12 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 	Page::end();
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
-			Errors::error(_("The quantity entered is negative or invalid."));
+			Event::error(_("The quantity entered is negative or invalid."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('std_cost', 0)) {
-			Errors::error(_("The entered standard cost is negative or invalid."));
+			Event::error(_("The entered standard cost is negative or invalid."));
 			JS::set_focus('std_cost');
 			return false;
 		}
@@ -120,12 +120,12 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 		function can_process() {
 			$adj = &$_SESSION['adj_items'];
 			if (count($adj->line_items) == 0) {
-				Errors::error(_("You must enter at least one non empty item line."));
+				Event::error(_("You must enter at least one non empty item line."));
 				JS::set_focus('stock_id');
 				return false;
 			}
 			if (!Ref::is_valid($_POST['ref'])) {
-				Errors::error(_("You must enter a reference."));
+				Event::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
@@ -133,12 +133,12 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 				$_POST['ref'] = Ref::get_next(ST_INVADJUST);
 			}
 			if (!Dates::is_date($_POST['AdjDate'])) {
-				Errors::error(_("The entered date for the adjustment is invalid."));
+				Event::error(_("The entered date for the adjustment is invalid."));
 				JS::set_focus('AdjDate');
 				return false;
 			}
 			elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-				Errors::error(_("The entered date is not in fiscal year."));
+				Event::error(_("The entered date is not in fiscal year."));
 				JS::set_focus('AdjDate');
 				return false;
 			}

@@ -117,7 +117,7 @@
 			if (count($sql_errors)) {
 				// display first failure message; the rest are probably derivative
 				$err = $sql_errors[0];
-				Errors::error(sprintf(_("SQL script execution failed in line %d: %s"), $err[1], $err[0]));
+				Event::error(sprintf(_("SQL script execution failed in line %d: %s"), $err[1], $err[0]));
 				return false;
 			} else {
 				return true;

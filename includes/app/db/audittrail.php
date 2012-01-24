@@ -66,7 +66,7 @@
 				}
 			}
 			if ($errors) {
-				Errors::warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
+				Event::warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
 			}
 		}
 

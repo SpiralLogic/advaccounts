@@ -19,7 +19,7 @@
 				exit;
 			}
 			if (WO::is_closed($woid)) {
-				Errors::error("UNEXPECTED : Producing Items for a closed Work Order");
+				Event::error("UNEXPECTED : Producing Items for a closed Work Order");
 				DB::cancel();
 				exit;
 			}

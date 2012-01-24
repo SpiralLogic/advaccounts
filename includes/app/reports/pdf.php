@@ -50,7 +50,7 @@
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
 
 			if (!User::get()->can_access_page(Page::get_security())) {
-				Errors::error(_("The security settings on your account do not permit you to print this report"));
+				Event::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
 				exit;
 			}
@@ -833,11 +833,11 @@
 					$mail->attachment($fname);
 					$ret = $mail->send();
 					if (!$ret) {
-						Errors::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
+						Event::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
 					}
 					else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						Errors::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
+						Event::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
 					}
 					unlink($fname);
 				}
@@ -876,10 +876,10 @@
 						$prn = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
 						if ($error) {
-							Errors::error($error);
+							Event::error($error);
 						}
 						else {
-							Errors::notice(_('Report has been sent to network printer ') . $printer['name']);
+							Event::notice(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}
 				}

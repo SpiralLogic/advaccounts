@@ -16,7 +16,7 @@
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
 		DB::query($sql, "The Shipping Company could not be added");
-		Errors::notice(_('New shipping company has been added'));
+		Event::notice(_('New shipping company has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
@@ -27,7 +27,7 @@
 		address =" . DB::escape($_POST['address']) . "
 		WHERE shipper_id = " . DB::escape($selected_id);
 		DB::query($sql, "The shipping company could not be updated");
-		Errors::notice(_('Selected shipping company has been updated'));
+		Event::notice(_('Selected shipping company has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {
@@ -37,7 +37,7 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
+			Event::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
 		}
 		else {
 			// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
@@ -46,12 +46,12 @@
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				Errors::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
+				Event::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 			}
 			else {
 				$sql = "DELETE FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
 				DB::query($sql, "could not delete shipper");
-				Errors::notice(_('Selected shipping company has been deleted'));
+				Event::notice(_('Selected shipping company has been deleted'));
 			}
 		}
 		$Mode = MODE_RESET;
@@ -114,7 +114,7 @@
 	Page::end();
 	function can_process() {
 		if (strlen($_POST['shipper_name']) == 0) {
-			Errors::error(_("The shipping company name cannot be empty."));
+			Event::error(_("The shipping company name cannot be empty."));
 			JS::set_focus('shipper_name');
 			return false;
 		}

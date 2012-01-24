@@ -190,7 +190,7 @@
 			if (!isset($_SESSION['config']['company'])) {
 				$_SESSION['config']['company'] = static::i();
 				if (!static::$i) {
-					Errors::error("FATAL : Could not find company prefs");
+					Event::error("FATAL : Could not find company prefs");
 				}
 			}
 			return (array)$_SESSION['config']['company'];

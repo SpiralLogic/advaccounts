@@ -426,7 +426,7 @@
 					 echo "<td>";
 				 }*/
 				if ($heading2 != "") {
-					Errors::warning($heading2, 0, 0, "class='overduefg'");
+					Event::warning($heading2, 0, 0, "class='overduefg'");
 				}
 				echo "</td><td width=10% class='right'>";
 				submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
@@ -527,10 +527,10 @@
 				start_row();
 				echo "<td colspan=" . ($colspan + 1) . ">";
 				if ($creditor_trans->is_invoice) {
-					Errors::warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
+					Event::warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 				}
 				else {
-					Errors::warning(_("There are no received items for the selected supplier that have been invoiced.<br>Credits can only be applied to invoiced items."));
+					Event::warning(_("There are no received items for the selected supplier that have been invoiced.<br>Credits can only be applied to invoiced items."));
 				}
 				echo "</td>";
 				end_row();

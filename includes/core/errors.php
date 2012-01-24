@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		/**
 		 *
 		 */
@@ -74,6 +73,7 @@
 		 * @var array Errors to ignore comeletely
 		 */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+
 		/**
 		 * @static Initialiser
 		 *
@@ -95,73 +95,9 @@
 			else {
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
+			Event::register_shutdown(__CLASS__);
 		}
-		/**
-		 * @static
-		 *
-		 * @param $message Error message
-		 */
-		static function error($message) {
-			//Get the caller of the calling function and details about it
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
-		}
-		/**
-		 * @static
-		 *
-		 * @param $msg Notice message
-		 */
-		static function notice($message) {
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
-		}
-		/**
-		 * @static
-		 *
-		 * @param $msg Warning message
-		 */
-		static function warning($message) {
-			$source = next(debug_backtrace());
-			//Trigger appropriate error
-			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
-		}
-		/**
-		 * @static Shutdown handler
-		 *
-		 */
-		static function shutdown_handler() {
-			$Ajax = Ajax::i();
-			$last_error = error_get_last();
-			// Only show valid fatal errors
-			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
-				$Ajax->aCommands = array();
-				static::$fatal = true;
-				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
-				static::exception_handler($error);
-			}
-			if (Ajax::in_ajax()) {
-				Ajax::i()->run();
-			}
-			elseif (AJAX_REFERRER && IS_JSON_REQUEST &&!static::$jsonerrorsent) {
-				ob_end_clean();
-				echo static::getJSONError();
-			}
-			elseif (static::$fatal) {
-				ob_end_clean();
-				Page::error_exit(static::format());
-				exit();
-			}
-			// flush all output buffers (works also with exit inside any div levels)
-			while (ob_get_level()) {
-				ob_end_flush();
-			}
-			fastcgi_finish_request();
-			Config::store();
-			Cache::set('autoloads', Autoloader::getLoaded());
-			static::send_debug_email();
-			}
+
 		/**
 		 * @static
 		 *
@@ -188,9 +124,11 @@
 			static::$jsonerrorsent = true;
 			return $status;
 		}
+
 		static public function getJSONError() {
 			return json_encode(array('status' => $status));
 		}
+
 		/**
 		 * @static
 		 *
@@ -221,6 +159,7 @@
 			}
 			return true;
 		}
+
 		/**
 		 * @static
 		 *
@@ -234,6 +173,7 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
+
 		/**
 		 * @static
 		 * @return string
@@ -265,6 +205,11 @@
 			}
 			return $content;
 		}
+
+		static public function _shutdown() {
+return 			static::send_debug_email();
+		}
+
 		static function send_debug_email() {
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
@@ -289,6 +234,7 @@
 				}
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -299,6 +245,7 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
+
 		/**
 		 * @static
 		 *
@@ -325,6 +272,7 @@
 			}
 			trigger_error($error['message'] . '||' . $error['source']['file'] . '||' . $error['source']['line'] . '||', E_USER_ERROR);
 		}
+
 		/**
 		 * @static
 		 *
@@ -348,6 +296,35 @@
 			}
 			static::$messages[] = $data;
 			static::$errors[] = $data;
+		}
+
+		public static function process() {
+			$last_error = error_get_last();
+			// Only show valid fatal errors
+			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
+				$Ajax->aCommands = array();
+				static::$fatal = true;
+				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
+				static::exception_handler($error);
+			}
+			if (Ajax::in_ajax()) {
+				Ajax::i()->run();
+			}
+			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
+				ob_end_clean();
+				echo static::getJSONError();
+			}
+			elseif (static::$fatal) {
+				static::fatal();
+			}
+		}
+
+		static public function fatal() {
+			ob_end_clean();
+			$content = static::format();
+			static::send_debug_email();
+			Page::error_exit($content);
+
 		}
 	}
 

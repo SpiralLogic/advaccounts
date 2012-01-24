@@ -118,14 +118,14 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 		}
 		else {
 			if (!exist_transaction($_POST['filterType'], $_POST['trans_no'])) {
-				Errors::error(_("The entered transaction does not exist or cannot be voided."));
+				Event::error(_("The entered transaction does not exist or cannot be voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 			}
 			else {
-				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+				Event::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				$_SESSION['voiding'] = $_POST['trans_no'] . $_POST['filterType'];
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
@@ -134,7 +134,7 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 				else {
 					$view_str = GL_UI::trans_view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
-				Errors::warning($view_str);
+				Event::warning($view_str);
 				Display::br();
 				submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
@@ -145,22 +145,22 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 
 	function check_valid_entries() {
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
-			Errors::error(_("The selected transaction was closed for edition and cannot be voided."));
+			Event::error(_("The selected transaction was closed for edition and cannot be voided."));
 			JS::set_focus('trans_no');
 			return;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
-			Errors::error(_("The transaction number is expected to be numeric and greater than zero."));
+			Event::error(_("The transaction number is expected to be numeric and greater than zero."));
 			JS::set_focus('trans_no');
 			return false;
 		}
@@ -169,7 +169,7 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 
 	function handle_void_transaction() {
 		if ($_SESSION['voiding'] != $_POST['trans_no'] . $_POST['filterType']) {
-			Errors::error(_("The transaction number has changed."));
+			Event::error(_("The transaction number has changed."));
 			JS::set_focus('trans_no');
 			return false;
 		}
@@ -177,7 +177,7 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 			unset($_SESSION['voiding']);
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
-				Errors::error(_("The selected transaction has already been voided."), true);
+				Event::error(_("The selected transaction has already been voided."), true);
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
@@ -186,13 +186,13 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 			}
 			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
 			if ($ret) {
-				Errors::notice(_("Selected transaction has been voided."));
+				Event::notice(_("Selected transaction has been voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 			}
 			else {
-				Errors::error(_("The entered transaction does not exist or cannot be voided."));
+				Event::error(_("The entered transaction does not exist or cannot be voided."));
 				JS::set_focus('trans_no');
 			}
 		}

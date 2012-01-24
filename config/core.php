@@ -27,6 +27,7 @@
 		'DB_Query_Where', //
 		'Dialog', //
 		'Errors', //
+		'Event', //
 		'Files', //
 		'HTML', //
 		'Input', //
@@ -38,5 +39,4 @@
 		'Session', //
 		'Status', //
 		'UploadHandler', //
-		'Events', //
 	);

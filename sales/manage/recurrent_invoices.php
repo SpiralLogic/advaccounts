@@ -17,7 +17,7 @@ Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The area description cannot be empty."));
+			Event::error(_("The area description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
@@ -42,7 +42,7 @@ Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
 				$note = _('New recurrent invoice has been added');
 			}
 			DB::query($sql, "The recurrent invoice could not be updated or added");
-			Errors::notice($note);
+			Event::notice($note);
 			$Mode = MODE_RESET;
 		}
 	}
@@ -51,7 +51,7 @@ Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
 			DB::query($sql, "could not delete recurrent invoice");
-			Errors::notice(_('Selected recurrent invoice has been deleted'));
+			Event::notice(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
 		$Mode = MODE_RESET;
 	}

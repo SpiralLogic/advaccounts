@@ -57,7 +57,7 @@ Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, true);
 	$voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 	$items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
 	if (DB::num_rows($items) == 0) {
-		Errors::warning(_("There are no items for this payment."));
+		Event::warning(_("There are no items for this payment."));
 	}
 	else {
 		Display::heading(_("Items for this Payment"));

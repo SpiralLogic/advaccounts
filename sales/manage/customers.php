@@ -29,7 +29,7 @@
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			Errors::error(_("This customer cannot be deleted because there are transactions that refer to it."));
+			Event::error(_("This customer cannot be deleted because there are transactions that refer to it."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
@@ -37,7 +37,7 @@
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				Errors::error(_("Cannot delete the customer record because orders have been created against it."));
+				Event::error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
 				$sql = "SELECT COUNT(*) FROM branches WHERE debtor_no=$sel_id";
@@ -45,7 +45,7 @@
 				$myrow = DB::fetch_row($result);
 				if ($myrow[0] > 0) {
 					$cancel_delete = 1;
-					Errors::error(_("Cannot delete this customer because there are branch records set up against it."));
+					Event::error(_("Cannot delete this customer because there are branch records set up against it."));
 					//echo "<br> There are " . $myrow[0] . " branch records relating to this customer";
 				}
 			}
@@ -53,7 +53,7 @@
 		if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
 			$sql = "DELETE FROM debtors WHERE debtor_no=$sel_id";
 			DB::query($sql, "cannot delete customer");
-			Errors::notice(_("Selected customer has been deleted."));
+			Event::notice(_("Selected customer has been deleted."));
 			unset($_POST['customer_id']);
 			$new_customer = true;
 			Ajax::i()->activate('_page_body');
@@ -172,27 +172,27 @@
 	Page::end();
 	function can_process() {
 		if (strlen($_POST['CustName']) == 0) {
-			Errors::error(_("The customer name cannot be empty."));
+			Event::error(_("The customer name cannot be empty."));
 			JS::set_focus('CustName');
 			return false;
 		}
 		if (strlen($_POST['cust_ref']) == 0) {
-			Errors::error(_("The customer short name cannot be empty."));
+			Event::error(_("The customer short name cannot be empty."));
 			JS::set_focus('cust_ref');
 			return false;
 		}
 		if (!Validation::is_num('credit_limit', 0)) {
-			Errors::error(_("The credit limit must be numeric and not less than zero."));
+			Event::error(_("The credit limit must be numeric and not less than zero."));
 			JS::set_focus('credit_limit');
 			return false;
 		}
 		if (!Validation::is_num('pymt_discount', 0, 100)) {
-			Errors::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			Event::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			JS::set_focus('pymt_discount');
 			return false;
 		}
 		if (!Validation::is_num('discount', 0, 100)) {
-			Errors::error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			Event::error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			JS::set_focus('discount');
 			return false;
 		}
@@ -224,7 +224,7 @@
 			DB::query($sql, "The customer could not be updated");
 			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_no');
 			Ajax::i()->activate('customer_id'); // in case of status change
-			Errors::notice(_("Customer has been updated."));
+			Event::notice(_("Customer has been updated."));
 		}
 		else { //it is a new customer
 			DB::begin();
@@ -238,7 +238,7 @@
 			$_POST['customer_id'] = DB::insert_id();
 			$new_customer = false;
 			DB::commit();
-			Errors::notice(_("A new customer has been added."));
+			Event::notice(_("A new customer has been added."));
 			Ajax::i()->activate('_page_body');
 		}
 	}

@@ -16,12 +16,12 @@
 		if (can_process($selected_id)) {
 			if ($selected_id != -1) {
 				if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					Errors::notice(_('Selected account type has been updated'));
+					Event::notice(_('Selected account type has been updated'));
 				}
 			}
 			else {
 				if (GL_Type::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					Errors::notice(_('New account type has been added'));
+					Event::notice(_('New account type has been added'));
 					$Mode = MODE_RESET;
 				}
 			}
@@ -30,7 +30,7 @@
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			GL_Type::delete($selected_id);
-			Errors::notice(_('Selected account group has been deleted'));
+			Event::notice(_('Selected account group has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -101,7 +101,7 @@
 		$result = DB::query($sql, "could not query chart master");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
+			Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM chart_types
@@ -109,7 +109,7 @@
 		$result = DB::query($sql, "could not query chart types");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
+			Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -117,17 +117,17 @@
 
 	function can_process(&$selected_id) {
 		if (!Validation::input_num('id')) {
-			Errors::error(_("The account id must be an integer and cannot be empty."));
+			Event::error(_("The account id must be an integer and cannot be empty."));
 			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The account group name cannot be empty."));
+			Event::error(_("The account group name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
 		if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
-			Errors::error(_("You cannot set an account group to be a subgroup of itself."));
+			Event::error(_("You cannot set an account group to be a subgroup of itself."));
 			return false;
 		}
 		return true;

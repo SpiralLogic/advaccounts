@@ -27,7 +27,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	}
 	if (isset($_GET['AddedID'])) {
 		$refund_id = $_GET['AddedID'];
-		Errors::notice(_("The customer refund has been successfully entered."));
+		Event::notice(_("The customer refund has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
@@ -82,7 +82,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	Session::i()->global_customer = $customer->id;
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
-		Errors::error(_("This customer account is on hold."));
+		Event::error(_("This customer account is on hold."));
 	}
 	else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
@@ -109,7 +109,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
 		if ($cust_currency != $bank_currency) {
-			Errors::warning(_("Amount and discount are in customer's currency."));
+			Event::warning(_("Amount and discount are in customer's currency."));
 		}
 		Display::br();
 		submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
@@ -138,27 +138,27 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	}
 	function can_process() {
 		if (!get_post('customer_id')) {
-			Errors::error(_("There is no customer selected."));
+			Event::error(_("There is no customer selected."));
 			JS::setfocus('[name="customer_id"]');
 			return false;
 		}
 		if (!get_post('BranchID')) {
-			Errors::error(_("This customer has no branch defined."));
+			Event::error(_("This customer has no branch defined."));
 			JS::setfocus('[name="BranchID"]');
 			return false;
 		}
 		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
-			Errors::error(_("The entered date is invalid. Please enter a valid date for the refund."));
+			Event::error(_("The entered date is invalid. Please enter a valid date for the refund."));
 			JS::setfocus('[name="DateBanked"]');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::setfocus('[name="DateBanked"]');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::setfocus('[name="ref"]');
 			return false;
 		}
@@ -166,25 +166,25 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 			$_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
 		}
 		if (!Validation::is_num('amount', 0, null)) {
-			Errors::error(_("The entered amount is invalid or positive and cannot be processed."));
+			Event::error(_("The entered amount is invalid or positive and cannot be processed."));
 			JS::setfocus('[name="amount"]');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
+			Event::error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::setfocus('[name="charge"]');
 			return false;
 		}
 		if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (GL_Account::get($charge_acct) == false) {
-				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::setfocus('[name="charge"]');
 				return false;
 			}
 		}
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			Errors::error(_("The exchange rate must be numeric and greater than zero."));
+			Event::error(_("The exchange rate must be numeric and greater than zero."));
 			JS::setfocus('[name="ex_rate"]');
 			return false;
 		}
@@ -193,7 +193,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 		}
 		//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
 		if (Validation::input_num('amount') >= 0) {
-			Errors::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
+			Event::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
 			JS::setfocus('[name="amount"]');
 			return false;
 		}

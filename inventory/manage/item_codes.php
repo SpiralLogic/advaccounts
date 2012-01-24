@@ -18,42 +18,42 @@ Page::start(_($help_context = "Foreign Item Codes"), SA_FORITEMCODE);
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			Errors::error(_("There is no item selected."));
+			Event::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
 		elseif (!Validation::input_num('quantity')) {
 			$input_error = 1;
-			Errors::error(_("The price entered was not positive number."));
+			Event::error(_("The price entered was not positive number."));
 			JS::set_focus('quantity');
 		}
 		elseif ($_POST['description'] == '') {
 			$input_error = 1;
-			Errors::error(_("Item code description cannot be empty."));
+			Event::error(_("Item code description cannot be empty."));
 			JS::set_focus('description');
 		}
 		elseif ($selected_id == -1) {
 			$kit = Item_Code::get_kit($_POST['item_code']);
 			if (DB::num_rows($kit)) {
 				$input_error = 1;
-				Errors::error(_("This item code is already assigned to stock item or sale kit."));
+				Event::error(_("This item code is already assigned to stock item or sale kit."));
 				JS::set_focus('item_code');
 			}
 		}
 		if ($input_error == 0) {
 			if ($Mode == ADD_ITEM) {
 				Item_Code::add($_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
-				Errors::notice(_("New item code has been added."));
+				Event::notice(_("New item code has been added."));
 			}
 			else {
 				Item_Code::update($selected_id, $_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
-				Errors::notice(_("Item code has been updated."));
+				Event::notice(_("Item code has been updated."));
 			}
 			$Mode = MODE_RESET;
 		}
 	}
 	if ($Mode == MODE_DELETE) {
 		Item_Code::delete($selected_id);
-		Errors::notice(_("Item code has been sucessfully deleted."));
+		Event::notice(_("Item code has been sucessfully deleted."));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {

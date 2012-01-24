@@ -88,12 +88,12 @@
 	}
 	elseif (isset($_GET['RemovedID'])) {
 		if ($_GET['Type'] == ST_SALESQUOTE) {
-			Errors::notice(_("This sales quotation has been deleted as requested."), 1);
+			Event::notice(_("This sales quotation has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?" . Orders::NEW_QUOTE . "=Yes");
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
-			Errors::notice(_("This sales order has been deleted as requested."), 1);
+			Event::notice(_("This sales order has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
@@ -157,10 +157,10 @@
 	}
 	if (isset($_POST['discountall'])) {
 		if (!is_numeric($_POST['_discountall'])) {
-			Errors::error(_("Discount must be a number"));
+			Event::error(_("Discount must be a number"));
 		}
 		elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
-			Errors::error(_("Discount percentage must be between 0-100"));
+			Event::error(_("Discount percentage must be between 0-100"));
 		}
 		else {
 			$order->discount_all($_POST['_discountall'] / 100);
@@ -238,7 +238,7 @@
 		}
 	}
 	else {
-		Errors::warning($customer_error);
+		Event::warning($customer_error);
 					Session::i()->global_customer = null;
 
 		Page::footer_exit();
@@ -259,7 +259,7 @@
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
-		Errors::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
+		Event::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
 			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
@@ -398,26 +398,26 @@
 	 */
 	function can_process($order) {
 		if (!get_post('customer_id')) {
-			Errors::error(_("There is no customer selected."));
+			Event::error(_("There is no customer selected."));
 			JS::set_focus('customer_id');
 			return false;
 		}
 		if (!get_post('branch_id')) {
-			Errors::error(_("This customer has no branch defined."));
+			Event::error(_("This customer has no branch defined."));
 			JS::set_focus('branch_id');
 			return false;
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('OrderDate');
 			return false;
 		}
 		if (!$order) {
-			Errors::error(_("You are not currently editing an order! (Using the browser back button after committing an order does not go back to editing)"));
+			Event::error(_("You are not currently editing an order! (Using the browser back button after committing an order does not go back to editing)"));
 			return false;
 		}
 		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-			Errors::error(_("The entered date is not in fiscal year"));
+			Event::error(_("The entered date is not in fiscal year"));
 			JS::set_focus('OrderDate');
 			return false;
 		}
@@ -425,23 +425,23 @@
 			if (!empty($_POST['stock_id'])) {
 				handle_new_item($order);
 			}else{
-			Errors::error(_("You must enter at least one non empty item line."));
+			Event::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('AddItem');
 			return false;}
 		}
 		if ($order->trans_no == 0 && !empty($_POST['cust_ref']) && !$order->check_cust_ref($_POST['cust_ref'])
 		) {
-			Errors::error(_("This customer already has a purchase order with this number."));
+			Event::error(_("This customer already has a purchase order with this number."));
 			JS::set_focus('cust_ref');
 			return false;
 		}
 		if (strlen($_POST['deliver_to']) <= 1) {
-			Errors::error(_("You must enter the person or company to whom delivery should be made to."));
+			Event::error(_("You must enter the person or company to whom delivery should be made to."));
 			JS::set_focus('deliver_to');
 			return false;
 		}
 		if (strlen($_POST['delivery_address']) <= 1) {
-			Errors::error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			Event::error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			JS::set_focus('delivery_address');
 			return false;
 		}
@@ -449,16 +449,16 @@
 			$_POST['freight_cost'] = Num::price_format(0);
 		}
 		if (!Validation::is_num('freight_cost', 0)) {
-			Errors::error(_("The shipping cost entered is expected to be numeric."));
+			Event::error(_("The shipping cost entered is expected to be numeric."));
 			JS::set_focus('freight_cost');
 			return false;
 		}
 		if (!Dates::is_date($_POST['delivery_date'])) {
 			if ($order->trans_type == ST_SALESQUOTE) {
-				Errors::error(_("The Valid date is invalid."));
+				Event::error(_("The Valid date is invalid."));
 			}
 			else {
-				Errors::error(_("The delivery date is invalid."));
+				Event::error(_("The delivery date is invalid."));
 			}
 			JS::set_focus('delivery_date');
 			return false;
@@ -466,21 +466,21 @@
 		//if (Dates::date1_greater_date2($order->document_date, $_POST['delivery_date'])) {
 		if (Dates::date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($order->trans_type == ST_SALESQUOTE) {
-				Errors::error(_("The requested valid date is before the date of the quotation."));
+				Event::error(_("The requested valid date is before the date of the quotation."));
 			}
 			else {
-				Errors::error(_("The requested delivery date is before the date of the order."));
+				Event::error(_("The requested delivery date is before the date of the order."));
 			}
 			JS::set_focus('delivery_date');
 			return false;
 		}
 		if ($order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
-			Errors::error(_("You must enter a Person Ordering name."));
+			Event::error(_("You must enter a Person Ordering name."));
 			JS::set_focus('name');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
+			Event::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
@@ -497,12 +497,12 @@
 	 */
 	function check_item_data($order) {
 		if (!User::get()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num(Disc, 0, 100))) {
-			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
+			Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
 		}
 		elseif (!Validation::is_num('price', 0)) {
-			Errors::error(_("Price for item must be entered and can not be less than 0"));
+			Event::error(_("Price for item must be entered and can not be less than 0"));
 			JS::set_focus('price');
 			return false;
 		}
@@ -510,14 +510,14 @@
 		 ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
 		) {
 			JS::set_focus('qty');
-			Errors::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
+			Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
 		elseif ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
 			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (Validation::input_num('qty') > $qoh) {
 				$stock = Item::get($_POST['stock_id']);
-				Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id'])));
+				Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id'])));
 				return false;
 			}
 			return true;
@@ -544,7 +544,7 @@
 			$order->remove_from_order($line_no);
 		}
 		else {
-			Errors::error(_("This item cannot be deleted because some of it has already been delivered."));
+			Event::error(_("This item cannot be deleted because some of it has already been delivered."));
 		}
 		line_start_focus();
 	}
@@ -568,21 +568,21 @@
 	 */
 	function handle_cancel_order($order) {
 		if (!User::get()->can_access(SS_SETUP)) {
-			Errors::error('You don\'t have access to delete orders');
+			Event::error('You don\'t have access to delete orders');
 			return;
 		}
 		if ($order->trans_type == ST_CUSTDELIVERY) {
-			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
+			Event::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
 		}
 		elseif ($order->trans_type == ST_SALESINVOICE) {
-			Errors::notice(_("Direct invoice entry has been cancelled as requested."), 1);
+			Event::notice(_("Direct invoice entry has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
 		}
 		else {
 			if ($order->trans_no != 0) {
 				if ($order->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key($order->trans_no))) {
-					Errors::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
+					Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {
 					$trans_no = key($order->trans_no);

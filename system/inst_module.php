@@ -15,10 +15,10 @@
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
-				Errors::notice(_("Extension data has been updated."));
+				Event::notice(_("Extension data has been updated."));
 			}
 			else {
-				Errors::notice(_("Extension has been installed."));
+				Event::notice(_("Extension has been installed."));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -34,7 +34,7 @@
 		}
 		advaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
-		Errors::notice(_('Current active extensions set has been saved.'));
+		Event::notice(_('Current active extensions set has been saved.'));
 	}
 	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
@@ -59,7 +59,7 @@
 	Page::end();
 	function update_extensions($extensions) {
 		if (!advaccounting::write_extensions($extensions)) {
-			Errors::notice(_("Cannot update system extensions list."));
+			Event::notice(_("Cannot update system extensions list."));
 			return false;
 		}
 		// update per company files
@@ -74,7 +74,7 @@
 				}
 			}
 			if (!advaccounting::write_extensions($newexts, $i)) {
-				Errors::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i, 'name')));
+				Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i, 'name')));
 				return false;
 			}
 		}
@@ -83,25 +83,25 @@
 
 	function check_data($id, $exts) {
 		if ($_POST['name'] == "") {
-			Errors::error(_("Extension name cannot be empty."));
+			Event::error(_("Extension name cannot be empty."));
 			return false;
 		}
 		foreach ($exts as $n => $ext) {
 			if ($_POST['name'] == $ext['name'] && $id != $n) {
-				Errors::error(_("Extension name have to be unique."));
+				Event::error(_("Extension name have to be unique."));
 				return false;
 			}
 		}
 		if ($_POST['title'] == "") {
-			Errors::error(_("Extension title cannot be empty."));
+			Event::error(_("Extension title cannot be empty."));
 			return false;
 		}
 		if ($_POST['path'] == "") {
-			Errors::error(_("Extension folder name cannot be empty."));
+			Event::error(_("Extension folder name cannot be empty."));
 			return false;
 		}
 		if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
-			Errors::error(_("You have to select plugin file to upload"));
+			Event::error(_("You have to select plugin file to upload"));
 			return false;
 		}
 		return true;
@@ -115,7 +115,7 @@
 		}
 		$id = $selected_id == -1 ? $next_extension_id : $selected_id;
 		if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
-			Errors::error(_('Module installation support is not implemented yet. You have to do it manually.'));
+			Event::error(_('Module installation support is not implemented yet. You have to do it manually.'));
 			return;
 		}
 		$extensions[$id]['tab'] = $_POST['tab'];
@@ -189,7 +189,7 @@
 		rmdir($filename);
 		unset($extensions[$id]);
 		if (update_extensions($extensions)) {
-			Errors::notice(_("Selected extension has been successfully deleted"));
+			Event::notice(_("Selected extension has been successfully deleted"));
 		}
 		return true;
 	}
@@ -283,7 +283,7 @@
 		file_row(_("Access Levels Extensions"), 'uploadfile3');
 		file_row(_("SQL File"), 'uploadfile2');
 		end_table(0);
-		Errors::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
+		Event::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 

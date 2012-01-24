@@ -80,7 +80,7 @@
 					$str .= '</tr>';
 				}
 				$str .= '</table>';
-				Errors::error($str);
+				Event::error($str);
 			}
 		}
 

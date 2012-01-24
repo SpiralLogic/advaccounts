@@ -24,7 +24,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
-		Errors::notice(_("The work order been added."));
+		Event::notice(_("The work order been added."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
@@ -33,27 +33,27 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
-			Errors::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+			Event::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
 				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype
 			);
-			Errors::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+			Event::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 		safe_exit();
 	}
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
-		Errors::notice(_("The work order been updated."));
+		Event::notice(_("The work order been updated."));
 		safe_exit();
 	}
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
-		Errors::notice(_("Work order has been deleted."));
+		Event::notice(_("Work order has been deleted."));
 		safe_exit();
 	}
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
-		Errors::notice(_("This work order has been closed. There can be no more issues against it.") . " #$id");
+		Event::notice(_("This work order has been closed. There can be no more issues against it.") . " #$id");
 		safe_exit();
 	}
 	function safe_exit() {
@@ -71,7 +71,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 	function can_process(&$selected_id=null) {
 		if (!is_null($selected_id)) {
 			if (!Ref::is_valid($_POST['wo_ref'])) {
-				Errors::error(_("You must enter a reference."));
+				Event::error(_("You must enter a reference."));
 				JS::set_focus('wo_ref');
 				return false;
 			}
@@ -80,24 +80,24 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 			}
 		}
 		if (!Validation::is_num('quantity', 0)) {
-			Errors::error(_("The quantity entered is invalid or less than zero."));
+			Event::error(_("The quantity entered is invalid or less than zero."));
 			JS::set_focus('quantity');
 			return false;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The date entered is in an invalid format."));
+			Event::error(_("The date entered is in an invalid format."));
 			JS::set_focus('date_');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
 		}
 		// only check bom and quantites if quick assembly
 		if (!($_POST['type'] == WO_ADVANCED)) {
 			if (!WO::has_bom(Input::post('stock_id'))) {
-				Errors::error(_("The selected item to manufacture does not have a bom."));
+				Event::error(_("The selected item to manufacture does not have a bom."));
 				JS::set_focus('stock_id');
 				return false;
 			}
@@ -105,7 +105,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 				$_POST['Labour'] = Num::price_format(0);
 			}
 			if (!Validation::is_num('Labour', 0)) {
-				Errors::error(_("The labour cost entered is invalid or less than zero."));
+				Event::error(_("The labour cost entered is invalid or less than zero."));
 				JS::set_focus('Labour');
 				return false;
 			}
@@ -113,7 +113,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 				$_POST['Costs'] = Num::price_format(0);
 			}
 			if (!Validation::is_num('Costs', 0)) {
-				Errors::error(_("The cost entered is invalid or less than zero."));
+				Event::error(_("The cost entered is invalid or less than zero."));
 				JS::set_focus('Costs');
 				return false;
 			}
@@ -126,7 +126,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 							$quantity = $bom_item["quantity"] * Validation::input_num('quantity');
 							$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
 							if (-$quantity + $qoh < 0) {
-								Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]);
+								Event::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]);
 								JS::set_focus('quantity');
 								return false;
 							}
@@ -137,7 +137,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 					// if unassembling, check item to unassemble
 					$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
 					if (-Validation::input_num('quantity') + $qoh < 0) {
-						Errors::error(_("The selected item cannot be unassembled because there is insufficient stock."));
+						Event::error(_("The selected item cannot be unassembled because there is insufficient stock."));
 						return false;
 					}
 				}
@@ -146,19 +146,19 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 		else {
 			if (!Dates::is_date($_POST['RequDate'])) {
 				JS::set_focus('RequDate');
-				Errors::error(_("The date entered is in an invalid format."));
+				Event::error(_("The date entered is in an invalid format."));
 				return false;
 			}
 			//elseif (!Dates::is_date_in_fiscalyear($_POST['RequDate']))
 			//{
-			//	Errors::error(_("The entered date is not in fiscal year."));
+			//	Event::error(_("The entered date is not in fiscal year."));
 			//	return false;
 			//}
 			if (isset($selected_id)) {
 				$myrow = WO::get($selected_id, true);
 				if ($_POST['units_issued'] > Validation::input_num('quantity')) {
 					JS::set_focus('quantity');
-					Errors::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
+					Event::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
 					return false;
 				}
 			}
@@ -188,7 +188,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 		// can't delete it there are productions or issues
 		if (WO::has_productions($selected_id) || WO::has_issues($selected_id) || WO::has_payments($selected_id)
 		) {
-			Errors::error(_("This work order cannot be deleted because it has already been processed."));
+			Event::error(_("This work order cannot be deleted because it has already been processed."));
 			$cancel_delete = true;
 		}
 		if ($cancel_delete == false) { //ie not cancelled the delete as a result of above tests
@@ -218,7 +218,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 		// if it's a closed work order can't edit it
 		if ($myrow["closed"] == 1) {
 			echo "<div class='center'>";
-			Errors::error(_("This work order is closed and cannot be edited."));
+			Event::error(_("This work order is closed and cannot be edited."));
 			safe_exit();
 		}
 		$_POST['wo_ref'] = $myrow["wo_ref"];

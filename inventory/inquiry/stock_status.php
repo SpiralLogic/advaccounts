@@ -34,7 +34,7 @@ Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
 	$kitset_or_service = false;
 	Display::div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		Event::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);

@@ -18,26 +18,26 @@ Page::start(_($help_context = "Units of Measure"), SA_UOM);
 		$input_error = 0;
 		if (strlen($_POST['abbr']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The unit of measure code cannot be empty."));
+			Event::error(_("The unit of measure code cannot be empty."));
 			JS::set_focus('abbr');
 		}
 		if (strlen($_POST['abbr']) > (20 + 2)) {
 			$input_error = 1;
-			Errors::error(_("The unit of measure code is too long."));
+			Event::error(_("The unit of measure code is too long."));
 			JS::set_focus('abbr');
 		}
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The unit of measure description cannot be empty."));
+			Event::error(_("The unit of measure description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
 			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
-				Errors::notice(_('Selected unit has been updated'));
+				Event::notice(_('Selected unit has been updated'));
 			}
 			else {
-				Errors::notice(_('New unit has been added'));
+				Event::notice(_('New unit has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -45,11 +45,11 @@ Page::start(_($help_context = "Units of Measure"), SA_UOM);
 	if ($Mode == MODE_DELETE) {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		if (Item_Unit::used($selected_id)) {
-			Errors::error(_("Cannot delete this unit of measure because items have been created using this unit."));
+			Event::error(_("Cannot delete this unit of measure because items have been created using this unit."));
 		}
 		else {
 			Item_Unit::delete($selected_id);
-			Errors::notice(_('Selected unit has been deleted'));
+			Event::notice(_('Selected unit has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}

@@ -35,12 +35,12 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 		//first off validate inputs sensible
 		if (strlen($_POST['br_name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The Branch name cannot be empty."));
+			Event::error(_("The Branch name cannot be empty."));
 			JS::set_focus('br_name');
 		}
 		if (strlen($_POST['br_ref']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The Branch short name cannot be empty."));
+			Event::error(_("The Branch short name cannot be empty."));
 			JS::set_focus('br_ref');
 		}
 		if ($input_error != 1) {
@@ -82,7 +82,7 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The branch record could not be inserted or updated");
-			Errors::notice($note);
+			Event::notice($note);
 			$Mode = MODE_RESET;
 			if (Input::request('frame')) {
 				JS::set_focus("Select" . ($_POST['branch_id'] == -1 ? DB::insert_id() : $_POST['branch_id']));
@@ -96,19 +96,19 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 		$result = DB::query($sql, "could not query debtortrans");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
+			Event::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "could not query sales orders");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
-				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
+				Event::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 			}
 			else {
 				$sql = "DELETE FROM branches WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
 				DB::query($sql, "could not delete branch");
-				Errors::notice(_('Selected customer branch has been deleted'));
+				Event::notice(_('Selected customer branch has been deleted'));
 			}
 		} //end ifs to test if the branch can be deleted
 		$Mode = MODE_RESET;
@@ -174,11 +174,11 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 			DB_Pager::display($table);
 		}
 		else {
-			Errors::warning(_("The selected customer does not have any branches. Please create at least one branch."));
+			Event::warning(_("The selected customer does not have any branches. Please create at least one branch."));
 		}
 	}
 	else {
-		Errors::warning(_("No Customer selected."));
+		Event::warning(_("No Customer selected."));
 	}
 	start_outer_table('tablestyle2');
 	table_section(1);

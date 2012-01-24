@@ -47,21 +47,21 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		$filename .= "/" . Item::img_name($stock_id) . ".jpg";
 		//But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG') {
-			Errors::warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			Event::warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
-			Errors::warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
+			Event::warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
-			Errors::warning(_('Only graphics files can be uploaded'));
+			Event::warning(_('Only graphics files can be uploaded'));
 			$upload_file = 'No';
 		}
 		elseif (file_exists($filename)) {
 			$result = unlink($filename);
 			if (!$result) {
-				Errors::error(_('The existing image could not be removed'));
+				Event::error(_('The existing image could not be removed'));
 				$upload_file = 'No';
 			}
 		}
@@ -93,23 +93,23 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		}
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			Errors::error(_('The item name must be entered.'));
+			Event::error(_('The item name must be entered.'));
 			JS::set_focus('description');
 		}
 		elseif (empty($_POST['NewStockID'])) {
 			$input_error = 1;
-			Errors::error(_('The item code cannot be empty'));
+			Event::error(_('The item code cannot be empty'));
 			JS::set_focus('NewStockID');
 		}
 		elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
-			Errors::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
+			Event::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
 			JS::set_focus('NewStockID');
 		}
 		elseif ($new_item && DB::num_rows(Item_Code::get_kit($_POST['NewStockID']))) {
 			$input_error = 1;
-			Errors::error(_("This item code is already assigned to stock item or sale kit."));
+			Event::error(_("This item code is already assigned to stock item or sale kit."));
 			JS::set_focus('NewStockID');
 		}
 		if ($input_error != 1) {
@@ -124,11 +124,11 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				Ajax::i()->activate('stock_id'); // in case of status change
-				Errors::notice(_("Item has been updated."));
+				Event::notice(_("Item has been updated."));
 			}
 			else { //it is a NEW part
 				Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], check_value('no_sale'), check_value('editable'));
-				Errors::notice(_("A new item has been added."));
+				Event::notice(_("A new item has been added."));
 				JS::set_focus('NewStockID');
 			}
 			if (isset($_POST['addupdatenew'])) {
@@ -182,7 +182,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		}
 		if ($msg != '') {
 			if ($dispmsg) {
-				Errors::error($msg);
+				Event::error($msg);
 			}
 			return false;
 		}
@@ -197,7 +197,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 			if (file_exists($filename)) {
 				unlink($filename);
 			}
-			Errors::notice(_("Selected item has been deleted."));
+			Event::notice(_("Selected item has been deleted."));
 			$_POST['stock_id'] = '';
 			clear_data();
 			$new_item = true;

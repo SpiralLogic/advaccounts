@@ -14,7 +14,7 @@
 
 	if (get_post('view')) {
 		if (!get_post('backups')) {
-			Errors::error(_('Select backup file first.'));
+			Event::error(_('Select backup file first.'));
 		}
 		else {
 			$filename = BACKUP_PATH . get_post('backups');
@@ -47,16 +47,16 @@
 	;
 	if (get_post('restore')) {
 		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
-			Errors::notice(_("Restore backup completed."));
+			Event::notice(_("Restore backup completed."));
 		}
 	}
 	if (get_post('deldump')) {
 		if (unlink(BACKUP_PATH . get_post('backups'))) {
-			Errors::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . get_post('backups'));
+			Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . get_post('backups'));
 			Ajax::i()->activate('backups');
 		}
 		else {
-			Errors::error(_("Can't delete backup file."));
+			Event::error(_("Can't delete backup file."));
 		}
 	}
 	;
@@ -64,15 +64,15 @@
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
 		$fname = $_FILES['uploadfile']['name'];
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
-			Errors::error(_("You can only upload *.sql backup files"));
+			Event::error(_("You can only upload *.sql backup files"));
 		}
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, BACKUP_PATH . $fname);
-			Errors::notice("File uploaded to backup directory");
+			Event::notice("File uploaded to backup directory");
 			Ajax::i()->activate('backups');
 		}
 		else {
-			Errors::error(_("File was not uploaded into the system."));
+			Event::error(_("File was not uploaded into the system."));
 		}
 	}
 	start_form(true);

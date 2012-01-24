@@ -14,12 +14,12 @@
 	list($Mode,$selected_id) = Page::simple_mode(true);
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The POS name cannot be empty."));
+			Event::error(_("The POS name cannot be empty."));
 			JS::set_focus('pos_name');
 			return false;
 		}
 		if (!check_value('cash') && !check_value('credit')) {
-			Errors::error(_("You must allow cash or credit sale."));
+			Event::error(_("You must allow cash or credit sale."));
 			JS::set_focus('credit');
 			return false;
 		}
@@ -28,23 +28,23 @@
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
-		Errors::notice(_('New point of sale has been added'));
+		Event::notice(_('New point of sale has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
 		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
-		Errors::notice(_('Selected point of sale has been updated'));
+		Event::notice(_('Selected point of sale has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {
 		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
 		$res = DB::query($sql, "canot check pos usage");
 		if (DB::num_rows($res)) {
-			Errors::error(_("Cannot delete this POS because it is used in users setup."));
+			Event::error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
 			Sales_Point::delete($selected_id);
-			Errors::notice(_('Selected point of sale has been deleted'));
+			Event::notice(_('Selected point of sale has been deleted'));
 			$Mode = MODE_RESET;
 		}
 	}
@@ -78,7 +78,7 @@
 	end_table(1);
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
-		Errors::warning(_("To have cash POS first define at least one cash bank account."));
+		Event::warning(_("To have cash POS first define at least one cash bank account."));
 	}
 	start_table('tablestyle2');
 	if ($selected_id != -1) {

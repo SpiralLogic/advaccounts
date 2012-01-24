@@ -88,7 +88,7 @@ Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
 
 	function on_submit($selected_parent, $selected_component = -1) {
 		if (!Validation::is_num('quantity', 0)) {
-			Errors::error(_("The quantity entered must be numeric and greater than zero."));
+			Event::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
 			return;
 		}
@@ -98,7 +98,7 @@ Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			DB::query($sql, "could not update bom");
-			Errors::notice(_('Selected component has been updated'));
+			Event::notice(_('Selected component has been updated'));
 			$Mode = MODE_RESET;
 		}
 		else {
@@ -118,16 +118,16 @@ Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
 					$sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . "," . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
 					DB::query($sql, "check failed");
-					Errors::notice(_("A new component part has been added to the bill of material for this item."));
+					Event::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = MODE_RESET;
 				}
 				else {
 					/*The component must already be on the bom */
-					Errors::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
+					Event::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}
 			} //end of if its not a recursive bom
 			else {
-				Errors::error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
+				Event::error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 			}
 		}
 	}
@@ -135,7 +135,7 @@ Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
 	if ($Mode == MODE_DELETE) {
 		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
 		DB::query($sql, "Could not delete this bom components");
-		Errors::notice(_("The component item has been deleted from this bom"));
+		Event::notice(_("The component item has been deleted from this bom"));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {

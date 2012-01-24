@@ -102,7 +102,7 @@
 			$sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
 			filesize, filetype, tran_date) VALUES (" . DB::escape($_POST['filterType']) . "," . DB::escape($_POST['trans_no']) . "," . DB::escape($_POST['description']) . ", " . DB::escape($filename) . ", " . DB::escape($unique_name) . ", " . DB::escape($filesize) . ", " . DB::escape($filetype) . ", '$date')";
 			DB::query($sql, "Attachment could not be inserted");
-			Errors::notice(_("Attachment has been inserted."));
+			Event::notice(_("Attachment has been inserted."));
 		}
 		else {
 			$sql = "UPDATE attachments SET
@@ -117,7 +117,7 @@
 			}
 			$sql .= "tran_date='$date' WHERE id=" . DB::escape($selected_id);
 			DB::query($sql, "Attachment could not be updated");
-			Errors::notice(_("Attachment has been updated."));
+			Event::notice(_("Attachment has been updated."));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -129,7 +129,7 @@
 		}
 		$sql = "DELETE FROM attachments WHERE id = " . DB::escape($selected_id);
 		DB::query($sql, "Could not delete attachment");
-		Errors::notice(_("Attachment has been deleted."));
+		Event::notice(_("Attachment has been deleted."));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {

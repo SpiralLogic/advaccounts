@@ -17,7 +17,7 @@ Page::start(_($help_context = "View Bank Transfer"), SA_BANKTRANSVIEW, true);
 	}
 	$result = Bank_Trans::get(ST_BANKTRANSFER, $trans_no);
 	if (DB::num_rows($result) != 2) {
-		Errors::error("Bank transfer does not contain two records");
+		Event::error("Bank transfer does not contain two records");
 	}
 	$trans1 = DB::fetch($result);
 	$trans2 = DB::fetch($result);

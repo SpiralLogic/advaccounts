@@ -244,12 +244,12 @@
 			$filename = PATH_TO_ROOT . ($company == -1 ? '' : '/company/' . $company) . '/installed_extensions.php';
 			// Check if the file is writable first.
 			if (!$zp = fopen($filename, 'w')) {
-				Errors::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));
+				Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));
 				return false;
 			}
 			else {
 				if (!fwrite($zp, $msg)) {
-					Errors::error(sprintf(_("Cannot write to the extensions setup file '%s'."), $filename));
+					Event::error(sprintf(_("Cannot write to the extensions setup file '%s'."), $filename));
 					fclose($zp);
 					return false;
 				}

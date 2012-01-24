@@ -249,8 +249,8 @@
 		$found = false;
 		$lastcat = null;
 		$edit = false;
-		//if($name=='stock_id')	Errors::notice('<pre>'.print_r($_POST, true).'</pre>');
-		//if($name=='curr_default') Errors::notice($opts['search_submit']);
+		//if($name=='stock_id')	Event::notice('<pre>'.print_r($_POST, true).'</pre>');
+		//if($name=='curr_default') Event::notice($opts['search_submit']);
 		if ($result = DB::query($sql)) {
 			while ($contact_row = DB::fetch($result)) {
 				$value = $contact_row[0];
@@ -407,7 +407,7 @@
 		$selector = $first_opt = '';
 		$first_id = false;
 		$found = false;
-		//if($name=='SelectStockFromList') Errors::error($sql);
+		//if($name=='SelectStockFromList') Event::error($sql);
 		foreach ($items as $value => $descr) {
 			$sel = '';
 			if (in_array((string)$value, $selected_id)) {

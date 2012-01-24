@@ -18,17 +18,17 @@ Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The item category description cannot be empty."));
+			Event::error(_("The item category description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
-				Errors::notice(_('Selected item category has been updated'));
+				Event::notice(_('Selected item category has been updated'));
 			}
 			else {
 				Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
-				Errors::notice(_('New item category has been added'));
+				Event::notice(_('New item category has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -47,11 +47,11 @@ Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
 		$result = DB::query($sql, "could not query stock master");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this item category because items have been created using this item category."));
+			Event::error(_("Cannot delete this item category because items have been created using this item category."));
 		}
 		else {
 			Item_Category::delete($selected_id);
-			Errors::notice(_('Selected item category has been deleted'));
+			Event::notice(_('Selected item category has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}

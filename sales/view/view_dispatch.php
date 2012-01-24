@@ -84,7 +84,7 @@ Page::start(_($help_context = "View Sales Dispatch"), SA_SALESTRANSVIEW, true);
 		} //end while there are line items to print out
 	}
 	else {
-		Errors::warning(_("There are no line items on this dispatch."), 1, 2);
+		Event::warning(_("There are no line items on this dispatch."), 1, 2);
 	}
 	$display_sub_tot = Num::price_format($sub_total);
 	$display_freight = Num::price_format($myrow["ov_freight"]);

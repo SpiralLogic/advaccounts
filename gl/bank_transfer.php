@@ -16,7 +16,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
-		Errors::notice(_("Transfer has been entered"));
+		Event::notice(_("Transfer has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
 		Page::footer_exit();
@@ -60,32 +60,32 @@
 
 	function check_valid_entries() {
 		if (!Dates::is_date($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is invalid ."));
+			Event::error(_("The entered date is invalid ."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is not in fiscal year . "));
+			Event::error(_("The entered date is not in fiscal year . "));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Validation::is_num('amount', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero ."));
+			Event::error(_("The entered amount is invalid or less than zero ."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero ."));
+			Event::error(_("The entered amount is invalid or less than zero ."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && Validation::input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
-			Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
+			Event::error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (!Ref::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference ."));
+			Event::error(_("You must enter a reference ."));
 			JS::set_focus('ref');
 			return false;
 		}
@@ -93,7 +93,7 @@
 			$_POST['ref'] = Ref::get_next(ST_BANKTRANSFER);
 		}
 		if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
-			Errors::error(_("The source and destination bank accouts cannot be the same ."));
+			Event::error(_("The source and destination bank accouts cannot be the same ."));
 			JS::set_focus('ToBankAccount');
 			return false;
 		}

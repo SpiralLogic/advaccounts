@@ -40,7 +40,7 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
+		Event::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
@@ -70,8 +70,8 @@
 	}
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
-			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+			Event::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
+			Event::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
 		}
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -94,7 +94,7 @@
 		end_table();
 	}
 	else {
-		Errors::error($customer_error);
+		Event::error($customer_error);
 	}
 	submit_center_first('Update', _("Update"));
 	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -159,7 +159,7 @@
 		}
 		if ($order->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
-				Errors::error(_("You must enter a reference."));
+				Event::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				$input_error = 1;
 			}
@@ -168,12 +168,12 @@
 			}
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
-			Errors::error(_("The entered date for the credit note is invalid."));
+			Event::error(_("The entered date for the credit note is invalid."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
 		}
@@ -182,17 +182,17 @@
 
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
-			Errors::error(_("The quantity must be greater than zero."));
+			Event::error(_("The quantity must be greater than zero."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('price', 0)) {
-			Errors::error(_("The entered price is negative or invalid."));
+			Event::error(_("The entered price is negative or invalid."));
 			JS::set_focus('price');
 			return false;
 		}
 		if (!Validation::is_num('Disc', 0, 100)) {
-			Errors::error(_("The entered discount percent is negative, greater than 100 or invalid."));
+			Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
 			JS::set_focus('Disc');
 			return false;
 		}

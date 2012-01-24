@@ -19,7 +19,7 @@ Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
-		Errors::notice(_("The additional cost has been entered."));
+		Event::notice(_("The additional cost has been entered."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		Display::link_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
@@ -29,28 +29,28 @@ Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
 	}
 	$wo_details = WO::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
-		Errors::error(_("The order number sent is not valid."));
+		Event::error(_("The order number sent is not valid."));
 		exit;
 	}
 	function can_process() {
 		global $wo_details;
 		if (!Validation::is_num('costs', 0)) {
-			Errors::error(_("The amount entered is not a valid number or less then zero."));
+			Event::error(_("The amount entered is not a valid number or less then zero."));
 			JS::set_focus('costs');
 			return false;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The entered date is invalid."));
+			Event::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
+			Event::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
-			Errors::error(_("The additional cost date cannot be before the release date of the work order."));
+			Event::error(_("The additional cost date cannot be before the release date of the work order."));
 			JS::set_focus('date_');
 			return false;
 		}

@@ -162,7 +162,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	}
 	echo "<div class='center'>";
 	if ($_SESSION['View']->so_type == 1) {
-		Errors::warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
+		Event::warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	}
 	Display::heading(_("Line Details"));
 	start_table('tablestyle width95');

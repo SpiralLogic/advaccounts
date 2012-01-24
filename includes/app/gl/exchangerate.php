@@ -132,7 +132,7 @@
 					} // end handle
 				}
 				if (!$contents) {
-					Errors::warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
+					Event::warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
 				}
 				if ($provider == 'ECB') {
 					$contents = str_replace("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);

@@ -57,7 +57,7 @@ Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "class=right colspan=6", ' class="right nowrap"', 3);
 	end_table();
 	if ($overdue_items) {
-		Errors::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
+		Event::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
 	}
 	$k = 0;
 	$grns_result = Purch_GRN::get_for_po($_GET['trans_no']);

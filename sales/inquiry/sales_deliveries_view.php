@@ -49,7 +49,7 @@
 			}
 		}
 		if (!$del_count) {
-			Errors::error(_('For batch invoicing you should select at least one delivery. All items must be dispatched to the same customer branch.'));
+			Event::error(_('For batch invoicing you should select at least one delivery. All items must be dispatched to the same customer branch.'));
 		}
 		else {
 			$_SESSION['DeliveryBatch'] = $selected;

@@ -39,9 +39,9 @@
 		$emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET['AddedID'];
 		$reference = $order->reference;
-		Errors::notice(_("Invoice $reference has been entered."));
+		Event::notice(_("Invoice $reference has been entered."));
 		$trans_type = ST_SALESINVOICE;
-		Errors::notice(_("Selected deliveries has been processed"), true);
+		Event::notice(_("Selected deliveries has been processed"), true);
 		Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
@@ -55,7 +55,7 @@
 		$customer = new Debtor($order->customer_id);
 		$emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET['UpdatedID'];
-		Errors::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+		Event::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
@@ -118,13 +118,13 @@
 	}
 	elseif (!$order && !isset($_GET['order_id'])) {
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
-		Errors::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
+		Event::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 		Page::end();
 		exit;
 	}
 	elseif ($order && !check_quantities($order)) {
-		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+		Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 	}
 	if (isset($_POST['Update'])) {
 		Ajax::i()->activate('Items');
@@ -225,7 +225,7 @@
 	end_table();
 	$row = Sales_Order::get_customer($order->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
-		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+		Event::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
 		Page::end();
 		exit();
@@ -443,23 +443,23 @@
 	 */
 	function check_data($order) {
 		if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
-			Errors::error(_("The entered invoice date is invalid."));
+			Event::error(_("The entered invoice date is invalid."));
 			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
-			Errors::error(_("The entered invoice date is not in fiscal year."));
+			Event::error(_("The entered invoice date is not in fiscal year."));
 			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-			Errors::error(_("The entered invoice due date is invalid."));
+			Event::error(_("The entered invoice due date is invalid."));
 			JS::set_focus('due_date');
 			return false;
 		}
 		if ($order->trans_no == 0) {
 			if (!Ref::is_valid($_POST['ref'])) {
-				Errors::error(_("You must enter a reference."));
+				Event::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
@@ -471,16 +471,16 @@
 			$_POST['ChargeFreightCost'] = Num::price_format(0);
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			Errors::error(_("The entered shipping value is not numeric."));
+			Event::error(_("The entered shipping value is not numeric."));
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
-			Errors::error(_("There are no item quantities on this invoice."));
+			Event::error(_("There are no item quantities on this invoice."));
 			return false;
 		}
 		if (!check_quantities($order)) {
-			Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+			Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 			return false;
 		}
 		return true;

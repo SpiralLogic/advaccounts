@@ -40,7 +40,7 @@
 	if (isset($_POST['delete'])) {
 		$customer->delete();
 		$status = $customer->getStatus();
-		Errors::notice($status['message']);
+		Event::notice($status['message']);
 	}
 	if (!Input::get('frame') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */

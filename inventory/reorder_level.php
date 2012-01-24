@@ -65,7 +65,7 @@ Page::start(_($help_context = "Reorder Levels"), SA_REORDER, Input::request('fra
 		}
 	}
 	if ($updated) {
-		Errors::notice(_("Reorder levels have been updated."));
+		Event::notice(_("Reorder levels have been updated."));
 	}
 	end_table(1);
 	Display::div_end();

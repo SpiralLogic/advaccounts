@@ -18,17 +18,17 @@ Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			Errors::error(_("The work centre name cannot be empty."));
+			Event::error(_("The work centre name cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				WO_WorkCentre::update($selected_id, $_POST['name'], $_POST['description']);
-				Errors::notice(_('Selected work center has been updated'));
+				Event::notice(_('Selected work center has been updated'));
 			}
 			else {
 				WO_WorkCentre::add($_POST['name'], $_POST['description']);
-				Errors::notice(_('New work center has been added'));
+				Event::notice(_('New work center has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -38,14 +38,14 @@ Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
 		$result = DB::query($sql, "check can delete work centre");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
+			Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
 		$result = DB::query($sql, "check can delete work centre");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
+			Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -54,7 +54,7 @@ Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
 	if ($Mode == MODE_DELETE) {
 		if (can_delete($selected_id)) {
 			WO_WorkCentre::delete($selected_id);
-			Errors::notice(_('Selected work center has been deleted'));
+			Event::notice(_('Selected work center has been deleted'));
 		}
 		$Mode = MODE_RESET;
 	}

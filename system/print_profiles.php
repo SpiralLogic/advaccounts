@@ -18,7 +18,7 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 		$error = 0;
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
 			$error = 1;
-			Errors::error(_("Printing profile name cannot be empty."));
+			Event::error(_("Printing profile name cannot be empty."));
 			JS::set_focus('name');
 		}
 		if (!$error) {
@@ -32,18 +32,18 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				Errors::notice(_('New printing profile has been created'));
+				Event::notice(_('New printing profile has been created'));
 				clear_form($selected_id);
 			}
 			else {
-				Errors::notice(_('Printing profile has been updated'));
+				Event::notice(_('Printing profile has been updated'));
 			}
 		}
 	}
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
 			Printer::delete_profile($selected_id);
-			Errors::notice(_('Selected printing profile has been deleted'));
+			Event::notice(_('Selected printing profile has been deleted'));
 			clear_form($selected_id);
 		}
 	}
@@ -88,7 +88,7 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 	}
 	end_table();
 	if ($unkn) {
-		Errors::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
+		Event::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
 	}
 	else {
 		echo '<br>';

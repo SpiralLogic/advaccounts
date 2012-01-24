@@ -273,7 +273,7 @@
 			end_row();
 			end_table();
 			if (isset($pager->marker_txt)) {
-				Errors::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+				Event::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
 			}
 			Display::div_end();
 			return true;
@@ -830,7 +830,7 @@
 						if (isset($col['ord']) && $col['ord'] != ''
 						 && !isset($col['name'])
 						) {
-							//Errors::warning("Result field names must be set
+							//Event::warning("Result field names must be set
 							//for all intially ordered db_pager columns.");
 						}
 					}

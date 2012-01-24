@@ -13,17 +13,17 @@
 	Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
 	function can_process() {
 		if (strlen($_POST['password']) < 4) {
-			Errors::error(_("The password entered must be at least 4 characters long."));
+			Event::error(_("The password entered must be at least 4 characters long."));
 			JS::set_focus('password');
 			return false;
 		}
 		if (strstr($_POST['password'], User::get()->username) != false) {
-			Errors::error(_("The password cannot contain the user login."));
+			Event::error(_("The password cannot contain the user login."));
 			JS::set_focus('password');
 			return false;
 		}
 		if ($_POST['password'] != $_POST['passwordConfirm']) {
-			Errors::error(_("The passwords entered are not the same."));
+			Event::error(_("The passwords entered are not the same."));
 			JS::set_focus('password');
 			return false;
 		}
@@ -33,28 +33,28 @@
 	if (isset($_POST[UPDATE_ITEM])) {
 		if (can_process()) {
 			if (Config::get('demo_mode')) {
-				Errors::warning(_("Password cannot be changed in demo mode."));
+				Event::warning(_("Password cannot be changed in demo mode."));
 			}
 			else {
 				$auth = new Auth(User::get()->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0) {
-					Errors::error($check['text']);
+					Event::error($check['text']);
 				}
 				elseif ($check['strength'] < 3) {
-					Errors::error(_("Password Too Weak!"));
+					Event::error(_("Password Too Weak!"));
 				}
 				else {
 					$auth->update_password($_SESSION['current_user']->user, $_POST['password']);
 					User::get()->change_password=false;
-					Errors::notice(_("Password Changed"));
+					Event::notice(_("Password Changed"));
 				}
 			}
 			Ajax::i()->activate('_page_body');
 		}
 	}
 	elseif (User::get()->change_password) {
-		Errors::warning('You are required to change your password!');
+		Event::warning('You are required to change your password!');
 	}
 	start_form();
 	start_table('tablestyle');

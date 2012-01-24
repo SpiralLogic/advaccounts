@@ -6,8 +6,7 @@
 	 * Time: 6:57 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Page
-	{
+	class Page {
 		/**@var Page null*/
 		public $renderer = null;
 		protected $frame = false;
@@ -22,6 +21,7 @@
 		/** @var Page */
 		static protected $i = null;
 		static protected $security = null;
+
 		protected function __construct($title, $menu, $index = false) {
 			$this->is_index = $index;
 			$this->title = $title;
@@ -47,11 +47,12 @@
 			if ($title && !$this->is_index && !$this->frame) {
 				$this->header = false;
 				echo "<div class='titletext'>$title" . (User::hints() ? "<span id='hints' class='floatright'
-				style='display:none'></span>": '') ."</div>";
+				style='display:none'></span>" : '') . "</div>";
 			}
 			Security::check_page(static::$security);
 			Display::div_start('_page_body');
 		}
+
 		static public function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false) {
 			static::set_security($security);
 			if (static::$i === null) {
@@ -59,6 +60,7 @@
 			}
 			return static::$i;
 		}
+
 		static public function simple_mode($numeric_id = true) {
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
@@ -84,18 +86,23 @@
 			}
 			return array('', $selected_id);
 		}
+
 		static public function add_css($file = false) {
 			static::$i->css[] = $file;
 		}
+
 		static public function set_security($security) {
 			static::$security = $security;
 		}
+
 		public static function get_security() { return static::$security; }
+
 		static public function footer_exit() {
 			Display::br(2);
 			static::$i->end_page(true);
 			exit;
 		}
+
 		protected function header() {
 			JS::open_window(900, 500);
 			$encoding = $_SESSION['Language']->encoding;
@@ -114,6 +121,7 @@
 			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
+
 		protected function menu_header() {
 			echo "<div id='top'>\n";
 			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
@@ -130,6 +138,7 @@
 			$this->renderer->menu();
 			echo "</div></div>" . "<div id='wrapper'>";
 		}
+
 		protected function help_url($context = null) {
 			global $help_context;
 			$country = $_SESSION['Language']->code;
@@ -145,14 +154,16 @@
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '', '/' => '', '&' => 'And'
-																																										))) . '&ctxhelp=1&lang=' . $country;
+				' ' => '', '/' => '', '&' => 'And'
+			))) . '&ctxhelp=1&lang=' . $country;
 		}
+
 		static public function end($hide_back_link = false) {
 			if (static::$i) {
 				static::$i->end_page($hide_back_link);
 			}
 		}
+
 		protected function menu_footer() {
 			echo "</div>"; //end wrapper div
 			if ($this->menu && !AJAX_REFERRER) {
@@ -171,6 +182,7 @@
 			}
 			echo "</div>\n"; //end footer div
 		}
+
 		protected function footer() {
 			$Validate = array();
 			$this->menu_footer();
@@ -190,6 +202,7 @@
 			JS::get_websales();
 			echo	 "</html>\n";
 		}
+
 		protected function end_page($hide_back_link) {
 			if ($this->frame) {
 				$hide_back_link = true;
@@ -201,6 +214,7 @@
 			Display::div_end(); // end of _page_body section
 			$this->footer();
 		}
+
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
 			$row = "<table id='loaded'>";
@@ -210,10 +224,17 @@
 			}
 			echo $row . "</table>";
 		}
+
 		protected function send_css() {
 			$path = DS . "themes" . DS . $this->theme . DS;
 			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
+		}
+
+		public static function error_exit($text) {
+			ob_get_clean();
+			echo $text;
+			exit();
 		}
 	}
 
