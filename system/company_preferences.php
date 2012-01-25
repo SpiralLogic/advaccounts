@@ -98,7 +98,7 @@
 	$_POST['fax'] = $myrow["fax"];
 	$_POST['email'] = $myrow["email"];
 	$_POST['coy_logo'] = $myrow["coy_logo"];
-	$_POST['domicile'] = $myrow["domicile"];
+	$_POST['suburb'] = $myrow["suburb"];
 	$_POST['use_dimension'] = $myrow["use_dimension"];
 	$_POST['base_sales'] = $myrow["base_sales"];
 	$_POST['no_item_list'] = $myrow["no_item_list"];
@@ -119,7 +119,7 @@
 	table_section(1);
 	text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
 	textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 6);
-	text_row_ex(_("Domicile:"), 'domicile', 25, 55);
+	text_row_ex(_("Suburb:"), 'suburb', 25, 55);
 	text_row_ex(_("Phone Number:"), 'phone', 25, 55);
 	text_row_ex(_("Fax Number:"), 'fax', 25);
 	email_row_ex(_("Email Address:"), 'email', 25, 55);

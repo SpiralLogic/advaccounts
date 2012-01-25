@@ -45,7 +45,7 @@
 		$doc_Your_Ref = _("Your Ref");
 		if ($doctype == ST_WORKORDER) {
 			$doc_Our_Ref = _("Type");
-			$doc_Your_VAT_no = _("Manufactured Item");
+			$doc_Your_TAX_no = _("Manufactured Item");
 			$doc_Payment_Terms = _("Required By");
 			$doc_Customers_Ref = _("Reference");
 			$doc_Our_Order_No = _("Into Location");
@@ -58,40 +58,40 @@
 			if ($doctype == ST_PURCHORDER) {
 				$doc_Customers_Ref = "Acount Number";
 				$doc_Our_Ref = "";
-				$doc_Your_VAT_no = "Phone";
+				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Fax";
 				$doc_Due_Date = "";
 			} elseif ($doctype == ST_PROFORMA) {
 				$doc_Customers_Ref = "";
 				$doc_Our_Ref = "Contact";
-				$doc_Your_VAT_no = "";
+				$doc_Your_TAX_no = "";
 				$doc_Our_Order_No = "";
 				$doc_Due_Date = "Due Date";
 				$doc_Payment_Terms = _("Payment Terms");
 			} elseif ($doctype == ST_STATEMENT) {
 				$doc_Customers_Ref = "";
 				$doc_Our_Ref = "";
-				$doc_Your_VAT_no = "Phone";
+				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Fax";
 				$doc_Due_Date = "";
 				$doc_Payment_Terms = "Payment Terms";
 			} elseif ($doctype == ST_CUSTDELIVERY) {
 				$doc_Customers_Ref = "Purchase Order#";
 				$doc_Payment_Terms = "";
-				$doc_Your_VAT_no = "Phone";
+				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Order No:";
 			} else {
 				$doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
 				$doc_Our_Ref = "Contact";
 				$doc_Payment_Terms = "Payment Terms";
 				$doc_customer_id = "Customer ID";
-				$doc_Your_VAT_no = "Phone";
+				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Fax";
 			}
 			# __ADVANCEDEDIT__ END #
 		}
-		$doc_Our_VAT_no = _("Our ABN No.");
-		//	$doc_Domicile = _("Domicile");
+		$doc_Our_TAX_no = _("Our ABN No.");
+		//	$doc_Suburb = _("Suburb");
 		$doc_Extra = "";
 		if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND
 		) {

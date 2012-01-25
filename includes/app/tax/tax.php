@@ -67,7 +67,7 @@
 		 *
 		 * @return float|int
 		 *
-		 * Full price (incl. VAT) for item $stock_id with line price $price,
+		 * Full price (incl. TAX) for item $stock_id with line price $price,
 		 * with tax rates $tax_group_array or applicable group $tax_group
 		 *
 		 */

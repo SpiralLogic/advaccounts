@@ -62,7 +62,7 @@
 		public $fax;
 		public $email;
 		public $coy_logo;
-		public $domicile;
+		public $suburb;
 		public $curr_default;
 		public $debtors_act;
 		public $pyt_discount_act;
