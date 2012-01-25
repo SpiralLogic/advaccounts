@@ -43,7 +43,7 @@
 		const QUICK_ENTRIES = "quick_entries";
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
-		static public function check($validate, $msg = '', $extra = null) {
+		static public function check($validate, $msg = '', $extra = null, $default = null) {
 			if ($extra === false) {
 				return 0;
 			}
@@ -52,7 +52,7 @@
 			}
 			if ($extra !== null) {
 				if (empty($extra)) {
-					throw new Adv_Exception("Extra information not provided for " . $validate);
+					return $default;
 				}
 				if (is_string($extra)) {
 					$extra = DB::escape($extra);
