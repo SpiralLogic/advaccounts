@@ -30,6 +30,7 @@
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
 						$i->setOption(Memcached::OPT_PREFIX_KEY, __DIR__);
+						(Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY,true);
 						$i->addServer('127.0.0.1', 11211);
 					}
 					static::$connected = ($i->getVersion() !== false);
