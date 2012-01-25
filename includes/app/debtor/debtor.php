@@ -427,15 +427,15 @@ JS;
 		}
 		static public function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
+			$focus = false;
 			if (!$value && isset($_POST['customer'])) {
 				$value = $_POST['customer'];
 				JS::set_focus('stock_id');
-				$focus = false;
 			}
-			elseif ($value) {
-				$focus = false;
+			elseif (!$value && isset($_SESSION['global_customer_id'])) {
+				$value = Debtor::get_name($_SESSION['global_customer_id']);
 			}
-			else {
+			elseif (!$value) {
 				JS::set_focus('customer');
 				$focus = true;
 			}
@@ -444,9 +444,13 @@ JS;
 																	'url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => $focus, 'value' => $value
 														 ));
 			echo "</td>\n</tr>\n";
-			JS::beforeload("var Customer = function(data) { var id = document.getElementById('customer_id');id.value= data.id;
-			var customer = document.getElementById('customer');customer.value=data.value;
-			JsHttpRequest.request(customer)}");
+			JS::beforeload("var Customer = function(data) {
+			var id = document.getElementById('customer_id');
+			id.value= data.id;
+			var customer = document.getElementById('customer');
+			customer.value=data.value;
+			JsHttpRequest.request(customer)}"
+			);
 		}
 		static public function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors ";

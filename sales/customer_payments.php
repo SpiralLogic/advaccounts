@@ -54,8 +54,8 @@
 	if (isset($_POST['_DateBanked_changed'])) {
 		Ajax::i()->activate('_ex_rate');
 	}
-	if (list_updated('customer_id') || list_updated('bank_account')) {
-		Ajax::i()->activate('alloc_tbl');
+	if (Input::post('customer_id') || list_updated('bank_account')) {
+		Ajax::i()->activate('_page_body');
 	}
 	if (isset($_POST['AddPaymentItem'])) {
 		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
@@ -78,7 +78,8 @@
 	start_form();
 	start_outer_table('tablestyle2 width90 pad2');
 	table_section(1);
-	Debtor::row(_("From Customer:"), 'customer_id', null, false, true);
+	Debtor::newselect();
+
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
