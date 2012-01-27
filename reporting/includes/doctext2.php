@@ -121,7 +121,7 @@
 			}
 		} elseif ($doctype == ST_STATEMENT) {
 			$this->title = "STATEMENT";
-			$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
+			$this->headers = array('Trans Type', 'Invoice', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
 		}
 	}
 	if (isset($emailtype)) {
