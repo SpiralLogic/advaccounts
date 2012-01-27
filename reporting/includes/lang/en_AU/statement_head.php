@@ -95,13 +95,13 @@
 		$this->NewLine();
 	}
 	if ($this->company['gst_no'] != "") {
-		$this->Text($ccol, $doc_Our_VAT_no, $c2col);
+		$this->Text($ccol, $doc_Our_TAX_no, $c2col);
 		$this->Text($c2col, $this->company['gst_no'], $mcol);
 		$this->NewLine();
 	}
-	if ($this->company['domicile'] != "") {
-		$this->Text($ccol, $doc_Domicile, $c2col);
-		$this->Text($c2col, $this->company['domicile'], $mcol);
+	if ($this->company['suburb'] != "") {
+		$this->Text($ccol, $doc_Suburb, $c2col);
+		$this->Text($c2col, $this->company['suburb'], $mcol);
 		$this->NewLine();
 	}
 	$this->Font();
@@ -189,13 +189,13 @@
 	$this->row -= $this->lineHeight;
 	$this->Font();
 	$this->Font('bold');
-	$this->TextWrap($ccol, $this->row, $right - $ccol, _("IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP"), 'C');
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $statement_note, 'C');
 	$this->row -= $this->lineHeight;
 	$this->row -= $this->lineHeight;
 	$this->Font();
 	$this->Font('italic');
 	if (isset($bankaccount['bank_name'])) {
-		$txt = "If you do not have an account, our terms are Pre payments only. All accounts are 30 days Cash, cheque, Visa, MasterCard, or Direct deposit";
+		$txt = $payment_terms_note;
 		$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 		$this->row -= $this->lineHeight;
 		$txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];

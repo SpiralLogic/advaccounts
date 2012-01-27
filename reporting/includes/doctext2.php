@@ -41,7 +41,7 @@
 		$doc_Your_Ref = "Your Ref";
 		if ($doctype == ST_WORKORDER) {
 			$doc_Our_Ref = "Type";
-			$doc_Your_VAT_no = "Manufactured Item";
+			$doc_Your_TAX_no = "Manufactured Item";
 			$doc_Payment_Terms = "Required By";
 			$doc_Customers_Ref = "Reference";
 			$doc_Our_Order_No = "Into Location";
@@ -55,12 +55,12 @@
 				$doc_Our_Ref = "Contact";
 			}
 			if ($doctype == ST_PURCHORDER) {
-				$doc_Your_VAT_no = "";
+				$doc_Your_TAX_no = "";
 				$doc_Payment_Terms = "";
 				$doc_Customers_Ref = "Acount Number";
 				$doc_Our_Order_No = "";
 			} else {
-				$doc_Your_VAT_no = "Your ABN no.";
+				$doc_Your_TAX_no = "Your ABN no.";
 				$doc_Payment_Terms = "Payment Terms";
 				$doc_Customers_Ref = "Customers Reference";
 				$doc_Our_Order_No = "Our Order No";
@@ -68,8 +68,8 @@
 			# __ADVANCEDEDIT__ END #
 		}
 		$doc_Extra = "";
-		$doc_Our_VAT_no = "Our ABN No.";
-		$doc_Domicile = "Domicile";
+		$doc_Our_TAX_no = "Our ABN No.";
+		$doc_Suburb = "Suburb";
 		if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTPREFUND
 		) {
 			if ($doctype == ST_CUSTPAYMENT) {

@@ -353,7 +353,7 @@ msgid "Address:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/company_preferences.php:164
-msgid "Domicile:"
+msgid "Suburb:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/company_preferences.php:166
@@ -10761,7 +10761,7 @@ msgid "Your Ref"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:52
-msgid "Your VAT no."
+msgid "Your TAX no."
 msgstr "Your ABN no."
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:54
@@ -10769,11 +10769,11 @@ msgid "Customers Reference"
 msgstr "Account Number"
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:57
-msgid "Our VAT No."
+msgid "Our TAX No."
 msgstr "ABN No."
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:58
-msgid "Domicile"
+msgid "Suburb"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:63
@@ -10848,19 +10848,19 @@ msgid "Credit No."
 msgstr "Number."
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:144
-msgid "TOTAL ORDER EX VAT"
+msgid "TOTAL ORDER EX TAX"
 msgstr "TOTAL ORDER EXCLUDING GST"
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:145
-msgid "TOTAL ORDER VAT INCL."
+msgid "TOTAL ORDER TAX INCL."
 msgstr "TOTAL ORDER INCLUDING GST"
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:146
-msgid "TOTAL PO EX VAT"
+msgid "TOTAL PO EX TAX"
 msgstr "TOTAL PO EXCLUDING GST"
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:147
-msgid "TOTAL DELIVERY INCL. VAT"
+msgid "TOTAL DELIVERY INCL. TAX"
 msgstr "TOTAL DELIVERY INCLUDING GST"
 
 #: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:151

@@ -112,13 +112,13 @@
 		$this->NewLine();
 	}
 	if ($this->company['gst_no'] != "") {
-		$this->Text($ccol, $doc_Our_VAT_no, $c2col);
+		$this->Text($ccol, $doc_Our_TAX_no, $c2col);
 		$this->Text($c2col, $this->company['gst_no'], $mcol);
 		$this->NewLine();
 	}
-	if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT) && $this->company['domicile'] != "") {
-		$this->Text($ccol, $doc_Domicile, $c2col);
-		$this->Text($c2col, $this->company['domicile'], $mcol);
+	if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT) && $this->company['suburb'] != "") {
+		$this->Text($ccol, $doc_Suburb, $c2col);
+		$this->Text($c2col, $this->company['suburb'], $mcol);
 		$this->NewLine();
 	}
 	$this->Font();
@@ -227,7 +227,7 @@
 	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
 		$name = $sales_order['deliver_to'];
 	}
-	elseif (isset($companyto->name)) {
+	elseif ($doctype != ST_PURCHORDER && isset($companyto->name)) {
 		$name = $companyto->name;
 	}
 	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['delivery_address'])) {
@@ -247,7 +247,7 @@
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Our_Ref, 'C');
 	$col += $width;
-	$this->TextWrap($col, $this->row, $width, $doc_Your_VAT_no, 'C');
+	$this->TextWrap($col, $this->row, $width, $doc_Your_TAX_no, 'C');
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
 	$col += $width;
