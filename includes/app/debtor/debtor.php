@@ -217,6 +217,7 @@
 		}
 		protected function _getBranches() {
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
+
 			$branches = DB::fetch()->asClassLate('Debtor_Branch');
 			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_id] = $branch;

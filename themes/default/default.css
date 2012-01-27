@@ -1152,34 +1152,48 @@ body.lite {
 #msgbox, .msgbox {
 	width:       80%;
 	margin:      10px auto;
-	font-weight: bolder;
+	font-weight: bold;
 }
 
-div.err_msg {
-	margin:           10px;
-	padding:          3px;
-	border:           1px solid #cc3300;
-	background-color: #ffcccc;
-	color:            #dd2200;
-	text-align:       center;
-}
-
-div.warn_msg, span.note_msg {
-	margin:           10px;
-	padding:          3px;
-	border:           1px solid #ff9900;
-	background-color: #f0ef42;
-	color:            #8b0000;
-	text-align:       center;
+div.err_msg, div.warn_msg {
+	-webkit-box-shadow:  rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
+	background:          #C43C35 -webkit-linear-gradient(top, rgb(238, 95, 91), rgb(196, 60, 53)) repeat-x 0px -15px;
+	border:              1px solid rgba(0, 0, 0, 0.0976563);
+	border-bottom-color: rgba(0, 0, 0, 0.246094);
+	border-radius:       4px;
+	box-shadow:          rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
+	box-sizing:          border-box;
+	color:               white;
+	display:             block;
+	font-family:         'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size:           13px;
+	font-weight:         normal;
+	height:              29px;
+	line-height:         normal;
+	margin:              0px 4px 0px 0px;
+	padding:             5px 14px 6px;
+	text-align:          center;
+	text-shadow:         rgba(0, 0, 0, 0.246094) 0px -1px 0px;
 }
 
 div.note_msg {
-	margin:           10px;
-	padding:          3px;
-	border:           1px solid #33cc00;
-	background-color: #ccffcc;
-	color:            #007700;
-	text-align:       center;
+	-webkit-box-shadow:  rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
+	background:          #57A957 -webkit-linear-gradient(top, rgb(98, 196, 98), rgb(87, 169, 87)) repeat-x;
+	border:              1px solid rgba(0, 0, 0, 0.0976563);
+	border-bottom-color: rgba(0, 0, 0, 0.246094);
+	border-radius:       4px;
+	box-shadow:          rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
+	box-sizing:          border-box;
+	color:               white;
+	display:             block;
+	font-family:         'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size:           13px;
+	height:              29px;
+	line-height:         normal;
+	margin:              0px 4px 0px 0px;
+	padding:             5px 14px 6px;
+	text-align:          center;
+	text-shadow:         rgba(0, 0, 0, 0.246094) 0px -1px 0px;
 }
 
 .bold {

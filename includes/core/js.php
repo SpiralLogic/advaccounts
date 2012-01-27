@@ -3,8 +3,7 @@
 	/**
 	 *
 	 */
-	class JS
-	{
+	class JS {
 		/**
 		 * @var array
 		 */
@@ -38,11 +37,13 @@
 		 * @var bool
 		 */
 		static private $_openWindow = false;
+
 		/**
 		 *
 		 */
 		private function __construct() {
 		}
+
 		/**
 		 * @static
 		 *
@@ -59,6 +60,7 @@
 			static::onload($js);
 			static::$_openWindow = true;
 		}
+
 		/**
 		 * @static
 		 *
@@ -71,11 +73,11 @@
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			$js= "Adv.Forms.autocomplete('$id','$url',$callback);";
+			$js = "Adv.Forms.autocomplete('$id','$url',$callback);";
 			$clean = "Adv.o.autocomplete['$id'].autocomplete('destroy');";
-				static::addLive($js, $clean);
-
+			static::addLive($js, $clean);
 		}
+
 		/**
 		 * @static
 		 *
@@ -106,6 +108,7 @@ JS;
 			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
+
 		/**
 		 * @static
 		 *
@@ -114,6 +117,7 @@ JS;
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
+
 		/**
 		 * @static
 		 *
@@ -133,6 +137,7 @@ JS;
 				$inserted = true;
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -153,6 +158,7 @@ JS;
 			}
 			return $name;
 		}
+
 		/**
 		 * @static
 		 *
@@ -160,6 +166,7 @@ JS;
 		static public function reset_focus() {
 			unset($_POST['_focus']);
 		}
+
 		/**
 		 * @static
 		 *
@@ -167,16 +174,41 @@ JS;
 		 * @param array $options
 		 * @param			 $page
 		 */
-		static public function tabs($id, $options = array(), $page) {
-			$defaults = array('noajax' => false);
+		static public function tabs($id, $options = array(), $page = null) {
+			$defaults = array('noajax' => false, 'hasLinks' => false);
+			$hasLinks=false;
 			extract(array_merge($defaults, $options));
-			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs().toggleClass('tabs')";
+			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
+			if ($hasLinks) {
+				$content .= <<<JS
+    {
+    select: function(event, ui) {
+    var \$tab = $(ui.tab);
+
+        var param = $('#'+\$tab.data('paramel')).val();
+        var url = $.data(ui.tab, 'load.tabs')+param;
+        var target = \$tab.data('target');
+        if( url ) {
+            if (target) {
+            Adv.openWindow(url,'Test');
+            }else{
+            location.href = url;}
+            return false;
+        }
+        return true;
+    }
+    }
+JS;
+			}
+			$content .= ").toggleClass('tabs')";
 			if ($page) {
 				$content .= ".tabs('select'," . $page . ")";
 			}
+
 			$content .= ";";
 			self::onload($content);
 		}
+
 		/**
 		 * @static
 		 *
@@ -189,6 +221,7 @@ JS;
 				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -228,6 +261,7 @@ JS;
 
 			HTML::script(array('content' => minify_js($content)))->script;
 		}
+
 		/**
 		 * @static
 		 *
@@ -246,6 +280,7 @@ JS;
 			echo	 json_encode($data);
 			exit();
 		}
+
 		/**
 		 * @static
 		 *
@@ -255,6 +290,7 @@ JS;
 		static public function setFocus($selector, $cached = false) {
 			$_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
 		}
+
 		/**
 		 * @static
 		 *
@@ -266,6 +302,7 @@ JS;
 			$options = (object)$options;
 			return json_encode($options);
 		}
+
 		/**
 		 * @static
 		 *
@@ -276,6 +313,7 @@ JS;
 		static public function addEvent($selector, $type, $action) {
 			self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
 		}
+
 		/**
 		 * @static
 		 *
@@ -292,6 +330,7 @@ JS;
 			$cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
 			return self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
+
 		/**
 		 * @static
 		 *
@@ -304,6 +343,7 @@ JS;
 				self::register($clean, self::$_toclean);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -318,6 +358,7 @@ JS;
 				}
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -328,6 +369,7 @@ JS;
 				self::register($js, self::$_onload);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -338,6 +380,7 @@ JS;
 				self::register($js, self::$_beforeload);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -346,6 +389,7 @@ JS;
 		static public function headerFile($file) {
 			self::registerFile($file, self::$_headerFiles);
 		}
+
 		/**
 		 * @static
 		 *
@@ -354,6 +398,7 @@ JS;
 		static public function footerFile($file) {
 			self::registerFile($file, self::$_footerFiles);
 		}
+
 		/**
 		 * @static
 		 *
@@ -367,10 +412,11 @@ JS;
 				}
 			}
 			else {
-				if (substr(trim($js),-1)!==';')$js.=';';
+				if (substr(trim($js), -1) !== ';') $js .= ';';
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -390,6 +436,7 @@ JS;
 				$var[$dir][$file] = $file;
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -402,14 +449,16 @@ JS;
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
-/**
- * @static
- * @param $url
- */
+
+		/**
+		 * @static
+		 * @param $url
+		 */
 		static public function redirect($url) {
 			$data['status'] = array('status' => 'redirect', 'message' => $_SERVER['PHP_SELF']);
 			static::renderJSON($data);
 		}
+
 		/***
 		 * @static
 		 *

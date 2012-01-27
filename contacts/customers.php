@@ -187,7 +187,7 @@
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
 	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
-	HTML::div('transactions', false);
+	echo "<iframe id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab()->render();
 	hidden('frame', Input::request('frame'));
 	end_form();
@@ -213,12 +213,9 @@
 	if (!Input::get('frame')) {
 		HTML::div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
-		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=');
-		$shortcuts->endTab();
-		$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
-		$shortcuts->endTab();
-		$shortcuts->startTab('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=');
-		$shortcuts->endTab();
+		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=','id');
+		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=','id');
+		$shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=','id',true);
 		$shortcuts->render();
 		/** @noinspection PhpUndefinedMethodInspection */
 	}

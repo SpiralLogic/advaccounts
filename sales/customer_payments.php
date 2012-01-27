@@ -84,12 +84,10 @@
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
 	}
-	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
-		Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+	if (isset($_POST["customer_id"])) {
+		Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
 	}
-	else {
-		hidden('BranchID', ANY_NUMERIC);
-	}
+	Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	read_customer_data();
 	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {

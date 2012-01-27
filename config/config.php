@@ -9,7 +9,7 @@
 	return array(
 		'debug' => false, //
 		'debug_sql' => false, //
-		'debug_pdf' => true, //
+		'debug_pdf' => false, //
 		'debug_email' => true, //
 		'debug_query_log' => false,
 		'debug_select_log' => false, //

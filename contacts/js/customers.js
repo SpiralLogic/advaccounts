@@ -280,6 +280,11 @@ var Customer = function () {
 	}
 }();
 $(function () {
+	var $invoiceFrame = $('#invoiceFrame'),	 urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
+	$invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
+	$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + id);
+
+
 	Adv.extend({
 							 tabs:$("#tabs0"),
 							 $shortcutTabs:$("#tabs1").tabs({ select:function (event, ui) {

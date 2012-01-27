@@ -129,6 +129,8 @@ Adv.extend({
 		 function () {$(this).removeClass()}).slideUp('normal');
 	},
 	openWindow:function (url, title, width, height) {
+		width = width || 900;
+		height = height || 600;
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
 		return window.open(url, title,

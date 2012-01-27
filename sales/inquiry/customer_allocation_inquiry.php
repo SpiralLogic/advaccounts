@@ -19,16 +19,23 @@ Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
+
 	start_form();
 	start_table('tablestyle_noborder');
 	start_row();
-	Debtor::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
-	date_cells(_("from:"), 'TransAfterDate', '', null, -30);
+	if (!Input::request('customer_id')) {	Debtor::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+		Session::i()->global_customer = $_POST['customer_id'];
+
+	}else {
+		$_POST['showSettled']=!(Input::request('customer_id'));
+	}
+
+	date_cells(_("from:"), 'TransAfterDate', '', null, -31,-12);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
 	Debtor_Payment::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	Session::i()->global_customer = $_POST['customer_id'];
+
 	end_row();
 	end_table();
 
