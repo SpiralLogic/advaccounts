@@ -24,16 +24,16 @@
 		}
 		elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Creditor($_POST);
+				$data['creditor'] = $supplier = new Creditor($_POST);
 				$supplier->save();
 				$data['status'] = $supplier->getStatus();
 			}
 			elseif (!isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Creditor($_POST['id']);
+				$data['creditor'] = $supplier = new Creditor($_POST['id']);
 			}
 		}
 		else {
-			$data['supplier'] = new Creditor(0);
+			$data['creditor'] = new Creditor(0);
 		}
 		JS::renderJSON($data);
 	}

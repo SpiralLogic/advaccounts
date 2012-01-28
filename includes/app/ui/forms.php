@@ -848,7 +848,8 @@
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
-		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ?
+		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" .
+		 $_POST[$name] . "\"" . ($title ?
 		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
 		Ajax::i()->addUpdate($name, $name, $_POST[$name]);

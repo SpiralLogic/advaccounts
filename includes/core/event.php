@@ -48,8 +48,7 @@
 		 *
 		 */
 		static function shutdown() {
-			ob_end_flush();
-			exit("running");
+
 			$Ajax = Ajax::i();
 			Errors::process();
 			// flush all output buffers (works also with exit inside any div levels)

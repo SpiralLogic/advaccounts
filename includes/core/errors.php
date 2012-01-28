@@ -64,7 +64,7 @@
 		/**
 		 * @var array Errors which terminate execution
 		 */
-		static public $fatal_levels = array(E_PARSE, E_ERROR, E_COMPILE_ERROR);
+		static public $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 		/**
 		 * @var array Errors where execution can continue
 		 */
@@ -196,9 +196,6 @@
 					}
 					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
 					$type = E_USER_ERROR;
-				}
-				elseif ($type > E_USER_ERROR && $type < E_USER_NOTICE) {
-					$type = E_USER_WARNING;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
 				$content .= "<div class='$class[1]'>$str</div>\n\n";

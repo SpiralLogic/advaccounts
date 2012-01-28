@@ -37,12 +37,8 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 		Ajax::i()->activate('orders_tbl');
 	}
 	start_form();
-	if (Input::request('frame')) {
-		start_table('tablestyle_noborder hidden');
-	}
-	else {
+	if (!Input::request('frame')) {
 		start_table('tablestyle_noborder');
-	}
 	start_row();
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
@@ -52,6 +48,7 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
+	}
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
 	}
@@ -123,12 +120,18 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 		_("Order Date") => array(
 			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'),
 		_("Order Total") => 'amount', array(
-			'insert' => true, 'fun' => 'edit_link'), array(
-			'insert' => true, 'fun' => 'email_link'), array(
-			'insert' => true, 'fun' => 'prt_link'), array(
-			'insert' => true, 'fun' => 'receive_link'));
+			'insert' => true, 'fun' => 'edit_link'));
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
+	}
+	if ((Input::get(LOC_NOT_FAXED_YET) == 1)) {
+		$cols[_("Supplier's Reference")] = 'skip';
+
+	} else {
+		Arr::append($cols, array(array(
+					'insert' => true, 'fun' => 'email_link'), array(
+					'insert' => true, 'fun' => 'prt_link'), array(
+					'insert' => true, 'fun' => 'receive_link')));
 	}
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";

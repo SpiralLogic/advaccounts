@@ -78,10 +78,10 @@ Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRAN
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
 	if ($_POST['supplier_id'] != ALL_TEXT) {
-		$sql .= " AND supplier.supplier_id = " . DB::quote($selected_stock_item);
+		$sql .= " AND supplier.supplier_id = " . DB::quote($_POST['supplier_id']);
 	}
 	if (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . DB::quote($selected_stock_item);
+		$sql .= "AND porder.reference LIKE " . DB::quote($order_number);
 	}
 	else {
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
@@ -89,7 +89,7 @@ Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRAN
 		$sql .= " AND porder.ord_date >= '$data_after'";
 		$sql .= " AND porder.ord_date <= '$data_before'";
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND porder.into_stock_location = " . DB::quote($selected_stock_item);
+			$sql .= " AND porder.into_stock_location = " . DB::quote($_POST['StockLocation']);
 		}
 		if (isset($selected_stock_item)) {
 			$sql .= " AND line.item_code=" . DB::quote($selected_stock_item);
@@ -103,7 +103,7 @@ Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRAN
 			'fun' => 'trans_view', 'ord' => ''
 		), _("Reference"), _("Supplier") => array(
 			'ord' => '', 'type' => 'id'
-		), _("Supplier ID") => array('skip'), _("Location"), _("Supplier's Reference"), _("Order Date") => array(
+		), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"), _("Order Date") => array(
 			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'
 		), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
 			'insert' => true, 'fun' => 'edit_link'

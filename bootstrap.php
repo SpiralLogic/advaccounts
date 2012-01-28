@@ -74,6 +74,7 @@
 	}
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
+		(!class_exists('Event', false)) and	include(COREPATH . 'event.php');
 		\Event::shutdown();
 	});
 	if (!function_exists('adv_ob_flush_handler')) {

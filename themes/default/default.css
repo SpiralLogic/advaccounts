@@ -1195,7 +1195,7 @@ div.warn_msg {
 	text-decoration: underline;
 }
 
-.pointer {
+.pointer, .pagerclick {
 	cursor: pointer;
 }
 
