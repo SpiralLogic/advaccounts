@@ -144,7 +144,7 @@
 				'type' => 'local',
 				'kits' => true,
 				'where' => '',
-				'size' => '20'
+				'size' => '15'
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
@@ -173,7 +173,7 @@
 			}
 			elseif ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array(
-																															'name' => 'description', 'rows' => 1, 'cols' => 45
+																															'name' => 'description', 'rows' => 1, 'cols' => 35
 																												 ), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}

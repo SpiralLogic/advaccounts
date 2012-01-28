@@ -38,8 +38,8 @@
 		this.showSearch = function (data) {
 			previous = $wrapper.contents().detach();
 			$wrapper.html(data);
-			Adv.msgbox.prependTo($wrapper);
-		}
+			Adv.showStatus({html:$('.msgbox').detach().html()});
+		};
 		$search.delegate("li", "click", function (event) {
 			searchInput.trigger('blur');
 			$current = $(this).hide();

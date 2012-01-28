@@ -136,7 +136,7 @@ button {
 	padding:   1px 0;
 }
 
-button img, span {
+button img {
 	vertical-align: middle;
 }
 
@@ -1148,56 +1148,51 @@ body.lite {
 .inactive {
 	color: gray;
 }
-
-#msgbox, .msgbox {
+#msgbox {
 	width:       80%;
+}
+#msgbox, .msgbox {
+
 	margin:      10px auto;
 	font-weight: bold;
+	text-align:  center;
 }
 
-div.err_msg, div.warn_msg {
-	-webkit-box-shadow:  rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
-	background:          #C43C35 -webkit-linear-gradient(top, rgb(238, 95, 91), rgb(196, 60, 53)) repeat-x 0px -15px;
-	border:              1px solid rgba(0, 0, 0, 0.0976563);
-	border-bottom-color: rgba(0, 0, 0, 0.246094);
-	border-radius:       4px;
-	box-shadow:          rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
-	box-sizing:          border-box;
-	color:               white;
-	display:             block;
-	font-family:         'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size:           13px;
-	font-weight:         normal;
-	height:              29px;
-	line-height:         normal;
-	margin:              0px 4px 0px 0px;
-	padding:             5px 14px 6px;
-	text-align:          center;
-	text-shadow:         rgba(0, 0, 0, 0.246094) 0px -1px 0px;
+div.err_msg, div.warn_msg, div.note_msg {
+	background-attachment: scroll;
+	background-clip:       border-box;
+	background-color:      rgb(225, 79, 28);
+	background-origin:     padding-box;
+	border:                1px solid rgb(205, 10, 10);
+	border-radius:         5px;
+	color:                 rgb(255, 255, 255);
+	display:               block;
+	line-height:           27px;
+	font-family:           Verdana, Arial, sans-serif;
+	font-size:             11px;
+	outline:               rgb(255, 255, 255) none 0;
+	padding:               0 7px;
+	margin-bottom:10px;
 }
 
 div.note_msg {
-	-webkit-box-shadow:  rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
-	background:          #57A957 -webkit-linear-gradient(top, rgb(98, 196, 98), rgb(87, 169, 87)) repeat-x;
-	border:              1px solid rgba(0, 0, 0, 0.0976563);
-	border-bottom-color: rgba(0, 0, 0, 0.246094);
-	border-radius:       4px;
-	box-shadow:          rgba(255, 255, 255, 0.199219) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.046875) 0px 1px 2px 0px;
-	box-sizing:          border-box;
-	color:               white;
-	display:             block;
-	font-family:         'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size:           13px;
-	height:              29px;
-	line-height:         normal;
-	margin:              0px 4px 0px 0px;
-	padding:             5px 14px 6px;
-	text-align:          center;
-	text-shadow:         rgba(0, 0, 0, 0.246094) 0px -1px 0px;
+	border: 1px solid #8bd83b;
+	background: #4eb305 50% 50% repeat-x;
+
+}
+
+div.warn_msg {
+	border:     1px solid #fcd113;
+	background: #f8da4e 50% 50% repeat-x;
+	color:      #915608;
 }
 
 .bold {
 	font-weight: bold;
+}
+
+.u {
+	text-decoration: underline;
 }
 
 .pointer {

@@ -126,7 +126,7 @@
 		}
 
 		static public function getJSONError() {
-			return json_encode(array('status' => $status));
+			return json_encode(array('status' => static::JSONError()));
 		}
 
 		/**
@@ -301,8 +301,8 @@ return 			static::send_debug_email();
 		public static function process() {
 			$last_error = error_get_last();
 			// Only show valid fatal errors
-			if ($last_error AND in_array($last_error['type'], static::$fatal_levels)) {
-				$Ajax->aCommands = array();
+			if ($last_error){// && in_array($last_error['type'], static::$fatal_levels)) {
+				Ajax::i()->aCommands = array();
 				static::$fatal = true;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
@@ -320,7 +320,7 @@ return 			static::send_debug_email();
 		}
 
 		static public function fatal() {
-			ob_end_clean();
+
 			$content = static::format();
 			static::send_debug_email();
 			Page::error_exit($content);

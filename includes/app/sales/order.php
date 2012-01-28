@@ -1317,7 +1317,7 @@
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('AddItem', _("Add Item"),'', _('Add new item to document'), true);
+				submit_cells('AddItem', _("Add Item"),'class="center"', _('Add new item to document'), true);
 			}
 			end_row();
 		}

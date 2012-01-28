@@ -180,14 +180,14 @@
 			Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 			return;
 		}
-		Orders::session_delete($order);
+		Orders::session_delete($order->order_id);
 		if ($order->order_no != 0) {
 			$order->delete();
 		}
 		else {
 			Display::meta_forward('/index.php', 'application=Purchases');
 		}
-		Orders::session_delete($order);
+		Orders::session_delete($order->order_id);
 		Event::notice(_("This purchase order has been cancelled."));
 		Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";

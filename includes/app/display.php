@@ -25,7 +25,8 @@
 			$access = '';
 			$slices = array();
 			if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-				$label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
+				$label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' .
+				 $slices[3];
 				$access = " accesskey='" . strtoupper($slices[2]) . "'";
 			}
 			$label = str_replace('&&', '&', $label);

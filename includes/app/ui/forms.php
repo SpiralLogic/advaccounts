@@ -933,7 +933,7 @@
 		else {
 			echo "class='amount' ";
 		}
-		echo "type='text' name='$name' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
+		echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
@@ -983,7 +983,7 @@
 		if (!isset($dec)) {
 			$dec = User::qty_dec();
 		}
-		amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
+		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec);
 	}
 
 	function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {

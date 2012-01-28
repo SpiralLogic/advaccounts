@@ -90,15 +90,16 @@ Adv.extend({
 		 try
 			 {
 				 var data = $.parseJSON(request.responseText);
-				 (data && data.status) ? Adv.showStatus(data.status) : Adv.hideStatus();
+				 if (data && data.status)
+					 {Adv.showStatus(data.status);}
 			 }
 		 catch (e)
-			 {}
-		 setTimeout(Adv.hideStatus, 10000);
+			 {return false}
 
 	 }),
 	showStatus:function (status) {
-		Adv.msgbox.empty();
+		var text='';
+		status = status || {status:null,message:''};
 		if (status.status === 'redirect')
 			{
 				window.onunload = null;
@@ -113,20 +114,20 @@ Adv.extend({
 				status.class = (status.status) ? 'note_msg' : 'err_msg';
 				text = '<div class="' + status.class + '">' + status.message + '</div>';
 			}
+		if (!text)return;
 		Adv.msgbox.html(text);
-		Adv.msgbox.show();
+		Adv.msgbox.clearQueue().animate({ height:'show', opacity:'show' }, 'normal');
 		setTimeout(Adv.hideStatus, 10000);
 		try
 			{
 				var y = element_pos(Adv.msgbox[0]).y - 40;
 			} catch (e)
-			{}
+			{ return;}
 		if ($.isNumeric(y))
-			{window.scrollTo(0, y);}
+			{scrollTo(0, y);}
 	},
 	hideStatus:function () {
-		Adv.msgbox.fadeOut('normal',
-		 function () {$(this).removeClass()}).slideUp('normal');
+		Adv.msgbox.clearQueue().animate({ height:'hide', opacity:'hide' }, 'slow');
 	},
 	openWindow:function (url, title, width, height) {
 		width = width || 900;
