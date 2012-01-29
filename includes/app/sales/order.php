@@ -65,8 +65,7 @@
 		public $payment_terms; // cached payment terms
 		public $credit;
 		protected $uniqueid;
-		public $view_only=false;
-
+		public $view_only = false;
 		//
 		// $trans_no==0 => open new/direct document
 		// $trans_no!=0 && $this->view_only==false => read for view
@@ -94,7 +93,6 @@
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
 		}
-
 		/**
 		 * @param			$type
 		 * @param int	$trans_no
@@ -196,7 +194,6 @@
 			}
 			$this->credit = Debtor::get_credit($this->customer_id);
 		}
-
 		/**
 		 * Writing new/modified sales document to database.
 		 * Makes parent documents for direct delivery/invoice by recurent call.
@@ -252,7 +249,6 @@
 					}
 			}
 		}
-
 		/**
 		 * @param $cust_ref
 		 *
@@ -266,7 +262,6 @@
 			$result = DB::query($sql);
 			return (DB::num_rows($result) > 0) ? false : true;
 		}
-
 		/**
 		 * @param $customer_id
 		 * @param $customer_name
@@ -289,7 +284,6 @@
 				$this->credit = Debtor::get_credit($customer_id);
 			}
 		}
-
 		/**
 		 * @param				$branch_id
 		 * @param				$tax_group_id
@@ -305,7 +299,6 @@
 			$this->tax_group_id = $tax_group_id;
 			$this->tax_group_array = Tax_Groups::get_items_as_array($tax_group_id);
 		}
-
 		/**
 		 * @param null $salesman_code
 		 */
@@ -323,7 +316,6 @@
 				$this->salesman = $salesman_code;
 			}
 		}
-
 		/**
 		 * @param		 $sales_type
 		 * @param		 $sales_name
@@ -336,7 +328,6 @@
 			$this->tax_included = $tax_included;
 			$this->price_factor = $factor;
 		}
-
 		/**
 		 * @param $id
 		 * @param $name
@@ -345,7 +336,6 @@
 			$this->Location = $id;
 			$this->location_name = $name;
 		}
-
 		/**
 		 * @param			$shipper
 		 * @param			$destination
@@ -360,7 +350,6 @@
 				$this->freight_cost = $freight_cost;
 			}
 		}
-
 		/**
 		 * @param			$line_no
 		 * @param			$stock_id
@@ -386,7 +375,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param				$line_no
 		 * @param				$qty
@@ -403,7 +391,6 @@
 			$this->line_items[$line_no]->price = $price;
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
-
 		/**
 		 * @param $discount
 		 */
@@ -412,7 +399,6 @@
 				$line->discount_percent = $discount;
 			}
 		}
-
 		/**
 		 * @param $line_no
 		 * @param $qty
@@ -420,14 +406,12 @@
 		public function update_add_order_item_qty($line_no, $qty) {
 			$this->line_items[$line_no]->quantity += $qty;
 		}
-
 		/**
 		 * @param $line_no
 		 */
 		public function remove_from_order($line_no) {
 			array_splice($this->line_items, $line_no, 1);
 		}
-
 		/**
 		 *
 		 */
@@ -438,7 +422,6 @@
 			$this->trans_no = 0;
 			$this->customer_id = $this->order_no = 0;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -451,7 +434,6 @@
 			}
 			return $counter;
 		}
-
 		/**
 		 * @return float|int
 		 */
@@ -464,7 +446,6 @@
 			}
 			return $total;
 		}
-
 		/**
 		 *
 		 * @return float|int
@@ -478,7 +459,6 @@
 			}
 			return $total;
 		}
-
 		/**
 		 * @return bool
 		 */
@@ -490,7 +470,6 @@
 			}
 			return false;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -503,7 +482,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param $line_no
 		 *
@@ -516,7 +494,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -542,7 +519,6 @@
 			}
 			return $taxes;
 		}
-
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -568,7 +544,6 @@
 			}
 			return $taxes;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -580,7 +555,6 @@
 				return ($this->freight_cost - $this->get_shipping_tax());
 			}
 		}
-
 		/**
 		 * @return float
 		 */
@@ -602,7 +576,6 @@
 				return round($this->freight_cost * $tax_rate / 100, User::price_dec());
 			}
 		}
-
 		/**
 		 * @return int
 		 */
@@ -675,7 +648,6 @@
 			Orders::session_delete($this->order_id);
 			return $order_no;
 		}
-
 		/**
 		 * @param $order_no
 		 * @param $trans_type
@@ -710,7 +682,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @param			$new_item
 		 * @param			$new_item_qty
@@ -777,14 +748,12 @@
 				}
 			}
 		}
-
 		/**
 		 *
 		 */
 		public function start() {
 			Orders::session_start($this);
 		}
-
 		/**
 		 *
 		 */
@@ -793,14 +762,12 @@
 				Orders::session_delete($this->order_id);
 			}
 		}
-
 		/**
 		 * @return bool
 		 */
 		public function active() {
 			return Orders::session_exists($this->order_id);
 		}
-
 		/**
 		 *
 		 */
@@ -903,7 +870,6 @@
 				$mail->send();
 			}
 		}
-
 		/**
 		 * @param $customer_id
 		 * @param $branch_id
@@ -961,7 +927,6 @@
 			}
 			return $ret_error;
 		}
-
 		/**
 		 * @param			$title
 		 * @param bool $editable_items
@@ -980,7 +945,8 @@
 			start_table('tablestyle ');
 			$th = array(
 				_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"),
-				"");
+				""
+			);
 			if ($this->trans_no == 0) {
 				unset($th[3]);
 			}
@@ -1050,8 +1016,8 @@
 			end_row();
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
-			label_cells(_("Total Discount"), $total_discount, "colspan=".$colspan." style='background:inherit; text-align:right;'",
-			"class='right'");
+			label_cells(_("Total Discount"), $total_discount, "colspan=" . $colspan . " style='background:inherit; text-align:right;'",
+									"class='right'");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1077,7 +1043,6 @@
 			}
 			Display::div_end();
 		}
-
 		/**
 		 * @param			$date_text
 		 * @param bool $display_tax_group
@@ -1192,7 +1157,9 @@
 				 $_POST['OrderDate'] : $this->document_date));
 			}
 			table_section(3);
-			if ($_POST['customer_id']) Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
+			if ($_POST['customer_id']) {
+				Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
+			}
 			if ($editable) {
 				Sales_Type::row(_("Price List"), 'sales_type', null, true);
 			}
@@ -1261,7 +1228,6 @@
 			}
 			return $customer_error;
 		}
-
 		/**
 		 * @param $rowcounter
 		 * @param $line_no
@@ -1317,11 +1283,10 @@
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('AddItem', _("Add Item"),'class="center"', _('Add new item to document'), true);
+				submit_cells('AddItem', _("Add Item"), 'class="center"', _('Add new item to document'), true);
 			}
 			end_row();
 		}
-
 		/**
 		 *
 		 */
@@ -1378,8 +1343,6 @@
 			}
 			Display::div_end();
 		}
-
-
 		/**
 		 * @static
 		 *
@@ -1396,7 +1359,6 @@
 			DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
 			DB::commit();
 		}
-
 		/**
 		 * @static
 		 *
@@ -1446,7 +1408,6 @@
 			}
 			return Event::error("Database returned nothing!", E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1465,7 +1426,6 @@
 		AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
 			return DB::query($sql, "Retreive order Line Items");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1479,7 +1439,6 @@
 			$row = DB::fetch_row($result);
 			return ($row[0] > 0);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1492,7 +1451,6 @@
 			SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
 			DB::query($sql, "The sales order detail record could not be updated");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1522,7 +1480,6 @@
 			}
 			return $duedate;
 		}
-
 		/**
 		 * @static
 		 *
@@ -1553,7 +1510,6 @@
 			$result = DB::query($sql, "Customer Record Retreive");
 			return DB::fetch($result);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1576,7 +1532,6 @@
 					AND branches.debtor_no = " . DB::escape($customer_id);
 			return DB::query($sql, "Customer Branch Record Retreive");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1600,7 +1555,6 @@
 			}
 			return $order;
 		}
-
 		/**
 		 * @static
 		 *

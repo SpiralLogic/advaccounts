@@ -142,7 +142,7 @@
 				'no_sale' => false,
 				'select' => false,
 				'type' => 'local',
-				'kits' => true,
+				'kitsonly' => false,
 				'where' => '',
 				'size' => '15'
 			);

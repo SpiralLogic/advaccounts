@@ -24,11 +24,12 @@ Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 	start_table('tablestyle_noborder');
 	start_row();
 	if (!Input::request('customer_id')) {	Debtor::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
-		Session::i()->global_customer = $_POST['customer_id'];
 
 	}else {
-		$_POST['showSettled']=!(Input::request('customer_id'));
+		$_POST['showSettled']=!!(Input::request('customer_id'));
+		$_POST['customer_id']=Input::request('customer_id');
 	}
+	Session::i()->global_customer = $_POST['customer_id'];
 
 	date_cells(_("from:"), 'TransAfterDate', '', null, -31,-12);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
@@ -50,11 +51,10 @@ Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 		trans.due_date,
 		debtor.name,
 		debtor.curr_code,
- 	(trans.ov_amount + trans.ov_gst + trans.ov_freight
-			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
-		trans.alloc AS Allocated,
-		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
+ 	(trans.ov_amount + trans.ov_gst + trans.ov_freight			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
+	trans.alloc AS credit,
+	trans.alloc AS Allocated,
+		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
  	FROM debtor_trans as trans, debtors as debtor
  	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
@@ -96,9 +96,9 @@ Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 		_("Customer"),
 		_("Currency") => array('align' => 'center'),
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("Allocated") => 'amount',
-		_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'),
+		_("Credit") => array('align' => 'right', 'fun' => 'fmt_credit'),
+		_("Allocated") => 'amount',_("overdue")=>array('type'=>'skip'),
+		_("Balance") => array('type' => 'amount', 'insert' => true,  'fun' => 'fmt_balance'),
 		array('insert' => true, 'fun' => 'alloc_link')
 	);
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
@@ -106,7 +106,8 @@ Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	Page::end();function check_overdue($row) {
+	Page::end();
+	function check_overdue($row) {
 			return ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
 		}
 

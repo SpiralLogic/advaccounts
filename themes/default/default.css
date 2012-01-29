@@ -1039,26 +1039,25 @@ body.lite {
 
 #msgbox, .msgbox {
 
-	margin:      10px auto;
+	margin:      0 auto;
 	font-weight: bold;
 	text-align:  center;
 }
 
 div.err_msg, div.warn_msg, div.note_msg {
+	margin: 10px 0;
 	background-attachment: scroll;
 	background-clip:       border-box;
 	background-color:      rgb(225, 79, 28);
 	background-origin:     padding-box;
 	border:                1px solid rgb(205, 10, 10);
-	border-radius:         5px;
+	border-radius:         4px;
 	color:                 rgb(255, 255, 255);
 	display:               block;
 	line-height:           27px;
 	font-family:           Verdana, Arial, sans-serif;
 	font-size:             11px;
 	outline:               rgb(255, 255, 255) none 0;
-	padding:               0 7px;
-	margin-bottom:         10px;
 	-moz-box-shadow:       0 2px 3px 1px rgba(10, 10, 10, .5);
 	-webkit-box-shadow:    0 2px 3px 1px rgba(10, 10, 10, .5);
 	box-shadow:            0 2px 3px 1px rgba(10, 10, 10, .5);

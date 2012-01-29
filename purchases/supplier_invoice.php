@@ -204,13 +204,13 @@
 	 fv.total = fv.qty*fv.price*((100-fv.discount)/100);
 	 nodes.total.val(Math.round(fv.total*100)/100 );
 	 };
-	 price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
+	 Adv.Forms.priceFormat(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
 	 } else {
 		if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
 		var total = Number(invTotal.data('total'));
 		var ChgTax = Number(ChgTax.val().replace(',',''));
 		var ChgTotal = Number(ChgTotal.val().replace(',',''));
-		price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
+		Adv.Forms.priceFormat(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 	}});
 JS;
 	JS::onload($js);

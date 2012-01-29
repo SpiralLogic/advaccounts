@@ -216,8 +216,11 @@
 		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=','id');
 		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=','id');
 		$shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=','id',true);
+		$shortcuts->addLink('Customer Payment', 'Make customer payment!',
+												'/sales/customer_payments.php?customer_id=','id');
 		$shortcuts->render();
 		/** @noinspection PhpUndefinedMethodInspection */
+		HTML::_div();
+
 	}
-	HTML::_div();
 	Page::end(false, true);

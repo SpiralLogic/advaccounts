@@ -10,19 +10,19 @@
  ***********************************************************************/
 function focus_amount(i) {
 	save_focus(i);
-	i.setAttribute('_last', get_amount(i.name));
+	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 }
 
 function blur_amount(i) {
-	var change = get_amount(i.name);
+	var change = Adv.Forms.getAmount(i.name);
 
-	price_format(i.name, change, user.pdec);
+	Adv.Forms.priceFormat(i.name, change, user.pdec);
 	change = change - i.getAttribute('_last');
 	if (i.name == 'beg_balance') {
 		change = -change;
 	}
 
-	price_format('difference', get_amount('difference', 1, 1) + change, user.pdec);
+	Adv.Forms.priceFormat('difference', Adv.Forms.getAmount('difference', 1, 1) + change, user.pdec);
 }
 
 var balances = {

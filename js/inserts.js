@@ -51,7 +51,7 @@ function _set_combo_input(e) {
 			if (this.className == 'combo2') {
 				this.style.display = 'none';
 				select.style.display = 'inline';
-				setFocus(select);
+				Adv.Forms.setFocus(select);
 			}
 		}
 		return false;
@@ -133,7 +133,7 @@ function _set_combo_select(e) {
 			this.style.display = 'none';
 			box.style.display = 'inline';
 			box.value = '';
-			setFocus(box);
+			Adv.Forms.setFocus(box);
 			return false;
 		}
 	}
@@ -248,7 +248,7 @@ var inserts = {
 		if (e.onblur == undefined) {
 			e.onblur = function () {
 				var dec = this.getAttribute("data-dec");
-				price_format(this.name, get_amount(this.name), dec);
+				Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
 			};
 		}
 	},
@@ -256,7 +256,7 @@ var inserts = {
 		if (e.onblur == undefined) {
 			e.onblur = function () {
 				var dec = this.getAttribute("data-dec");
-				price_format(this.name, get_amount(this.name), dec, '2');
+				Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec, '2');
 			};
 		}
 	},
@@ -301,7 +301,7 @@ var inserts = {
 			ev = ev || window.event;
 			key = ev.keyCode || ev.which;
 			if (key == 37 || key == 38 || key == 39 || key == 40) {
-				move_focus(key, e, document.links);
+				Adv.Forms.moveFocus(key, e, document.links);
 				ev.returnValue = false;
 				return false;
 			}
@@ -462,5 +462,5 @@ function stopEv(ev) {
  */
 Behaviour.register(inserts);
 
-Behaviour.addLoadEvent(setFocus);
+Behaviour.addLoadEvent(Adv.Forms.setFocus);
 //Behaviour.addLoadEvent(setHotKeys);

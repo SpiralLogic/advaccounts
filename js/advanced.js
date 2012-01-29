@@ -32,6 +32,16 @@ jQuery.fn.quickEach = (function () {
 		return this;
 	};
 }());
+jQuery.easing['jswing'] = jQuery.easing['swing'];
+
+jQuery.extend( jQuery.easing,
+{
+	def: 'easeOutExpo',
+	easeOutExpo: function (x, t, b, c, d) {
+			return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+		}
+});
+
 (function (window, $, undefined) {
 	//noinspection LocalVariableNamingConventionJS
 	var Adv = {
@@ -98,8 +108,8 @@ Adv.extend({
 
 	 }),
 	showStatus:function (status) {
-		var text='';
-		status = status || {status:null,message:''};
+		var text = '',closeTime;
+		status = status || {status:null, message:''};
 		if (status.status === 'redirect')
 			{
 				window.onunload = null;
@@ -109,25 +119,29 @@ Adv.extend({
 		if (status.html)
 			{
 				text = status.html;
-			} else if (status.message)
+			} else
 			{
-				status.class = (status.status) ? 'note_msg' : 'err_msg';
-				text = '<div class="' + status.class + '">' + status.message + '</div>';
+				if (status.message)
+					{
+						status.class = (status.status) ? 'note_msg' : 'err_msg';
+						text = '<div class="' + status.class + '">' + status.message + '</div>';
+					}
 			}
-		setTimeout(Adv.hideStatus, 10000);
+		if (closeTime) clearTimeout(closeTime);
+		closeTime = setTimeout(Adv.hideStatus, 10000);
 		if (!text)return;
 		Adv.msgbox.html(text);
-		Adv.msgbox.clearQueue().animate({ height:'show', opacity:'show' }, 'normal');
+		Adv.msgbox.clearQueue().animate({ height:'show', opacity:1 }, 1000,'easeOutExpo');
 		try
 			{
-				var y = element_pos(Adv.msgbox[0]).y - 40;
+				var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
 			} catch (e)
 			{ return;}
 		if ($.isNumeric(y))
 			{scrollTo(0, y);}
 	},
 	hideStatus:function () {
-		Adv.msgbox.clearQueue().animate({ height:'hide', opacity:'hide' }, 'slow');
+		Adv.msgbox.clearQueue().animate({ height:'hide', opacity:0 }, 1000,'easeOutExpo');
 	},
 	openWindow:function (url, title, width, height) {
 		width = width || 900;
@@ -290,12 +304,174 @@ Adv.extend({Forms:(function () {
 			 .focus(
 			 function () {
 				 $(this).data('active', true).on('change.autocomplete', function () {
-					 console.log('changed');
 					 $(this).autocomplete('search', $this.val());
 				 })
 			 }).css({'z-index':'2'});
 			if (document.activeElement === $this[0]) $this.data('active', true);
+		},
+		moveFocus:function (dir, e0, neighbours) {
+			var p0 = Adv.Forms.elementPos(e0), t, l = 0;
+			for (var i = 0; i < neighbours.length; i++)
+				{
+					var e = neighbours[i], p = Adv.Forms.elementPos(e);
+					if (p !== null && (e.className == 'menu_option' || e.className == 'printlink'))
+						{
+							if (((dir == 40) && (p.y > p0.y)) || (dir == 38 && (p.y < p0.y))
+									 || ((dir == 37) && (p.x < p0.x)) || ((dir == 39 && (p.x > p0.x))))
+								{
+									var l1 = (p.y - p0.y) * (p.y - p0.y) + (p.x - p0.x) * (p.x - p0.x);
+									if ((l1 < l) || (l === 0))
+										{
+											l = l1;
+											t = e;
+										}
+								}
+						}
+				}
+			if (t)
+				{
+					Adv.Forms.setFocus(t);
+				}
+			return t;
+		},
+		priceFormat:function (post, num, dec, label, color) {
+
+			var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
+			//num = num.toString().replace(/\$|\,/g,'');
+			if (isNaN(num))
+				{
+					num = "0";
+				}
+			sign = (num == (num = Math.abs(num)));
+			if (dec < 0) dec = 2;
+			decsize = Math.pow(10, dec);
+			num = Math.floor(num * decsize + 0.50000000001);
+			cents = num % decsize;
+			num = Math.floor(num / decsize).toString();
+			for (i = cents.toString().length; i < dec; i++)
+				{
+					cents = "0" + cents;
+				}
+			for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+				{
+					num = num.substring(0, num.length - (4 * i + 3)) + user.ts +
+								num.substring(num.length - (4 * i + 3));
+				}
+			num = ((sign) ? '' : '-') + num;
+			if (dec != 0) num = num + user.ds + cents;
+			if (label)
+				{
+					el.innerHTML = num;
+				}
+			else
+				{
+					el.value = num;
+				}
+			if (color)
+				{
+					el.style.color = (sign) ? '' : '#FF0000';
+				}
+		},
+		getAmount:function (doc, label) {
+			var val;
+			if (label)
+				{
+					val = document.getElementById(doc).innerHTML;
+				}
+			else
+				{
+					val = typeof(doc) == "string" ?
+								document.getElementsByName(doc)[0].value : doc.value;
+				}
+
+			val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
+			val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
+			return isNaN(val) ? 0 : val;
+		},
+		setFocus:function (name, byId) {
+			var el;
+			if (typeof(name) == 'object')
+				{
+					el = name;
+				}
+			else
+				{
+					if (!name)
+						{ // page load/ajax update
+							if (_focus)
+								{
+									name = _focus;
+								}	// last focus set in onfocus handlers
+							else
+								{
+									if (document.forms.length)
+										{	// no current focus (first page display) -  set it from from last form
+											var cur = document.getElementsByName('_focus')[document.forms.length - 1];
+											if (cur) name = cur.value;
+										}
+								}
+						}
+					if (byId || !(el = document.getElementsByName(name)[0]))
+						{
+							el = document.getElementById(name);
+						}
+				}
+			if (el && el.focus)
+				{
+					// The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
+					// Using tmp var prevents crash on IE5
+
+					var tmp = function () {
+						el.focus();
+						if (el.select) el.select();
+					};
+					setTimeout(tmp, 0);
+				}
+		},
+
+//returns the absolute position of some element within document
+		elementPos:function (e) {
+			var res = new Object();
+			res.x = 0;
+			res.y = 0;
+			if (e !== null)
+				{
+					res.x = e.offsetLeft;
+					res.y = e.offsetTop;
+					var offsetParent = e.offsetParent;
+					var parentNode = e.parentNode;
+
+					while (offsetParent !== null && offsetParent.style.display != 'none')
+						{
+							res.x += offsetParent.offsetLeft;
+							res.y += offsetParent.offsetTop;
+							// the second case is for IE6/7 in some doctypes
+							if (offsetParent != document.body && offsetParent != document.documentElement)
+								{
+									res.x -= offsetParent.scrollLeft;
+									res.y -= offsetParent.scrollTop;
+								}
+							//next lines are necessary to support FireFox problem with offsetParent
+							if (navigator.userAgent.match(/gecko/i))
+								{
+									while (offsetParent != parentNode && parentNode !== null)
+										{
+											res.x -= parentNode.scrollLeft;
+											res.y -= parentNode.scrollTop;
+
+											parentNode = parentNode.parentNode;
+										}
+								}
+							parentNode = offsetParent.parentNode;
+							offsetParent = offsetParent.offsetParent;
+						}
+				}
+			// parentNode has style.display set to none
+			if (parentNode != document.documentElement) return null;
+			return res;
 		}
+
+
 	}
 })()});
 Adv.extend({

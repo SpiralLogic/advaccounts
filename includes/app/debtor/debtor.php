@@ -272,7 +272,7 @@
 			$js
 			 = <<<JS
 							var val = $("#customer_id").val();
-							$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+							$("#customerBox").html("<iframe src='/contacts/customers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
 			JS::addLiveEvent('#customer_id_label', 'click', $js);
 		}
@@ -429,7 +429,7 @@ JS;
 		static public function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
 			$focus = false;
-			if (!$value && isset($_POST['customer'])) {
+			if (!$value && Input::post('customer')) {
 				$value = $_POST['customer'];
 				JS::set_focus('stock_id');
 			}
