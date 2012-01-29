@@ -31,7 +31,6 @@
 		 * @var array
 		 */
 		static protected $classes = array();
-
 		/**
 		 * @static
 		 *
@@ -56,7 +55,6 @@
 				static::$loaded = array();
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -67,7 +65,6 @@
 			$path[] .= get_include_path();
 			set_include_path(implode(PATH_SEPARATOR, $path));
 		}
-
 		/**
 		 * @static
 		 *
@@ -76,7 +73,6 @@
 		static function add_core_classes(array $classes) {
 			static::add_classes((array)$classes, COREPATH);
 		}
-
 		/**
 		 * @static
 		 *
@@ -92,7 +88,6 @@
 				static::$classes[$class] = $type . $dir . DS . str_replace('_', DS, $class) . '.php';
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -101,7 +96,6 @@
 		static function add_vendor_classes(array $classes) {
 			static::add_classes((array)$classes, VENDORPATH);
 		}
-
 		/**
 		 * @static
 		 *
@@ -116,63 +110,73 @@
 			}
 			return $filepath;
 		}
-
-		/**
-		 * @static
-		 *
-		 * @param $classname
-		 *
-		 * @internal param $class
-		 *
-		 * @return bool|void
-		 * @throws Autoload_Exception
-		 */
 		static public function load($classname) {
-			if (strpos($classname, 'Modules') !== false) {
-				return static::loadModules($classname);
+			try {
+				static::findFile($classname);
 			}
+			catch (Autoload_Exception $e) {
+				Errors::exception_handler($e);
+			} catch (Exception $e) {
+				throw new Autoload_Exception('Unexpected Autload Error',E_USER_ERROR,$e);
 
-			static::$time = microtime(true);
-			$class = $classname;
-			if (isset(static::$loaded[$class])) {
-				$path = static::$loaded[$class];
-				$filepath = static::tryPath($path);
-				if ($filepath) {
-					return static::includeFile($filepath, $classname);
-				}
-			}
-			if (isset(static::$classes[$class])) {
-				$path = static::$classes[$class];
-				$filepath = static::tryPath($path);
-				if ($filepath) {
-					return static::includeFile($filepath, $classname);
-				}
-			}
-			$class = str_replace('_', DS, $class);
-			if (substr($class, 0, 1) == 'I') {
-				$path = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
-				$filepath = static::tryPath($path);
-				if ($filepath) {
-					return static::includeFile($filepath, $classname);
-				}
-			}
-			$path = APPPATH . $class . '.php';
-			$filepath = static::tryPath($path);
-			if ($filepath) {
-				return static::includeFile($filepath, $classname);
-			}
-			$path = APPPATH . $class . DS . $class . '.php';
-			$filepath = static::tryPath($path, $class);
-			if ($filepath) {
-				return static::includeFile($filepath, $classname);
-			}
-			$path = COREPATH . $class . '.php';
-			$filepath = static::tryPath($path);
-			if ($filepath) {
-				return static::includeFile($filepath, $classname);
-			}
-			throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . static::$classes[$class]);
 		}
+	}
+
+	/**
+	 * @static
+	 *
+	 * @param $classname
+	 *
+	 * @internal param $class
+	 *
+	 * @return bool|void
+	 * @throws Autoload_Exception
+	 */
+		static protected function findFile($classname) {
+	if (strpos($classname, 'Modules') !== false) {
+		return static::loadModules($classname);
+	}
+	static::$time = microtime(true);
+	$class = $classname;
+	if (isset(static::$loaded[$class])) {
+		$path = static::$loaded[$class];
+		$filepath = static::tryPath($path);
+		if ($filepath) {
+			return static::includeFile($filepath, $classname);
+		}
+	}
+	if (isset(static::$classes[$class])) {
+		$path = static::$classes[$class];
+		$filepath = static::tryPath($path);
+		if ($filepath) {
+			return static::includeFile($filepath, $classname);
+		}
+	}
+	$class = str_replace('_', DS, $class);
+	if (substr($class, 0, 1) == 'I') {
+		$path = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
+		$filepath = static::tryPath($path);
+		if ($filepath) {
+			return static::includeFile($filepath, $classname);
+		}
+	}
+	$path = APPPATH . $class . '.php';
+	$filepath = static::tryPath($path);
+	if ($filepath) {
+		return static::includeFile($filepath, $classname);
+	}
+	$path = APPPATH . $class . DS . $class . '.php';
+	$filepath = static::tryPath($path, $class);
+	if ($filepath) {
+		return static::includeFile($filepath, $classname);
+	}
+	$path = COREPATH . $class . '.php';
+	$filepath = static::tryPath($path);
+	if ($filepath) {
+		return static::includeFile($filepath, $classname);
+	}
+	throw new Autoload_Exception('File for class ' . $class . ' does not exist!');
+}
 
 		/**
 		 * @static
@@ -183,55 +187,50 @@
 		 * @throws Autoload_Exception
 		 */
 		static protected function includeFile($filepath, $class) {
-			try {
-				if (empty($filepath)) {
-					throw new Autoload_Exception('File for class ' . $class . ' cannot be found!');
-				}
-				/** @noinspection PhpIncludeInspection */
-				if (!include($filepath)) {
-					throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
-				}
-				static::$loaded[$class] = $filepath;
-				static::$loadperf[$class] = array(
-					$class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME
-				);
-			}
-			catch (Autoload_Exception $e) {
-				Errors::exception_handler($e);
-			}
-		}
+	if (empty($filepath)) {
+		throw new Autoload_Exception('File for class ' . $class . ' cannot be found!');
+	}
+	/** @noinspection PhpIncludeInspection */
+	if (!include($filepath)) {
+		throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
+	}
+	static::$loaded[$class] = $filepath;
+	static::$loadperf[$class] = array(
+		$class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME
+	);
+}
 		static protected function loadModules($classname) {
-			$class = explode("\\", $classname);
-			$mainclass = array_pop($class);
-			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
-			$class[] = $mainclass;
-			$class = implode(DS, $class);
-			$filepath = static::trypath(DOCROOT . $class . '.php');
-			if (!$filepath) {
-				throw new Autoload_Exception('Could not find module:' .$classname.' here: '.$class.'.php');
-			}
-			static::includeFile($filepath, $classname);
-		}
+	$class = explode("\\", $classname);
+	$mainclass = array_pop($class);
+	$class[] = (count($class) > 1) ? 'classes' : $mainclass;
+	$class[] = $mainclass;
+	$class = implode(DS, $class);
+	$filepath = static::trypath(DOCROOT . $class . '.php');
+	if (!$filepath) {
+		throw new Autoload_Exception('Could not find module:' . $classname . ' here: ' . $class . '.php');
+	}
+	static::includeFile($filepath, $classname);
+}
 		/**
 		 * @static
 		 * @return array
 		 */
 		static public function getPerf() {
-			array_walk(static::$loadperf, function(&$v) {
-				$v[1] = Files::convert_size($v[1]);
-				$v[2] = Dates::getReadableTime($v[2]);
-				$v[3] = Dates::getReadableTime($v[3]);
-			});
-			return static::$loadperf;
-		}
+	array_walk(static::$loadperf, function(&$v) {
+		$v[1] = Files::convert_size($v[1]);
+		$v[2] = Dates::getReadableTime($v[2]);
+		$v[3] = Dates::getReadableTime($v[3]);
+	});
+	return static::$loadperf;
+}
 
 		/**
 		 * @static
 		 * @return array
 		 */
 		static public function getLoaded() {
-			return static::$loaded;
-		}
+	return static::$loaded;
+}
 	}
 
 	Autoloader::i();

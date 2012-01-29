@@ -128,7 +128,7 @@
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
 		if ($cust_currency != $bank_currency) {
-			Display::note(_("Amount and discount are in customer's currency."));
+			Event::warning(_("Amount and discount are in customer's currency."));
 		}
 		Display::br();
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');

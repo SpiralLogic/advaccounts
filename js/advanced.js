@@ -109,15 +109,15 @@ Adv.extend({
 		if (status.html)
 			{
 				text = status.html;
-			} else
+			} else if (status.message)
 			{
 				status.class = (status.status) ? 'note_msg' : 'err_msg';
 				text = '<div class="' + status.class + '">' + status.message + '</div>';
 			}
+		setTimeout(Adv.hideStatus, 10000);
 		if (!text)return;
 		Adv.msgbox.html(text);
 		Adv.msgbox.clearQueue().animate({ height:'show', opacity:'show' }, 'normal');
-		setTimeout(Adv.hideStatus, 10000);
 		try
 			{
 				var y = element_pos(Adv.msgbox[0]).y - 40;

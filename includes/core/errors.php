@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
+	class Errors
+	{
 		/**
 		 *
 		 */
@@ -38,11 +39,13 @@
 		 * @var bool	Wether the json error status has been sent
 		 */
 		static protected $jsonerrorsent = false;
+		static protected $current_severity = E_ALL;
 		/**
 		 * @var array Error constants to text
 		 */
 		static public $levels
 		 = array(
+			 -1 => 'Fatal!',
 			 0 => 'Error',
 			 E_ERROR => 'Error',
 			 E_WARNING => 'Warning',
@@ -55,7 +58,8 @@
 			 E_USER_ERROR => 'User Error',
 			 E_USER_WARNING => 'User Warning',
 			 E_USER_NOTICE => 'User Notice',
-			 E_STRICT => 'Runtime Notice'
+			 E_STRICT => 'Runtime Notice',
+			 E_ALL => 'No Error'
 		 );
 		/**
 		 * @var string	temporary container for output html data before error box
@@ -73,7 +77,6 @@
 		 * @var array Errors to ignore comeletely
 		 */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-
 		/**
 		 * @static Initialiser
 		 *
@@ -97,7 +100,6 @@
 			}
 			Event::register_shutdown(__CLASS__);
 		}
-
 		/**
 		 * @static
 		 *
@@ -124,11 +126,9 @@
 			static::$jsonerrorsent = true;
 			return $status;
 		}
-
 		static public function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
-
 		/**
 		 * @static
 		 *
@@ -142,6 +142,9 @@
 		static function handler($type, $message, $file = null, $line = null) {
 			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
 				list($message, $file, $line) = explode('||', $message);
+			}
+			if (static::$current_severity > $type) {
+				static::$current_severity = $type;
 			}
 			if (in_array($type, static::$ignore)) {
 				return true;
@@ -159,7 +162,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -173,7 +175,6 @@
 			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
 			static::prepare_exception($e);
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -186,7 +187,6 @@
 				E_USER_NOTICE => array('USER', 'note_msg')
 			);
 			$content = '';
-
 			foreach (static::$messages as $msg) {
 				$type = $msg['type'];
 				$str = $msg['message'];
@@ -200,13 +200,14 @@
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
 				$content .= "<div class='$class[1]'>$str</div>\n\n";
 			}
+			if (!static::$fatal) {
+				JS::beforeload("Adv.showStatus();");
+			}
 			return $content;
 		}
-
 		static public function _shutdown() {
-return 			static::send_debug_email();
+			return static::send_debug_email();
 		}
-
 		static function send_debug_email() {
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
@@ -220,6 +221,12 @@ return 			static::send_debug_email();
 				if (isset($_SESSION['current_user'])) {
 					$subject .= $_SESSION['current_user']->username;
 				}
+				if (static::$current_severity) {
+					$subject .= ', Severity: ' . static::$levels[static::$current_severity];
+				}
+				if (count(static::$dberrors)) {
+					$subject .= ', DB Error';
+				}
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
@@ -231,7 +238,6 @@ return 			static::send_debug_email();
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -242,7 +248,6 @@ return 			static::send_debug_email();
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
-
 		/**
 		 * @static
 		 *
@@ -269,38 +274,40 @@ return 			static::send_debug_email();
 			}
 			trigger_error($error['message'] . '||' . $error['source']['file'] . '||' . $error['source']['line'] . '||', E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param Exception $e
 		 */
 		static protected function prepare_exception(\Exception $e) {
-			$data = array(
+			$error = array(
 				'type' => ($e->getCode()) ? $e->getCode() : E_USER_ERROR,
 				'message' => get_class($e) . ' ' . $e->getMessage(),
 				'file' => $e->getFile(),
-				'line' => $e->getLine(),
-				'backtrace' => $e->getTrace()
+				'line' => $e->getLine()
 			);
-			foreach ($data['backtrace'] as $key => $trace) {
+			if (static::$current_severity > $error['type']) {
+				static::$current_severity = $error['type'];
+			}
+			static::$messages[] = $error;
+			$error['backtrace'] = $e->getTrace();
+			foreach ($error['backtrace'] as $key => $trace) {
 				if (!isset($trace['file'])) {
-					unset($data['backtrace'][$key]);
+					unset($error['backtrace'][$key]);
 				}
 				elseif ($trace['file'] == __FILE__ || $trace['function'] == 'shutdown_handler') {
-					unset($data['backtrace'][$key]);
+					unset($error['backtrace'][$key]);
 				}
 			}
-			static::$messages[] = $data;
-			static::$errors[] = $data;
+			static::$errors[] = $error;
 		}
-
 		public static function process() {
 			$last_error = error_get_last();
 			// Only show valid fatal errors
-			if ($last_error){// && in_array($last_error['type'], static::$fatal_levels)) {
+			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
 				Ajax::i()->aCommands = array();
 				static::$fatal = true;
+				static::$current_severity = -1;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
 				static::exception_handler($error);
 			}
@@ -315,13 +322,12 @@ return 			static::send_debug_email();
 				static::fatal();
 			}
 		}
-
 		static public function fatal() {
-
 			$content = static::format();
-			static::send_debug_email();
 			Page::error_exit($content);
-
+			fastcgi_finish_request();
+			static::send_debug_email();
+			exit();
 		}
 	}
 

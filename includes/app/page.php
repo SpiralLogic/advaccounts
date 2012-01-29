@@ -229,7 +229,6 @@
 			$page->header();
 			echo "<div id='msgbox'>$text</div>";
 			echo "</div></body></html>";
-			exit();
 		}
 	}
 

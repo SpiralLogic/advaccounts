@@ -10,8 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(900, 500);
-Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
+	JS::open_window(900, 500);
+	Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
 	if (isset($_GET['order_number'])) {
 		$order_number = $_GET['order_number'];
 	}
@@ -39,15 +39,15 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 	start_form();
 	if (!Input::request('frame')) {
 		start_table('tablestyle_noborder');
-	start_row();
-	ref_cells(_("#:"), 'order_number', '', null, '', true);
-	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
-	date_cells(_("to:"), 'OrdersToDate');
-	Inv_Location::cells(_("into location:"), 'StockLocation', null, true);
-	Item::cells(_("for item:"), 'SelectStockFromList', null, true);
-	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	end_row();
-	end_table();
+		start_row();
+		ref_cells(_("#:"), 'order_number', '', null, '', true);
+		date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
+		date_cells(_("to:"), 'OrdersToDate');
+		Inv_Location::cells(_("into location:"), 'StockLocation', null, true);
+		Item::cells(_("for item:"), 'SelectStockFromList', null, true);
+		submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+		end_row();
+		end_table();
 	}
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
@@ -114,24 +114,30 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
-		_("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array(
-			'ord' => '', 'type' => 'id'), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"),
-		_("Order Date") => array(
-			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'),
-		_("Order Total") => 'amount', array(
-			'insert' => true, 'fun' => 'edit_link'));
+		_("#") => array('fun' => 'trans_view', 'ord' => ''), //
+		_("Reference"), //
+		_("Supplier") => array('ord' => '', 'type' => 'id'), //
+		_("Supplier ID") => 'skip', //
+		_("Location")=>'', //
+		_("Invoice #")=>'', //
+		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
+		_("Currency") => array('align' => 'center'), //
+		_("Order Total") => 'amount', //
+		array('insert' => true, 'fun' => 'edit_link') //
+	);
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 	if ((Input::get(LOC_NOT_FAXED_YET) == 1)) {
-		$cols[_("Supplier's Reference")] = 'skip';
-
-	} else {
-		Arr::append($cols, array(array(
-					'insert' => true, 'fun' => 'email_link'), array(
-					'insert' => true, 'fun' => 'prt_link'), array(
-					'insert' => true, 'fun' => 'receive_link')));
+		$cols[_("Invoice #")] = 'skip';
+	}
+	else {
+		Arr::append($cols, array(
+														array('insert' => true, 'fun' => 'email_link'), //
+														array('insert' => true, 'fun' => 'prt_link'), //
+														array('insert' => true, 'fun' => 'receive_link') //
+											 )//
+		);
 	}
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
@@ -156,7 +162,8 @@ Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input
 		HTML::setReturn(true);
 		UI::button(false, 'Email', array(
 																		'class' => 'button email-button',
-																		'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
+																		'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
+															 ));
 		return HTML::setReturn(false);
 	}
 
