@@ -10,15 +10,15 @@
  ***********************************************************************/
 function focus_budget(i) {
 	save_focus(i);
-	i.setAttribute('_last', get_amount(i.name));
+	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 }
 
 function blur_budget(i) {
-	var amount = get_amount(i.name);
-	var total = get_amount('Total', 1);
+	var amount = Adv.Forms.getAmount(i.name);
+	var total = Adv.Forms.getAmount('Total', 1);
 
-	price_format(i.name, amount, 0);
-	price_format('Total', total + amount - i.getAttribute('_last'), 0, 1, 1);
+	Adv.Forms.priceFormat(i.name, amount, 0);
+	Adv.Forms.priceFormat('Total', total + amount - i.getAttribute('_last'), 0, 1, 1);
 }
 
 

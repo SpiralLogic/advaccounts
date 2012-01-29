@@ -71,10 +71,14 @@
 			$this->tax_type_id = 1;
 			$this->mb_flag = STOCK_PURCHASED;
 			$this->sales_account = DB_Company::i()->default_inv_sales_act;
-			if (STOCK_MANUFACTURE || STOCK_PURCHASED) $this->inventory_accounts = DB_Company::i()->default_inventory_act;
+			if (STOCK_MANUFACTURE || STOCK_PURCHASED) {
+				$this->inventory_accounts = DB_Company::i()->default_inventory_act;
+			}
 			$this->cogs_account = DB_Company::i()->default_cogs_act;
 			$this->adjustment_account = DB_Company::i()->default_adj_act;
-			if (STOCK_MANUFACTURE ) $this->assembly_account = DB_Company::i()->default_assembly_act;
+			if (STOCK_MANUFACTURE) {
+				$this->assembly_account = DB_Company::i()->default_assembly_act;
+			}
 			$this->actual_cost = 0;
 			$this->last_cost = 0;
 			$this->material_cost = 0;
@@ -427,21 +431,21 @@ s.category_id, editable, 0 as kit,
 					array_unshift($terms, $_SESSION['supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,20) + ' . $weight;
 				}
-				$stock_code= ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
+				$stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
 				$prices = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
 			}
 			elseif ($o['sale']) {
 				$weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-				$stock_code= " s.item_code as stock_id, p.price,";
+				$stock_code = " s.item_code as stock_id, p.price,";
 				$prices = ", prices p";
 				$where .= " AND s.id = p.item_code_id ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			}
-			elseif ($o['kits']) {
+			elseif ($o['kitsonly']) {
 				$where .= " AND s.stock_id!=i.stock_id ";
-				}
+			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql
 			 = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
@@ -449,10 +453,10 @@ s.category_id, editable, 0 as kit,
 							WHERE (s.item_code LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
 							ORDER BY weight, s.category_id, s.item_code LIMIT 30";
-			DB::prepare($sql,true);
+			DB::prepare($sql);
 
-
-			return DB::execute($terms,true);
+			$result = DB::execute($terms);
+			return $result;
 		}
 		static public function addEditDialog($options = array()) {
 			$default = array('page' => 0);
@@ -476,7 +480,7 @@ JS;
 		/**
 		 * @static
 		 *
-		 * @param       $id
+		 * @param			 $id
 		 * @param array $options 'description' => false,<br>
 		'disabled' => false,<br>
 		'editable' => true,<br>

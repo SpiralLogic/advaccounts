@@ -429,7 +429,7 @@ JS;
 		static public function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
 			$focus = false;
-			if (!$value && isset($_POST['customer'])) {
+			if (!$value && Input::post('customer')) {
 				$value = $_POST['customer'];
 				JS::set_focus('stock_id');
 			}

@@ -10,29 +10,29 @@
  ***********************************************************************/
 function focus_alloc(i) {
 	save_focus(i);
-	i.setAttribute('_last', get_amount(i.name));
+	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 }
 
 function blur_alloc(i) {
 
 	var last = +i.getAttribute('_last')
-	var left = get_amount('left_to_allocate', 1);
-	var cur = Math.min(get_amount(i.name), get_amount('maxval' + i.name.substr(6), 1), last + left)
+	var left = Adv.Forms.getAmount('left_to_allocate', 1);
+	var cur = Math.min(Adv.Forms.getAmount(i.name), Adv.Forms.getAmount('maxval' + i.name.substr(6), 1), last + left)
 
-	price_format(i.name, cur, user.pdec);
+	Adv.Forms.priceFormat(i.name, cur, user.pdec);
 	change = cur - last;
 
-	var total = get_amount('total_allocated', 1) + change;
+	var total = Adv.Forms.getAmount('total_allocated', 1) + change;
 	left -= change;
-	price_format('left_to_allocate', left, user.pdec, 1, 1);
-	price_format('total_allocated', total, user.pdec, 1, 1);
+	Adv.Forms.priceFormat('left_to_allocate', left, user.pdec, 1, 1);
+	Adv.Forms.priceFormat('total_allocated', total, user.pdec, 1, 1);
 }
 
 function allocate_all(doc) {
-	var amount = get_amount('amount' + doc);
-	var unallocated = get_amount('un_allocated' + doc);
-	var total = get_amount('total_allocated', 1);
-	var left = get_amount('left_to_allocate', 1);
+	var amount = Adv.Forms.getAmount('amount' + doc);
+	var unallocated = Adv.Forms.getAmount('un_allocated' + doc);
+	var total = Adv.Forms.getAmount('total_allocated', 1);
+	var left = Adv.Forms.getAmount('left_to_allocate', 1);
 	total -= (amount - unallocated);
 	left += (amount - unallocated);
 	amount = unallocated;
@@ -42,18 +42,18 @@ function allocate_all(doc) {
 		left = 0;
 	}
 
-	price_format('amount' + doc, amount, user.pdec);
-	price_format('left_to_allocate', left, user.pdec, 1, 1);
-	price_format('total_allocated', total, user.pdec, 1, 1);
+	Adv.Forms.priceFormat('amount' + doc, amount, user.pdec);
+	Adv.Forms.priceFormat('left_to_allocate', left, user.pdec, 1, 1);
+	Adv.Forms.priceFormat('total_allocated', total, user.pdec, 1, 1);
 }
 
 function allocate_none(doc) {
-	amount = get_amount('amount' + doc);
-	left = get_amount('left_to_allocate', 1);
-	total = get_amount('total_allocated', 1);
-	price_format('left_to_allocate', amount + left, user.pdec, 1, 1);
-	price_format('amount' + doc, 0, user.pdec);
-	price_format('total_allocated', total - amount, user.pdec, 1, 1);
+	amount = Adv.Forms.getAmount('amount' + doc);
+	left = Adv.Forms.getAmount('left_to_allocate', 1);
+	total = Adv.Forms.getAmount('total_allocated', 1);
+	Adv.Forms.priceFormat('left_to_allocate', amount + left, user.pdec, 1, 1);
+	Adv.Forms.priceFormat('amount' + doc, 0, user.pdec);
+	Adv.Forms.priceFormat('total_allocated', total - amount, user.pdec, 1, 1);
 }
 
 var allocations = {
