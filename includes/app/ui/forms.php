@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	function start_form($multi = false, $action = "", $name = "") {
 		if ($name != "") {
-			$name = "name='$name'";
+			$name = "name='$name' id='$name'";
 		}
 		if ($action == "") {
 			$action = $_SERVER['PHP_SELF'];
@@ -631,20 +631,18 @@
 			$rel = " rel='$value'";
 			$value = _("Select");
 		}
+		$name=htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
 		if (User::graphic_links() && $icon) {
 			if ($value == _("Delete")) // Helper during implementation
 			{
 				$icon = ICON_DELETE;
 			}
-			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																																'.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
-																																													 ))) . "' value='1'" . ($title ? " title='$title'" :
+
+			return "<button type='submit' class='editbutton' id='".$name."' name='" .$name. "' value='1'" . ($title ? " title='$title'" :
 			 " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		}
 		else {
-			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
-																																															 '.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B'
-																																													))) . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
+			return "<input type='submit' class='editbutton' id='".$name."' name='" . $name. "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
 			 " data-aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}

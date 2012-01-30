@@ -692,7 +692,9 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 	color:         black;
 	padding-right: 7px;
 }
-
+#_doc_tbl_span a {
+	color:#2F637A;
+}
 .tableinfo input, .tableinfo textarea, .tableinfo select {
 	max-width: 300px;
 }

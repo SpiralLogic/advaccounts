@@ -201,7 +201,6 @@ var Customer = function () {
 	 'off');
 	return {
 		init:function () {
-			Customer.getFrames();
 			$customerID.autocomplete({
 				source:function (request, response) {
 					var lastXhr = $.getJSON('#', request, function (data, status, xhr) {
@@ -257,6 +256,7 @@ var Customer = function () {
 						Adv.Forms.setFormValue(i, data);
 					}
 			});
+			Customer.getFrames(customer.id);
 			Adv.resetHighlights();
 		},
 		hideSearch:function () {
@@ -271,13 +271,13 @@ var Customer = function () {
 			$.post("customers.php", {"id":item.id}, function (data) {
 				Customer.setValues(data);
 			}, 'json');
-			Customer.getFrames();
 		},
-		getFrames:function() {
-if (!Customer.get().id) return;
+		getFrames:function(id,data) {
+			if (id===undefined && customer.id) { id=customer.id}
+
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
-						 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
-						$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + Customer.get().id);
+						 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0];
+						$invoiceFrame.load($invoiceFrameSrc,data+"&frame=1&customer_id="+id);
 
 
 		},
@@ -424,4 +424,8 @@ $(function () {
 	$("#id").prop('disabled', true);
 	Branches.init();
 	Customer.init();
+	Adv.o.wrapper.delegate('#RefreshInquiry','click',function(){
+	Customer.getFrames(undefined, $('#invoiceForm').serialize());
+	return false;});
+	Customer.getFrames($("#id").val());
 });

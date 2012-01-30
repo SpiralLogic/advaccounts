@@ -187,7 +187,7 @@
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
 	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
-	echo "<iframe id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+	echo "<div id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
 	$menu->endTab()->render();
 	hidden('frame', Input::request('frame'));
 	end_form();
@@ -195,7 +195,6 @@
 		'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
 	));
 	hidden('type', Contact_Log::CUSTOMER);
-
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);

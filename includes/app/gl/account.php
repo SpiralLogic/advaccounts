@@ -94,7 +94,7 @@
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
 		WHERE bank_trans.bank_act = " . DB::quote($bank_account) . "
-			AND undeposited = 0 AND trans_date <= '" . Dates::date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . Dates::date2sql($date) . "')
+			AND undeposited = 0 AND amount!=0 AND trans_date <= '" . Dates::date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . Dates::date2sql($date) . "')
 		ORDER BY trans_date,bank_trans.id";
 			// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
 			return $sql;
