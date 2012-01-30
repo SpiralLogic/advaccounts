@@ -156,7 +156,7 @@ function callEditor(key) {
 
 function passBack(value) {
 	var o = opener;
-	if (!value ) {
+	if (!value) {
 		var back = o.editors[o.editors._call]; // form input bindings
 		var to = o.document.getElementsByName(back[1])[0];
 		if (to) {

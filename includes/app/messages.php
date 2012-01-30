@@ -18,10 +18,9 @@
 			if (!$userid) {
 				return false;
 			}
-			$sql = "SELECT * FROM user_messages WHERE user =$userid AND unread > 0";
-			$result = DB::query($sql, "could not retrieve user messages");
-			static::$count = DB::num_rows($result);
-			while ($row = DB::fetch_assoc($result)) {
+			$result = DB::select()->from('user_messages')->where('user=',$userid)->and_where('unread>',0)->fetch()->all();
+			static::$count=count($result);
+			foreach ($result as $row) {
 				if (!empty($row['subject'])) {
 					static::$messages .= '<div style="margin-top:5px; margin-bottom:5px; font-weight:bold; text-decoration:underline;">' .
 					 $row['subject'] . ':</div><hr style="margin-top:1px;"/> <div style="padding-top:5px;" >'
@@ -45,10 +44,12 @@
 		}
 
 		static public function show($user = false) {
+
 			if (!$user && isset($_SESSION['current_user'])) {
 				$user = $_SESSION['current_user']->user;
 			}
-			if ($user && static::get($user) > 0) {
+			static::get($user);
+			if (static::$count > 0) {
 				static::makeDialog();
 			}
 		}
@@ -57,7 +58,7 @@
 			$dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
 			$dialog->addButtons(array('Close' => '$(this).dialog("close");'));
 			$dialog->setOptions(array(
-															 'autoopen' => true,
+															 'autoOpen' => true,
 															 'modal' => true,
 															 'width' => '500',
 															 'resizeable' => false));
