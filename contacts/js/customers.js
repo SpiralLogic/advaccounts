@@ -201,6 +201,7 @@ var Customer = function () {
 	 'off');
 	return {
 		init:function () {
+			Customer.getFrames();
 			$customerID.autocomplete({
 				source:function (request, response) {
 					var lastXhr = $.getJSON('#', request, function (data, status, xhr) {
@@ -270,9 +271,14 @@ var Customer = function () {
 			$.post("customers.php", {"id":item.id}, function (data) {
 				Customer.setValues(data);
 			}, 'json');
+			Customer.getFrames();
+		},
+		getFrames:function() {
+
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
-			 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
-			$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + item.id);
+						 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
+						$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + item.id);
+
 
 		},
 		Save:function () {
