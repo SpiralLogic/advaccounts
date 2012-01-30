@@ -237,8 +237,7 @@ var Customer = function () {
 				} else
 				{
 					Adv.o.tabs.tabs1.tabs('option', 'disabled',true );
-
-				}t
+				}
 			if (content.contact_log !== undefined)
 				{
 					Adv.setContactLog(content.contact_log);
