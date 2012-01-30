@@ -139,6 +139,7 @@
 																														'style' => 'margin:20px', 'data-url' => $url))->p;
 			$js = <<<JS
 		$('#EmailButton$type_no').click(function() {
+		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
 			$.getJSON($(this).data('url') + "&Email="+email);
 			\$emailBox.dialog("close");
