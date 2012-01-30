@@ -274,7 +274,7 @@ var Customer = function () {
 			Customer.getFrames();
 		},
 		getFrames:function() {
-
+if (!Customer.get().id) return;
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 						 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
 						$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + Customer.get().id);
