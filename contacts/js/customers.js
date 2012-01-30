@@ -277,7 +277,7 @@ var Customer = function () {
 
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 						 $invoiceFrameSrc = $('#invoiceFrame').data('src').match(urlregex)[0] + '?frame=1';
-						$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + item.id);
+						$invoiceFrame.attr('src', $invoiceFrameSrc + '&customer_id=' + Customer.get().id);
 
 
 		},
