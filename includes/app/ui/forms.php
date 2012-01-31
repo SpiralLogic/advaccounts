@@ -263,7 +263,7 @@
 					$sel = 'selected';
 					$found = $value;
 					$edit = $opts['editable'] && $contact_row['editable'] && (Input::post($search_box) == $value) ? $contact_row[1] :
-					false; // get non-formatted description
+					 false; // get non-formatted description
 					if ($edit) {
 						break; // selected field is editable - abandon list construction
 					}
@@ -298,7 +298,10 @@
 			$sel = $found === false ? 'selected' : '';
 			$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
 			$selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
-		}if (isset($lastcat)) {$selector.='</optgroup>';}
+		}
+		if (isset($lastcat)) {
+			$selector .= '</optgroup>';
+		}
 		if ($found === false) {
 			$selected_id = array($first_id);
 		}
@@ -631,18 +634,18 @@
 			$rel = " rel='$value'";
 			$value = _("Select");
 		}
-		$name=htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
+		$name = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
 		if (User::graphic_links() && $icon) {
 			if ($value == _("Delete")) // Helper during implementation
 			{
 				$icon = ICON_DELETE;
 			}
 
-			return "<button type='submit' class='editbutton' id='".$name."' name='" .$name. "' value='1'" . ($title ? " title='$title'" :
+			return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" :
 			 " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		}
 		else {
-			return "<input type='submit' class='editbutton' id='".$name."' name='" . $name. "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
+			return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
 			 " data-aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
@@ -888,14 +891,14 @@
 		echo "</tr>\n";
 	}
 
-	function percent_row($label, $name, $init = null, $cellparams = '',$inputparams='') {
+	function percent_row($label, $name, $init = null, $cellparams = '', $inputparams = '') {
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
-		small_amount_row($label, $name , $_POST[$name], null, "%", User::percent_dec(),0,$inputparams);
+		small_amount_row($label, $name, $_POST[$name], null, "%", User::percent_dec(), 0, $inputparams);
 	}
 
-	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null,$inputparams='') {
+	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
 		if (!isset($dec)) {
 			$dec = User::price_dec();
 		}
@@ -932,6 +935,9 @@
 		else {
 			echo "class='amount' ";
 		}
+		if (!Input::post($name)) {
+			$_POST[$name] = number_format(0, $dec);
+		}
 		echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
@@ -942,8 +948,8 @@
 		Ajax::i()->addAssign($name, $name, 'data-dec', $dec);
 	}
 
-	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null,$inputparams='') {
-		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id,$inputparams);
+	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
+		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id, $inputparams);
 	}
 
 	/**
@@ -963,15 +969,15 @@
 		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec + 2);
 	}
 
-	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams='') {
+	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
 		echo "<tr>";
-		amount_cells($label, $name, $init, $params, $post_label, $dec,$inputparams);
+		amount_cells($label, $name, $init, $params, $post_label, $dec, $inputparams);
 		echo "</tr>\n";
 	}
 
-	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0,$inputparams='') {
+	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '') {
 		echo "<tr>";
-		small_amount_cells($label, $name, $init, $params, $post_label, $dec,$inputparams);
+		small_amount_cells($label, $name, $init, $params, $post_label, $dec, $inputparams);
 		if ($leftfill != 0) {
 			echo "<td colspan=$leftfill></td>";
 		}
@@ -1003,8 +1009,8 @@
 		echo "</tr>\n";
 	}
 
-	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams='') {
-		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec,null,$inputparams);
+	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
+		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, null, $inputparams);
 	}
 
 	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
@@ -1084,8 +1090,8 @@
 		$items['0'] = strlen($name_no) ? $name_no : _("No");
 		$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 		return array_selector($name, $selected_id, $items, array(
-																														'select_submit' => $submit_on_change, 'async' => false
-																											 )); // FIX?
+			'select_submit' => $submit_on_change, 'async' => false
+		)); // FIX?
 	}
 
 	function yesno_list_cells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
@@ -1113,8 +1119,8 @@
 			$items[$i] = "$i";
 		}
 		return array_selector($name, $selected, $items, array(
-																												 'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-																										));
+			'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+		));
 	}
 
 	function number_list_cells($label, $name, $selected, $from, $to, $no_option = false) {
@@ -1183,4 +1189,3 @@
 	function _format_account($row) {
 		return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 	}
-

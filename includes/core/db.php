@@ -391,7 +391,8 @@
 		 * @return mixed
 		 */
 		static public function fetch_assoc() {
-			return static::$prepared->fetch(PDO::FETCH_ASSOC);
+
+			return is_a(static::$prepared,'PDOStatement')? static::$prepared->fetch(PDO::FETCH_ASSOC):false;
 		}
 		/**
 		 * @static
