@@ -10,9 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(900, 500);
-Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
+	Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
 	}
@@ -37,40 +36,74 @@ Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
+	/**
+	 * @param $row
+	 * @return bool
+	 */
 	function check_overdue($row) {
 		return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
 	}
 
+	/**
+	 * @param $dummy
+	 * @param $type
+	 * @return mixed
+	 */
 	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
 	}
 
+	/**
+	 * @param $trans
+	 * @return null|string
+	 */
 	function view_link($trans) {
 		return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
 	}
 
+	/**
+	 * @param $row
+	 * @return string
+	 */
 	function due_date($row) {
 		return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
 	}
 
+	/**
+	 * @param $row
+	 * @return mixed
+	 */
 	function fmt_balance($row) {
-		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
+		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
+		 -$row["TotalAmount"] - $row["Allocated"] :
 		 $row["TotalAmount"] - $row["Allocated"];
 		return $value;
 	}
 
+	/**
+	 * @param $row
+	 * @return string
+	 */
 	function alloc_link($row) {
 		$link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
 		 $link : '';
 	}
 
+	/**
+	 * @param $row
+	 * @return int|string
+	 */
 	function fmt_debit($row) {
 		$value = -$row["TotalAmount"];
 		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
+	/**
+	 * @param $row
+	 * @return int|string
+	 */
 	function fmt_credit($row) {
 		$value = $row["TotalAmount"];
 		return $value > 0 ? Num::price_format($value) : '';
@@ -79,7 +112,8 @@ Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
-	$sql = "SELECT
+	$sql
+	 = "SELECT
 		trans.type, 
 		trans.trans_no,
 		trans.reference, 

@@ -11,50 +11,45 @@
 		protected static $shutdown_objects = array();
 		/**
 		 * @static
-		 *
-		 * @param $message Error message
+		 * @param string $message Error message
 		 */
 		static function error($message) {
-			//Get the caller of the calling function and details about it
 			$source = next(debug_backtrace());
-			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
 		}
 		/**
 		 * @static
-		 *
-		 * @param $msg Notice message
+		 * @param string $message
 		 */
 		static function notice($message) {
 			$source = next(debug_backtrace());
-			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
 		}
 		/**
 		 * @static
-		 *
-		 * @param $msg Warning message
+		 * @param $message
 		 */
 		static function warning($message) {
 			$source = next(debug_backtrace());
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}
+		/**
+		 * @static
+		 * @param $object
+		 */
 		static function register_shutdown($object) {
 			static::$shutdown_objects[] = $object;
 		}
-		/**
-		 * @static Shutdown handler
-		 *
-		 */
+		/*** @static Shutdown handler */
 		static function shutdown() {
-
-			$Ajax = Ajax::i();
+			Ajax::i();
 			Errors::process();
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+			/** @noinspection PhpUndefinedFunctionInspection */
 			fastcgi_finish_request();
 			foreach (static::$shutdown_objects as $object) {
 				if (method_exists($object, '_shutdown')) {

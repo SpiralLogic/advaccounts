@@ -11,38 +11,22 @@
 	 ***********************************************************************/
 	class Errors
 	{
-		/**
-		 *
-		 */
 		const DB_DUPLICATE_ERROR_CODE = 1062;
-		/**
-		 * @var array Container for the system messages
-		 */
+		/** @var array Container for the system messages */
 		static public $messages = array();
-		/**
-		 * @var array Container for the system errors
-		 */
+		/** @var array Container for the system errors */
 		static public $errors = array();
-		/**
-		 * @var array Container for DB errors
-		 */
+		/** @var array Container for DB errors */
 		static public $dberrors = array();
-		/**
-		 * @var bool Whether a fatal error has occuered
-		 */
+		/*** @var bool Whether a fatal error has occuered */
 		static public $fatal = false;
-		/**
-		 * @var int How many messages have currently been recorded
-		 */
+		/**	@var int How many messages have currently been recorded */
 		static public $count = 0;
-		/***
-		 * @var bool	Wether the json error status has been sent
-		 */
+		/*** @var bool	Wether the json error status has been sent */
 		static protected $jsonerrorsent = false;
+		/*** @var int */
 		static protected $current_severity = E_ALL;
-		/**
-		 * @var array Error constants to text
-		 */
+		/** @var array Error constants to text */
 		static public $levels
 		 = array(
 			 -1 => 'Fatal!',
@@ -61,26 +45,15 @@
 			 E_STRICT => 'Runtime Notice',
 			 E_ALL => 'No Error'
 		 );
-		/**
-		 * @var string	temporary container for output html data before error box
-		 */
+		/** @var string	temporary container for output html data before error box */
 		static public $before_box = '';
-		/**
-		 * @var array Errors which terminate execution
-		 */
+		/** @var array Errors which terminate execution */
 		static public $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
-		/**
-		 * @var array Errors where execution can continue
-		 */
+		/** @var array Errors where execution can continue */
 		static public $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
-		/**
-		 * @var array Errors to ignore comeletely
-		 */
+		/** @var array Errors to ignore comeletely */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-		/**
-		 * @static Initialiser
-		 *
-		 */
+		/** @static Initialiser */
 		static function init() {
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
@@ -102,9 +75,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param bool $json
-		 *
 		 * @return array|bool|string
 		 */
 		static public function JSONError() {
@@ -126,18 +97,19 @@
 			static::$jsonerrorsent = true;
 			return $status;
 		}
+		/**
+		 * @static
+		 * @return string
+		 */
 		static public function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
 		/**
 		 * @static
-		 *
 		 * @param $type
 		 * @param $message
 		 * @param $file
 		 * @param $line
-		 *
-		 * @return bool
 		 */
 		static function handler($type, $message, $file = null, $line = null) {
 			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
@@ -164,7 +136,6 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
@@ -205,9 +176,11 @@
 			}
 			return $content;
 		}
+		/** @static */
 		static public function _shutdown() {
 			return static::send_debug_email();
 		}
+		/** @static */
 		static function send_debug_email() {
 			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
@@ -238,10 +211,7 @@
 				}
 			}
 		}
-		/**
-		 * @static
-		 *
-		 */
+		/** @static */
 		static function error_box() {
 			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
 			static::$before_box = ob_get_clean(); // save html content before error box
@@ -250,10 +220,8 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$msg
 		 * @param null			 $sql_statement
-		 *
 		 * @internal param bool $exit
 		 * @throws DBException
 		 */
@@ -276,7 +244,6 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param Exception $e
 		 */
 		static protected function prepare_exception(\Exception $e) {
@@ -301,6 +268,7 @@
 			}
 			static::$errors[] = $error;
 		}
+		/** @static */
 		public static function process() {
 			$last_error = error_get_last();
 			// Only show valid fatal errors
@@ -322,6 +290,7 @@
 				static::fatal();
 			}
 		}
+		/** @static */
 		static public function fatal() {
 			$content = static::format();
 			Page::error_exit($content);
