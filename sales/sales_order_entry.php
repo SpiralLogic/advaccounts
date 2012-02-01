@@ -12,18 +12,18 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
-		ST_SALESORDER => SA_SALESORDER,
-		ST_SALESQUOTE => SA_SALESQUOTE,
-		ST_CUSTDELIVERY => SA_SALESDELIVERY,
-		ST_SALESINVOICE => SA_SALESINVOICE
-	), array(
-		Orders::NEW_ORDER => SA_SALESORDER,
-		Orders::MODIFY_ORDER => SA_SALESORDER,
-		Orders::NEW_QUOTE => SA_SALESQUOTE,
-		Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-		Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-		Orders::NEW_INVOICE => SA_SALESINVOICE
-	));
+																														ST_SALESORDER => SA_SALESORDER,
+																														ST_SALESQUOTE => SA_SALESQUOTE,
+																														ST_CUSTDELIVERY => SA_SALESDELIVERY,
+																														ST_SALESINVOICE => SA_SALESINVOICE
+																											 ), array(
+																															 Orders::NEW_ORDER => SA_SALESORDER,
+																															 Orders::MODIFY_ORDER => SA_SALESORDER,
+																															 Orders::NEW_QUOTE => SA_SALESQUOTE,
+																															 Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+																															 Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+																															 Orders::NEW_INVOICE => SA_SALESINVOICE
+																													));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::get('customer_id', Input::NUMERIC)) {
@@ -100,7 +100,7 @@
 		Page::footer_exit();
 	}
 	//--------------- --------------------------------------------------------------
-	if (isset($_POST['ProcessOrder']) && can_process($order)) {
+	if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($order)) {
 		copy_to_order($order);
 		$_SESSION['Jobsboard'] = clone ($order);
 		$modified = ($order->trans_no != 0);
@@ -139,20 +139,20 @@
 	if (isset($_POST['update'])) {
 		Ajax::i()->activate('items_table');
 	}
-	if (isset($_POST['CancelChanges'])) {
+	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$type = $order->trans_type;
 		$order_no = (is_array($order->trans_no)) ? key($order->trans_no) : $order->trans_no;
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($type, $order_no);
 	}
-	if (isset($_POST['DeleteOrder'])) {
+	if (isset($_POST[Orders::DELETE_ORDER])) {
 		handle_cancel_order($order);
 	}
 	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
-	if (isset($_POST['UpdateItem'])) {
+	if (isset($_POST[Orders::UPDATE_ITEM])) {
 		handle_update_item($order);
 	}
 	if (isset($_POST['discountall'])) {
@@ -167,7 +167,7 @@
 		}
 		Ajax::i()->activate('_page_body');
 	}
-	if (isset($_POST['AddItem'])) {
+	if (isset($_POST[Orders::ADD_ITEM])) {
 		handle_new_item($order);
 	}
 	if (isset($_POST['CancelItemChanges'])) {
@@ -207,13 +207,10 @@
 		$porder = _("Place Order");
 		$corder = _("Commit Order Changes");
 	}
-
 	start_form();
-
 	$customer_error = $order->header($idate);
 	hidden('order_id', $_POST['order_id']);
 	if ($customer_error == "") {
-
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
@@ -222,18 +219,18 @@
 		echo "</td></tr>";
 		end_table(1);
 		if ($order->trans_no > 0 && User::get()->can_access(SA_VOIDTRANSACTION)) {
-			submit_js_confirm('DeleteOrder', _('You are about to void this Document.\nDo you want to continue?'));
-			submit_center_first('DeleteOrder', $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
-			submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+			submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+			submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
+			submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		}
 		else {
-			submit_center_first('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+			submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		}
 		if ($order->trans_no == 0) {
-			submit_center_last('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
+			submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
 		}
 		else {
-			submit_center_last('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
+			submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
 		}
 		if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
 			//UploadHandler::insert($_GET[Orders::MODIFY_ORDER]);
@@ -242,7 +239,6 @@
 	else {
 		Event::warning($customer_error);
 		Session::i()->global_customer = null;
-
 		Page::footer_exit();
 	}
 	end_form();
@@ -264,13 +260,15 @@
 		Event::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
+			 "ModifyOrder" :
 			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+			 ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
@@ -355,7 +353,6 @@
 
 	/**
 	 * @param $order
-	 *
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function copy_from_order($order) {
@@ -386,7 +383,7 @@
 	}
 
 	/**
-	 *
+
 	 */
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
@@ -395,7 +392,6 @@
 
 	/**
 	 * @param Sales_Order $order
-	 *
 	 * @return bool
 	 */
 	function can_process($order) {
@@ -426,9 +422,10 @@
 		if (count($order->line_items) == 0) {
 			if (!empty($_POST['stock_id'])) {
 				handle_new_item($order);
-			} else {
+			}
+			else {
 				Event::error(_("You must enter at least one non empty item line."));
-				JS::set_focus('AddItem');
+				JS::set_focus(Orders::ADD_ITEM);
 				return false;
 			}
 		}
@@ -495,7 +492,6 @@
 
 	/**
 	 * @param $order
-	 *
 	 * @return bool
 	 */
 	function check_item_data($order) {
@@ -532,7 +528,7 @@
 	 * @param Sales_Order $order
 	 */
 	function handle_update_item($order) {
-		if ($_POST['UpdateItem'] != '' && check_item_data($order)) {
+		if ($_POST[Orders::UPDATE_ITEM] != '' && check_item_data($order)) {
 			$order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
 		}
 		line_start_focus();
@@ -554,7 +550,6 @@
 
 	/**
 	 * @param Sales_Order $order
-	 *
 	 * @return mixed
 	 */
 	function handle_new_item($order) {
@@ -608,7 +603,6 @@
 	/**
 	 * @param $type
 	 * @param $trans_no
-	 *
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function create_order($type, $trans_no) {

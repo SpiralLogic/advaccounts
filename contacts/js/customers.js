@@ -233,7 +233,6 @@ var Customer = function () {
 					Adv.Forms.setFormValue(i, data);
 				}
 			});
-			Customer.getFrames(customer.id);
 			Adv.resetHighlights();
 		},
 		hideSearch:function () {
@@ -247,6 +246,7 @@ var Customer = function () {
 			$.post("customers.php", {"id":item.id}, function (data) {
 				Customer.setValues(data);
 			}, 'json');
+			Customer.getFrames(item.id);
 		},
 		getFrames:function (id, data) {
 			if (id === undefined && customer.id) { id = customer.id}

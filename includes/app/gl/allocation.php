@@ -230,25 +230,26 @@
 		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
 			if (!User::get()->salesmanid) {
-				Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
+				 Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
+				return false;
 			}
-			$doc = new Sales_Order(ST_SALESINVOICE, 0);
+			$doc = new Sales_Order($type, 0);
 			$doc->start();
-			$doc->trans_type = ST_SALESINVOICE;
+			$doc->trans_type = $type;
 			$doc->due_date = $doc->document_date = Dates::new_doc_date($date);
 			$doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
 			$doc->set_branch($customer->branches[$branch_id]->id, $customer->branches[$branch_id]->tax_group_id);
 			$doc->pos = User::pos();
 			$doc->ship_via = 11;
 			$doc->sales_type = 1;
-			$doc->Location = 'MEL';
+			$doc->Location = DEFAULT_LOCATION;
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->salesman=User::get()->salesmanid;
 			$doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			$doc->finish();
-			$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
+			$_SESSION['alloc']->add_or_update_item($type, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 		}
 		static public function display($alloc_result, $total) {
 			global $systypes_array;

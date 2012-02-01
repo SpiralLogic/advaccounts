@@ -22,6 +22,7 @@
 		const VIEW_INVOICE = 'ViewInvoice';
 		const MODIFY_CREDIT = 'ModifyCredit';
 		const NEW_CREDIT = 'NewCredit';
+		const PROCESS_ORDER = 'ProcessOrder';
 
 		/**
 		 * @var
@@ -139,4 +140,8 @@
 				unset($_SESSION['orders'][$type][$id]);
 			}
 		}
+		const CANCEL_CHANGES = 'CancelChanges';
+		const DELETE_ORDER = 'DeleteOrder';
+		const ADD_ITEM = 'AddItem';
+		const UPDATE_ITEM = 'UpdateItem';
 	}

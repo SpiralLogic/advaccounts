@@ -1277,13 +1277,13 @@
 			$line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
 			amount_cell($line_total, false, '', 'line_total');
 			if ($id != -1) {
-				button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+				button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
 				button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 				hidden('LineNo', $line_no);
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('AddItem', _("Add Item"), 'class="center"', _('Add new item to document'), true);
+				submit_cells(Orders::ADD_ITEM, _("Add Item"), 'class="center"', _('Add new item to document'), true);
 			}
 			end_row();
 		}

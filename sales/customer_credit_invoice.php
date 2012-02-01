@@ -87,7 +87,7 @@
 	if (isset($_POST['Location'])) {
 		Orders::session_get($_POST['order_id'])->Location = $_POST['Location'];
 	}
-	if (isset($_POST['CancelChanges'])) {
+	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$order = Orders::session_get($_POST['order_id']);
 		$type = $order->trans_type;
 		$order_no = key($order->trans_no);
@@ -100,7 +100,7 @@
 	display_credit_items();
 	display_credit_options();
 	submit_center_first('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
-	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+	submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 	submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 	Page::end();
 	function check_quantities() {

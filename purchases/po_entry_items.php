@@ -40,7 +40,7 @@
 		Page::footer_exit();
 	}
 	$order = Orders::session_get() ? : null;
-	if (isset($_POST['CancelChanges'])) {
+	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$order_no = $order->trans_no;
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($order_no);
@@ -87,7 +87,7 @@
 	Display::div_start('controls', 'items_table');
 	if ($order->order_has_items()) {
 		submit_center_first('CancelOrder', _("Delete This Order"));
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		if ($order->order_no) {
 			submit_center_last('Commit', _("Update Order"), '', 'default');
 		}
@@ -98,7 +98,7 @@
 	else {
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center_first('CancelOrder', _("Delete This Order"), true, false, ICON_DELETE);
-		submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
+		submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 	}
 	Display::div_end();
 	end_form();
