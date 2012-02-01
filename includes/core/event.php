@@ -14,7 +14,7 @@
 		 * @param string $message Error message
 		 */
 		static function error($message) {
-			$source = next(debug_backtrace());
+			$source = reset(debug_backtrace());
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_ERROR);
 		}
 		/**
@@ -22,7 +22,7 @@
 		 * @param string $message
 		 */
 		static function notice($message) {
-			$source = next(debug_backtrace());
+			$source = reset(debug_backtrace());
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_NOTICE);
 		}
 		/**
@@ -30,7 +30,7 @@
 		 * @param $message
 		 */
 		static function warning($message) {
-			$source = next(debug_backtrace());
+			$source = reset(debug_backtrace());
 			//Trigger appropriate error
 			trigger_error($message . '||' . $source['file'] . '||' . $source['line'] . '||', E_USER_WARNING);
 		}

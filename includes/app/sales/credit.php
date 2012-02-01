@@ -443,13 +443,13 @@
 			small_amount_cells(null, 'Disc', Num::percent_format(0), null, null, User::percent_dec());
 			amount_cell(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
 			if ($id != -1) {
-				button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+				button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
 				button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 				hidden('line_no', $line_no);
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+				submit_cells(Orders::ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
 			}
 			end_row();
 		}

@@ -108,7 +108,8 @@
 		$order->start();
 		copy_from_order($order);
 		if ($order->count_items() == 0) {
-			echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</span></div>";
+			echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice have been credited. There is
+			nothing to modify on this invoice") . "</span></div>";
 		}
 	}
 	elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
@@ -266,7 +267,7 @@
 		qty_cell($line->qty_done, false, $dec);
 		if ($is_batch_invoice) {
 			// for batch invoices we can only remove whole deliveries
-			echo '<td class="right no wrap">';
+			echo '<td class="right nowrap">';
 			hidden('Line' . $line_no, $line->qty_dispatched);
 			echo Num::format($line->qty_dispatched, $dec) . '</td>';
 		}
@@ -339,7 +340,7 @@
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	start_table('center red bold');
-	if (!$order->view_only) label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO MODE_EDIT ANYTHING IN THE
+	if (!$order->view_only) label_cell(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO EDIT ANYTHING IN THE
 	FUTURE ON THIS
 	INVOICE"));
 	end_table();
@@ -347,7 +348,7 @@
 	if (!$order->view_only) {submit_center_first('Update', _("Update"), _('Refresh document page'), true);
 	submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
 	start_table('center red bold');
-	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO MODE_EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');}
+	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');}
 	end_table();
 	end_form();
 	Page::end(false);

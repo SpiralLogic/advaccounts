@@ -42,11 +42,6 @@
 		Page::footer_exit();
 	}
 	// validate inputs
-	if (isset($_POST['AddPaymentItem'])) {
-		if (!can_process()) {
-			unset($_POST['AddPaymentItem']);
-		}
-	}
 	if (isset($_POST['_customer_id_button'])) {
 		//	unset($_POST['branch_id']);
 		Ajax::i()->activate('BranchID');
@@ -57,7 +52,7 @@
 	if (Input::post('customer_id') || list_updated('bank_account')) {
 		Ajax::i()->activate('_page_body');
 	}
-	if (isset($_POST['AddPaymentItem'])) {
+	if (isset($_POST['AddPaymentItem']) && can_process()) {
 		$cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
 		$bank_currency = Bank_Currency::for_company($_POST['bank_account']);
 		$comp_currency = Bank_Currency::for_company();
@@ -79,7 +74,6 @@
 	start_outer_table('tablestyle2 width90 pad2');
 	table_section(1);
 	Debtor::newselect();
-
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
@@ -135,7 +129,8 @@
 	}
 	Display::br();
 	end_form();
-	$js = <<<JS
+	$js
+	 = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
@@ -207,6 +202,10 @@ JS;
 		if (!Validation::is_num('discount')) {
 			Event::error(_("The entered discount is not a valid number."));
 			JS::set_focus('discount');
+			return false;
+		}
+		if (!User::get()->salesmanid) {
+			Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
 			return false;
 		}
 		//if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {

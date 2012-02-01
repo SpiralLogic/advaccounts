@@ -135,10 +135,8 @@
 			}
 			$error['backtrace'] = debug_backtrace();
 			foreach ($error['backtrace'] as $key => $trace) {
-				if (!isset($trace['file'])) {
-					unset($error['backtrace'][$key]);
-				}
-				elseif ($trace['file'] == __FILE__ || ($trace['function'] == __FUNCTION__ && $trace['class'] == __CLASS__)) {
+				if (!isset($trace['file']) || $trace['file'] == __FILE__ || ($trace['function'] == __FUNCTION__ && $trace['class'] ==
+				 __CLASS__)) {
 					unset($error['backtrace'][$key]);
 				}
 			}
@@ -191,13 +189,14 @@
 		}
 		/** @static */
 		static function send_debug_email() {
-			if ((Errors::$fatal || count(static::$errors) > 0 || count(static::$dberrors) > 0) && Config::get('debug_email')) {
+			if ((Errors::$fatal || count(static::$errors) || count(static::$dberrors)) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
-				$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
-				$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
+				if (count(static::$dberrors)) $text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
+				if (count(static::$messages)) $text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
 				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
-				$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
-				$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
+				if (count($_POST)) $text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
+				if (count($_GET)) $text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
+				if (count($_REQUEST)) $text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
 				$subject = 'Error log: ';
 				if (isset($_SESSION['current_user'])) {

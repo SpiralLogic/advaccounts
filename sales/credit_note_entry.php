@@ -50,20 +50,20 @@
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	}
-	if (isset($_POST['CancelChanges'])) {
+	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$type = $order->trans_type;
-		$order_no = key($order->trans_no);
+		$order_no = (is_array($order->trans_no))?key($order->trans_no):$order->trans_no;
 		Orders::session_delete($_POST['order_id']);
-		$order = create_order($type, $order_no);
+		$order = handle_new_credit($order_no);
 	}
 	$id = find_submit(MODE_DELETE);
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
-	if (isset($_POST['AddItem'])) {
+	if (isset($_POST[Orders::ADD_ITEM])) {
 		handle_new_item($order);
 	}
-	if (isset($_POST['UpdateItem'])) {
+	if (isset($_POST[Orders::UPDATE_ITEM])) {
 		handle_update_item($order);
 	}
 	if (isset($_POST['CancelItemChanges'])) {
@@ -97,9 +97,8 @@
 	else {
 		Event::error($customer_error);
 	}
-	submit_center_first('Update', _("Update"));
-	submit_center_middle('CancelChanges', _("Cancel Changes"), _("Revert this document entry back to its former state."));
-	submit_center_last('ProcessCredit', _("Process Credit Note"), '', false, 'default');
+	submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+	submit_center_last('ProcessCredit', _("Process Credit Note"), '', false);
 	echo "</tr></table></div>";
 	end_form();
 	Page::end();
@@ -201,7 +200,7 @@
 	}
 
 	function handle_update_item($order) {
-		if ($_POST['UpdateItem'] != "" && check_item_data()) {
+		if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
 			$order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
 		}
 		line_start_focus();

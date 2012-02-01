@@ -14,34 +14,39 @@
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
-
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET[Orders::MODIFY_DELIVERY])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
 		$help_context = "Modifying Delivery Note";
 	}
-	Page::start($page_title,SA_SALESDELIVERY);
+	Page::start($page_title, SA_SALESDELIVERY);
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
 		Event::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
-		Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
-		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
-		Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
-		Display::link_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
-		Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
+		Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery"),0,'button'), 0, 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY),0,1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false,
+																						"printlink button", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false,
+																						"printlink button"), 0, 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false,
+																						"printlink button", "", 1, 1),0, 1);
+		Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries"),0,'button'), 0,1);
+		Display::submenu_option(_("Invoice This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$dispatch_no");
+		Display::submenu_option(_("Select Another Order For Dispatch"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$delivery_no = $_GET['UpdatedID'];
 		Event::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
-		Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
+		Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery"),0,'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false,
+																						"printlink button", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false,
+																						"printlink button", "", 0, 1));
+		Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false,
+																						"printlink button", "", 1, 1), 1);
 		Display::link_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 		Page::footer_exit();
@@ -179,7 +184,8 @@
 	$new = $order->trans_no == 0;
 	$th = array(
 		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"),
-		$new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
+		$new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
+	);
 	table_header($th);
 	$k = 0;
 	$has_marked = false;

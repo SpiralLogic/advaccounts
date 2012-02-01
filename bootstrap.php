@@ -51,11 +51,11 @@
 	 *
 	 */
 	define('CRLF', chr(13) . chr(10));
-	$path = substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
 	/**
 	 *
 	 */
-	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
+
+	define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ?:'.');
 	/**
 	 * Do we have access to mbstring?
 	 * We need this in order to work with UTF-8 strings
@@ -91,7 +91,5 @@
 	Config::i();
 	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-	array_walk($_POST, function(&$v) {
-		$v = is_string($v) ? trim($v) : $v;
-	});
+
 	ADVAccounting::i();
