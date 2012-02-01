@@ -49,6 +49,8 @@
 		static public $before_box = '';
 		/** @var array Errors which terminate execution */
 		static public $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+		/** @var array Errors which are user errors */
+		static public $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 		/** @var array Errors where execution can continue */
 		static public $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
@@ -80,13 +82,13 @@
 		 */
 		static public function JSONError() {
 			$status = false;
-			if (count(Errors::$dberrors) > 0) {
-				$dberror = end(Errors::$dberrors);
+			if (count(static::$dberrors) > 0) {
+				$dberror = end(static::$dberrors);
 				$status['status'] = false;
 				$status['message'] = $dberror['message'];
 			}
-			elseif (count(Errors::$messages) > 0) {
-				$message = end(Errors::$messages);
+			elseif (count(static::$messages) > 0) {
+				$message = end(static::$messages);
 				$status['status'] = ($message['type'] == E_USER_NOTICE);
 				$status['message'] = $message['message'];
 				if (Config::get('debug')) {
@@ -112,12 +114,6 @@
 		 * @param $line
 		 */
 		static function handler($type, $message, $file = null, $line = null) {
-			if ($type == E_USER_ERROR || $type == E_USER_NOTICE || $type == E_USER_WARNING) {
-				list($message, $file, $line) = explode('||', $message);
-			}
-			if (static::$current_severity > $type) {
-				static::$current_severity = $type;
-			}
 			if (in_array($type, static::$ignore)) {
 				return true;
 			}
@@ -125,11 +121,28 @@
 				Page::footer_exit();
 			}
 			static::$count++;
+			if (static::$current_severity > $type) {
+				static::$current_severity = $type;
+			}
+			if (in_array($type, static::$user_errors)) {
+				list($message, $file, $line) = explode('||', $message);
+			}
 			$error = array(
 				'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line
 			);
-			static::$messages[] = $error;
-			if (in_array($type, static::$fatal_levels) || $type == E_USER_ERROR) {
+			if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
+				static::$messages[] = $error;
+			}
+			$error['backtrace'] = debug_backtrace();
+			foreach ($error['backtrace'] as $key => $trace) {
+				if (!isset($trace['file'])) {
+					unset($error['backtrace'][$key]);
+				}
+				elseif ($trace['file'] == __FILE__ || ($trace['function'] == __FUNCTION__ && $trace['class'] == __CLASS__)) {
+					unset($error['backtrace'][$key]);
+				}
+			}
+			if (!in_array($type, static::$user_errors) || $type == E_USER_ERROR) {
 				static::$errors[] = $error;
 			}
 			return true;
@@ -161,11 +174,7 @@
 			foreach (static::$messages as $msg) {
 				$type = $msg['type'];
 				$str = $msg['message'];
-				if ($type < E_USER_ERROR && $type != null) {
-					if ($msg['file']) {
-						$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
-					}
-					$str .= (!isset($msg['backtrace'])) ? '' : "\n" . var_export($msg['backtrace'], true);
+				if ($type && $type < E_USER_ERROR) {
 					$type = E_USER_ERROR;
 				}
 				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];

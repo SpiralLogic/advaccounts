@@ -125,7 +125,8 @@
 	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,null,null, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,null,null,0, ($_SESSION['current_user']->can_access
+(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);

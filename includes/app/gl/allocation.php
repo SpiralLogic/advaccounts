@@ -229,7 +229,7 @@
 		}
 		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
-			if (!User::get()->salesmanid); {
+			if (!User::get()->salesmanid) {
 				Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
 			}
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);

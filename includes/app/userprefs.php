@@ -31,7 +31,7 @@
 		public $graphic_links; // use graphic links
 		public $sticky_date; // save date on subsequent document entry
 		public $startup_tab; // default start-up menu tab
-		function userPrefs($user = null) {
+		function __construct($user = null) {
 			if ($user == null) {
 				// set default values, used before login
 				$this->date_sep = Config::get('ui_date_seperator');
@@ -39,6 +39,8 @@
 				$this->tho_sep = 0;
 				$this->dec_sep = 0;
 				$this->price_dec = 2;
+				$this->percent_dec = 2;
+
 				$this->language = Config::get('defaults.lang');
 				$this->theme = 'default';
 			} else {

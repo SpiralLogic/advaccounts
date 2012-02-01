@@ -102,7 +102,7 @@
 				$this->user = $myrow["id"];
 				$this->last_act = time();
 				$this->timeout = DB_Company::get_pref('login_tout');
-				$this->set_salesman();
+				$this->salesmanid = $this->get_salesmanid();
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 				Users::update_visitdate($this->username);
 			}
@@ -259,6 +259,9 @@
 		}
 		static public function	startup_tab() {
 			return static::prefs()->start_up_tab();
+		}
+		private function get_salesmanid() {
+			return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
 		}
 	}
 

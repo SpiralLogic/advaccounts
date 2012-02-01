@@ -899,7 +899,7 @@
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
-		if (!isset($dec)) {
+		if (is_null($dec)) {
 			$dec = User::price_dec();
 		}
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
