@@ -15,7 +15,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
 
-	JS::open_window(900, 500);
+	JS::open_window(900, 500);	$order = Orders::session_get() ? : null;
+
 	if (isset($_GET[Orders::NEW_CREDIT])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		$order = handle_new_credit(0);
@@ -68,7 +69,7 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	if (isset($_POST['ProcessCredit']) && can_process()) {
+	if (isset($_POST['ProcessCredit']) && can_process($order)) {
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
 			Event::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 			Event::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);

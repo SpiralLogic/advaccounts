@@ -12,18 +12,18 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
-																														ST_SALESORDER => SA_SALESORDER,
-																														ST_SALESQUOTE => SA_SALESQUOTE,
-																														ST_CUSTDELIVERY => SA_SALESDELIVERY,
-																														ST_SALESINVOICE => SA_SALESINVOICE
-																											 ), array(
-																															 Orders::NEW_ORDER => SA_SALESORDER,
-																															 Orders::MODIFY_ORDER => SA_SALESORDER,
-																															 Orders::NEW_QUOTE => SA_SALESQUOTE,
-																															 Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-																															 Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-																															 Orders::NEW_INVOICE => SA_SALESINVOICE
-																													));
+		ST_SALESORDER => SA_SALESORDER,
+		ST_SALESQUOTE => SA_SALESQUOTE,
+		ST_CUSTDELIVERY => SA_SALESDELIVERY,
+		ST_SALESINVOICE => SA_SALESINVOICE
+	), array(
+		Orders::NEW_ORDER => SA_SALESORDER,
+		Orders::MODIFY_ORDER => SA_SALESORDER,
+		Orders::NEW_QUOTE => SA_SALESQUOTE,
+		Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+		Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+		Orders::NEW_INVOICE => SA_SALESINVOICE
+	));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::get('customer_id', Input::NUMERIC)) {
@@ -208,10 +208,12 @@
 		$corder = _("Commit Order Changes");
 	}
 
+	start_form();
 
-	$customer_error = (!$order) ? _("There is no order currently being edited") : start_form().$order->header($idate);
+	$customer_error = $order->header($idate);
+	hidden('order_id', $_POST['order_id']);
 	if ($customer_error == "") {
-		hidden('order_id', $_POST['order_id']);
+
 		start_table('tablesstyle center width90 pad10');
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
@@ -239,7 +241,7 @@
 	}
 	else {
 		Event::warning($customer_error);
-					Session::i()->global_customer = null;
+		Session::i()->global_customer = null;
 
 		Page::footer_exit();
 	}
@@ -424,10 +426,11 @@
 		if (count($order->line_items) == 0) {
 			if (!empty($_POST['stock_id'])) {
 				handle_new_item($order);
-			}else{
-			Event::error(_("You must enter at least one non empty item line."));
-			JS::set_focus('AddItem');
-			return false;}
+			} else {
+				Event::error(_("You must enter at least one non empty item line."));
+				JS::set_focus('AddItem');
+				return false;
+			}
 		}
 		if ($order->trans_no == 0 && !empty($_POST['cust_ref']) && !$order->check_cust_ref($_POST['cust_ref'])
 		) {
