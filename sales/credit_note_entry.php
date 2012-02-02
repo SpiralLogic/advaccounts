@@ -38,8 +38,8 @@
 		$_POST['customer_id'] = $br['debtor_no'];
 		Ajax::i()->activate('customer_id');
 	}
-	if (isset($_GET['AddedID'])) {
-		$credit_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$credit_no = $_GET[ADDED_ID];
 		$trans_type = ST_CUSTCREDIT;
 		Event::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);

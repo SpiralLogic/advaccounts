@@ -13,8 +13,8 @@
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"), SA_SUPPLIERINVOICE);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	if (isset($_GET['AddedID'])) {
-		$invoice_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$invoice_no = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<div class='center'>";
 		Event::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));

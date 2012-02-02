@@ -13,8 +13,8 @@
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	if (isset($_GET['AddedID'])) {
-		$invoice_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$invoice_no = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPCREDIT;
 		echo "<div class='center'>";
 		Event::notice(_("Supplier credit note has been processed."));

@@ -13,8 +13,8 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_BANKTRANSFER;
 		Event::notice(_("Transfer has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));

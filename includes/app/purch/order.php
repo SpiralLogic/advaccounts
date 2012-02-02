@@ -503,12 +503,12 @@
 			$line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
 			amount_cell($line_total, false, '', 'line_total');
 			if ($id != -1) {
-				button_cell('UpdateLine', _("Update"), _('Confirm changes'), ICON_UPDATE);
-				button_cell('CancelUpdate', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+				button_cell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
+				button_cell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells('EnterLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+				submit_cells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
 			}
 			end_row();
 		}

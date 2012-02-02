@@ -19,8 +19,8 @@
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
 	Page::start($_SESSION['page_title'], SA_JOURNALENTRY);
-	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_JOURNAL;
 		Event::notice(_("Journal entry has been entered") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
@@ -28,8 +28,8 @@
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 		Page::footer_exit();
 	}
-	elseif (isset($_GET['UpdatedID'])) {
-		$trans_no = $_GET['UpdatedID'];
+	elseif (isset($_GET[UPDATED_ID])) {
+		$trans_no = $_GET[UPDATED_ID];
 		$trans_type = ST_JOURNAL;
 		Event::notice(_("Journal entry has been updated") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));

@@ -34,8 +34,8 @@
 		$_SESSION['alloc']->read();
 		Ajax::i()->activate('alloc_tbl');
 	}
-	if (isset($_GET['AddedID'])) {
-		$payment_id = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$payment_id = $_GET[ADDED_ID];
 		Event::notice(_("Payment has been sucessfully entered"));
 		Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);

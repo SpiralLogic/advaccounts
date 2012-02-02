@@ -20,8 +20,8 @@
 		$help_context = "Modifying Delivery Note";
 	}
 	Page::start($page_title, SA_SALESDELIVERY);
-	if (isset($_GET['AddedID'])) {
-		$dispatch_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$dispatch_no = $_GET[ADDED_ID];
 		Event::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 		Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery"),0,'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY),0,1);
@@ -36,8 +36,8 @@
 		Display::submenu_option(_("Select Another Order For Dispatch"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 		Page::footer_exit();
 	}
-	elseif (isset($_GET['UpdatedID'])) {
-		$delivery_no = $_GET['UpdatedID'];
+	elseif (isset($_GET[UPDATED_ID])) {
+		$delivery_no = $_GET[UPDATED_ID];
 		Event::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 		Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery"),0,'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));

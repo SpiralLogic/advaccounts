@@ -12,8 +12,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
-	if (isset($_GET['AddedID'])) {
-		$grn = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$grn = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPRECEIVE;
 		Event::notice(_("Purchase Order Delivery has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));

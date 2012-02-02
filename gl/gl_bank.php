@@ -29,8 +29,8 @@
 		$_POST['person_id'] = $br['debtor_no'];
 		Ajax::i()->activate('person_id');
 	}
-	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_BANKPAYMENT;
 		Event::notice(_("Payment $trans_no has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));

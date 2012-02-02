@@ -23,8 +23,8 @@
 	}
 
 	Page::start($page_title,SA_SALESCREDITINV);
-	if (isset($_GET['AddedID'])) {
-		$credit_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$credit_no = $_GET[ADDED_ID];
 		$trans_type = ST_CUSTCREDIT;
 		Event::notice(_("Credit Note has been processed"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
@@ -32,8 +32,8 @@
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		Page::footer_exit();
 	}
-	elseif (isset($_GET['UpdatedID'])) {
-		$credit_no = $_GET['UpdatedID'];
+	elseif (isset($_GET[UPDATED_ID])) {
+		$credit_no = $_GET[UPDATED_ID];
 		$trans_type = ST_CUSTCREDIT;
 		Event::notice(_("Credit Note has been updated"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);

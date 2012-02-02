@@ -15,8 +15,8 @@
 Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSFER);
 	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_LOCTRANSFER;
 		Event::notice(_("Inventory transfer has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));

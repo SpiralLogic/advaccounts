@@ -16,8 +16,8 @@ Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
-	if (isset($_GET['AddedID'])) {
-		$id = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$id = $_GET[ADDED_ID];
 		$stype = ST_WORKORDER;
 		Event::notice(_("The additional cost has been entered."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));

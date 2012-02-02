@@ -25,8 +25,8 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 			$_POST['DateBanked'] = Dates::end_fiscalyear();
 		}
 	}
-	if (isset($_GET['AddedID'])) {
-		$refund_id = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$refund_id = $_GET[ADDED_ID];
 		Event::notice(_("The customer refund has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));

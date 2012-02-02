@@ -68,25 +68,25 @@
 		$_POST['customer_id'] = $br['debtor_no'];
 		Ajax::i()->activate('customer_id');
 	}
-	if (isset($_GET['AddedID'])) {
-		page_complete($_GET['AddedID'], ST_SALESORDER, "Order", true);
+	if (isset($_GET[ADDED_ID])) {
+		page_complete($_GET[ADDED_ID], ST_SALESORDER, "Order", true);
 	}
-	elseif (isset($_GET['UpdatedID'])) {
-		page_complete($_GET['UpdatedID'], ST_SALESORDER, "Order", true, true);
+	elseif (isset($_GET[UPDATED_ID])) {
+		page_complete($_GET[UPDATED_ID], ST_SALESORDER, "Order", true, true);
 	}
-	elseif (isset($_GET['AddedQU'])) {
-		page_complete($_GET['AddedQU'], ST_SALESQUOTE, "Quotation", true);
+	elseif (isset($_GET[ADDED_QU])) {
+		page_complete($_GET[ADDED_QU], ST_SALESQUOTE, "Quotation", true);
 	}
-	elseif (isset($_GET['UpdatedQU'])) {
-		page_complete($_GET['UpdatedQU'], ST_SALESQUOTE, "Quotation", true, true);
+	elseif (isset($_GET[UPDATED_QU])) {
+		page_complete($_GET[UPDATED_QU], ST_SALESQUOTE, "Quotation", true, true);
 	}
-	elseif (isset($_GET['AddedDN'])) {
-		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
+	elseif (isset($_GET[ADDED_DN])) {
+		page_complete($_GET[ADDED_DN], ST_CUSTDELIVERY, "Delivery");
 	}
-	elseif (isset($_GET['AddedDI'])) {
-		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
+	elseif (isset($_GET[ADDED_DI])) {
+		page_complete($_GET[ADDED_DI], ST_SALESINVOICE, "Invoice");
 	}
-	elseif (isset($_GET['RemovedID'])) {
+	elseif (isset($_GET[REMOVED_ID])) {
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			Event::notice(_("This sales quotation has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?" . Orders::NEW_QUOTE . "=Yes");
@@ -260,15 +260,13 @@
 		Event::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?
-			 "ModifyOrder" :
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
 			 "ModifyQuote") . "=$order_no");
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-			 ST_PROFORMAQ), $order_no, 'prtopt');
+			Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
 			Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
 			 ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 		}
@@ -306,7 +304,7 @@
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-			if ($_GET['AddedDI'] && isset($_SESSION['global_customer_id']) && $row == false) {
+			if ($_GET[ADDED_DI] && isset($_SESSION['global_customer_id']) && $row == false) {
 				echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}
@@ -353,6 +351,7 @@
 
 	/**
 	 * @param $order
+	 *
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function copy_from_order($order) {
@@ -392,6 +391,7 @@
 
 	/**
 	 * @param Sales_Order $order
+	 *
 	 * @return bool
 	 */
 	function can_process($order) {
@@ -492,6 +492,7 @@
 
 	/**
 	 * @param $order
+	 *
 	 * @return bool
 	 */
 	function check_item_data($order) {
@@ -550,6 +551,7 @@
 
 	/**
 	 * @param Sales_Order $order
+	 *
 	 * @return mixed
 	 */
 	function handle_new_item($order) {
@@ -585,7 +587,7 @@
 				else {
 					$trans_no = key($order->trans_no);
 					$trans_type = $order->trans_type;
-					if (!isset($_GET['RemovedID'])) {
+					if (!isset($_GET[REMOVED_ID])) {
 						Sales_Order::delete($trans_no, $trans_type);
 						Display::meta_forward("/jobsboard/jobsboard/removejob/RemovedID/$trans_no/$trans_type", "");
 					}
@@ -603,6 +605,7 @@
 	/**
 	 * @param $type
 	 * @param $trans_no
+	 *
 	 * @return \Purch_Order|\Sales_Order
 	 */
 	function create_order($type, $trans_no) {

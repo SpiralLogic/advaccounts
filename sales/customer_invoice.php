@@ -33,11 +33,11 @@
 	}
 	Page::start($page_title,SA_SALESINVOICE);
 	$order = Orders::session_get() ? : null;
-	if (isset($_GET['AddedID'])) {
-		$order = new Sales_Order(ST_SALESINVOICE, $_GET['AddedID']);
+	if (isset($_GET[ADDED_ID])) {
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET[ADDED_ID]);
 		$customer = new Debtor($order->customer_id);
 		$emails = $customer->getEmailAddresses();
-		$invoice_no = $_GET['AddedID'];
+		$invoice_no = $_GET[ADDED_ID];
 		$reference = $order->reference;
 		Event::notice(_("Invoice $reference has been entered."));
 		$trans_type = ST_SALESINVOICE;
@@ -50,11 +50,11 @@
 		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
-	elseif (isset($_GET['UpdatedID'])) {
-		$order = new Sales_Order(ST_SALESINVOICE, $_GET['UpdatedID']);
+	elseif (isset($_GET[UPDATED_ID])) {
+		$order = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
 		$customer = new Debtor($order->customer_id);
 		$emails = $customer->getEmailAddresses();
-		$invoice_no = $_GET['UpdatedID'];
+		$invoice_no = $_GET[UPDATED_ID];
 		Event::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';

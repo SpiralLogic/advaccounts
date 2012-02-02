@@ -303,3 +303,14 @@
 	define('MODE_EDIT', 'Edit');
 	define('MODE_DELETE', 'Delete');
 	define('MODE_CLONE', 'CLONE');
+define('ADDED_ID','AddedID');
+define('ADDED_QU','AddedQU');
+define('ADDED_DN','AddedDN');
+define('ADDED_DI','AddedDI');
+	define('UPDATED_ID','UpdatedID');
+	define('UPDATED_QU','UpdatedQU');
+	define('REMOVED_QU','RemovedQU');
+	define('COMMIT','Commit');
+	define('UPDATE_ITEM','UpdateLine');
+	define('ADD_ITEM','EnterLine');
+	define('CANCEL','CancelUpdate');

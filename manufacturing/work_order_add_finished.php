@@ -16,8 +16,8 @@ Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Or
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
-	if (isset($_GET['AddedID'])) {
-		$id = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$id = $_GET[ADDED_ID];
 		$stype = ST_WORKORDER;
 		Event::notice(_("The manufacturing process has been entered."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));

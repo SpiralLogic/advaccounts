@@ -21,8 +21,8 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 	elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	}
-	if (isset($_GET['AddedID'])) {
-		$id = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$id = $_GET[ADDED_ID];
 		$stype = ST_WORKORDER;
 		Event::notice(_("The work order been added."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
@@ -41,8 +41,8 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 		}
 		safe_exit();
 	}
-	if (isset($_GET['UpdatedID'])) {
-		$id = $_GET['UpdatedID'];
+	if (isset($_GET[UPDATED_ID])) {
+		$id = $_GET[UPDATED_ID];
 		Event::notice(_("The work order been updated."));
 		safe_exit();
 	}

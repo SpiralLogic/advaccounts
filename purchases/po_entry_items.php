@@ -20,8 +20,8 @@
 	}
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
-	if (isset($_GET['AddedID'])) {
-		$order_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$order_no = $_GET[ADDED_ID];
 		$trans_type = ST_PURCHORDER;
 		$supplier = new Creditor(Session::i()->supplier_id);
 		if (!isset($_GET['Updated'])) {
@@ -49,25 +49,25 @@
 	if ($id != -1) {
 		handle_delete_item($order, $id);
 	}
-	if (isset($_POST['Commit'])) {
+	if (isset($_POST[COMMIT])) {
 		handle_commit_order($order);
 	}
-	if (isset($_POST['UpdateLine'])) {
+	if (isset($_POST[UPDATE_ITEM])) {
 		handle_update_item($order);
 	}
-	if (isset($_POST['EnterLine'])) {
+	if (isset($_POST[ADD_ITEM])) {
 		handle_add_new_item($order);
 	}
-	if (isset($_POST['CancelOrder'])) {
+	if (isset($_POST[Orders::CANCEL])) {
 		handle_cancel_po($order);
 	}
-	if (isset($_POST['CancelUpdate'])) {
+	if (isset($_POST[CANCEL])) {
 		unset_form_variables();
 	}
 	if (isset($_GET[Orders::MODIFY_ORDER]) && $_GET[Orders::MODIFY_ORDER] != "") {
 		$order = create_order($_GET[Orders::MODIFY_ORDER]);
 	}
-	elseif (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
+	elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
 		line_start_focus();
 	}
 	elseif (isset($_GET[Orders::NEW_ORDER])) {
@@ -86,18 +86,18 @@
 	end_table(1);
 	Display::div_start('controls', 'items_table');
 	if ($order->order_has_items()) {
-		submit_center_first('CancelOrder', _("Delete This Order"));
+		submit_center_first(Orders::CANCEL, _("Delete This Order"));
 		submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		if ($order->order_no) {
-			submit_center_last('Commit', _("Update Order"), '', 'default');
+			submit_center_last(COMMIT, _("Update Order"), '', 'default');
 		}
 		else {
-			submit_center_last('Commit', _("Place Order"), '', 'default');
+			submit_center_last(COMMIT, _("Place Order"), '', 'default');
 		}
 	}
 	else {
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-		submit_center_first('CancelOrder', _("Delete This Order"), true, false, ICON_DELETE);
+		submit_js_confirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
+		submit_center_first(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
 		submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 	}
 	Display::div_end();

@@ -32,8 +32,8 @@
 			$_POST['DateBanked'] = Dates::end_fiscalyear();
 		}
 	}
-	if (isset($_GET['AddedID'])) {
-		$payment_no = $_GET['AddedID'];
+	if (isset($_GET[ADDED_ID])) {
+		$payment_no = $_GET[ADDED_ID];
 		Event::notice(_("The customer payment has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 		Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
