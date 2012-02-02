@@ -54,7 +54,7 @@
 	echo "</td>\n";
 	end_row();
 	if (!$login_timeout) {
-		table_section_title(_("Version") . VERSION . " Build " . BUILD_VERSION . " - " . _("Login"));
+		table_section_title(_("Version ") . VERSION . " - " . _("Login"));
 	}
 	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
 	text_row(_("User name"), "user_name", $value, 20, 30);

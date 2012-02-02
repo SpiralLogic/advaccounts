@@ -30,7 +30,7 @@
 	define('DEFAULT_AREA', 1);
 	define('DEFAULT_SHIP_VIA', 1);
 	define('APP_TITLE', "Advanced Accounting");
-	define('VERSION', "2.2.12");
+	define('VERSION', "3.0.12.SYEDESIGN");
 	define('BUILD_VERSION', -3);
 	define('POWERED_BY', "Advanced Accounting");
 	define('POWERED_URL', "http://www.advancedgroup.com.au");
