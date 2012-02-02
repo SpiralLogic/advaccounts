@@ -84,9 +84,9 @@
 	HTML::td()->tr;
 	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
 	//hidden('br_contact_name', $customer->contact_name);
-	text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
-	text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
-	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
+	text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 35, 30);
+	text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 35, 30);
+	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 35, 30);
 	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 	Contact_Postcode::render(array(
@@ -103,10 +103,10 @@
 		'class' => "center", 'colspan' => 2
 	));
 	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
-	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
-	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
-	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
-	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
+	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 35, 40);
+	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 35, 30);
+	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 35, 30);
+	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 35, 30);
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	Contact_Postcode::render(array(
@@ -198,7 +198,7 @@
 	hidden('type', Contact_Log::CUSTOMER);
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
+	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 35, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
 	HTML::div()->div(array('class' => 'center width50'));

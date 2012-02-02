@@ -73,7 +73,7 @@
 	elseif (isset($_GET[Orders::NEW_ORDER])) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
-			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' style='width:90%; height:350px' frameborder='0'></iframe></div>";
+			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' class='width70' style='height:300px' frameborder='0'></iframe></div>";
 		}
 	}
 	start_form();

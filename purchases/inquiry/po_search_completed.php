@@ -140,7 +140,7 @@
 		);
 	}
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-	$table->width = "80%";
+	$table->width = "80";
 	DB_Pager::display($table);
 	Creditor::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
