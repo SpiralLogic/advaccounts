@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class MenuUI extends Menu {
+	class MenuUI extends Menu
+	{
 		/**
 		 * @var array
 		 */
@@ -22,8 +23,6 @@
 		 * @var int
 		 */
 		static public $menuCount = 0;
-
-
 		/**
 		 * @param array $options
 		 */
@@ -31,7 +30,6 @@
 			$this->options = $options;
 			ob_start();
 		}
-
 		/**
 		 * @param				$title
 		 * @param string $tooltip
@@ -43,21 +41,26 @@
 			$this->items[] = new MenuUi_item($title, $tooltip, $link);
 			return $this;
 		}
-
 		/**
-		 * @param $title
+		 * @param        $title
 		 * @param string $tooltip
 		 * @param string $link
-		 * @param $param_element element id to get extra paramater from
-		 * @param null $target
+		 * @param        $param_element element id to get extra paramater from
+		 * @param null   $target
+		 *
 		 * @return MenuUI
 		 */
-		public function addLink($title, $tooltip = '', $link,$param_element, $target = null) {
-			$this->items[] = new MenuUi_item($title, $tooltip, $link,$param_element,$target);
-			$this->options['hasLinks']=true;
+		public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
+			$this->items[] = new MenuUi_item($title, $tooltip, $link, $param_element, $target);
+			$this->options['hasLinks'] = true;
 			return $this;
 		}
-
+		public function addJSLink($title, $tooltip = '', $name, $onselect) {
+			$this->items[] = new MenuUi_item($title, $tooltip,'#'.$name);
+			$this->options['hasLinks'] = true;
+			JS::onload($onselect);
+			return $this;
+		}
 		/**
 		 * @param				$title
 		 * @param				$tooltip
@@ -79,7 +82,6 @@
 			echo '>';
 			return $this;
 		}
-
 		/**
 		 * @return MenuUI
 		 */
@@ -87,7 +89,6 @@
 			echo '</div>';
 			return $this;
 		}
-
 		/**
 		 *
 		 */
@@ -101,15 +102,14 @@
 					$menu .= ' href="' . $item->link . '" ';
 					$menu .= ($item->param_element) ? ' data-paramel="' . $item->param_element . '" ' : '';
 					$menu .= ($item->target) ? ' data-target="' . $item->target . '" ' : '';
-				} else {
+				}
+				else {
 					$menu .= " href='#tabs" . MenuUI::$menuCount . "-{$num}'";
 				}
-
 				$menu .= "><span>{$item->label}</span></a></li>";
 			}
 			$menu .= "</ul>";
 			$content = ob_get_clean();
-
 			echo $menu . $content . '</div>';
 			JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
 			MenuUI::$menuCount++;
@@ -119,24 +119,24 @@
 	/**
 	 *
 	 */
-	class MenuUi_item extends menu_item {
+	class MenuUi_item extends menu_item
+	{
 		/**
 		 * @var string
 		 */
 		public $tooltip = '';
 		public $param_element = '';
 		public $target = '';
-
 		/**
 		 * @param				$label
 		 * @param string $tooltip
 		 * @param string $link
 		 */
-		public function __construct($label, $tooltip = '', $link = '#', $param_element=null,$target = null) {
+		public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null) {
 			$this->label = $label;
 			$this->link = $link;
 			$this->tooltip = $tooltip;
-			$this->param_element=$param_element;
+			$this->param_element = $param_element;
 			$this->target = $target;
 		}
 	}

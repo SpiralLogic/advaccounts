@@ -59,10 +59,7 @@ JS;
 		}
 
 		static public function getEmailDialogue($emailid) {
-			$emailid = explode('-', $emailid);
-			$id = $emailid[0];
-			$type = $emailid[1];
-			$trans = $emailid[2];
+			list($id,$type,$trans) = explode('-', $emailid);
 			$company = get_called_class();
 			$company = new $company($id);
 			$emails = $company->getEmailAddresses();

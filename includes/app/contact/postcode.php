@@ -6,30 +6,39 @@
 	 * Time: 4:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contact_Postcode {
+	class Contact_Postcode
+	{
 		static private $count = 1;
-
 		static public function render($city, $state, $postcode, $options = array()) {
 			$o = array('url' => '/contacts/postcode.php');
 			extract(array_merge($o, $options));
-			HTML::tr(true)->td(array('class' => 'label '))
-			 ->label(array('content' => 'City: ', 'for' => $city[0]), false)->td->td(true);
-			UI::search($city[0],
-				array('url' => $o['url'] . '?city=1', 'nodiv' => true, 'set' => static::$count, 'name' => $city[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode.fetch'));
+			HTML::tr(true)->td(array('class' => 'label '))->label(array('content' => 'City: ', 'for' => $city[0]), false)->td->td(true);
+			UI::search($city[0], array(
+																'url' => $o['url'] . '?city=1',
+																'nodiv' => true,
+																'set' => static::$count,
+																'name' => $city[0],
+																'size' => 35,
+																'max' => 40,
+																'callback' => 'Adv.postcode.fetch'
+													 ));
 			HTML::td()->tr;
-			HTML::tr(true)->td(array('class' => 'label'))
-			 ->label(array('content' => 'State: ', 'for' => $state[0]), false)->td->td(true);
-			HTML::input($state[0],
-				array('maxlength' => 35, 'data-set' => static::$count, 'size' => 35, 'value' => $state[1], 'name' => $state[0]));
-			HTML::tr(true)->td(array('class' => 'label'))
-			 ->label(array('content' => 'Postcode: ', 'for' => $postcode[0]), false)->td->td(true);
-			UI::search($postcode[0],
-				array('url' => $o['url'] . '?postcode=1', 'nodiv' => true, 'set' => static::$count, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode.fetch'));
+			HTML::tr(true)->td(array('class' => 'label'))->label(array('content' => 'State: ', 'for' => $state[0]), false)->td->td(true);
+			HTML::input($state[0], array('maxlength' => 35, 'data-set' => static::$count, 'size' => 35, 'value' => $state[1], 'name' => $state[0]));
+			HTML::tr(true)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $postcode[0]), false)->td->td(true);
+			UI::search($postcode[0], array(
+																		'url' => $o['url'] . '?postcode=1',
+																		'nodiv' => true,
+																		'set' => static::$count,
+																		'name' => $postcode[0],
+																		'size' => 35,
+																		'max' => 40,
+																		'callback' => 'Adv.postcode.fetch'
+															 ));
 			HTML::td()->tr;
-			static::registerJS("#" . $city[0], "#" . $state[0],"#" . $postcode[0]);
+			static::registerJS("#" . $city[0], "#" . $state[0], "#" . $postcode[0]);
 		}
-
-		static public function registerJS($city, $state,$postcode) {
+		static public function registerJS($city, $state, $postcode) {
 			if (static::$count == 1) {
 				static::initjs();
 			}
@@ -40,7 +49,6 @@ JS;
 			JS::onload($js);
 			static::$count++;
 		}
-
 		static public function searchByCity($city = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
 			$result = DB::query($sql, "Could not find city");
@@ -49,7 +57,6 @@ JS;
 			}
 			return $resultArray;
 		}
-
 		static public function searchByPostcode($postcode = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
 			$result = DB::query($sql, "Could not find postcode");
@@ -58,7 +65,6 @@ JS;
 			}
 			return $resultArray;
 		}
-
 		static protected function initjs() {
 			$js = <<<JS
 						Adv.extend({

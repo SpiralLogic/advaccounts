@@ -91,7 +91,7 @@
 	}
 	end_form(1);
 	Display::div_end();
-	echo "<table class='bottomBar'>\n";
+	echo "<table class='marginauto'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['current_user'])) {
 		$date = Dates::Today() . " | " . Dates::Now();
@@ -100,7 +100,7 @@
 	}
 	echo "<td class='bottomBarCell'>$date</td>\n";
 	echo "</tr></table>\n";
-	echo "<table class='footer'>\n";
+	echo "<table class='marginauto'>\n";
 	echo "<tr>\n";
 	echo "<td><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 	echo "</tr>\n";
