@@ -136,6 +136,17 @@ button img {
 	padding:       5px;
 }
 /*--------------------------------- TOP -----------------------------------------------------------------*/
+
+#ajaxmark {
+    margin: 15px;
+    visibility: hidden;
+}
+
+.ajaxmark {
+    position:   absolute;
+    width:      100%;
+    text-align: center;
+}
 #top {
 	float:      right;
 	color:      #808080;
