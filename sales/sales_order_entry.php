@@ -13,7 +13,7 @@
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
 																														ST_SALESORDER => SA_SALESORDER,
-																														ST_SALESQUOTE => SA_SALESQUOTE,
+																	 													ST_SALESQUOTE => SA_SALESQUOTE,
 																														ST_CUSTDELIVERY => SA_SALESDELIVERY,
 																														ST_SALESINVOICE => SA_SALESINVOICE
 																											 ), array(
@@ -328,7 +328,7 @@
 		$order->deliver_to = $_POST['deliver_to'];
 		$order->delivery_address = $_POST['delivery_address'];
 		$order->name = $_POST['name'];
-		$order->customer_name = $_POST['customer'];
+		$order->customer_name = Input::post('customer_id',Input::NUMERIC,0);
 		$order->phone = $_POST['phone'];
 		$order->Location = $_POST['Location'];
 		$order->ship_via = $_POST['ship_via'];
