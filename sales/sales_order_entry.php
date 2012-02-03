@@ -110,7 +110,7 @@
 		$_SESSION['global_customer_id'] = $order->customer_id;
 		$order->write(1);
 		$trans_no = key($order->trans_no);
-		if (Errors::$fatal) { // abort on failure or error messages are lost
+		if (Errors::getSeverity()==-1) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}

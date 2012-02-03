@@ -385,8 +385,8 @@ $(function () {
 	}).click(function () {
 		 $(this).dialog("open");
 	 });
-	Adv.tabs.delegate("form:input", "change keypress", function (event) {
-		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList')
+	Adv.tabs.delegate("input", "change keypress", function (event) {
+		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || Adv.tabs.tabs('option','selected')==4 )
 			{
 				return;
 			}
