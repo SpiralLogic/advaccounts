@@ -139,11 +139,12 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
-			if (static::$count > 5) {
+			if (count(static::$errors) > 5) {
 				Page::footer_exit();
 			}
-			static::$count++;
-			static::$fatal = (bool)(!in_array($e->getCode(), static::$continue_on));
+			if (!in_array($e->getCode(), static::$continue_on)) {
+				static::$current_severity = -1;
+			}
 			static::prepare_exception($e);
 		}
 		/**
@@ -163,9 +164,9 @@
 					$msg['type'] = E_USER_ERROR;
 				}
 				$class = $msg_class[$msg['type']] ? : $msg_class[E_USER_NOTICE];
-				$content .= "<div class='$class[1]'>".$msg['message']."</div>\n";
+				$content .= "<div class='$class[1]'>" . $msg['message'] . "</div>\n";
 			}
-			if (static::$current_severity>-1) {
+			if (static::$current_severity > -1) {
 				JS::beforeload("Adv.showStatus();");
 			}
 			return $content;
@@ -176,7 +177,7 @@
 		}
 		/** @static */
 		static function send_debug_email() {
-			if ((static::$current_severity==-1 || count(static::$errors) || count(static::$dberrors)) && Config::get('debug_email')) {
+			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors)) && Config::get('debug_email')) {
 				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				if (count(static::$dberrors)) {
 					$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
@@ -292,7 +293,7 @@
 				ob_end_clean();
 				echo static::getJSONError();
 			}
-			elseif (static::$current_severity==-1) {
+			elseif (static::$current_severity == -1) {
 				static::fatal();
 			}
 		}
