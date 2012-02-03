@@ -264,7 +264,7 @@
 				$sql .= ", shippers.shipper_name, " . "sales_types.sales_type, " . "sales_types.tax_included, " . "branches.*, " . "debtors.discount, " . "tax_groups.name AS tax_group_name, " . "tax_groups.id AS tax_group_id ";
 			}
 			$sql .= " FROM debtor_trans, debtors ";
-			if ($trans_type == ST_CUSTPAYMENT) {
+			if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 				// it's a payment so also get the bank account
 				$sql .= ", bank_trans, bank_accounts";
 			}

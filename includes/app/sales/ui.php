@@ -195,7 +195,7 @@
 
 		static public function kits($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 			return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false,
-																																															 'sale'=>false,'kits'=>false));
+																																															 'sale'=>false,'kits'=>false),true);
 		}
 
 		static public function local_items_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true) {

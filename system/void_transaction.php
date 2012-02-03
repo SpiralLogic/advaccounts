@@ -10,22 +10,28 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(800, 500);
-Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
+	JS::open_window(800, 500);
+	Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::Today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}
 	}
+
+	if (isset($_POST['ConfirmVoiding'])) {
+		if ($_SESSION['voiding'] != $_POST['trans_no'] . $_POST['filterType']) {
+			unset($_POST['ConfirmVoiding']);
+			$_POST['ProcessVoiding'] = true;
+		} else {
+			handle_void_transaction();
+		}
+		Ajax::i()->activate('_page_body');
+	}
 	if (isset($_POST['ProcessVoiding'])) {
 		if (!check_valid_entries()) {
 			unset($_POST['ProcessVoiding']);
 		}
-		Ajax::i()->activate('_page_body');
-	}
-	if (isset($_POST['ConfirmVoiding'])) {
-		handle_void_transaction();
 		Ajax::i()->activate('_page_body');
 	}
 	if (isset($_POST['CancelVoiding'])) {
@@ -168,11 +174,7 @@ Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 	}
 
 	function handle_void_transaction() {
-		if ($_SESSION['voiding'] != $_POST['trans_no'] . $_POST['filterType']) {
-			Event::error(_("The transaction number has changed."));
-			JS::set_focus('trans_no');
-			return false;
-		}
+
 		if (check_valid_entries() == true) {
 			unset($_SESSION['voiding']);
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);

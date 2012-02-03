@@ -326,7 +326,7 @@
 		$order->deliver_to = $_POST['deliver_to'];
 		$order->delivery_address = $_POST['delivery_address'];
 		$order->name = $_POST['name'];
-		$order->customer_name = Input::post('customer_id',Input::NUMERIC,0);
+		$order->customer_name = Input::post('customer',Input::STRING);
 		$order->phone = $_POST['phone'];
 		$order->Location = $_POST['Location'];
 		$order->ship_via = $_POST['ship_via'];

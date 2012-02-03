@@ -11,9 +11,9 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
+	Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	list($Mode,$selected_id) = Page::simple_mode(true);
+	list($Mode, $selected_id) = Page::simple_mode(true);
 
 	if (get_post('update_name')) {
 		Item_Code::update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
@@ -21,7 +21,7 @@ Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
 		Ajax::i()->activate('_page_body');
 	}
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-		update_component($Mode,$_POST['item_code'], $selected_id);
+		update_component($Mode, $_POST['item_code'], $selected_id);
 	}
 	if ($Mode == MODE_DELETE) {
 		// Before removing last component from selected kit check
@@ -137,7 +137,7 @@ Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
 		Display::div_end();
 	}
 
-	function update_component(&$Mode,$kit_code, $selected_item) {
+	function update_component(&$Mode, $kit_code, $selected_item) {
 		global $selected_kit;
 		if (!Validation::is_num('quantity', 0)) {
 			Event::error(_("The quantity entered must be numeric and greater than zero."));
