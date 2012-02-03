@@ -454,7 +454,7 @@
 			$total = 0;
 			foreach ($this->line_items as $line) {
 				/* @var Sales_Line $line */
-				$price = $line->line_price();
+				$price = $line->price;
 				$total += round(($line->qty_dispatched * $price * (1 - $line->discount_percent)), User::price_dec());
 			}
 			return $total;

@@ -135,8 +135,9 @@
 			}
 			$error['backtrace'] = debug_backtrace();
 			foreach ($error['backtrace'] as $key => $trace) {
-				if (!isset($trace['file']) || $trace['file'] == __FILE__ || ($trace['function'] == __FUNCTION__ && $trace['class'] ==
-				 __CLASS__)) {
+				if (!isset($trace['file']) ||
+				 $trace['file'] == __FILE__ ||
+				 ($trace['function'] == __FUNCTION__ && $trace['class'] == __CLASS__) || $trace['function']=='trigger_error') {
 					unset($error['backtrace'][$key]);
 				}
 			}
