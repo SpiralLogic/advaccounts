@@ -118,6 +118,8 @@
 		 */
 		static public function i($id = null) {
 			$id = $id ? : User::get()->company;
+			$company=Config::get('db.' . $_POST["login_company"]);
+			$id=$company['id'];
 			if (static::$i === null) {
 				static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
 			}

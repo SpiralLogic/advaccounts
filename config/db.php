@@ -8,6 +8,7 @@
 	 */
 	return array(
 		'default' => array(
+			'id'=>1,
 			'company'=>'Advanced Group PTY LTD',
 			'name' => 'fa', //
 			'dbname' => 'fa', //

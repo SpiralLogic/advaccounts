@@ -72,7 +72,6 @@
 		}
 		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='login_company'>\n";
 		$companies=Config::get_all('db');
-		var_dump($companies);
 		foreach ($companies as $name=>$company) {
 			if (!$company['company']) continue;
 			echo "<option value=$name " . ($name == $coy ? 'selected' : '') . ">" . $company['company'] . "</option>";

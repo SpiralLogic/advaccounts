@@ -47,7 +47,7 @@
 		public $change_password = false;
 		function __construct() {
 			$this->loginname = $this->username = $this->name = "";
-			$this->company = Config::get('company_default') ? Config::get('company_default') : 1;
+			$this->company = Config::get('company_default') ? : 'default';
 			$this->logged = false;
 			$this->prefs = new userPrefs();
 		}
@@ -135,7 +135,7 @@
 				$access = in_array($page_level, $this->access_sections);
 			}
 			// only first registered company has site admin privileges
-			return $access && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
+			return $access && ($this->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
 		}
 		public function can_access_page($page_level) {
 			return $this->can_access($page_level);
