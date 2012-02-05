@@ -217,7 +217,7 @@
 				return true;
 			}
 			elseif (DB::num_rows($result) > 1) {
-				Errors::show_db_error("FATAL : duplicate purchase order found", "", true);
+				Errors::db_error("FATAL : duplicate purchase order found", "", true);
 			}
 			return false;
 		}

@@ -43,7 +43,7 @@ Page::start(_($help_context = "Allocate Customer Payment or Credit Note"), SA_SA
 				unset($_SESSION['alloc']->allocs);
 				unset($_SESSION['alloc']);
 			}
-			//session_register('alloc');
+			session_register('alloc');
 		}
 
 		function edit_allocations_for_transaction($type, $trans_no) {

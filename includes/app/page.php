@@ -110,7 +110,7 @@
 			}
 			echo "<!DOCTYPE HTML>\n";
 			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) :
-			 '') . "' dir='" . $this->lang_dir . "' >\n";
+			 '') . " dir='" . $this->lang_dir . "' >\n";
 			echo "<head><title>" . $this->title . "</title>";
 			echo "<meta charset='{$this->encoding}'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
@@ -201,19 +201,20 @@
 					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
 			}
-			if (Config::get('debug')) {
+		//	if (Config::get('debug')) {
 				$this->display_loaded();
-			}
+	//		}
 			echo "</div>\n"; //end footer div
 		}
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
-			$row = "<table id='loaded'>";
+			$row = "<table id='autoloaded'>";
 			while ($v1 = array_shift($loaded)) {
 				$v2 = array_shift($loaded);
 				$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
 			}
 			echo $row . "</table>";
+
 		}
 		protected function renderCSS() {
 			$this->css += Config::get('assets.css') ? : array('default.css');
@@ -227,6 +228,7 @@
 			$page->header();
 			echo "<div id='msgbox'>$text</div>";
 			echo "</div></body></html>";
+			exit();
 		}
 	}
 

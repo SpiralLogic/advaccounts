@@ -16,7 +16,7 @@
 			$sql = "SELECT curr_default FROM company";
 			$result = DB::query($sql, "retreive company currency");
 			if (DB::num_rows($result) == 0) {
-				Errors::show_db_error("Could not find the requested currency. Fatal.", $sql);
+				Errors::db_error("Could not find the requested currency. Fatal.", $sql);
 			}
 			$myrow = DB::fetch_row($result);
 			return $myrow[0];

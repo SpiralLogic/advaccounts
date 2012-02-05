@@ -65,7 +65,9 @@
 				$trans_no = $this->trans_no;
 			}
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
-				$bank_trans = DB::fetch(Bank_Trans::get($type, $trans_no));
+				$result = Bank_Trans::get($type, $trans_no);
+				$bank_trans = DB::fetch($result);
+
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
 			}
 			else {
@@ -92,8 +94,9 @@
 			else {
 				$trans_items = Sales_Allocation::get_to_trans($this->person_id);
 			}
-			while ($myrow = DB::fetch($trans_items)) {
-				$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
+			$results = DB::fetch_all($trans_items);
+			foreach ($results as $myrow ) {
+					$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
 												$myrow["alloc"], // trans total allocated
 												0); // this allocation
 			}
@@ -109,7 +112,8 @@
 			else {
 				$trans_items = Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
 			}
-			while ($myrow = DB::fetch($trans_items)) {
+			$results = DB::fetch_all($trans_items);
+			foreach($results as $myrow ) {
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
 		}

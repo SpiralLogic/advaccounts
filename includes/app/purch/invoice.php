@@ -385,13 +385,13 @@
 						}
 					}
 				} else {
-					return Errors::show_db_error(
+					return Errors::db_error(
 						"Invalid supptrans details for supptrans number : $trans_no and type : $trans_type",
 						$sql, true
 					);
 				}
 			} else {
-				return Errors::show_db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, true);
+				return Errors::db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, true);
 			}
 		}
 

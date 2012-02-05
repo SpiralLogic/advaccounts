@@ -44,7 +44,7 @@
 		static public function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
 			$mb_flag = WO::get_mb_flag($stock_id);
 			if (Input::post('mb_flag') == STOCK_SERVICE) {
-				Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
+				Errors::db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 			}
 			Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 			Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location,

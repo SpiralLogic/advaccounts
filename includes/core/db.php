@@ -31,7 +31,7 @@
 
 	;
 	/**
-	 *
+
 	 */
 	class DBDuplicateException extends DBException
 	{
@@ -40,19 +40,19 @@
 	class DB
 	{
 		/**
-		 *
+
 		 */
 		const SELECT = 0;
 		/**
-		 *
+
 		 */
 		const INSERT = 1;
 		/**
-		 *
+
 		 */
 		const UPDATE = 2;
 		/**
-		 *
+
 		 */
 		const DELETE = 4;
 		/**
@@ -89,7 +89,6 @@
 		static protected $results = false;
 		static protected $errorSql = false;
 		static protected $errorInfo = false;
-
 		protected $intransaction = false;
 		/***
 		 * @var PDO
@@ -100,12 +99,9 @@
 		 */
 		static protected $i = null;
 		static $default_connection;
-
 		/***
 		 * @static
-		 *
 		 * @param array $config
-		 *
 		 * @internal PDO $conn
 		 * @return DB
 		 */
@@ -124,7 +120,6 @@
 			$this->_connect($config);
 		}
 		/**
-		 *
 		 * @return bool
 		 */
 		protected function _connect($config) {
@@ -157,10 +152,8 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$sql
 		 * @param null			 $err_msg
-		 *
 		 * @return null|PDOStatement
 		 */
 		static public function query($sql, $err_msg = null, $cache = false) {
@@ -193,10 +186,8 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$value
 		 * @param null			 $type
-		 *
 		 * @return mixed
 		 */
 		static public function quote($value, $type = null) {
@@ -204,12 +195,9 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$value
 		 * @param bool			 $null
-		 *
 		 * @internal param bool $paramaterized
-		 *
 		 * @return bool|mixed|string
 		 */
 		static public function escape($value, $null = false) {
@@ -236,11 +224,8 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$sql
-		 *
 		 * @param bool			 $debug
-		 *
 		 * @return bool|PDOStatement
 		 * @throws DBException
 		 */
@@ -273,10 +258,8 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param						$sql
 		 * @param bool			 $debug
-		 *
 		 * @return null|PDOStatement
 		 */
 		static public function prepare($sql, $debug = false) {
@@ -285,9 +268,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param $data
-		 *
 		 * @return array|bool
 		 */
 		static public function execute($data, $debug = false) {
@@ -305,7 +286,6 @@
 			catch (PDOException $e) {
 				$result = static::i()->_error($e);
 			}
-
 			static::$data = array();
 			return $result;
 		}
@@ -318,7 +298,6 @@
 		}
 		/***
 		 * @param string $columns,... Database columns to select
-		 *
 		 * @return DB_Query_Select
 		 */
 		static public function select($columns = null) {
@@ -329,9 +308,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param $into
-		 *
 		 * @return DB_Query_Update
 		 */
 		static public function update($into) {
@@ -341,9 +318,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param $into
-		 *
 		 * @return DB_Query_Insert
 		 */
 		static public function insert($into) {
@@ -353,9 +328,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param $into
-		 *
 		 * @return DB_Query_Delete
 		 */
 		static public function delete($into) {
@@ -365,19 +338,22 @@
 		}
 		/***
 		 * @static
-		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
-		 *
 		 * @return DB_Query_Result|Array This is something
 		 */
 		static public function fetch($result = null, $fetch_mode = PDO::FETCH_BOTH) {
-			if ($result !== null) {
-				return $result->fetch($fetch_mode);
+			try {
+				if ($result !== null) {
+					return $result->fetch($fetch_mode);
+				}
+				if (static::$prepared === null) {
+					return static::$query->fetch($fetch_mode);
+				}
+				return static::$prepared->fetch($fetch_mode);
 			}
-			if (static::$prepared === null) {
-				return static::$query->fetch($fetch_mode);
+			catch (Exception $e) {
+				static::_error($e);
 			}
-			return static::$prepared->fetch($fetch_mode);
 		}
 		/**
 		 * @static
@@ -391,8 +367,7 @@
 		 * @return mixed
 		 */
 		static public function fetch_assoc() {
-
-			return is_a(static::$prepared,'PDOStatement')? static::$prepared->fetch(PDO::FETCH_ASSOC):false;
+			return is_a(static::$prepared, 'PDOStatement') ? static::$prepared->fetch(PDO::FETCH_ASSOC) : false;
 		}
 		/**
 		 * @static
@@ -437,9 +412,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param int|PDO $value
-		 *
 		 * @return mixed
 		 */
 		static public function getAttribute($value) {
@@ -457,9 +430,7 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param null|PDOStatement $sql
-		 *
 		 * @return int
 		 */
 		static public function num_rows($sql = null) {
@@ -486,7 +457,7 @@
 		}
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function begin() {
 			if (!static::i()->conn->inTransaction() && !static::i()->intransaction) {
@@ -501,7 +472,7 @@
 		}
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function commit() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
@@ -516,7 +487,7 @@
 		}
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function cancel() {
 			if (static::i()->conn->inTransaction() || static::i()->intransaction) {
@@ -534,13 +505,11 @@
 		//
 		/**
 		 * @static
-		 *
 		 * @param $id
 		 * @param $status
 		 * @param $table
 		 * @param $key
 		 * Update record activity status.
-		 *
 		 * @return \DB_Query_Result
 		 */
 		static public function update_record_status($id, $status, $table, $key) {
@@ -553,12 +522,10 @@
 		}
 		/**
 		 * @static
-		 *
 		 * @param $id
 		 * @param $status
 		 * @param $table
 		 * @param $key
-		 *
 		 * @return DB_Query_Result
 		 */
 		static public function insert_record_status($id, $status, $table, $key) {
@@ -573,7 +540,6 @@
 		 * @param						$sql
 		 * @param						$type
 		 * @param null			 $data
-		 *
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
@@ -632,7 +598,6 @@
 		 * @param PDOException												$e
 		 * @param bool																$msg
 		 * @param string|bool												 $exit
-		 *
 		 * @return bool
 		 * @throws DBException
 		 */
@@ -658,6 +623,6 @@
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
-			Errors::show_db_error($error, static::$errorSql, $data);
+			Errors::db_error($error, static::$errorSql, $data);
 		}
 	}

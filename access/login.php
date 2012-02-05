@@ -37,7 +37,7 @@
 	echo "<link href='/themes/{$def_theme}/default.css' rel='stylesheet'> \n";
 
 	echo "</head>\n";
-	echo "<body id='loginscreen' >\n";
+	echo "<body class='loginscreen' >\n";
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	Display::div_start('_page_body');
 	Display::br(2);
@@ -47,7 +47,7 @@
 	start_row();
 	echo "<td class='center' colspan=2>";
 	if (!$login_timeout) { // ADV logo
-		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts' height='50' border='0' /></a>";
+		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
 	} else {
 		echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}
@@ -56,7 +56,9 @@
 	if (!$login_timeout) {
 		table_section_title(_("Version ") . VERSION . " - " . _("Login"));
 	}
-	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
+	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");	start_row();
+			label_cell($demo_text, "colspan=2 class='center'");
+			end_row();
 	text_row(_("User name"), "user_name", $value, 20, 30);
 	$password = Config::get('demo_mode') ? "password" : "";
 	password_row(_("Password:"), 'password', $password);
@@ -75,12 +77,13 @@
 			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
 		}
 		echo "</select>\n";
-		start_row();
-		label_cell($demo_text, "colspan=2 class='center'");
-		end_row();
-	}
+
+	}	start_row();
+	echo "<td colspan='2' class='center pad20'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;'
+	name='SubmitUser'" .
+	 ($login_timeout ? '' : " ") . " /></td>\n";
+			end_row();
 	end_table(1);
-	echo "<div class='center'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " ") . " /></div>\n";
 	foreach (
 		$_SESSION['timeout']['post'] as $p => $val
 	) {
@@ -91,23 +94,17 @@
 	}
 	end_form(1);
 	Display::div_end();
-	echo "<table class='marginauto'>\n";
-	echo "<tr>";
+	echo "<div class='center'>\n";
 	if (isset($_SESSION['current_user'])) {
-		$date = Dates::Today() . " | " . Dates::Now();
+		echo 		$date = Dates::Today() . " | " . Dates::Now();
 	} else {
-		$date = date("m/d/Y") . " | " . date("h.i am");
+		echo 	$date = date("m/d/Y") . " | " . date("h.i am");
 	}
-	echo "<td class='bottomBarCell'>$date</td>\n";
-	echo "</tr></table>\n";
-	echo "<table class='marginauto'>\n";
-	echo "<tr>\n";
-	echo "<td><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></td>\n";
-	echo "</tr>\n";
-	echo "</table><br><br>\n";
+	echo "<div class='center'>\n";
+	echo "<br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _
+	("Theme:") . "
+	 " . $def_theme . "</a>\n";
+	echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a>\n";
 	echo "<script>//<![CDATA[<!--
 	 document.forms[0].user_name.select();
 	 document.forms[0].user_name.focus();

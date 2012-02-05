@@ -82,8 +82,8 @@
 			 . "<span>$value</span></button>\n";
 		}
 
-		static function navi_cell($name, $value, $enabled = true, $align = 'left') {
-			label_cell(static::navi($name, $value, $enabled), "class='$align'");
+		static function navi_cell($name, $value, $enabled = true) {
+			label_cell(static::navi($name, $value, $enabled));
 		}
 
 		//
@@ -243,21 +243,19 @@
 			$inact = $pager->inactive_ctrl == true
 			 ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
 			if ($pager->rec_count) {
-				echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
-				echo "<div style='float:right;'>";
+				echo "<td colspan=$colspan class='navibar' >";
+				echo "<table class='floatright'>";
 				$but_pref = $pager->name . '_page_';
-				start_table();
 				start_row();
 				if (@$pager->inactive_ctrl) {
 					submit('Update', _('Update'), true, '', null);
 				} // inactive update
-				echo static::navi_cell($but_pref . 'first', _('First'), $pager->first_page, 'right');
-				echo static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page, 'right');
-				echo static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page, 'right');
-				echo static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page, 'right');
+				echo static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
+				echo static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
+				echo static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page);
+				echo static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page);
 				end_row();
-				end_table();
-				echo "</div>";
+				echo "</table>";
 				$from = ($pager->curr_page - 1) * $pager->page_len + 1;
 				$to = $from + $pager->page_len - 1;
 				if ($to > $pager->rec_count) {

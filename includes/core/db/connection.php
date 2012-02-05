@@ -261,6 +261,6 @@
 			if ($exit) {
 				throw new DBException($error);
 			}
-			Errors::show_db_error($error);
+			Errors::db_error($error);
 		}
 	}

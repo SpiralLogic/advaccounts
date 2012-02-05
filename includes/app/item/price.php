@@ -219,7 +219,7 @@
 		static public function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
 			$mb_flag = WO::get_mb_flag($stock_id);
 			if (Input::post('mb_flag') == STOCK_SERVICE) {
-				Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
+				Errors::db_error("Cannot do cost update for Service item : $stock_id", "");
 			}
 			$update_no = -1;
 			DB::begin();

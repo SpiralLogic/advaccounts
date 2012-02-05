@@ -78,7 +78,7 @@
 				$row = DB::fetch_row($result);
 				return $row[0];
 			}
-			Errors::show_db_error("could not retreive the location name for $loc_code", $sql, true);
+			Errors::db_error("could not retreive the location name for $loc_code", $sql, true);
 		}
 
 		/***

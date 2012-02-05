@@ -318,7 +318,7 @@
 				GROUP BY workorders.id";
 			$result = DB::query($sql, "The work order issues could not be retrieved");
 			if (!$allow_null && DB::num_rows($result) == 0) {
-				Errors::show_db_error("Could not find work order $woid", $sql);
+				Errors::db_error("Could not find work order $woid", $sql);
 			}
 			return DB::fetch($result);
 		}

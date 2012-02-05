@@ -329,7 +329,7 @@
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
-			// if (mysql_error()) return "DB_ERROR";
+			// if (mysql_error()) return "db_error(";
 			//mysql_close($con);
 			//if ($zip == "zip")
 			//	$zip = $time;

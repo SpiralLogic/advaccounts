@@ -250,6 +250,7 @@
 			return true;
 		}
 		static public function get($trans_id, $trans_type) {
+
 			$sql = "SELECT debtor_trans.*,
 		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
 		debtors.name AS DebtorName, debtors.address, debtors.email AS email2,
@@ -275,7 +276,7 @@
 			$sql .= " WHERE debtor_trans.trans_no=" . DB::escape($trans_id) . "
 		AND debtor_trans.type=" . DB::escape($trans_type) . "
 		AND debtor_trans.debtor_no=debtors.debtor_no";
-			if ($trans_type == ST_CUSTPAYMENT) {
+			if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 				// it's a payment so also get the bank account
 				$sql .= " AND bank_trans.trans_no =$trans_id
 			AND bank_trans.type=$trans_type
@@ -292,12 +293,11 @@
 			if (DB::num_rows($result) == 0) {
 				// can't return nothing
 				Event::error("no debtor trans found for given params", $sql, true);
-				exit;
+
 			}
 			if (DB::num_rows($result) > 1) {
 				// can't return multiple
 				Event::error("duplicate debtor transactions found for given params", $sql, true);
-				exit;
 			}
 			//return DB::fetch($result);
 			$row = DB::fetch($result);

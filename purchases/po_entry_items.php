@@ -70,7 +70,7 @@
 	elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
 		line_start_focus();
 	}
-	elseif (isset($_GET[Orders::NEW_ORDER])) {
+	elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($order)) {
 		$order = create_order();
 		if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($order->line_items) == 0) {
 			echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' class='width70' style='height:300px' frameborder='0'></iframe></div>";

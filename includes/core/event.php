@@ -27,6 +27,14 @@
 		}
 		/**
 		 * @static
+		 * @param string $message
+		 */
+		static function success($message) {
+			$source = reset(debug_backtrace());
+			Errors::handler(E_SUCCESS,$message. '||' . $source['file'] . '||' . $source['line']);
+		}
+		/**
+		 * @static
 		 * @param $message
 		 */
 		static function warning($message) {

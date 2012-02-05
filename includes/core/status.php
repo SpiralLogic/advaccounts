@@ -16,28 +16,35 @@
 		 * @var array
 		 */
 		protected $_errors = array();
-
+		const SUCCESS = E_SUCCESS;
+		const INFO = E_USER_NOTICE;
+		const WARNING = E_USER_WARNING;
+		const ERROR = E_USER_ERROR;
 		/**
-		 * @param null $status
-		 * @param null $process
+		 * @param null   $status
+		 * @param null   $process
 		 * @param string $message
-		 * @param null $var
+		 * @param null   $var
 		 */
 		public function __construct($status = null, $process = null, $message = '', $var = null) {
 			$this->set($status, $process, $message, $var);
 		}
-
 		/**
 		 * @param null	 $status
 		 * @param null	 $process
 		 * @param string $message
 		 * @param null	 $var
-		 *
 		 * @return array
 		 */
 		public function set($status = null, $process = null, $message = '', $var = null) {
+			if ($status === true) {
+				$status = self::SUCCESS;
+			}
+			if ($status === false) {
+				$status = self::ERROR;
+			}
 			if ($status === null || $process === null) {
-				$newstatus['status'] = false;
+				$newstatus['status'] = self::ERROR;
 				$newstatus['process'] = 'status';
 				$newstatus['message'] = 'Not enough parameters passed for status update.';
 			}
@@ -50,25 +57,22 @@
 				}
 			}
 			$this->_status[] = $newstatus;
-			if (!$status) {
+			if ($status==self::ERROR) {
 				$this->_errors[] = $newstatus;
 			}
-			return $status;
+			return !($status == self::ERROR);
 		}
-
 		/**
 		 * @param array $status
-		 *
 		 * @return mixed
 		 */
 		public function append(array $status, $error_only = true) {
-			if ($error_only && $status['status'] == true) {
-				return $status['status'];
+			if ($error_only && $status['status'] != self::ERROR) {
+				return true;
 			}
 			$this->_status[] = $status;
-			return $status['status'];
+			return false;
 		}
-
 		/**
 		 * @return array
 		 */
@@ -81,7 +85,6 @@
 			}
 			return false;
 		}
-
 		/**
 		 * @return bool|mixed
 		 */
@@ -91,18 +94,16 @@
 			}
 			return false;
 		}
-
 		/**
 		 * @return array
 		 */
 		public function getAll() {
 			return $this->_status;
 		}
-
 		public function __toString() {
 			$last = $this->get();
 			$str = ucwords($last['process']);
-			$str .= ($last['status']) ? ' Succeeded: ' : ' Failed: ';
+			$str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
 			$str .= $last['message'];
 			return $str;
 		}

@@ -39,16 +39,17 @@
 			 E_USER_WARNING => 'User Warning',
 			 E_USER_NOTICE => 'User Notice',
 			 E_STRICT => 'Runtime Notice',
-			 E_ALL => 'No Error'
+			 E_ALL => 'No Error',
+			 E_SUCCESS => 'Success!'
 		 );
 		/** @var string	temporary container for output html data before error box */
 		static public $before_box = '';
 		/** @var array Errors which terminate execution */
 		static public $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 		/** @var array Errors which are user errors */
-		static public $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+		static public $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 		/** @var array Errors where execution can continue */
-		static public $continue_on = array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+		static public $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/** @static Initialiser */
@@ -73,37 +74,6 @@
 		}
 		/**
 		 * @static
-		 * @param bool $json
-		 * @return array|bool|string
-		 */
-		static public function JSONError() {
-			$status = false;
-			if (count(static::$dberrors) > 0) {
-				$dberror = end(static::$dberrors);
-				$status['status'] = false;
-				$status['message'] = $dberror['message'];
-			}
-			elseif (count(static::$messages) > 0) {
-				$message = end(static::$messages);
-				$status['status'] = ($message['type'] == E_USER_NOTICE);
-				$status['message'] = $message['message'];
-				if (Config::get('debug')) {
-					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
-				}
-				$status['process'] = '';
-			}
-			static::$jsonerrorsent = true;
-			return $status;
-		}
-		/**
-		 * @static
-		 * @return string
-		 */
-		static public function getJSONError() {
-			return json_encode(array('status' => static::JSONError()));
-		}
-		/**
-		 * @static
 		 * @param $type
 		 * @param $message
 		 * @param $file
@@ -114,7 +84,7 @@
 				return true;
 			}
 			if (count(static::$errors) > 5) {
-				Page::footer_exit();
+				Page::error_exit(static::format());
 			}
 			if (static::$current_severity > $type) {
 				static::$current_severity = $type;
@@ -139,13 +109,17 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
-			if (count(static::$errors) > 5) {
-				Page::footer_exit();
-			}
-			if (!in_array($e->getCode(), static::$continue_on)) {
-				static::$current_severity = -1;
-			}
-			static::prepare_exception($e);
+			$error = array(
+				'type' => -1,
+				'code' => $e->getCode(),
+				'message' => get_class($e) . ' ' . $e->getMessage(),
+				'file' => $e->getFile(),
+				'line' => $e->getLine()
+			);
+			static::$current_severity = -1;
+			static::$messages[] = $error;
+			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
+			static::$errors[] = $error;
 		}
 		/**
 		 * @static
@@ -156,7 +130,8 @@
 				E_USER_ERROR => array('ERROR', 'err_msg'),
 				E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
 				E_USER_WARNING => array('WARNING', 'warn_msg'),
-				E_USER_NOTICE => array('USER', 'note_msg')
+				E_USER_NOTICE => array('USER', 'info_msg'),
+				E_SUCCESS => array('SUCCESS', 'success_msg')
 			);
 			$content = '';
 			foreach (static::$messages as $msg) {
@@ -224,6 +199,88 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
+		/***
+		 * @static
+		 * @param $backtrace
+		 * @return mixed
+		 */
+		static protected function prepare_backtrace($backtrace) {
+			foreach ($backtrace as $key => $trace) {
+				if (!isset($trace['file']) || $trace['file'] == __FILE__ || $trace['class'] == __CLASS__
+				 || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
+				) {
+					unset($backtrace[$key]);
+				}
+			}
+			return $backtrace;
+		}
+		/** @static */
+		public static function process() {
+			$last_error = error_get_last();
+			// Only show valid fatal errors
+			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
+				Ajax::i()->aCommands = array();
+				static::$current_severity = -1;
+				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
+					$last_error['line']);
+				static::exception_handler($error);
+			}
+			if (Ajax::in_ajax()) {
+				Ajax::i()->run();
+			}
+			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
+				ob_end_clean();
+				echo static::getJSONError();
+			}
+			elseif (static::$current_severity == -1) {
+				static::fatal();
+			}
+		}
+		/** @static */
+		static public function fatal() {
+			ob_end_clean();
+			$content = static::format();
+			Page::error_exit($content);
+			fastcgi_finish_request();
+			static::send_debug_email();
+			exit();
+		}
+		/***
+		 * @static
+		 * @return int
+		 */
+		static public function getSeverity() { return static::$current_severity; }
+		/**
+		 * @static
+		 * @param bool $json
+		 * @return array|bool|string
+		 */
+		static public function JSONError() {
+			$status = false;
+			if (count(static::$dberrors) > 0) {
+				$dberror = end(static::$dberrors);
+				$status['status'] = E_ERROR;
+				$status['message'] = $dberror['message'];
+			}
+			elseif (count(static::$messages) > 0) {
+				$message = end(static::$messages);
+				$status['status'] = $message['type'];
+				$status['message'] = $message['message'];
+				if (Config::get('debug')) {
+					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
+				}
+				$status['process'] = '';
+			}
+			static::$jsonerrorsent = true;
+			return $status;
+		}
+		/**
+		 * @static
+		 * @return string
+		 */
+		static public function getJSONError() {
+			return json_encode(array('status' => static::JSONError()));
+		}
 		/**
 		 * @static
 		 * @param						$msg
@@ -231,7 +288,7 @@
 		 * @internal param bool $exit
 		 * @throws DBException
 		 */
-		static function show_db_error($error, $sql = null, $data = array()) {
+		static public function db_error($error, $sql = null, $data = array()) {
 			$errorCode = DB::error_no();
 			$error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
 			if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
@@ -248,65 +305,6 @@
 			}
 			trigger_error($error['message'] . '||' . $source['file'] . '||' . $source['line'], E_USER_ERROR);
 		}
-		static protected function prepare_backtrace($backtrace) {
-			foreach ($backtrace as $key => $trace) {
-				if (!isset($trace['file']) || $trace['file'] == __FILE__ || $trace['class'] == __CLASS__
-				 || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
-				) {
-					unset($backtrace[$key]);
-				}
-			}
-			return $backtrace;
-		}
-		/**
-		 * @static
-		 * @param Exception $e
-		 */
-		static protected function prepare_exception(\Exception $e) {
-			$error = array(
-				'type' => $e->getCode() ? : E_USER_ERROR,
-				'message' => get_class($e) . ' ' . $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine()
-			);
-			if (static::$current_severity > $error['type']) {
-				static::$current_severity = $error['type'];
-			}
-			static::$messages[] = $error;
-			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
-			static::$errors[] = $error;
-		}
-		/** @static */
-		public static function process() {
-			$last_error = error_get_last();
-			// Only show valid fatal errors
-			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
-				Ajax::i()->aCommands = array();
-				static::$current_severity = -1;
-				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
-				static::exception_handler($error);
-			}
-			if (Ajax::in_ajax()) {
-				Ajax::i()->run();
-			}
-			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
-				ob_end_clean();
-				echo static::getJSONError();
-			}
-			elseif (static::$current_severity == -1) {
-				static::fatal();
-			}
-		}
-		/** @static */
-		static public function fatal() {
-			$content = static::format();
-			Page::error_exit($content);
-			fastcgi_finish_request();
-			static::send_debug_email();
-			exit();
-		}
-		static public function getSeverity() { return static::$current_severity; }
 	}
 
 	Errors::init();
-

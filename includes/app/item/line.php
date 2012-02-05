@@ -20,7 +20,7 @@
 			{
 				$item_row = Item::get($stock_id);
 				if ($item_row == null) {
-					Errors::show_db_error("invalid item added to order : $stock_id", "");
+					Errors::db_error("invalid item added to order : $stock_id", "");
 				}
 				$this->mb_flag = $item_row["mb_flag"];
 				$this->units = $item_row["units"];

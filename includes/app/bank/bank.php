@@ -96,7 +96,7 @@
 				case PT_SUPPLIER :
 					return Validation::check(Validation::SUPPLIERS);
 				default :
-					Errors::show_db_error("Invalid type sent to has_items", "");
+					Errors::db_error("Invalid type sent to has_items", "");
 					return false;
 			}
 		}

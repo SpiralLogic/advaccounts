@@ -1,5 +1,9 @@
 <?php
-	require 'bootstrap.php';
-	use Modules\Jobsboard as Jobsboard;
+	include 'bootstrap.php';
+Page::start('test');
+Event::success('test');
+Event::notice('test');
+Event::warning('test');
+Event::error('test');
+Page::end();
 
-	$job = new Jobsboard();

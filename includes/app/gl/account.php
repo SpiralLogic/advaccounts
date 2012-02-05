@@ -127,6 +127,6 @@
 				$row = DB::fetch_row($result);
 				return $row[0];
 			}
-			Errors::show_db_error("could not retreive the account name for $code", $sql, true);
+			Errors::db_error("could not retreive the account name for $code", $sql, true);
 		}
 	}

@@ -18,7 +18,7 @@ Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, true);
 	// get the pay-to bank payment info
 	$result = Bank_Trans::get(ST_BANKDEPOSIT, $trans_no);
 	if (DB::num_rows($result) != 1) {
-		Errors::show_db_error("duplicate payment bank transaction found", "");
+		Errors::db_error("duplicate payment bank transaction found", "");
 	}
 	$to_trans = DB::fetch($result);
 	$company_currency = Bank_Currency::for_company();

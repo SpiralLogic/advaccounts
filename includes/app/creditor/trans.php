@@ -165,6 +165,7 @@
 		}
 
 		static public function get($trans_no, $trans_type = -1) {
+
 			$sql
 			 = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
 				suppliers.supp_name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
@@ -194,12 +195,12 @@
 			$result = DB::query($sql, "Cannot retreive a supplier transaction");
 			if (DB::num_rows($result) == 0) {
 				// can't return nothing
-				Errors::show_db_error("no supplier trans found for given params", $sql, true);
+				Errors::db_error("no supplier trans found for given params", $sql, true);
 				exit;
 			}
 			if (DB::num_rows($result) > 1) {
 				// can't return multiple
-				Errors::show_db_error("duplicate supplier transactions found for given params", $sql, true);
+				Errors::db_error("duplicate supplier transactions found for given params", $sql, true);
 				exit;
 			}
 			return DB::fetch($result);

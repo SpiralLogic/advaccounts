@@ -371,7 +371,7 @@
 			}
 			else {
 				// shouldn't come here under normal circumstances
-				Errors::show_db_error("unexpected - adding an invalid item or null quantity", "", true);
+				Errors::db_error("unexpected - adding an invalid item or null quantity", "", true);
 			}
 			return 0;
 		}
