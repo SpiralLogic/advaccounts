@@ -109,7 +109,7 @@
 				header("Content-type: text/html; charset='{$this->encoding}'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) :
+			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id)."'" :
 			 '') . " dir='" . $this->lang_dir . "' >\n";
 			echo "<head><title>" . $this->title . "</title>";
 			echo "<meta charset='{$this->encoding}'>";

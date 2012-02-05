@@ -28,8 +28,8 @@
 			}
 			$result = false;
 			try {
-				\DB::query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today	 = 0 WHERE
-			Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=-1 AND has_worked_change>0');
+				\DB::query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today	 = -1 WHERE
+			Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
 				$result = \DB::num_rows();
 			}
 			catch (\Exception $e) {
