@@ -36,24 +36,28 @@
 		'accounts_allowcharacters' => null, /* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
 									 2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
 		'accounts_datesystem' => 0, /* email stock location if order below reorder-level */
-		'accounts_stock_emailnotify' => false, 'accounts_allocation_allowance' => 0.005,
-		/* use old style convert (income and expense in BS, PL) */
+		'accounts_stock_emailnotify' => false, //
+		'accounts_allocation_allowance' => 0.005, /* use old style convert (income and expense in BS, PL) */
 		'accounts_gl_oldconvertstyle' => false, /* print_invoice_no. 0 = print reference number, 1 = print invoice number */
-		'print_useinvoicenumber' => 1, 'auth_salt' => '342342134sdfgsgdf', 'ui_date_format' => 1, 'ui_date_seperator' => '/',
+		'print_useinvoicenumber' => 1, //
+		'auth_salt' => '342342134sdfgsgdf', //
+		'ui_date_format' => 1, //
+		'ui_date_seperator' => '/',
 		'use_fiscalyear' => false, /* Default border and spacing for tables
 									 * Should be moved to CSS */
-		'tables_style' => "class='tablestyle center'", 'tables_style2' => "class='tablestyle2'", /* Accounts Payable
+		'tables_style' => "class='tablestyle center'", //
+		'tables_style2' => "class='tablestyle2'", /* Accounts Payable
 				 System check to see if quantity charged on purchase invoices exceeds the quantity received.
 				 If this parameter is checked the proportion by which the purchase invoice is an overcharge
 				 referred to before reporting an error */
 		'valid_charged_to_delivered_qty' => true, /* System check to see if price charged on purchase invoices exceeds the purchase order price.
 									 If this parameter is checked the proportion by which the purchase invoice is an overcharge
 									 referred to before reporting an error */
-		'valid_charged_to_delivered_price' => true, 'demo_mode' => false, 'item_images_width' => 80, 'item_images_height' => 50,
-		'item_images_max_size' => 500, 'company_default' => 1,
+		'valid_charged_to_delivered_price' => true, //
+		'demo_mode' => false, 'item_images_width' => 80, 'item_images_height' => 50,
+		'item_images_max_size' => 500, //
+		'company_default' => 'default',
 		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'), 'graphs_skin' => 1,
-
-
 		'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
 		'separators_thousands' => array(",", ".", " "), 'separators_decimal' => array(".", ","),
 		'separators_date' => array('/', ".", "-", " "), 'formats_paper_size' => array("Letter", "A4"),

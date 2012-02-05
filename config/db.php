@@ -8,6 +8,7 @@
 	 */
 	return array(
 		'default' => array(
+			'company'=>'Advanced Group PTY LTD',
 			'name' => 'fa', //
 			'dbname' => 'fa', //
 			'user' => 'fa', //
@@ -17,6 +18,7 @@
 			'debug' => false
 		),
 		'jobsboard' => array(
+			'company'=>false,
 			'name' => 'jobsboard',
 			'dbname' => 'jobsboard',
 			'user' => 'fa',

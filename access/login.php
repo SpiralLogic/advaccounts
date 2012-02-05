@@ -71,10 +71,11 @@
 			$coy = Config::get('company_default');
 		}
 		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='login_company'>\n";
-		for (
-			$i = 1; $i < count(Config::get_all('db')) + 1; $i++
-		) {
-			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
+		$companies=Config::get_all('db');
+		var_dump($companies);
+		foreach ($companies as $name=>$company) {
+			if (!$company['company']) continue;
+			echo "<option value=$name " . ($name == $coy ? 'selected' : '') . ">" . $company['company'] . "</option>";
 		}
 		echo "</select>\n";
 
