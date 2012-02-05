@@ -138,7 +138,8 @@
 			}
 			$currentUser = User::get();
 			if (Input::post("user_name")) {
-				if (Config::get('db.' . $_POST["login_company"])) {
+				$company=Config::get('db.' . $_POST["login_company"]);
+				if ($company) {
 					if (!$currentUser->login($_POST["login_company"], $_POST["user_name"], $_POST["password"])) {
 						// Incorrect password
 						static::loginFail();

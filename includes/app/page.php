@@ -123,7 +123,8 @@
 		}
 		protected function menu_header() {
 			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'></div><div id='top'>\n";
-			echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
+			echo "<p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
+			 ->name . "</p>\n";
 			echo "<ul>\n";
 			echo	 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
 		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
