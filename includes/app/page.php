@@ -171,6 +171,8 @@
 		}
 		protected function footer() {
 			$Validate = array();
+			\Modules\Jobsboard::tasks();
+
 			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
 			Ajax::i()->addScript('editors', $edits);
@@ -201,9 +203,9 @@
 					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
 			}
-		//	if (Config::get('debug')) {
+			if (Config::get('debug')) {
 				$this->display_loaded();
-	//		}
+		}
 			echo "</div>\n"; //end footer div
 		}
 		protected function display_loaded() {

@@ -49,18 +49,18 @@
 				DB::update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
 			} catch (DBUpdateException $e) {
 				DB::cancel();
-				return $this->_status(false, 'write', "Could not update " . get_class($this));
+				return $this->_status(Status::ERROR, 'write', "Could not update " . get_class($this));
 			}
 			if (property_exists($this, 'inactive')) {
 				try {
 					DB::update_record_status($this->id, $this->inactive, $this->_table, $this->_id_column);
 				} catch (DBUpdateException $e) {
 					DB::cancel();
-					return $this->_status(false, 'write', "Could not update active status of " . get_class($this));
+					return $this->_status(Status::ERROR, 'write', "Could not update active status of " . get_class($this));
 				}
 			}
 			DB::commit();
-			return $this->_status(true, 'write', get_class($this) . ' changes saved to database.');
+			return $this->_status(Status::SUCCESS, 'write', get_class($this) . ' changes saved to database.');
 		}
 		/**
 		 * @param int $id Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object

@@ -50,13 +50,10 @@
 		 *
 		 */
 		protected function execute() {
-			try {
 				$this->cursor = 0;
 				$this->valid = $this->prepared->execute($this->data);
 				$this->count = $this->prepared->rowCount();
-			}
-			catch (PDOException $e) {
-			}
+
 		}
 
 		/**
@@ -223,4 +220,5 @@
 			}
 			return var_export($this->current(), true);
 		}
+
 	}

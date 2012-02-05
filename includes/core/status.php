@@ -38,7 +38,7 @@
 		 */
 		public function set($status = null, $process = null, $message = '', $var = null) {
 			if ($status === true) {
-				$status = self::SUCCESS;
+				$status = self::INFO;
 			}
 			if ($status === false) {
 				$status = self::ERROR;

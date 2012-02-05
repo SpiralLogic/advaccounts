@@ -107,7 +107,7 @@
 		 */
 		static protected function i($config = array()) {
 			if (static::$i === null) {
-				$config = $config ? : Config::get('db_default');
+				$config = $config ? : Config::get('db.default');
 				static::$i = new static($config);
 			}
 			return static::$i;
@@ -546,6 +546,12 @@
 			static::$errorInfo = false;
 			static::$errorSql = $sql;
 			static::$data = $data;
+			if ($data && is_array(reset($data))) {
+				static::$queryString = static::placeholderValues(static::$errorSql, $data);
+			}
+			elseif ($data) {
+				static::$queryString = static::namedValues(static::$errorSql, $data);
+			}
 			try {
 				$prepared = $this->_prepare($sql);
 				switch ($type) {
@@ -576,6 +582,8 @@
 						break;
 				}
 			}
+
+
 			static::$data = array();
 			return false;
 		}
@@ -610,6 +618,7 @@
 			elseif ($data) {
 				static::$errorSql = static::namedValues(static::$errorSql, $data);
 			}
+			static::$queryString=static::$errorSql;
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();

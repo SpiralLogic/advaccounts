@@ -52,24 +52,7 @@
 		'valid_charged_to_delivered_price' => true, 'demo_mode' => false, 'item_images_width' => 80, 'item_images_height' => 50,
 		'item_images_max_size' => 500, 'company_default' => 1,
 		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'), 'graphs_skin' => 1,
-		'db_default' => array(
-			'name' => 'fa', //
-			'dbname' => 'fa', //
-			'user' => 'fa', //
-			'pass' => '1willenberg', //
-			'host' => 'localhost', //
-			'port' => 3306, //
-			'debug' => false
-		),
-		'db_jobsboard' => array(
-			'name' => 'jobsboard',
-			'dbname' => 'jobsboard',
-			'user' => 'fa',
-			'pass' => '1willenberg',
-			'host' => 'localhost',
-			'port' => 3306,
-			'debug' => false,
-		),
+
 
 		'formats_date' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
 		'separators_thousands' => array(",", ".", " "), 'separators_decimal' => array(".", ","),

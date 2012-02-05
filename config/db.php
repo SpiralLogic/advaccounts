@@ -7,22 +7,22 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		1 => array( //
-			'name' => 'Advanced Group PTY LTD', //
-			'host' => 'localhost', //
-			'dbuser' => 'fa', //
-			'dbpassword' => '1willenberg', //
+		'default' => array(
+			'name' => 'fa', //
 			'dbname' => 'fa', //
-			'type' => 'pdo', //
-			'connection' => array( //
-				'dsn' => 'mysql:host=localhost;dbname=fa', //
-				'username' => 'fa', //
-				'password' => '1willenberg', //
-				'persistent' => false, //
-			), //
-			'table_prefix' => '', //
-			'charset' => 'utf8', //
-			'caching' => false, //
-			'profiling' => false, //
-		)
+			'user' => 'fa', //
+			'pass' => '1willenberg', //
+			'host' => 'localhost', //
+			'port' => 3306, //
+			'debug' => false
+		),
+		'jobsboard' => array(
+			'name' => 'jobsboard',
+			'dbname' => 'jobsboard',
+			'user' => 'fa',
+			'pass' => '1willenberg',
+			'host' => 'localhost',
+			'port' => 3306,
+			'debug' => false,
+		),
 	);
