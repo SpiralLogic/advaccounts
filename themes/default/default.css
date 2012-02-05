@@ -51,7 +51,7 @@ select {
 	max-width: 250px;
 }
 
-a {
+a, .ui-widget-content a table a {
 	color:           #2F637A;
 	text-decoration: none;
 }

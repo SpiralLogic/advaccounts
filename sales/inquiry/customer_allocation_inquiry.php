@@ -45,9 +45,9 @@ if (isset($_GET['frame'])) {
 
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
-	$sql = "SELECT
- 		IF(trans.type=".ST_SALESINVOICE.",0,1),
- 		trans.type,
+	$sql = "SELECT ";
+	if(Input::get('frame')) $sql .= " IF(trans.type=".ST_SALESINVOICE.",0,1), ";
+	$sql .= " trans.type,
 		trans.trans_no,
 		trans.reference,
 		trans.order_,
@@ -108,7 +108,9 @@ if (isset($_GET['frame'])) {
 	if (Input::post('customer_id') ) {
 		$cols[_("Customer")] = 'skip';
 	}
-
+if (!Input::get('frame')) {
+	array_shift($cols);
+}
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
