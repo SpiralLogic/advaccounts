@@ -13,8 +13,7 @@
 		 Class for supplier/customer payment/credit allocations edition
 		 and related helpers.
 	 */
-	class Gl_Allocation
-	{
+	class Gl_Allocation {
 		public $trans_no;
 		public $type;
 		public $person_id = '';
@@ -29,6 +28,7 @@
 			$this->type = $type;
 			$this->read(); // read payment or credit
 		}
+
 		public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -38,6 +38,7 @@
 				return false;
 			}
 		}
+
 		public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[$index] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -47,6 +48,7 @@
 				return false;
 			}
 		}
+
 		public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			for ($i = 0; $i < count($this->allocs); $i++) {
 				$item = $this->allocs[$i];
@@ -56,6 +58,7 @@
 			}
 			return $this->add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 		}
+
 		//
 		//	Read payment or credit current/available allocations to order.
 		//
@@ -89,16 +92,16 @@
 																		for this customer/supplier. First get the transactions that have
 																		outstanding balances ie Total-alloc >0 */
 			if ($this->person_type) {
-				$trans_items = Purch_Allocation::get_allocatable_to_trans($this->person_id);
+				Purch_Allocation::get_allocatable_to_trans($this->person_id);
 			}
 			else {
-				$trans_items = Sales_Allocation::get_to_trans($this->person_id);
+				Sales_Allocation::get_to_trans($this->person_id);
 			}
-			$results = DB::fetch_all($trans_items);
-			foreach ($results as $myrow ) {
-					$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
-												$myrow["alloc"], // trans total allocated
-												0); // this allocation
+			$results = DB::fetch_all();
+			foreach ($results as $myrow) {
+				$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
+					$myrow["alloc"], // trans total allocated
+					0); // this allocation
 			}
 			if ($trans_no == 0) {
 				return;
@@ -107,16 +110,17 @@
 																	NB existing entries where still some of the trans outstanding entered from
 																	above logic will be overwritten with the prev alloc detail below */
 			if ($this->person_type) {
-				$trans_items = Purch_Allocation::get_allocatable_to_trans($this->person_id, $trans_no, $type);
+				Purch_Allocation::get_allocatable_to_trans($this->person_id, $trans_no, $type);
 			}
 			else {
-				$trans_items = Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
+				Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
 			}
-			$results = DB::fetch_all($trans_items);
-			foreach($results as $myrow ) {
+			$results = DB::fetch_all();
+			foreach ($results as $myrow) {
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
 		}
+
 		//
 		//	Update allocations in database.
 		//
@@ -155,6 +159,7 @@
 			}
 			DB::commit();
 		}
+
 		static public function show_allocatable($show_totals) {
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
@@ -203,6 +208,7 @@
 			}
 			hidden('TotalNumberOfAllocs', $counter);
 		}
+
 		static public function check() {
 			$total_allocated = 0;
 			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
@@ -231,10 +237,11 @@
 			}
 			return true;
 		}
+
 		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
 			if (!User::get()->salesmanid) {
-				 Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
+				Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
 				return false;
 			}
 			$doc = new Sales_Order($type, 0);
@@ -249,12 +256,13 @@
 			$doc->Location = DEFAULT_LOCATION;
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
-			$doc->salesman=User::get()->salesmanid;
+			$doc->salesman = User::get()->salesmanid;
 			$doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			$doc->finish();
 			$_SESSION['alloc']->add_or_update_item($type, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 		}
+
 		static public function display($alloc_result, $total) {
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows() == 0) {
@@ -290,6 +298,7 @@
 			end_row();
 			end_table(1);
 		}
+
 		static public function from($person_type, $person_id, $type, $type_no, $total) {
 			switch ($person_type) {
 				case PT_CUSTOMER :
@@ -304,8 +313,7 @@
 		}
 	}
 
-	class allocation_item
-	{
+	class allocation_item {
 		public $type;
 		public $type_no;
 		public $date_;
@@ -313,6 +321,7 @@
 		public $amount_allocated;
 		public $amount;
 		public $current_allocated;
+
 		public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			$this->type = $type;
 			$this->type_no = $type_no;

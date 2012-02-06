@@ -6,8 +6,7 @@
 	 * Time: 6:57 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Page
-	{
+	class Page {
 		/**@var Page null*/
 		public $renderer = null;
 		protected $frame = false;
@@ -26,11 +25,13 @@
 		public $encoding;
 		public $ajaxpage;
 		public $lang_dir = '';
+
 		protected function __construct($title, $index = false) {
 			$this->is_index = $index;
 			$this->title = $title;
 			$this->frame = isset($_GET['frame']);
 		}
+
 		protected function init($menu) {
 			$this->app = $_SESSION['App'];
 			$this->sel_app = $this->app->selected;
@@ -57,6 +58,7 @@
 			Security::check_page(static::$security);
 			Display::div_start('_page_body');
 		}
+
 		static public function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false) {
 			static::set_security($security);
 			if (static::$i === null) {
@@ -65,6 +67,7 @@
 			static::$i->init(!$no_menu);
 			return static::$i;
 		}
+
 		static public function simple_mode($numeric_id = true) {
 			$default = $numeric_id ? -1 : '';
 			$selected_id = get_post('selected_id', $default);
@@ -90,18 +93,23 @@
 			}
 			return array('', $selected_id);
 		}
+
 		static public function add_css($file = false) {
 			static::$i->css[] = $file;
 		}
+
 		static public function set_security($security) {
 			static::$security = $security;
 		}
+
 		public static function get_security() { return static::$security; }
+
 		static public function footer_exit() {
 			Display::br(2);
 			static::$i->end_page(true);
 			exit;
 		}
+
 		protected function header() {
 			$this->header = true;
 			JS::open_window(900, 500);
@@ -109,7 +117,7 @@
 				header("Content-type: text/html; charset='{$this->encoding}'");
 			}
 			echo "<!DOCTYPE HTML>\n";
-			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id)."'" :
+			echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
 			 '') . " dir='" . $this->lang_dir . "' >\n";
 			echo "<head><title>" . $this->title . "</title>";
 			echo "<meta charset='{$this->encoding}'>";
@@ -121,6 +129,7 @@
 			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
 			echo "<div id='content'>\n";
 		}
+
 		protected function menu_header() {
 			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'></div><div id='top'>\n";
 			echo "<p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
@@ -136,6 +145,7 @@
 			$this->renderer->menu();
 			echo "</div></div>";
 		}
+
 		protected function help_url($context = null) {
 			global $help_context;
 			$country = $_SESSION['Language']->code;
@@ -151,14 +161,16 @@
 				$help_page_url = Display::access_string($help_page_url, true);
 			}
 			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-																																												 ' ' => '', '/' => '', '&' => 'And'
-																																										))) . '&ctxhelp=1&lang=' . $country;
+				' ' => '', '/' => '', '&' => 'And'
+			))) . '&ctxhelp=1&lang=' . $country;
 		}
+
 		static public function end($hide_back_link = false) {
 			if (static::$i) {
 				static::$i->end_page($hide_back_link);
 			}
 		}
+
 		protected function end_page($hide_back_link) {
 			if ($this->frame) {
 				$hide_back_link = true;
@@ -170,6 +182,7 @@
 			Display::div_end(); // end of _page_body section
 			$this->footer();
 		}
+
 		protected function footer() {
 			$Validate = array();
 			\Modules\Jobsboard::tasks();
@@ -191,6 +204,7 @@
 			JS::get_websales();
 			echo	 "</html>\n";
 		}
+
 		protected function menu_footer() {
 			echo "</div>"; //end wrapper div
 			if ($this->menu && !AJAX_REFERRER) {
@@ -206,9 +220,10 @@
 			}
 			if (Config::get('debug')) {
 				$this->display_loaded();
-		}
+			}
 			echo "</div>\n"; //end footer div
 		}
+
 		protected function display_loaded() {
 			$loaded = Autoloader::getPerf();
 			$row = "<table id='autoloaded'>";
@@ -217,21 +232,22 @@
 				$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
 			}
 			echo $row . "</table>";
-
 		}
+
 		protected function renderCSS() {
 			$this->css += Config::get('assets.css') ? : array('default.css');
 			$path = DS . "themes" . DS . $this->theme . DS;
 			$css = implode(',', $this->css);
 			echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
 		}
-		public static function error_exit($text) {
+
+		public static function error_exit($text, $exit = true) {
 			ob_get_clean();
 			$page = new static('Fatal Error.', false);
 			$page->header();
 			echo "<div id='msgbox'>$text</div>";
 			echo "</div></body></html>";
-			exit();
+			if ($exit) exit();
 		}
 	}
 

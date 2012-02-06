@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors
-	{
+	class Errors {
 		const DB_DUPLICATE_ERROR_CODE = 1062;
 		/** @var array Container for the system messages */
 		static public $messages = array();
@@ -52,6 +51,7 @@
 		static public $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+
 		/** @static Initialiser */
 		static function init() {
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
@@ -72,6 +72,7 @@
 			}
 			Event::register_shutdown(__CLASS__);
 		}
+
 		/**
 		 * @static
 		 * @param $type
@@ -84,7 +85,7 @@
 				return true;
 			}
 			if (count(static::$errors) > 5) {
-				Page::error_exit(static::format());
+				static::fatal();
 			}
 			if (static::$current_severity > $type) {
 				static::$current_severity = $type;
@@ -104,11 +105,13 @@
 			}
 			return true;
 		}
+
 		/**
 		 * @static
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
+
 			$error = array(
 				'type' => -1,
 				'code' => $e->getCode(),
@@ -121,6 +124,7 @@
 			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
 			static::$errors[] = $error;
 		}
+
 		/**
 		 * @static
 		 * @return string
@@ -146,31 +150,44 @@
 			}
 			return $content;
 		}
+
 		/** @static */
 		static public function _shutdown() {
 			return static::send_debug_email();
 		}
+
 		/** @static */
 		static function send_debug_email() {
+
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors)) && Config::get('debug_email')) {
-				$text = "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
+
+				$text = '';
+				if (count(static::$errors)) {
+					$text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
+				}
 				if (count(static::$dberrors)) {
 					$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
 				}
+
 				if (count(static::$messages)) {
 					$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
 				}
 				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
-				if (count($_POST)) {
+				if (isset($_POST) && count($_POST)) {
 					$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
 				}
-				if (count($_GET)) {
+
+				if (isset($_GET) && count($_GET)) {
 					$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
 				}
-				if (count($_REQUEST)) {
+
+				if (isset($_REQUEST) && count($_REQUEST)) {
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
-				$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
+				if (isset($_SESSION) && count($_SESSION)) {
+					$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
+				}
+
 				$subject = 'Error log: ';
 				if (isset($_SESSION['current_user'])) {
 					$subject .= $_SESSION['current_user']->username;
@@ -181,17 +198,21 @@
 				if (count(static::$dberrors)) {
 					$subject .= ', DB Error';
 				}
+
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
 				$mail->subject($subject);
 				$mail->html($text);
+
 				$success = $mail->send();
+
 				if (!$success) {
 					static::handler(E_ERROR, $success, __FILE__, __LINE__);
 				}
 			}
 		}
+
 		/** @static */
 		static function error_box() {
 			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
@@ -199,6 +220,7 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
+
 		/***
 		 * @static
 		 * @param $backtrace
@@ -206,7 +228,7 @@
 		 */
 		static protected function prepare_backtrace($backtrace) {
 			foreach ($backtrace as $key => $trace) {
-				if (!isset($trace['file']) || $trace['file'] == __FILE__ || $trace['class'] == __CLASS__
+				if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__)
 				 || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
 				) {
 					unset($backtrace[$key]);
@@ -214,6 +236,7 @@
 			}
 			return $backtrace;
 		}
+
 		/** @static */
 		public static function process() {
 			$last_error = error_get_last();
@@ -223,6 +246,7 @@
 				static::$current_severity = -1;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
 					$last_error['line']);
+
 				static::exception_handler($error);
 			}
 			if (Ajax::in_ajax()) {
@@ -236,20 +260,23 @@
 				static::fatal();
 			}
 		}
+
 		/** @static */
 		static public function fatal() {
 			ob_end_clean();
 			$content = static::format();
-			Page::error_exit($content);
+			Page::error_exit($content, false);
 			fastcgi_finish_request();
 			static::send_debug_email();
 			exit();
 		}
+
 		/***
 		 * @static
 		 * @return int
 		 */
 		static public function getSeverity() { return static::$current_severity; }
+
 		/**
 		 * @static
 		 * @param bool $json
@@ -274,6 +301,7 @@
 			static::$jsonerrorsent = true;
 			return $status;
 		}
+
 		/**
 		 * @static
 		 * @return string
@@ -281,6 +309,7 @@
 		static public function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
+
 		/**
 		 * @static
 		 * @param						$msg

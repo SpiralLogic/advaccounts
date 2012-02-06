@@ -765,8 +765,8 @@
 		/**
 		 * @return bool
 		 */
-		public function active() {
-			return Orders::session_exists($this->order_id);
+		public static function active() {
+			return Orders::session_get();
 		}
 		/**
 		 *

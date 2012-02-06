@@ -20,6 +20,8 @@
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
 		$page_title = _($help_context = "Credit all or part of an Invoice");
+	}else {
+		$page_title= "Credit Invoice";
 	}
 
 	Page::start($page_title,SA_SALESCREDITINV);
@@ -60,7 +62,8 @@
 	}
 	elseif (!Sales_Order::active()) {
 		/* This page can only be called with an invoice number for crediting*/
-		die (_("This page can only be opened if an invoice has been selected for crediting."));
+		Event::error(_("This page can only be opened if an invoice has been selected for crediting."));
+	Page::footer_exit();
 	}
 	elseif (!check_quantities()) {
 		Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
