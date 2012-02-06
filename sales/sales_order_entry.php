@@ -12,18 +12,18 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
-																														ST_SALESORDER => SA_SALESORDER,
-																	 													ST_SALESQUOTE => SA_SALESQUOTE,
-																														ST_CUSTDELIVERY => SA_SALESDELIVERY,
-																														ST_SALESINVOICE => SA_SALESINVOICE
-																											 ), array(
-																															 Orders::NEW_ORDER => SA_SALESORDER,
-																															 Orders::MODIFY_ORDER => SA_SALESORDER,
-																															 Orders::NEW_QUOTE => SA_SALESQUOTE,
-																															 Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-																															 Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-																															 Orders::NEW_INVOICE => SA_SALESINVOICE
-																													));
+		ST_SALESORDER => SA_SALESORDER,
+		ST_SALESQUOTE => SA_SALESQUOTE,
+		ST_CUSTDELIVERY => SA_SALESDELIVERY,
+		ST_SALESINVOICE => SA_SALESINVOICE
+	), array(
+		Orders::NEW_ORDER => SA_SALESORDER,
+		Orders::MODIFY_ORDER => SA_SALESORDER,
+		Orders::NEW_QUOTE => SA_SALESQUOTE,
+		Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+		Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+		Orders::NEW_INVOICE => SA_SALESINVOICE
+	));
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::get('customer_id', Input::NUMERIC)) {
@@ -102,29 +102,33 @@
 	//--------------- --------------------------------------------------------------
 	if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($order)) {
 		copy_to_order($order);
-		$_SESSION['Jobsboard'] = clone ($order);
 		$modified = ($order->trans_no != 0);
 		$so_type = $order->so_type;
 		$trans_type = $order->trans_type;
 		Dates::new_doc_date($order->document_date);
 		$_SESSION['global_customer_id'] = $order->customer_id;
-		$order->write(1);
-		$trans_no = key($order->trans_no);
-		if (Errors::getSeverity()==-1) { // abort on failure or error messages are lost
+		$order->write(1);		$jobsboard_order = clone ($order);
+
+		$jobsboard_order->trans_no = key($order->trans_no);
+		if (Errors::getSeverity() == -1) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
 		$order->finish();
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
-				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=".$jobsboard_order->trans_no);
 			}
 			else {
-				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$trans_type", "");
+				$jb = new			\Modules\Jobsboard();
+				$jb->addjob($jobsboard_order);
+				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=".$jobsboard_order->trans_no);
 			}
 		}
 		elseif ($trans_type == ST_SALESORDER) {
-			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$trans_type", "");
+			$jb = new			\Modules\Jobsboard();
+			$jb->addjob($jobsboard_order);
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			Display::meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
@@ -326,7 +330,7 @@
 		$order->deliver_to = $_POST['deliver_to'];
 		$order->delivery_address = $_POST['delivery_address'];
 		$order->name = $_POST['name'];
-		$order->customer_name = Input::post('customer',Input::STRING);
+		$order->customer_name = Input::post('customer', Input::STRING);
 		$order->phone = $_POST['phone'];
 		$order->Location = $_POST['Location'];
 		$order->ship_via = $_POST['ship_via'];

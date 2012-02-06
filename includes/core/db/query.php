@@ -50,7 +50,7 @@
 		/***
 		 * @param null $data
 		 *
-		 * @return DB_Query_Result
+		 * @return DB_Query_Result|int|bool
 		 */
 		public function exec($data = null) {
 			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);

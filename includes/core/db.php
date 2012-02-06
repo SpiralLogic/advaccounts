@@ -6,39 +6,32 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends PDOException
-	{
+	class DBException extends PDOException {
 	}
 
-	class DBUpdateException extends DBException
-	{
-	}
-
-	;
-	class DBInsertException extends DBException
-	{
+	class DBUpdateException extends DBException {
 	}
 
 	;
-	class DBDeleteException extends DBException
-	{
+	class DBInsertException extends DBException {
 	}
 
 	;
-	class DBSelectException extends DBException
-	{
+	class DBDeleteException extends DBException {
+	}
+
+	;
+	class DBSelectException extends DBException {
 	}
 
 	;
 	/**
 
 	 */
-	class DBDuplicateException extends DBException
-	{
+	class DBDuplicateException extends DBException {
 	}
 
-	class DB
-	{
+	class DB {
 		/**
 
 		 */
@@ -99,6 +92,7 @@
 		 */
 		static protected $i = null;
 		static $default_connection;
+
 		/***
 		 * @static
 		 * @param array $config
@@ -112,6 +106,7 @@
 			}
 			return static::$i;
 		}
+
 		/**
 		 * @param $config
 		 */
@@ -119,6 +114,7 @@
 			static::$debug = false;
 			$this->_connect($config);
 		}
+
 		/**
 		 * @return bool
 		 */
@@ -138,8 +134,12 @@
 				throw new DBException($e);
 			}
 		}
+
 		static public function change_connection($name = false) {
 			$name = $name ? : static::$default_connection;
+			if (!isset(static::$connections[$name])) {
+				static::connect(Config::get('db.' . $name));
+			}
 			if (isset(static::$connections[$name])) {
 				static::i()->conn = static::$connections[$name];
 			}
@@ -147,9 +147,11 @@
 				throw new DBException("There is no connection with this name");
 			}
 		}
+
 		static public function connect($config) {
 			static::i()->_connect($config);
 		}
+
 		/**
 		 * @static
 		 * @param						$sql
@@ -184,6 +186,7 @@
 			}
 			return static::$prepared;
 		}
+
 		/**
 		 * @static
 		 * @param						$value
@@ -193,6 +196,7 @@
 		static public function quote($value, $type = null) {
 			return static::i()->conn->quote($value, $type);
 		}
+
 		/**
 		 * @static
 		 * @param						$value
@@ -222,6 +226,7 @@
 			static::$data[] = array($value, $type);
 			return ' ? ';
 		}
+
 		/**
 		 * @static
 		 * @param						$sql
@@ -256,6 +261,7 @@
 			static::$data = array();
 			return $prepared;
 		}
+
 		/**
 		 * @static
 		 * @param						$sql
@@ -266,6 +272,7 @@
 			static::$prepared = static::i()->_prepare($sql, $debug);
 			return static::$prepared;
 		}
+
 		/**
 		 * @static
 		 * @param $data
@@ -289,6 +296,7 @@
 			static::$data = array();
 			return $result;
 		}
+
 		/**
 		 * @static
 		 * @return string
@@ -296,6 +304,7 @@
 		static public function insert_id() {
 			return static::i()->conn->lastInsertId();
 		}
+
 		/***
 		 * @param string $columns,... Database columns to select
 		 * @return DB_Query_Select
@@ -306,6 +315,7 @@
 			static::$query = new DB_Query_Select($columns, static::i());
 			return static::$query;
 		}
+
 		/**
 		 * @static
 		 * @param $into
@@ -316,6 +326,7 @@
 			static::$query = new DB_Query_Update($into, static::i());
 			return static::$query;
 		}
+
 		/**
 		 * @static
 		 * @param $into
@@ -326,6 +337,7 @@
 			static::$query = new DB_Query_Insert($into, static::i());
 			return static::$query;
 		}
+
 		/**
 		 * @static
 		 * @param $into
@@ -336,6 +348,7 @@
 			static::$query = new DB_Query_Delete($into, static::i());
 			return static::$query;
 		}
+
 		/***
 		 * @static
 		 * @param PDOStatement $result The result of the query or whatever cunt
@@ -355,6 +368,7 @@
 				static::_error($e);
 			}
 		}
+
 		/**
 		 * @static
 		 * @return mixed
@@ -362,6 +376,7 @@
 		static public function fetch_row($result = null) {
 			return static::fetch($result, PDO::FETCH_NUM);
 		}
+
 		/**
 		 * @static
 		 * @return mixed
@@ -369,6 +384,7 @@
 		static public function fetch_assoc() {
 			return is_a(static::$prepared, 'PDOStatement') ? static::$prepared->fetch(PDO::FETCH_ASSOC) : false;
 		}
+
 		/**
 		 * @static
 		 * @return array
@@ -381,6 +397,7 @@
 			static::$results = false;
 			return $results;
 		}
+
 		/**
 		 * @static
 		 * @return mixed
@@ -389,6 +406,7 @@
 			$info = static::errorInfo();
 			return $info[1];
 		}
+
 		/**
 		 * @static
 		 * @return mixed
@@ -402,6 +420,7 @@
 			}
 			return static::i()->conn->errorInfo();
 		}
+
 		/**
 		 * @static
 		 * @return mixed
@@ -410,6 +429,7 @@
 			$info = static::errorInfo();
 			return isset($info[2]) ? $info[2] : false;
 		}
+
 		/**
 		 * @static
 		 * @param int|PDO $value
@@ -418,6 +438,7 @@
 		static public function getAttribute($value) {
 			return static::i()->conn->getAttribute($value);
 		}
+
 		/**
 		 * @static
 		 * @return bool
@@ -428,6 +449,7 @@
 			static::$data = array();
 			return $result;
 		}
+
 		/**
 		 * @static
 		 * @param null|PDOStatement $sql
@@ -448,6 +470,7 @@
 			Cache::set('sql.rowcount.' . md5($sql), $rows);
 			return $rows;
 		}
+
 		/**
 		 * @static
 		 * @return int
@@ -455,6 +478,7 @@
 		static public function num_fields() {
 			return static::$prepared->columnCount();
 		}
+
 		/**
 		 * @static
 
@@ -470,6 +494,7 @@
 				}
 			}
 		}
+
 		/**
 		 * @static
 
@@ -485,6 +510,7 @@
 				}
 			}
 		}
+
 		/**
 		 * @static
 
@@ -501,6 +527,7 @@
 			}
 			static::$data = array();
 		}
+
 		//
 		//
 		/**
@@ -520,6 +547,7 @@
 				static::insert_record_status($id, $status, $table, $key);
 			}
 		}
+
 		/**
 		 * @static
 		 * @param $id
@@ -536,11 +564,12 @@
 				throw new DBUpdateException('Could not update record inactive status');
 			}
 		}
+
 		/***
 		 * @param						$sql
 		 * @param						$type
 		 * @param null			 $data
-		 * @return DB_Query_Result|int
+		 * @return int|bool|DB_Query_Result
 		 */
 		public function exec($sql, $type, $data = null) {
 			static::$errorInfo = false;
@@ -583,16 +612,17 @@
 				}
 			}
 
-
 			static::$data = array();
 			return false;
 		}
+
 		static protected function namedValues($sql, array $data) {
 			foreach ($data as $k => $v) {
 				$sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 			}
 			return $sql;
 		}
+
 		static protected function placeholderValues($sql, array $data) {
 			foreach ($data as $v) {
 				if (is_array($v)) {
@@ -602,6 +632,7 @@
 			}
 			return $sql;
 		}
+
 		/**
 		 * @param PDOException												$e
 		 * @param bool																$msg
@@ -618,7 +649,7 @@
 			elseif ($data) {
 				static::$errorSql = static::namedValues(static::$errorSql, $data);
 			}
-			static::$queryString=static::$errorSql;
+			static::$queryString = static::$errorSql;
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
