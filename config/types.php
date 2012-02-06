@@ -91,7 +91,7 @@
 		ST_BANKTRANSFER => "Funds Transfer",
 		ST_SALESINVOICE => "Sales&nbsp;Invoice",
 		ST_CUSTCREDIT => "Customer Credit Note",
-		ST_DEPOSIT_GROUP => "Group Deposit",
+		ST_GROUPDEPOSIT => "Group Deposit",
 		ST_CUSTPAYMENT => "Payment",
 		ST_CUSTREFUND => "Customer Refund",
 		ST_CUSTDELIVERY => "Delivery&nbsp;Note",

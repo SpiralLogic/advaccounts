@@ -46,9 +46,8 @@
 	start_table('login');
 	start_row();
 	echo "<td class='center' colspan=2>";
-	if (!$login_timeout) { // ADV logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
-	} else {
+	if ($login_timeout) { // ADV logo
 		echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}
 	echo "</td>\n";

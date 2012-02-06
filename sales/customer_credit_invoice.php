@@ -20,11 +20,11 @@
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
 		$page_title = _($help_context = "Credit all or part of an Invoice");
-	}else {
-		$page_title= "Credit Invoice";
+	} else {
+		$page_title = "Credit Invoice";
 	}
 
-	Page::start($page_title,SA_SALESCREDITINV);
+	Page::start($page_title, SA_SALESCREDITINV);
 	if (isset($_GET[ADDED_ID])) {
 		$credit_no = $_GET[ADDED_ID];
 		$trans_type = ST_CUSTCREDIT;
@@ -63,7 +63,7 @@
 	elseif (!Sales_Order::active()) {
 		/* This page can only be called with an invoice number for crediting*/
 		Event::error(_("This page can only be opened if an invoice has been selected for crediting."));
-	Page::footer_exit();
+		Page::footer_exit();
 	}
 	elseif (!check_quantities()) {
 		Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
@@ -102,7 +102,7 @@
 	}
 	display_credit_items();
 	display_credit_options();
-	submit_center_first('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
+	submit_center_first('Update', _("Update"), _('Update credit value for quantities entered'), false, ICON_UPDATE);
 	submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 	submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 	Page::end();

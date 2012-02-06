@@ -220,7 +220,7 @@
 	define('ST_CUSTPAYMENT', 12);
 	define('ST_CUSTDELIVERY', 13);
 	define('ST_CUSTREFUND', 14);
-	define('ST_DEPOSIT_GROUP', 15);
+	define('ST_GROUPDEPOSIT', 15);
 	define('ST_LOCTRANSFER', 16);
 	define('ST_INVADJUST', 17);
 	define('ST_PURCHORDER', 18);

@@ -138,21 +138,16 @@
 	$act = Bank_Account::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(
-		_("Type") => array(
-			'fun' => 'systype_name', 'ord' => ''
-		), _("#") => array(
-			'fun' => 'trans_view', 'ord' => ''
-		), _("Reference"), _("Date") => array('date', 'ord' => ''), _("Debit") => array(
-			'align' => 'right', 'fun' => 'fmt_debit', 'ord' => ''
-		), _("Credit") => array(
-			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit', 'ord' => ''
-		), _("Person/Item") => array('fun' => 'fmt_person'), array(
-			'insert' => true, 'fun' => 'gl_view'
-		), "X" => array(
-			'insert' => true, 'fun' => 'rec_checkbox'
-		), array(
-			'insert' => true, 'fun' => 'ungroup'
-		)
+		_("Type") => array('fun' => 'systype_name', 'ord' => ''), //
+		_("#") => array('fun' => 'trans_view', 'ord' => ''), //
+		_("Reference"), //
+		_("Date") => array('date', 'ord' => ''), //
+		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit', 'ord' => ''), //
+		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit', 'ord' => ''), //
+		_("Person/Item") => array('fun' => 'fmt_person'), //
+		array('insert' => true, 'fun' => 'gl_view'), //
+		"X" => array('insert' => true, 'fun' => 'rec_checkbox'), //
+		array('insert' => true, 'fun' => 'ungroup')
 	);
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
@@ -220,6 +215,21 @@ JS;
 	}
 
 	function fmt_person($row) {
+		if ($row['type'] == ST_BANKTRANSFER) {
+			return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
+		} elseif ($row['type'] == ST_GROUPDEPOSIT) {
+
+			$sql = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,comments.memo_ FROM bank_trans LEFT JOIN comments ON bank_trans.type=comments.type AND bank_trans.trans_no=comments.id WHERE bank_trans.ref='" . str_replace(',',
+				"' OR bank_trans.ref='", $row['ref']) . "'";
+
+			$result = DB::query($sql, 'Couldn\'t get deposit references');
+			$content = '';
+			foreach ($result as $trans) {
+				$name = Bank::payment_person_name($trans["person_type_id"], $trans["person_id"], true, $trans["trans_no"]);
+				$content .= $trans['ref'] .' <span class="u">'.$name.' ($'.Num::price_format($trans['amount']). ')</span>: ' . $trans['memo_'].'<br>';
+			}
+			return $content;
+		}
 		return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
 	}
 
