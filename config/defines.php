@@ -20,7 +20,7 @@
 	define("ICON_RECEIVE", "receive.gif");
 	define("ICON_DOWN", "download.gif");
 	define("ICON_MONEY", "money.png");
-	define("ICON_REMOVE", "remove.png");
+	define("ICON_REMOVE", "remove.png"); 
 	define("ICON_REPORT", "report.png");
 	define("ICON_VIEW", "view.gif");
 	define("ICON_SUBMIT", "ok.gif");
