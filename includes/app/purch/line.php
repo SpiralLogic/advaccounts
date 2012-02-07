@@ -42,7 +42,7 @@
 
 		static public function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description,
 			$gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_,
-			$err_msg = "", $discount, $exp_price = -1) {
+			$err_msg = "", $discount=0, $exp_price = -1) {
 			$unit_price = $unit_price / (1 - $discount / 100);
 			$sql = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 		 	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";

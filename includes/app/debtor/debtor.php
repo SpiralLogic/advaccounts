@@ -283,7 +283,7 @@ JS;
 			$data = array();
 			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE '" . trim($terms) . "%',0,5) as weight")
 			 ->from('debtors')->where('name LIKE ', "$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
+			 ->or_where('name LIKE', str_replace(' ', '%','%'.trim($terms)) . "%");
 			if (is_numeric($terms)) {
 				$sql->or_where('debtor_no LIKE', "$terms%");
 			}

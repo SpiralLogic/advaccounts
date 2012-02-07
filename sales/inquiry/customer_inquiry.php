@@ -210,7 +210,12 @@
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 		table_header($th);
 		start_row();
-		label_cell($customer_record["curr_code"]);
+	if(isset($customer_record["curr_code"]))	{label_cell($customer_record["curr_code"]);
+		}else{
+		unset($th[0]);
+	}
+
+
 		label_cell($customer_record["terms"]);
 		amount_cell($customer_record["Balance"] - $customer_record["Due"]);
 		amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);

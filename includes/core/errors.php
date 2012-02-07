@@ -185,7 +185,9 @@
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
 				if (isset($_SESSION) && count($_SESSION)) {
-					$text .= "<h3>Session: </h3>" . var_export($_SESSION, true) . "\n\n</pre></div>";
+					$session=$_SESSION;
+					unset($session['current_user'],$session['config'],$session['App']);
+					$text .= "<h3>Session: </h3>" . var_export($session, true) . "\n\n</pre></div>";
 				}
 
 				$subject = 'Error log: ';
