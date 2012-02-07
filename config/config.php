@@ -16,7 +16,6 @@
 		'errors_throttling' => 10, // Log file for error/warning messages. Should be set to any location
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
-		//$error_logfile = '';
 		'logs_error_file' => DOCROOT . 'tmp/errors.log', /* use popup windows for views */
 		'ui_windows_popups' => true, /* use date picker for all date fields */
 		'ui_forms_datepicker' => true, /* use Audit Trails in GL */
