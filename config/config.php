@@ -64,10 +64,3 @@
 		'store_product_url' => 'http://www.advancedroadsigns.com.au/-p/', 'store_url_extension' => '.htm',
 		'session_lifetime' => 3600,
 	);
-/* Whether to display the demo login and password or not */
-/* for uploaded item pictures */
-/* skin for Business Graphics, 1, 2 or 3 */
-// set Config::get('debug.query.log') to 1 only if you want to perform bugtracking sql trail
-// Warning: this produces huge amount of data in sql_trail table.
-// Don't forget switch the option off and flush the table manually after
-// trail, or your future backup files are overloaded with unneeded data.
