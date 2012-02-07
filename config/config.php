@@ -45,9 +45,8 @@
 				 System check to see if quantity charged on purchase invoices exceeds the quantity received.
 				 If this parameter is checked the proportion by which the purchase invoice is an overcharge
 				 referred to before reporting an error */
-		'valid_charged_to_delivered_qty' => true, /* System check to see if price charged on purchase invoices exceeds the purchase order price.
-									 If this parameter is checked the proportion by which the purchase invoice is an overcharge
-									 referred to before reporting an error */
+		'valid_charged_to_delivered_qty' => true, //* System check to see if price charged on purchase invoices exceeds the purchase order price.
+
 		'valid_charged_to_delivered_price' => true, //
 		'demo_mode' => false, 'item_images_width' => 80, 'item_images_height' => 50,
 		'item_images_max_size' => 500, //
