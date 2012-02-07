@@ -22,4 +22,3 @@
 		$app->set_selected ($_GET['application']);
 	}
 	$app->display();
-	echo file_get_contents(DOCROOT.'/version');

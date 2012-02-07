@@ -23,7 +23,7 @@
 	define("ICON_REMOVE", "remove.png");
 	define("ICON_REPORT", "report.png");
 	define("ICON_VIEW", "view.gif");
-	define("ICON_SUBMIT", "ok.gif"); 
+	define("ICON_SUBMIT", "ok.gif");
 	define("ICON_ESCAPE", "escape.png");
 	define('DEFAULT_LOCATION', 'KEYS');
 	define('DEFAULT_TAX_GROUP', 1);
