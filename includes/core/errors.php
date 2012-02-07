@@ -85,7 +85,7 @@
 				return true;
 			}
 			if (count(static::$errors) > 5) {
-				static::fatal();
+			//	static::fatal();
 			}
 			if (static::$current_severity > $type) {
 				static::$current_severity = $type;
@@ -265,7 +265,7 @@
 		static public function fatal() {
 			ob_end_clean();
 			$content = static::format();
-			Page::error_exit($content, false);
+			Page::error_exit(var_export(static::$errors,true), false);
 			fastcgi_finish_request();
 			static::send_debug_email();
 			exit();

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" stopOnFailure="false" bootstrap="bootstraptest.php">
+	<php>
+		<server name="COREPATH" value="includes/core"/>
+		<server name="DOCROOT" value="."/>
+	</php>
+	<testsuites>
+		<testsuite name="core">
+			<directory suffix=".php">tests/core</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

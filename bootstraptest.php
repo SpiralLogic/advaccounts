@@ -10,51 +10,51 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	/**
-	 *
+
 	 */
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 	/**
-	 *
+
 	 */
 	define('DS', DIRECTORY_SEPARATOR);
 	/**
-	 *
+
 	 */
 	define('DOCROOT', __DIR__ . DS);
 	/**
-	 *
+
 	 */
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
 	/**
-	 *
+
 	 */
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	/**
-	 *
+
 	 */
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
 	/**
-	 *
+
 	 */
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	/**
-	 *
+
 	 */
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	/**
-	 *
+
 	 */
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	/**
-	 *
+
 	 */
 	define('CRLF', chr(13) . chr(10));
 	$path = substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
 	/**
-	 *
+
 	 */
 	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
 	/**
@@ -67,7 +67,6 @@
 	 * @param $message
 	 * @param $filepath
 	 * @param $line
-	 *
 	 * @return bool
 	 */
 		function ($severity, $message, $filepath, $line) {
@@ -89,6 +88,8 @@
 		});
 	/** @noinspection PhpIncludeInspection */
 	require COREPATH . 'autoloader.php';
+	include_once('PHPUnit/Autoload.php');
+
 	register_shutdown_function(function () {
 		$Ajax = Ajax::i();
 		if (isset($Ajax)) {
@@ -104,7 +105,6 @@
 	if (!function_exists('adv_ob_flush_handler')) {
 		/**
 		 * @param $text
-		 *
 		 * @return string
 		 */
 		function adv_ob_flush_handler($text) {
@@ -122,17 +122,16 @@
 	}
 	Session::i();
 	Config::i();
-	Ajax::i();
 	/***
-	 *
+
 	 */
 	ob_start('adv_ob_flush_handler', 0);
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, /**
-	 * @param $v
-	 */
+		 * @param $v
+		 */
 		function(&$v) {
 			$v = is_string($v) ? trim($v) : $v;
 		});
