@@ -25,11 +25,7 @@
 		'print_default_excel' => false, // Wiki context help configuration
 		// If your help wiki use translated page titles uncomment next line
 		// $old_style_help = 1; // this setting is depreciated and subject to removal in next ADV versions
-		// 	locally installed wiki module
-		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-		// 	context help feed from advaccounting.net
-		// Config::get('help_baseurl') = 'http://advaccounting.com/fawiki/index.php?n=Help.';
-		// 	not used
+// 	not used
 		'help_baseurl' => null, /* per user data/cache directory */
 		/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 		'accounts_allowcharacters' => null, /* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
