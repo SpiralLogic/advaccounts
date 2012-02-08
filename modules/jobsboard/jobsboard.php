@@ -20,18 +20,20 @@
 		 * @return mixed
 		 */
 		function removejob($trans_no) {
+			\DB::change_connection('jobsboard');
 			$job = $this->get_job($trans_no);
 			if ($this->jobExists($trans_no)) {
-				$data['Customer'] = $job->Customer . ' - CANCELLED';
-				$data['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . $_SESSION['current_user']->name . ' ' . chr(13) . chr(10) . $job->Updates;
-				$data['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . $_SESSION['current_user']->name . '</div>' . $job->Next_Action_Required;
-				$data['order_ref'] = '';
-				$data['Priority_Level'] = 5;
-				$data['order_no'] = 0;
-				return \DB::update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
-			}
-			\Event::error('There is no current Order to remove from jobsboard');
+				$this->currentJob['Customer'] = $job->Customer . ' - CANCELLED';
+				$this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . $_SESSION['current_user']->name . ' ' . chr(13) . chr(10) . $job['Updates'];
+				$this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . $_SESSION['current_user']->name . '</div>' . $job['Next_Action_Required'];
+				$this->currentJob['order_ref'] = '';
+				$this->currentJob['Priority_Level'] = 5;
+				\DB::update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+				\Event::success('Order '.$trans_no.' has been removed from the Jobs Board!');
 
+			}else {
+				\Event::error('There is no current Order to remove from jobsboard');
+			}\DB::change_connection();
 			return false;
 		}
 
@@ -43,18 +45,15 @@
 		 * @return mixed
 		 */
 		function addjob($job_data) {
-
 			$this->order_no = $order_no = $job_data->trans_no;
 			$user_data = $_SESSION['current_user']->name;
-
 			$branch = new \Debtor_Branch($job_data->Branch);
-
 			$orderlines = $this->getOrderLines();
 			\DB::change_connection('jobsboard');
 			$update = var_export($job_data, true);
 			$job = $this->get_job($order_no);
 			$exists = ($job['Advanced_Job_No'] > 0);
-			$lines=array();
+			$lines = array();
 			foreach ($orderlines as $line) {
 				/***
 				 * @var \Sales_Line $line
@@ -69,13 +68,12 @@
 				);
 			}
 			if ($exists) {
-				$deleted = array_diff_key($this->getLines(),$lines );
-						foreach ($deleted as $line) {
+				$deleted = array_diff_key($this->getLines(), $lines);
+				foreach ($deleted as $line) {
 					$lines[$line['line_id']]['quantity'] = 0;
 					$lines[$line['line_id']]['description'] .= " DELETED!";
 				}
 			}
-
 			if ($exists) {
 				$update = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job Updated from acounts by ' . $user_data . ' ' . chr(13) . chr(10) . $job['Updates'];
 				$data['Next_Action_Required'] = '<div>Job has been updated from accounts ' . $user_data . '</div>' . $job['Next_Action_Required'];
@@ -151,14 +149,14 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		/***
 		 * @return bool
 		 */
-		private function jobExists() {
+		protected function jobExists() {
 			if (empty($this->currentJob)) {
 				return false;
 			}
 			return (isset($this->currentJob['Advanced_Job_No']));
 		}
 
-		private function insertJob($data) {
+		protected function insertJob($data) {
 			$result = \DB::insert('Job_List')->values($data)->exec();
 			if ($result) {
 				$data['Advanced_Job_No'] = $result;
@@ -167,19 +165,19 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			}
 		}
 
-		private function updateJob($data) {
+		protected function updateJob($data) {
 			$result = \DB::update('Job_List')->values($data)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
 			if ($result) {
 				$this->insertLines();
 			}
 		}
 
-		private function insertLines() {
+		protected function insertLines() {
 			$lines = $this->lines;
 			$this->lines = array();
-			$currentLines=$this->getLines();
+			$currentLines = $this->getLines();
 			foreach ($lines as $line) {
-				if (isset($currentLines[$line['line_id']]) ) {
+				if (isset($currentLines[$line['line_id']])) {
 					$this->updateline($line);
 				} else {
 					$this->insertLine($line);
@@ -187,18 +185,18 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			}
 		}
 
-		private function insertLine($line) {
+		protected function insertLine($line) {
 			$line['job_id'] = $this->currentJob['Advanced_Job_No'];
 			$line_id = \DB::insert('JobListItems')->values($line)->exec();
 			$this->lines[$line_id] = $line;
 		}
 
-		private function updateLine($line) {
+		protected function updateLine($line) {
 			$line['job_id'] = $this->currentJob['Advanced_Job_No'];
 			\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
 		}
 
-		private function getLines() {
+		protected function getLines() {
 			$lines = \DB::select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
 			foreach ($lines as $line) {
 				$lines[$line['line_id']] = $line;
@@ -206,7 +204,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			return $lines;
 		}
 
-		public function getOrderLines() {
+		protected function getOrderLines() {
 			$lines = \DB::select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
 			return $lines;
 		}

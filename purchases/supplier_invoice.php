@@ -300,7 +300,7 @@ JS;
 			Creditor_Trans::i()->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
 		$invoice_no = Purch_Invoice::add(Creditor_Trans::i());
-		$_SESSION['history'][ST_SUPPINVOICE] = $_POST['Reference'];
+		$_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
 		Creditor_Trans::i()->clear_items();
 		Creditor_Trans::killInstance();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");

@@ -16,7 +16,6 @@
 		'errors_throttling' => 10, // Log file for error/warning messages. Should be set to any location
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
-		//$error_logfile = '';
 		'logs_error_file' => DOCROOT . 'tmp/errors.log', /* use popup windows for views */
 		'ui_windows_popups' => true, /* use date picker for all date fields */
 		'ui_forms_datepicker' => true, /* use Audit Trails in GL */
@@ -26,11 +25,7 @@
 		'print_default_excel' => false, // Wiki context help configuration
 		// If your help wiki use translated page titles uncomment next line
 		// $old_style_help = 1; // this setting is depreciated and subject to removal in next ADV versions
-		// 	locally installed wiki module
-		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-		// 	context help feed from advaccounting.net
-		// Config::get('help_baseurl') = 'http://advaccounting.com/fawiki/index.php?n=Help.';
-		// 	not used
+// 	not used
 		'help_baseurl' => null, /* per user data/cache directory */
 		/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 		'accounts_allowcharacters' => null, /* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
@@ -50,9 +45,8 @@
 				 System check to see if quantity charged on purchase invoices exceeds the quantity received.
 				 If this parameter is checked the proportion by which the purchase invoice is an overcharge
 				 referred to before reporting an error */
-		'valid_charged_to_delivered_qty' => true, /* System check to see if price charged on purchase invoices exceeds the purchase order price.
-									 If this parameter is checked the proportion by which the purchase invoice is an overcharge
-									 referred to before reporting an error */
+		'valid_charged_to_delivered_qty' => true, //* System check to see if price charged on purchase invoices exceeds the purchase order price.
+
 		'valid_charged_to_delivered_price' => true, //
 		'demo_mode' => false, 'item_images_width' => 80, 'item_images_height' => 50,
 		'item_images_max_size' => 500, //
@@ -64,10 +58,3 @@
 		'store_product_url' => 'http://www.advancedroadsigns.com.au/-p/', 'store_url_extension' => '.htm',
 		'session_lifetime' => 3600,
 	);
-/* Whether to display the demo login and password or not */
-/* for uploaded item pictures */
-/* skin for Business Graphics, 1, 2 or 3 */
-// set Config::get('debug.query.log') to 1 only if you want to perform bugtracking sql trail
-// Warning: this produces huge amount of data in sql_trail table.
-// Don't forget switch the option off and flush the table manually after
-// trail, or your future backup files are overloaded with unneeded data.

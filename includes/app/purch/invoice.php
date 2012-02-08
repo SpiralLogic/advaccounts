@@ -229,7 +229,8 @@
 					$current_purchase_price = Item_Price::getPriceBySupplier(
 						Item::getStockID($entered_grn->item_code),
 						$creditor_trans->supplier_id
-					)->price;
+					);
+					$current_purchase_price = ($current_purchase_price)?$current_purchase_price->price:0;
 					if ($current_purchase_price == 0 || $current_purchase_price > $entered_grn->chg_price) {
 						Purch_Order::add_or_update_data($creditor_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);
 					}

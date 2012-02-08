@@ -193,7 +193,8 @@
 			return $this->order_no;
 		}
 		public function get_header($order_no) {
-			$sql = "SELECT purch_orders.*, suppliers.supp_name,
+			$sql
+			 = "SELECT purch_orders.*, suppliers.supp_name,
 	 		suppliers.curr_code, locations.location_name
 			FROM purch_orders, suppliers, locations
 			WHERE purch_orders.supplier_id = suppliers.supplier_id
@@ -223,7 +224,8 @@
 		}
 		public function get_items($order_no, $view = false) {
 			/*now populate the line po array with the purchase order details records */
-			$sql = "SELECT purch_order_details.*, units
+			$sql
+			 = "SELECT purch_order_details.*, units
 			FROM purch_order_details
 			LEFT JOIN stock_master
 			ON purch_order_details.item_code=stock_master.stock_id
@@ -271,7 +273,8 @@
 			return DB::insert_id();
 		}
 		public function supplier_to_order($supplier_id) {
-			$sql = "SELECT * FROM suppliers
+			$sql
+			 = "SELECT * FROM suppliers
 			WHERE supplier_id = '$supplier_id'";
 			$result = DB::query($sql, "The supplier details could not be retreived");
 			$myrow = DB::fetch_assoc($result);
@@ -298,7 +301,7 @@
 				}
 				return $session_order;
 			}
-			return $order?:false;
+			return $order ? : false;
 		}
 		public function header() {
 			$editable = ($this->order_no == 0);
@@ -348,8 +351,11 @@
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 			Inv_Location::row(_("Receive Into:"), 'StkLocation', null, false, true);
 			table_section(3);
-			if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" || isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == ""
-			) {
+			if (!isset($_POST['StkLocation'])
+			 || $_POST['StkLocation'] == ""
+			 || isset($_POST['_StkLocation_update'])
+				|| !isset($_POST['delivery_address'])
+			 || $_POST['delivery_address'] == "") {
 				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['StkLocation'] . "'";
 				$result = DB::query($sql, "could not get location info");
 				if (DB::num_rows($result) == 1) {
@@ -371,7 +377,8 @@
 			Display::div_start('items_table');
 			start_table('tablestyle width90');
 			$th = array(
-				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), ""
+				_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"),
+				_('Discount %'), _("Total"), ""
 			);
 			if (count($this->line_items)) {
 				$th[] = '';
@@ -380,30 +387,36 @@
 			$id = find_submit(MODE_EDIT);
 			$total = 0;
 			$k = 0;
-			foreach ($this->line_items as $line_no => $po_line) {
-				if ($po_line->Deleted == false) {
-					$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
-					if (!$editable || ($id != $line_no)) {
-						alt_table_row_color($k);
-						label_cell($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
-						label_cell($po_line->description);
-						qty_cell($po_line->quantity, false, Item::qty_dec($po_line->stock_id));
-						qty_cell($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
-						label_cell($po_line->units);
-						label_cell($po_line->req_del_date);
-						amount_decimal_cell($po_line->price);
-						percent_cell($po_line->discount * 100);
-						amount_cell($line_total);
-						if ($editable) {
-							edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
-							delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+			if (!$this->line_items) {
+				Event::warning('There are no line items on this Purchase Order');
+			}
+			else
+			{
+				foreach ($this->line_items as $line_no => $po_line) {
+					if ($po_line->Deleted == false) {
+						$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
+						if (!$editable || ($id != $line_no)) {
+							alt_table_row_color($k);
+							label_cell($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
+							label_cell($po_line->description);
+							qty_cell($po_line->quantity, false, Item::qty_dec($po_line->stock_id));
+							qty_cell($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
+							label_cell($po_line->units);
+							label_cell($po_line->req_del_date);
+							amount_decimal_cell($po_line->price);
+							percent_cell($po_line->discount * 100);
+							amount_cell($line_total);
+							if ($editable) {
+								edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
+								delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+							}
+							end_row();
 						}
-						end_row();
+						else {
+							$this->item_controls($po_line->stock_id);
+						}
+						$total += $line_total;
 					}
-					else {
-						$this->item_controls($po_line->stock_id);
-					}
-					$total += $line_total;
 				}
 			}
 			if ($id == -1 && $editable) {
@@ -513,7 +526,8 @@
 			end_row();
 		}
 		static public function get_data($supplier_id, $stock_id) {
-			$sql = "SELECT * FROM purch_data
+			$sql
+			 = "SELECT * FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
 			$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -523,7 +537,8 @@
 			$data = static::get_data($supplier_id, $stock_id);
 			if ($data === false) {
 				$supplier_code = $stock_id;
-				$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+				$sql
+				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
 					conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
 				return false;
@@ -541,3 +556,5 @@
 			return true;
 		}
 	} /* end of class defintion */
+
+
