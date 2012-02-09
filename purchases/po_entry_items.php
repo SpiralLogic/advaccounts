@@ -217,7 +217,7 @@
 			}
 			if (isset($_GET[LOC_DROP_SHIP])) {
 				$item_info = Item::get('DS');
-				$_POST['StkLocation'] = $order->Location =  LOC_DROP_SHIP;
+				$_POST['StkLocation'] = $order->Location = LOC_DROP_SHIP;
 				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {

@@ -73,7 +73,7 @@
 		$companies=Config::get_all('db');
 		foreach ($companies as $name=>$company) {
 			if (!$company['company']) continue;
-			echo "<option value=$name " . ($name == $coy ? 'selected' : '') . ">" . $company['company'] . "</option>";
+			echo "<option value='$name' " . ($name == $coy ? 'selected' : '') . ">" . $company['company'] . "</option>";
 		}
 		echo "</select>\n";
 
@@ -104,9 +104,9 @@
 	("Theme:") . "
 	 " . $def_theme . "</a>\n";
 	echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a>\n";
-	echo "<script>//<![CDATA[<!--
+	echo "<script>
 	 document.forms[0].user_name.select();
 	 document.forms[0].user_name.focus();
-	 //--> //]]></script>";
+	 </script>";
 	echo "</body></html>\n";
 ?>

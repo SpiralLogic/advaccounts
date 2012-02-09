@@ -71,12 +71,12 @@
 	if (isset($_GET[REMOVED])) {
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			Event::notice(_("This sales quotation has been deleted as requested."), 1);
-			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?" . Orders::NEW_QUOTE . "=Yes");
+			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?type=" . ST_SALESQUOTE );
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
 			Event::notice(_("This sales order has been deleted as requested."), 1);
-			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?type=".ST_SALESORDER);
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
 		Page::footer_exit();
@@ -230,7 +230,7 @@
 	 */
 	function page_complete() {
 		global $sales_type_names;
-		$trans_type = $_GET['Type'];
+		$trans_type = $_GET['type'];
 		$trans_name = $sales_type_names[$trans_type];
 
 		$update = (isset($_GET[UPDATED])) ? true : false;
@@ -250,7 +250,7 @@
 			case ST_SALESQUOTE:
 				Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $order_no, 'prtopt');
 				Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ST_PROFORMAQ, 'EmailLink', null, $emails, 1);
-				Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . "ModifyQuote" . "=$order_no");
+				Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . "type=".ST_SALESQUOTE . "&=$order_no");
 				Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?QuoteToOrder=$order_no");
 				Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuote=1");
 				Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
@@ -258,7 +258,7 @@
 			case ST_SALESORDER:
 				Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
 				Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ST_PROFORMA, 'EmailLink', null, $emails, 1);
-				Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . "ModifyOrder" . "=$order_no");
+				Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?ModifyOrder" . "=$order_no");
 				Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 				Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?NewOrder=1");
 				Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
@@ -286,7 +286,7 @@
 					Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
 				}
 				Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-				if ($_GET[ADDED_DI] && isset($_SESSION['global_customer_id']) && $row == false) {
+				if ($_GET[ADDED] && isset($_SESSION['global_customer_id']) && $row == false) {
 					echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 				}
 				$sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);

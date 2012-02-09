@@ -22,6 +22,7 @@
 		const VIEW_INVOICE = 'ViewInvoice';
 		const MODIFY_CREDIT = 'ModifyCredit';
 		const NEW_CREDIT = 'NewCredit';
+
 		const PROCESS_ORDER = 'ProcessOrder';
 		const CANCEL = 'CancelOrder';
 		const CANCEL_CHANGES = 'CancelChanges';
