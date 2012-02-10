@@ -63,23 +63,12 @@
 			}
 
 			/** @noinspection PhpUndefinedFunctionInspection */
-		//fastcgi_finish_request();
+		fastcgi_finish_request();
 				foreach (static::$shutdown_objects as $object) {
 
 					if (method_exists($object, '_shutdown')) {
 					call_user_func($object . '::_shutdown');
 				}
 			}
-			if (extension_loaded('xhprof')) {
-			          $profiler_namespace = 'advaccounts';  // namespace for your application
-			          $xhprof_data = xhprof_disable();
-			          $xhprof_runs = new XHProfRuns_Default();
-			          $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-
-			          // url to the XHProf UI libraries (change the host name and path)
-			          $profiler_url = sprintf('http://dev.advaccounts/xhprof/xhprof_html/index.php?run=%s&source=%s', $run_id,
-			                                  $profiler_namespace);
-			          echo '<a href="'. $profiler_url .'" target="_blank">Profiler output</a>';
-			      }
 		}
 	}

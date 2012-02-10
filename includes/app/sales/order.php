@@ -1406,7 +1406,7 @@
 			if ($num == 1) {
 				return DB::fetch($result);
 			}
-			return Event::error("Database returned nothing!", E_USER_ERROR);
+			return Event::error("Order does not exist!", E_USER_ERROR);
 		}
 		/**
 		 * @static

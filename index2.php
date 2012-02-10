@@ -6,4 +6,3 @@
  * Time: 5:33 PM
  * To change this template use File | Settings | File Templates.
  */
-phpinfo();
