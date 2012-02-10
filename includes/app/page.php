@@ -185,7 +185,6 @@
 
 		protected function footer() {
 			$Validate = array();
-			\Modules\Jobsboard::tasks();
 
 			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";

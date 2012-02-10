@@ -86,11 +86,18 @@ class Event
 		}
 		/** @noinspection PhpUndefinedFunctionInspection */
 		fastcgi_finish_request();
+		static::$request_finsihed = true;
 		foreach (static::$shutdown_objects as $object) {
-			if (method_exists($object, '_shutdown')) {
-				call_user_func($object . '::_shutdown');
+			try {
+				if (method_exists($object, '_shutdown')) {
+					call_user_func($object . '::_shutdown');
+				}
+			}
+			catch (Exception $e) {
+				static::error('Error during post processing: '.$e->getMessage());
 			}
 		}
 	}
 }
+
 Event::i();

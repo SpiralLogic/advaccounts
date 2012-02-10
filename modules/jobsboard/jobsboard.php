@@ -37,5 +37,6 @@
 				\Event::notice($result .' Jobs were changed back to having "work can be done" due to inactivity.');
 			}
 			\DB::change_connection();
+
 		}
 	}
