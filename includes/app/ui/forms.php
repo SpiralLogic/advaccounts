@@ -51,7 +51,11 @@
 		}
 		return $numeric ? -1 : null;
 	}
-
+/**
+ * @param $name
+ * @param string $dflt
+ * @return string|int
+ */
 	function get_post($name, $dflt = '') {
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}

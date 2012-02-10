@@ -51,12 +51,24 @@
 		}
 		/*** @static Shutdown handler */
 		static function shutdown() {
+      if (extension_loaded('xhprof')) {
+          $profiler_namespace = 'myapp';  // namespace for your application
+          $xhprof_data = xhprof_disable();
+          $xhprof_runs = new XHProfRuns_Default();
+          $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+
+          // url to the XHProf UI libraries (change the host name and path)
+          $profiler_url = sprintf('http://dev.advanced.advancedgroup.com.au/xhprof/xhprof_html/index.php?run=%s&source=%s', $run_id,
+                                  $profiler_namespace);
+          echo '<a href="'. $profiler_url .'" target="_blank">Profiler output</a>';
+      }
 			Ajax::i();
 			Errors::process();
 			// flush all output buffers (works also with exit inside any div levels)
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+
 			/** @noinspection PhpUndefinedFunctionInspection */
 			fastcgi_finish_request();
 			foreach (static::$shutdown_objects as $object) {
