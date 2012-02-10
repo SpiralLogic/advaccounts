@@ -13,7 +13,6 @@
 			echo 'test';
 		}
 	static	function tasks() {
-			\DB::connect(\Config::get('db.jobsboard'));
 			\DB::change_connection('jobsboard');
 			$result = false;
 			try {
