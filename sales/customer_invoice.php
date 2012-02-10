@@ -42,12 +42,12 @@
 		Event::notice(_("Invoice $reference has been entered."));
 		$trans_type = ST_SALESINVOICE;
 		Event::notice(_("Selected deliveries has been processed"), true);
-		Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
+		Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice"),false,'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
-		Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
-		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
+		Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"),'',true,'class="button"');
+		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice"),false,'button'), 1);
+		Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1",true,'class="button"');
 		Page::footer_exit();
 	}
 	elseif (isset($_GET[UPDATED_ID])) {

@@ -23,14 +23,14 @@
 		static protected function i() {
 			if (static::$i === null) {
 				if (class_exists('Memcached', false)) {
-					$i = new Memcached(__DIR__);
+					$i = new Memcached($_SERVER["SERVER_NAME"]);
 					if (!count($i->getServerList())) {
 						$i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
 						$i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-						$i->setOption(Memcached::OPT_PREFIX_KEY, __DIR__);
-						(Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY,true);
+						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER["SERVER_NAME"]);
+						(Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
 						$i->addServer('127.0.0.1', 11211);
 					}
 					static::$connected = ($i->getVersion() !== false);
@@ -39,8 +39,6 @@
 					}
 					static::$i = $i;
 				}
-				Event::register_shutdown(__CLASS__);
-
 			}
 			return (static::$connected) ? static::$i : false;
 		}
@@ -71,19 +69,19 @@
 		 *
 		 * @return mixed
 		 */
-		static public function get($key) {
+		static public function get($key, $default = false) {
 			if (static::i() !== false) {
 				$result = static::i()->get($key);
-				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? false : $result;
+				$result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
 			}
 			elseif (class_exists('Session', false)) {
 				if (!isset($_SESSION['cache'])) {
 					$_SESSION['cache'] = array();
 				}
-				$result = (!isset($_SESSION['cache'][$key])) ? false : $_SESSION['cache'][$key];
+				$result = (!isset($_SESSION['cache'][$key])) ? $default : $_SESSION['cache'][$key];
 			}
 			else {
-				$result = false;
+				$result = $default;
 			}
 			return $result;
 		}
@@ -124,9 +122,5 @@
 			else {
 				$_SESSION['cache'] = array();
 			}
-		}
-
-		static public function _shutdown() {
-			static::set('autoloads', Autoloader::getLoaded());
 		}
 	}

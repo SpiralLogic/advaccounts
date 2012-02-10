@@ -259,7 +259,7 @@ JS;
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 
-			HTML::script(array('content' => minify_js($content)))->script;
+			HTML::script(array('content' => $content))->script;
 		}
 
 		/**

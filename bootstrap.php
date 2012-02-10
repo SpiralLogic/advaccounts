@@ -13,9 +13,11 @@
 	 *
 	 */
 if (extension_loaded('xhprof')) {
-    include_once '/usr/share/php/xhprof_lib/utils/xhprof_lib.php';
-    include_once '/usr/share/php/xhprof_lib/utils/xhprof_runs.php';
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+	$XHPROF_ROOT = realpath(dirname(__FILE__) .'/xhprof');
+	include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );
 }
 	error_reporting(-1);
 	ini_set('display_errors', 1);
@@ -98,5 +100,7 @@ if (extension_loaded('xhprof')) {
 	Config::i();
 	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-
+	include(DOCROOT . 'config' . DS . 'defines.php');
+	include(DOCROOT . 'config' . DS . 'types.php');
+	include(DOCROOT . 'config' . DS . 'access_levels.php');
 	ADVAccounting::i();

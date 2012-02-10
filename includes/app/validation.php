@@ -47,7 +47,7 @@
 			if ($extra === false) {
 				return 0;
 			}
-			if (Cache::get('Validation' . $validate)) {
+			if (Cache::get('validation.' . $validate)) {
 				return 1;
 			}
 			if ($extra !== null) {
@@ -67,7 +67,7 @@
 				throw new Adv_Exception($msg);
 			}
 			else {
-				Cache::set('Validation' . $validate, true);
+				Cache::set('validation.' . $validate, true);
 				return $myrow[0];
 			}
 		}
