@@ -21,7 +21,7 @@
 		'SMTP', //
 		'OLEwriter', //
 		'JsHttpRequest', //
-		'tcpdf'=>'TCPDF',//
+		'tcpdf/'=>'TCPDF',//
 		'Cpdf', //
 
 	);

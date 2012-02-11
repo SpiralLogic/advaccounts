@@ -192,7 +192,8 @@ JS;
             if (target) {
             Adv.openWindow(url,'Test');
             }else{
-            location.href = url;}
+            location.href = url;
+            }
             return false;
         }
         return true;

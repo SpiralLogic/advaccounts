@@ -131,8 +131,8 @@
 		}
 
 		protected function menu_header() {
-			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'></div><div id='top'>\n";
-			echo "<p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
+			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
+			echo "<div id='top'><p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
 			 ->name . "</p>\n";
 			echo "<ul>\n";
 			echo	 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
@@ -140,7 +140,7 @@
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div><div
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div></div><div
 			id='logo'><h1>" . APP_TITLE . "<span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'><div class='menu_container'>";
 			$this->renderer->menu();
 			echo "</div></div>";
