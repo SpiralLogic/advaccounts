@@ -127,7 +127,7 @@
 			}
 			if ($ok) {
 				DB_Company::update_fiscalyear($selected_id, $_POST['closed']);
-				Event::notice(_('Selected fiscal year has been updated'));
+				Event::success(_('Selected fiscal year has been updated'));
 			}
 		}
 		else {
@@ -135,7 +135,7 @@
 				return false;
 			}
 			DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
-			Event::notice(_('New fiscal year has been added'));
+			Event::success(_('New fiscal year has been added'));
 		}
 		$Mode = MODE_RESET;
 	}

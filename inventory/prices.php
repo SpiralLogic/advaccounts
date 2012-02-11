@@ -51,7 +51,7 @@ Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Inp
 				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
 				$msg = _("The new price has been added.");
 			}
-			Event::notice($msg);
+			Event::success($msg);
 			$Mode = MODE_RESET;
 		}
 	}

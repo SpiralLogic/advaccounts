@@ -24,11 +24,11 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Bank_Account::update($selected_id, $_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
-				Event::notice(_('Bank account has been updated'));
+				Event::success(_('Bank account has been updated'));
 			}
 			else {
 				Bank_Account::add($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
-				Event::notice(_('New bank account has been added'));
+				Event::success(_('New bank account has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

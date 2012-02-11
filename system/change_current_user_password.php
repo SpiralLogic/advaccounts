@@ -47,7 +47,7 @@
 				else {
 					$auth->update_password($_SESSION['current_user']->user, $_POST['password']);
 					User::get()->change_password=false;
-					Event::notice(_("Password Changed"));
+					Event::success(_("Password Changed"));
 				}
 			}
 			Ajax::i()->activate('_page_body');

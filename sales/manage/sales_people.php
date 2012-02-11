@@ -54,10 +54,10 @@
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
-				Event::notice(_('Selected sales person data have been updated'));
+				Event::success(_('Selected sales person data have been updated'));
 			}
 			else {
-				Event::notice(_('New sales person data have been added'));
+				Event::success(_('New sales person data have been added'));
 			}
 			$Mode = MODE_RESET;
 		}

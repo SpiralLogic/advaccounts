@@ -15,10 +15,10 @@
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
-				Event::notice(_("Extension data has been updated."));
+				Event::success(_("Extension data has been updated."));
 			}
 			else {
-				Event::notice(_("Extension has been installed."));
+				Event::success(_("Extension has been installed."));
 			}
 			$Mode = MODE_RESET;
 		}

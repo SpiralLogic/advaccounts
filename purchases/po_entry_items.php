@@ -25,10 +25,10 @@
 		$trans_type = ST_PURCHORDER;
 		$supplier = new Creditor(Session::i()->supplier_id);
 		if (!isset($_GET['Updated'])) {
-			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
+			Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
+			Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
 		}
 		Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);

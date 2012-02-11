@@ -39,9 +39,9 @@
 		$emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET[ADDED_ID];
 		$reference = $order->reference;
-		Event::notice(_("Invoice $reference has been entered."));
+		Event::success(_("Invoice $reference has been entered."));
 		$trans_type = ST_SALESINVOICE;
-		Event::notice(_("Selected deliveries has been processed"), true);
+		Event::success(_("Selected deliveries has been processed"), true);
 		Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice"),false,'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
@@ -55,7 +55,7 @@
 		$customer = new Debtor($order->customer_id);
 		$emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET[UPDATED_ID];
-		Event::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+		Event::success(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));

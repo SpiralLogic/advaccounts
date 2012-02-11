@@ -79,12 +79,12 @@
 			$sections = array_values($sections);
 			if ($new_role) {
 				Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
-				Event::notice(_("New security role has been added."));
+				Event::success(_("New security role has been added."));
 			}
 			else {
 				Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
 				DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
-				Event::notice(_("Security role has been updated."));
+				Event::success(_("Security role has been updated."));
 			}
 			$new_role = true;
 			clear_data();

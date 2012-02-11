@@ -59,11 +59,11 @@
 		}
 		if ($selected_id != "") {
 			GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
-			Event::notice(_('Selected currency settings has been updated'));
+			Event::success(_('Selected currency settings has been updated'));
 		}
 		else {
 			GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
-			Event::notice(_('New currency has been added'));
+			Event::success(_('New currency has been added'));
 		}
 		$Mode = MODE_RESET;
 	}

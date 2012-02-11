@@ -124,11 +124,11 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				Ajax::i()->activate('stock_id'); // in case of status change
-				Event::notice(_("Item has been updated."));
+				Event::success(_("Item has been updated."));
 			}
 			else { //it is a NEW part
 				Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], check_value('no_sale'), check_value('editable'));
-				Event::notice(_("A new item has been added."));
+				Event::success(_("A new item has been added."));
 				JS::set_focus('NewStockID');
 			}
 			if (isset($_POST['addupdatenew'])) {

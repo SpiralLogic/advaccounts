@@ -112,7 +112,7 @@
 		}
 		$exts = DB_Company::get_company_extensions();
 		advaccounting::write_extensions($exts, $id);
-		Event::notice($new ? _('New company has been created.') : _('Company has been updated.'));
+		Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
 

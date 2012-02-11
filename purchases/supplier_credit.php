@@ -17,7 +17,7 @@
 		$invoice_no = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPCREDIT;
 		echo "<div class='center'>";
-		Event::notice(_("Supplier credit note has been processed."));
+		Event::success(_("Supplier credit note has been processed."));
 		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Credit Note")));
 		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");

@@ -32,7 +32,7 @@
 	if (isset($_GET[ADDED_ID])) {
 		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_BANKPAYMENT;
-		Event::notice(_("Payment $trans_no has been entered"));
+		Event::success(_("Payment $trans_no has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
@@ -41,7 +41,7 @@
 	if (isset($_GET['AddedDep'])) {
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
-		Event::notice(_("Deposit $trans_no has been entered"));
+		Event::success(_("Deposit $trans_no has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");

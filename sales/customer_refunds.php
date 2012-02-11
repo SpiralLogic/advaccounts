@@ -27,7 +27,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	}
 	if (isset($_GET[ADDED_ID])) {
 		$refund_id = $_GET[ADDED_ID];
-		Event::notice(_("The customer refund has been successfully entered."));
+		Event::success(_("The customer refund has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));

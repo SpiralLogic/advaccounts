@@ -17,7 +17,7 @@
 
 	if (get_post('update_name')) {
 		Item_Code::update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
-		Event::notice(_('Kit common properties has been updated'));
+		Event::success(_('Kit common properties has been updated'));
 		Ajax::i()->activate('_page_body');
 	}
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -43,7 +43,7 @@
 		}
 		else {
 			Item_Code::delete($selected_id);
-			Event::notice(_("The component item has been deleted from this bom"));
+			Event::success(_("The component item has been deleted from this bom"));
 			$Mode = MODE_RESET;
 		}
 	}
@@ -186,12 +186,12 @@
 				$msg = _("New component has been added to selected kit.");
 			}
 			Item_Code::add($kit_code, get_post('component'), get_post('description'), get_post('category'), Validation::input_num('quantity'), 0);
-			Event::notice($msg);
+			Event::success($msg);
 		}
 		else {
 			$props = Item_Code::get_kit_props($_POST['item_code']);
 			Item_Code::update($selected_item, $kit_code, get_post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
-			Event::notice(_("Component of selected kit has been updated."));
+			Event::success(_("Component of selected kit has been updated."));
 		}
 		$Mode = MODE_RESET;
 		Ajax::i()->activate('_page_body');
