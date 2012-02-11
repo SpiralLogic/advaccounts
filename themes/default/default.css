@@ -365,7 +365,7 @@ top:0;
 	line-height:        39px;
 	height:             39px;
 }
-#topmenu .active a, #topmenu a:hover {
+#topmenu .active a, #topmenu a:hover ,#topmenu li:hover {
 	color:white;
 	background:       #5cadff;
 	background-image: -moz-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
@@ -773,11 +773,7 @@ table.tablestyle2 td {
 	padding:         3px;
 }
 
-table.tablestyle_inner {
-	border-collapse: collapse;
-	border:          1px solid #f9f9f9;
-}
-
+table.tablestyle_inner,
 table.tablestyle_inner td {
 	border-collapse: collapse;
 	border:          1px solid #f9f9f9;
@@ -849,8 +845,14 @@ button img {
 	padding:            3px 4px;
 	border-radius:      3px 3px 3px 3px;
 	box-shadow:         0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background:         -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
-	background:         -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	background: #ededed;
+	background: -moz-linear-gradient(top,  #ededed 0%, #c4c4c4 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#c4c4c4));
+	background: -webkit-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: -o-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: -ms-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#c4c4c4',GradientType=0 );
 	border:             1px solid #333;
 	color:              #333;
 	line-height:        1.4;
@@ -874,9 +876,15 @@ button img {
 	outline:            none;
 	color:              #1c4257;
 	border-color:       #7096ab;
-	background:         url(images/bg_fallback.png) 0 -50px repeat-x;
-	background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
-	background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
+	background: #b9e0f5;
+	background: -moz-linear-gradient(top,  #b9e0f5 100%, #92bdd6 0%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(100%,#b9e0f5), color-stop(0%,#92bdd6));
+	background: -webkit-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: -o-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: -ms-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b9e0f5', endColorstr='#92bdd6',GradientType=0 );
+
 	-moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	box-shadow:         0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
@@ -885,9 +893,15 @@ button img {
 .ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active, button:active {
 	color:              #1c4257;
 	border-color:       #7096ab;
-	background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
-	background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
-	-webkit-box-shadow: none;
+	background: #b9e0f5;
+	background: -moz-linear-gradient(top,  #b9e0f5 100%, #92bdd6 0%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(100%,#b9e0f5), color-stop(0%,#92bdd6));
+	background: -webkit-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: -o-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: -ms-linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	background: linear-gradient(top,  #b9e0f5 100%,#92bdd6 0%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b9e0f5', endColorstr='#92bdd6',GradientType=0 );
+		-webkit-box-shadow: none;
 	-moz-box-shadow:    none;
 	box-shadow:         none;
 }
@@ -944,8 +958,14 @@ th:hover span {
 	padding:         0 3px;
 	color:           #333;
 	border-collapse: collapse;
-	background:      -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
-	background:      -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	background: #ededed;
+	background: -moz-linear-gradient(top,  #ededed 0%, #c4c4c4 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#c4c4c4));
+	background: -webkit-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: -o-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: -ms-linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	background: linear-gradient(top,  #ededed 0%,#c4c4c4 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#c4c4c4',GradientType=0 );
 	border:          1px solid #7096AB;
 	box-shadow:      none;
 }
@@ -1057,8 +1077,6 @@ th:hover span {
 	display: none;
 }
 
-.file_upload_progress .ui-progressbar-value {
-}
 
 .file_upload_progress div {
 	width:  150px;

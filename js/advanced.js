@@ -66,16 +66,18 @@ jQuery.extend(jQuery.easing,
 		 });
 		this.extend = function (object) {extender(Adv, object)};
 		extender(Adv.loader, {
-			tout: 15000,
-			off:  function () {
-				Adv.loader.style.visibility = 'hidden';
+			off: function (img) {
+				if (img) {
+					Adv.loader.src = user.theme + 'images/' + img;
+					Adv.loader.style.visibility = 'visible';
+				} else {
+					Adv.loader.style.visibility = 'hidden';
+				}
 			},
-			on:   function (img) {
-				Adv.loader.tout = Adv.loader.tout || 15000;	// default timeout value
-				img = Adv.loader.tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
-				if (img)
-				{Adv.loader.src = user.theme + 'images/' + img;}
-				Adv.loader.style.visibility = 'visible';
+			on:  function (timeout) {
+				timeout = timeout || 15000;	// default timeout value
+				img = timeout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
+				Adv.loader.off(img);
 			}
 		})
 	}).apply(Adv);

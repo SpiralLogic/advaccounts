@@ -207,7 +207,7 @@ var inserts = {
 		// this hides search button for js enabled browsers
 		e.style.display = 'none';
 	},
-	'div.js_only':function (e) {
+	'div.js':function (e) {
 		// this shows divs for js enabled browsers only
 		e.style.display = 'block';
 	},
@@ -279,7 +279,7 @@ var inserts = {
 		}
 	},
 	'select':function (e) {
-		if (e.onfocus == undefined) {
+		if (e.onfocus === undefined) {
 			e.onfocus = function () {
 				save_focus(this);
 			};
@@ -289,8 +289,8 @@ var inserts = {
 			}
 		}
 	},
-	'a.printlink':function (l) {
-		l.onclick = function () {
+	'a.printlink':function (e) {
+		e.onclick = function () {
 			save_focus(this);
 			JsHttpRequest.request(this, null, 60000);
 			return false;
@@ -306,46 +306,8 @@ var inserts = {
 				return false;
 			}
 		}
-	},
-	'ul.ajaxtabs':function (ul) {
-		var ulist = ul.getElementsByTagName("li");
-		for (var x = 0; x < ulist.length; x++) { //loop through each LI e
-			var ulistlink = ulist[x].getElementsByTagName("input")[0];
-			if (ulistlink.onclick == undefined) {
-// ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
-				var url = ulistlink.form.action
-				ulistlink.onclick = function () {
-					_expand(this);
-					return false;
-				}
-			}
-		}
 	}
-	/*	'tr.editrow': function(e) {
-	 e.onkeydown = function(ev) {
-	 ev = ev||window.event;
-	 key = ev.keyCode||ev.which;
-	 if(key == 13) {
-	 // Find & click additem/update button
 
-	 } else	if(key == 27) {
-	 return false;
-	 }
-	 }
-
-	 },
-	 *//*	'#msgbox': function(e) {
-	 // this is to avoid changing div height after ajax update in IE7
-	 e.style.display = e.innerHTML.length ? 'block' : 'none';
-	 }
-	 *//* TODO
-	 'a.date_picker':  function(e) {
-	 // this un-hides data picker for js enabled browsers
-	 e.href = date_picker(this.getAttribute('rel'));
-	 e.style.display = '';
-	 e.tabindex = -1; // skip in tabbing order
-	 }
-	 */
 };
 
 function stopEv(ev) {

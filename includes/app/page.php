@@ -141,9 +141,9 @@
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
 			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div></div><div
-			id='logo'><h1>" . APP_TITLE . "<span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'><div class='menu_container'>";
+			id='logo'><h1>" . APP_TITLE . "<span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'>";
 			$this->renderer->menu();
-			echo "</div></div>";
+			echo "</div>";
 		}
 
 		protected function help_url($context = null) {
