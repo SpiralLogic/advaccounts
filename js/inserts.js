@@ -207,7 +207,7 @@ var inserts = {
 		// this hides search button for js enabled browsers
 		e.style.display = 'none';
 	},
-	'div.js':function (e) {
+	'div.js_only':function (e) {
 		// this shows divs for js enabled browsers only
 		e.style.display = 'block';
 	},
@@ -279,7 +279,7 @@ var inserts = {
 		}
 	},
 	'select':function (e) {
-		if (e.onfocus === undefined) {
+		if (e.onfocus == undefined) {
 			e.onfocus = function () {
 				save_focus(this);
 			};
