@@ -219,20 +219,17 @@ var Customer = function () {
 					of:$customerID,
 					collision:"none"
 				}
-
 			});
-
 		},
 		setValues:function (content) {
 			if (!content.customer)
 				{return;}
 			customer = data = content.customer;
-			if (id)
-				{
-					Adv.o.tabs.tabs1.tabs('option', 'disabled', []);
+			if (customer.id)
+				{					Adv.tabs1.tabs('option', 'disabled', []);
 				} else
-				{
-					Adv.o.tabs.tabs1.tabs('option', 'disabled', true);
+				{					Adv.tabs1.tabs('option', 'disabled', [0,1,2,3,4]);
+
 				}
 			if (content.contact_log !== undefined)
 				{
@@ -346,7 +343,7 @@ $(function () {
 		Adv.ContactLog.dialog("open");
 		return false;
 	});
-	$("#tabs1").tabs({ select:function (event, ui) {
+	Adv.tabs1 = $("#tabs1").tabs({ select:function (event, ui) {
 		var url = $.data(ui.tab, 'load.tabs');
 		if (url)
 			{location.href = url + Customer.get().id;}
@@ -385,7 +382,7 @@ $(function () {
 	}).click(function () {
 		 $(this).dialog("open");
 	 });
-	Adv.tabs.delegate("input", "change keypress", function (event) {
+	Adv.tabs.delegate("input, textarea", "change keypress", function (event) {
 		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || Adv.tabs.tabs('option','selected')==4 )
 			{
 				return;
@@ -407,6 +404,7 @@ $(function () {
 		return false;
 	});
 	$("#id").prop('disabled', true);
+
 	Branches.init();
 	Customer.init();
 	Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {
