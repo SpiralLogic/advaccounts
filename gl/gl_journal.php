@@ -22,7 +22,7 @@
 	if (isset($_GET[ADDED_ID])) {
 		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_JOURNAL;
-		Event::notice(_("Journal entry has been entered") . " #$trans_no");
+		Event::success(_("Journal entry has been entered") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
 		JS::reset_focus();
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
@@ -31,7 +31,7 @@
 	elseif (isset($_GET[UPDATED_ID])) {
 		$trans_no = $_GET[UPDATED_ID];
 		$trans_type = ST_JOURNAL;
-		Event::notice(_("Journal entry has been updated") . " #$trans_no");
+		Event::success(_("Journal entry has been updated") . " #$trans_no");
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
 		Display::link_no_params(DOCROOT . "gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();

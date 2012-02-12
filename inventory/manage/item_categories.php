@@ -24,11 +24,11 @@ Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
-				Event::notice(_('Selected item category has been updated'));
+				Event::success(_('Selected item category has been updated'));
 			}
 			else {
 				Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], check_value('no_sale'));
-				Event::notice(_('New item category has been added'));
+				Event::success(_('New item category has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

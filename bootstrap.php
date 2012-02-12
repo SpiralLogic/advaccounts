@@ -12,6 +12,7 @@
 	/**
 	 *
 	 */
+
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
@@ -93,5 +94,7 @@
 	Config::i();
 	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-
+	include(DOCROOT . 'config' . DS . 'defines.php');
+	include(DOCROOT . 'config' . DS . 'types.php');
+	include(DOCROOT . 'config' . DS . 'access_levels.php');
 	ADVAccounting::i();

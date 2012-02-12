@@ -19,7 +19,7 @@ Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 		$_POST['po_over_charge'] = Validation::input_num('po_over_charge');
 		$_POST['accumulate_shipping'] = check_value('accumulate_shipping');
 		DB_Company::update_gl_setup($_POST);
-		Event::notice(_("The general GL setup has been updated."));
+		Event::success(_("The general GL setup has been updated."));
 	} /* end of if submit */
 	start_form();
 	//start_outer_table("class='tablestyle'");

@@ -55,14 +55,14 @@
 					DB::update_record_status($_POST['account_code'], $_POST['inactive'], 'chart_master', 'account_code');
 					Tags::update_associations(TAG_ACCOUNT, $_POST['account_code'], $_POST['account_tags']);
 					Ajax::i()->activate('account_code'); // in case of status change
-					Event::notice(_("Account data has been updated."));
+					Event::success(_("Account data has been updated."));
 				}
 			}
 			else {
 				if (GL_Account::add($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'])
 				) {
 					Tags::add_associations($_POST['account_code'], $_POST['account_tags']);
-					Event::notice(_("New account has been added."));
+					Event::success(_("New account has been added."));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
 			}

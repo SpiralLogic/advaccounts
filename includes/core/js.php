@@ -124,14 +124,14 @@ JS;
 		 */
 		static public function get_websales() {
 			static $inserted;
-			if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
+			if ($_SERVER['HTTP_HOST'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 				$_SESSION['getWebsales'] = true;
 				echo "<script>";
 				echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
-$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body');
-$('<iframe\>').attr({'id':'customerGet',src:'//{$_SERVER['SERVER_NAME']}/modules/advanced/web.php'}).css({width:0,height:0}).appendTo('body')});
+$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['HTTP_HOST']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body');
+$('<iframe\>').attr({'id':'customerGet',src:'//{$_SERVER['HTTP_HOST']}/modules/advanced/web.php'}).css({width:0,height:0}).appendTo('body')});
 JS;
 				echo "</script>";
 				$inserted = true;
@@ -192,7 +192,8 @@ JS;
             if (target) {
             Adv.openWindow(url,'Test');
             }else{
-            location.href = url;}
+            location.href = url;
+            }
             return false;
         }
         return true;
@@ -259,7 +260,7 @@ JS;
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 
-			HTML::script(array('content' => minify_js($content)))->script;
+			HTML::script(array('content' => $content))->script;
 		}
 
 		/**

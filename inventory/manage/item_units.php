@@ -34,10 +34,10 @@ Page::start(_($help_context = "Units of Measure"), SA_UOM);
 		if ($input_error != 1) {
 			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
-				Event::notice(_('Selected unit has been updated'));
+				Event::success(_('Selected unit has been updated'));
 			}
 			else {
-				Event::notice(_('New unit has been added'));
+				Event::success(_('New unit has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

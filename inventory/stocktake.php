@@ -18,7 +18,7 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 	if (isset($_GET[ADDED_ID])) {
 		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_INVADJUST;
-		Event::notice(_("Items adjustment has been processed"));
+		Event::success(_("Items adjustment has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));

@@ -18,11 +18,11 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				GL_QuickEntry::update($selected_id, $_POST['description'], $_POST['type'], Validation::input_num('base_amount'), $_POST['base_desc']);
-				Event::notice(_('Selected quick entry has been updated'));
+				Event::success(_('Selected quick entry has been updated'));
 			}
 			else {
 				GL_QuickEntry::add($_POST['description'], $_POST['type'], Validation::input_num('base_amount'), $_POST['base_desc']);
-				Event::notice(_('New quick entry has been added'));
+				Event::success(_('New quick entry has been added'));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -30,11 +30,11 @@
 	if ($Mode2 == 'ADD_ITEM2' || $Mode2 == 'UPDATE_ITEM2') {
 		if ($selected_id2 != -1) {
 			GL_QuickEntry::update_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], Validation::input_num('amount', 0), $_POST['dimension_id'], $_POST['dimension2_id']);
-			Event::notice(_('Selected quick entry line has been updated'));
+			Event::success(_('Selected quick entry line has been updated'));
 		}
 		else {
 			GL_QuickEntry::add_line($selected_id, $_POST['actn'], $_POST['dest_id'], Validation::input_num('amount', 0), $_POST['dimension_id'], $_POST['dimension2_id']);
-			Event::notice(_('New quick entry line has been added'));
+			Event::success(_('New quick entry line has been added'));
 		}
 		$Mode2 = 'RESET2';
 	}

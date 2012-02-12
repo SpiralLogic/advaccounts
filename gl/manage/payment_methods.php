@@ -24,11 +24,11 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				GL_PaymentMethod::update($selected_id, $_POST['name'], $_POST['undeposited']);
-				Event::notice(_('Payment method has been updated'));
+				Event::success(_('Payment method has been updated'));
 			}
 			else {
 				GL_PaymentMethod::add($_POST['name'], $_POST['undeposited']);
-				Event::notice(_('New payment method has been added'));
+				Event::success(_('New payment method has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

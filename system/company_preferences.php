@@ -81,7 +81,7 @@
 		if ($input_error != 1) {
 			DB_Company::update_setup($_POST);
 			$_SESSION['current_user']->timeout = $_POST['login_tout'];
-			Event::notice(_("Company setup has been updated."));
+			Event::success(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');
 		Ajax::i()->activate('_page_body');

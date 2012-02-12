@@ -41,7 +41,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
  			conversion_factor, supplier_description) VALUES (";
 				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
-				Event::notice(_("This supplier purchasing data has been added."));
+				Event::success(_("This supplier purchasing data has been added."));
 			}
 			else {
 				$sql = "UPDATE purch_data SET price=" . Validation::input_num('price', 0) . ",
@@ -51,7 +51,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
 				supplier_id=" . DB::escape($selected_id);
 				DB::query($sql, "The supplier purchasing details could not be updated");
-				Event::notice(_("Supplier purchasing data has been updated."));
+				Event::success(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = MODE_RESET;
 		}

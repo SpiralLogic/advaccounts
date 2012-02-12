@@ -36,7 +36,7 @@
 	}
 	if (isset($_GET[ADDED_ID])) {
 		$payment_id = $_GET[ADDED_ID];
-		Event::notice(_("Payment has been sucessfully entered"));
+		Event::success(_("Payment has been sucessfully entered"));
 		Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 		Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));

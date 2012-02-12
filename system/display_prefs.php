@@ -37,7 +37,7 @@
 				Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 			}
 			else {
-				Event::notice(_("Display settings have been updated."));
+				Event::success(_("Display settings have been updated."));
 			}
 		}
 	}

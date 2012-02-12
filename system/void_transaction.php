@@ -188,7 +188,7 @@
 			}
 			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
 			if ($ret) {
-				Event::notice(_("Selected transaction has been voided."));
+				Event::success(_("Selected transaction has been voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);

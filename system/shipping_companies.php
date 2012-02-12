@@ -16,7 +16,7 @@
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
 		DB::query($sql, "The Shipping Company could not be added");
-		Event::notice(_('New shipping company has been added'));
+		Event::success(_('New shipping company has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
@@ -27,7 +27,7 @@
 		address =" . DB::escape($_POST['address']) . "
 		WHERE shipper_id = " . DB::escape($selected_id);
 		DB::query($sql, "The shipping company could not be updated");
-		Event::notice(_('Selected shipping company has been updated'));
+		Event::success(_('Selected shipping company has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {

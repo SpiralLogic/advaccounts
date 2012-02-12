@@ -43,12 +43,12 @@ jQuery.extend(jQuery.easing,
 (function (window, $, undefined) {
 	//noinspection LocalVariableNamingConventionJS
 	var Adv = {
-		$content:      $("#content"),
+
 		loader:        document.getElementById('ajaxmark'),
 		fieldsChanged: 0,
 		debug:         { ajax: true},
 		lastXhr:       '',
-		o:             {tabs: {}}
+		o:             {$content:      $("#content"),tabs: {}}
 	};
 	(function () {
 		var extender = jQuery.extend;
@@ -66,16 +66,17 @@ jQuery.extend(jQuery.easing,
 		 });
 		this.extend = function (object) {extender(Adv, object)};
 		extender(Adv.loader, {
-			tout: 15000,
-			off:  function () {
-				Adv.loader.style.visibility = 'hidden';
+			off: function (img) {
+				if (img) {
+					Adv.loader.src = user.theme + 'images/' + img;
+					Adv.loader.style.visibility = 'visible';
+				} else {
+					Adv.loader.style.visibility = 'hidden';
+				}
 			},
-			on:   function (img) {
-				Adv.loader.tout = Adv.loader.tout || 15000;	// default timeout value
-				img = Adv.loader.tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
-				if (img)
-				{Adv.loader.src = user.theme + 'images/' + img;}
-				Adv.loader.style.visibility = 'visible';
+			on:  function (tout) {
+				var img = tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
+				Adv.loader.off(img);
 			}
 		})
 	}).apply(Adv);
@@ -84,7 +85,6 @@ jQuery.extend(jQuery.easing,
 Adv.extend({
 	msgbox:      $('#msgbox').ajaxError(
 	 function (event, request, settings) {
-
 		 if (request.statusText == "abort")
 		 {return;}
 		 var status = {
@@ -171,7 +171,7 @@ Adv.extend({
 			if (Adv.hoverWindow._init)
 			{return;}
 			Adv.hoverWindow._init = true;
-			Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open',
+			Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open',
 			 'div .openWindow,td .openWindow',
 			 function (e) {
 				 if (e.type == 'click')

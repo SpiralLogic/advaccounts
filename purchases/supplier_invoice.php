@@ -17,7 +17,7 @@
 		$invoice_no = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<div class='center'>";
-		Event::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
+		Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
 		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Invoice")));
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
@@ -332,7 +332,8 @@ JS;
 			if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if (Session::i()->err_over_charge != true) {
-						Event::error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
+						Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge
+						percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 						JS::set_focus('ChgPrice' . $n);
 						$_SESSION['err_over_charge'] = true;
 						return false;

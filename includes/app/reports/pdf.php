@@ -837,7 +837,7 @@
 					}
 					else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						Event::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
+						Event::success($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
 					}
 					unlink($fname);
 				}
@@ -879,7 +879,7 @@
 							Event::error($error);
 						}
 						else {
-							Event::notice(_('Report has been sent to network printer ') . $printer['name']);
+							Event::success(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}
 				}

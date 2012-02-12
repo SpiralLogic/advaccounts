@@ -32,11 +32,11 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				Event::notice(_('New printing profile has been created'));
+				Event::success(_('New printing profile has been created'));
 				clear_form($selected_id);
 			}
 			else {
-				Event::notice(_('Printing profile has been updated'));
+				Event::success(_('Printing profile has been updated'));
 			}
 		}
 	}

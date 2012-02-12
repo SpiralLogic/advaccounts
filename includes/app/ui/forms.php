@@ -51,7 +51,11 @@
 		}
 		return $numeric ? -1 : null;
 	}
-
+/**
+ * @param $name
+ * @param string $dflt
+ * @return string|int
+ */
 	function get_post($name, $dflt = '') {
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}
@@ -864,7 +868,7 @@
 
 	function password_row($label, $name, $value) {
 		echo "<tr><td class='label'>$label</td>";
-		label_cell("<input type='password' name='$name' size=20 maxlength=20 value='$value' />");
+		label_cell("<input type='password' name='$name' value='$value' />");
 		echo "</tr>\n";
 	}
 

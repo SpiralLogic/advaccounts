@@ -47,7 +47,7 @@
 	;
 	if (get_post('restore')) {
 		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
-			Event::notice(_("Restore backup completed."));
+			Event::success(_("Restore backup completed."));
 		}
 	}
 	if (get_post('deldump')) {

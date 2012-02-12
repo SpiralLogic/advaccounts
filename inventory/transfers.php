@@ -18,7 +18,7 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 	if (isset($_GET[ADDED_ID])) {
 		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_LOCTRANSFER;
-		Event::notice(_("Inventory transfer has been processed"));
+		Event::success(_("Inventory transfer has been processed"));
 		Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));
 		Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();

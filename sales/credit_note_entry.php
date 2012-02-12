@@ -41,7 +41,7 @@
 	if (isset($_GET[ADDED_ID])) {
 		$credit_no = $_GET[ADDED_ID];
 		$trans_type = ST_CUSTCREDIT;
-		Event::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
+		Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);

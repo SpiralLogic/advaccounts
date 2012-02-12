@@ -61,7 +61,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 				DB::query($sql, "The supplier could not be updated");
 				DB::update_record_status($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
 				Ajax::i()->activate('supplier_id'); // in case of status change
-				Event::notice(_("Supplier has been updated."));
+				Event::success(_("Supplier has been updated."));
 			}
 			else {
 				$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
@@ -71,7 +71,7 @@ Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame')
 				DB::query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = DB::insert_id();
 				$new_supplier = false;
-				Event::notice(_("A new supplier has been added."));
+				Event::success(_("A new supplier has been added."));
 				Ajax::i()->activate('_page_body');
 			}
 		}

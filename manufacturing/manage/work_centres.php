@@ -24,11 +24,11 @@ Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				WO_WorkCentre::update($selected_id, $_POST['name'], $_POST['description']);
-				Event::notice(_('Selected work center has been updated'));
+				Event::success(_('Selected work center has been updated'));
 			}
 			else {
 				WO_WorkCentre::add($_POST['name'], $_POST['description']);
-				Event::notice(_('New work center has been added'));
+				Event::success(_('New work center has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

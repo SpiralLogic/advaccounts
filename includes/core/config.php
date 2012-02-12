@@ -40,8 +40,10 @@
 			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
 				static::load();
+
+				Event::register_shutdown(__CLASS__);
+
 			}
-			Event::register_shutdown(__CLASS__);
 			static::$i = true;
 			static::js();
 		}

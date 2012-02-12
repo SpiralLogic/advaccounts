@@ -11,9 +11,7 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
 	/** @define "null" "VALUE" */
-	include(DOCROOT . 'config' . DS . 'defines.php');
-	include(DOCROOT . 'config' . DS . 'types.php');
-	include(DOCROOT . 'config' . DS . 'access_levels.php');
+
 	/**
 
 	 */

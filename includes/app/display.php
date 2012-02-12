@@ -107,7 +107,7 @@
 			global $ajax_divs;
 			if ($non_ajax) { // div for non-ajax elements
 				array_push($ajax_divs, array($id, null));
-				echo "<div class='js_only hidden' " . ($id != '' ? "id='$id'" : '') . ">";
+				echo "<div class='js hidden' " . ($id != '' ? "id='$id'" : '') . ">";
 			}
 			else { // ajax ready div
 				array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));

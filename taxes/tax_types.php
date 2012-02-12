@@ -14,12 +14,12 @@
 	list($Mode, $selected_id) = Page::simple_mode(true);
 	if ($Mode == ADD_ITEM && can_process($selected_id)) {
 		Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
-		Event::notice(_('New tax type has been added'));
+		Event::success(_('New tax type has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process($selected_id)) {
 		Tax_Types::update($selected_id, $_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate'));
-		Event::notice(_('Selected tax type has been updated'));
+		Event::success(_('Selected tax type has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {

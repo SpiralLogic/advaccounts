@@ -28,13 +28,13 @@
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
-		Event::notice(_('New sales type has been added'));
+		Event::success(_('New sales type has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
 		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 :
 		 0, Validation::input_num('factor'));
-		Event::notice(_('Selected sales type has been updated'));
+		Event::success(_('Selected sales type has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {
