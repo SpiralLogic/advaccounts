@@ -78,9 +78,7 @@
 		echo "</select>\n";
 
 	}	start_row();
-	echo "<td colspan='2' class='center pad20'><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;'
-	name='SubmitUser'" .
-	 ($login_timeout ? '' : " ") . " /></td>\n";
+	echo "<td colspan='2' class='center pad20'><button name='SubmitUser'>" . _("Login -->") . "</button></td>\n";
 			end_row();
 	end_table(1);
 	foreach (
