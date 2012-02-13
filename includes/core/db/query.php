@@ -6,8 +6,7 @@
 	 * Time: 12:24 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class DB_Query extends DB_Query_Where
-	{
+	abstract class DB_Query extends DB_Query_Where {
 		/**
 		 * @var DB_Query
 		 */
@@ -24,11 +23,13 @@
 		 * @var DB
 		 */
 		protected $conn;
+
 		/**
 		 * @abstract
 		 *
 		 */
 		protected abstract function execute();
+
 		/**
 		 * @param $conn
 		 */
@@ -36,6 +37,7 @@
 			$this->conn = $conn;
 			static::$query = $this;
 		}
+
 		/**
 		 * @param $data
 		 *
@@ -47,15 +49,17 @@
 			}
 			return $this->compiled_query;
 		}
+
 		/***
 		 * @param null $data
 		 *
-		 * @return DB_Query_Result
+		 * @return DB_Query_Result|int|bool
 		 */
 		public function exec($data = null) {
 			$result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
 			return $result;
 		}
+
 		/***
 		 * @return DB_Query_Result
 		 */

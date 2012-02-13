@@ -33,21 +33,17 @@ HTML;
 		 <a href="/gl/bank_account_reconcile.php?">Reconcile</a>
 		 <a href="/gl/undeposited_funds.php?">Undeposited</a>
 		 </div>
-
 HTML;
+
 		protected $sales = <<<HTML
-
 <h3><a href="#">Create</a></h3>
-
 		 <div>
-		 <a href="/sales/sales_order_entry.php?NewQuote=Yes">Quote</a>
-		 <a href="/sales/sales_order_entry.php?NewOrder=Yes">Order</a>
-		 <a href="/sales/sales_order_entry.php?NewInvoice=0">Direct Invoice</a>
-		 <a href="/purchases/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
+		 <a href="/sales/sales_order_entry.php?type=32">Quote</a>
+		 <a href="/sales/sales_order_entry.php?New=30">Order</a>
+		 <a href="/sales/sales_order_entry.php?New=0">Direct Invoice</a>
+		 <a href="/purchases/po_entry_items.php?New=0">Purchase Order</a>
 		 </div>
-
 HTML;
-
 		static function render() {
 			$sidemenu = new static;
 			echo $sidemenu->display;

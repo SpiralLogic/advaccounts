@@ -211,8 +211,8 @@
 	if (!Input::get('frame')) {
 		HTML::div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
-		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=', 'id');
-		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=', 'id');
+		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?new='.ST_SALESQUOTE.'&customer_id=', 'id');
+		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?new='.ST_SALESORDER.'&customer_id=', 'id');
 		$shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=', 'id', true);
 		$shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab',<<<JS
 			Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});
