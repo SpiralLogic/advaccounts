@@ -344,8 +344,7 @@
 	}
 
 	function edit_link($row) {
-		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrder" : "ModifyQuote");
-		return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+		return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no']."&type=".$row['trans_type'], ICON_EDIT);
 	}
 
 	function email_link($row) {

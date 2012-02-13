@@ -129,6 +129,7 @@ function _set_combo_select(e) {
 		event = event || window.event;
 		key = event.keyCode || event.which;
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
+
 		if (box && key == 32 && this.className == 'combo2') {
 			this.style.display = 'none';
 			box.style.display = 'inline';

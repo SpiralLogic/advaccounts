@@ -313,12 +313,12 @@
 	define('ADDED_QU', 'AddedQU');
 	define('ADDED_DN', 'AddedDN');
 	define('ADDED_DI', 'AddedDI');
-	define('ADDED', 'Added');
+	define('ADDED', 'added');
 	define('UPDATED_ID', 'UpdatedID');
 	define('UPDATED_QU', 'UpdatedQU');
 	define('UPDATE_ITEM', 'UpdateItem');
-	define('UPDATED', 'Update');
-	define('TYPE', 'Type');
+	define('UPDATED', 'updated');
+	define('TYPE', 'type');
 	define('REMOVED_ID', 'RemovedID');
 	define('REMOVED', 'Removed');
 	define('CANCEL', 'CancelUpdate');

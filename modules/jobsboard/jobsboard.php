@@ -233,10 +233,11 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		 */
 		protected function getLines() {
 			$lines = \DB::select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
-			foreach ($lines as $line) {
-				$lines[$line['line_id']] = $line;
+	$result = array();
+				foreach ($lines as $line) {
+					$result[$line['line_id']] = $line;
 			}
-			return $lines;
+			return $result;
 		}
 /***
  * Get line from order

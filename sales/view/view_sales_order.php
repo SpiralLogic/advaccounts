@@ -215,7 +215,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	else {
 		Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
 	}
-	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0' target='_top' ");
+	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?add=0&type=30' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
 	Page::end();

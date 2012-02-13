@@ -164,13 +164,13 @@
 			foreach ($this->line_items as $po_line) {
 				if ($po_line->Deleted == True) {
 					// Sherifoz 21.06.03 Handle deleting existing lines
-					if ($po_line->po_detail_rec != '') {
+					if (!empty($po_line->po_detail_rec)) {
 						$sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . DB::escape($po_line->po_detail_rec);
 						DB::query($sql, "could not query purch order details");
 					}
 				}
 				else {
-					if ($po_line->po_detail_rec == '') {
+					if (!$po_line->po_detail_rec) {
 						// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
 						$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 						$sql .= $this->order_no . "," . DB::escape($po_line->stock_id) . "," . DB::escape($po_line->description) . ",'" . Dates::date2sql($po_line->req_del_date) . "'," . DB::escape($po_line->price) . ", " . DB::escape($po_line->quantity) . ", " . DB::escape($po_line->discount) . ")";

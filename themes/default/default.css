@@ -39,12 +39,11 @@ table {
 }
 
 input, select,textarea {
-	padding:   1px;
-	padding-left:4px;
+	padding:       1px 4px 1px 4px;
 	border-radius: 4px;
-	-webkit-box-shadow: 0 0 3px #333 inset;
-	-moz-box-shadow: 0 0 3px #333 inset;
-	box-shadow: 0 0 3px #333 inset;
+	-webkit-box-shadow: 0 0 2px #333 inset;
+	-moz-box-shadow: 0 0 2px #333 inset;
+	box-shadow: 0 0 2px #333 inset;
 	line-height: 20px;
 
 }
@@ -80,10 +79,12 @@ input[type="checkbox"] {
 }
 
 select, input {
-	height: 25px;
 	max-width: 300px;
 }
+input {
+	height: 25px;
 
+}
 a, .ui-widget-content a table a {
 	color:           #2F637A;
 	text-decoration: none;
@@ -713,7 +714,6 @@ div.formbox label span:first-child {
 }
 
 input.amount, input.freight {
-	padding-right: 0;
 	border-right:  none;
 }
 
