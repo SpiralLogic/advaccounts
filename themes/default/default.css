@@ -62,7 +62,7 @@ select {
 	font-size: 11px;
 		padding:   1px;
 		min-width: 50px;
-	border: grey solid 1px;
+	border: lightgray solid 1px;
 }
 input.big {
 	width: 100px;
@@ -282,6 +282,8 @@ img {
 	left:                  15px;
 	background-color:      #dcdcdc;
 	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 	-webkit-box-shadow:    3px 6px 20px 5px rgba(3, 3, 3, .25);
 	-moz-box-shadow:       3px 6px 20px 5px rgba(3, 3, 3, .25);
 	box-shadow:            3px 6px 20px 5px rgba(3, 3, 3, .25);
@@ -300,6 +302,8 @@ img {
 	background:            white;
 	padding:               6px 6px;
 	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 	width:                 125px;
 }
 
@@ -311,6 +315,8 @@ img {
 
 #summary tr {
 	-webkit-border-radius: 10px 0;
+	-moz-border-radius: 10px 0;
+	border-radius: 10px 0;
 }
 
 #summary button {
@@ -879,7 +885,7 @@ button img {
 	background:         -ms-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
 	background:         linear-gradient(top, #ededed 0%, #c4c4c4 100%);
 	filter:             progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ededed', endColorstr = '#c4c4c4', GradientType = 0);
-	border:             1px solid #333;
+	border:             1px solid #999;
 	color:              #333;
 	line-height:        1.4;
 	cursor:             pointer;
