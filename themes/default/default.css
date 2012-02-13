@@ -42,9 +42,9 @@ input, select,textarea {
 	padding:   1px;
 	padding-left:4px;
 	border-radius: 4px;
-	-webkit-box-shadow: 0 0 5px #666 inset;
-	-moz-box-shadow: 0 0 5px #666 inset;
-	box-shadow: 0 0 5px #666 inset;
+	-webkit-box-shadow: 0 0 3px #333 inset;
+	-moz-box-shadow: 0 0 3px #333 inset;
+	box-shadow: 0 0 3px #333 inset;
 	line-height: 20px;
 
 }
@@ -57,6 +57,9 @@ input, textarea {
 	-moz-border-radius: 4px;
 text-indent: 3px;
 	margin-left: 3px;
+}
+textarea {
+	border-radius: 4px 4px 0 4px;
 }
 select {
 	font-size: 11px;
@@ -78,7 +81,6 @@ input[type="checkbox"] {
 
 select, input {
 	height: 25px;
-
 	max-width: 300px;
 }
 
@@ -386,8 +388,8 @@ img {
 #topmenu a {
 	color:              #363636;
 	text-decoration:    none;
-	-moz-transition:    all 1s linear;
-	-webkit-transition: all 1s linear;
+	-moz-transition:    all .5s linear;
+	-webkit-transition: all .5s linear;
 	text-transform:     uppercase;
 	font-weight:        bold;
 	display:            block;
@@ -684,9 +686,6 @@ div.formbox {
 	margin:  0 auto;
 }
 
-div.formbox .input-text, div.formbox select, div.formbox textarea {
-	border: 1px solid #3b6e22;
-}
 
 div.formbox label {
 	display:       block;

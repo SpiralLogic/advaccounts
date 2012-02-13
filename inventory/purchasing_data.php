@@ -60,7 +60,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
-		$sql = "MODE_DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
 		DB::query($sql, "could not delete purchasing data");
 		Event::notice(_("The purchasing data item has been sucessfully deleted."));
