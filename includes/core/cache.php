@@ -6,7 +6,8 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache {
+	class Cache
+	{
 		/**
 		 * @var Memcached
 		 */
@@ -15,7 +16,6 @@
 		 * @var bool
 		 */
 		static protected $connected = false;
-
 		/**
 		 * @static
 		 * @return Memcached
@@ -23,13 +23,13 @@
 		static protected function i() {
 			if (static::$i === null) {
 				if (class_exists('Memcached', false)) {
-					$i = new Memcached($_SERVER["SERVER_NAME"]);
+					$i = new Memcached($_SERVER['HTTP_HOST']);
 					if (!count($i->getServerList())) {
 						$i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
 						$i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER["SERVER_NAME"]);
+						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER['HTTP_HOST']);
 						(Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
 						$i->addServer('127.0.0.1', 11211);
 					}
@@ -42,12 +42,11 @@
 			}
 			return (static::$connected) ? static::$i : false;
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param $key
-		 * @param $value
+		 * @param     $key
+		 * @param     $value
 		 * @param int $expires
 		 *
 		 * @return mixed
@@ -61,7 +60,14 @@
 			}
 			return $value;
 		}
-
+		static public function delete($key) {
+			if (static::i() !== false) {
+				static::i()->delete($key);
+			}
+			elseif (class_exists('Session', false)) {
+				unset($_SESSION['cache'][$key]);
+			}
+		}
 		/**
 		 * @static
 		 *
@@ -85,7 +91,6 @@
 			}
 			return $result;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -93,7 +98,6 @@
 		static public function getStats() {
 			return (static::$connected) ? static::i()->getStats() : false;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -101,7 +105,6 @@
 		static public function getVersion() {
 			return (static::$connected) ? static::i()->getVersion() : false;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -109,7 +112,6 @@
 		static public function getServerList() {
 			return (static::$connected) ? static::i()->getServerList() : false;
 		}
-
 		/**
 		 * @static
 		 *

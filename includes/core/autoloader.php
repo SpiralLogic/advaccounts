@@ -6,13 +6,15 @@
 	 * Time: 7:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Autoload_Exception extends Exception {
+	class Autoload_Exception extends Exception
+	{
 	}
 
 	/**
-	 *
+
 	 */
-	class Autoloader {
+	class Autoloader
+	{
 		/**
 		 * @var array
 		 */
@@ -29,25 +31,24 @@
 		 * @var array
 		 */
 		static protected $classes = array();
-
 		/**
 		 * @static
-		 *
+
 		 */
 		static function i() {
 			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
 			spl_autoload_register('Autoloader::load', true, true);
 			static::$classes = Cache::get('autoload.classes');
-			static::$loaded = Cache::get('autoload.paths');
+			static::$loaded  = Cache::get('autoload.paths');
+
 			if (!static::$classes) {
-				$core = include(DOCROOT . 'config' . DS . 'core.php');
+				$core   = include(DOCROOT . 'config' . DS . 'core.php');
 				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
 				static::add_classes((array)$core, COREPATH);
 				static::add_classes((array)$vendor, VENDORPATH);
 				Event::register_shutdown(__CLASS__);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -58,7 +59,6 @@
 			$path[] .= get_include_path();
 			set_include_path(implode(PATH_SEPARATOR, $path));
 		}
-
 		/**
 		 * @static
 		 *
@@ -74,10 +74,11 @@
 				static::$classes[$class] = $type . $dir . str_replace('_', DS, $class) . '.php';
 			}
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $path
+		 *
 		 * @return string
 		 */
 		static protected function tryPath($paths, $classname) {
@@ -91,9 +92,13 @@
 					return static::includeFile($filepath, $classname);
 				}
 			}
-			return false;
+			if (isset(static::$loaded[$classname])) {
+				unset (static::$loaded[$classname]);
+			}
+				static::$classes=false;
+				Cache::delete('autoload.classes');
+			throw new Autoload_Exception('File for class ' . $classname . ' could not be found.');
 		}
-
 		static public function load($classname) {
 			try {
 				if (isset(static::$loaded[$classname])) {
@@ -110,17 +115,17 @@
 				return Errors::exception_handler($e);
 			}
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $classname
+		 *
 		 * @internal param $class
 		 * @return bool|void
 		 * @throws Autoload_Exception
 		 */
 		static protected function findFile($classname) {
-	//		static::$time = microtime(true);
-
+			//		static::$time = microtime(true);
 			if (strpos($classname, 'Modules') !== false) {
 				return static::loadModules($classname);
 			}
@@ -137,9 +142,9 @@
 			$paths[] = COREPATH . $class . '.php';
 			return static::tryPath($paths, $classname);
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $filepath
 		 * @param $class
 		 *
@@ -155,24 +160,24 @@
 			}
 			if (!isset(static::$loaded[$class])) {
 				static::$loaded[$class] = $filepath;
-				if ($class != 'Cache' && $class != 'Event') Event::register_shutdown(__CLASS__);
+				if ($class != 'Cache' && $class != 'Event') {
+					Event::register_shutdown(__CLASS__);
+				}
 			}
-		//	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
+			//	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			return true;
 		}
-
 		static protected function loadModules($classname) {
-			$class = explode("\\", $classname);
+			$class     = explode("\\", $classname);
 			$mainclass = array_pop($class);
-			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
-			$class[] = $mainclass;
-			$class = implode(DS, $class);
-			$filepath = static::trypath(array(DOCROOT . $class . '.php'), $classname);
+			$class[]   = (count($class) > 1) ? 'classes' : $mainclass;
+			$class[]   = $mainclass;
+			$class     = implode(DS, $class);
+			$filepath  = static::trypath(array(DOCROOT . $class . '.php'), $classname);
 			if (!$filepath) {
 				throw new Autoload_Exception('Could not find module:' . $classname . ' here: ' . $class . '.php');
 			}
 		}
-
 		/**
 		 * @static
 		 * @return array
@@ -185,7 +190,6 @@
 			});
 			return static::$loadperf;
 		}
-
 		/**
 		 * @static
 		 * @return array
@@ -193,9 +197,8 @@
 		static public function getLoaded() {
 			return static::$loaded;
 		}
-
 		static public function _shutdown() {
-			Cache::set('autoload.classes', static::$classes);
+	if (static::$classes)	Cache::set('autoload.classes', static::$classes);
 			Cache::set('autoload.paths', static::$loaded);
 		}
 	}

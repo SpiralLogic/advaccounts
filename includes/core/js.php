@@ -260,7 +260,7 @@ JS;
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 
-			HTML::script(array('content' => $content))->script;
+			HTML::script(array('content' => JSMin::minify($content)))->script;
 		}
 
 		/**
