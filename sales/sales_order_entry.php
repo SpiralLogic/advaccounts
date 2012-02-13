@@ -102,28 +102,38 @@
 	//--------------- --------------------------------------------------------------
 	if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($order)) {
 		copy_to_order($order);
+		$_SESSION['Jobsboard'] = clone ($order);
 		$modified = ($order->trans_no != 0);
 		$so_type = $order->so_type;
 		$trans_type = $order->trans_type;
 		Dates::new_doc_date($order->document_date);
 		$_SESSION['global_customer_id'] = $order->customer_id;
 		$order->write(1);
-		$jobsboard_order = clone ($order);
-		$trans_no = $jobsboard_order->trans_no = key($order->trans_no);
+		$trans_no = key($order->trans_no);
 		if (Errors::getSeverity() == -1) { // abort on failure or error messages are lost
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
 		$order->finish();
-		if ($trans_type == ST_SALESORDER) {
-			$jb = new			\Modules\Jobsboard();
-			$jb->addjob($jobsboard_order);
-		}
 		if ($modified) {
-			Display::meta_forward($_SERVER['PHP_SELF'], UPDATED . "=" . $trans_no . "&" . TYPE . "=" . $trans_type);
+			if ($trans_type == ST_SALESQUOTE) {
+				Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
 		}
 		else {
-			Display::meta_forward($_SERVER['PHP_SELF'], ADDED . "=" . $trans_no . "&" . TYPE . "=" . $trans_type);
+				Display::meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$trans_type", "");
+		}
+	}
+		elseif ($trans_type == ST_SALESORDER) {
+			Display::meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$trans_type", "");
+		}
+		elseif ($trans_type == ST_SALESQUOTE) {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
+		}
+		elseif ($trans_type == ST_SALESINVOICE) {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=" . ST_SALESINVOICE);
+		}
+		else {
+			Display::meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$trans_type");
 		}
 	}
 	if (isset($_POST['update'])) {
@@ -247,7 +257,7 @@
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
-		Event::notice(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
+		Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
 			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrder" :
@@ -579,8 +589,7 @@
 					$trans_type = $order->trans_type;
 					if (!isset($_GET[REMOVED_ID])) {
 						Sales_Order::delete($trans_no, $trans_type);
-						$jb = new \Modules\Jobsboard();
-						$jb->removejob($trans_no);
+						Display::meta_forward("/jobsboard/jobsboard/removejob/RemovedID/$trans_no/$trans_type", "");
 					}
 				}
 			}
