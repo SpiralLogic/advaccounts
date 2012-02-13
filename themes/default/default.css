@@ -38,25 +38,31 @@ table {
 	margin:     0 auto;
 }
 
-input, textarea {
+input, select,textarea {
 	padding:   1px;
 	padding-left:4px;
-	min-width: 50px;
-	border: none;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
 	-webkit-box-shadow: 0 0 5px #666 inset;
 	-moz-box-shadow: 0 0 5px #666 inset;
 	box-shadow: 0 0 5px #666 inset;
 	line-height: 20px;
-	text-indent: 3px;
+
+}
+
+
+input, textarea {
+	min-width: 50px;
+	border: none;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+text-indent: 3px;
 	margin-left: 3px;
 }
 select {
 	font-size: 11px;
 		padding:   1px;
-		min-width: 50px
+		min-width: 50px;
+	border: grey solid 1px;
 }
 input.big {
 	width: 100px;
@@ -711,7 +717,7 @@ input.amount, input.freight {
 }
 
 input.hasDatepicker {
-	max-width: 70px;
+	max-width: 85px;
 	min-width: inherit;
 }
 
@@ -1302,7 +1308,7 @@ body.lite {
 	color: red
 }
 
-.top {
+.top,tr.top td {
 	vertical-align: top;
 }
 
