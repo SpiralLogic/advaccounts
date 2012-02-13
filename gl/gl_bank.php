@@ -76,9 +76,9 @@
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			//	Event::error(_("The entered date is not in fiscal year."));
-			//	JS::set_focus('date_');
-			//	$input_error = 1;
+			Event::error(_("The entered date is not in fiscal year."));
+			JS::set_focus('date_');
+			$input_error = 1;
 		}
 		if ($input_error == 1) {
 			unset($_POST['Process']);
