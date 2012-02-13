@@ -23,13 +23,13 @@
 		static protected function i() {
 			if (static::$i === null) {
 				if (class_exists('Memcached', false)) {
-					$i = new Memcached($_SERVER['HTTP_HOST']);
+					$i = new Memcached($_SERVER["SERVER_NAME"]);
 					if (!count($i->getServerList())) {
 						$i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
 						$i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
 						$i->setOption(Memcached::OPT_TCP_NODELAY, true);
 						$i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER['HTTP_HOST']);
+						$i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER["SERVER_NAME"]);
 						(Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
 						$i->addServer('127.0.0.1', 11211);
 					}

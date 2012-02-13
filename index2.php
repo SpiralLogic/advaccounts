@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * Created by JetBrains PhpStorm.
  * User: advanced
  * Date: 9/02/12
@@ -7,4 +8,5 @@
  * To change this template use File | Settings | File Templates.
  */
 	include 'bootstrap.php';
-phpinfo();
+	echo '<pre>';var_dump(Cache::getStats());
+var_dump(Cache::getServerList());
