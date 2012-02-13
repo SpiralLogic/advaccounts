@@ -127,11 +127,14 @@
 	submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
 	end_form();
 	Page::end();
+
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
-
+/**
+ * @return bool
+ */
 	function check_item_data() {
 		//if (!Validation::is_num('amount', 0))
 		//{
