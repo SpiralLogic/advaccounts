@@ -22,6 +22,7 @@
 		/*** @var int */
 		static protected $current_severity = E_ALL;
 		/** @var array Error constants to text */
+		static protected $session=false;
 		static public $levels
 		 = array(
 			 -1 => 'Fatal!',
@@ -184,15 +185,13 @@
 				if (isset($_REQUEST) && count($_REQUEST)) {
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
-				if (isset($_SESSION) && count($_SESSION)) {
-					$session=$_SESSION;
-					unset($session['current_user'],$session['config'],$session['App']);
-					$text .= "<h3>Session: </h3>" . var_export($session, true) . "\n\n</pre></div>";
+				if (count(static::$session)) {
+					unset(static::$session['current_user'],static::$session['config'],static::$session['App']);
+					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
-
 				$subject = 'Error log: ';
-				if (isset($_SESSION['current_user'])) {
-					$subject .= $_SESSION['current_user']->username;
+				if (isset(static::$session['current_user'])) {
+					$subject .= static::$session['current_user']->username;
 				}
 				if (isset(static::$levels[static::$current_severity])) {
 					$subject .= ', Severity: ' . static::$levels[static::$current_severity];
@@ -242,13 +241,13 @@
 		/** @static */
 		public static function process() {
 			$last_error = error_get_last();
+			static::$session = $_SESSION;
 			// Only show valid fatal errors
 			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
 				Ajax::i()->aCommands = array();
 				static::$current_severity = -1;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
 					$last_error['line']);
-
 				static::exception_handler($error);
 			}
 			if (Ajax::in_ajax()) {
@@ -268,6 +267,7 @@
 			ob_end_clean();
 			$content = static::format();
 			Page::error_exit($content, false);
+			session_write_close();
 			fastcgi_finish_request();
 			static::send_debug_email();
 			exit();

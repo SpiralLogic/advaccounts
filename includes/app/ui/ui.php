@@ -148,7 +148,7 @@
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
-			Cache::set($UniqueID, $o);
+			$_SESSION['search'][$UniqueID]=$o;
 			$desc_js = $o['js'];
 			HTML::setReturn(true);
 			if ($o['cells']) {
