@@ -12,7 +12,13 @@
 	/**
 	 *
 	 */
-
+if (extension_loaded('xhprof')) {
+	$XHPROF_ROOT = realpath(dirname(__FILE__) .'/xhprof');
+	include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );
+}
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
