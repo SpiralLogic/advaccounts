@@ -60,7 +60,7 @@ class SessionException extends Exception {};
 			if (class_exists('Memcached', false)) {
 				ini_set('session.save_handler', 'Memcached');
 				ini_set('session.save_path', '127.0.0.1:11211');
-				(Memcached::HAVE_IGBINARY)	and ini_set('session.serialize_handler', 'igbinary');
+		//		(Memcached::HAVE_IGBINARY)	and ini_set('session.serialize_handler', 'igbinary');
 			}
 			if (!session_start()) {
 				ini_set('session.save_handler', 'files');

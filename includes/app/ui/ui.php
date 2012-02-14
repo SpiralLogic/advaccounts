@@ -148,7 +148,7 @@
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
-			Cache::set($UniqueID, $o, DB_Company::get_pref('login_tout'));
+			Cache::set($UniqueID, $o);
 			$desc_js = $o['js'];
 			HTML::setReturn(true);
 			if ($o['cells']) {

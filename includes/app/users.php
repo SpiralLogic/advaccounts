@@ -231,7 +231,7 @@
 				$timeout = $timestamp - $timeoutseconds;
 				$ip = static::get_ip();
 				// Add user to database
-				DB::query("INSERT INTO useronline (timestamp, ip, file) VALUES ('" . $timestamp . "','" . $ip . "','" . $_SERVER['PHP_SELF'] . "')");
+				DB::insert('useronline')->values(array('timestamp'=>$timestamp,'ip'=>$ip,'file'=>$_SERVER['PHP_SELF']))->exec();
 				//Remove users that were not online within $timeoutseconds.
 				DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
 				// Select online users
