@@ -176,7 +176,7 @@ JS;
 		 */
 		static public function tabs($id, $options = array(), $page = null) {
 			$defaults = array('noajax' => false, 'hasLinks' => false);
-			$hasLinks=false;
+			$hasLinks = false;
 			extract(array_merge($defaults, $options));
 			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
 			if ($hasLinks) {
@@ -259,8 +259,12 @@ JS;
 				$content .= "\n$(function() { " . $onReady . '});';
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-
-			HTML::script(array('content' => JSMin::minify($content)))->script;
+			$cachekey = 'js_min.'.md5($content);
+			$cachecontent = Cache::get($cachekey);
+			if (!$cachecontent) {
+				$cachecontent = Cache::set($cachekey, JSMin::minify($content));
+			}
+			HTML::script(array('content' => $cachecontent))->script;
 		}
 
 		/**
