@@ -6,13 +6,15 @@
 	 * Time: 7:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Autoload_Exception extends Exception {
+	class Autoload_Exception extends Exception
+	{
 	}
 
 	/**
 
 	 */
-	class Autoloader {
+	class Autoloader
+	{
 		/**
 		 * @var array
 		 */
@@ -29,7 +31,6 @@
 		 * @var array
 		 */
 		static protected $classes = array();
-
 		/**
 		 * @static
 
@@ -39,10 +40,6 @@
 			spl_autoload_register('Autoloader::loadCore', true);
 			static::$classes = Cache::get('autoload.classes');
 			static::$loaded = Cache::get('autoload.paths');
-			spl_autoload_register('Autoloader::loadApp', true,true);
-			spl_autoload_register('Autoloader::loadInterface', true, true);
-			spl_autoload_register('Autoloader::loadModule', true, true);
-			spl_autoload_register('Autoloader::loadFromCache', true, true);
 			if (!static::$classes) {
 				$core = include(DOCROOT . 'config' . DS . 'core.php');
 				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
@@ -50,8 +47,15 @@
 				static::add_classes((array)$vendor, VENDORPATH);
 				Event::register_shutdown(__CLASS__);
 			}
+			spl_autoload_register('Autoloader::loadVendor', true, true);
+			spl_autoload_register('Autoloader::loadApp', true, true);
+			spl_autoload_register('Autoloader::loadInterface', true, true);
+			spl_autoload_register('Autoloader::loadModule', true, true);
+			spl_autoload_register('Autoloader::loadFromCache', true, true);
 		}
-
+		static function load($classname) {
+			class_exists($classname);
+		}
 		/**
 		 * @static
 		 *
@@ -103,7 +107,8 @@
 			$result = false;
 			if (isset(static::$loaded[$classname])) {
 				$result = static::tryPath(static::$loaded[$classname], $classname);
-			} elseif (isset(static::$classes[$classname])) {
+			}
+			elseif (isset(static::$classes[$classname])) {
 				$result = static::tryPath(static::$classes[$classname], $classname);
 			}
 			if (!$result) {
@@ -115,7 +120,6 @@
 			if (strpos($classname, 'Modules') === false) {
 				return false;
 			}
-
 			$class = explode("\\", $classname);
 			$mainclass = array_pop($class);
 			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
@@ -130,10 +134,8 @@
 			}
 			return static::trypath(APPPATH . 'interfaces' . DS . substr($class, 1) . '.php', $classname);
 		}
-
 		static public function loadApp($classname) {
 			$class = str_replace('_', DS, $classname);
-
 			$lowerclass = strtolower($class);
 			$paths[] = APPPATH . $class . '.php';
 			$paths[] = APPPATH . $lowerclass . '.php';
@@ -141,16 +143,22 @@
 			$paths[] = APPPATH . $lowerclass . DS . $lowerclass . '.php';
 			return static::trypath($paths, $classname);
 		}
-
+		static public function loadVendor($classname) {
+			$class = str_replace('_', DS, $classname);
+			$lowerclass = strtolower($class);
+			$paths[] = VENDORPATH . $class . '.php';
+			$paths[] = VENDORPATH . $lowerclass . '.php';
+			$paths[] = VENDORPATH . $class . DS . $class . '.php';
+			$paths[] = VENDORPATH . $lowerclass . DS . $lowerclass . '.php';
+			return static::trypath($paths, $classname);
+		}
 		static public function loadCore($classname) {
 			$class = str_replace('_', DS, $classname);
-
 			$lowerclass = strtolower($class);
 			$paths[] = COREPATH . $class . '.php';
 			$paths[] = COREPATH . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}
-
 		/**
 		 * @static
 		 *
@@ -176,8 +184,6 @@
 			//	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			return true;
 		}
-
-
 		/**
 		 * @static
 		 * @return array
@@ -190,7 +196,6 @@
 			});
 			return static::$loadperf;
 		}
-
 		/**
 		 * @static
 		 * @return array
@@ -198,9 +203,10 @@
 		static public function getLoaded() {
 			return static::$loaded;
 		}
-
 		static public function _shutdown() {
-			if (static::$classes) Cache::set('autoload.classes', static::$classes);
+			if (static::$classes) {
+				Cache::set('autoload.classes', static::$classes);
+			}
 			Cache::set('autoload.paths', static::$loaded);
 		}
 	}
