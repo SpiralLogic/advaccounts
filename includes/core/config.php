@@ -131,7 +131,7 @@
 		 *
 		 */
 		static public function _shutdown() {
-			static::set('config', static::$_vars);
+			Cache::set('config', static::$_vars);
 		}
 		/**
 		 * @staticx

@@ -33,6 +33,7 @@
 	$buildversion = Cache::get('build.version',false);
 	if (!$buildversion) {
 		define('BUILD_VERSION',	file_get_contents(DOCROOT.'version'));
+		Cache::set('build.version',BUILD_VERSION);
 	} else {
 		define('BUILD_VERSION',	$buildversion);
 

@@ -12,13 +12,18 @@
 	/**
 	 *
 	 */
-
+	if (extension_loaded('xhprof')) {
+		$XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
+		include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS);
+	}
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 	define('E_SUCCESS', E_ALL << 1);
-
 	define('DS', DIRECTORY_SEPARATOR);
 	/**
 	 *
@@ -57,8 +62,8 @@
 	/**
 	 *
 	 */
-
-	define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ?:'.');
+	define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
+	 '.');
 	/**
 	 * Do we have access to mbstring?
 	 * We need this in order to work with UTF-8 strings
@@ -73,7 +78,7 @@
 		return \Errors::exception_handler($e);
 	});
 	if (!function_exists('e')) {
-		function e($string){return Security::htmlentities($string);}
+		function e($string) { return Security::htmlentities($string); }
 	}
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {

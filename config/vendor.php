@@ -23,5 +23,6 @@
 		'JsHttpRequest', //
 		'tcpdf/'=>'TCPDF',//
 		'Cpdf', //
+		'JSMin', //
 
 	);

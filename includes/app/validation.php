@@ -47,7 +47,8 @@
 			if ($extra === false) {
 				return 0;
 			}
-			if (Cache::get('validation.' . $validate)) {
+			$cachekey = 'validation.' .md5($validate.$extra);
+			if (Cache::get($cachekey )) {
 				return 1;
 			}
 			if ($extra !== null) {
@@ -61,13 +62,14 @@
 			else {
 				$extra = '';
 			}
+
 			$result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
 			$myrow = DB::fetch_row($result);
 			if (!($myrow[0] > 0)) {
 				throw new Adv_Exception($msg);
 			}
 			else {
-				Cache::set('validation.' . $validate, true);
+				Cache::set($cachekey, true);
 				return $myrow[0];
 			}
 		}

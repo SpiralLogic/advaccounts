@@ -437,7 +437,7 @@ s.category_id, editable, 0 as kit,
 		}
 
 		static public function searchOrder($term, $UniqueID) {
-			$o = Cache::get($UniqueID);
+			$o = $_SESSION['search'][$UniqueID];
 			$term = explode(' ', trim($term));
 			$item_code = trim(array_shift($term));
 			$terms = array($item_code, '%' . $item_code . '%');

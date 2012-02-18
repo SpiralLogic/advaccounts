@@ -1,6 +1,11 @@
 <?php
-	include 'bootstrap.php';
-$test = new \Modules\Jobsboard();
-$test->get_job(1254);
-echo '<pre>';
-var_dump($test);
+/**
+ *
+ * Created by JetBrains PhpStorm.
+ * User: advanced
+ * Date: 9/02/12
+ * Time: 5:33 PM
+ * To change this template use File | Settings | File Templates.
+ */
+include 'bootstrap.php';
+phpinfo();

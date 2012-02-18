@@ -41,7 +41,7 @@ var Items = function () {
 	 $locationFrame = $('#locationFrame'),
 	 $webFrame = $('#webFrame'),
 	 $selects = $('select'),
-	 urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g;
+	 urlregex = /[\w\-\.:/=ƒ&!~\*\'"(),]+/g;
 	var $buyFrameSrc = $('#buyFrame').data('src').match(urlregex)[0] + '?frame=1',
 	 $sellFrameSrc = $('#sellFrame').data('src').match(urlregex)[0] + '?frame=1',
 	 $locationFrameSrc = $('#locationFrame').data('src').match(urlregex)[0] + '?frame=1',

@@ -107,7 +107,7 @@
 	if (isset($order->supplier_id)) {
 		Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
 	}
-	Page::end();
+	Page::end(true);
 	/**
 	 * @param $order
 	 *
@@ -175,7 +175,13 @@
 	 * @return mixed
 	 */
 	function handle_cancel_po($order) {
-		//need to check that not already dispatched or invoiced by the supplier
+	if (!$order) {
+		Display::meta_forward('/index.php', 'application=Purchases');
+
+	}
+
+				//need to check that not already dispatched or invoiced by the supplier
+
 		if (($order->order_no != 0) && $order->any_already_received() == 1) {
 			Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 			return;
@@ -191,7 +197,7 @@
 		Event::notice(_("This purchase order has been cancelled."));
 		Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
-		Page::end();
+		Page::end(true);
 		exit;
 	}
 

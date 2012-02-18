@@ -446,7 +446,6 @@ img {
 	background:       -ms-linear-gradient(top, #ffe7aa 0%, #ffb405 50%, #febf04 100%);
 	background:       linear-gradient(top, #ffe7aa 0%, #ffb405 50%, #febf04 100%);
 	filter:           progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe7aa', endColorstr = '#febf04', GradientType = 0);
-	color:            #363636;
 }
 
 /*--------------------------------- END TOP MENU -----------------------------------------------------------------*/
@@ -578,6 +577,7 @@ img {
 	margin:      0 auto;
 	font-weight: bold;
 	text-align:  center;
+
 }
 
 div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
