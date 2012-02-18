@@ -22,7 +22,7 @@
 		/*** @var int */
 		static protected $current_severity = E_ALL;
 		/** @var array Error constants to text */
-		static protected $session=false;
+		static protected $session = false;
 		static public $levels
 		 = array(
 			 -1 => 'Fatal!',
@@ -76,6 +76,7 @@
 
 		/**
 		 * @static
+		 *
 		 * @param $type
 		 * @param $message
 		 * @param $file
@@ -109,6 +110,7 @@
 
 		/**
 		 * @static
+		 *
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
@@ -124,6 +126,14 @@
 			static::$messages[] = $error;
 			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
 			static::$errors[] = $error;
+		}
+
+		/** @static */
+		static function error_box() {
+			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
+			static::$before_box = ob_get_clean(); // save html content before error box
+			ob_start('adv_ob_flush_handler');
+			echo "</div>";
 		}
 
 		/**
@@ -186,7 +196,7 @@
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
 				if (count(static::$session)) {
-					unset(static::$session['current_user'],static::$session['config'],static::$session['App']);
+					unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
 					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
 				$subject = 'Error log: ';
@@ -214,17 +224,11 @@
 			}
 		}
 
-		/** @static */
-		static function error_box() {
-			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
-			static::$before_box = ob_get_clean(); // save html content before error box
-			ob_start('adv_ob_flush_handler');
-			echo "</div>";
-		}
-
 		/***
 		 * @static
+		 *
 		 * @param $backtrace
+		 *
 		 * @return mixed
 		 */
 		static protected function prepare_backtrace($backtrace) {
@@ -281,7 +285,9 @@
 
 		/**
 		 * @static
+		 *
 		 * @param bool $json
+		 *
 		 * @return array|bool|string
 		 */
 		static public function JSONError() {
@@ -314,8 +320,10 @@
 
 		/**
 		 * @static
+		 *
 		 * @param						$msg
 		 * @param null			 $sql_statement
+		 *
 		 * @internal param bool $exit
 		 * @throws DBException
 		 */

@@ -15,8 +15,7 @@ class SessionException extends Exception {};
 	/**
 	 *
 	 */
-	class Session extends Input
-	{
+	class Session extends Input {
 		/**
 		 * @static
 		 * @return Session|mixed
@@ -25,20 +24,23 @@ class SessionException extends Exception {};
 			(static::$i === null) and static::$i = new static;
 			return static::$i;
 		}
+
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function kill() {
 			session_unset();
 			session_destroy();
 		}
+
 		/**
 		 * @static
 		 */
 		static public function regenerate() {
 			session_regenerate_id();
 		}
+
 		/**
 		 * @var Session
 		 */
@@ -51,8 +53,9 @@ class SessionException extends Exception {};
 		 * @var array
 		 */
 		protected $_session = array();
+
 		/**
-		 *
+
 		 */
 		final protected function __construct() {
 			ini_set('session.gc_maxlifetime', 3200); // 10hrs

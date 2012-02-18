@@ -18,7 +18,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-
 	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
@@ -32,7 +31,7 @@
 	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
-	Page::start(_($help_context = "Items"), SA_ITEM,Input::request('frame'));
+	Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">

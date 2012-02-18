@@ -6,15 +6,13 @@
 	 * Time: 7:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Autoload_Exception extends Exception
-	{
+	class Autoload_Exception extends Exception {
 	}
 
 	/**
 
 	 */
-	class Autoloader
-	{
+	class Autoloader {
 		/**
 		 * @var array
 		 */
@@ -31,24 +29,29 @@
 		 * @var array
 		 */
 		static protected $classes = array();
+
 		/**
 		 * @static
 
 		 */
 		static function i() {
 			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
-			spl_autoload_register('Autoloader::load', true, true);
+			spl_autoload_register('Autoloader::loadCore', true);
 			static::$classes = Cache::get('autoload.classes');
-			static::$loaded  = Cache::get('autoload.paths');
-
+			static::$loaded = Cache::get('autoload.paths');
+			spl_autoload_register('Autoloader::loadApp', true,true);
+			spl_autoload_register('Autoloader::loadInterface', true, true);
+			spl_autoload_register('Autoloader::loadModule', true, true);
+			spl_autoload_register('Autoloader::loadFromCache', true, true);
 			if (!static::$classes) {
-				$core   = include(DOCROOT . 'config' . DS . 'core.php');
+				$core = include(DOCROOT . 'config' . DS . 'core.php');
 				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
 				static::add_classes((array)$core, COREPATH);
 				static::add_classes((array)$vendor, VENDORPATH);
 				Event::register_shutdown(__CLASS__);
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -84,10 +87,7 @@
 		static protected function tryPath($paths, $classname) {
 			$paths = (array)$paths;
 			while ($path = array_shift($paths)) {
-				$filepath = realpath(str_replace(strtolower(DOCROOT), DOCROOT, strtolower($path)));
-				if (empty($filepath)) {
-					$filepath = realpath($path);
-				}
+				$filepath = realpath($path);
 				if ($filepath) {
 					return static::includeFile($filepath, $classname);
 				}
@@ -95,53 +95,57 @@
 			if (isset(static::$loaded[$classname])) {
 				unset (static::$loaded[$classname]);
 			}
-				static::$classes=false;
-				Cache::delete('autoload.classes');
-			throw new Autoload_Exception('File for class ' . $classname . ' could not be found.');
+			static::$classes = false;
+			Cache::delete('autoload.classes');
+			return false;
 		}
-		static public function load($classname) {
-			try {
-				if (isset(static::$loaded[$classname])) {
-					return static::tryPath(static::$loaded[$classname], $classname);
-				}
+		static public function loadFromCache($classname) {
+			$result = false;
+			if (isset(static::$loaded[$classname])) {
+				$result = static::tryPath(static::$loaded[$classname], $classname);
+			} elseif (isset(static::$classes[$classname])) {
+				$result = static::tryPath(static::$classes[$classname], $classname);
 			}
-			catch (Autoload_Exception $e) {
+			if (!$result) {
 				Event::register_shutdown(__CLASS__);
 			}
-			try {
-				static::findFile($classname);
-			}
-			catch (Autoload_Exception $e) {
-				return Errors::exception_handler($e);
-			}
+			return $result;
 		}
-		/**
-		 * @static
-		 *
-		 * @param $classname
-		 *
-		 * @internal param $class
-		 * @return bool|void
-		 * @throws Autoload_Exception
-		 */
-		static protected function findFile($classname) {
-			//		static::$time = microtime(true);
-			if (strpos($classname, 'Modules') !== false) {
-				return static::loadModules($classname);
+		static public function loadModule($classname) {
+			if (strpos($classname, 'Modules') === false) {
+				return false;
 			}
-			$class = $classname;
-			if (isset(static::$classes[$class])) {
-				$paths[] = static::$classes[$class];
+			$class = explode("\\", $classname);
+			$mainclass = array_pop($class);
+			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
+			$class[] = $mainclass;
+			$class = implode(DS, $class);
+			return static::trypath(DOCROOT . $class . '.php', $classname);
+		}
+		static public function loadInterface($classname) {
+			$class = str_replace('_', DS, $classname);
+			if (substr($class, 0, 1) != 'I') {
+				return false;
 			}
-			$class = str_replace('_', DS, $class);
-			if (substr($class, 0, 1) == 'I') {
-				$paths[] = APPPATH . 'interfaces' . DS . substr($class, 1) . '.php';
-			}
-			$paths[] = APPPATH . $class . '.php';
-			$paths[] = APPPATH . $class . DS . $class . '.php';
-			$paths[] = COREPATH . $class . '.php';
+			return static::trypath(APPPATH . 'interfaces' . DS . substr($class, 1) . '.php', $classname);
+		}
+
+		static public function loadApp($classname) {
+			$lowerclass = strtolower($classname);
+			$paths[] = APPPATH . $classname . '.php';
+			$paths[] = APPPATH . $lowerclass . '.php';
+			$paths[] = APPPATH . $classname . DS . $classname . '.php';
+			$paths[] = APPPATH . $lowerclass . DS . $lowerclass . '.php';
+			return static::trypath($paths, $classname);
+		}
+
+		static public function loadCore($classname) {
+			$lowerclass = strtolower($classname);
+			$paths[] = COREPATH . $classname . '.php';
+			$paths[] = COREPATH . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}
+
 		/**
 		 * @static
 		 *
@@ -167,17 +171,8 @@
 			//	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			return true;
 		}
-		static protected function loadModules($classname) {
-			$class     = explode("\\", $classname);
-			$mainclass = array_pop($class);
-			$class[]   = (count($class) > 1) ? 'classes' : $mainclass;
-			$class[]   = $mainclass;
-			$class     = implode(DS, $class);
-			$filepath  = static::trypath(array(DOCROOT . $class . '.php'), $classname);
-			if (!$filepath) {
-				throw new Autoload_Exception('Could not find module:' . $classname . ' here: ' . $class . '.php');
-			}
-		}
+
+
 		/**
 		 * @static
 		 * @return array
@@ -190,6 +185,7 @@
 			});
 			return static::$loadperf;
 		}
+
 		/**
 		 * @static
 		 * @return array
@@ -197,8 +193,9 @@
 		static public function getLoaded() {
 			return static::$loaded;
 		}
+
 		static public function _shutdown() {
-	if (static::$classes)	Cache::set('autoload.classes', static::$classes);
+			if (static::$classes) Cache::set('autoload.classes', static::$classes);
 			Cache::set('autoload.paths', static::$loaded);
 		}
 	}

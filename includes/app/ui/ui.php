@@ -6,8 +6,7 @@
 	 * Time: 5:47 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class UI extends HTML
-	{
+	class UI extends HTML {
 		static function button($id = false, $content = false, $attr = array()) {
 			if ($id) {
 				$attr['id'] = $id;
@@ -21,6 +20,7 @@
 			HTML::button($id, $content, $attr, false);
 			return static::$_instance;
 		}
+
 		static function select($id = false, $options = array(), $params = array()) {
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array)$options as $label => $option) {
@@ -38,6 +38,7 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
+
 		/***
 		 * @static
 		 *
@@ -46,7 +47,6 @@
 		 * @param array $options
 		 *
 		 * @return HTML|null
-		 *
 		 * url: url to get search results from<br>
 		 * label: if set becomes the text of a &lt;label&gt; element for the input<br>
 		 * size: size of the input<br>
@@ -54,7 +54,7 @@
 		 * nodiv: if true then a div is not included<br>
 		 * callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
 		 * options: Javascript function autocomplete options<br>
-		 *
+
 		 */
 		static function search($id, $attr = array(), $options = array()) {
 			$o = array(
@@ -97,12 +97,13 @@
 			JS::autocomplete($id, $callback, $url, $options);
 			return static::$_instance;
 		}
+
 		/**
 		 * @static
 		 *
-		 * @param        $id
+		 * @param				$id
 		 * @param string $url
-		 * @param array  $options 'description' => false,<br>
+		 * @param array	$options 'description' => false,<br>
 		'disabled' => false,<br>
 		'editable' => true,<br>
 		'selected' => '',<br>
@@ -148,7 +149,7 @@
 			);
 			$o = array_merge($defaults, $options);
 			$UniqueID = md5(serialize($o));
-			$_SESSION['search'][$UniqueID]=$o;
+			$_SESSION['search'][$UniqueID] = $o;
 			$desc_js = $o['js'];
 			HTML::setReturn(true);
 			if ($o['cells']) {
@@ -160,8 +161,8 @@
 			HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'size' => $o['size']));
 			if ($o['editable']) {
 				HTML::label('lineedit', 'edit', array(
-																						 'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-																				), false);
+					'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+				), false);
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cells']) {
@@ -173,8 +174,8 @@
 			}
 			elseif ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array(
-																															'name' => 'description', 'rows' => 1, 'cols' => 35
-																												 ), false);
+					'name' => 'description', 'rows' => 1, 'cols' => 35
+				), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}
 			elseif ($o['submitonselect']) {
@@ -242,6 +243,7 @@ JS;
 			JS::addLive($js, $clean);
 			return HTML::setReturn(false);
 		}
+
 		static public function emailDialogue($contactType) {
 			static $loaded = false;
 			if ($loaded == true) {
@@ -250,8 +252,8 @@ JS;
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$emailBox->setOptions(array(
-																 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-														));
+				'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+			));
 			$emailBox->show();
 			$action
 			 = <<<JS

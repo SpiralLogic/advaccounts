@@ -1,7 +1,7 @@
 <?php
 	include(DOCROOT . 'modules/smartoptimizer/minifiers/js.php');
 	/**
-	 *
+
 	 */
 	class JS {
 		/**
@@ -39,7 +39,7 @@
 		static private $_openWindow = false;
 
 		/**
-		 *
+
 		 */
 		private function __construct() {
 		}
@@ -111,7 +111,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function png_fix() {
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
@@ -120,7 +120,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function get_websales() {
 			static $inserted;
@@ -144,10 +144,9 @@ JS;
 		 * @param null $name
 		 *
 		 * @return null|string
-		 *
 		 * Set default focus on first field $name if not set yet
 		 * Returns unique name if $name=null
-		 *
+
 		 */
 		static public function default_focus($name = null) {
 			if ($name == null) {
@@ -161,7 +160,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function reset_focus() {
 			unset($_POST['_focus']);
@@ -212,7 +211,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function renderHeader() {
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
@@ -225,7 +224,7 @@ JS;
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static public function render() {
 			$files = $content = $onReady = '';
@@ -259,7 +258,7 @@ JS;
 				$content .= "\n$(function() { " . $onReady . '});';
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-			$cachekey = 'js_min.'.md5($content);
+			$cachekey = 'js_min.' . md5($content);
 			$cachecontent = Cache::get($cachekey);
 			if (!$cachecontent) {
 				$cachecontent = Cache::set($cachekey, JSMin::minify($content));
@@ -457,6 +456,7 @@ JS;
 
 		/**
 		 * @static
+		 *
 		 * @param $url
 		 */
 		static public function redirect($url) {
