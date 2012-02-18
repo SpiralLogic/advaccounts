@@ -245,7 +245,7 @@
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Debtor::addEditDialog();
 	Item::addEditDialog();
-	Page::end();
+	Page::end(true);
 	unset($_SESSION['order_no']);
 	/**
 	 * @param				$order_no

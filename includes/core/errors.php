@@ -183,6 +183,7 @@
 				if (count(static::$messages)) {
 					$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
 				}
+				$id=md5($text);
 				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
 				if (isset($_POST) && count($_POST)) {
 					$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
@@ -195,13 +196,14 @@
 				if (isset($_REQUEST) && count($_REQUEST)) {
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
-				if (count(static::$session)) {
-					unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
-					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
-				}
+
 				$subject = 'Error log: ';
 				if (isset(static::$session['current_user'])) {
 					$subject .= static::$session['current_user']->username;
+				}
+				if (count(static::$session)) {
+									unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
+									$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
 				if (isset(static::$levels[static::$current_severity])) {
 					$subject .= ', Severity: ' . static::$levels[static::$current_severity];
@@ -209,7 +211,7 @@
 				if (count(static::$dberrors)) {
 					$subject .= ', DB Error';
 				}
-
+$subject.= ' '.$id;
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";

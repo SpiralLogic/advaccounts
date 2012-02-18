@@ -115,6 +115,7 @@
 			if (strpos($classname, 'Modules') === false) {
 				return false;
 			}
+
 			$class = explode("\\", $classname);
 			$mainclass = array_pop($class);
 			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
@@ -131,17 +132,21 @@
 		}
 
 		static public function loadApp($classname) {
-			$lowerclass = strtolower($classname);
-			$paths[] = APPPATH . $classname . '.php';
+			$class = str_replace('_', DS, $classname);
+
+			$lowerclass = strtolower($class);
+			$paths[] = APPPATH . $class . '.php';
 			$paths[] = APPPATH . $lowerclass . '.php';
-			$paths[] = APPPATH . $classname . DS . $classname . '.php';
+			$paths[] = APPPATH . $class . DS . $class . '.php';
 			$paths[] = APPPATH . $lowerclass . DS . $lowerclass . '.php';
 			return static::trypath($paths, $classname);
 		}
 
 		static public function loadCore($classname) {
-			$lowerclass = strtolower($classname);
-			$paths[] = COREPATH . $classname . '.php';
+			$class = str_replace('_', DS, $classname);
+
+			$lowerclass = strtolower($class);
+			$paths[] = COREPATH . $class . '.php';
 			$paths[] = COREPATH . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}

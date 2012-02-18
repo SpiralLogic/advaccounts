@@ -6,72 +6,59 @@
 	 * Time: 6:39 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Event {
+	class Event
+	{
 		protected static $shutdown_objects = array();
 		protected static $request_finsihed = false;
-
 		static function i() {
 			if (isset($_SESSION['event.messages'])) {
 				while ($msg = array_pop($_SESSION['event.messages'])) {
-					static::handle($msg[0], $msg[1]);
+					static::handle($msg[0], $msg[1], $msg[2]);
 				}
 				unset($_SESSION['event.messages']);
 			}
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param string $message Error message
 		 */
 		static function error($message) {
-			$source = reset(debug_backtrace());
-			$message = $message . '||' . $source['file'] . '||' . $source['line'];
-			static::handle($message, E_USER_ERROR);
+			static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param string $message
 		 */
 		static function notice($message) {
-			$source = reset(debug_backtrace());
-			$message = $message . '||' . $source['file'] . '||' . $source['line'];
-			static::handle($message, E_USER_NOTICE);
+			static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param string $message
 		 */
 		static function success($message) {
-			$source = reset(debug_backtrace());
-			$message = $message . '||' . $source['file'] . '||' . $source['line'];
-			static::handle($message, E_SUCCESS);
+			static::handle($message, reset(debug_backtrace()), E_SUCCESS);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param $message
 		 */
 		static function warning($message) {
-			$source = reset(debug_backtrace());
-			$message = $message . '||' . $source['file'] . '||' . $source['line'];
-			static::handle($message, E_USER_WARNING);
+			static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
 		}
-
-		protected static function handle($message, $type) {
+		protected static function handle($message, $source, $type) {
 			if (static::$request_finsihed) {
-				$_SESSION['event.messages'][] = array($message, $type);
+				$_SESSION['event.messages'][] = array($message, $source, $type);
 			}
 			else {
+				$message = $message . '||' . $source['file'] . '||' . $source['line'];
 				($type == E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -82,7 +69,6 @@
 				static::$shutdown_objects[] = $object;
 			}
 		}
-
 		/*** @static Shutdown handler */
 		static function shutdown() {
 			Ajax::i();
