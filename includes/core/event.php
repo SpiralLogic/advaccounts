@@ -10,12 +10,15 @@
 	{
 		protected static $shutdown_objects = array();
 		protected static $request_finsihed = false;
+		protected static $shutdown_events = array();
+		protected static $shutdown_events_id;
 		static function i() {
-			if (isset($_SESSION['event.messages'])) {
-				while ($msg = array_pop($_SESSION['event.messages'])) {
+			static::$shutdown_events_id='shutdown.events.'.User::get()->username;
+			$shutdown_events = Cache::get(static::$shutdown_events_id);
+			if ($shutdown_events) {
+				while ($msg = array_pop($shutdown_events)) {
 					static::handle($msg[0], $msg[1], $msg[2]);
 				}
-				unset($_SESSION['event.messages']);
 			}
 		}
 		/**
@@ -52,7 +55,7 @@
 		}
 		protected static function handle($message, $source, $type) {
 			if (static::$request_finsihed) {
-				$_SESSION['event.messages'][] = array($message, $source, $type);
+				static::$shutdown_events[] = array($message, $source, $type);
 			}
 			else {
 				$message = $message . '||' . $source['file'] . '||' . $source['line'];
@@ -91,6 +94,8 @@
 					static::error('Error during post processing: ' . $e->getMessage());
 				}
 			}
+
+			Cache::set(static::$shutdown_events_id,static::$shutdown_events);
 			if (extension_loaded('xhprof')) {
 				$profiler_namespace = 'advaccounts'; // namespace for your application
 				$xhprof_data = xhprof_disable();
@@ -100,4 +105,3 @@
 		}
 	}
 
-	Event::i();

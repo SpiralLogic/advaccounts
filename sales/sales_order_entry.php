@@ -74,13 +74,7 @@
 		Ajax::i()->activate('customer_id');
 	}
 
-	if (isset($_GET[ADDED])) {
-		page_complete($_GET[ADDED], $_GET['type'], "Order", true);
-	}
-	elseif (isset($_GET[UPDATED])) {
-		page_complete($_GET[UPDATED], $_GET['type'], "Order", true);
-	}
-	elseif (isset($_GET[REMOVED])) {
+if (isset($_GET[REMOVED])) {
 		if ($_GET['type'] == ST_SALESQUOTE) {
 			Event::notice(_("This sales quotation has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?add=0type=" . ST_SALESQUOTE);
@@ -113,12 +107,9 @@
 			$jb = new			\Modules\Jobsboard();
 			$jb->addjob($jobsboard_order);
 		}
-		if ($modified) {
-			Display::meta_forward($_SERVER['PHP_SELF'], UPDATED . "=" . $trans_no . "&" . TYPE . "=" . $trans_type);
-		}
-		else {
-			Display::meta_forward($_SERVER['PHP_SELF'], ADDED . "=" . $trans_no . "&" . TYPE . "=" . $trans_type);
-		}
+
+			page_complete($trans_no, $trans_type, "Order", true,$modified);
+
 	}
 	if (isset($_POST['update'])) {
 		Ajax::i()->activate('items_table');
@@ -260,7 +251,7 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?QuoteToOrder=$order_no");
-			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=32");
+			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=".ST_SALESQUOTE);
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {
@@ -270,7 +261,7 @@
 			Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
 			((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
 			 Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
+			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=".ST_CUSTDELIVERY);
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
 			$sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
@@ -479,7 +470,7 @@
 	 * @return bool
 	 */
 	function check_item_data($order) {
-		if (!User::get()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num(Disc, 0, 100))) {
+		if (!User::get()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;

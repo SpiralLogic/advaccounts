@@ -121,6 +121,8 @@
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				static::checkLogin();
 			}
+			Event::i();
+
 			if (!isset($_SESSION["App"])) {
 				$_SESSION["App"] = new ADVAccounting();
 			}

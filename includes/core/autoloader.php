@@ -125,7 +125,7 @@
 			$class[] = (count($class) > 1) ? 'classes' : $mainclass;
 			$class[] = $mainclass;
 			$class = implode(DS, $class);
-			return static::trypath(DOCROOT . $class . '.php', $classname);
+			return static::trypath(DOCROOT . strtolower($class) . '.php', $classname);
 		}
 		static public function loadInterface($classname) {
 			$class = str_replace('_', DS, $classname);
