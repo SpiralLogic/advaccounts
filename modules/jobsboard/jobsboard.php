@@ -7,11 +7,11 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	namespace Modules;
+		/**
+
+		 */
 	/**
-	 *
-	 */
-	/**
-	 *
+
 	 */
 	class Jobsboard {
 		/**
@@ -29,6 +29,7 @@
 
 		/***
 		 * @param $trans_no
+		 *
 		 * @return mixed
 		 */
 		function removejob($trans_no) {
@@ -48,8 +49,10 @@
 			\DB::change_connection();
 			return false;
 		}
+
 		/**
 		 * @param \Sales_Order $job_data
+		 *
 		 * @internal param $type
 		 * @internal param $trans_no
 		 * @internal param $so_type
@@ -120,9 +123,13 @@
 
 		/**
 		 * @static
-		 *
+
 		 */
 		static function tasks() {
+			$webstore = \Config::get('webstore.type');
+			$webstore = '\\Modules\\' . $webstore;
+			$store = new $webstore();
+			$store->doWebsales();
 			\DB::change_connection('jobsboard');
 			$result = false;
 			try {
@@ -151,6 +158,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 
 		/***
 		 * @param $trans_no
+		 *
 		 * @return array
 		 */
 		function get_job($trans_no) {
@@ -161,7 +169,6 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 
 		/***
 		 * @return bool
-		 *
 		 * Returns if there is currently a job that exists stored in currentJob
 		 */
 		protected function jobExists() {
@@ -172,9 +179,8 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		}
 
 		/**
-		 * @param array $data  Data to insert as job
-		 *
-		 * Will insert lines
+		 * @param array $data	Data to insert as job
+		 *										 Will insert lines
 		 */
 		protected function insertJob($data) {
 			$result = \DB::insert('Job_List')->values($data)->exec();
@@ -196,7 +202,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		}
 
 		/**
-		 *
+
 		 */
 		protected function insertLines() {
 			$lines = $this->lines;
@@ -233,16 +239,17 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		 */
 		protected function getLines() {
 			$lines = \DB::select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
-	$result = array();
-				foreach ($lines as $line) {
-					$result[$line['line_id']] = $line;
+			$result = array();
+			foreach ($lines as $line) {
+				$result[$line['line_id']] = $line;
 			}
 			return $result;
 		}
-/***
- * Get line from order
- * @return array Lines from accounting order
- */
+
+		/***
+		 * Get line from order
+		 * @return array Lines from accounting order
+		 */
 		protected function getOrderLines() {
 			$lines = \DB::select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
 			return $lines;

@@ -9,49 +9,49 @@
 	namespace Modules;
 	use \Modules\Volusion\Orders as Orders;
 
-	class Volusion
-	{
+	class Volusion {
 		function __construct() {
-			\DB::connect(\Config::get('db_jobsboard'));
 		}
 
 		function doWebsales() {
-			echo "<br><br>Retrieving new webWales from Volusion<br>";
+			//echo "<br><br>Retrieving new webWales from Volusion<br>";
 
 			$orders = $this->getNewWebsales();
-
 			if (count($orders) > 0) {
-				echo "<br><br>Jamming all new orders in local database to Jobs Board<br>";
+				//				echo "<br><br>Jamming all new orders in local database to Jobs Board<br>";
 			}
 			else {
-				echo "<br><br>No new websales, checking for local strays<br>";
+				\Event::notice("No new websales from website");
 			}
 			$result = $this->notOnJobsboard();
 			if ($result) {
-				echo "<br><br>New orders successfully added!<br>";
+				//echo "<br><br>New orders successfully added!<br>";
 			}
-			echo "<br><br>Updating Jobs Board with fetched orders<br>";
-
+			//echo "<br><br>Updating Jobs Board with fetched orders<br>";
+			$success = 0;
 			foreach ($orders as $order) {
 				$this->insertJob($order['OrderID']);
+				$success++;
 			}
+			if ($success) \Event::success('Succesfully added ' . $success . ' jobs to database');
 			\DB::change_connection();
 		}
+
 		protected function getNewWebsales() {
 			$orders = new Orders();
 			if (!$orders) {
-				echo "<br>No Orders Retrieved";
 				return false;
 			}
+			$success = 0;
 			foreach ($orders as $order) {
-				$orders->process();
+				if ($orders->process()) $success++;
 			}
-
+			\Event::success('Found ' . $success . ' new websales');
 			return $orders;
 		}
-		function getNotOnJobsboard() {
-			\DB::change_connection('jobsboard');
 
+		function getNotOnJobsboard() {
+			\DB::change_connection();
 			$results = \DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
 			if (count($results) > 0) {
 				return $results;
@@ -62,20 +62,23 @@
 		protected function notOnJobsboard() {
 			$neworders = $this->getNotOnJobsboard();
 			if (!$neworders) {
-				echo "No new jobs in database!";
+				\Event::notice("No new jobs in database that aren't on Jobsboard!");
 				return false;
 			}
+			$success = 0;
 			foreach ($neworders as $neworder) {
 				$job = $this->insertJob($neworder['OrderID']);
 				if (!$job) {
-					$result = "Websale {$neworder['OrderID']} couldn't be added to Jobs Board (it's probably aready there)!";
+					\Event::warning("Websale {$neworder['OrderID']} couldn't be added to Jobs Board (it's probably aready there)!");
 				}
 				else {
 					\DB::change_connection();
 					\DB::update('WebOrders')->value('ison_jobsboard', $job)->where('OrderID=', $neworder['OrderID'])->exec();
-					echo "Websale {$neworder['OrderID']} successfully added to Jobs Board with Job Number $job!";
+					\Event::success("Websale {$neworder['OrderID']} successfully added to Jobs Board with Job Number $job!");
 				}
+				$success++;
 			}
+
 			return true;
 		}
 
@@ -88,6 +91,7 @@
 			}
 			\DB::change_connection('jobsboard');
 			$jobsboard_no = \DB::select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
+			$jobsboard_no = $jobsboard_no['Advanced_Job_No'];
 			$lineitems = $lines = array();
 			foreach ($orderdetails as $detail) {
 				$lines[] = array(
@@ -103,23 +107,23 @@
 				);
 			}
 			if ($jobsboard_no > 0) {
-				$freight_method = Orders::$shipping_types[$neworder['ShippingMethodID']];
-				$payment_method = Orders::$payment_types[$neworder['PaymentMethodID']];
-				$comments = (strlen($neworder['Order_Comments']) > 0) ? $neworder['Order_Comments'] . "\r\n" : '';
+				$freight_method = Orders::$shipping_types[$order['ShippingMethodID']];
+				$payment_method = Orders::$payment_types[$order['PaymentMethodID']];
+				$comments = (strlen($order['Order_Comments']) > 0) ? $order['Order_Comments'] . "\r\n" : '';
 				$detail = $comments . "Payment Method: " . $payment_method . "\r\nShipping Method: " . $freight_method . "\r\nFreight Paid: " . $order['TotalShippingCost'];
 				$newJob = array(
 					'Advanced_Job_No' => $jobsboard_no,
 					'websaleid' => $id,
 					'Detail' => $detail,
 				);
-				$result = \DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsoard_no)->exec();
+				$result = \DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
 
-				$this->insertLines($lineitems, $jobsoard_no);
+				$this->insertLines($lineitems, $jobsboard_no);
 				return $result;
 			}
 			$newJob = array(
 				'websaleid' => $id,
-				'Customer' => "Websale: $id " . $neworder['BillingCompanyName'],
+				'Customer' => "Websale: $id " . $order['BillingCompanyName'],
 				'Date_Ordered' => date('Y-m-d', strtotime("now")),
 				'Promised_Due_Date' => date('Y-m-d', strtotime("+1 week")),
 				'Brief_Job_Description' => $lines
@@ -168,33 +172,32 @@
 				$newJob['Updates'] = $updates;
 				$jobsboard_no = \DB::insert('Job_List')->values($newJob)->exec();
 				$this->insertlines($lineitems, $jobsboard_no);
-
-				return $result;
 			}
 			\DB::change_connection();
 		}
+
 		function insertlines($lines, $jobid) {
 			$existing_lines = $this->getLines($jobid);
 			$deleted = array_diff_key($lines, $existing_lines);
 			foreach ($deleted as $line) {
 				$line['quantity'] = 0;
 				$line['description'] .= " DELETED!";
-				\DB::update('JobListItems')->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
-				echo 'Deleting line ' . $line['line_id'] . ' for job ' . $jobid;
+				\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+				//		echo 'Deleting line ' . $line['line_id'] . ' for job ' . $jobid;
 			}
 			foreach ($lines as $line) {
 				$line['job_id'] = $jobid;
 				try {
 					$line['line_id'] = \DB::insert('JobListItems')->values($line)->exec();
-					echo 'Added line ' . $line['line_id'] . ' for job ' . $jobid;
+					//		echo 'Added line ' . $line['line_id'] . ' for job ' . $jobid;
 				}
 				catch (\DBDuplicateException $e) {
 					\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
-					echo 'Updating line ' . $line['line_id'] . ' for job ' . $jobid;
+					//			echo 'Updating line ' . $line['line_id'] . ' for job ' . $jobid;
 				}
 			}
-			echo '<br>';
 		}
+
 		function getLines($jobid) {
 			$result = \DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
 			return $result;

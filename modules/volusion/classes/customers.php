@@ -1,8 +1,8 @@
 <?php
 	namespace Modules\Volusion;
-	class Customers
-	{
+	class Customers {
 		public $customers;
+
 		public function __construct() {
 			echo __NAMESPACE__;
 		}
@@ -26,6 +26,7 @@
 			$url .= '&SELECT_Columns=*';
 			return file_get_contents($url);
 		}
+
 		function insert() {
 			$result = \DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
 			if (!$result) {
