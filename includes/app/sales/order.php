@@ -257,7 +257,7 @@
 		public function check_cust_ref($cust_ref) {
 			$sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
 			$result = DB::query($sql);
-			return (DB::num_rows($result) > 0) ? false : true;
+			return (DB::num_rows($result) > 0) ? true  :false ;
 		}
 		/**
 		 * @param $customer_id

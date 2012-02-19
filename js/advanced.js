@@ -221,7 +221,6 @@ Adv.extend({
 	}
 });
 Adv.extend({Forms: (function () {
-
 	Adv.o.wrapper.on('focus', ".datepicker",
 	 function () { $(this).datepicker({numberOfMonths: 3, showButtonPanel: true, showCurrentAtPos: 2, dateFormat: 'dd/mm/yy'}).focus(); });
 
@@ -305,7 +304,7 @@ Adv.extend({Forms: (function () {
 				 var $this = $(this);
 				 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null)
 				 {
-					 callback($this.data()['default'])
+					 callback($this.data()['default']);
 					 $this.val($this.data()['default'].label);
 				 }
 				 $this.data('default', null)
@@ -435,7 +434,6 @@ Adv.extend({Forms: (function () {
 				setTimeout(tmp, 0);
 			}
 		},
-
 //returns the absolute position of some element within document
 		elementPos:   function (e) {
 			var res = new Object();
@@ -478,8 +476,6 @@ Adv.extend({Forms: (function () {
 			{return null;}
 			return res;
 		}
-
-
 	}
 })()});
 Adv.extend({
