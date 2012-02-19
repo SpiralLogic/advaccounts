@@ -1,6 +1,5 @@
 *~
 *.bak
-!*.gitignore
 Thumbs.db
 desktop.ini
 .DS_Store
@@ -17,5 +16,5 @@ sor4.xml
 tmp/chromelogs
 tmp/test.csv
 .idea
-
+!*.gitignore
 tmp/chromelogs/last_run.json
