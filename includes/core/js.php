@@ -239,31 +239,31 @@ JS;
 				self::$_onlive = self::$_onload = array();
 			}
 			if (self::$_beforeload) {
-				$content .= implode("\n", self::$_beforeload);
+				$content .= implode("", self::$_beforeload);
 			}
 			if (self::$_onlive) {
-				$onReady .= 'Adv.Events.onload(function() {' . implode("\n", self::$_onlive) . '}';
+				$onReady .= 'Adv.Events.onload(function(){' . implode("", self::$_onlive) . '}';
 				if (count(self::$_toclean)) {
-					$onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
+					$onReady .= ',function(){' . implode(";", self::$_toclean) . '}';
 				}
 				$onReady .= ');';
 			}
 			if (self::$_onload) {
-				$onReady .= implode("\n", self::$_onload);
+				$onReady .= implode("", self::$_onload);
 			}
 			if (!empty(self::$_focus)) {
 				$onReady .= self::$_focus . '.focus();';
 			}
 			if ($onReady != '') {
-				$content .= "\n$(function() { " . $onReady . '});';
+				$content .= "\n$(function(){ " . $onReady . '});';
 			}
+		//	$cachekey = 'js_min.' . md5($content);
+		//	$cachecontent = Cache::get($cachekey);
+//			if (!$cachecontent) {
+	//			$cachecontent = Cache::set($cachekey, JSMin::minify($content));
+	//		}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-			$cachekey = 'js_min.' . md5($content);
-			$cachecontent = Cache::get($cachekey);
-			if (!$cachecontent) {
-				$cachecontent = Cache::set($cachekey, JSMin::minify($content));
-			}
-			HTML::script(array('content' => $cachecontent))->script;
+			HTML::script(array('content' => $content))->script;
 		}
 
 		/**

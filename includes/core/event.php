@@ -97,7 +97,7 @@
 
 			Cache::set(static::$shutdown_events_id,static::$shutdown_events);
 			if (extension_loaded('xhprof')) {
-				$profiler_namespace = 'advaccounts'; // namespace for your application
+				$profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
 				$xhprof_data = xhprof_disable();
 				$xhprof_runs = new XHProfRuns_Default();
 				$xhprof_runs->save_run($xhprof_data, $profiler_namespace);
