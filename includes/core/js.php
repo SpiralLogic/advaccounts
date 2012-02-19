@@ -126,7 +126,7 @@ JS;
 			static $inserted;
 			if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 				$_SESSION['getWebsales'] = true;
-				echo "<script>";
+				echo "<script async>";
 				echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
@@ -218,7 +218,7 @@ JS;
 			HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
 			foreach (self::$_headerFiles as $dir => $files) {
 				/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
+				HTML::script(array('src' => $dir . '/' . implode(',', $files),'async'=>true), false);
 			}
 		}
 
@@ -259,7 +259,7 @@ JS;
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 
-			HTML::script(array('content' => minify_js($content)))->script;
+			HTML::script(array( 'content' => minify_js($content),'async'=>true))->script;
 		}
 
 		/**
@@ -413,7 +413,7 @@ JS;
 			}
 			else {
 				if (substr(trim($js), -1) !== ';') $js .= ';';
-				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
+				array_unshift($var, str_replace(array('<script async>', '</script>'), '', $js));
 			}
 		}
 

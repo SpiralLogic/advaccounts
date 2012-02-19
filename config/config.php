@@ -41,7 +41,7 @@
 		'use_fiscalyear' => false, /* Default border and spacing for tables
 									 * Should be moved to CSS */
 		'tables_style' => "class='tablestyle center'", //
-		'tables_style2' => "class='tablestyle2'", 
+		'tables_style2' => "class='tablestyle2'",
 		'valid_charged_to_delivered_qty' => true, //* System check to see if price charged on purchase invoices exceeds the purchase order price.
 
 		'valid_charged_to_delivered_price' => true, //

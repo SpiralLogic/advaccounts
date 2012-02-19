@@ -99,11 +99,10 @@
 	} else {
 		echo 	$date = date("m/d/Y") . " | " . date("h.i am");
 	}
-	echo "<div class='center'>\n";
 	echo "<br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _
 	("Theme:") . "
 	 " . $def_theme . "</a>\n";
-	echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a>\n";
+	echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></div>";
 	echo "<script>
 	 document.forms[0].user_name.select();
 	 document.forms[0].user_name.focus();
