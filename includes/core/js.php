@@ -3,7 +3,8 @@
 	/**
 	 *
 	 */
-	class JS {
+	class JS
+	{
 		/**
 		 * @var array
 		 */
@@ -37,13 +38,11 @@
 		 * @var bool
 		 */
 		static private $_openWindow = false;
-
 		/**
 		 *
 		 */
 		private function __construct() {
 		}
-
 		/**
 		 * @static
 		 *
@@ -60,7 +59,6 @@
 			static::onload($js);
 			static::$_openWindow = true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -77,7 +75,6 @@
 			$clean = "Adv.o.autocomplete['$id'].autocomplete('destroy');";
 			static::addLive($js, $clean);
 		}
-
 		/**
 		 * @static
 		 *
@@ -108,7 +105,6 @@ JS;
 			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
-
 		/**
 		 * @static
 		 *
@@ -117,7 +113,6 @@ JS;
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
-
 		/**
 		 * @static
 		 *
@@ -137,7 +132,6 @@ JS;
 				$inserted = true;
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -158,7 +152,6 @@ JS;
 			}
 			return $name;
 		}
-
 		/**
 		 * @static
 		 *
@@ -166,7 +159,6 @@ JS;
 		static public function reset_focus() {
 			unset($_POST['_focus']);
 		}
-
 		/**
 		 * @static
 		 *
@@ -176,12 +168,13 @@ JS;
 		 */
 		static public function tabs($id, $options = array(), $page = null) {
 			$defaults = array('noajax' => false, 'hasLinks' => false);
-			$hasLinks=false;
+			$hasLinks = false;
 			extract(array_merge($defaults, $options));
 			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
 			if ($hasLinks) {
-				$content .= <<<JS
-    {
+				$content .= "
+{
+
     select: function(event, ui) {
     var \$tab = $(ui.tab);
 
@@ -198,17 +191,15 @@ JS;
         return true;
     }
     }
-JS;
+";
 			}
 			$content .= ").toggleClass('tabs')";
 			if ($page) {
 				$content .= ".tabs('select'," . $page . ")";
 			}
-
 			$content .= ";";
 			self::onload($content);
 		}
-
 		/**
 		 * @static
 		 *
@@ -218,10 +209,9 @@ JS;
 			HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
 			foreach (self::$_headerFiles as $dir => $files) {
 				/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-				HTML::script(array('src' => $dir . '/' . implode(',', $files),'async'=>true), false);
+				HTML::script(array('src' => $dir . '/' . implode(',', $files), 'async' => true), false);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -258,10 +248,8 @@ JS;
 				$content .= "\n$(function() { " . $onReady . '});';
 			}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-
-			HTML::script(array( 'content' => minify_js($content),'async'=>true))->script;
+			HTML::script(array('content' => minify_js($content), 'async' => true))->script;
 		}
-
 		/**
 		 * @static
 		 *
@@ -280,7 +268,6 @@ JS;
 			echo	 json_encode($data);
 			exit();
 		}
-
 		/**
 		 * @static
 		 *
@@ -290,7 +277,6 @@ JS;
 		static public function setFocus($selector, $cached = false) {
 			$_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
 		}
-
 		/**
 		 * @static
 		 *
@@ -302,7 +288,6 @@ JS;
 			$options = (object)$options;
 			return json_encode($options);
 		}
-
 		/**
 		 * @static
 		 *
@@ -313,7 +298,6 @@ JS;
 		static public function addEvent($selector, $type, $action) {
 			self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
 		}
-
 		/**
 		 * @static
 		 *
@@ -330,7 +314,6 @@ JS;
 			$cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
 			return self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
-
 		/**
 		 * @static
 		 *
@@ -343,7 +326,6 @@ JS;
 				self::register($clean, self::$_toclean);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -358,7 +340,6 @@ JS;
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -369,7 +350,6 @@ JS;
 				self::register($js, self::$_onload);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -380,7 +360,6 @@ JS;
 				self::register($js, self::$_beforeload);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -389,7 +368,6 @@ JS;
 		static public function headerFile($file) {
 			self::registerFile($file, self::$_headerFiles);
 		}
-
 		/**
 		 * @static
 		 *
@@ -398,7 +376,6 @@ JS;
 		static public function footerFile($file) {
 			self::registerFile($file, self::$_footerFiles);
 		}
-
 		/**
 		 * @static
 		 *
@@ -412,11 +389,12 @@ JS;
 				}
 			}
 			else {
-				if (substr(trim($js), -1) !== ';') $js .= ';';
+				if (substr(trim($js), -1) !== ';') {
+					$js .= ';';
+				}
 				array_unshift($var, str_replace(array('<script async>', '</script>'), '', $js));
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -436,29 +414,26 @@ JS;
 				$var[$dir][$file] = $file;
 			}
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param bool $message
 		 */
 		static public function onUnload($message = false) {
-
 			if ($message) {
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
 			}
 		}
-
 		/**
 		 * @static
+		 *
 		 * @param $url
 		 */
 		static public function redirect($url) {
 			$data['status'] = array('status' => 'redirect', 'message' => $_SERVER['PHP_SELF']);
 			static::renderJSON($data);
 		}
-
 		/***
 		 * @static
 		 *
@@ -471,3 +446,4 @@ JS;
 			$_POST['_focus'] = $name;
 		}
 	}
+
