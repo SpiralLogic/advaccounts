@@ -8,11 +8,27 @@
 	 */
 	class Event
 	{
+		/**
+		 * @var array all objects with methods to be run on shutdown
+		 */
 		protected static $shutdown_objects = array();
+		/**
+		 * @var bool Whether the request from the browser has finsihed
+		 */
 		protected static $request_finsihed = false;
+		/**
+		 * @var array Events which occur after browser dissconnect which will be shown on next request
+		 */
 		protected static $shutdown_events = array();
+		/**
+		 * @var string id for cache handler to store shutdown events
+		 */
 		protected static $shutdown_events_id;
-		static function i() {
+		/**
+		 * @static
+
+		 */
+		static public function i() {
 			static::$shutdown_events_id='shutdown.events.'.User::get()->username;
 			$shutdown_events = Cache::get(static::$shutdown_events_id);
 			if ($shutdown_events) {
@@ -26,7 +42,7 @@
 		 *
 		 * @param string $message Error message
 		 */
-		static function error($message) {
+		static public function error($message) {
 			static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
 		}
 		/**
@@ -34,7 +50,7 @@
 		 *
 		 * @param string $message
 		 */
-		static function notice($message) {
+		static public function notice($message) {
 			static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
 		}
 		/**
@@ -42,7 +58,7 @@
 		 *
 		 * @param string $message
 		 */
-		static function success($message) {
+		static public function success($message) {
 			static::handle($message, reset(debug_backtrace()), E_SUCCESS);
 		}
 		/**
@@ -50,10 +66,17 @@
 		 *
 		 * @param $message
 		 */
-		static function warning($message) {
+		static public function warning($message) {
 			static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
 		}
-		protected static function handle($message, $source, $type) {
+		/**
+		 * @static
+		 *
+		 * @param $message
+		 * @param $source
+		 * @param $type
+		 */
+		static protected function handle($message, $source, $type) {
 			if (static::$request_finsihed) {
 				static::$shutdown_events[] = array($message, $source, $type);
 			}
@@ -67,13 +90,13 @@
 		 *
 		 * @param $object
 		 */
-		static function register_shutdown($object) {
+		static public function register_shutdown($object) {
 			if (!in_array($object, static::$shutdown_objects)) {
 				static::$shutdown_objects[] = $object;
 			}
 		}
 		/*** @static Shutdown handler */
-		static function shutdown() {
+		static public function shutdown() {
 			Ajax::i();
 			Errors::process();
 			// flush all output buffers (works also with exit inside any div levels)

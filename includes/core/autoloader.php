@@ -6,15 +6,13 @@
 	 * Time: 7:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Autoload_Exception extends Exception
-	{
+	class Autoload_Exception extends Exception {
 	}
 
 	/**
 
 	 */
-	class Autoloader
-	{
+	class Autoloader {
 		/**
 		 * @var array
 		 */
@@ -31,11 +29,12 @@
 		 * @var array
 		 */
 		static protected $classes = array();
+
 		/**
 		 * @static
 
 		 */
-		static function i() {
+		static public function i() {
 			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
 			spl_autoload_register('Autoloader::loadCore', true);
 			static::$classes = Cache::get('autoload.classes');
@@ -53,19 +52,27 @@
 			spl_autoload_register('Autoloader::loadModule', true, true);
 			spl_autoload_register('Autoloader::loadFromCache', true, true);
 		}
-		static function load($classname) {
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 */
+		static public function load($classname) {
 			class_exists($classname);
 		}
+
 		/**
 		 * @static
 		 *
 		 * @param array $path
 		 */
-		static function add_path($path = array()) {
+		static public function add_path($path = array()) {
 			$path = (array)$path;
 			$path[] .= get_include_path();
 			set_include_path(implode(PATH_SEPARATOR, $path));
 		}
+
 		/**
 		 * @static
 		 *
@@ -81,6 +88,7 @@
 				static::$classes[$class] = $type . $dir . str_replace('_', DS, $class) . '.php';
 			}
 		}
+
 		/**
 		 * @static
 		 *
@@ -103,6 +111,14 @@
 			Cache::delete('autoload.classes');
 			return false;
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return bool|string
+		 */
 		static public function loadFromCache($classname) {
 			$result = false;
 			if (isset(static::$loaded[$classname])) {
@@ -116,6 +132,14 @@
 			}
 			return $result;
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return bool|string
+		 */
 		static public function loadModule($classname) {
 			if (strpos($classname, 'Modules') === false) {
 				return false;
@@ -127,6 +151,14 @@
 			$class = implode(DS, $class);
 			return static::trypath(DOCROOT . strtolower($class) . '.php', $classname);
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return bool|string
+		 */
 		static public function loadInterface($classname) {
 			$class = str_replace('_', DS, $classname);
 			if (substr($class, 0, 1) != 'I') {
@@ -134,6 +166,14 @@
 			}
 			return static::trypath(APPPATH . 'interfaces' . DS . substr($class, 1) . '.php', $classname);
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return string
+		 */
 		static public function loadApp($classname) {
 			$class = str_replace('_', DS, $classname);
 			$lowerclass = strtolower($class);
@@ -143,6 +183,14 @@
 			$paths[] = APPPATH . $lowerclass . DS . $lowerclass . '.php';
 			return static::trypath($paths, $classname);
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return string
+		 */
 		static public function loadVendor($classname) {
 			$class = str_replace('_', DS, $classname);
 			$lowerclass = strtolower($class);
@@ -152,6 +200,14 @@
 			$paths[] = VENDORPATH . $lowerclass . DS . $lowerclass . '.php';
 			return static::trypath($paths, $classname);
 		}
+
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
+		 * @return string
+		 */
 		static public function loadCore($classname) {
 			$class = str_replace('_', DS, $classname);
 			$lowerclass = strtolower($class);
@@ -159,6 +215,7 @@
 			$paths[] = COREPATH . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}
+
 		/**
 		 * @static
 		 *
@@ -184,6 +241,7 @@
 			//	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
 			return true;
 		}
+
 		/**
 		 * @static
 		 * @return array
@@ -196,6 +254,7 @@
 			});
 			return static::$loadperf;
 		}
+
 		/**
 		 * @static
 		 * @return array
@@ -203,6 +262,11 @@
 		static public function getLoaded() {
 			return static::$loaded;
 		}
+
+		/**
+		 * @static
+
+		 */
 		static public function _shutdown() {
 			if (static::$classes) {
 				Cache::set('autoload.classes', static::$classes);

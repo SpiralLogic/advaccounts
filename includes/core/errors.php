@@ -23,8 +23,7 @@
 		static protected $current_severity = E_ALL;
 		/** @var array Error constants to text */
 		static protected $session = false;
-		static public $levels
-		 = array(
+		static public $levels = array(
 			 -1 => 'Fatal!',
 			 0 => 'Error',
 			 E_ERROR => 'Error',
@@ -52,7 +51,6 @@
 		static public $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-
 		/** @static Initialiser */
 		static function init() {
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
@@ -73,7 +71,6 @@
 			}
 			Event::register_shutdown(__CLASS__);
 		}
-
 		/**
 		 * @static
 		 *
@@ -107,7 +104,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -127,7 +123,6 @@
 			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
 			static::$errors[] = $error;
 		}
-
 		/** @static */
 		static function error_box() {
 			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
@@ -135,7 +130,6 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -162,12 +156,10 @@
 			return $content;
 		}
 
-		/** @static */
 		static public function _shutdown() {
 			return static::send_debug_email();
 		}
 
-		/** @static */
 		static function send_debug_email() {
 
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors)) && Config::get('debug_email')) {
@@ -183,7 +175,7 @@
 				if (count(static::$messages)) {
 					$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
 				}
-				$id=md5($text);
+				$id = md5($text);
 				$text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
 				if (isset($_POST) && count($_POST)) {
 					$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
@@ -202,8 +194,8 @@
 					$subject .= static::$session['current_user']->username;
 				}
 				if (count(static::$session)) {
-									unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
-									$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
+					unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
+					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
 				if (isset(static::$levels[static::$current_severity])) {
 					$subject .= ', Severity: ' . static::$levels[static::$current_severity];
@@ -211,7 +203,7 @@
 				if (count(static::$dberrors)) {
 					$subject .= ', DB Error';
 				}
-$subject.= ' '.$id;
+				$subject .= ' ' . $id;
 				$mail = new Reports_Email(false);
 				$mail->to('errors@advancedgroup.com.au');
 				$mail->mail->FromName = "Accounts Errors";
@@ -225,7 +217,6 @@ $subject.= ' '.$id;
 				}
 			}
 		}
-
 		/***
 		 * @static
 		 *
@@ -244,7 +235,6 @@ $subject.= ' '.$id;
 			return $backtrace;
 		}
 
-		/** @static */
 		public static function process() {
 			$last_error = error_get_last();
 			static::$session = $_SESSION;
@@ -268,7 +258,6 @@ $subject.= ' '.$id;
 			}
 		}
 
-		/** @static */
 		static public function fatal() {
 			ob_end_clean();
 			$content = static::format();
@@ -278,13 +267,11 @@ $subject.= ' '.$id;
 			static::send_debug_email();
 			exit();
 		}
-
 		/***
 		 * @static
 		 * @return int
 		 */
 		static public function getSeverity() { return static::$current_severity; }
-
 		/**
 		 * @static
 		 *
@@ -311,7 +298,6 @@ $subject.= ' '.$id;
 			static::$jsonerrorsent = true;
 			return $status;
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -319,7 +305,6 @@ $subject.= ' '.$id;
 		static public function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
-
 		/**
 		 * @static
 		 *
