@@ -234,7 +234,7 @@
 	 * @param bool   $update
 	 */
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
-		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
+		$customer = new Debtor($_SESSION['global_customer_id']);
 		$emails = $customer->getEmailAddresses();
 		Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);

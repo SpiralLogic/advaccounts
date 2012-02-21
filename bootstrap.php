@@ -17,7 +17,7 @@
 		include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
 		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
 		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS);
+		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY );
 	}
 	error_reporting(-1);
 	ini_set('display_errors', 1);

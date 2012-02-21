@@ -465,7 +465,7 @@
 			if (is_object($sql)) {
 				return $sql->rowCount();
 			}
-			$rows = (static::$i->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : false;
+			$rows = (static::i()->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : false;
 			if ($rows !== false) {
 				return $rows;
 			}

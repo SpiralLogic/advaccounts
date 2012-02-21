@@ -37,21 +37,17 @@
 			if (static::$_vars === null) {
 				static::$_vars = Cache::get('config');
 			}
-			if (static::$_vars === false || Input::get('reload_config')) {
+			if (static::$_vars === false || isset($_GET['reload_config'])) {
 				static::$_vars = array();
 				static::load();
-
 				Event::register_shutdown(__CLASS__);
-
 			}
 			static::$i = true;
 			static::js();
 		}
 		/**
 		 * @static
-		 *
 		 * @param string $group
-		 *
 		 * @return mixed
 		 * @throws Config_Exception
 		 */
@@ -88,11 +84,9 @@
 		}
 		/***
 		 * @static
-		 *
 		 * @param			$var
 		 * @param null $array_key
 		 * @param null $group
-		 *
 		 * @return mixed
 		 */
 		static public function get($var, $array_key = null, $group = null) {

@@ -34,7 +34,7 @@
 		 */
 		function app_function($label, $link, $access = SA_OPEN) {
 			$this->label = $label;
-			$this->link = $link;
+			$this->link = e($link);
 			$this->access = $access;
 		}
 	}

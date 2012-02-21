@@ -281,7 +281,6 @@
 				}
 				if ($first_id === false) {
 					$first_id = $value;
-					$first_opt = $descr;
 				}
 				$cat = $contact_row[$opts['category']];
 				if ($opts['category'] !== false && $cat != $lastcat) {
@@ -310,7 +309,10 @@
 			$selected_id = array($first_id);
 		}
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-		$selector = "<select id='$name' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
+
+
+
+					$selector = "<select id='$name' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
 		 '') . "$disabled name='$name" . ($multi ? '[]' : '') . "' class='$class' title='" . $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
 		if ($by_id && ($search_box != false || $opts['editable'])) {
 			// on first display show selector list

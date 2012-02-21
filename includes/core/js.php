@@ -230,7 +230,8 @@ JS;
 			$files = $content = $onReady = '';
 			if (!AJAX_REFERRER) {
 				foreach (self::$_footerFiles as $dir => $file) {
-					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)),
+					false)->setReturn(false);
 				}
 				echo $files;
 			}

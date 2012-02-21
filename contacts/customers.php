@@ -183,9 +183,10 @@
 	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
 	table_section_title(_("Notes"));
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
+	end_outer_table(1);
+
 	hidden('frame', Input::request('frame'));
 		end_form();
-	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
 	echo "<div id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
 	$menu->endTab()->render();
@@ -199,7 +200,7 @@
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 35, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
-	HTML::div()->div(array('class' => 'center width50'));
+	HTML::_div()->div(array('class' => 'center width50'));
 	UI::button('btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
 																																											 'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
 																																									));

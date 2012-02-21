@@ -10,6 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// xls version
+	if (!class_exists('OLEwriter')) {
+		Event::error('Could not find excel writer module');
+	}
 	class ADVReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		public $size;
@@ -49,7 +52,6 @@
 		public $formatAmount = array();
 		public $sheet;
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
-
 			if (!User::get()->can_access_page(Page::get_security())) {
 				Event::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
