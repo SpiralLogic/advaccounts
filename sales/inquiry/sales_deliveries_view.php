@@ -75,6 +75,7 @@
 	start_form(false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
 	start_table('tablestyle_noborder');
 	start_row();
+Debtor::cells(_('Customer:'),'selected_customer',$_POST['selected_customer'],true);
 	ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
 	date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 	date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
@@ -95,7 +96,6 @@
 	 = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_id,
-		
 		sorder.contact_name,
 		sorder.deliver_to,
 		trans.reference,
@@ -128,7 +128,7 @@
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {
-			$sql .= " AND trans.debtor_no=" . DB::quote($selected_customer) . " ";
+			$sql .= " AND trans.debtor_no=" . DB::quote($_POST['customer_id']) . " ";
 		}
 		if (isset($selected_stock_item)) {
 			$sql .= " AND line.stock_id=" . DB::quote($selected_stock_item) . " ";

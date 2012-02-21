@@ -105,7 +105,7 @@
 	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 35, 30);
 	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 35, 30);
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 35, 30);
-	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
+	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 55);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	Contact_Postcode::render(array(
 																'acc_city', $customer->accounts->city

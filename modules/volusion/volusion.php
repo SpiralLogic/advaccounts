@@ -126,7 +126,7 @@
 				'Customer' => "Websale: $id " . $order['BillingCompanyName'],
 				'Date_Ordered' => date('Y-m-d', strtotime("now")),
 				'Promised_Due_Date' => date('Y-m-d', strtotime("+1 week")),
-				'Brief_Job_Description' => $lines
+				'Brief_Job_Description' => var_export($lines,true)
 			);
 			if ($order['PaymentDeclined'] == "Y") {
 				$newJob['Priority_Level'] = 3;

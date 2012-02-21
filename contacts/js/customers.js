@@ -393,6 +393,7 @@ $(function () {
 	}).click(function () {
 		 $(this).dialog("open");
 	 });
+	$("#messageLog").prop('disabled',true).css('background','white');
 	Adv.tabs.delegate("input, textarea", "change keypress", function (event) {
 		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || Adv.tabs.tabs('option','selected')==4 )
 			{

@@ -175,7 +175,8 @@
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
-				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)
+				if ((filter_var($this->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)!= filter_var($previous->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access
+				(SA_CUSTOMER_CREDIT)
 				) {
 					return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 				}

@@ -7,7 +7,8 @@
 
 	/**
 
-	 */ class Orders implements \Iterator, \Countable {
+	 */
+	class Orders implements \Iterator, \Countable {
 		/**
 		 * @var
 		 */
