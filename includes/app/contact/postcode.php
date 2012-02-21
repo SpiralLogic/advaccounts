@@ -84,6 +84,7 @@ JS;
 							sets[set].city.val(data[0]);
 						 sets[set].state.val(data[1]);
 						 sets[set].postcode.val(data[2]);
+						$.each(sets[set],function(k,v) {Adv.stateModified($(v))});
 						 return false;
 						 }
 						 }

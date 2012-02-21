@@ -304,7 +304,7 @@ Adv.extend({Forms: (function () {
 				 var $this = $(this);
 				 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null)
 				 {
-					 callback($this.data()['default']);
+					if (callback($this.data()['default'],event,this)!==false)
 					 $this.val($this.data()['default'].label);
 				 }
 				 $this.data('default', null)

@@ -21,6 +21,17 @@ Adv.extend({
 		Customer.fetch(0)
 	},
 	stateModified:function (feild) {
+		Adv.fieldsChanged++;
+				if (feild.data('init') === feild.val())
+					{
+						feild.removeClass("ui-state-highlight");
+						Adv.fieldsChanged--;
+						if (Adv.fieldsChanged === 0)
+							{
+								Adv.resetHighlights();
+							}
+						return;
+					}
 		if (feild.prop('disabled')) return;
 		Adv.o.custsearch.prop('disabled', true);
 		Adv.btnCancel.text('Cancel Changes').show();
@@ -387,17 +398,7 @@ $(function () {
 			{
 				return;
 			}
-		Adv.fieldsChanged++;
-		if ($(this).data('init') == $(this).val())
-			{
-				$(this).removeClass("ui-state-highlight");
-				Adv.fieldsChanged--;
-				if (Adv.fieldsChanged === 0)
-					{
-						Adv.resetHighlights();
-					}
-				return;
-			}
+
 		Adv.stateModified($(this));
 	});
 	$("[name='messageLog']").keypress(function (event) {
