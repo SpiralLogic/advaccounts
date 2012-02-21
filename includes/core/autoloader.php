@@ -213,6 +213,8 @@
 			$lowerclass = strtolower($class);
 			$paths[] = COREPATH . $class . '.php';
 			$paths[] = COREPATH . $lowerclass . '.php';
+			$paths[] = COREPATH . $class . DS . $class . '.php';
+			$paths[] = COREPATH . $lowerclass . DS . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}
 
