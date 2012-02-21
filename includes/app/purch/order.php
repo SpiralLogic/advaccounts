@@ -123,7 +123,7 @@
 			DB::query($sql, "The order header could not be deleted");
 			$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::quote($this->order_no);
 			DB::query($sql, "The order detail lines could not be deleted");
-			Orders::session_delete($this->order_no);
+			Orders::session_delete($this->order_id);
 		}
 		public function add() {
 			DB::begin();
@@ -161,12 +161,12 @@
 			$sql .= " WHERE order_no = " . $this->order_no;
 			DB::query($sql, "The purchase order could not be updated");
 			/*Now Update the purchase order detail records */
+
 			foreach ($this->line_items as $po_line) {
 				if ($po_line->Deleted == True) {
 					// Sherifoz 21.06.03 Handle deleting existing lines
 					if (!empty($po_line->po_detail_rec)) {
 						$sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . DB::escape($po_line->po_detail_rec);
-						DB::query($sql, "could not query purch order details");
 					}
 				}
 				else {
