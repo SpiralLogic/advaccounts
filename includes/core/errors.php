@@ -116,7 +116,6 @@
 		 * @param Exception $e
 		 */
 		static function exception_handler(\Exception $e) {
-
 			$error = array(
 				'type' => -1,
 				'code' => $e->getCode(),
@@ -167,7 +166,7 @@
 		}
 
 		static public function _shutdown() {
-			return static::send_debug_email();
+			static::send_debug_email();
 		}
 
 		static function send_debug_email() {
@@ -251,6 +250,7 @@
 
 		public static function process() {
 			$last_error = error_get_last();
+
 			static::$session = $_SESSION;
 			// Only show valid fatal errors
 			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
@@ -272,11 +272,11 @@
 			}
 		}
 
-		static public function fatal() {
+		static public function fatal($e = null) {
 			ob_end_clean();
 			$content = static::format();
 			if (!$content) {
-				$content= '<div class="err_msg">A fatal error has occured!</div>';
+				$content = '<div class="err_msg">A fatal error has occured!</div>';
 			}
 			Page::error_exit($content, false);
 			session_write_close();

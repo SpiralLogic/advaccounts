@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	/**
-	 *
+
 	 */
 	if (extension_loaded('xhprof')) {
 		$XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
@@ -26,41 +26,41 @@
 	define('E_SUCCESS', E_ALL << 1);
 	define('DS', DIRECTORY_SEPARATOR);
 	/**
-	 *
+
 	 */
 	define('DOCROOT', __DIR__ . DS);
 	/**
-	 *
+
 	 */
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
 	/**
-	 *
+
 	 */
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	/**
-	 *
+
 	 */
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
 	/**
-	 *
+
 	 */
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	/**
-	 *
+
 	 */
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-	/**	*/
+	/**  */
 	define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
 	/**
-	 *
+
 	 */
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	/**
-	 *
+
 	 */
 	define('CRLF', chr(13) . chr(10));
 	/**
-	 *
+
 	 */
 	define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
 	 '.');
@@ -74,15 +74,15 @@
 		return \Errors::handler($severity, $message, $filepath, $line);
 	});
 	set_exception_handler(function (\Exception $e) {
-		(!class_exists('Errors', false)) and	include(COREPATH . 'errors.php');
-		return \Errors::exception_handler($e);
+		(!class_exists('Errors', false)) and  include(COREPATH . 'errors.php');
+		\Errors::exception_handler($e);
 	});
 	if (!function_exists('e')) {
 		function e($string) { return Security::htmlentities($string); }
 	}
 	require COREPATH . 'autoloader.php';
 	register_shutdown_function(function () {
-		(!class_exists('Event', false)) and	include(COREPATH . 'event.php');
+		if (!class_exists('Event', false)) include(COREPATH . 'event.php');
 		\Event::shutdown();
 	});
 	if (!function_exists('adv_ob_flush_handler')) {

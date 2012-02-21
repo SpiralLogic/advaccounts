@@ -202,11 +202,10 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	if (Input::get('frame')) {
 		return;
 	}
-	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrder" : "ModifyQuote");
 	if (ST_SALESORDER) {
 		Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
 	}
-	Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
+	Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?".Orders::UPDATE."={$_GET['trans_no']}&type=".ST_SALESORDER."' target='_top' ");
 	Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 	Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
 	if ($qty_remaining > 0) {
@@ -215,7 +214,7 @@ Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
 	else {
 		Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
 	}
-	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?add=0&type=30' target='_top' ");
+	Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?".Orders::ADD."=0&type=30' target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	Debtor::addEditDialog();
 	Page::end();

@@ -29,11 +29,9 @@
 		$_POST['customer_id'] = $_GET['customer_id'];
 		Ajax::i()->activate('customer_id');
 	}
+	$page_title = _($help_context = "New Sales Order Entry");
 	if (Input::get(Orders::ADD, Input::NUMERIC, -1) > -1) {
 		switch (Input::get('type')) {
-			case ST_SALESORDER:
-				$page_title = _($help_context = "New Sales Order Entry");
-				break;
 			case ST_SALESQUOTE:
 				$page_title = _($help_context = "New Sales Quotation Entry");
 				break;
@@ -42,6 +40,10 @@
 				break;
 			case ST_CUSTDELIVERY:
 				$page_title = _($help_context = "Direct Sales Delivery");
+				break;
+			case ST_SALESORDER;
+			default:
+				$page_title = _($help_context = "New Sales Order Entry");
 				break;
 		}
 		$order = create_order(Input::get('type'), 0);
@@ -66,6 +68,9 @@
 		$page_title = _($help_context = "New order from previous order");
 		$order = create_order(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
 	}
+	if (!isset($order)) {
+		$order = create_order(ST_SALESORDER, 0);
+	}
 	Page::start($page_title);
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -74,7 +79,7 @@
 		Ajax::i()->activate('customer_id');
 	}
 
-if (isset($_GET[REMOVED])) {
+	if (isset($_GET[REMOVED])) {
 		if ($_GET['type'] == ST_SALESQUOTE) {
 			Event::notice(_("This sales quotation has been deleted as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?add=0type=" . ST_SALESQUOTE);
@@ -82,7 +87,7 @@ if (isset($_GET[REMOVED])) {
 		}
 		else {
 			Event::notice(_("This sales order has been deleted as requested."), 1);
-			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?add=0&type=".$_GET['type']);
+			Display::submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?add=0&type=" . $_GET['type']);
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.vphp?type=" . ST_SALESORDER);
 		}
 		Page::footer_exit();
@@ -104,12 +109,11 @@ if (isset($_GET[REMOVED])) {
 		}
 		$order->finish();
 		if ($trans_type == ST_SALESORDER) {
-			$jb = new			\Modules\Jobsboard();
+			$jb = new      \Modules\Jobsboard();
 			$jb->addjob($jobsboard_order);
 		}
 
-			page_complete($trans_no, $trans_type, "Order", true,$modified);
-
+		page_complete($trans_no, $trans_type, ($trans_type==ST_SALESORDER? "Order":"Quote"), true, $modified);
 	}
 	if (isset($_POST['update'])) {
 		Ajax::i()->activate('items_table');
@@ -223,11 +227,11 @@ if (isset($_GET[REMOVED])) {
 	Page::end(true);
 	unset($_SESSION['order_no']);
 	/**
-	 * @param				$order_no
-	 * @param				$trans_type
+	 * @param        $order_no
+	 * @param        $trans_type
 	 * @param string $trans_name
-	 * @param bool	 $edit
-	 * @param bool	 $update
+	 * @param bool   $edit
+	 * @param bool   $update
 	 */
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Debtor($_SESSION['Jobsboard']->customer_id);
@@ -235,7 +239,7 @@ if (isset($_GET[REMOVED])) {
 		Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
-			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?update=$order_no&type=".$trans_type);
+			Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type);
 		}
 		Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
@@ -247,11 +251,12 @@ if (isset($_GET[REMOVED])) {
 		if ($trans_type == ST_SALESORDER) {
 			Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 			Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+			Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
 			Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
-			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?QuoteToOrder=$order_no");
-			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=".ST_SALESQUOTE);
+			Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . "=$order_no");
+			Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESQUOTE);
 			Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {
@@ -261,7 +266,7 @@ if (isset($_GET[REMOVED])) {
 			Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
 			((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
 			 Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=".ST_CUSTDELIVERY);
+			 Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
 			$sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
@@ -511,7 +516,7 @@ if (isset($_GET[REMOVED])) {
 
 	/**
 	 * @param Sales_Order $order
-	 * @param						 $line_no
+	 * @param             $line_no
 	 */
 	function handle_delete_item($order, $line_no) {
 		if ($order->some_already_delivered($line_no) == 0) {
@@ -546,11 +551,11 @@ if (isset($_GET[REMOVED])) {
 			return;
 		}
 		if ($order->trans_type == ST_CUSTDELIVERY) {
-			Event::notice(_("Direct delivery entry has been cancelled as requested."), 1);
+			Event::notice(_("Direct delivery has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
 		}
 		elseif ($order->trans_type == ST_SALESINVOICE) {
-			Event::notice(_("Direct invoice entry has been cancelled as requested."), 1);
+			Event::notice(_("Direct invoice has been cancelled as requested."), 1);
 			Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
 		}
 		else {
@@ -565,6 +570,7 @@ if (isset($_GET[REMOVED])) {
 						Sales_Order::delete($trans_no, $trans_type);
 						$jb = new \Modules\Jobsboard();
 						$jb->removejob($trans_no);
+						Event::notice(_("Sales order has been cancelled as requested."), 1);
 					}
 				}
 			}
@@ -574,6 +580,9 @@ if (isset($_GET[REMOVED])) {
 		}
 		Ajax::i()->activate('_page_body');
 		$order->finish($_POST['order_id']);
+		Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+		Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
+		Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		Page::footer_exit();
 	}
 
@@ -585,15 +594,10 @@ if (isset($_GET[REMOVED])) {
 	 */
 	function create_order($type, $trans_no) {
 		if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
-			$trans_no = $_GET[Orders::QUOTE_TO_ORDER];
 			$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
-			$doc->trans_no = 0;
-			$doc->trans_type = ST_SALESORDER;
-			$doc->reference = Ref::get_next($doc->trans_type);
-			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
+			$doc->convertToOrder();
 		}
-		elseif (isset($_Get[Orders::CLONE_ORDER])) {
+		elseif (isset($_GET[Orders::CLONE_ORDER])) {
 			$trans_no = $_GET[Orders::CLONE_ORDER];
 			$doc = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_no = 0;

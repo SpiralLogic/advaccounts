@@ -123,7 +123,7 @@
 		static public function change_connection($name = false) {
 			$name = $name ? : static::$default_connection;
 			if (!isset(static::$connections[$name])) {
-				if ($this->useConfig && !is_array($name)) {
+				if (static::i()->useConfig && !is_array($name)) {
 					$config = Config::get('db.' . $name);
 				}
 				elseif (is_array($name)) {
@@ -132,7 +132,7 @@
 				else {
 					throw new DBException('No database configuration provided');
 				}
-				static::_connect($config);
+				static::i()->_connect($config);
 			}
 			if (isset(static::$connections[$name])) {
 				static::i()->conn = static::$connections[$name];
@@ -156,7 +156,7 @@
 			static::$prepared = null;
 			if ($cache) {
 				$md5 = md5($sql);
-				if ($this->useCache) {
+				if (static::$i->useCache) {
 					static::$results = Cache::get($md5);
 				}
 				if (static::$results) {
@@ -179,7 +179,7 @@
 			static::$data = array();
 			if ($cache && isset($md5)) {
 				static::$results = static::fetch_all(PDO::FETCH_BOTH);
-				if ($this->useCache) {
+				if (static::$i->useCache) {
 					Cache::set($md5, static::$results);
 				}
 			}
