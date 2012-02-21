@@ -15,8 +15,7 @@
 	/**
 
 	 */
-	class ADVAccounting
-	{
+	class ADVAccounting {
 		/**
 		 * @var
 		 */
@@ -37,6 +36,7 @@
 		 * @var \Menu
 		 */
 		public $menu;
+
 		/**
 
 		 */
@@ -63,6 +63,7 @@
 			$this->add_application(new Apps_System());
 			$this->get_selected();
 		}
+
 		/**
 		 * @param $app
 		 */
@@ -72,8 +73,10 @@
 				$this->applications[strtolower($app->id)] = $app;
 			}
 		}
+
 		/**
 		 * @param $id
+		 *
 		 * @return null
 		 */
 		public function get_application($id) {
@@ -82,11 +85,12 @@
 			}
 			return null;
 		}
+
 		/**
 		 * @return null
 		 */
 		public function get_selected() {
-			if ($this->selected !== null) {
+			if ($this->selected !== null && is_object($this->selected)) {
 				return $this->selected;
 			}
 			$path = explode('/', $_SERVER['SCRIPT_NAME']);
@@ -96,8 +100,12 @@
 				$app_id = User::get()->startup_tab();
 				$this->selected = $this->get_application($app_id);
 			}
+			if (!$this->selected || !is_object($this->selected)) {
+				$this->selected = $this->get_application(Config::get('apps.default'));
+			}
 			return $this->selected;
 		}
+
 		/**
 
 		 */
@@ -106,7 +114,9 @@
 			$page->renderer->display_application($this);
 			Page::end();
 		}
+
 		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
+
 		/**
 		 * @static
 
@@ -124,10 +134,11 @@
 			Event::i();
 
 			if (!isset($_SESSION["App"])) {
-				$_SESSION["App"] = new ADVAccounting();
+				$_SESSION["App"] = new static();
 			}
 			return $_SESSION["App"];
 		}
+
 		/**
 
 		 */
@@ -138,9 +149,9 @@
 			}
 			$currentUser = User::get();
 			if (Input::post("user_name")) {
-				$company=Config::get('db.' . $_POST["login_company"]);
+				$company = isset($_POST["login_company"]) ? $_POST["login_company"]: 'default';
 				if ($company) {
-					if (!$currentUser->login($_POST["login_company"], $_POST["user_name"], $_POST["password"])) {
+					if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
 						// Incorrect password
 						static::loginFail();
 					}
@@ -156,6 +167,7 @@
 				Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 			}
 		}
+
 		/**
 
 		 */
@@ -173,6 +185,7 @@
 			}
 			exit();
 		}
+
 		/**
 
 		 */
@@ -186,10 +199,13 @@
 			Session::kill();
 			die();
 		}
+
 		/**
 		 * @static
+		 *
 		 * @param null $extensions
-		 * @param			$company
+		 * @param      $company
+		 *
 		 * @return bool
 		 */
 		static public function write_extensions($extensions = null, $company = -1) {

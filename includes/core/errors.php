@@ -151,6 +151,7 @@
 				E_SUCCESS => array('SUCCESS', 'success_msg')
 			);
 			$content = '';
+
 			foreach (static::$messages as $msg) {
 				if (!isset($msg['type']) || $msg['type'] < E_USER_ERROR) {
 					$msg['type'] = E_USER_ERROR;
@@ -161,6 +162,7 @@
 			if (static::$current_severity > -1) {
 				JS::beforeload("Adv.showStatus();");
 			}
+
 			return $content;
 		}
 
@@ -173,8 +175,9 @@
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog)) && Config::get('debug_email')) {
 				$text = '';
 				if (count(static::$debugLog)) {
-									$text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
-								}		if (count(static::$errors)) {
+					$text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
+				}
+				if (count(static::$errors)) {
 					$text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				}
 
@@ -272,6 +275,9 @@
 		static public function fatal() {
 			ob_end_clean();
 			$content = static::format();
+			if (!$content) {
+				$content= '<div class="err_msg">A fatal error has occured!</div>';
+			}
 			Page::error_exit($content, false);
 			session_write_close();
 			fastcgi_finish_request();
@@ -351,7 +357,7 @@
 			$args = func_get_args();
 			$content = array();
 			foreach ($args as $arg) {
-				$content[] = var_export($arg,true);
+				$content[] = var_export($arg, true);
 			}
 			static::$debugLog[] = $content;
 		}
