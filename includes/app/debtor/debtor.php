@@ -282,7 +282,7 @@ JS;
 		}
 		static public function search($terms) {
 			$data = array();
-			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE '" . trim($terms) . "%',0,5) as weight")
+			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms).'%') . ",0,5) as weight")
 			 ->from('debtors')->where('name LIKE ', "$terms%")
 			 ->or_where('name LIKE', str_replace(' ', '%','%'.trim($terms)) . "%");
 			if (is_numeric($terms)) {

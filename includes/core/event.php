@@ -105,7 +105,7 @@
 			}
 			session_write_close();
 			/** @noinspection PhpUndefinedFunctionInspection */
-			fastcgi_finish_request();
+		//	fastcgi_finish_request();
 			static::$request_finsihed = true;
 			foreach (static::$shutdown_objects as $object) {
 				try {

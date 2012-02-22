@@ -25,6 +25,7 @@
 		public $line_items; //array of objects of class Sales_Line
 		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
 		public $src_date; // src document date (for info only)
+		public $source_no=null;
 		public $document_date;
 		public $due_date;
 		public $salesman;
@@ -243,7 +244,6 @@
 				case ST_CUSTDELIVERY:
 					return Sales_Delivery::add($this, $policy);
 				case ST_SALESORDER:
-					$_SESSION['Jobsboard'] = clone($this);
 				case ST_SALESQUOTE:
 				default:
 					if ($this->trans_no == 0) // new document
@@ -823,6 +823,7 @@
 					debtor_no = " . DB::escape($this->customer_id) . ",
 					branch_id = " . DB::escape($this->Branch) . ",
 					customer_ref = " . DB::escape($this->cust_ref) . ",
+					source_no = " . DB::escape($this->source_no) . ",
 					reference = " . DB::escape($this->reference) . ",
 					salesman = " . DB::escape($this->salesman) . ",
 					comments = " . DB::escape($this->Comments) . ",
@@ -947,7 +948,7 @@
 					$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
 				}
 				if ($this->due_date == Dates::Today()) {
-					$this->pos == -1;
+					$this->pos = -1;
 				}
 			}
 			if ($this->cash) {
