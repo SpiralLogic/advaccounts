@@ -51,7 +51,7 @@
 		 * @param string $message
 		 */
 		static public function notice($message) {
-			static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
+			static::handle($message, @reset(debug_backtrace()), E_USER_NOTICE);
 		}
 		/**
 		 * @static
