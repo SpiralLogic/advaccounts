@@ -275,10 +275,10 @@ JSS;
 		static public function renderJSON($data) {
 			$data = (array)$data;
 			$error = Errors::JSONError();
-			if (isset($data['status']) && $data['status'] && count(Errors::$dberrors) > 0) {
+			if (isset($data['status']) && $data['status'] && Errors::dbErrorCount()) {
 				$data['status'] = $error;
 			}
-			elseif (!isset($data['status']) && count(Errors::$messages) > 0) {
+			elseif (!isset($data['status']) && Errors::messageCount()) {
 				$data['status'] = $error;
 			}
 			ob_end_clean();

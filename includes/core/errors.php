@@ -11,11 +11,13 @@
 	 ***********************************************************************/
 	class Errors {
 
-		const DB_DUPLICATE_ERROR_CODE = 1062;
+		/**
+
+		 */const DB_DUPLICATE_ERROR_CODE = 1062;
 		/** @var array Container for the system messages */
 		static public $messages = array();
 		/** @var array Container for the system errors */
-		static public $errors = array();
+		static protected $errors = array();
 		/** @var array */
 		static protected $debugLog = array();
 		/** @var array Container for DB errors */
@@ -27,7 +29,7 @@
 		/** @var array Error constants to text */
 		static protected $session = false;
 		/** @var array */
-		static public $levels = array(
+		static protected $levels = array(
 			-1 => 'Fatal!',
 			0 => 'Error',
 			E_ERROR => 'Error',
@@ -50,11 +52,11 @@
 		/** @var array Errors which terminate execution */
 		static protected $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 		/** @var array Errors which are user errors */
-		static public $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+		static protected $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 		/** @var array Errors where execution can continue */
-		static public $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+		static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
-		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+		static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/** @static Initialiser */
 		static function init() {
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
@@ -171,21 +173,24 @@
 		 * @static
 
 		 */
-		static function send_debug_email() {
+		static protected function send_debug_email() {
 
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog)) && Config::get('debug_email')) {
-				$text = '';
+				$withbacktrace = $text = '';
 				if (count(static::$debugLog)) {
 					$text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
 				}
 				if (count(static::$errors)) {
+					$withbacktrace = array();
+					foreach (static::$errors as $id => $error) {
+						$withbacktrace[] = $error;
+						unset(static::$errors[$id]['backtrace']);
+					}
 					$text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
 				}
-
 				if (count(static::$dberrors)) {
 					$text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
 				}
-
 				if (count(static::$messages)) {
 					$text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
 				}
@@ -202,13 +207,15 @@
 				if (isset($_REQUEST) && count($_REQUEST)) {
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
-
+				if ($withbacktrace) {
+					$text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($withbacktrace, true) . "\n\n";
+				}
 				$subject = 'Error log: ';
 				if (isset(static::$session['current_user'])) {
 					$subject .= static::$session['current_user']->username;
 				}
 				if (count(static::$session)) {
-					unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
+					unset(static::$session['current_user'], static::$session['config'], static::$session['App'], static::$session['orders_tbl']);
 					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
 				if (isset(static::$levels[static::$current_severity])) {
@@ -223,9 +230,7 @@
 				$mail->mail->FromName = "Accounts Errors";
 				$mail->subject($subject);
 				$mail->html($text);
-
 				$success = $mail->send();
-
 				if (!$success) {
 					static::handler(E_ERROR, $success, __FILE__, __LINE__);
 				}
@@ -254,7 +259,6 @@
 		 */
 		public static function process() {
 			$last_error = error_get_last();
-
 			static::$session = $_SESSION;
 			// Only show valid fatal errors
 			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
@@ -277,10 +281,25 @@
 		}
 		/**
 		 * @static
+		 * @return int
+		 */
+		static public function dbErrorCount() {
+			return count(static::$dberrors);
+		}
+		/**
+		 * @static
+		 * @return int
+		 */
+		static public function messageCount() {
+			return count(static::$messages);
+		}
+
+		/**
+		 * @static
 		 *
 		 * @param null $e
 		 */
-		static public function fatal($e = null) {
+		static protected function fatal() {
 			ob_end_clean();
 			$content = static::format();
 			if (!$content) {
@@ -327,7 +346,7 @@
 		 * @static
 		 * @return string
 		 */
-		static public function getJSONError() {
+		static protected function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
 		/**

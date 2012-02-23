@@ -42,8 +42,6 @@
 	$order = Orders::session_get() ? : null;
 	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$order_no = $order->order_no;
-		Errors::log($order,$order_no,$_POST['order_id']);
-
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($order_no);
 	}
