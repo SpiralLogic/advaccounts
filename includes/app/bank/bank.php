@@ -114,7 +114,7 @@
 					return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"] . $comment;
 				case PT_WORKORDER :
 					global $wo_cost_types;
-					return $wo_cost_types[$person_id];
+					return $wo_cost_types[$type];
 				case PT_CUSTOMER :
 					return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);
 				case PT_SUPPLIER :

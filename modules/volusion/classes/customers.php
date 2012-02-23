@@ -1,6 +1,7 @@
 <?php
 	namespace Modules\Volusion;
 	class Customers {
+
 		public $customers;
 
 		public function __construct() {
@@ -24,7 +25,11 @@
 			$url .= '&EncryptedPassword=' . $apikey;
 			$url .= '&EDI_Name=Generic\Customers';
 			$url .= '&SELECT_Columns=*';
-			return file_get_contents($url);
+			if (!$result = file_get_contents($url)) {
+				\Event::warning('Could not retrieve web customers');
+			}
+			;
+			return $result;
 		}
 
 		function insert() {

@@ -23,6 +23,8 @@
 			$url .= '&EncryptedPassword=' . $apikey;
 			$url .= '&EDI_Name=Generic\Products';
 			$url .= '&SELECT_Columns=*&LIMIT=1';
-			return file_get_contents($url);
-		}
+			if (!$result = file_get_contents($url)) {
+							\Event::warning('Could not retrieve web products');
+						};
+						return $result;		}
 	}

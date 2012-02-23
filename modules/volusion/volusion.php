@@ -10,6 +10,7 @@
 	use \Modules\Volusion\Orders as Orders;
 
 	class Volusion {
+
 		function __construct() {
 		}
 
@@ -46,7 +47,7 @@
 			foreach ($orders as $order) {
 				if ($orders->process()) $success++;
 			}
-			\Event::success('Found ' . $success . ' new websales');
+			if ($success) \Event::success('Found ' . $success . ' new websales');
 			return $orders;
 		}
 
@@ -62,7 +63,6 @@
 		protected function notOnJobsboard() {
 			$neworders = $this->getNotOnJobsboard();
 			if (!$neworders) {
-				\Event::notice("No new jobs in database that aren't on Jobsboard!");
 				return false;
 			}
 			$success = 0;
@@ -126,7 +126,7 @@
 				'Customer' => "Websale: $id " . $order['BillingCompanyName'],
 				'Date_Ordered' => date('Y-m-d', strtotime("now")),
 				'Promised_Due_Date' => date('Y-m-d', strtotime("+1 week")),
-				'Brief_Job_Description' => var_export($lines,true)
+				'Brief_Job_Description' => var_export($lines, true)
 			);
 			if ($order['PaymentDeclined'] == "Y") {
 				$newJob['Priority_Level'] = 3;

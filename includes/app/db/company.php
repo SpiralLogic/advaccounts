@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class DB_Company extends DB_abstract
-	{
+	class DB_Company extends DB_abstract {
+
 		public function __construct($id = 0) {
 			parent::__construct($id);
 			$this->id = &$this->coy_code;
@@ -117,9 +117,14 @@
 		 * @return DB_Company
 		 */
 		static public function i($id = null) {
-			$id = $id ? : User::get()->company;
-			$company=Config::get('db.' . $_POST["login_company"]);
-			$id=$company['id'];
+			if (isset($_POST['login_comapny'])) {
+				$company = Config::get('db.' . $_POST['login_company']);
+			}
+			if (!isset($company)) {
+				$id = $id ? : User::get()->company;
+				$company = Config::get('db.' . $id);
+			}
+			$id = $company['id'];
 			if (static::$i === null) {
 				static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
 			}
