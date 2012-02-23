@@ -10,14 +10,14 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	class Errors {
+
 		const DB_DUPLICATE_ERROR_CODE = 1062;
 		/** @var array Container for the system messages */
 		static public $messages = array();
 		/** @var array Container for the system errors */
 		static public $errors = array();
-
+		/** @var array */
 		static protected $debugLog = array();
-
 		/** @var array Container for DB errors */
 		static public $dberrors = array();
 		/*** @var bool  Wether the json error status has been sent */
@@ -26,6 +26,7 @@
 		static protected $current_severity = E_ALL;
 		/** @var array Error constants to text */
 		static protected $session = false;
+		/** @var array */
 		static public $levels = array(
 			-1 => 'Fatal!',
 			0 => 'Error',
@@ -47,14 +48,13 @@
 		/** @var string  temporary container for output html data before error box */
 		static public $before_box = '';
 		/** @var array Errors which terminate execution */
-		static public $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+		static protected $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 		/** @var array Errors which are user errors */
 		static public $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 		/** @var array Errors where execution can continue */
 		static public $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static public $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-
 		/** @static Initialiser */
 		static function init() {
 			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
@@ -75,7 +75,6 @@
 			}
 			Event::register_shutdown(__CLASS__);
 		}
-
 		/**
 		 * @static
 		 *
@@ -109,7 +108,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
@@ -128,7 +126,6 @@
 			$error['backtrace'] = static::prepare_backtrace($e->getTrace());
 			static::$errors[] = $error;
 		}
-
 		/** @static */
 		static function error_box() {
 			printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
@@ -136,7 +133,6 @@
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -164,11 +160,17 @@
 
 			return $content;
 		}
+		/**
+		 * @static
 
+		 */
 		static public function _shutdown() {
 			static::send_debug_email();
 		}
+		/**
+		 * @static
 
+		 */
 		static function send_debug_email() {
 
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog)) && Config::get('debug_email')) {
@@ -229,7 +231,6 @@
 				}
 			}
 		}
-
 		/***
 		 * @static
 		 *
@@ -247,7 +248,10 @@
 			}
 			return $backtrace;
 		}
+		/**
+		 * @static
 
+		 */
 		public static function process() {
 			$last_error = error_get_last();
 
@@ -271,7 +275,11 @@
 				static::fatal();
 			}
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param null $e
+		 */
 		static public function fatal($e = null) {
 			ob_end_clean();
 			$content = static::format();
@@ -284,13 +292,11 @@
 			static::send_debug_email();
 			exit();
 		}
-
 		/***
 		 * @static
 		 * @return int
 		 */
 		static public function getSeverity() { return static::$current_severity; }
-
 		/**
 		 * @static
 		 *
@@ -317,7 +323,6 @@
 			static::$jsonerrorsent = true;
 			return $status;
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -325,7 +330,6 @@
 		static public function getJSONError() {
 			return json_encode(array('status' => static::JSONError()));
 		}
-
 		/**
 		 * @static
 		 *
@@ -352,7 +356,10 @@
 			}
 			trigger_error($error['message'] . '||' . $source['file'] . '||' . $source['line'], E_USER_ERROR);
 		}
+		/**
+		 * @static
 
+		 */
 		static public function log() {
 			$args = func_get_args();
 			$content = array();

@@ -64,9 +64,9 @@
 		/**
 		 * @static
 		 *
-		 * @param			 $id
-		 * @param			 $callback
-		 * @param bool	$url
+		 * @param       $id
+		 * @param       $callback
+		 * @param bool  $url
 		 * @param array $options
 		 */
 		static public function autocomplete($id, $callback, $url = false, $options = array()) {
@@ -169,9 +169,9 @@ JS;
 		/**
 		 * @static
 		 *
-		 * @param			 $id
+		 * @param       $id
 		 * @param array $options
-		 * @param			 $page
+		 * @param       $page
 		 */
 		static public function tabs($id, $options = array(), $page = null) {
 			$defaults = array('noajax' => false, 'hasLinks' => false);
@@ -179,7 +179,7 @@ JS;
 			extract(array_merge($defaults, $options));
 			$content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
 			if ($hasLinks) {
-				$content .= <<<JS
+				$content .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);
@@ -198,7 +198,7 @@ JS;
         return true;
     }
     }
-JS;
+JSS;
 			}
 			$content .= ").toggleClass('tabs')";
 			if ($page) {
@@ -231,7 +231,7 @@ JS;
 			if (!AJAX_REFERRER) {
 				foreach (self::$_footerFiles as $dir => $file) {
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)),
-					false)->setReturn(false);
+						false)->setReturn(false);
 				}
 				echo $files;
 			}
@@ -258,11 +258,11 @@ JS;
 			if ($onReady != '') {
 				$content .= "\n$(function(){ " . $onReady . '});';
 			}
-		//	$cachekey = 'js_min.' . md5($content);
-		//	$cachecontent = Cache::get($cachekey);
-//			if (!$cachecontent) {
-	//			$cachecontent = Cache::set($cachekey, JSMin::minify($content));
-	//		}
+			//	$cachekey = 'js_min.' . md5($content);
+			//	$cachecontent = Cache::get($cachekey);
+			//	if (!$cachecontent) {
+			//			$cachecontent = Cache::set($cachekey, JSMin::minify($content));
+			//		}
 			/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 			HTML::script(array('content' => $content))->script;
 		}
@@ -282,14 +282,14 @@ JS;
 				$data['status'] = $error;
 			}
 			ob_end_clean();
-			echo	 json_encode($data);
+			echo   json_encode($data);
 			exit();
 		}
 
 		/**
 		 * @static
 		 *
-		 * @param			$selector
+		 * @param      $selector
 		 * @param bool $cached
 		 */
 		static public function setFocus($selector, $cached = false) {
@@ -322,9 +322,9 @@ JS;
 		/**
 		 * @static
 		 *
-		 * @param			$selector
-		 * @param			$type
-		 * @param			$action
+		 * @param      $selector
+		 * @param      $type
+		 * @param      $action
 		 * @param bool $delegate
 		 * @param bool $cached
 		 */
@@ -339,7 +339,7 @@ JS;
 		/**
 		 * @static
 		 *
-		 * @param			$action
+		 * @param      $action
 		 * @param bool $clean
 		 */
 		static public function addLive($action, $clean = false) {
@@ -408,7 +408,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $js
-		 * @param						$var
+		 * @param            $var
 		 */
 		static protected function register($js = false, &$var) {
 			if (is_array($js)) {
@@ -426,7 +426,7 @@ JS;
 		 * @static
 		 *
 		 * @param array|bool $file
-		 * @param						$var
+		 * @param            $var
 		 */
 		static protected function registerFile($file, &$var) {
 			if (is_array($file)) {
