@@ -302,6 +302,7 @@ JS;
 		}
 		$invoice_no = Purch_Invoice::add(Creditor_Trans::i());
 		$_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
+		$_SESSION['supplier_id'] = $_POST['supplier_id'] ;
 		Creditor_Trans::i()->clear_items();
 		Creditor_Trans::killInstance();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
