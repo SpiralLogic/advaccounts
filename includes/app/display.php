@@ -480,7 +480,7 @@
 		 * @param int			 $extra
 		 */
 		static public function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
+			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 1,0);
 		}
 
 		/**
