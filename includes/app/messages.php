@@ -45,8 +45,8 @@
 
 		static public function show($user = false) {
 
-			if (!$user && isset($_SESSION['current_user'])) {
-				$user = $_SESSION['current_user']->user;
+			if (!$user && User::i()) {
+				$user = User::i()->user;
 			}
 			static::get($user);
 			if (static::$count > 0) {

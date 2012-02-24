@@ -2,51 +2,35 @@ Adv.extend({
 
 	resetHighlights:function () {
 		$(".ui-state-highlight").removeClass("ui-state-highlight");
-		Adv.o.custsearch.prop('disabled', false);
-		Adv.btnCustomer.hide();
-		Adv.btnCancel.text('New Customer');
-		Branches.btnBranchAdd();
 		Adv.fieldsChanged = 0;
 		Adv.Events.onLeave();
 	},
 	revertState:function () {
 		$('.ui-state-highlight').each(function () {
-			$(this).val($(this).data('init'))
+			$(this).val($(this).data('init'));
 		});
+		Adv.o.custsearch.prop('disabled', false);
+		Adv.btnConfirm.hide();
+		Adv.btnCancel.text('New Customer');
+		Branches.btnBranchAdd();
 		Adv.resetHighlights();
 	},
 	resetState:function () {
 		$("#tabs0 input, #tabs0 textarea").empty();
 		$("#customer").val('');
-		Customer.fetch(0)
+		Customer.fetch(0);
 	},
 	stateModified:function (feild) {
 		Adv.fieldsChanged++;
-				if (feild.data('init') === feild.val())
-					{
-						feild.removeClass("ui-state-highlight");
-						Adv.fieldsChanged--;
-						if (Adv.fieldsChanged === 0)
-							{
-								Adv.resetHighlights();
-							}
-						return;
-					}
-		if (feild.prop('disabled')) return;
-		Adv.o.custsearch.prop('disabled', true);
-		Adv.btnCancel.text('Cancel Changes').show();
-		var fieldname = feild.addClass("ui-state-highlight").attr('name');
-		$("[name='" + fieldname + "']").each(function () {
-			$(this).addClass("ui-state-highlight");
-		});
-		if (Customer.get().id === null || Customer.get().id === 0)
+		if (feild.data('init') === feild.val())
 			{
-				Adv.btnCustomer.text("Save New Customer").show();
-			} else
-			{
-				Adv.btnCustomer.text("Save Changes").show();
+				Adv.fieldsChanged--;
+				Adv.fieldsChanged === 0 ? Adv.resetHighlights() : feild.removeClass("ui-state-highlight");
+				return;
 			}
-		Customer.set(fieldname, feild.val());
+		if (feild.prop('disabled'))	{return;}
+		var fieldname = feild.addClass("ui-state-highlight").attr('name');
+		$("[name='" + fieldname + "']").addClass("ui-state-highlight");
 		Adv.Events.onLeave("Continue without saving changes?");
 	}
 });
@@ -205,7 +189,8 @@ var Accounts = function () {
 	}
 }();
 var Customer = function () {
-	var customer, transactions = $('#transactions'), customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete', 'off');
+	var customer, transactions = $('#transactions'), customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete',
+	 'off');
 	return {
 		init:function () {
 			$customerID.autocomplete({
@@ -237,9 +222,11 @@ var Customer = function () {
 				{return;}
 			customer = data = content.customer;
 			if (customer.id)
-				{					Adv.tabs1.tabs('option', 'disabled', []);
+				{
+					Adv.tabs1.tabs('option', 'disabled', []);
 				} else
-				{					Adv.tabs1.tabs('option', 'disabled', [0,1,2,3,4]);
+				{
+					Adv.tabs1.tabs('option', 'disabled', [0, 1, 2, 3, 4]);
 
 				}
 			if (content.contact_log !== undefined)
@@ -282,17 +269,18 @@ var Customer = function () {
 
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 			 $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
-			if (!id) {return;}
+			if (!id)
+				{return;}
 			$invoiceFrame.load($invoiceFrameSrc, data + "&frame=1&customer_id=" + id);
 		},
 		Save:function () {
 			Branches.btnBranchAdd();
-			Adv.btnCustomer.prop('disabled', true);
+			Adv.btnConfirm.prop('disabled', true);
 			$.post('customers.php', Customer.get(), function (data) {
 				if (data.status)
 					{
 						Adv.showStatus(data.status);
-						Adv.btnCustomer.prop('disabled', false);
+						Adv.btnConfirm.prop('disabled', false);
 						if (!data.status.status)
 							{return;}
 					}
@@ -331,7 +319,7 @@ $(function () {
 	Adv.extend({
 		tabs:$("#tabs0"),
 		accFields:$("[name^='acc_']"),
-		btnCustomer:$("#btnCustomer").click(function () {
+		btnConfirm:$("#btnConfirm").click(function () {
 			Customer.Save();
 			return false;
 		}),
@@ -339,7 +327,13 @@ $(function () {
 			(!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 			return false;
 		}),
-		ContactLog:$("#contactLog").hide()
+		ContactLog:$("#contactLog").hide(),
+							tabs1: $("#tabs1").tabs({ select:function (event, ui) {
+							var url = $.data(ui.tab, 'load.tabs');
+							if (url)
+								{location.href = url + Customer.get().id;}
+							return false;
+						}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
 		Adv.accFields.each(function () {
@@ -354,12 +348,6 @@ $(function () {
 		Adv.ContactLog.dialog("open");
 		return false;
 	});
-	Adv.tabs1 = $("#tabs1").tabs({ select:function (event, ui) {
-		var url = $.data(ui.tab, 'load.tabs');
-		if (url)
-			{location.href = url + Customer.get().id;}
-		return false;
-	}, selected:-1 });
 	Adv.ContactLog.dialog({
 		autoOpen:false,
 		show:"slide",
@@ -383,7 +371,7 @@ $(function () {
 					});
 					Adv.ContactLog.find("[name='message']").val('');
 					Adv.setContactLog(data);
-				}, 'json')
+				}, 'json');
 			},
 			Cancel:function () {
 				Adv.ContactLog.find("[name='message']").val('');
@@ -391,22 +379,27 @@ $(function () {
 			}
 		}
 	}).click(function () {
-		 $(this).dialog("open");
-	 });
-	$("#messageLog").prop('disabled',true).css('background','white');
+		$(this).dialog("open");
+	});
+	$("#messageLog").prop('disabled', true).css('background', 'white');
 	Adv.tabs.delegate("input, textarea", "change keypress", function (event) {
-		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || Adv.tabs.tabs('option','selected')==4 )
+		var $this = $(this), $thisname = $this.attr('name'), buttontext = "Save New";
+		if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.tabs.tabs('option', 'selected') == 4)
 			{
 				return;
 			}
-
-		Adv.stateModified($(this));
+		Adv.stateModified($this);
+		Adv.o.custsearch.prop('disabled', true);
+		Adv.btnCancel.text('Cancel Changes').show();
+		if (Customer.get().id)
+			{ buttontext = "Save Changes";}
+		Adv.btnConfirm.text(buttontext).show();
+		Customer.set($thisname, $this.val());
 	});
 	$("[name='messageLog']").keypress(function (event) {
 		return false;
 	});
 	$("#id").prop('disabled', true);
-
 	Branches.init();
 	Customer.init();
 	Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {

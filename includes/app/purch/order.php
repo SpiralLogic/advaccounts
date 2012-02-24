@@ -135,7 +135,7 @@
 		 */
 		public function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
-				$salesman_name = $_SESSION['current_user']->name;
+				$salesman_name = User::i()->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query = DB::query($sql, 'Couldn\'t find current salesman');
 				$result = DB::fetch_assoc($query);

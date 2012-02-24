@@ -167,7 +167,7 @@
 			JS::set_focus('code_id');
 			return false;
 		}
-		if (!User::get()->can_access(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
+		if (!User::i()->can_access(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
 			Event::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			JS::set_focus('code_id');
 			return false;

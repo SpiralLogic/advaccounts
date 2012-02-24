@@ -132,11 +132,11 @@
 
 		protected function menu_header() {
 			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
-			echo "<div id='top'><p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
+			echo "<div id='top'><p>" . Config::get('db.' . User::i()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::i()
 			 ->name . "</p>\n";
 			echo "<ul>\n";
 			echo	 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
-		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::i()->username . "'>" . _("Change password") . "</a></li>\n";
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
@@ -207,10 +207,10 @@
 			echo "</div>"; //end wrapper div
 			if ($this->menu && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
-				if (isset($_SESSION['current_user'])) {
+				if (User::i()) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
-					if ($_SESSION['current_user']->logged_in()) {
+					if (User::i()->logged_in()) {
 				//		echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}
 					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";

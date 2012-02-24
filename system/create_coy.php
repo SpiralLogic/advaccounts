@@ -160,7 +160,7 @@
 	}
 
 	function display_companies() {
-		$coyno = User::get()->company;
+		$coyno = User::i()->company;
 		echo "
 			<script language='javascript'>
 			function deleteCompany(id) {

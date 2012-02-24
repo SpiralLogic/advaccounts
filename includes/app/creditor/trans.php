@@ -105,6 +105,7 @@
 				$tax_group_id = $this->tax_group_id;
 			}
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
+			Errors::log($taxes);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {

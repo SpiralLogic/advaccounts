@@ -97,7 +97,7 @@
 			$app_id = $path[0];
 			$this->selected = $this->get_application($app_id);
 			if (!$this->selected) {
-				$app_id = User::get()->startup_tab();
+				$app_id = User::i()->startup_tab();
 				$this->selected = $this->get_application($app_id);
 			}
 			if (!$this->selected || !is_object($this->selected)) {
@@ -147,7 +147,7 @@
 				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
 				static::showLogin();
 			}
-			$currentUser = User::get();
+			$currentUser = User::i();
 			if (Input::post("user_name")) {
 				$company = isset($_POST["login_company"]) ? $_POST["login_company"]: 'default';
 				if ($company) {

@@ -197,7 +197,7 @@
 		$order->display_delivery_details();
 		echo "</td></tr>";
 		end_table(1);
-		if ($order->trans_no > 0 && User::get()->can_access(SA_VOIDTRANSACTION)) {
+		if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION)) {
 			submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
 			submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
 			submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -475,7 +475,7 @@
 	 * @return bool
 	 */
 	function check_item_data($order) {
-		if (!User::get()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
+		if (!User::i()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
@@ -485,7 +485,7 @@
 			JS::set_focus('price');
 			return false;
 		}
-		elseif (!User::get()
+		elseif (!User::i()
 		 ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
 		) {
 			JS::set_focus('qty');
@@ -546,7 +546,7 @@
 	 ** @param Sales_Order $order
 	 */
 	function handle_cancel_order($order) {
-		if (!User::get()->can_access(SS_SETUP)) {
+		if (!User::i()->can_access(SS_SETUP)) {
 			Event::error('You don\'t have access to delete orders');
 			return;
 		}

@@ -52,7 +52,7 @@ HTML;
 		protected function __construct() {
 			$this->display = $this->start . $this->search . $this->sales;
 
-			if (User::get()->can_access(SS_GL)) $this->display .= $this->bank;
+			if (User::i()->can_access(SS_GL)) $this->display .= $this->bank;
 			$this->display .= $this->customer . $this->end;
 		}
 	}

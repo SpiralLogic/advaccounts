@@ -311,7 +311,7 @@
 		 */
 		public function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
-				$salesman_name = $_SESSION['current_user']->name;
+				$salesman_name = User::i()->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query = DB::query($sql, 'Couldn\'t find current salesman');
 				$result = DB::fetch_assoc($query);
@@ -656,20 +656,8 @@
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
 			if (isset($loc, $st_names, $st_reorder) && Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
-				$company = DB_Company::get_prefs();
-				$mail = new Reports_Email($company['coy_name'], $company['email']);
-				$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-				$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-				$msg = "\n";
-				for ($i = 0; $i < count($st_ids); $i++) {
-					$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
-				}
-				$msg .= "\n" . _("Please reorder") . "\n\n";
-				$msg .= $company['coy_name'];
-				$mail->to($to);
-				$mail->subject($subject);
-				$mail->text($msg);
-				$mail->send();
+				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
+
 			}
 			Orders::session_delete($this->order_id);
 			return $order_no;
@@ -888,23 +876,25 @@
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
 			if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
-				$company = DB_Company::get_prefs();
-				$mail = new Reports_Email($company['coy_name'], $company['email']);
-				$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-				$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-				$msg = "\n";
-				for ($i = 0; $i < count($st_ids); $i++) {
-					$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
-				}
-				$msg .= "\n" . _("Please reorder") . "\n\n";
-				$msg .= $company['coy_name'];
-				$mail->to($to);
-				$mail->subject($subject);
-				$mail->text($msg);
-				$mail->send();
+				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
 			}
 		}
-
+		protected function email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num) {
+			$company = DB_Company::get_prefs();
+			$mail = new Reports_Email($company['coy_name'], $company['email']);
+			$to = $loc['location_name'] . " <" . $loc['email'] . ">";
+			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
+			$msg = "\n";
+			for ($i = 0; $i < count($st_ids); $i++) {
+				$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
+			}
+			$msg .= "\n" . _("Please reorder") . "\n\n";
+			$msg .= $company['coy_name'];
+			$mail->to($to);
+			$mail->subject($subject);
+			$mail->text($msg);
+			$mail->send();
+		}
 		/**
 		 * @param $customer_id
 		 * @param $branch_id
@@ -1255,7 +1245,7 @@
 				hidden('tax_group_id', $this->tax_group_id);
 			}
 			Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman :
-			 $_SESSION['current_user']->salesmanid);
+			 User::i()->salesmanid);
 			end_outer_table(1); // outer table
 			if ($change_prices != 0) {
 				foreach ($this->line_items as $line) {

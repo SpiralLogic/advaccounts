@@ -16,7 +16,7 @@ class User
 	 * @static
 	 * @return User
 	 */
-	static public function get() {
+	static public function i() {
 		if (isset($_SESSION["current_user"])) {
 			static::$_instance = $_SESSION["current_user"];
 		}
@@ -29,7 +29,7 @@ class User
 	public $loginname;
 	public $username;
 	public $name;
-	public $company = 1;
+	public $company;
 	public $pos;
 	public $salesmanid = false;
 	public $access;

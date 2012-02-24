@@ -86,7 +86,7 @@
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];
-			$this->salesman = ($_SESSION['current_user']) ? $_SESSION['current_user']->salesmanid : 1;
+			$this->salesman = (User::i()) ? User::i()->salesmanid : 1;
 		}
 
 		protected function _new() {

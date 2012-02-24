@@ -123,7 +123,7 @@
 		Ajax::i()->activate('inv_tot');
 	}
 	$id2 = -1;
-	if (User::get()->can_access(SA_GRNDELETE)) {
+	if (User::i()->can_access(SA_GRNDELETE)) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DB::begin();

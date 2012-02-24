@@ -118,6 +118,8 @@ JS;
 			JS::beforeload($js);
 		}
 
+
+
 		/**
 		 * @static
 		 *

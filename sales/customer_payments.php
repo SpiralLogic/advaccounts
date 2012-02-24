@@ -115,7 +115,7 @@
 		start_table('tablestyle width70');
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount', 0);
-		if (User::get()->can_access(SS_SALES)) {
+		if (User::i()->can_access(SS_SALES)) {
 			check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
 		}
 		amount_row(_("Amount:"), 'amount');
@@ -204,7 +204,7 @@ JS;
 			JS::set_focus('discount');
 			return false;
 		}
-		if (!User::get()->salesmanid) {
+		if (!User::i()->salesmanid) {
 			Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
 			return false;
 		}

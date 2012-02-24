@@ -120,10 +120,10 @@
 	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Accounts Details:"), 2);
-	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+	percent_row(_("Discount Percent:"), 'discount', $customer->discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
@@ -201,7 +201,7 @@
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
 	HTML::_div()->div(array('class' => 'center width50'));
-	UI::button('btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
+	UI::button('btnConfirm', ($customer->id) ? 'Update Customer' : 'New Customer', array(
 																																											 'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
 																																									));
 	UI::button('btnCancel', 'Cancel', array(

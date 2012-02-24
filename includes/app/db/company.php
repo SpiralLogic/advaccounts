@@ -121,7 +121,7 @@
 				$company = Config::get('db.' . $_POST['login_company']);
 			}
 			if (!isset($company)) {
-				$id = $id ? : User::get()->company;
+				$id = $id ? : User::i()->company;
 				$company = Config::get('db.' . $id);
 			}
 			$id = $company['id'];

@@ -80,7 +80,7 @@
 		}
 		if ($input_error != 1) {
 			DB_Company::update_setup($_POST);
-			$_SESSION['current_user']->timeout = $_POST['login_tout'];
+			User::i()->timeout = $_POST['login_tout'];
 			Event::success(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');

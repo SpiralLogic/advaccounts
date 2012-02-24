@@ -49,7 +49,7 @@
 		public $headerFunc; // store the name of the currently selected header public function
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
 
-			if (!User::get()->can_access_page(Page::get_security())) {
+			if (!User::i()->can_access_page(Page::get_security())) {
 				Event::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
 				exit;
@@ -217,7 +217,7 @@
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
 			$this->company = DB_Company::get_prefs();
-			$this->user = User::get()->name;
+			$this->user = User::i()->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;
 			$this->cols = $cols;

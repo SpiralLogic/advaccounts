@@ -48,7 +48,7 @@
 					if ($appfunction->label == "") {
 						echo "<li class='empty'>&nbsp;</li>\n";
 					}
-					elseif (User::get()->can_access_page($appfunction->access)) {
+					elseif (User::i()->can_access_page($appfunction->access)) {
 						echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
 					}
 					else {
@@ -63,7 +63,7 @@
 						if ($appfunction->label == "") {
 							echo "<li class='empty'>&nbsp;</li>\n";
 						}
-						elseif (User::get()->can_access_page($appfunction->access)
+						elseif (User::i()->can_access_page($appfunction->access)
 						) {
 							echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
 						}

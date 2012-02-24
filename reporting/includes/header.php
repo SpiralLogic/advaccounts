@@ -178,7 +178,7 @@
 		$result = DB::query($sql, "could not get sales person");
 		$row = DB::fetch($result);
 		if (empty($row['salesman_name'])) {
-			$user = User::get()->name;
+			$user = User::i()->name;
 		}
 		else {
 			$user = $row['salesman_name'];
@@ -188,7 +188,7 @@
 		//$row = DB::fetch($result);
 		$this->Text($mcol + 180, $user);
 		//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-		//$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
+		//$this->TextWrap($col, $this->row, $width, User::i(), 'C');
 	}
 	if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk")) {
 		$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
@@ -274,7 +274,7 @@
 		$result = DB::query($sql, "could not get sales person");
 		$row = DB::fetch($result);
 		$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-		//$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
+		//$this->TextWrap($col, $this->row, $width, User::i(), 'C');
 	} # __ADVANCEDEDIT__ END #
 	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 		$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');

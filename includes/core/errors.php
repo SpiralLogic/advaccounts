@@ -59,7 +59,7 @@
 		static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
 		/** @static Initialiser */
 		static function init() {
-			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::get()->user == 1) {
+			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::i()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					/** @noinspection PhpIncludeInspection */
 					include(realpath(VENDORPATH . 'FirePHP/fb.chrome.php'));
