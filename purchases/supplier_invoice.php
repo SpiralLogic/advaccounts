@@ -22,6 +22,7 @@
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+		Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
 		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();

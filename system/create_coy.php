@@ -108,7 +108,7 @@
 			}
 		}
 		if ($new) {
-			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
+			create_comp_dirs(COMPANY_PATH . "$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
 		$exts = DB_Company::get_company_extensions();
 		advaccounting::write_extensions($exts, $id);
@@ -131,7 +131,7 @@
 		// other subdirectories will have right owners even after
 		// unsuccessfull removal.
 		$cdir = COMPANY_PATH . DS . $id;
-		$tmpname = COMPANY_PATH . '/old_' . $id;
+		$tmpname = COMPANY_PATH . 'old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
 			Event::error(_('Cannot rename subdirectory to temporary name.'));
 			return;

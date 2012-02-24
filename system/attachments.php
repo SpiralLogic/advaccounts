@@ -34,7 +34,7 @@
 				else {
 					header("Content-Disposition: inline");
 				}
-				echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
+				echo file_get_contents(COMPANY_PATH . "attachments/" . $row['unique_name']);
 				exit();
 			}
 		}
@@ -56,7 +56,7 @@
 				header("Content-type: " . $type);
 				header('Content-Length: ' . $row['filesize']);
 				header('Content-Disposition: attachment; filename=' . $row['filename']);
-				echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
+				echo file_get_contents(COMPANY_PATH . "attachments/" . $row['unique_name']);
 				exit();
 			}
 		}
@@ -75,7 +75,7 @@
 		if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
 			//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 			$tmpname = $_FILES['filename']['tmp_name'];
-			$dir = COMPANY_PATH . "/attachments";
+			$dir = COMPANY_PATH . "attachments";
 			if (!file_exists($dir)) {
 				mkdir($dir, 0777);
 				$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
@@ -123,7 +123,7 @@
 	}
 	if ($Mode == MODE_DELETE) {
 		$row = get_attachment($selected_id);
-		$dir = COMPANY_PATH . "/attachments";
+		$dir = COMPANY_PATH . "attachments";
 		if (file_exists($dir . "/" . $row['unique_name'])) {
 			unlink($dir . "/" . $row['unique_name']);
 		}

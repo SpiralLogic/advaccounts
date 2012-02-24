@@ -6,39 +6,39 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends PDOException
-	{
+	class DBException extends PDOException {
+
 	}
 
-	class DBUpdateException extends DBException
-	{
-	}
+	class DBUpdateException extends DBException {
 
-	;
-	class DBInsertException extends DBException
-	{
 	}
 
 	;
-	class DBDeleteException extends DBException
-	{
+	class DBInsertException extends DBException {
+
 	}
 
 	;
-	class DBSelectException extends DBException
-	{
+	class DBDeleteException extends DBException {
+
+	}
+
+	;
+	class DBSelectException extends DBException {
+
 	}
 
 	;
 	/**
 
 	 */
-	class DBDuplicateException extends DBException
-	{
+	class DBDuplicateException extends DBException {
+
 	}
 
-	class DB
-	{
+	class DB {
+
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
@@ -51,7 +51,7 @@
 		static public $queryString = array();
 		/*** @var PDOStatement */
 		static protected $prepared = null;
-		/**	 @var null */
+		/**   @var null */
 		static protected $debug = null;
 		/** @var bool */
 		static protected $nested = false;
@@ -67,7 +67,7 @@
 		protected $conn = false;
 		/** @var DB */
 		static protected $i = null;
-		static $default_connection;
+		protected $default_connection;
 		/***
 		 * @static
 		 *
@@ -86,18 +86,15 @@
 		 * @param $config
 		 */
 		protected function __construct($config) {
-			if (class_exists('Config')) {
-				$this->useConfig = true;
-			}
-			if (class_exists('Cache')) {
-				$this->useCache = true;
-			}
+			$this->useConfig = class_exists('Config');
+			$this->useCache = class_exists('Cache');
 			if (!$config && !$this->useConfig) {
 				throw new DBException('No database configuration provided');
 			}
 			$config = $config ? : Config::get('db.default');
 			static::$debug = false;
 			$this->_connect($config);
+			$this->default_connection = $config['name'];
 		}
 		/**
 		 * @param array $config
@@ -112,7 +109,6 @@
 				static::$connections[$config['name']] = $conn;
 				if ($this->conn === false) {
 					$this->conn = $conn;
-					static::$default_connection = $config['name'];
 				}
 				return true;
 			}
@@ -121,9 +117,9 @@
 			}
 		}
 		static public function change_connection($name = false) {
-			$name = $name ? : static::$default_connection;
+			$name = $name ? : static::i()->default_connection;
 			if (!isset(static::$connections[$name])) {
-				if (static::i()->useConfig && !is_array($name)) {
+				if (static::i()->useConfig && $name && !is_array($name)) {
 					$config = Config::get('db.' . $name);
 				}
 				elseif (is_array($name)) {
@@ -141,14 +137,15 @@
 				throw new DBException("There is no connection with this name");
 			}
 		}
+
 		static public function connect($config) {
 			static::i()->_connect($config);
 		}
 		/**
 		 * @static
 		 *
-		 * @param						$sql
-		 * @param null			 $err_msg
+		 * @param            $sql
+		 * @param null       $err_msg
 		 *
 		 * @return null|PDOStatement
 		 */
@@ -169,7 +166,6 @@
 					static::$prepared->execute();
 				}
 				catch (PDOException $e) {
-
 					static::i()->_error($e, " (execute) " . $err_msg);
 				}
 			}
@@ -188,8 +184,8 @@
 		/**
 		 * @static
 		 *
-		 * @param						$value
-		 * @param null			 $type
+		 * @param            $value
+		 * @param null       $type
 		 *
 		 * @return mixed
 		 */
@@ -199,15 +195,14 @@
 		/**
 		 * @static
 		 *
-		 * @param						$value
-		 * @param bool			 $null
+		 * @param            $value
+		 * @param bool       $null
 		 *
 		 * @internal param bool $paramaterized
 		 * @return bool|mixed|string
 		 */
 		static public function escape($value, $null = false) {
 			$value = trim($value);
-			//check for null/unset/empty strings
 			if (!isset($value) || is_null($value) || $value === "") {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
@@ -231,8 +226,8 @@
 		/**
 		 * @static
 		 *
-		 * @param						$sql
-		 * @param bool			 $debug
+		 * @param            $sql
+		 * @param bool       $debug
 		 *
 		 * @return bool|PDOStatement
 		 * @throws DBException
@@ -267,8 +262,8 @@
 		/**
 		 * @static
 		 *
-		 * @param						$sql
-		 * @param bool			 $debug
+		 * @param            $sql
+		 * @param bool       $debug
 		 *
 		 * @return null|PDOStatement
 		 */
@@ -568,9 +563,9 @@
 			}
 		}
 		/***
-		 * @param						$sql
-		 * @param						$type
-		 * @param null			 $data
+		 * @param            $sql
+		 * @param            $type
+		 * @param null       $data
 		 *
 		 * @return DB_Query_Result|int
 		 */
@@ -633,9 +628,9 @@
 			return $sql;
 		}
 		/**
-		 * @param PDOException												$e
-		 * @param bool																$msg
-		 * @param string|bool												 $exit
+		 * @param PDOException                        $e
+		 * @param bool                                $msg
+		 * @param string|bool                         $exit
 		 *
 		 * @return bool
 		 * @throws DBException

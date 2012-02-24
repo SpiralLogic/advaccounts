@@ -128,6 +128,7 @@
 		static function tasks() {
 			$webstore = \Config::get('webstore.type');
 			$webstore = '\\Modules\\' . $webstore;
+			/***	@var \Modules\Volusion $store */
 			$store = new $webstore();
 			$store->doWebsales();
 			\DB::change_connection('jobsboard');

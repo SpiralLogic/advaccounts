@@ -72,7 +72,7 @@
 			$lang = Arr::search_value($code, Config::get('languages.installed'), 'code');
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
-				Files::flush_dir(COMPANY_PATH . '/js_cache');
+				Files::flush_dir(COMPANY_PATH . 'js_cache');
 				$this->name = $lang['name'];
 				$this->code = $lang['code'];
 				$this->encoding = $lang['encoding'];
@@ -81,7 +81,7 @@
 				$this->is_locale_file = file_exists($locale);
 			}
 			$_SESSION['get_text']->set_language($this->code, $this->encoding);
-			$_SESSION['get_text']->add_domain($this->code, PATH_TO_ROOT . "/lang");
+			$_SESSION['get_text']->add_domain($this->code, DOCROOT . "lang");
 			// Necessary for ajax calls. Due to bug in php 4.3.10 for this
 			// version set globally in php.ini
 			ini_set('default_charset', $this->encoding);

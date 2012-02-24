@@ -406,7 +406,7 @@
 			// Print company logo if present and requested, or else just print company name
 			if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
 				// Build a string specifying the location of the company logo file
-				$logo = COMPANY_PATH . "/images/" . $this->company['coy_logo'];
+				$logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
 				// Width being zero means that the image will be scaled to the specified height
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) {
@@ -778,7 +778,7 @@
 				//$this->pdf->stream();
 			}
 			else {
-				$dir = COMPANY_PATH . '/pdf_files';
+				$dir = COMPANY_PATH . 'pdf_files';
 				//save the file
 				if (!file_exists($dir)) {
 					mkdir($dir, 0777);

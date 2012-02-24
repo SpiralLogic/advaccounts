@@ -158,9 +158,9 @@
 		$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 		$result = DB::query($sql, "Could not retrieve attachments");
 		while ($row = DB::fetch($result)) {
-			$dir = COMPANY_PATH . "/attachments";
-			if (file_exists($dir . "/" . $row['unique_name'])) {
-				unlink($dir . "/" . $row['unique_name']);
+			$dir = COMPANY_PATH . "attachments";
+			if (file_exists($dir . DS . $row['unique_name'])) {
+				unlink($dir . DS . $row['unique_name']);
 			}
 			$sql = "DELETE FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 			DB::query($sql, "Could not delete attachment");

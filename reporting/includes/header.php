@@ -54,7 +54,7 @@
 	$this->LineTo($right, $iline5, $right, $iline7);
 	$this->NewLine();
 	if ($this->company['coy_logo'] != '') {
-		$logo = COMPANY_PATH . "/images/" . $this->company['coy_logo'];
+		$logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
 		$this->AddImage($logo, $ccol, $this->row, 0, 40);
 	}
 	else {

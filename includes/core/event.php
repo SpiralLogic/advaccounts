@@ -6,8 +6,8 @@
 	 * Time: 6:39 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Event
-	{
+	class Event {
+
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */
@@ -29,7 +29,7 @@
 
 		 */
 		static public function i() {
-			static::$shutdown_events_id='shutdown.events.'.User::get()->username;
+			static::$shutdown_events_id = 'shutdown.events.' . User::get()->username;
 			$shutdown_events = Cache::get(static::$shutdown_events_id);
 			if ($shutdown_events) {
 				while ($msg = array_pop($shutdown_events)) {
@@ -105,7 +105,7 @@
 			}
 			session_write_close();
 			/** @noinspection PhpUndefinedFunctionInspection */
-		//	fastcgi_finish_request();
+			fastcgi_finish_request();
 			static::$request_finsihed = true;
 			foreach (static::$shutdown_objects as $object) {
 				try {
@@ -117,8 +117,7 @@
 					static::error('Error during post processing: ' . $e->getMessage());
 				}
 			}
-
-			Cache::set(static::$shutdown_events_id,static::$shutdown_events);
+			Cache::set(static::$shutdown_events_id, static::$shutdown_events);
 			if (extension_loaded('xhprof')) {
 				$profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
 				$xhprof_data = xhprof_disable();

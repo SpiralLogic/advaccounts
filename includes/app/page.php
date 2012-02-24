@@ -200,7 +200,6 @@
 				return;
 			}
 			echo "</div></body>"; //End content div
-			JS::get_websales();
 			echo	 "</html>\n";
 		}
 

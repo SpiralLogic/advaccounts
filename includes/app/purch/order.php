@@ -97,6 +97,7 @@
 			$this->line_items = array();
 			$this->lines_on_order = $this->supplier_id = 0;
 			$this->set_salesman();
+			$this->Location=Config::get('defaults.location');
 			$this->order_no = $order_no;
 			$this->read($order_no, $view);
 			$_POST['OrderDate'] = Dates::new_doc_date();
@@ -235,11 +236,23 @@
 		 * @return int
 		 */
 		public function add() {
+
 			DB::begin();
 			/*Insert to purchase order header record */
-			$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
-			$sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->Location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
-			DB::query($sql, "The purchase order header record could not be inserted");
+			if (!$this->order_no) {
+				if (!Ref::is_new($this->reference, ST_PURCHORDER)) {
+					$this->reference = Ref::get_next(ST_PURCHORDER);
+				}
+			}
+			try {
+				$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
+				$sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->Location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
+				DB::query($sql, "The purchase order header record could not be inserted.");
+			}
+			catch (DBException $e) {
+				Event::error('Purchase order could not be added: ' . $e->getMessage());
+				return false;
+			}
 			/*Get the auto increment value of the order number created from the sql above */
 			$this->order_no = DB::insert_id();
 			/*Insert the purchase order detail records */
@@ -492,21 +505,16 @@
 				Ajax::i()->activate('_ex_rate');
 			}
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
-			Inv_Location::row(_("Receive Into:"), 'StkLocation', null, false, true);
+			Inv_Location::row(_("Receive Into:"), 'Location', null, false, true);
 			table_section(3);
-			if (!isset($_POST['StkLocation'])
-			 || $_POST['StkLocation'] == ""
-			 || isset($_POST['_StkLocation_update'])
-			 || !isset($_POST['delivery_address'])
-			 || $_POST['delivery_address'] == ""
-			) {
+			if (!isset($_POST['Location']) || $_POST['Location'] == "" || isset($_POST['_Location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
 				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['StkLocation'] . "'";
 				$result = DB::query($sql, "could not get location info");
 				if (DB::num_rows($result) == 1) {
 					$loc_row = DB::fetch($result);
 					$_POST['delivery_address'] = $loc_row["delivery_address"];
 					Ajax::i()->activate('delivery_address');
-					$_SESSION['PO']->Location = $_POST['StkLocation'];
+					$_SESSION['PO']->Location = $_POST['Location'];
 					$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 				}
 				else { /* The default location of the user is crook */

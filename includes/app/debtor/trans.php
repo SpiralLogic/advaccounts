@@ -361,7 +361,7 @@
 		}
 		static public function display_tax_details($tax_items, $columns) {
 			while ($tax_item = DB::fetch($tax_items)) {
-				$tax = Num::format($tax_item['amount'], User::price_dec());
+				$tax = Num::price_format($tax_item['amount']);
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "", "colspan=$columns class='right'", "class='right'");
 				}

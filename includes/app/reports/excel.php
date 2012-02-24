@@ -70,7 +70,7 @@
 			$this->code = strtolower($_SESSION['Language']->encoding);
 			$this->filename = $filename . ".xls";
 			$this->unique_name = uniqid('') . ".xls";
-			$this->path = COMPANY_PATH . '/pdf_files';
+			$this->path = COMPANY_PATH . 'pdf_files';
 			$this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
 			//$this->setCountry(48);
 			if ($this->code != "iso-8859-1") {

@@ -25,27 +25,25 @@
 	define("ICON_VIEW", "view.gif");
 	define("ICON_SUBMIT", "ok.gif");
 	define("ICON_ESCAPE", "escape.png");
-	define('DEFAULT_LOCATION', 'KEYS');
 	define('DEFAULT_TAX_GROUP', 1);
 	define('DEFAULT_AREA', 1);
 	define('DEFAULT_SHIP_VIA', 1);
 	define('APP_TITLE', "Advanced Accounting");
-	$buildversion = Cache::get('build.version',false);
+	$buildversion = Cache::get('build.version', false);
 	if (!$buildversion) {
-		define('BUILD_VERSION',	file_get_contents(DOCROOT.'version'));
-		Cache::set('build.version',BUILD_VERSION);
+		define('BUILD_VERSION', file_get_contents(DOCROOT . 'version'));
+		Cache::set('build.version', BUILD_VERSION);
 	} else {
-		define('BUILD_VERSION',	$buildversion);
-
+		define('BUILD_VERSION', $buildversion);
 	}
-	define('VERSION', "3.".BUILD_VERSION."-SYEDESIGN");
-	define('POWERED_BY', "Advanced Accounting");
-	define('POWERED_URL', "http://www.advancedgroup.com.au");
+	define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
+	define('POWERED_BY', 'Advanced Accounting');
+	define('POWERED_URL', 'http://www.advancedgroup.com.au');
 	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
 	define('STORE_URL_EXTENSION', '.htm');
-	define('COMPANY_PATH', PATH_TO_ROOT . '/company');
-	define('THEME_PATH', PATH_TO_ROOT . '/themes/');
-	define("BACKUP_PATH", COMPANY_PATH . "/backup/");
+	define('COMPANY_PATH', PATH_TO_ROOT . DS.'company' . DS);
+	define('THEME_PATH', PATH_TO_ROOT . DS.'themes' . DS);
+	define("BACKUP_PATH", COMPANY_PATH . 'backup' . DS);
 	// ACCESS LEVELS
 	define('SS_SADMIN', 1 << 8); // site admin
 	define('SS_SETUP', 2 << 8); // company level setup

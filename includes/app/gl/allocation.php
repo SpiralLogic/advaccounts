@@ -179,7 +179,7 @@
 					amount_cell($alloc_item->amount_allocated);
 					$_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
 					amount_cells(null, "amount" . $counter, Num::price_format('amount' . $counter));
-					$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
+					$un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
 					amount_cell($un_allocated, false, '', 'maxval' . $counter);
 					label_cell("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
 					label_cell("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
@@ -253,7 +253,7 @@
 			$doc->pos = User::pos();
 			$doc->ship_via = 11;
 			$doc->sales_type = 1;
-			$doc->Location = DEFAULT_LOCATION;
+			$doc->Location = Config::get('defaults.location');
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->salesman = User::get()->salesmanid;

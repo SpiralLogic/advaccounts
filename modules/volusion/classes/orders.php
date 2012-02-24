@@ -12,7 +12,7 @@
 		/**
 		 * @var
 		 */
-		protected $data;
+		protected $data=array();
 		/**
 		 * @var int
 		 */
@@ -238,6 +238,7 @@
 		 *			 The return value is cast to an integer.
 		 */
 		public function count() {
+			$this->data = $this->data?: array();
 			return count($this->data);
 		}
 	}

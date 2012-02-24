@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'location' => 0, //
+		'location' => 'KEYS', //
 		'tax_group' => 1, //
 		'area' => 1, //
 		'ship_via' => 1, //

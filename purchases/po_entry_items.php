@@ -381,16 +381,16 @@
 		if (can_commit($order)) {
 			if ($order->order_no == 0) {
 				/*its a new order to be inserted */
-				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				$order_no = $order->add();
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				Dates::new_doc_date($order->orig_order_date);
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
 			}
 			else {
 				/*its an existing order need to update the old order info */
-				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				$order_no = $order->update();
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}

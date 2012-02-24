@@ -26,7 +26,7 @@
 				$_SESSION['Language']->set_language($_POST['language']);
 			}
 			// refresh main menu
-			Files::flush_dir(COMPANY_PATH . '/js_cache');
+			Files::flush_dir(COMPANY_PATH . 'js_cache');
 			if ($chg_theme && Config::get('demo_mode')) {
 				User::prefs()->theme = $_POST['theme'];
 			}

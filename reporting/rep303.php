@@ -177,7 +177,7 @@ Page::set_security(SA_ITEMSVALREP);
 					$rep->AmountCol(5, 6, $onorder, $dec);
 				}
 				if ($pictures) {
-					$image = COMPANY_PATH . '/images/'
+					$image = COMPANY_PATH . 'images/'
 					 . Item::img_name($trans['stock_id']) . '.jpg';
 					if (file_exists($image)) {
 						$rep->NewLine();
