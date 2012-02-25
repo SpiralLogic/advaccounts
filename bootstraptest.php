@@ -12,126 +12,52 @@
 	/**
 
 	 */
-	error_reporting(-1);
-	ini_set('display_errors', 1);
-	ini_set("ignore_repeated_errors", "On");
-	ini_set("log_errors", "On");
-	/**
-
-	 */
-	define('DS', DIRECTORY_SEPARATOR);
-	/**
-
-	 */
-	define('DOCROOT', __DIR__ . DS);
-	/**
-
-	 */
-	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
-	/**
-
-	 */
-	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
-	/**
-
-	 */
-	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
-	/**
-
-	 */
-	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
-	/**
-
-	 */
-	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-	/**
-
-	 */
-	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
-	/**
-
-	 */
-	define('CRLF', chr(13) . chr(10));
-	$path = substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
-	/**
-
-	 */
-	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
-	/**
-	 * Do we have access to mbstring?
-	 * We need this in order to work with UTF-8 strings
-	 */
-	define('MBSTRING', function_exists('mb_get_info'));
-	set_error_handler(/**
-	 * @param $severity
-	 * @param $message
-	 * @param $filepath
-	 * @param $line
-	 * @return bool
-	 */
-		function ($severity, $message, $filepath, $line) {
-			if (!class_exists('Errors', false)) {
-				/** @noinspection PhpIncludeInspection */
-				include(COREPATH . 'errors.php');
-			}
-			return \Errors::handler($severity, $message, $filepath, $line);
-		});
-	set_exception_handler(/**
-	 * @param Exception $e
-	 */
-		function (\Exception $e) {
-			if (!class_exists('Errors', false)) {
-				/** @noinspection PhpIncludeInspection */
-				include(COREPATH . 'errors.php');
-			}
-			return \Errors::exception_handler($e);
-		});
-	/** @noinspection PhpIncludeInspection */
-	require COREPATH . 'autoloader.php';
 	include_once('PHPUnit/Autoload.php');
 
-	register_shutdown_function(function () {
-		$Ajax = Ajax::i();
-		if (isset($Ajax)) {
-			$Ajax->run();
-		}
-		// flush all output buffers (works also with exit inside any div levels)
-		while (ob_get_level()) {
-			ob_end_flush();
-		}
-		Config::store();
-		Cache::set('autoloads', Autoloader::getLoaded());
-	});
-	if (!function_exists('adv_ob_flush_handler')) {
-		/**
-		 * @param $text
-		 * @return string
-		 */
-		function adv_ob_flush_handler($text) {
-			$Ajax = Ajax::i();
-			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text)) {
-				$Ajax->aCommands = array();
-				Errors::$fatal = true;
-				$text = '';
-				Errors::$messages[] = error_get_last();
-				Errors::$errors[] = error_get_last();
-			}
-			$Ajax->run();
-			return ($Ajax->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
-		}
-	}
-	Session::i();
-	Config::i();
-	/***
-
-	 */
-	ob_start('adv_ob_flush_handler', 0);
-	// intercept all output to destroy it in case of ajax call
-	// POST vars cleanup needed for direct reuse.
-	// We quote all values later with DB::escape() before db update.
-	array_walk($_POST, /**
-		 * @param $v
-		 */
-		function(&$v) {
-			$v = is_string($v) ? trim($v) : $v;
+	error_reporting(-1);
+		ini_set('display_errors', 1);
+		ini_set("ignore_repeated_errors", "On");
+		ini_set("log_errors", "On");
+		define('E_SUCCESS', E_ALL << 1);
+		define('DS', DIRECTORY_SEPARATOR);
+		define('DOCROOT', __DIR__ . DS);
+		define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
+		define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
+		define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
+		defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
+		define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+		define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
+		define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
+		define('CRLF', chr(13) . chr(10));
+		define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :  '.');
+		define('MBSTRING', function_exists('mb_get_info'));
+		set_error_handler(function ($severity, $message, $filepath, $line) {
+			(!class_exists('Errors', false)) and include(COREPATH . 'errors.php');
+			return \Errors::handler($severity, $message, $filepath, $line);
 		});
+		set_exception_handler(function (\Exception $e) {
+			(!class_exists('Errors', false)) and  include(COREPATH . 'errors.php');
+			\Errors::exception_handler($e);
+		});
+		if (!function_exists('e')) {
+			function e($string) { return Security::htmlentities($string); }
+		}
+		require COREPATH . 'autoloader.php';
+		register_shutdown_function(function () {
+			if (!class_exists('Event', false)) include(COREPATH . 'event.php');
+			\Event::shutdown();
+		});
+		if (!function_exists('adv_ob_flush_handler')) {
+			/**
+			 * @param $text
+			 *
+			 * @return string
+			 */
+			function adv_ob_flush_handler($text) {
+				return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+			}
+		}
+		Config::i();
+		include(DOCROOT . 'config' . DS . 'defines.php');
+		include(DOCROOT . 'config' . DS . 'types.php');
+		include(DOCROOT . 'config' . DS . 'access_levels.php');

@@ -246,7 +246,7 @@
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
-			$filename = COMPANY_PATH . "/pdf_files/test.png";
+			$filename = COMPANY_PATH . "pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;

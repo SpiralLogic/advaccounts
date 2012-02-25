@@ -32,11 +32,11 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				Event::notice(_('New printing profile has been created'));
+				Event::success(_('New printing profile has been created'));
 				clear_form($selected_id);
 			}
 			else {
-				Event::notice(_('Printing profile has been updated'));
+				Event::success(_('Printing profile has been updated'));
 			}
 		}
 	}
@@ -110,7 +110,7 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
 			$paths = array(
-				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . '/reporting/'
+				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . 'reporting/'
 			);
 			$reports = array('' => _('Default printing destination'));
 			foreach ($paths as $dirno => $path) {

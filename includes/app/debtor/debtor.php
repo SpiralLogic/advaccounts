@@ -175,7 +175,8 @@
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
-				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)
+				if ((filter_var($this->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)!= filter_var($previous->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) || $this->payment_terms != $previous->payment_terms) && !User::i()->can_access
+				(SA_CUSTOMER_CREDIT)
 				) {
 					return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 				}
@@ -281,9 +282,9 @@ JS;
 		}
 		static public function search($terms) {
 			$data = array();
-			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE '" . trim($terms) . "%',0,5) as weight")
+			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms).'%') . ",0,5) as weight")
 			 ->from('debtors')->where('name LIKE ', "$terms%")
-			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
+			 ->or_where('name LIKE', str_replace(' ', '%','%'.trim($terms)) . "%");
 			if (is_numeric($terms)) {
 				$sql->or_where('debtor_no LIKE', "$terms%");
 			}

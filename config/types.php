@@ -19,7 +19,8 @@
 				 $systypes_array, //
 				 $tag_types, //
 				 $wo_cost_types, //
-				 $wo_types_array;
+				 $wo_types_array,
+				 $sales_type_names;
 	//
 	$bank_account_types = array(
 		BT_TRANSFER => "Savings Account", //
@@ -123,4 +124,11 @@
 		WO_ASSEMBLY => "Assemble", //
 		WO_UNASSEMBLY => "Unassemble", //
 		WO_ADVANCED => "Advanced Manufacture"
+	);
+	$sales_type_names = array(
+		ST_SALESORDER => 'Sales Order',
+		ST_SALESQUOTE => 'Sales Quote',
+		ST_SALESINVOICE => "Invoice",
+		ST_CUSTDELIVERY => "Sales Delivery",
+		ST_CUSTPAYMENT => "Sales Payment"
 	);

@@ -37,7 +37,7 @@
 	}
 	Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
 	check_paths();
-	$db_name = User::get()->company;
+	$db_name = User::i()->company;
 	$connections = Config::get_all('db');
 	$conn = $connections[$db_name];
 	if (get_post('creat')) {
@@ -47,7 +47,7 @@
 	;
 	if (get_post('restore')) {
 		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
-			Event::notice(_("Restore backup completed."));
+			Event::success(_("Restore backup completed."));
 		}
 	}
 	if (get_post('deldump')) {

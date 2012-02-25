@@ -2,12 +2,11 @@
 
 <phpunit colors="true" stopOnFailure="false" bootstrap="bootstraptest.php">
 	<php>
-		<server name="COREPATH" value="includes/core"/>
-		<server name="DOCROOT" value="."/>
+		<server name="SERVER_NAME" value="advaccouts"/>
 	</php>
 	<testsuites>
 		<testsuite name="core">
-			<directory suffix=".php">tests/core</directory>
+			<directory suffix=".php">./tests/core/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

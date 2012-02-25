@@ -24,11 +24,11 @@ Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE)
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Inv_Movement::update_type($selected_id, $_POST['name']);
-				Event::notice(_('Selected movement type has been updated'));
+				Event::success(_('Selected movement type has been updated'));
 			}
 			else {
 				Inv_Movement::add_type($_POST['name']);
-				Event::notice(_('New movement type has been added'));
+				Event::success(_('New movement type has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

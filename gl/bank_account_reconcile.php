@@ -219,8 +219,12 @@ JS;
 			return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
 		} elseif ($row['type'] == ST_GROUPDEPOSIT) {
 
-			$sql = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,comments.memo_ FROM bank_trans LEFT JOIN comments ON bank_trans.type=comments.type AND bank_trans.trans_no=comments.id WHERE bank_trans.ref='" . str_replace(',',
-				"' OR bank_trans.ref='", $row['ref']) . "'";
+			$sql = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
+
+			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
+
+			WHERE bank_trans.bank_act='".$_POST['bank_account']."' AND bank_trans.type != ". ST_GROUPDEPOSIT.
+			 " AND bank_trans.undeposited>0 AND (bank_trans.ref='" . str_replace (',',  "' OR bank_trans.ref='", $row['ref']) . "')";
 
 			$result = DB::query($sql, 'Couldn\'t get deposit references');
 			$content = '';

@@ -41,7 +41,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
  			conversion_factor, supplier_description) VALUES (";
 				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
 				DB::query($sql, "The supplier purchasing details could not be added");
-				Event::notice(_("This supplier purchasing data has been added."));
+				Event::success(_("This supplier purchasing data has been added."));
 			}
 			else {
 				$sql = "UPDATE purch_data SET price=" . Validation::input_num('price', 0) . ",
@@ -51,7 +51,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
 				supplier_id=" . DB::escape($selected_id);
 				DB::query($sql, "The supplier purchasing details could not be updated");
-				Event::notice(_("Supplier purchasing data has been updated."));
+				Event::success(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -60,7 +60,7 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
-		$sql = "MODE_DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
 		DB::query($sql, "could not delete purchasing data");
 		Event::notice(_("The purchasing data item has been sucessfully deleted."));
@@ -76,7 +76,9 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 	if (list_updated('stock_id')) {
 		Ajax::i()->activate('price_table');
 	}
-	if (Input::request('frame')) {
+	if (Input::request('frame')) {		if (!Input::post('stock_id') && isset($_GET['stock_id'])) {
+				$_POST['stock_id'] = $_GET['stock_id'];
+			}
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	}
 	else {

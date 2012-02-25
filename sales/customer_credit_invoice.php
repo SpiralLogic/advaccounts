@@ -28,7 +28,7 @@
 	if (isset($_GET[ADDED_ID])) {
 		$credit_no = $_GET[ADDED_ID];
 		$trans_type = ST_CUSTCREDIT;
-		Event::notice(_("Credit Note has been processed"));
+		Event::success(_("Credit Note has been processed"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -37,7 +37,7 @@
 	elseif (isset($_GET[UPDATED_ID])) {
 		$credit_no = $_GET[UPDATED_ID];
 		$trans_type = ST_CUSTCREDIT;
-		Event::notice(_("Credit Note has been updated"));
+		Event::success(_("Credit Note has been updated"));
 		Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);

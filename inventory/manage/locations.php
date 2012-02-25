@@ -34,12 +34,12 @@ Page::start(_($help_context = "Inventory Locations"), SA_INVENTORYLOCATION);
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				Inv_Location::update($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
-				Event::notice(_('Selected location has been updated'));
+				Event::success(_('Selected location has been updated'));
 			}
 			else {
 				/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
 				Inv_Location::add($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
-				Event::notice(_('New location has been added'));
+				Event::success(_('New location has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

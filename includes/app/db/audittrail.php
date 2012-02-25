@@ -22,7 +22,7 @@
 			 ->values(array(
 				'type' => $trans_type,
 				'trans_no' => $trans_no,
-				'user' => User::get()->user,
+				'user' => User::i()->user,
 				'fiscal_year' => DB_Company::get_pref('f_year'),
 				'gl_date' => Dates::date2sql($trans_date),
 				'description' => $descr,

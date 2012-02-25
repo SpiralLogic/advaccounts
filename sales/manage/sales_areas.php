@@ -29,7 +29,7 @@
 				$note = _('New sales area has been added');
 			}
 			DB::query($sql, "The sales area could not be updated or added");
-			Event::notice($note);
+			Event::success($note);
 			$Mode = MODE_RESET;
 		}
 	}

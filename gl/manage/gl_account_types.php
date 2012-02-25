@@ -16,12 +16,12 @@
 		if (can_process($selected_id)) {
 			if ($selected_id != -1) {
 				if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					Event::notice(_('Selected account type has been updated'));
+					Event::success(_('Selected account type has been updated'));
 				}
 			}
 			else {
 				if (GL_Type::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					Event::notice(_('New account type has been added'));
+					Event::success(_('New account type has been added'));
 					$Mode = MODE_RESET;
 				}
 			}

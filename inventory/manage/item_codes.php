@@ -42,11 +42,11 @@ Page::start(_($help_context = "Foreign Item Codes"), SA_FORITEMCODE);
 		if ($input_error == 0) {
 			if ($Mode == ADD_ITEM) {
 				Item_Code::add($_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
-				Event::notice(_("New item code has been added."));
+				Event::success(_("New item code has been added."));
 			}
 			else {
 				Item_Code::update($selected_id, $_POST['item_code'], $_POST['stock_id'], $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
-				Event::notice(_("Item code has been updated."));
+				Event::success(_("Item code has been updated."));
 			}
 			$Mode = MODE_RESET;
 		}

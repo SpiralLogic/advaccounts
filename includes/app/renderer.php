@@ -10,23 +10,25 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		* ********************************************************************* */
-	class Renderer
-	{
+	class Renderer {
 		public function menu() {
 			/** @var ADVAccounting $application */
 			$application = Session::i()->App;
- echo '<ul class="menu" id="topmenu">';
+			echo '<ul class="menu" id="topmenu">';
 			foreach ($application->applications as $app) {
 				$acc = Display::access_string($app->name);
+				$selectedapp = $application->get_selected();
+				echo "<li " . ($selectedapp->id == $app->id ? "class='active' " : "") . ">";
 				if ($app->direct) {
-					echo "<li " . ($application->selected->id == $app->id ? "class='active' " : "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
+					echo "<a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 				else {
-					echo "<li " . ($application->selected->id == $app->id ? "class='active' " : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
+					echo "<a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
 				}
 			}
 			echo '</ul>';
 		}
+
 		public function display_application(ADVAccounting $application) {
 			if ($application->selected->direct) {
 				Display::meta_forward($application->selected->direct);
@@ -36,8 +38,8 @@
 				echo "<table class='width100'><tr>";
 				echo "<td class='menu_group top'>";
 				echo "<table class='width100'>";
-				$colspan=(count($module->rappfunctions)>0) ?'colspan=2':'';
-				echo "<tr><td class='menu_group' ".$colspan.">";
+				$colspan = (count($module->rappfunctions) > 0) ? 'colspan=2' : '';
+				echo "<tr><td class='menu_group' " . $colspan . ">";
 				echo $module->name;
 				echo "</td></tr><tr>";
 				echo "<td class='width50 menu_group_items'>";
@@ -46,7 +48,7 @@
 					if ($appfunction->label == "") {
 						echo "<li class='empty'>&nbsp;</li>\n";
 					}
-					elseif (User::get()->can_access_page($appfunction->access)) {
+					elseif (User::i()->can_access_page($appfunction->access)) {
 						echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
 					}
 					else {
@@ -61,7 +63,7 @@
 						if ($appfunction->label == "") {
 							echo "<li class='empty'>&nbsp;</li>\n";
 						}
-						elseif (User::get()->can_access_page($appfunction->access)
+						elseif (User::i()->can_access_page($appfunction->access)
 						) {
 							echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
 						}

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'C:\dev\accounts\includes\app\debtor\debtor.php';
 
 /**
  * Test class for Debtor.

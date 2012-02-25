@@ -143,7 +143,7 @@
 
 		static public function payment_terms($name, $selected_id = null, $disabled = null) {
 			if ($disabled === null) {
-				$disabled = (!$_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT));
+				$disabled = (!User::i()->can_access(SA_CUSTOMER_CREDIT));
 			}
 			$sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
 			return select_box($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'C:\dev\accounts\includes\app\search.php';
 
 /**
  * Test class for Search.

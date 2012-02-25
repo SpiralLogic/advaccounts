@@ -82,7 +82,7 @@ Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request(
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The branch record could not be inserted or updated");
-			Event::notice($note);
+			Event::success($note);
 			$Mode = MODE_RESET;
 			if (Input::request('frame')) {
 				JS::set_focus("Select" . ($_POST['branch_id'] == -1 ? DB::insert_id() : $_POST['branch_id']));

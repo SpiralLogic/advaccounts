@@ -52,7 +52,7 @@
 			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
-		if (get_post('role') == $_SESSION['current_user']->access) {
+		if (get_post('role') == User::i()->access) {
 			if (!isset($_POST['Area' . $security_areas[SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
 			) {
 				Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
@@ -79,12 +79,12 @@
 			$sections = array_values($sections);
 			if ($new_role) {
 				Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
-				Event::notice(_("New security role has been added."));
+				Event::success(_("New security role has been added."));
 			}
 			else {
 				Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
 				DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
-				Event::notice(_("Security role has been updated."));
+				Event::success(_("Security role has been updated."));
 			}
 			$new_role = true;
 			clear_data();

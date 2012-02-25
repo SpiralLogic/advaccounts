@@ -32,11 +32,11 @@
 			}
 			if ($selected_id != -1) {
 				Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-				Event::notice(_('Selected item tax type has been updated'));
+				Event::success(_('Selected item tax type has been updated'));
 			}
 			else {
 				Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
-				Event::notice(_('New item tax type has been added'));
+				Event::success(_('New item tax type has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

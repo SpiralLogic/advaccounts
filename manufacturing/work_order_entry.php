@@ -24,7 +24,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 	if (isset($_GET[ADDED_ID])) {
 		$id = $_GET[ADDED_ID];
 		$stype = ST_WORKORDER;
-		Event::notice(_("The work order been added."));
+		Event::success(_("The work order been added."));
 		Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
@@ -43,7 +43,7 @@ Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
 	}
 	if (isset($_GET[UPDATED_ID])) {
 		$id = $_GET[UPDATED_ID];
-		Event::notice(_("The work order been updated."));
+		Event::success(_("The work order been updated."));
 		safe_exit();
 	}
 	if (isset($_GET['DeletedID'])) {

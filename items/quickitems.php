@@ -88,7 +88,8 @@ HTML;
 		<label for="sales_account"><span>Sales Account:</span>$sales_account</label>
 		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>
 	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
-	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments Account:</span>$adjustment_account</label> {{/if}}
+	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label
+	> {{/if}}
 	<label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label></div>
 HTML;
 	$menu->endTab();

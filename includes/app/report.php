@@ -52,7 +52,7 @@
 					}
 				}
 			}
-			$file = COMPANY_PATH . "/reporting/reports_custom.php";
+			$file = COMPANY_PATH . "reporting/reports_custom.php";
 			if (file_exists($file)) {
 				/** @noinspection PhpIncludeInspection */
 				include_once($file);

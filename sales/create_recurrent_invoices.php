@@ -35,7 +35,7 @@
 			else {
 				$min = $max = 0;
 			}
-			Event::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+			Event::success(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
 					'PARAM_0' => $min . "-" . ST_SALESINVOICE,

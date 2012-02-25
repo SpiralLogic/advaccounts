@@ -6,108 +6,78 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends PDOException
-	{
+	class DBException extends PDOException {
+
 	}
 
-	class DBUpdateException extends DBException
-	{
-	}
+	class DBUpdateException extends DBException {
 
-	;
-	class DBInsertException extends DBException
-	{
 	}
 
 	;
-	class DBDeleteException extends DBException
-	{
+	class DBInsertException extends DBException {
+
 	}
 
 	;
-	class DBSelectException extends DBException
-	{
+	class DBDeleteException extends DBException {
+
+	}
+
+	;
+	class DBSelectException extends DBException {
+
 	}
 
 	;
 	/**
 
 	 */
-	class DBDuplicateException extends DBException
-	{
+	class DBDuplicateException extends DBException {
+
 	}
 
-	class DB
-	{
-		/**
+	class DB {
 
-		 */
 		const SELECT = 0;
-		/**
-
-		 */
 		const INSERT = 1;
-		/**
-
-		 */
 		const UPDATE = 2;
-		/**
-
-		 */
 		const DELETE = 4;
-		/**
-		 * @var array
-		 */
+		/** @var array */
 		static protected $connections = array();
-		/**
-		 * @var bool
-		 */
-		/**
-		 * @var array
-		 */
+		/** @var array */
 		static protected $data = array();
-		/***
-		 * @var string
-		 */
+		/*** @var string */
 		static public $queryString = array();
-		/***
-		 * @var PDOStatement
-		 */
+		/*** @var PDOStatement */
 		static protected $prepared = null;
-		/**
-		 * @var null
-		 */
+		/**   @var null */
 		static protected $debug = null;
-		/**
-		 * @var bool
-		 */
+		/** @var bool */
 		static protected $nested = false;
-		/**
-		 * @var DB_Query
-		 */
+		/** @var DB_Query */
 		static protected $query = false;
 		static protected $results = false;
 		static protected $errorSql = false;
 		static protected $errorInfo = false;
+		protected $useCache = false;
+		protected $useConfig = false;
 		protected $intransaction = false;
-		/***
-		 * @var PDO
-		 */
+		/*** @var PDO */
 		protected $conn = false;
-		/**
-		 * @var DB
-		 */
+		/** @var DB */
 		static protected $i = null;
-		static $default_connection;
+		protected $default_connection;
 		/***
 		 * @static
+		 *
 		 * @param array $config
+		 *
 		 * @internal PDO $conn
 		 * @return DB
 		 */
 		static protected function i($config = array()) {
 			if (static::$i === null) {
-				$config = $config ? : Config::get('db.default');
 				static::$i = new static($config);
 			}
 			return static::$i;
@@ -116,10 +86,19 @@
 		 * @param $config
 		 */
 		protected function __construct($config) {
+			$this->useConfig = class_exists('Config');
+			$this->useCache = class_exists('Cache');
+			if (!$config && !$this->useConfig) {
+				throw new DBException('No database configuration provided');
+			}
+			$config = $config ? : Config::get('db.default');
 			static::$debug = false;
 			$this->_connect($config);
+			$this->default_connection = $config['name'];
 		}
 		/**
+		 * @param array $config
+		 *
 		 * @return bool
 		 */
 		protected function _connect($config) {
@@ -130,7 +109,6 @@
 				static::$connections[$config['name']] = $conn;
 				if ($this->conn === false) {
 					$this->conn = $conn;
-					static::$default_connection = $config['name'];
 				}
 				return true;
 			}
@@ -139,7 +117,19 @@
 			}
 		}
 		static public function change_connection($name = false) {
-			$name = $name ? : static::$default_connection;
+			$name = $name ? : static::i()->default_connection;
+			if (!isset(static::$connections[$name])) {
+				if (static::i()->useConfig && $name && !is_array($name)) {
+					$config = Config::get('db.' . $name);
+				}
+				elseif (is_array($name)) {
+					$config = $name;
+				}
+				else {
+					throw new DBException('No database configuration provided');
+				}
+				static::i()->_connect($config);
+			}
 			if (isset(static::$connections[$name])) {
 				static::i()->conn = static::$connections[$name];
 			}
@@ -147,20 +137,25 @@
 				throw new DBException("There is no connection with this name");
 			}
 		}
+
 		static public function connect($config) {
 			static::i()->_connect($config);
 		}
 		/**
 		 * @static
-		 * @param						$sql
-		 * @param null			 $err_msg
+		 *
+		 * @param            $sql
+		 * @param null       $err_msg
+		 *
 		 * @return null|PDOStatement
 		 */
 		static public function query($sql, $err_msg = null, $cache = false) {
 			static::$prepared = null;
 			if ($cache) {
 				$md5 = md5($sql);
-				static::$results = Cache::get($md5);
+				if (static::$i->useCache) {
+					static::$results = Cache::get($md5);
+				}
 				if (static::$results) {
 					return true;
 				}
@@ -180,14 +175,18 @@
 			static::$data = array();
 			if ($cache && isset($md5)) {
 				static::$results = static::fetch_all(PDO::FETCH_BOTH);
-				Cache::set($md5, static::$results);
+				if (static::$i->useCache) {
+					Cache::set($md5, static::$results);
+				}
 			}
 			return static::$prepared;
 		}
 		/**
 		 * @static
-		 * @param						$value
-		 * @param null			 $type
+		 *
+		 * @param            $value
+		 * @param null       $type
+		 *
 		 * @return mixed
 		 */
 		static public function quote($value, $type = null) {
@@ -195,14 +194,15 @@
 		}
 		/**
 		 * @static
-		 * @param						$value
-		 * @param bool			 $null
+		 *
+		 * @param            $value
+		 * @param bool       $null
+		 *
 		 * @internal param bool $paramaterized
 		 * @return bool|mixed|string
 		 */
 		static public function escape($value, $null = false) {
 			$value = trim($value);
-			//check for null/unset/empty strings
 			if (!isset($value) || is_null($value) || $value === "") {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
@@ -220,12 +220,15 @@
 				$type = FALSE;
 			}
 			static::$data[] = array($value, $type);
+
 			return ' ? ';
 		}
 		/**
 		 * @static
-		 * @param						$sql
-		 * @param bool			 $debug
+		 *
+		 * @param            $sql
+		 * @param bool       $debug
+		 *
 		 * @return bool|PDOStatement
 		 * @throws DBException
 		 */
@@ -258,8 +261,10 @@
 		}
 		/**
 		 * @static
-		 * @param						$sql
-		 * @param bool			 $debug
+		 *
+		 * @param            $sql
+		 * @param bool       $debug
+		 *
 		 * @return null|PDOStatement
 		 */
 		static public function prepare($sql, $debug = false) {
@@ -268,7 +273,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param $data
+		 *
 		 * @return array|bool
 		 */
 		static public function execute($data, $debug = false) {
@@ -298,6 +305,7 @@
 		}
 		/***
 		 * @param string $columns,... Database columns to select
+		 *
 		 * @return DB_Query_Select
 		 */
 		static public function select($columns = null) {
@@ -308,7 +316,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param $into
+		 *
 		 * @return DB_Query_Update
 		 */
 		static public function update($into) {
@@ -318,7 +328,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param $into
+		 *
 		 * @return DB_Query_Insert
 		 */
 		static public function insert($into) {
@@ -328,7 +340,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param $into
+		 *
 		 * @return DB_Query_Delete
 		 */
 		static public function delete($into) {
@@ -338,7 +352,9 @@
 		}
 		/***
 		 * @static
+		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
+		 *
 		 * @return DB_Query_Result|Array This is something
 		 */
 		static public function fetch($result = null, $fetch_mode = PDO::FETCH_BOTH) {
@@ -412,7 +428,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param int|PDO $value
+		 *
 		 * @return mixed
 		 */
 		static public function getAttribute($value) {
@@ -430,7 +448,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param null|PDOStatement $sql
+		 *
 		 * @return int
 		 */
 		static public function num_rows($sql = null) {
@@ -440,12 +460,14 @@
 			if (is_object($sql)) {
 				return $sql->rowCount();
 			}
-			$rows = Cache::get('sql.rowcount.' . md5($sql));
+			$rows = (static::i()->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : false;
 			if ($rows !== false) {
 				return $rows;
 			}
 			$rows = static::query($sql)->rowCount();
-			Cache::set('sql.rowcount.' . md5($sql), $rows);
+			if (static::$i->useCache) {
+				Cache::set('sql.rowcount.' . md5($sql), $rows);
+			}
 			return $rows;
 		}
 		/**
@@ -505,11 +527,13 @@
 		//
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $status
 		 * @param $table
 		 * @param $key
 		 * Update record activity status.
+		 *
 		 * @return \DB_Query_Result
 		 */
 		static public function update_record_status($id, $status, $table, $key) {
@@ -522,10 +546,12 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param $id
 		 * @param $status
 		 * @param $table
 		 * @param $key
+		 *
 		 * @return DB_Query_Result
 		 */
 		static public function insert_record_status($id, $status, $table, $key) {
@@ -537,9 +563,10 @@
 			}
 		}
 		/***
-		 * @param						$sql
-		 * @param						$type
-		 * @param null			 $data
+		 * @param            $sql
+		 * @param            $type
+		 * @param null       $data
+		 *
 		 * @return DB_Query_Result|int
 		 */
 		public function exec($sql, $type, $data = null) {
@@ -582,8 +609,6 @@
 						break;
 				}
 			}
-
-
 			static::$data = array();
 			return false;
 		}
@@ -603,13 +628,14 @@
 			return $sql;
 		}
 		/**
-		 * @param PDOException												$e
-		 * @param bool																$msg
-		 * @param string|bool												 $exit
+		 * @param PDOException                        $e
+		 * @param bool                                $msg
+		 * @param string|bool                         $exit
+		 *
 		 * @return bool
 		 * @throws DBException
 		 */
-		protected function _error(PDOException $e, $msg = false, $exit = false) {
+		protected function _error(PDOException $e, $msg = false) {
 			$data = static::$data;
 			static::$data = array();
 			if ($data && is_array(reset($data))) {
@@ -618,7 +644,7 @@
 			elseif ($data) {
 				static::$errorSql = static::namedValues(static::$errorSql, $data);
 			}
-			static::$queryString=static::$errorSql;
+			static::$queryString = static::$errorSql;
 			static::$errorInfo = $error = $e->errorInfo;
 			$error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
 			$error['message'] = ($msg != false) ? $msg : $e->getMessage();
@@ -626,11 +652,11 @@
 				$this->conn->rollBack();
 				$this->intransaction = false;
 			}
-			if ($exit) {
-				throw new DBException($error);
-			}
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
+			}
+			if (!class_exists("Errors")) {
+				throw new DBException($error);
 			}
 			Errors::db_error($error, static::$errorSql, $data);
 		}

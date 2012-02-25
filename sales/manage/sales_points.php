@@ -28,12 +28,12 @@
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
-		Event::notice(_('New point of sale has been added'));
+		Event::success(_('New point of sale has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
 		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
-		Event::notice(_('Selected point of sale has been updated'));
+		Event::success(_('Selected point of sale has been updated'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_DELETE) {

@@ -15,10 +15,10 @@
 	if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
-				Event::notice(_("Extension data has been updated."));
+				Event::success(_("Extension data has been updated."));
 			}
 			else {
-				Event::notice(_("Extension has been installed."));
+				Event::success(_("Extension has been installed."));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -148,7 +148,7 @@
 				unlink($file2);
 			}
 			move_uploaded_file($file1, $file2);
-			$db_name = User::get()->company;
+			$db_name = User::i()->company;
 			DB_Utils::import($file2, Config::get('db.' . $db_name));
 		}
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {

@@ -105,7 +105,7 @@
 	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 35, 30);
 	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 35, 30);
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 35, 30);
-	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
+	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 55);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	Contact_Postcode::render(array(
 																'acc_city', $customer->accounts->city
@@ -120,10 +120,10 @@
 	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Accounts Details:"), 2);
-	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+	percent_row(_("Discount Percent:"), 'discount', $customer->discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, ($_SESSION['current_user']->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
 	 " disabled");
 	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
@@ -183,9 +183,10 @@
 	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
 	table_section_title(_("Notes"));
 	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
+	end_outer_table(1);
+
 	hidden('frame', Input::request('frame'));
 		end_form();
-	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
 	echo "<div id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
 	$menu->endTab()->render();
@@ -199,8 +200,8 @@
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 35, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
-	HTML::div()->div(array('class' => 'center width50'));
-	UI::button('btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
+	HTML::_div()->div(array('class' => 'center width50'));
+	UI::button('btnConfirm', ($customer->id) ? 'Update Customer' : 'New Customer', array(
 																																											 'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
 																																									));
 	UI::button('btnCancel', 'Cancel', array(
@@ -211,8 +212,8 @@
 	if (!Input::get('frame')) {
 		HTML::div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
-		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=', 'id');
-		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=', 'id');
+		$shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?new='.ST_SALESQUOTE.'&customer_id=', 'id');
+		$shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?new='.ST_SALESORDER.'&customer_id=', 'id');
 		$shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=', 'id', true);
 		$shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab',<<<JS
 			Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});

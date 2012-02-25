@@ -27,7 +27,7 @@
 	}
 	start_table('tablestyle_noborder');
 	start_row();
-	Creditor::cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
+	Creditor::cells(_("Select a supplier: "), 'supplier_id', null, true);
 	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
 	Purch_Allocation::row("filterType", null);

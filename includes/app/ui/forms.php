@@ -51,7 +51,11 @@
 		}
 		return $numeric ? -1 : null;
 	}
-
+/**
+ * @param $name
+ * @param string $dflt
+ * @return string|int
+ */
 	function get_post($name, $dflt = '') {
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}
@@ -277,7 +281,6 @@
 				}
 				if ($first_id === false) {
 					$first_id = $value;
-					$first_opt = $descr;
 				}
 				$cat = $contact_row[$opts['category']];
 				if ($opts['category'] !== false && $cat != $lastcat) {
@@ -306,7 +309,10 @@
 			$selected_id = array($first_id);
 		}
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-		$selector = "<select id='$name' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
+
+
+
+					$selector = "<select id='$name' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
 		 '') . "$disabled name='$name" . ($multi ? '[]' : '') . "' class='$class' title='" . $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
 		if ($by_id && ($search_box != false || $opts['editable'])) {
 			// on first display show selector list
@@ -864,7 +870,7 @@
 
 	function password_row($label, $name, $value) {
 		echo "<tr><td class='label'>$label</td>";
-		label_cell("<input type='password' name='$name' size=20 maxlength=20 value='$value' />");
+		label_cell("<input type='password' name='$name' value='$value' />");
 		echo "</tr>\n";
 	}
 

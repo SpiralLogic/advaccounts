@@ -108,11 +108,11 @@
 			}
 		}
 		if ($new) {
-			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
+			create_comp_dirs(COMPANY_PATH . "$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
 		$exts = DB_Company::get_company_extensions();
 		advaccounting::write_extensions($exts, $id);
-		Event::notice($new ? _('New company has been created.') : _('Company has been updated.'));
+		Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
 
@@ -131,7 +131,7 @@
 		// other subdirectories will have right owners even after
 		// unsuccessfull removal.
 		$cdir = COMPANY_PATH . DS . $id;
-		$tmpname = COMPANY_PATH . '/old_' . $id;
+		$tmpname = COMPANY_PATH . 'old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
 			Event::error(_('Cannot rename subdirectory to temporary name.'));
 			return;
@@ -160,7 +160,7 @@
 	}
 
 	function display_companies() {
-		$coyno = User::get()->company;
+		$coyno = User::i()->company;
 		echo "
 			<script language='javascript'>
 			function deleteCompany(id) {

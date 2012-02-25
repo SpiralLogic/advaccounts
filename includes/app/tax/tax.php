@@ -55,7 +55,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price / (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
+			return $price / (1 + ($tax_multiplier / 100));
 		}
 
 		/***
@@ -93,7 +93,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
+			return $price * (($tax_multiplier / 100));
 		}
 
 		static public function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
@@ -124,7 +124,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
+			return $price * (1 + ($tax_multiplier / 100));
 		}
 
 		/***
@@ -238,7 +238,7 @@
 								$tax_rate += $item_tax['rate'];
 							}
 						}
-						$shipping_net = Num::round($shipping_cost / (1 + ($tax_rate / 100)), User::price_dec());
+						$shipping_net = $shipping_cost / (1 + ($tax_rate / 100));
 					}
 					foreach (
 						$item_taxes as $item_tax
@@ -283,7 +283,7 @@
 						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
 				}
 				else {
-					$total += Num::round($taxitem['Value'], User::price_dec());
+					$total += $taxitem['Value'];
 					label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
 						Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
 				}

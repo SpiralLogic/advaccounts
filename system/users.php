@@ -19,13 +19,13 @@
 			if ($Mode == UPDATE_ITEM) {
 				Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				Users::update_password($selected_id, $_POST['user_id'], $password);
-				Event::notice(_("The selected user has been updated."));
+				Event::success(_("The selected user has been updated."));
 			}
 			else {
 				Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				// use current user display preferences as start point for new user
 				Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
-				Event::notice(_("A new user has been added."));
+				Event::success(_("A new user has been added."));
 			}
 			$Mode = MODE_RESET;
 		}
@@ -54,7 +54,7 @@
 		alt_table_row_color($k);
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
 		/*The security_headings array is defined in config.php */
-		$not_me = strcasecmp($myrow["user_id"], User::get()->username);
+		$not_me = strcasecmp($myrow["user_id"], User::i()->username);
 		label_cell($myrow["user_id"]);
 		label_cell($myrow["real_name"]);
 		label_cell($myrow["phone"]);

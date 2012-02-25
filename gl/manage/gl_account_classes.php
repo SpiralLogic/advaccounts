@@ -16,12 +16,12 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (GL_Class::update($selected_id, $_POST['name'], $_POST['ctype'])) {
-					Event::notice(_('Selected account class settings has been updated'));
+					Event::success(_('Selected account class settings has been updated'));
 				}
 			}
 			else {
 				if (GL_Class::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
-					Event::notice(_('New account class has been added'));
+					Event::success(_('New account class has been added'));
 					$Mode = MODE_RESET;
 				}
 			}

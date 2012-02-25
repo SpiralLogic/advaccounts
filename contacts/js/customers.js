@@ -1,42 +1,20 @@
 Adv.extend({
 
-	resetHighlights:function () {
-		$(".ui-state-highlight").removeClass("ui-state-highlight");
-		Adv.o.custsearch.prop('disabled', false);
-		Adv.btnCustomer.hide();
-		Adv.btnCancel.text('New Customer');
-		Branches.btnBranchAdd();
-		Adv.fieldsChanged = 0;
-		Adv.Events.onLeave();
-	},
+
 	revertState:function () {
 		$('.ui-state-highlight').each(function () {
-			$(this).val($(this).data('init'))
+			$(this).val($(this).data('init'));
 		});
-		Adv.resetHighlights();
+		Adv.o.custsearch.prop('disabled', false);
+		Adv.btnConfirm.hide();
+		Adv.btnCancel.text('New Customer');
+		Branches.btnBranchAdd();
+		Adv.Forms.resetHighlights();
 	},
 	resetState:function () {
 		$("#tabs0 input, #tabs0 textarea").empty();
 		$("#customer").val('');
-		Customer.fetch(0)
-	},
-	stateModified:function (feild) {
-		if (feild.prop('disabled')) return;
-		Adv.o.custsearch.prop('disabled', true);
-		Adv.btnCancel.text('Cancel Changes').show();
-		var fieldname = feild.addClass("ui-state-highlight").attr('name');
-		$("[name='" + fieldname + "']").each(function () {
-			$(this).addClass("ui-state-highlight");
-		});
-		if (Customer.get().id === null || Customer.get().id === 0)
-			{
-				Adv.btnCustomer.text("Save New Customer").show();
-			} else
-			{
-				Adv.btnCustomer.text("Save Changes").show();
-			}
-		Customer.set(fieldname, feild.val());
-		Adv.Events.onLeave("Continue without saving changes?");
+		Customer.fetch(0);
 	}
 });
 Adv.extend({
@@ -146,7 +124,7 @@ var Branches = function () {
 			$.each(data, function (key, value) {
 				Adv.Forms.setFormValue('br_' + key, value);
 			});
-			Adv.resetHighlights();
+			Adv.Forms.resetHighlights();
 			list.val(data.branch_id);
 			current = data;
 			if (current.branch_id > 0)
@@ -194,7 +172,8 @@ var Accounts = function () {
 	}
 }();
 var Customer = function () {
-	var customer, transactions = $('#transactions'), customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete', 'off');
+	var customer, transactions = $('#transactions'), customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete',
+	 'off');
 	return {
 		init:function () {
 			$customerID.autocomplete({
@@ -219,20 +198,19 @@ var Customer = function () {
 					of:$customerID,
 					collision:"none"
 				}
-
 			});
-
 		},
 		setValues:function (content) {
 			if (!content.customer)
 				{return;}
 			customer = data = content.customer;
-			if (id)
+			if (customer.id)
 				{
-					Adv.o.tabs.tabs1.tabs('option', 'disabled', []);
+					Adv.tabs1.tabs('option', 'disabled', []);
 				} else
 				{
-					Adv.o.tabs.tabs1.tabs('option', 'disabled', true);
+					Adv.tabs1.tabs('option', 'disabled', [0, 1, 2, 3, 4]);
+
 				}
 			if (content.contact_log !== undefined)
 				{
@@ -252,7 +230,7 @@ var Customer = function () {
 						Adv.Forms.setFormValue(i, data);
 					}
 			});
-			Adv.resetHighlights();
+			Adv.Forms.resetHighlights();
 		},
 		hideSearch:function () {
 			$customerID.autocomplete('disable');
@@ -274,21 +252,22 @@ var Customer = function () {
 
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 			 $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
-			if (!id) {return;}
+			if (!id)
+				{return;}
 			$invoiceFrame.load($invoiceFrameSrc, data + "&frame=1&customer_id=" + id);
 		},
 		Save:function () {
 			Branches.btnBranchAdd();
-			Adv.btnCustomer.prop('disabled', true);
+			Adv.btnConfirm.prop('disabled', true);
 			$.post('customers.php', Customer.get(), function (data) {
 				if (data.status)
 					{
 						Adv.showStatus(data.status);
-						Adv.btnCustomer.prop('disabled', false);
+						Adv.btnConfirm.prop('disabled', false);
 						if (!data.status.status)
 							{return;}
 					}
-				Adv.resetHighlights();
+				Adv.Forms.resetHighlights();
 				Branches.adding = false;
 				Customer.setValues(data);
 			}, 'json');
@@ -323,7 +302,7 @@ $(function () {
 	Adv.extend({
 		tabs:$("#tabs0"),
 		accFields:$("[name^='acc_']"),
-		btnCustomer:$("#btnCustomer").click(function () {
+		btnConfirm:$("#btnConfirm").click(function () {
 			Customer.Save();
 			return false;
 		}),
@@ -331,7 +310,13 @@ $(function () {
 			(!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 			return false;
 		}),
-		ContactLog:$("#contactLog").hide()
+		ContactLog:$("#contactLog").hide(),
+							tabs1: $("#tabs1").tabs({ select:function (event, ui) {
+							var url = $.data(ui.tab, 'load.tabs');
+							if (url)
+								{location.href = url + Customer.get().id;}
+							return false;
+						}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
 		Adv.accFields.each(function () {
@@ -346,12 +331,6 @@ $(function () {
 		Adv.ContactLog.dialog("open");
 		return false;
 	});
-	$("#tabs1").tabs({ select:function (event, ui) {
-		var url = $.data(ui.tab, 'load.tabs');
-		if (url)
-			{location.href = url + Customer.get().id;}
-		return false;
-	}, selected:-1 });
 	Adv.ContactLog.dialog({
 		autoOpen:false,
 		show:"slide",
@@ -375,7 +354,7 @@ $(function () {
 					});
 					Adv.ContactLog.find("[name='message']").val('');
 					Adv.setContactLog(data);
-				}, 'json')
+				}, 'json');
 			},
 			Cancel:function () {
 				Adv.ContactLog.find("[name='message']").val('');
@@ -383,25 +362,21 @@ $(function () {
 			}
 		}
 	}).click(function () {
-		 $(this).dialog("open");
-	 });
-	Adv.tabs.delegate("input", "change keypress", function (event) {
-		if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || Adv.tabs.tabs('option','selected')==4 )
+		$(this).dialog("open");
+	});
+	$("#messageLog").prop('disabled', true).css('background', 'white');
+	Adv.tabs.delegate("input, textarea", "change keypress", function (event) {
+		var $this = $(this), $thisname = $this.attr('name'), buttontext;
+		if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.tabs.tabs('option', 'selected') == 4)
 			{
 				return;
 			}
-		Adv.fieldsChanged++;
-		if ($(this).data('init') == $(this).val())
-			{
-				$(this).removeClass("ui-state-highlight");
-				Adv.fieldsChanged--;
-				if (Adv.fieldsChanged === 0)
-					{
-						Adv.resetHighlights();
-					}
-				return;
-			}
-		Adv.stateModified($(this));
+		Adv.Forms.stateModified($this);
+		Adv.o.custsearch.prop('disabled', true);
+		Adv.btnCancel.text('Cancel Changes').show();
+		buttontext = (Customer.get().id) ?"Save Changes":"Save New";
+		Adv.btnConfirm.text(buttontext).show();
+		Customer.set($thisname, $this.val());
 	});
 	$("[name='messageLog']").keypress(function (event) {
 		return false;

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'C:\dev\accounts\includes\core\errors.php';
 
 /**
  * Test class for Errors.

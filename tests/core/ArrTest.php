@@ -1,5 +1,6 @@
 <?php
 
+	include_once('PHPUnit/Autoload.php');
 
 /**
  * Test class for Arr.
@@ -35,10 +36,13 @@ class ArrTest extends PHPUnit_Framework_TestCase
      */
     public function testInsert()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+			$people = array("Jack", "Jill");
+
+			$expected = array("Humpty", "Jack", "Jill");
+			$output = Arr::insert($people, 0,"Humpty");
+
+			$this->assertEquals(true, $output);
+			$this->assertEquals($expected, $people);
     }
 
     /**
