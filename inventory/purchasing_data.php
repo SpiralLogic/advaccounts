@@ -76,7 +76,9 @@ Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, I
 	if (list_updated('stock_id')) {
 		Ajax::i()->activate('price_table');
 	}
-	if (Input::request('frame')) {
+	if (Input::request('frame')) {		if (!Input::post('stock_id') && isset($_GET['stock_id'])) {
+				$_POST['stock_id'] = $_GET['stock_id'];
+			}
 		start_form(false, $_SERVER['PHP_SELF'] . '?frame=1');
 	}
 	else {

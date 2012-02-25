@@ -154,7 +154,7 @@ class User
 		$this->prefs = new userPrefs(Users::get($this->user));
 	}
 	static public function prefs() {
-		return static::get()->prefs;
+		return static::i()->prefs;
 	}
 	static public function add_js_data() {
 		$js
@@ -171,7 +171,7 @@ class User
 		JS::beforeload($js);
 	}
 	static public function	fallback() {
-		return static::get()->ui_mode == 0;
+		return static::i()->ui_mode == 0;
 	}
 	static public function	numeric($input) {
 		$num = trim($input);
@@ -195,7 +195,7 @@ class User
 		}
 	}
 	static public function	pos() {
-		return static::get()->pos;
+		return static::i()->pos;
 	}
 	static public function	language() {
 		return static::prefs()->language();
@@ -265,7 +265,7 @@ class User
 	}
 	static function _shutdown() {
 		\Modules\Jobsboard::tasks();
-		Users::update_visitdate(static::get()->username);
+		Users::update_visitdate(static::i()->username);
 	}
 }
 
