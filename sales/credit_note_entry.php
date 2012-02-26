@@ -114,7 +114,7 @@
 		$order->Comments = $_POST['CreditText'];
 		$order->document_date = $_POST['OrderDate'];
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
-		$order->location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
+		$order->location = (isset($_POST['location']) ? $_POST['location'] : "");
 		$order->sales_type = $_POST['sales_type_id'];
 		if ($order->trans_no == 0) {
 			$order->reference = $_POST['ref'];

@@ -291,7 +291,7 @@
 					$_POST['location'] = $po->location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				Inv_Location::cells(null, "Location", $_POST['location']);
+				Inv_Location::cells(null, 'Location', $_POST['location']);
 				if (!isset($_POST['DefaultReceivedDate'])) {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 				}

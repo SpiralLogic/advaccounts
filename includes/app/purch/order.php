@@ -609,7 +609,7 @@
 					$_POST['location'] = $this->location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				Inv_Location::cells(null, 'location', $_POST['location']);
+				Inv_Location::cells(null, 'location', null);
 			}
 			else {
 				label_cells(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");

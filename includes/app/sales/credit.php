@@ -471,7 +471,7 @@
 				if (!isset($_POST['location'])) {
 					$_POST['location'] = $credit->location;
 				}
-				Inv_Location::row(_("Items Returned to Location"), 'location', $_POST['location']);
+				Inv_Location::row(_("Items Returned to Location"), 'location');
 			}
 			else {
 				/* the goods are to be written off to somewhere */
