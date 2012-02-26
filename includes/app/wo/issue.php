@@ -216,7 +216,7 @@
 			}
 			yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"),
 				_("Issue Items to Work order"));
-			Inv_Location::row(_("From Location:"), 'Location');
+			Inv_Location::row(_("From Location:"), 'location');
 			workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 			date_row(_("Issue Date:"), 'date_');
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);

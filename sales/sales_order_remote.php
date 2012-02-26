@@ -39,7 +39,7 @@
 		$_POST['delivery_address'] = $order->delivery_address;
 		$_POST['name'] = $order->name;
 		$_POST['phone'] = $order->phone;
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['ship_via'] = $order->ship_via;
 		$_POST['customer_id'] = $order->customer_id;
 		$_POST['branch_id'] = $order->Branch;

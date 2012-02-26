@@ -53,7 +53,7 @@ Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
 		if (!Ref::is_new($_POST['ref'], ST_MANUISSUE)) {
 			$_POST['ref'] = Ref::get_next(ST_MANUISSUE);
 		}
-		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
+		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {
 			Event::error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") . " " . $failed_item->stock_id . " - " . $failed_item->description);
 			return false;
@@ -63,7 +63,7 @@ Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
 
 	if (isset($_POST['Process']) && can_process()) {
 		// if failed, returns a stockID
-		$failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items, $_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
+		$failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items, $_POST['location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
 		if ($failed_data != null) {
 			Event::error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _("From location :") . $failed_data[1] . "<br>");
 		}

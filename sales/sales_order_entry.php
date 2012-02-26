@@ -307,7 +307,7 @@
 		$order->name = $_POST['name'];
 		$order->customer_name = Input::post('customer', Input::STRING);
 		$order->phone = $_POST['phone'];
-		$order->Location = $_POST['Location'];
+		$order->location = $_POST['location'];
 		$order->ship_via = $_POST['ship_via'];
 		if (isset($_POST['email'])) {
 			$order->email = $_POST['email'];
@@ -346,7 +346,7 @@
 		$_POST['name'] = $order->name;
 		$_POST['customer'] = $order->customer_name;
 		$_POST['phone'] = $order->phone;
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['ship_via'] = $order->ship_via;
 		$_POST['customer_id'] = $order->customer_id;
 		$_POST['branch_id'] = $order->Branch;
@@ -493,7 +493,7 @@
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
 		elseif ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
-			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
+			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['location'], $_POST['OrderDate']);
 			if (Validation::input_num('qty') > $qoh) {
 				$stock = Item::get($_POST['stock_id']);
 				Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id'])));

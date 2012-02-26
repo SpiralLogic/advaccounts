@@ -97,7 +97,7 @@
 			$this->line_items = array();
 			$this->lines_on_order = $this->supplier_id = 0;
 			$this->set_salesman();
-			$this->Location=Config::get('defaults.location');
+			$this->location=Config::get('defaults.location');
 			$this->order_no = $order_no;
 			$this->read($order_no, $view);
 			$_POST['OrderDate'] = Dates::new_doc_date();
@@ -246,7 +246,7 @@
 			}
 			try {
 				$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
-				$sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->Location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
+				$sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
 				DB::query($sql, "The purchase order header record could not be inserted.");
 			}
 			catch (DBException $e) {
@@ -278,7 +278,7 @@
 			/*Update the purchase order header with any changes */
 			$sql = "UPDATE purch_orders SET Comments=" . DB::escape($this->Comments) . ",
 			requisition_no= " . DB::escape($this->requisition_no) . ",
-			into_stock_location=" . DB::escape($this->Location) . ",
+			into_stock_location=" . DB::escape($this->location) . ",
 			ord_date='" . Dates::date2sql($this->orig_order_date) . "',
 			delivery_address=" . DB::escape($this->delivery_address) . ",
 			freight=" . DB::escape($this->freight) . ",
@@ -339,7 +339,7 @@
 				$this->curr_code = $myrow["curr_code"];
 				$this->orig_order_date = Dates::sql2date($myrow["ord_date"]);
 				$this->Comments = $myrow["comments"];
-				$this->Location = $myrow["into_stock_location"];
+				$this->location = $myrow["into_stock_location"];
 				$this->requisition_no = $myrow["requisition_no"];
 				$this->reference = $myrow["reference"];
 				$this->delivery_address = $myrow["delivery_address"];
@@ -505,16 +505,16 @@
 				Ajax::i()->activate('_ex_rate');
 			}
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
-			Inv_Location::row(_("Receive Into:"), 'Location', null, false, true);
+			Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
 			table_section(3);
-			if (!isset($_POST['Location']) || $_POST['Location'] == "" || isset($_POST['_Location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
-				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['StkLocation'] . "'";
+			if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_Location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
+				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
 				$result = DB::query($sql, "could not get location info");
 				if (DB::num_rows($result) == 1) {
 					$loc_row = DB::fetch($result);
 					$_POST['delivery_address'] = $loc_row["delivery_address"];
 					Ajax::i()->activate('delivery_address');
-					$_SESSION['PO']->Location = $_POST['Location'];
+					$_SESSION['PO']->location = $_POST['location'];
 					$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 				}
 				else { /* The default location of the user is crook */
@@ -605,14 +605,14 @@
 			start_row();
 			label_cells(_("Date"), $this->orig_order_date, "class='label'");
 			if ($editable) {
-				if (!isset($_POST['Location'])) {
-					$_POST['Location'] = $this->Location;
+				if (!isset($_POST['location'])) {
+					$_POST['location'] = $this->location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				Inv_Location::cells(null, 'Location', $_POST['Location']);
+				Inv_Location::cells(null, 'location', $_POST['location']);
 			}
 			else {
-				label_cells(_("Deliver Into Location"), Inv_Location::get_name($this->Location), "class='label'");
+				label_cells(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");
 			}
 			end_row();
 			if (!$editable) {

@@ -287,11 +287,11 @@
 					$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
 				}
 				ref_cells(_("Reference"), 'ref', '', null, "class='label'");
-				if (!isset($_POST['Location'])) {
-					$_POST['Location'] = $po->Location;
+				if (!isset($_POST['location'])) {
+					$_POST['location'] = $po->location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				Inv_Location::cells(null, "Location", $_POST['Location']);
+				Inv_Location::cells(null, "Location", $_POST['location']);
 				if (!isset($_POST['DefaultReceivedDate'])) {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 				}
@@ -299,7 +299,7 @@
 			}
 			else {
 				label_cells(_("Reference"), $po->reference, "class='label'");
-				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
+				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->location), "class='label'");
 			}
 			end_row();
 			if (!$editable) {

@@ -119,7 +119,7 @@ Page::set_security(SA_SALESBULKREP);
 				'from' => $cat,
 				'to' => ''),
 			3 => array(
-				'text' => _('Location'),
+				'text' => _('location'),
 				'from' => $loc,
 				'to' => ''),
 			4 => array(

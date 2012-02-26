@@ -87,8 +87,8 @@
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
 		}
 	}
-	if (isset($_POST['Location'])) {
-		Orders::session_get($_POST['order_id'])->Location = $_POST['Location'];
+	if (isset($_POST['location'])) {
+		Orders::session_get($_POST['order_id'])->location = $_POST['location'];
 	}
 	if (isset($_POST[Orders::CANCEL_CHANGES])) {
 		$order = Orders::session_get($_POST['order_id']);
@@ -168,7 +168,7 @@
 		$order->ship_via = $_POST['ShipperID'];
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
 		$order->document_date = $_POST['CreditDate'];
-		$order->Location = $_POST['Location'];
+		$order->location = $_POST['location'];
 		$order->Comments = $_POST['CreditText'];
 		if ($order->trans_no == 0) {
 			$order->reference = $_POST['ref'];
@@ -180,7 +180,7 @@
 		$_POST['ShipperID'] = $order->ship_via;
 		$_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
 		$_POST['CreditDate'] = $order->document_date;
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['CreditText'] = $order->Comments;
 		$_POST['order_id'] = $order->order_id;
 		$_POST['ref'] = $order->reference;
@@ -278,10 +278,10 @@
 		Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
 		if ($_POST['CreditType'] == "Return") {
 			/*if the credit note is a return of goods then need to know which location to receive them into */
-			if (!isset($_POST['Location'])) {
-				$_POST['Location'] = Orders::session_get($_POST['order_id'])->Location;
+			if (!isset($_POST['location'])) {
+				$_POST['location'] = Orders::session_get($_POST['order_id'])->location;
 			}
-			Inv_Location::row(_("Items Returned to Location"), 'Location', $_POST['Location']);
+			Inv_Location::row(_("Items Returned to Location"), 'location', $_POST['location']);
 		}
 		else {
 			/* the goods are to be written off to somewhere */

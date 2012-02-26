@@ -188,7 +188,7 @@
 						$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
 					}
 					if ($this->cash) {
-						$this->Location = $pos['pos_location'];
+						$this->location = $pos['pos_location'];
 						$this->location_name = $pos['location_name'];
 						$this->cash_account = $pos['pos_account'];
 						$this->account_name = $pos['bank_account_name'];
@@ -282,7 +282,7 @@
 			$this->payment = $payment;
 			$this->payment_terms = DB_Company::get_payment_terms($payment);
 			if ($this->payment_terms['cash_sale']) {
-				$this->Location = $this->pos['pos_location'];
+				$this->location = $this->pos['pos_location'];
 				$this->location_name = $this->pos['location_name'];
 			}
 			if ($customer_id > 0) {
@@ -342,7 +342,7 @@
 		 * @param $name
 		 */
 		public function set_location($id, $name) {
-			$this->Location = $id;
+			$this->location = $id;
 			$this->location_name = $name;
 		}
 
@@ -614,7 +614,7 @@
 			 = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, ord_date,
 			order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 			contact_email, freight_cost, from_stk_loc, delivery_date)
-			VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->Location) . ", " . DB::escape($del_date) . ")";
+			VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
 			DB::query($sql, "order Cannot be Added");
 			$this->trans_no = array($order_no => 0);
 			$st_ids = array();
@@ -630,13 +630,13 @@
 					FROM stock_location, locations
 					WHERE stock_location.loc_code=locations.loc_code
 					AND stock_location.stock_id = '" . $line->stock_id . "'
-					AND stock_location.loc_code = '" . $this->Location . "'";
+					AND stock_location.loc_code = '" . $this->location . "'";
 					$res = DB::query($sql, "a location could not be retreived");
 					$loc = DB::fetch($res);
 					if ($loc['email'] != "") {
-						$qoh = Item::get_qoh_on_date($line->stock_id, $this->Location);
-						$qoh -= Item::get_demand($line->stock_id, $this->Location);
-						$qoh -= WO::get_demand_asm_qty($line->stock_id, $this->Location);
+						$qoh = Item::get_qoh_on_date($line->stock_id, $this->location);
+						$qoh -= Item::get_demand($line->stock_id, $this->location);
+						$qoh -= WO::get_demand_asm_qty($line->stock_id, $this->location);
 						$qoh -= $line->quantity;
 						if ($qoh < $loc['reorder_level']) {
 							$st_ids[] = $line->stock_id;
@@ -824,7 +824,7 @@
 					contact_phone = " . DB::escape($this->phone) . ",
 					contact_email = " . DB::escape($this->email) . ",
 					freight_cost = " . DB::escape($this->freight_cost) . ",
-					from_stk_loc = " . DB::escape($this->Location) . ",
+					from_stk_loc = " . DB::escape($this->location) . ",
 					delivery_date = " . DB::escape($del_date) . ",
 					version = " . ($version + 1) . "
 				 WHERE order_no=" . $order_no . "
@@ -845,13 +845,13 @@
 							FROM stock_location, locations
 							WHERE stock_location.loc_code=locations.loc_code
 							 AND stock_location.stock_id = " . DB::escape($line->stock_id) . "
-							 AND stock_location.loc_code = " . DB::escape($this->Location);
+							 AND stock_location.loc_code = " . DB::escape($this->location);
 					$res = DB::query($sql, "a location could not be retreived");
 					$loc = DB::fetch($res);
 					if ($loc['email'] != "") {
-						$qoh = Item::get_qoh_on_date($line->stock_id, $this->Location);
-						$qoh -= Item::get_demand($line->stock_id, $this->Location);
-						$qoh -= WO::get_demand_asm_qty($line->stock_id, $this->Location);
+						$qoh = Item::get_qoh_on_date($line->stock_id, $this->location);
+						$qoh -= Item::get_demand($line->stock_id, $this->location);
+						$qoh -= WO::get_demand_asm_qty($line->stock_id, $this->location);
 						$qoh -= $line->quantity;
 						if ($qoh < $loc['reorder_level']) {
 							$st_ids[] = $line->stock_id;
@@ -990,7 +990,7 @@
 				$qoh_msg = '';
 				if (!$editable_items || $id != $line_no) {
 					if (!DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
-						$qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
+						$qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['location'], $_POST['OrderDate']);
 						if ($stock_item->qty_dispatched > $qoh) {
 							// oops, we don't have enough of one of the component items
 							start_row("class='stockmankobg'");
@@ -1119,7 +1119,7 @@
 					else {
 						$old_order = clone($this);
 						$customer_error = $this->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
-						$_POST['Location'] = $this->Location;
+						$_POST['location'] = $this->location;
 						$_POST['deliver_to'] = $this->deliver_to;
 						$_POST['delivery_address'] = $this->delivery_address;
 						$_POST['name'] = $this->name;
@@ -1134,7 +1134,7 @@
 								$_POST['delivery_date'] = $this->due_date;
 								Ajax::i()->activate('delivery_date');
 							}
-							Ajax::i()->activate('Location');
+							Ajax::i()->activate('location');
 							Ajax::i()->activate('deliver_to');
 							Ajax::i()->activate('name');
 							Ajax::i()->activate('phone');
@@ -1326,7 +1326,7 @@
 				Display::heading(_('Cash payment'));
 				start_table('tablestyle2 width60');
 				label_row(_("Deliver from Location:"), $this->location_name);
-				hidden('Location', $this->Location);
+				hidden('location', $this->location);
 				label_row(_("Cash account:"), $this->account_name);
 				textarea_row(_("Comments:"), "Comments", $this->Comments, 31, 5);
 				end_table();
@@ -1351,8 +1351,8 @@
 				Display::heading($title);
 				start_outer_table('tablestyle2 width90');
 				table_section(1);
-				Inv_Location::row(_("Deliver from Location:"), 'Location', null, false, true);
-				if (list_updated('Location')) {
+				Inv_Location::row(_("Deliver from Location:"), 'location', null, false, true);
+				if (list_updated('location')) {
 					Ajax::i()->activate('items_table');
 				}
 				date_row($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :

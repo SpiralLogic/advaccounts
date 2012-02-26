@@ -67,7 +67,7 @@
 					Sales_Order::update_parent_line(ST_CUSTDELIVERY, $delivery_line->src_id, $delivery_line->qty_dispatched - $delivery_line->qty_old);
 				}
 				if ($delivery_line->qty_dispatched != 0) {
-					Inv_Movement::add_for_debtor(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no, $delivery->Location, $delivery->document_date, $delivery->reference, -$delivery_line->qty_dispatched, $delivery_line->standard_cost, 1, $line_price, $delivery_line->discount_percent);
+					Inv_Movement::add_for_debtor(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no, $delivery->location, $delivery->document_date, $delivery->reference, -$delivery_line->qty_dispatched, $delivery_line->standard_cost, 1, $line_price, $delivery_line->discount_percent);
 					$stock_gl_code = Item::get_gl_code($delivery_line->stock_id);
 					/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 					if ($delivery_line->standard_cost != 0) {

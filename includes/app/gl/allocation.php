@@ -253,7 +253,7 @@
 			$doc->pos = User::pos();
 			$doc->ship_via = 11;
 			$doc->sales_type = 1;
-			$doc->Location = Config::get('defaults.location');
+			$doc->location = Config::get('defaults.location');
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->salesman = User::i()->salesmanid;
@@ -344,7 +344,7 @@
 			$_POST['delivery_address'] = $order->delivery_address;
 			$_POST['name'] = $order->name;
 			$_POST['phone'] = $order->phone;
-			$_POST['Location'] = $order->Location;
+			$_POST['location'] = $order->location;
 			$_POST['ship_via'] = $order->ship_via;
 			$_POST['sales_type'] = $order->sales_type;
 			$_POST['salesman'] = $order->salesman;
