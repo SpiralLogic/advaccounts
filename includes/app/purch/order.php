@@ -47,7 +47,7 @@
 		/**
 		 * @var
 		 */
-		public $Location;
+		public $location;
 		/**
 		 * @var
 		 */

@@ -45,7 +45,7 @@
 		public $cust_ref;
 		public $reference;
 		public $Comments;
-		public $Location;
+		public $location;
 		public $location_name;
 		public $order_no; // the original order number
 		public $trans_link = 0;
