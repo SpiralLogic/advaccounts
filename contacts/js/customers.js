@@ -18,10 +18,10 @@ Adv.extend({
 	}
 });
 Adv.extend({
-	getContactLog:function () {
+	getContactLog:function (id, type) {
 		var data = {
-			contact_id:Customer.get().id,
-			type:"C"
+			contact_id:id,
+			type:type
 		};
 		$.post('contact_log.php', data, function (data) {
 			Adv.setContactLog(data);
@@ -176,6 +176,7 @@ var Customer = function () {
 	 'off');
 	return {
 		init:function () {
+			Branches.init();
 			$customerID.autocomplete({
 				source:function (request, response) {
 					var lastXhr = $.getJSON('#', request, function (data, status, xhr) {
@@ -311,12 +312,12 @@ $(function () {
 			return false;
 		}),
 		ContactLog:$("#contactLog").hide(),
-							tabs1: $("#tabs1").tabs({ select:function (event, ui) {
-							var url = $.data(ui.tab, 'load.tabs');
-							if (url)
-								{location.href = url + Customer.get().id;}
-							return false;
-						}, selected:-1 })
+		tabs1:$("#tabs1").tabs({ select:function (event, ui) {
+			var url = $.data(ui.tab, 'load.tabs');
+			if (url)
+				{location.href = url + Customer.get().id;}
+			return false;
+		}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
 		Adv.accFields.each(function () {
@@ -362,9 +363,12 @@ $(function () {
 			}
 		}
 	}).click(function () {
-		$(this).dialog("open");
-	});
+		 $(this).dialog("open");
+	 });
 	$("#messageLog").prop('disabled', true).css('background', 'white');
+	$("[name='messageLog']").keypress(function (event) {
+		return false;
+	});
 	Adv.tabs.delegate("input, textarea", "change keypress", function (event) {
 		var $this = $(this), $thisname = $this.attr('name'), buttontext;
 		if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.tabs.tabs('option', 'selected') == 4)
@@ -374,15 +378,12 @@ $(function () {
 		Adv.Forms.stateModified($this);
 		Adv.o.custsearch.prop('disabled', true);
 		Adv.btnCancel.text('Cancel Changes').show();
-		buttontext = (Customer.get().id) ?"Save Changes":"Save New";
+		buttontext = (Customer.get().id) ? "Save Changes" : "Save New";
 		Adv.btnConfirm.text(buttontext).show();
 		Customer.set($thisname, $this.val());
 	});
-	$("[name='messageLog']").keypress(function (event) {
-		return false;
-	});
 	$("#id").prop('disabled', true);
-	Branches.init();
+
 	Customer.init();
 	Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {
 		Customer.getFrames(undefined, $('#invoiceForm').serialize());
