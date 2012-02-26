@@ -543,7 +543,7 @@
 			$total = 0;
 			$k = 0;
 			if (!$this->line_items) {
-				Event::warning('There are no line items on this Purchase Order');
+			//	Event::warning('There are no line items on this Purchase Order');
 			}
 			else
 			{
