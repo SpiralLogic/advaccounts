@@ -178,7 +178,9 @@ img {
 	position:   absolute;
 	top:        0;
 }
-
+.lite #ajaxmark {
+	margin: 15px auto;
+}
 .ajaxmark {
 	width:      100%;
 	position:   absolute;

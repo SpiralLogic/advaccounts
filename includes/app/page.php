@@ -127,11 +127,11 @@
 				JS::renderHeader();
 			}
 			echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
-			echo "<div id='content'>\n";
+			echo "<div id='content'>\n";			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
+
 		}
 
 		protected function menu_header() {
-			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
 			echo "<div id='top'><p>" . Config::get('db.' . User::i()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::i()
 			 ->name . "</p>\n";
 			echo "<ul>\n";

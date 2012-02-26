@@ -285,10 +285,38 @@ JSS;
 		 *
 		 * @return string
 		 */
-		static public function arrayToOptions($options = array()) {
-			$options = (object)$options;
-			return json_encode($options);
-		}
+		static public function arrayToOptions($options = array(), $funcs=array(), $level=0) {
+			foreach($options as $key=>$value)
+	         {
+	          if (is_array($value))
+	             {
+	              $ret = static::arrayToOptions($value, $funcs, 1);
+								 $options[$key]=$ret[0];
+	              $funcs=$ret[1];
+	             }
+	          else
+	             {
+	              if (substr($value,0,9)=='function(')
+	                 {
+	                  $func_key="#".uniqid()."#";
+	                  $funcs[$func_key]=$value;
+										 $options[$key]=$func_key;
+	                 }
+	             }
+	         }
+	  if ($level==1)
+	     {
+	      return array($options, $funcs);
+	     }
+	  else
+	     {
+	      $input_json = json_encode($options);
+	      foreach($funcs as $key=>$value)
+	             {
+	              $input_json = str_replace('"'.$key.'"', $value, $input_json);
+	             }
+	      return $input_json;
+	     } 		}
 
 		/**
 		 * @static

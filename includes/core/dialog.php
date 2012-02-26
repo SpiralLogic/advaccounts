@@ -98,7 +98,7 @@
 		 * @param $js
 		 */
 		public function addBeforeClose($js) {
-			$this->options['beforeClose'] = "function(event,ui){$js}";
+			$this->options['beforeClose'] = "function(event,ui){ $js}";
 		}
 
 		/**

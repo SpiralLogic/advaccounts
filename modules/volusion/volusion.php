@@ -48,7 +48,7 @@
 		protected function notOnJobsboard() {
 			$neworders = $this->getNotOnJobsboard();
 			if (!$neworders) {
-				\Event::notice('No jobs in database from website but not on jobsboard');
+		//		\Event::notice('No jobs in database from website but not on jobsboard');
 				return false;
 			}
 			$success = 0;

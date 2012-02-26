@@ -107,7 +107,6 @@ document.getElementsBySelector = jQuery;
 //
 JsHttpRequest.request = function (trigger, form, tout) {
 tout = (tout) ? tout : 15000;
-	console.log(tout);
 	try {Adv.loader.on(tout);} catch (e)
 	{}
 
