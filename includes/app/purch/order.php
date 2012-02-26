@@ -507,7 +507,7 @@
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 			Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
 			table_section(3);
-			if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_Location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
+			if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
 				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
 				$result = DB::query($sql, "could not get location info");
 				if (DB::num_rows($result) == 1) {

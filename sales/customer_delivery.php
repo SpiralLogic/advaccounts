@@ -114,7 +114,7 @@
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
 		}
 	}
-	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
+	if (isset($_POST['Update']) || isset($_POST['_location_update'])) {
 		Ajax::i()->activate('Items');
 	}
 	start_form();
