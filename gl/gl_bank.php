@@ -32,7 +32,7 @@
 	if (isset($_GET[ADDED_ID])) {
 		$trans_no = $_GET[ADDED_ID];
 		$trans_type = ST_BANKPAYMENT;
-		Event::notice(_("Payment $trans_no has been entered"));
+		Event::success(_("Payment $trans_no has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
@@ -41,7 +41,7 @@
 	if (isset($_GET['AddedDep'])) {
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
-		Event::notice(_("Deposit $trans_no has been entered"));
+		Event::success(_("Deposit $trans_no has been entered"));
 		Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
@@ -76,9 +76,9 @@
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			//	Event::error(_("The entered date is not in fiscal year."));
-			//	JS::set_focus('date_');
-			//	$input_error = 1;
+			Event::error(_("The entered date is not in fiscal year."));
+			JS::set_focus('date_');
+			$input_error = 1;
 		}
 		if ($input_error == 1) {
 			unset($_POST['Process']);
@@ -127,11 +127,14 @@
 	submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
 	end_form();
 	Page::end();
+
 	function line_start_focus() {
 		Ajax::i()->activate('items_table');
 		JS::set_focus('_code_id_edit');
 	}
-
+/**
+ * @return bool
+ */
 	function check_item_data() {
 		//if (!Validation::is_num('amount', 0))
 		//{

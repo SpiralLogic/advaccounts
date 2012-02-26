@@ -19,34 +19,33 @@
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
-if (isset($_GET['frame'])) {
-	foreach($_GET as $k=>$v) {
-		$_POST[$k]=$v;
+	if (isset($_GET['frame'])) {
+		foreach ($_GET as $k => $v) {
+			$_POST[$k] = $v;
+		}
 	}
-}
-	start_form(false,'#','invoiceForm');
+	if (list_updated('customer_id')) {
+			Ajax::i()->activate('customer_id');
+		}
+	start_form(false, '', 'invoiceForm');
 	start_table('tablestyle_noborder');
 	start_row();
-	if (!Input::request('customer_id') && !Input::get('frame')) {
-		Debtor::cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
-	} else {
-		$_POST['showSettled'] = !!(Input::request('customer_id'));
-		$_POST['customer_id'] = Input::request('customer_id');
+	if (!Input::get('frame')) {
+		Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
 	}
 	Session::i()->global_customer = $_POST['customer_id'];
+
 	date_cells(_("from:"), 'TransAfterDate', '', null, -31, -12);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
 	Debtor_Payment::allocations_select(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-
 	end_row();
 	end_table();
-
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql = "SELECT ";
-	if(Input::get('frame')) $sql .= " IF(trans.type=".ST_SALESINVOICE.",0,1), ";
+	if (Input::get('frame')) $sql .= " IF(trans.type=" . ST_SALESINVOICE . ",0,1), ";
 	$sql .= " trans.type,
 		trans.trans_no,
 		trans.reference,
@@ -61,7 +60,7 @@ if (isset($_GET['frame'])) {
 		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
  	FROM debtor_trans as trans, debtors as debtor
  	WHERE debtor.debtor_no = trans.debtor_no
-			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount != 0)
+			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
 	if ($_POST['customer_id'] != ALL_TEXT) {
@@ -87,11 +86,11 @@ if (isset($_GET['frame'])) {
 		$sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
 	}
 	if (!check_value('showSettled')) {
-		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) != 0) ";
+		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) > 0) ";
 	}
 	$cols = array(
-		"<button id='emailInvoices'>Email</button> " => array('fun' => 'email_chk','align'=>'center'),
-			_("Type") => array('fun' => 'systype_name'),
+		"<button id='emailInvoices'>Email</button> " => array('fun' => 'email_chk', 'align' => 'center'),
+		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link'),
 		_("Reference"),
 		_("Order") => array('fun' => 'order_link'),
@@ -105,12 +104,12 @@ if (isset($_GET['frame'])) {
 		_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'),
 		array('insert' => true, 'fun' => 'alloc_link')
 	);
-	if (Input::post('customer_id') ) {
+	if (Input::post('customer_id')) {
 		$cols[_("Customer")] = 'skip';
 	}
-if (!Input::get('frame')) {
-	array_shift($cols);
-}
+	if (!Input::get('frame')) {
+		array_shift($cols);
+	}
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
@@ -122,8 +121,8 @@ $('#invoiceForm').find(':checkbox').each(function(){\$this =\$(this);\$this.prop
 return false;
 JS;
 
-JS::addLiveEvent('#emailInvoices','dblclick',$action,'wrapper',true);
-JS::addLiveEvent('#emailInvoices','click','return false;','wrapper',true);
+	JS::addLiveEvent('#emailInvoices', 'dblclick', $action, 'wrapper', true);
+	JS::addLiveEvent('#emailInvoices', 'click', 'return false;', 'wrapper', true);
 	Page::end();
 	function check_overdue($row) {
 		return ($row['OverDue'] == 1 && Num::price_format(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);
@@ -178,9 +177,9 @@ JS::addLiveEvent('#emailInvoices','click','return false;','wrapper',true);
 		 -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value > 0 ? Num::price_format($value) : '';
 	}
-	function email_chk($row) {
-		return ($row['type']==ST_SALESINVOICE)? checkbox(null,'emailChk'):'';
 
+	function email_chk($row) {
+		return ($row['type'] == ST_SALESINVOICE) ? checkbox(null, 'emailChk') : '';
 	}
 
 ?>

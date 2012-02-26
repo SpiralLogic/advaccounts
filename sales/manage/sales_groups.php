@@ -29,7 +29,7 @@
 				$note = _('New sales group has been added');
 			}
 			DB::query($sql, "The sales group could not be updated or added");
-			Event::notice($note);
+			Event::success($note);
 			$Mode = MODE_RESET;
 		}
 	}

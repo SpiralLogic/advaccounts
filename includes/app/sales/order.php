@@ -17,8 +17,7 @@
 		iii) a credit note
 		iv) a delivery note
 		*/
-	class Sales_Order
-	{
+	class Sales_Order {
 		public $trans_type; // invoice, order, quotation, delivery note ...
 		public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
 		public $so_type = 0; // for sales order: simple=0 template=1
@@ -26,6 +25,7 @@
 		public $line_items; //array of objects of class Sales_Line
 		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
 		public $src_date; // src document date (for info only)
+		public $source_no=null;
 		public $document_date;
 		public $due_date;
 		public $salesman;
@@ -66,15 +66,16 @@
 		public $credit;
 		protected $uniqueid;
 		public $view_only = false;
+
 		//
 		// $trans_no==0 => open new/direct document
 		// $trans_no!=0 && $this->view_only==false => read for view
 		// $trans_no!=0 && $this->view_only==true => read for edit (qty update from parent doc)
 		//
 		/***
-		 * @param						$type
-		 * @param int|array	$trans_no
-		 * @param bool			 $view
+		 * @param            $type
+		 * @param int|array  $trans_no
+		 * @param bool       $view
 		 */
 		public function __construct($type, $trans_no = 0, $view = false) {
 			/*Constructor function initialises a new shopping order */
@@ -90,12 +91,17 @@
 			$this->dimension_id = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no);
+			$this->generateID();
+		}
+
+		protected function generateID() {
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
 		}
+
 		/**
-		 * @param			$type
-		 * @param int	$trans_no
+		 * @param      $type
+		 * @param int  $trans_no
 		 */
 		public function read($type, $trans_no = 0) {
 			if (!is_array($trans_no)) {
@@ -194,6 +200,7 @@
 			}
 			$this->credit = Debtor::get_credit($this->customer_id);
 		}
+
 		/**
 		 * Writing new/modified sales document to database.
 		 * Makes parent documents for direct delivery/invoice by recurent call.
@@ -237,7 +244,6 @@
 				case ST_CUSTDELIVERY:
 					return Sales_Delivery::add($this, $policy);
 				case ST_SALESORDER:
-					$_SESSION['Jobsboard'] = clone($this);
 				case ST_SALESQUOTE:
 				default:
 					if ($this->trans_no == 0) // new document
@@ -249,19 +255,18 @@
 					}
 			}
 		}
+
 		/**
 		 * @param $cust_ref
 		 *
 		 * @return bool
 		 */
 		public function check_cust_ref($cust_ref) {
-			if (!is_int($this->trans_type)) {
-				return false;
-			}
 			$sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
 			$result = DB::query($sql);
-			return (DB::num_rows($result) > 0) ? false : true;
+			return (DB::num_rows($result) > 0) ? true : false;
 		}
+
 		/**
 		 * @param $customer_id
 		 * @param $customer_name
@@ -284,10 +289,11 @@
 				$this->credit = Debtor::get_credit($customer_id);
 			}
 		}
+
 		/**
-		 * @param				$branch_id
-		 * @param				$tax_group_id
-		 * @param bool	 $tax_group_name
+		 * @param        $branch_id
+		 * @param        $tax_group_id
+		 * @param bool   $tax_group_name
 		 * @param string $phone
 		 * @param string $email
 		 * @param string $name
@@ -299,12 +305,13 @@
 			$this->tax_group_id = $tax_group_id;
 			$this->tax_group_array = Tax_Groups::get_items_as_array($tax_group_id);
 		}
+
 		/**
 		 * @param null $salesman_code
 		 */
 		public function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
-				$salesman_name = $_SESSION['current_user']->name;
+				$salesman_name = User::i()->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query = DB::query($sql, 'Couldn\'t find current salesman');
 				$result = DB::fetch_assoc($query);
@@ -316,9 +323,10 @@
 				$this->salesman = $salesman_code;
 			}
 		}
+
 		/**
-		 * @param		 $sales_type
-		 * @param		 $sales_name
+		 * @param     $sales_type
+		 * @param     $sales_name
 		 * @param int $tax_included
 		 * @param int $factor
 		 */
@@ -328,6 +336,7 @@
 			$this->tax_included = $tax_included;
 			$this->price_factor = $factor;
 		}
+
 		/**
 		 * @param $id
 		 * @param $name
@@ -336,10 +345,11 @@
 			$this->Location = $id;
 			$this->location_name = $name;
 		}
+
 		/**
-		 * @param			$shipper
-		 * @param			$destination
-		 * @param			$address
+		 * @param      $shipper
+		 * @param      $destination
+		 * @param      $address
 		 * @param null $freight_cost
 		 */
 		public function set_delivery($shipper, $destination, $address, $freight_cost = null) {
@@ -350,17 +360,18 @@
 				$this->freight_cost = $freight_cost;
 			}
 		}
+
 		/**
-		 * @param			$line_no
-		 * @param			$stock_id
-		 * @param			$qty
-		 * @param			$price
-		 * @param			$disc
-		 * @param int	$qty_done
-		 * @param int	$standard_cost
+		 * @param      $line_no
+		 * @param      $stock_id
+		 * @param      $qty
+		 * @param      $price
+		 * @param      $disc
+		 * @param int  $qty_done
+		 * @param int  $standard_cost
 		 * @param null $description
-		 * @param int	$id
-		 * @param int	$src_no
+		 * @param int  $id
+		 * @param int  $src_no
 		 *
 		 * @return int
 		 */
@@ -375,11 +386,12 @@
 			}
 			return 0;
 		}
+
 		/**
-		 * @param				$line_no
-		 * @param				$qty
-		 * @param				$price
-		 * @param				$disc
+		 * @param        $line_no
+		 * @param        $qty
+		 * @param        $price
+		 * @param        $disc
 		 * @param string $description
 		 */
 		public function update_order_item($line_no, $qty, $price, $disc, $description = "") {
@@ -391,6 +403,7 @@
 			$this->line_items[$line_no]->price = $price;
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
+
 		/**
 		 * @param $discount
 		 */
@@ -399,6 +412,7 @@
 				$line->discount_percent = $discount;
 			}
 		}
+
 		/**
 		 * @param $line_no
 		 * @param $qty
@@ -406,14 +420,16 @@
 		public function update_add_order_item_qty($line_no, $qty) {
 			$this->line_items[$line_no]->quantity += $qty;
 		}
+
 		/**
 		 * @param $line_no
 		 */
 		public function remove_from_order($line_no) {
 			array_splice($this->line_items, $line_no, 1);
 		}
+
 		/**
-		 *
+
 		 */
 		public function clear_items() {
 			unset($this->line_items);
@@ -422,6 +438,7 @@
 			$this->trans_no = 0;
 			$this->customer_id = $this->order_no = 0;
 		}
+
 		/**
 		 * @return int
 		 */
@@ -434,6 +451,7 @@
 			}
 			return $counter;
 		}
+
 		/**
 		 * @return float|int
 		 */
@@ -446,8 +464,8 @@
 			}
 			return $total;
 		}
+
 		/**
-		 *
 		 * @return float|int
 		 */
 		public function get_items_total_dispatch() {
@@ -459,6 +477,7 @@
 			}
 			return $total;
 		}
+
 		/**
 		 * @return bool
 		 */
@@ -470,6 +489,7 @@
 			}
 			return false;
 		}
+
 		/**
 		 * @return int
 		 */
@@ -482,6 +502,7 @@
 			}
 			return 0;
 		}
+
 		/**
 		 * @param $line_no
 		 *
@@ -494,6 +515,7 @@
 			}
 			return 0;
 		}
+
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -519,6 +541,7 @@
 			}
 			return $taxes;
 		}
+
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -544,6 +567,7 @@
 			}
 			return $taxes;
 		}
+
 		/**
 		 * @return int
 		 */
@@ -555,6 +579,7 @@
 				return ($this->freight_cost - $this->get_shipping_tax());
 			}
 		}
+
 		/**
 		 * @return float
 		 */
@@ -576,6 +601,7 @@
 				return round($this->freight_cost * $tax_rate / 100, User::price_dec());
 			}
 		}
+
 		/**
 		 * @return int
 		 */
@@ -630,24 +656,13 @@
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
 			if (isset($loc, $st_names, $st_reorder) && Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
-				$company = DB_Company::get_prefs();
-				$mail = new Reports_Email($company['coy_name'], $company['email']);
-				$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-				$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-				$msg = "\n";
-				for ($i = 0; $i < count($st_ids); $i++) {
-					$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
-				}
-				$msg .= "\n" . _("Please reorder") . "\n\n";
-				$msg .= $company['coy_name'];
-				$mail->to($to);
-				$mail->subject($subject);
-				$mail->text($msg);
-				$mail->send();
+				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
+
 			}
 			Orders::session_delete($this->order_id);
 			return $order_no;
 		}
+
 		/**
 		 * @param $order_no
 		 * @param $trans_type
@@ -682,11 +697,12 @@
 			}
 			return true;
 		}
+
 		/**
-		 * @param			$new_item
-		 * @param			$new_item_qty
-		 * @param			$price
-		 * @param			$discount
+		 * @param      $new_item
+		 * @param      $new_item_qty
+		 * @param      $price
+		 * @param      $discount
 		 * @param null $description
 		 * @param bool $no_errors
 		 *
@@ -748,28 +764,32 @@
 				}
 			}
 		}
+
 		/**
-		 *
+
 		 */
 		public function start() {
 			Orders::session_start($this);
 		}
+
 		/**
-		 *
+
 		 */
 		public function finish() {
 			if (is_object($this) && Orders::session_exists($this)) {
 				Orders::session_delete($this->order_id);
 			}
 		}
+
 		/**
 		 * @return bool
 		 */
 		public static function active() {
 			return Orders::session_get();
 		}
+
 		/**
-		 *
+
 		 */
 		static public function update_version($order) {
 			foreach ($order as $so_num => $so_ver) {
@@ -777,8 +797,9 @@
 				DB::query($sql, 'Concurrent editing conflict while sales order update');
 			}
 		}
+
 		/**
-		 *
+
 		 */
 		public function update() {
 			$del_date = Dates::date2sql($this->due_date);
@@ -790,6 +811,7 @@
 					debtor_no = " . DB::escape($this->customer_id) . ",
 					branch_id = " . DB::escape($this->Branch) . ",
 					customer_ref = " . DB::escape($this->cust_ref) . ",
+					source_no = " . DB::escape($this->source_no) . ",
 					reference = " . DB::escape($this->reference) . ",
 					salesman = " . DB::escape($this->salesman) . ",
 					comments = " . DB::escape($this->Comments) . ",
@@ -845,7 +867,7 @@
 					 discount_percent, qty_sent)
 					 VALUES (";
 				$sql .= DB::escape($line->id ? $line->id :
-														0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+				 0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
 						" . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
 				DB::query($sql, "Old order Cannot be Inserted");
 			} /* inserted line items into sales order details */
@@ -854,21 +876,24 @@
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
 			if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
-				$company = DB_Company::get_prefs();
-				$mail = new Reports_Email($company['coy_name'], $company['email']);
-				$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-				$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-				$msg = "\n";
-				for ($i = 0; $i < count($st_ids); $i++) {
-					$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
-				}
-				$msg .= "\n" . _("Please reorder") . "\n\n";
-				$msg .= $company['coy_name'];
-				$mail->to($to);
-				$mail->subject($subject);
-				$mail->text($msg);
-				$mail->send();
+				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
 			}
+		}
+		protected function email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num) {
+			$company = DB_Company::get_prefs();
+			$mail = new Reports_Email($company['coy_name'], $company['email']);
+			$to = $loc['location_name'] . " <" . $loc['email'] . ">";
+			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
+			$msg = "\n";
+			for ($i = 0; $i < count($st_ids); $i++) {
+				$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
+			}
+			$msg .= "\n" . _("Please reorder") . "\n\n";
+			$msg .= $company['coy_name'];
+			$mail->to($to);
+			$mail->subject($subject);
+			$mail->text($msg);
+			$mail->send();
 		}
 		/**
 		 * @param $customer_id
@@ -913,7 +938,7 @@
 					$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
 				}
 				if ($this->due_date == Dates::Today()) {
-					$this->pos == -1;
+					$this->pos = -1;
 				}
 			}
 			if ($this->cash) {
@@ -927,8 +952,9 @@
 			}
 			return $ret_error;
 		}
+
 		/**
-		 * @param			$title
+		 * @param      $title
 		 * @param bool $editable_items
 		 */
 		public function summary($title, $editable_items = false) {
@@ -1017,7 +1043,7 @@
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
 			label_cells(_("Total Discount"), $total_discount, "colspan=" . $colspan . " style='background:inherit; text-align:right;'",
-									"class='right'");
+				"class='right'");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1043,8 +1069,9 @@
 			}
 			Display::div_end();
 		}
+
 		/**
-		 * @param			$date_text
+		 * @param      $date_text
 		 * @param bool $display_tax_group
 		 *
 		 * @return mixed|string
@@ -1218,7 +1245,7 @@
 				hidden('tax_group_id', $this->tax_group_id);
 			}
 			Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman :
-			 $_SESSION['current_user']->salesmanid);
+			 User::i()->salesmanid);
 			end_outer_table(1); // outer table
 			if ($change_prices != 0) {
 				foreach ($this->line_items as $line) {
@@ -1228,6 +1255,7 @@
 			}
 			return $customer_error;
 		}
+
 		/**
 		 * @param $rowcounter
 		 * @param $line_no
@@ -1287,8 +1315,9 @@
 			}
 			end_row();
 		}
+
 		/**
-		 *
+
 		 */
 		public function display_delivery_details() {
 			Display::div_start('delivery');
@@ -1343,6 +1372,7 @@
 			}
 			Display::div_end();
 		}
+
 		/**
 		 * @static
 		 *
@@ -1359,6 +1389,7 @@
 			DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
 			DB::commit();
 		}
+
 		/**
 		 * @static
 		 *
@@ -1406,8 +1437,9 @@
 			if ($num == 1) {
 				return DB::fetch($result);
 			}
-			return Event::error("Database returned nothing!", E_USER_ERROR);
+			return Event::error("Order does not exist!", E_USER_ERROR);
 		}
+
 		/**
 		 * @static
 		 *
@@ -1426,6 +1458,7 @@
 		AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
 			return DB::query($sql, "Retreive order Line Items");
 		}
+
 		/**
 		 * @static
 		 *
@@ -1439,6 +1472,7 @@
 			$row = DB::fetch_row($result);
 			return ($row[0] > 0);
 		}
+
 		/**
 		 * @static
 		 *
@@ -1451,6 +1485,7 @@
 			SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
 			DB::query($sql, "The sales order detail record could not be updated");
 		}
+
 		/**
 		 * @static
 		 *
@@ -1480,6 +1515,7 @@
 			}
 			return $duedate;
 		}
+
 		/**
 		 * @static
 		 *
@@ -1510,6 +1546,7 @@
 			$result = DB::query($sql, "Customer Record Retreive");
 			return DB::fetch($result);
 		}
+
 		/**
 		 * @static
 		 *
@@ -1532,6 +1569,7 @@
 					AND branches.debtor_no = " . DB::escape($customer_id);
 			return DB::query($sql, "Customer Branch Record Retreive");
 		}
+
 		/**
 		 * @static
 		 *
@@ -1555,6 +1593,7 @@
 			}
 			return $order;
 		}
+
 		/**
 		 * @static
 		 *
@@ -1586,6 +1625,16 @@
 			}
 			DB::query($sql, "The parent document detail record could not be updated");
 			return true;
+		}
+
+		public function convertToOrder() {
+			$this->trans_type = ST_SALESORDER;
+			$this->reference = Ref::get_next($this->trans_type);
+			$this->document_date = $this->due_date = Dates::new_doc_date();
+			$this->Comments = $this->Comments . "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
+			$this->trans_no = 0;
+			$this->order_no = 0;
+			$this->generateID();
 		}
 	}
 

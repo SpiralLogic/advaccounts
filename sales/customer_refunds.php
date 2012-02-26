@@ -11,9 +11,9 @@
 			 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-		JS::open_window(900, 500);
+	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
-Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
+	Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	if (!isset($_POST['customer_id'])) {
@@ -27,7 +27,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	}
 	if (isset($_GET[ADDED_ID])) {
 		$refund_id = $_GET[ADDED_ID];
-		Event::notice(_("The customer refund has been successfully entered."));
+		Event::success(_("The customer refund has been successfully entered."));
 		Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
@@ -67,7 +67,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 	start_outer_table('tablestyle2 width60 pad5');
 	table_section(1);
 	UI::search('customer', array(
-															'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
+		'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
@@ -136,6 +136,7 @@ Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::r
 		$_POST['pymt_discount'] = 0;
 		$_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
 	}
+
 	function can_process() {
 		if (!get_post('customer_id')) {
 			Event::error(_("There is no customer selected."));

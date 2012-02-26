@@ -6,8 +6,7 @@
 	 * Time: 2:53 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Num
-	{
+	class Num {
 		/**
 		 * @static
 		 *
@@ -16,7 +15,7 @@
 		 * @return int|string
 		 */
 		static public function	price_format($number) {
-			return Num::format($number, User::prefs()->price_dec());
+			return Num::format(Num::round($number, User::prefs()->price_dec()), User::prefs()->price_dec());
 		}
 
 		/**
@@ -123,9 +122,8 @@
 		 * @param $number
 		 *
 		 * @return string
-		 *
 		 * Simple English version of number to words conversion.
-		 *
+
 		 */
 		static public function to_words($number) {
 			$Bn = floor($number / 1000000000); /* Billions (giga) */

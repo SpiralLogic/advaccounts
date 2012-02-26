@@ -105,6 +105,7 @@
 				$tax_group_id = $this->tax_group_id;
 			}
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
+			Errors::log($taxes);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
@@ -128,7 +129,7 @@
 				$tax_group = null;
 			}
 			foreach ($this->grn_items as $line) {
-				$total += round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
+				$total += ($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group));
 			}
 			foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
 				if (!Tax::is_account($gl_line->gl_code)) {

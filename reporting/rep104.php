@@ -152,7 +152,7 @@
 				$rep->TextCol(3, 4, Num::format($disp, User::percent_dec()) . " %");
 			}
 			if ($pictures) {
-				$image = COMPANY_PATH . "/images/"
+				$image = COMPANY_PATH . "images/"
 								 . Item::img_name($myrow['stock_id']) . ".jpg";
 				if (file_exists($image)) {
 					$rep->NewLine();

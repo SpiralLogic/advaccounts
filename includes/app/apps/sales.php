@@ -22,12 +22,12 @@ class Apps_Sales extends Application
 		$this->add_module(_("Quotations and Orders"));
 		$this->add_lapp_function(0, '', '');
 		$this->add_lapp_function(0, _("Sales &Quotation Entry"),
-								 "sales/sales_order_entry.php?NewQuote=Yes", SA_SALESQUOTE);
+								 "sales/sales_order_entry.php?add=0&type=32", SA_SALESQUOTE);
 		$this->add_lapp_function(0, _("Sales Quotation I&nquiry"),
 								 "sales/inquiry/sales_orders_view.php?type=32", SA_SALESTRANSVIEW);
 		$this->add_lapp_function(0, '', '');
 		$this->add_rapp_function(0, _("Sales &Order Entry"),
-								 "sales/sales_order_entry.php?NewOrder=Yes", SA_SALESORDER);
+								 "sales/sales_order_entry.php?add=0&type=30", SA_SALESORDER);
 
 		$this->add_rapp_function(0, _("Sales Order &Inquiry"),
 								 "sales/inquiry/sales_orders_view.php?type=30", SA_SALESTRANSVIEW);
@@ -35,7 +35,7 @@ class Apps_Sales extends Application
 		$this->add_module(_("Deliveries and Invoices"));
 
 		$this->add_lapp_function(1, _("Prepare &Invoice"),
-								 "sales/sales_order_entry.php?NewDelivery=0", SA_SALESDELIVERY);
+								 "sales/sales_order_entry.php?add=0&type=".ST_CUSTDELIVERY, SA_SALESDELIVERY);
 		$this->add_lapp_function(1, _("&Delivery Against Sales Orders"),
 								 "sales/inquiry/sales_orders_view.php?OutstandingOnly=1", SA_SALESDELIVERY);
 		$this->add_lapp_function(1, _("&Invoice Against Sales Delivery"),
@@ -45,7 +45,7 @@ class Apps_Sales extends Application
 		$this->add_rapp_function(1, '', '');
 	
 			$this->add_rapp_function(1, _("Direct &Invoice"),
-									 "sales/sales_order_entry.php?NewInvoice=0", SA_SALESINVOICE);
+									 "sales/sales_order_entry.php?add=0&type=".ST_SALESINVOICE, SA_SALESINVOICE);
 
 		$this->add_rapp_function(1, _("Invoice/D&elivery Inquiry"),
 								 "sales/inquiry/customer_inquiry.php?", SA_SALESTRANSVIEW);

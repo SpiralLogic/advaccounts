@@ -224,7 +224,7 @@
 			DB::query($sql, "The customer could not be updated");
 			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_no');
 			Ajax::i()->activate('customer_id'); // in case of status change
-			Event::notice(_("Customer has been updated."));
+			Event::success(_("Customer has been updated."));
 		}
 		else { //it is a new customer
 			DB::begin();
@@ -238,7 +238,7 @@
 			$_POST['customer_id'] = DB::insert_id();
 			$new_customer = false;
 			DB::commit();
-			Event::notice(_("A new customer has been added."));
+			Event::success(_("A new customer has been added."));
 			Ajax::i()->activate('_page_body');
 		}
 	}

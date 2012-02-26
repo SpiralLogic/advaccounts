@@ -222,7 +222,7 @@
 			$out .= "# Built by " . APP_TITLE . " " . VERSION . "\n";
 			$out .= "# " . POWERED_URL . "\n";
 			$out .= "# Company: " . html_entity_decode($company, ENT_QUOTES, $_SESSION['Language']->encoding) . "\n";
-			$out .= "# User: " . User::get()->name . "\n\n";
+			$out .= "# User: " . User::i()->name . "\n\n";
 			// write users comment
 			if ($comment) {
 				$out .= "# Comment:\n";

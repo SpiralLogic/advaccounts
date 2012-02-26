@@ -9,7 +9,7 @@
 	class Security
 	{
 		static function check_page($page_security) {
-			if (!User::get()->can_access_page($page_security)) {
+			if (!User::i()->can_access_page($page_security)) {
 				echo "<div class='center'><br><br><br><span class='bold'>";
 				echo _("The security settings on your account do not permit you to access this function");
 				echo "</span>";

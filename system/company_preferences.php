@@ -25,7 +25,7 @@
 		}
 		if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
 			$result = $_FILES['pic']['error'];
-			$filename = COMPANY_PATH . "/images";
+			$filename = COMPANY_PATH . "images";
 			if (!file_exists($filename)) {
 				mkdir($filename);
 			}
@@ -60,7 +60,7 @@
 			}
 		}
 		if (check_value('del_coy_logo')) {
-			$filename = COMPANY_PATH . "/images/" . $_POST['coy_logo'];
+			$filename = COMPANY_PATH . "images/" . $_POST['coy_logo'];
 			if (file_exists($filename)) {
 				$result = unlink($filename);
 				if (!$result) {
@@ -80,8 +80,8 @@
 		}
 		if ($input_error != 1) {
 			DB_Company::update_setup($_POST);
-			$_SESSION['current_user']->timeout = $_POST['login_tout'];
-			Event::notice(_("Company setup has been updated."));
+			User::i()->timeout = $_POST['login_tout'];
+			Event::success(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');
 		Ajax::i()->activate('_page_body');

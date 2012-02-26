@@ -54,11 +54,11 @@
 			}
 			if ($selected_id != -1) {
 				Tax_Groups::update($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				Event::notice(_('Selected tax group has been updated'));
+				Event::success(_('Selected tax group has been updated'));
 			}
 			else {
 				Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				Event::notice(_('New tax group has been added'));
+				Event::success(_('New tax group has been added'));
 			}
 			$Mode = MODE_RESET;
 		}

@@ -20,7 +20,7 @@
 		public $debtor_no;
 		public $branch_ref = "New";
 		public $contact_name = "";
-		public $default_location = DEFAULT_LOCATION;
+		public $default_location;
 		public $default_ship_via = DEFAULT_SHIP_VIA;
 		public $disable_trans = 0;
 		public $phone = '';
@@ -82,10 +82,11 @@
 		protected function _defaults() {
 			$company_record = DB_Company::get_prefs();
 			$this->branch_id = 0;
+			$this->default_location=Config::get('defaults.location');
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];
-			$this->salesman = ($_SESSION['current_user']) ? $_SESSION['current_user']->salesmanid : 1;
+			$this->salesman = (User::i()) ? User::i()->salesmanid : 1;
 		}
 
 		protected function _new() {

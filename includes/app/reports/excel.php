@@ -10,6 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// xls version
+	if (!class_exists('OLEwriter')) {
+		Event::error('Could not find excel writer module');
+	}
 	class ADVReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		public $size;
@@ -49,8 +52,7 @@
 		public $formatAmount = array();
 		public $sheet;
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
-
-			if (!User::get()->can_access_page(Page::get_security())) {
+			if (!User::i()->can_access_page(Page::get_security())) {
 				Event::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
 				exit;
@@ -68,7 +70,7 @@
 			$this->code = strtolower($_SESSION['Language']->encoding);
 			$this->filename = $filename . ".xls";
 			$this->unique_name = uniqid('') . ".xls";
-			$this->path = COMPANY_PATH . '/pdf_files';
+			$this->path = COMPANY_PATH . 'pdf_files';
 			$this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
 			//$this->setCountry(48);
 			if ($this->code != "iso-8859-1") {
@@ -199,7 +201,7 @@
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
-			$this->user = User::get()->name;
+			$this->user = User::i()->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;
 			$this->cols = $cols;

@@ -34,9 +34,9 @@
 			}
 			if (Config::get('logs_audits')) {
 				if ($memo_ == "" || $memo_ == null) {
-					$memo_ = User::get()->username;
+					$memo_ = User::i()->username;
 				} else {
-					$memo_ = User::get()->username . " - " . $memo_;
+					$memo_ = User::i()->username . " - " . $memo_;
 				}
 			}
 			$sql = "INSERT INTO gl_trans ( type, type_no, tran_date,

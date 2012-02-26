@@ -33,7 +33,7 @@ Page::start(_($help_context = "Inventory Item Cost Update"), SA_STANDARDCOST);
 		}
 		if ($should_update) {
 			$update_no = Item_Price::update_cost($_POST['stock_id'], Validation::input_num('material_cost'), Validation::input_num('labour_cost'), Validation::input_num('overhead_cost'), $old_cost);
-			Event::notice(_("Cost has been updated."));
+			Event::success(_("Cost has been updated."));
 			if ($update_no > 0) {
 				Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}

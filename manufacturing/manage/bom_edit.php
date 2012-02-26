@@ -98,7 +98,7 @@ Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			DB::query($sql, "could not update bom");
-			Event::notice(_('Selected component has been updated'));
+			Event::success(_('Selected component has been updated'));
 			$Mode = MODE_RESET;
 		}
 		else {

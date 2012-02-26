@@ -49,7 +49,7 @@
 		public $headerFunc; // store the name of the currently selected header public function
 		public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
 
-			if (!User::get()->can_access_page(Page::get_security())) {
+			if (!User::i()->can_access_page(Page::get_security())) {
 				Event::error(_("The security settings on your account do not permit you to print this report"));
 				Page::end();
 				exit;
@@ -217,7 +217,7 @@
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
 			$this->company = DB_Company::get_prefs();
-			$this->user = User::get()->name;
+			$this->user = User::i()->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;
 			$this->cols = $cols;
@@ -406,7 +406,7 @@
 			// Print company logo if present and requested, or else just print company name
 			if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
 				// Build a string specifying the location of the company logo file
-				$logo = COMPANY_PATH . "/images/" . $this->company['coy_logo'];
+				$logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
 				// Width being zero means that the image will be scaled to the specified height
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) {
@@ -778,7 +778,7 @@
 				//$this->pdf->stream();
 			}
 			else {
-				$dir = COMPANY_PATH . '/pdf_files';
+				$dir = COMPANY_PATH . 'pdf_files';
 				//save the file
 				if (!file_exists($dir)) {
 					mkdir($dir, 0777);
@@ -837,7 +837,7 @@
 					}
 					else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						Event::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
+						Event::success($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
 					}
 					unlink($fname);
 				}
@@ -879,7 +879,7 @@
 							Event::error($error);
 						}
 						else {
-							Event::notice(_('Report has been sent to network printer ') . $printer['name']);
+							Event::success(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}
 				}

@@ -131,19 +131,19 @@
 		}
 
 		protected function menu_header() {
-			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'></div><div id='top'>\n";
-			echo "<p>" . Config::get('db.' . User::get()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()
+			echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
+			echo "<div id='top'><p>" . Config::get('db.' . User::i()->company, 'company') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::i()
 			 ->name . "</p>\n";
 			echo "<ul>\n";
 			echo	 " <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
-		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
+		href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::i()->username . "'>" . _("Change password") . "</a></li>\n";
 			if (Config::get('help_baseurl') != null) {
 				echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
 			}
-			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div><div
-			id='logo'><h1>" . APP_TITLE . "<span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'><div class='menu_container'>";
+			echo " <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li></ul></div></div><div
+			id='logo'><h1>" . APP_TITLE . "<br><span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'>";
 			$this->renderer->menu();
-			echo "</div></div>";
+			echo "</div>";
 		}
 
 		protected function help_url($context = null) {
@@ -185,7 +185,6 @@
 
 		protected function footer() {
 			$Validate = array();
-			\Modules\Jobsboard::tasks();
 
 			$this->menu_footer();
 			$edits = "editors = " . Ajax::i()->php2js(Display::set_editor(false, false)) . ";";
@@ -201,7 +200,6 @@
 				return;
 			}
 			echo "</div></body>"; //End content div
-			JS::get_websales();
 			echo	 "</html>\n";
 		}
 
@@ -209,11 +207,11 @@
 			echo "</div>"; //end wrapper div
 			if ($this->menu && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
-				if (isset($_SESSION['current_user'])) {
+				if (User::i()) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
-					if ($_SESSION['current_user']->logged_in()) {
-						echo "<span class='date'> " . Users::show_online() . "</span>\n";
+					if (User::i()->logged_in()) {
+				//		echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}
 					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}

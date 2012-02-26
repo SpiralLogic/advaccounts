@@ -35,7 +35,6 @@
 			$ov_gst = 0;
 			$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 			foreach ($taxes as $taxitem) {
-				$taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
 				$ov_gst += $taxitem['Value'];
 			}
 			if ($invoice->tax_included == 0) {

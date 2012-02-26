@@ -26,7 +26,7 @@
 		}
 		DB::commit();
 		if (isset($_POST['add'])) {
-			Event::notice(_("The Budget has been saved."));
+			Event::success(_("The Budget has been saved."));
 		}
 		else {
 			Event::notice(_("The Budget has been deleted."));

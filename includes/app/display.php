@@ -107,7 +107,7 @@
 			global $ajax_divs;
 			if ($non_ajax) { // div for non-ajax elements
 				array_push($ajax_divs, array($id, null));
-				echo "<div class='js_only hidden' " . ($id != '' ? "id='$id'" : '') . ">";
+				echo "<div class='js hidden' " . ($id != '' ? "id='$id'" : '') . ">";
 			}
 			else { // ajax ready div
 				array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));
@@ -480,7 +480,7 @@
 		 * @param int			 $extra
 		 */
 		static public function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
+			Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 1,0);
 		}
 
 		/**

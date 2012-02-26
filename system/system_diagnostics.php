@@ -170,9 +170,9 @@
 		$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 		$test['descr'] = _('Company subdirectories consistency');
 		$test['type'] = 3;
-		$test['test'] = array(COMPANY_PATH . '/*');
+		$test['test'] = array(COMPANY_PATH . '*');
 		foreach ($comp_subdirs as $sub) {
-			$test['test'][] = COMPANY_PATH . '/*/' . $sub;
+			$test['test'][] = COMPANY_PATH . '*/' . $sub;
 		}
 		$test['result'] = true;
 		if (!is_dir(COMPANY_PATH) || !is_writable(COMPANY_PATH)) {
@@ -182,7 +182,7 @@
 		}
 		;
 		foreach (Config::get_all('db') as $n => $comp) {
-			$path = COMPANY_PATH . "/";
+			$path = COMPANY_PATH . "";
 			if (!is_dir($path) || !is_writable($path)) {
 				$test['result'] = false;
 				$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
@@ -263,10 +263,10 @@
 		$test['type'] = 3;
 		$test['test'] = PATH_TO_ROOT . '/config/extensions.php';
 		$test['result'] = is_file($test['test']) && is_writable($test['test']);
-		$test['test'] . ',' . COMPANY_PATH . '/*/extensions.php';
+		$test['test'] . ',' . COMPANY_PATH . '*/extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 		foreach (Config::get_all('db') as $n => $comp) {
-			$path = COMPANY_PATH . "/$n";
+			$path = COMPANY_PATH . "$n";
 			if (!is_dir($path)) {
 				continue;
 			}

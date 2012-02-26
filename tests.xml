@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" stopOnFailure="false" bootstrap="bootstraptest.php">
+	<php>
+		<server name="SERVER_NAME" value="advaccouts"/>
+	</php>
+	<testsuites>
+		<testsuite name="core">
+			<directory suffix="Test.php">./tests/core</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

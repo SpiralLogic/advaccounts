@@ -127,7 +127,7 @@
 			}
 			if ($ok) {
 				DB_Company::update_fiscalyear($selected_id, $_POST['closed']);
-				Event::notice(_('Selected fiscal year has been updated'));
+				Event::success(_('Selected fiscal year has been updated'));
 			}
 		}
 		else {
@@ -135,7 +135,7 @@
 				return false;
 			}
 			DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
-			Event::notice(_('New fiscal year has been added'));
+			Event::success(_('New fiscal year has been added'));
 		}
 		$Mode = MODE_RESET;
 	}
@@ -158,9 +158,9 @@
 		$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 		$result = DB::query($sql, "Could not retrieve attachments");
 		while ($row = DB::fetch($result)) {
-			$dir = COMPANY_PATH . "/attachments";
-			if (file_exists($dir . "/" . $row['unique_name'])) {
-				unlink($dir . "/" . $row['unique_name']);
+			$dir = COMPANY_PATH . "attachments";
+			if (file_exists($dir . DS . $row['unique_name'])) {
+				unlink($dir . DS . $row['unique_name']);
 			}
 			$sql = "DELETE FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 			DB::query($sql, "Could not delete attachment");
@@ -172,7 +172,7 @@
 	}
 
 	function delete_this_fiscalyear($selected_id) {
-		DB_Utils::backup(Config::get('db.' . User::get()->company), 'Security backup before Fiscal Year Removal');
+		DB_Utils::backup(Config::get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
 		DB::begin();
 		$ref = _("Open Balance");
 		$myrow = DB_Company::get_fiscalyear($selected_id);

@@ -59,7 +59,7 @@
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The payment term could not be added or updated");
-			Event::notice($note);
+			Event::success($note);
 			$Mode = MODE_RESET;
 		}
 	}

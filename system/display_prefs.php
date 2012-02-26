@@ -20,13 +20,13 @@
 		else {
 			$chg_theme = User::theme() != $_POST['theme'];
 			$chg_lang = $_SESSION['Language']->code != $_POST['language'];
-			User::get()
+			User::i()
 			 ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], check_value('show_gl'), check_value('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], check_value('show_hints'), $_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']), check_value('graphic_links'), $_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
 			if ($chg_lang) {
 				$_SESSION['Language']->set_language($_POST['language']);
 			}
 			// refresh main menu
-			Files::flush_dir(COMPANY_PATH . '/js_cache');
+			Files::flush_dir(COMPANY_PATH . 'js_cache');
 			if ($chg_theme && Config::get('demo_mode')) {
 				User::prefs()->theme = $_POST['theme'];
 			}
@@ -37,7 +37,7 @@
 				Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 			}
 			else {
-				Event::notice(_("Display settings have been updated."));
+				Event::success(_("Display settings have been updated."));
 			}
 		}
 	}

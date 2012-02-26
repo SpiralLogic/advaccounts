@@ -25,10 +25,10 @@
 		$trans_type = ST_PURCHORDER;
 		$supplier = new Creditor(Session::i()->supplier_id);
 		if (!isset($_GET['Updated'])) {
-			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
+			Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			Event::notice(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
+			Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
 		}
 		Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
@@ -41,7 +41,7 @@
 	}
 	$order = Orders::session_get() ? : null;
 	if (isset($_POST[Orders::CANCEL_CHANGES])) {
-		$order_no = $order->trans_no;
+		$order_no = $order->order_no;
 		Orders::session_delete($_POST['order_id']);
 		$order = create_order($order_no);
 	}
@@ -107,7 +107,7 @@
 	if (isset($order->supplier_id)) {
 		Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
 	}
-	Page::end();
+	Page::end(true);
 	/**
 	 * @param $order
 	 *
@@ -175,7 +175,13 @@
 	 * @return mixed
 	 */
 	function handle_cancel_po($order) {
-		//need to check that not already dispatched or invoiced by the supplier
+	if (!$order) {
+		Display::meta_forward('/index.php', 'application=Purchases');
+
+	}
+
+				//need to check that not already dispatched or invoiced by the supplier
+
 		if (($order->order_no != 0) && $order->any_already_received() == 1) {
 			Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 			return;
@@ -191,7 +197,7 @@
 		Event::notice(_("This purchase order has been cancelled."));
 		Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
-		Page::end();
+		Page::end(true);
 		exit;
 	}
 
@@ -375,16 +381,16 @@
 		if (can_commit($order)) {
 			if ($order->order_no == 0) {
 				/*its a new order to be inserted */
-				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				$order_no = $order->add();
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				Dates::new_doc_date($order->orig_order_date);
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
 			}
 			else {
 				/*its an existing order need to update the old order info */
-				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				$order_no = $order->update();
+				$_SESSION['history'][ST_PURCHORDER] = $order->reference;
 				Orders::session_delete($_POST['order_id']);
 				Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}

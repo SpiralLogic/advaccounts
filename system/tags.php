@@ -49,12 +49,12 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
-					Event::notice(_('Selected tag settings have been updated'));
+					Event::success(_('Selected tag settings have been updated'));
 				}
 			}
 			else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
-					Event::notice(_('New tag has been added'));
+					Event::success(_('New tag has been added'));
 				}
 			}
 			if ($ret) {

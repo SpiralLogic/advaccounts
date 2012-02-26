@@ -17,11 +17,12 @@
 		$invoice_no = $_GET[ADDED_ID];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<div class='center'>";
-		Event::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
+		Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
 		Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Invoice")));
 		Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+		Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
 		Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
@@ -122,7 +123,7 @@
 		Ajax::i()->activate('inv_tot');
 	}
 	$id2 = -1;
-	if (User::get()->can_access(SA_GRNDELETE)) {
+	if (User::i()->can_access(SA_GRNDELETE)) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DB::begin();
@@ -301,6 +302,7 @@ JS;
 		}
 		$invoice_no = Purch_Invoice::add(Creditor_Trans::i());
 		$_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
+		$_SESSION['supplier_id'] = $_POST['supplier_id'] ;
 		Creditor_Trans::i()->clear_items();
 		Creditor_Trans::killInstance();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
@@ -330,9 +332,10 @@ JS;
 		$margin = DB_Company::get_pref('po_over_charge');
 		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
-				if ($_POST['order_price' . $n] == 0 || Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
+				if ($_POST['order_price' . $n] != 0 || Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if (Session::i()->err_over_charge != true) {
-						Event::error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
+						Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge
+						percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 						JS::set_focus('ChgPrice' . $n);
 						$_SESSION['err_over_charge'] = true;
 						return false;

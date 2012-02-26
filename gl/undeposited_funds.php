@@ -65,7 +65,7 @@
 				$total_amount += $row['amount'];
 				$ref[] = $row['ref'];
 			}
-			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount," . DB::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['current_user']->user . "',0)";
+			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount," . DB::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
 			$query = DB::query($sql, "Undeposited Cannot be Added");
 			$order_no = DB::insert_id($query);
 			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {

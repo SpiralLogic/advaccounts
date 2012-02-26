@@ -59,7 +59,7 @@
 		 * @param $condition
 		 * @param null $uservar
 		 *
-		 * @return DB_Query_Select
+		 * @return DB_Query
 		 */
 		public function where($condition, $uservar = null) {
 			return $this->_where($condition, 'AND', $uservar);

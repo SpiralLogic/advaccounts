@@ -40,7 +40,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		$stock_id = $_POST['NewStockID'];
 		$result = $_FILES['pic']['error'];
 		$upload_file = 'Yes'; //Assume all is well to start off with
-		$filename = COMPANY_PATH . "/$user_comp/images";
+		$filename = COMPANY_PATH . "$user_comp/images";
 		if (!file_exists($filename)) {
 			mkdir($filename);
 		}
@@ -114,7 +114,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		}
 		if ($input_error != 1) {
 			if (check_value('del_image')) {
-				$filename = COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
+				$filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
 				if (file_exists($filename)) {
 					unlink($filename);
 				}
@@ -124,11 +124,11 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				Ajax::i()->activate('stock_id'); // in case of status change
-				Event::notice(_("Item has been updated."));
+				Event::success(_("Item has been updated."));
 			}
 			else { //it is a NEW part
 				Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], check_value('no_sale'), check_value('editable'));
-				Event::notice(_("A new item has been added."));
+				Event::success(_("A new item has been added."));
 				JS::set_focus('NewStockID');
 			}
 			if (isset($_POST['addupdatenew'])) {
@@ -193,7 +193,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
 			Item::del($stock_id);
-			$filename = COMPANY_PATH . "/$user_comp/images/" . Item::img_name($stock_id) . ".jpg";
+			$filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($stock_id) . ".jpg";
 			if (file_exists($filename)) {
 				unlink($filename);
 			}
@@ -321,9 +321,9 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 	// Add Image upload for New Item - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
+	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
+		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
 		$check_remove_image = true;
 	}
 	else {

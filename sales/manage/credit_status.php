@@ -24,11 +24,11 @@ Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
 
 	if ($Mode == ADD_ITEM && can_process()) {
 		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
-		Event::notice(_('New credit status has been added'));
+		Event::success(_('New credit status has been added'));
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == UPDATE_ITEM && can_process()) {
-		Event::notice(_('Selected credit status has been updated'));
+		Event::success(_('Selected credit status has been updated'));
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = MODE_RESET;
 	}
