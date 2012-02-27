@@ -12,8 +12,8 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP);
-	include_once(__DIR__ . DS . 'includes/lang/en_AU/report.php'); //TODO  change to language from config
-//	use \Reports\Report as Report;
+	include_once(__DIR__ . DS . 'includes/lang/en_AU/Report.php'); //TODO  change to language from config
+	use \Reports\Report as Report;
 
 	print_po();
 	function get_po($order_no) {
