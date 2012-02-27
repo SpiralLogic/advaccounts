@@ -37,8 +37,8 @@
 			$job = $this->get_job($trans_no);
 			if ($this->jobExists($trans_no)) {
 				$this->currentJob['Customer'] = $job['Customer'] . ' - CANCELLED';
-				$this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
-				$this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . User::i()->name . '</div>' . $job['Next_Action_Required'];
+				$this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . \User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
+				$this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . \User::i()->name . '</div>' . $job['Next_Action_Required'];
 				$this->currentJob['order_ref'] = '';
 				$this->currentJob['Priority_Level'] = 5;
 				\DB::update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
@@ -60,7 +60,7 @@
 		 */
 		function addjob($job_data) {
 			$this->order_no = $order_no = $job_data->trans_no;
-			$user_name = User::i()->name;
+			$user_name = \User::i()->name;
 			$orderlines = $this->getOrderLines();
 			\DB::change_connection('jobsboard');
 			$update = var_export($job_data, true);
