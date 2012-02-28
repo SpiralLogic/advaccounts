@@ -283,7 +283,7 @@
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-			if ($_GET[ADDED_DI] && isset($_SESSION['global_customer_id']) && $row == false) {
+			if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer_id']) && $row == false) {
 				echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}
@@ -579,7 +579,7 @@
 			}
 		}
 		Ajax::i()->activate('_page_body');
-		$order->finish($_POST['order_id']);
+		$order->finish();
 		Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 		Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
 		Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);

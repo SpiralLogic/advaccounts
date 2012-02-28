@@ -211,6 +211,7 @@
 		$_SESSION['delivery_po'] = $order->order_no;
 		Dates::new_doc_date($_POST['DefaultReceivedDate']);
 		unset($order->line_items);
+		$order->finish($_POST['order_id']);
 		unset($order);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 	}

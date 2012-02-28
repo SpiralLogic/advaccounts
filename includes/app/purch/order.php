@@ -459,6 +459,14 @@
 		/**
 
 		 */
+		public function finish() {
+			if (is_object($this) && Orders::session_exists($this)) {
+				Orders::session_delete($this->order_id);
+			}
+		}
+		/**
+
+		 */
 		public function header() {
 			$editable = ($this->order_no == 0);
 			start_outer_table('tablestyle2 width90');

@@ -15,7 +15,7 @@
 		 * @return int|string
 		 */
 		static public function	price_format($number) {
-			return Num::format(Num::round($number, User::prefs()->price_dec()), User::prefs()->price_dec());
+			return Num::format(Num::round($number, User::prefs()->price_dec()+2), User::prefs()->price_dec());
 		}
 
 		/**
