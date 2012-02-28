@@ -88,7 +88,6 @@
 					$jobslines[$line['line_id']]['quantity'] = 0;
 					$jobslines[$line['line_id']]['description'] .= " DELETED!";
 				}
-				\Errors::log($jobslines);
 				$update = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job Updated from acounts by ' . $user_name . ' ' . chr(13) . chr(10) . $job['Updates'];
 				$data['Next_Action_Required'] = '<div>Job has been updated from accounts ' . $user_name . '</div>' . $job['Next_Action_Required'];
 			}
