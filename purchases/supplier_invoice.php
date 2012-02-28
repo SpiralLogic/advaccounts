@@ -332,7 +332,8 @@ JS;
 		$margin = DB_Company::get_pref('po_over_charge');
 		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
-				if ($_POST['order_price' . $n] != 0 || Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
+				if ($_POST['order_price' . $n] != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 +
+				 ($margin / 100))) {
 					if (Session::i()->err_over_charge != true) {
 						Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge
 						percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");

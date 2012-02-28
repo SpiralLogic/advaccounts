@@ -380,12 +380,13 @@
 
 		 */
 		static public function log() {
+			$source = reset(debug_backtrace());
 			$args = func_get_args();
 			$content = array();
 			foreach ($args as $arg) {
 				$content[] = var_export($arg, true);
 			}
-			static::$debugLog[] = $content;
+			static::$debugLog[] = array('line'=>$source['line'],'file'=>$source['file'],'content'=>$content);
 		}
 	}
 

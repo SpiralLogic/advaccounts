@@ -9,23 +9,26 @@
 	namespace Modules;
 	use \Modules\Volusion\Orders as Orders;
 
-	class Volusion {
+	class Volusion
+	{
 		function doWebsales() {
 			$orders = $this->getNewWebsales();
 			if (!$orders) {
 				\Event::notice("No new websales from website");
-			} else {
+			}
+			else {
 				$success = 0;
 				foreach ($orders as $order) {
 					$this->insertJob($order['OrderID']);
 					$success++;
 				}
-				if ($success) \Event::success('Succesfully added ' . $success . ' jobs to database');
+				if ($success) {
+					\Event::success('Succesfully added ' . $success . ' jobs to database');
+				}
 			}
 			$this->notOnJobsboard();
 			\DB::change_connection();
 		}
-
 		protected function getNewWebsales() {
 			$orders = new Orders();
 			if (!count($orders)) {
@@ -33,18 +36,20 @@
 			}
 			$success = 0;
 			foreach ($orders as $order) {
-				if ($orders->process()) $success++;
+				if ($orders->process()) {
+					$success++;
+				}
 			}
-			if ($success) \Event::success('Found ' . $success . ' new websales');
+			if ($success) {
+				\Event::success('Found ' . $success . ' new websales');
+			}
 			return $orders;
 		}
-
 		function getNotOnJobsboard() {
 			\DB::change_connection();
 			$results = \DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
 			return $results;
 		}
-
 		protected function notOnJobsboard() {
 			$neworders = $this->getNotOnJobsboard();
 			if (!$neworders) {
@@ -55,20 +60,17 @@
 			foreach ($neworders as $neworder) {
 				$job = $this->insertJob($neworder['OrderID']);
 				if ($job) {
-					\DB::change_connection();
-					\DB::update('WebOrders')->value('ison_jobsboard', $job)->where('OrderID=', $neworder['OrderID'])->exec();
 					\Event::success("Websale " . $neworder['OrderID'] . " successfully added to Jobs Board with Job Number $job!");
 				}
 				$success++;
 			}
 			return true;
 		}
-
 		protected function insertJob($id) {
 			\DB::change_connection();
 			$order = \DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
 			if (!$order) {
-				\Event::error('Could not find job '.$id.' in database');
+				\Event::error('Could not find job ' . $id . ' in database');
 				return false;
 			}
 			$orderdetails = \DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
@@ -99,7 +101,7 @@
 					'websaleid' => $id,
 					'Detail' => $detail,
 				);
-				$result = \DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
+				\DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
 				$this->insertLines($lineitems, $jobsboard_no);
 				return $jobsboard_no;
 			}
@@ -152,12 +154,12 @@
 				$newJob['Updates'] = $updates;
 				$jobsboard_no = \DB::insert('Job_List')->values($newJob)->exec();
 				$this->insertlines($lineitems, $jobsboard_no);
+				\DB::change_connection();
+				\DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
 				$result = $jobsboard_no;
 			}
-			\DB::change_connection();
 			return $result;
 		}
-
 		function insertlines($lines, $jobid) {
 			$existing_lines = $this->getLines($jobid);
 			$deleted = array_diff_key($lines, $existing_lines);
@@ -176,7 +178,6 @@
 				}
 			}
 		}
-
 		function getLines($jobid) {
 			$result = \DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
 			return $result;

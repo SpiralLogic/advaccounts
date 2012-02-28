@@ -25,6 +25,18 @@
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
+	if (!isset($_POST['TransAfterDate']) && isset($_SESSION['global_TransAfterDate'])) {
+			$_POST['TransAfterDate'] = $_SESSION['global_TransAfterDate'];
+		}
+		elseif (isset($_POST['TransAfterDate'])) {
+			$_SESSION['global_TransAfterDate'] = $_POST['TransAfterDate'];
+		}
+		if (!isset($_POST['TransToDate']) && isset($_SESSION['global_TransToDate'])) {
+			$_POST['TransToDate'] = $_SESSION['global_TransToDate'];
+		}
+		elseif (isset($_POST['TransToDate'])) {
+			$_SESSION['global_TransToDate'] = $_POST['TransToDate'];
+		}
 	start_table('tablestyle_noborder');
 	start_row();
 	Creditor::cells(_("Select a supplier: "), 'supplier_id', null, true);
