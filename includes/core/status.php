@@ -30,10 +30,11 @@
 			$this->set($status, $process, $message, $var);
 		}
 		/**
-		 * @param null	 $status
-		 * @param null	 $process
+		 * @param null   $status
+		 * @param null   $process
 		 * @param string $message
-		 * @param null	 $var
+		 * @param null   $var
+		 *
 		 * @return array
 		 */
 		public function set($status = null, $process = null, $message = '', $var = null) {
@@ -57,13 +58,14 @@
 				}
 			}
 			$this->_status[] = $newstatus;
-			if ($status==self::ERROR) {
+			if ($status == self::ERROR) {
 				$this->_errors[] = $newstatus;
 			}
 			return !($status == self::ERROR);
 		}
 		/**
 		 * @param array $status
+		 *
 		 * @return mixed
 		 */
 		public function append(array $status, $error_only = true) {
@@ -100,6 +102,9 @@
 		public function getAll() {
 			return $this->_status;
 		}
+		/**
+		 * @return string
+		 */
 		public function __toString() {
 			$last = $this->get();
 			$str = ucwords($last['process']);

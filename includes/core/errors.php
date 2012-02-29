@@ -255,7 +255,7 @@
 			static::$session = $_SESSION;
 			// Only show valid fatal errors
 			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
-				if (class_exists('Ajax',false)) {
+				if (class_exists('Ajax', false)) {
 					Ajax::i()->aCommands = array();
 				}
 				static::$current_severity = -1;
@@ -263,7 +263,7 @@
 					$last_error['line']);
 				static::exception_handler($error);
 			}
-			if (class_exists('Ajax',false) && Ajax::in_ajax()) {
+			if (class_exists('Ajax', false) && Ajax::in_ajax()) {
 				Ajax::i()->run();
 			}
 			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {

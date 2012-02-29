@@ -11,8 +11,8 @@
 		/**
 		 * @static
 		 *
-		 * @param			$backupfile
-		 * @param			$fileData
+		 * @param      $backupfile
+		 * @param      $fileData
 		 * @param bool $zip
 		 *
 		 * @return bool
@@ -26,7 +26,8 @@
 					gzwrite($zp, $fileData);
 					gzclose($zp);
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 				// $zip contains the timestamp
@@ -76,7 +77,7 @@
 				$cdrec .= $sub1 . $sub2;
 				// length of filename, extra field length, file comment length, disk number start, internal file attributes, external file attributes - 'archive' bit set, offset
 				$cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V',
-					0);
+																																																															0);
 				$cdrec .= $name;
 				// combine data
 				$fileData = $fr . $cdrec . $eof_ctrl_dir;
@@ -87,22 +88,24 @@
 					fwrite($zp, $fileData);
 					fclose($zp);
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 				// uncompressed
-			} else {
+			}
+			else {
 				/** @noinspection PhpAssignmentInConditionInspection */
 				if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
 					fwrite($zp, $fileData);
 					fclose($zp);
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -115,11 +118,10 @@
 			$i = (int)floor(log($size, 1024));
 			return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$path
+		 * @param      $path
 		 * @param bool $wipe
 		 */
 		static public function flush_dir($path, $wipe = false) {
@@ -133,7 +135,8 @@
 					if ($wipe) {
 						@rmdir($path . DS . $fname);
 					}
-				} else
+				}
+				else
 				{
 					@unlink($path . DS . $fname);
 				}

@@ -9,7 +9,8 @@
 	/***
 	 *
 	 */
-	class DB_Query_Result implements \Countable, \Iterator {
+	class DB_Query_Result implements \Countable, \Iterator
+	{
 		/***
 		 * @var PDOStatement thing
 		 */
@@ -34,9 +35,8 @@
 		 * @var
 		 */
 		protected $valid;
-
 		/**
-		 * @param $prepared
+		 * @param      $prepared
 		 * @param null $data
 		 */
 		public function __construct($prepared, $data = null) {
@@ -45,17 +45,14 @@
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 			$this->execute();
 		}
-
 		/**
 		 *
 		 */
 		protected function execute() {
-				$this->cursor = 0;
-				$this->valid = $this->prepared->execute($this->data);
-				$this->count = $this->prepared->rowCount();
-
+			$this->cursor = 0;
+			$this->valid = $this->prepared->execute($this->data);
+			$this->count = $this->prepared->rowCount();
 		}
-
 		/**
 		 * @return array
 		 */
@@ -64,7 +61,6 @@
 			$this->prepared = null;
 			return $result;
 		}
-
 		/**
 		 * @param null $column
 		 *
@@ -74,7 +70,6 @@
 			$result = $this->prepared->fetch();
 			return ($column !== null && isset($result[$column])) ? $result[$column] : $result;
 		}
-
 		/**
 		 * @return DB_Query_Result
 		 */
@@ -82,7 +77,6 @@
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 			return $this;
 		}
-
 		/**
 		 * @return DB_Query_Result
 		 */
@@ -90,34 +84,32 @@
 			$this->prepared->setFetchMode(PDO::FETCH_NUM);
 			return $this;
 		}
-
 		/**
-		 * @param $class
+		 * @param       $class
 		 * @param array $construct
+		 *
 		 * @return DB_Query_Result
 		 */
 		public function asClassLate($class, $construct = array()) {
 			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class, $construct);
 			return $this;
 		}
-
 		/**
-		 * @param $class
+		 * @param       $class
 		 * @param array $construct
+		 *
 		 * @return DB_Query_Result
 		 */
 		public function asClass($class, $construct = array()) {
 			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $class, $construct);
 			return $this;
 		}
-
 		/**
 		 * @param $object
 		 */
 		public function intoClass($object) {
 			return $this->intoObject($object);
 		}
-
 		/**
 		 * @param $object
 		 */
@@ -128,7 +120,6 @@
 			$this->prepared = null;
 			return $this->count;
 		}
-
 		/**
 		 * @return DB_Query_Result
 		 */
@@ -136,7 +127,6 @@
 			$this->prepared->setFetchMode(PDO::FETCH_OBJ);
 			return $this;
 		}
-
 		/**
 		 * (PHP 5 &gt;= 5.1.0)<br/>
 		 * Return the current element
@@ -147,7 +137,6 @@
 		public function current() {
 			return $this->current;
 		}
-
 		/**
 		 * (PHP 5 &gt;= 5.1.0)<br/>
 		 * Move forward to next element
@@ -159,7 +148,6 @@
 			$this->current = $this->prepared->fetch();
 			++$this->cursor;
 		}
-
 		/**
 		 * (PHP 5 &gt;= 5.1.0)<br/>
 		 * Return the key of the current element
@@ -171,7 +159,6 @@
 		public function key() {
 			return $this->cursor;
 		}
-
 		/**
 		 * @return mixed
 		 */
@@ -181,7 +168,6 @@
 			}
 			return $this->valid;
 		}
-
 		/**
 		 * (PHP 5 &gt;= 5.1.0)<br/>
 		 * Rewind the Iterator to the first element
@@ -196,7 +182,6 @@
 			$this->execute();
 			$this->next();
 		}
-
 		/**
 		 * (PHP 5 &gt;= 5.1.0)<br/>
 		 * Count elements of an object
@@ -205,12 +190,11 @@
 		 * @return int The custom count as an integer.
 		 * </p>
 		 * <p>
-		 *			 The return value is cast to an integer.
+		 *       The return value is cast to an integer.
 		 */
 		public function count() {
 			return $this->count;
 		}
-
 		/**
 		 * @return mixed
 		 */
@@ -220,5 +204,4 @@
 			}
 			return var_export($this->current(), true);
 		}
-
 	}

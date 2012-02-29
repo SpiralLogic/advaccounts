@@ -46,9 +46,9 @@
 		 */
 		public $is_locale_file;
 		/**
-		 * @param				$name
-		 * @param				$code
-		 * @param				$encoding
+		 * @param        $name
+		 * @param        $code
+		 * @param        $encoding
 		 * @param string $dir
 		 */
 		public function __construct($name, $code, $encoding, $dir = 'ltr') {
@@ -102,7 +102,8 @@
 					include(DOCROOT . "lang/" . static::$i->code . "/locale.php");
 				}
 				$_SESSION['Language'] = static::$i;
-			} else {
+			}
+			else {
 				static::$i = $_SESSION['Language'];
 			}
 		}

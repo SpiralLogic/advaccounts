@@ -45,6 +45,7 @@
 		/**
 		 * @param $user_id
 		 * @param $password
+		 *
 		 * @return bool|mixed
 		 */
 		public function check_user_password($user_id, $password) {

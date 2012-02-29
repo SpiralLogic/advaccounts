@@ -10,12 +10,16 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+	class SessionException extends Exception
+	{
+	}
 
-class SessionException extends Exception {};
+	;
 	/**
 	 *
 	 */
-	class Session extends Input {
+	class Session extends Input
+	{
 		/**
 		 * @static
 		 * @return Session|mixed
@@ -24,7 +28,6 @@ class SessionException extends Exception {};
 			(static::$i === null) and static::$i = new static;
 			return static::$i;
 		}
-
 		/**
 		 * @static
 
@@ -33,14 +36,12 @@ class SessionException extends Exception {};
 			session_unset();
 			session_destroy();
 		}
-
 		/**
 		 * @static
 		 */
 		static public function regenerate() {
 			session_regenerate_id();
 		}
-
 		/**
 		 * @var Session
 		 */
@@ -53,7 +54,6 @@ class SessionException extends Exception {};
 		 * @var array
 		 */
 		protected $_session = array();
-
 		/**
 
 		 */
@@ -63,7 +63,7 @@ class SessionException extends Exception {};
 			if (class_exists('Memcached', false)) {
 				ini_set('session.save_handler', 'Memcached');
 				ini_set('session.save_path', '127.0.0.1:11211');
-				(Memcached::HAVE_IGBINARY)	and ini_set('session.serialize_handler', 'igbinary');
+				(Memcached::HAVE_IGBINARY)  and ini_set('session.serialize_handler', 'igbinary');
 			}
 			if (!session_start()) {
 				ini_set('session.save_handler', 'files');
@@ -83,7 +83,7 @@ class SessionException extends Exception {};
 			Language::set();
 			$this->_session = &$_SESSION;
 			// Ajax communication object
-			(!class_exists('Ajax'))	or Ajax::i();
+			(!class_exists('Ajax'))  or Ajax::i();
 		}
 		/**
 		 * @return mixed

@@ -28,8 +28,8 @@
 		 */
 		public $access;
 		/**
-		 * @param $label
-		 * @param $link
+		 * @param        $label
+		 * @param        $link
 		 * @param string $access
 		 */
 		function app_function($label, $link, $access = SA_OPEN) {
@@ -61,7 +61,7 @@
 		 */
 		public $rappfunctions;
 		/**
-		 * @param $name
+		 * @param      $name
 		 * @param null $icon
 		 */
 		public function module($name, $icon = null) {
@@ -71,7 +71,7 @@
 			$this->rappfunctions = array();
 		}
 		/**
-		 * @param $label
+		 * @param        $label
 		 * @param string $link
 		 * @param string $access
 		 *
@@ -82,11 +82,12 @@
 			//array_push($this->lappfunctions,$appfunction);
 			$this->lappfunctions[] = $appfunction;
 			return $appfunction;
-	}
+		}
 		/**
-		 * @param $label
+		 * @param        $label
 		 * @param string $link
 		 * @param string $access
+		 *
 		 * @return app_function
 		 */
 		public function add_rapp_function($label, $link = "", $access = SA_OPEN) {
@@ -101,69 +102,70 @@
 	 *
 	 */
 	abstract class Application
-{
-	/**
-	 * @var
-	 */
+	{
+		/**
+		 * @var
+		 */
 		public $id;
-	/**
-	 * @var
-	 */
+		/**
+		 * @var
+		 */
 		public $name;
-	/**
-	 * @var bool
-	 */
+		/**
+		 * @var bool
+		 */
 		public $direct = false;
-	/**
-	 * @var
-	 */
+		/**
+		 * @var
+		 */
 		public $help_context;
-	/**
-	 * @var array
-	 */
+		/**
+		 * @var array
+		 */
 		public $modules;
-	/**
-	 * @var bool
-	 */
+		/**
+		 * @var bool
+		 */
 		public $enabled;
-	/**
-	 * @param $id
-	 * @param $name
-	 * @param bool $enabled
-	 */
+		/**
+		 * @param      $id
+		 * @param      $name
+		 * @param bool $enabled
+		 */
 		public function __construct($id, $name, $enabled = true) {
 			$this->id = $id;
 			$this->name = $name;
 			$this->enabled = $enabled;
 			$this->modules = array();
-	}
-	/**
-	 * @param $name
-	 * @param null $icon
-	 * @return module
-	 */
+		}
+		/**
+		 * @param      $name
+		 * @param null $icon
+		 *
+		 * @return module
+		 */
 		public function add_module($name, $icon = null) {
 			$module = new module($name, $icon);
 			//array_push($this->modules,$module);
 			$this->modules[] = $module;
 			return $module;
-	}
-	/**
-	 *
-	 * @param $level
-	 * @param $label
-	 * @param string $link
-	 * @param string $access
-	 */
+		}
+		/**
+		 *
+		 * @param        $level
+		 * @param        $label
+		 * @param string $link
+		 * @param string $access
+		 */
 		public function add_lapp_function($level, $label, $link = "", $access = SA_OPEN) {
 			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
-	}
-	/**
-	 * @param $level
-	 * @param $label
-	 * @param string $link
-	 * @param string $access
-	 */
+		}
+		/**
+		 * @param        $level
+		 * @param        $label
+		 * @param string $link
+		 * @param string $access
+		 */
 		public function add_rapp_function($level, $label, $link = "", $access = SA_OPEN) {
 			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
 		}

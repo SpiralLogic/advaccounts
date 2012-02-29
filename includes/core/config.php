@@ -47,7 +47,9 @@
 		}
 		/**
 		 * @static
+		 *
 		 * @param string $group
+		 *
 		 * @return mixed
 		 * @throws Config_Exception
 		 */
@@ -73,8 +75,8 @@
 		/**
 		 * @static
 		 *
-		 * @param				$var
-		 * @param				$value
+		 * @param        $var
+		 * @param        $value
 		 * @param string $group
 		 *
 		 * @return mixed
@@ -85,9 +87,11 @@
 		}
 		/***
 		 * @static
-		 * @param			$var
+		 *
+		 * @param      $var
 		 * @param null $array_key
 		 * @param null $group
+		 *
 		 * @return mixed
 		 */
 		static public function get($var, $array_key = null, $group = null) {
@@ -108,12 +112,13 @@
 			if (!isset(static::$_vars[$group][$var])) {
 				return false;
 			}
-			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
+			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] :
+			 static::$_vars[$group][$var];
 		}
 		/**
 		 * @static
 		 *
-		 * @param				$var
+		 * @param        $var
 		 * @param string $group
 		 */
 		static public function remove($var, $group = 'config') {

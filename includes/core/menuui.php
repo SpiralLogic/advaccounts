@@ -31,7 +31,7 @@
 			ob_start();
 		}
 		/**
-		 * @param				$title
+		 * @param        $title
 		 * @param string $tooltip
 		 * @param string $link
 		 *
@@ -55,15 +55,23 @@
 			$this->options['hasLinks'] = true;
 			return $this;
 		}
+		/**
+		 * @param        $title
+		 * @param string $tooltip
+		 * @param        $name
+		 * @param        $onselect
+		 *
+		 * @return MenuUI
+		 */
 		public function addJSLink($title, $tooltip = '', $name, $onselect) {
-			$this->items[] = new MenuUi_item($title, $tooltip,'#'.$name);
+			$this->items[] = new MenuUi_item($title, $tooltip, '#' . $name);
 			$this->options['hasLinks'] = true;
 			JS::onload($onselect);
 			return $this;
 		}
 		/**
-		 * @param				$title
-		 * @param				$tooltip
+		 * @param        $title
+		 * @param        $tooltip
 		 * @param string $link
 		 * @param string $style
 		 *
@@ -128,7 +136,7 @@
 		public $param_element = '';
 		public $target = '';
 		/**
-		 * @param				$label
+		 * @param        $label
 		 * @param string $tooltip
 		 * @param string $link
 		 */

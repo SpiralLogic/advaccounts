@@ -12,9 +12,29 @@
 	/*
 			 Write/update customer payment.
 		 */
+	/**
+	 *
+	 */
 	class Debtor_Payment
 	{
-		static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
+		/**
+		 * @static
+		 *
+		 * @param     $trans_no
+		 * @param     $customer_id
+		 * @param     $branch_id
+		 * @param     $bank_account
+		 * @param     $date_
+		 * @param     $ref
+		 * @param     $amount
+		 * @param     $discount
+		 * @param     $memo_
+		 * @param int $rate
+		 * @param int $charge
+		 * @param int $tax
+		 *
+		 * @return int
+		 */static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
 			DB::begin();
 			$company_record = DB_Company::get_prefs();
 			$payment_no = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -62,21 +82,35 @@
 			Ref::save(ST_CUSTPAYMENT, $ref);
 			DB::commit();
 			return $payment_no;
-		}
-		static public function void($type, $type_no) {
+	}
+		/**
+		 * @static
+		 * @param $type
+		 * @param $type_no
+		 */static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);
 			Sales_Allocation::void($type, $type_no);
 			Debtor_Trans::void($type, $type_no);
 			DB::commit();
-		}
-		static public function credit_row($customer, $credit, $parms = '') {
+	}
+		/**
+		 * @static
+		 * @param        $customer
+		 * @param        $credit
+		 * @param string $parms
+		 */static public function credit_row($customer, $credit, $parms = '') {
 			label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' :
 			 '') . " href='".e('/sales/inquiry/customer_inquiry.php?frame=1&customer_id=' . $customer) . "'>" . Num::price_format
 			($credit) . "</a>", $parms);
-		}
-		static public function allocations_select($label, $name, $selected = null) {
+	}
+		/**
+		 * @static
+		 * @param      $label
+		 * @param      $name
+		 * @param null $selected
+		 */static public function allocations_select($label, $name, $selected = null) {
 			if ($label != null) {
 				label_cell($label);
 			}

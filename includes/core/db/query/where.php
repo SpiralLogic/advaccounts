@@ -6,7 +6,8 @@
 	 * Time: 11:13 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class DB_Query_Where {
+	abstract class DB_Query_Where
+	{
 		/**
 		 * @var array
 		 */
@@ -23,14 +24,14 @@
 		 * @var int
 		 */
 		protected $count = 0;
-
 		protected function resetWhere() {
-			$this->wheredata=$this->where=array();$count=0;
+			$this->wheredata = $this->where = array();
+			$count = 0;
 		}
 		/***
-		 * @param array $conditions
+		 * @param array  $conditions
 		 * @param string $type
-		 * @param null $uservar
+		 * @param null   $uservar
 		 *
 		 * @return DB_Query_Select
 		 */
@@ -39,7 +40,8 @@
 				foreach ($conditions as $condition) {
 					if (is_array($condition)) {
 						$this->_where($condition[0], $type, $condition[1]);
-					} else {
+					}
+					else {
 						$this->_where($condition);
 					}
 				}
@@ -54,9 +56,8 @@
 			$this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
 			return $this;
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
 		 *
 		 * @return DB_Query
@@ -64,64 +65,64 @@
 		public function where($condition, $uservar = null) {
 			return $this->_where($condition, 'AND', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function or_where($condition, $uservar = null) {
 			return $this->_where($condition, 'OR', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function and_where($condition, $uservar = null) {
 			return $this->_where($condition, 'AND', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function or_open($condition, $uservar = null) {
 			return $this->_where($condition, 'OR (', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function and_open($condition, $uservar = null) {
 			return $this->_where($condition, 'AND (', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function close_and($condition, $uservar = null) {
 			return $this->_where($condition, ') AND', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function close_or($condition, $uservar = null) {
 			return $this->_where($condition, ') OR', $uservar);
 		}
-
 		/**
-		 * @param $condition
+		 * @param      $condition
 		 * @param null $uservar
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function open($condition, $uservar = null) {
@@ -130,7 +131,6 @@
 			}
 			return $this->_where($condition, ' AND ', $uservar);
 		}
-
 		/**
 		 * @return DB_Query_Where
 		 */
@@ -138,7 +138,6 @@
 			array_push($this->where, array_pop($this->where) . ') ');
 			return $this;
 		}
-
 		/**
 		 * @return string
 		 */

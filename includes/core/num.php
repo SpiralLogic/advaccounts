@@ -6,7 +6,8 @@
 	 * Time: 2:53 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Num {
+	class Num
+	{
 		/**
 		 * @static
 		 *
@@ -14,10 +15,9 @@
 		 *
 		 * @return int|string
 		 */
-		static public function	price_format($number) {
-			return Num::format(Num::round($number, User::prefs()->price_dec()+2), User::prefs()->price_dec());
+		static public function  price_format($number) {
+			return Num::format(Num::round($number, User::prefs()->price_dec() + 2), User::prefs()->price_dec());
 		}
-
 		/**
 		 * @static
 		 *
@@ -26,7 +26,7 @@
 		 *
 		 * @return int|string
 		 */
-		static public function	price_decimal($number, &$dec) {
+		static public function  price_decimal($number, &$dec) {
 			$dec = User::price_dec();
 			$str = strval($number);
 			$pos = strpos($str, '.');
@@ -38,28 +38,26 @@
 			}
 			return Num::format($number, $dec);
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param		 $number
+		 * @param     $number
 		 * @param int $decimals
 		 *
 		 * @return float
 		 */
-		static public function	round($number, $decimals = 0) {
+		static public function  round($number, $decimals = 0) {
 			return round($number, $decimals, PHP_ROUND_HALF_EVEN);
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param		 $number
+		 * @param     $number
 		 * @param int $decimals
 		 *
 		 * @return int|string
 		 */
-		static public function	format($number, $decimals = 0) {
+		static public function  format($number, $decimals = 0) {
 			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
 			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
 			//return number_format($number, $decimals, $dsep,	$tsep);
@@ -67,7 +65,6 @@
 			$number = number_format($number + $delta, $decimals, $dsep, $tsep);
 			return ($number == -0 ? 0 : $number);
 		}
-
 		/**
 		 * @static
 		 *
@@ -75,10 +72,9 @@
 		 *
 		 * @return int|string
 		 */
-		static public function	exrate_format($number) {
+		static public function  exrate_format($number) {
 			return Num::format($number, User::prefs()->exrate_dec());
 		}
-
 		/**
 		 * @static
 		 *
@@ -86,10 +82,9 @@
 		 *
 		 * @return int|string
 		 */
-		static public function	percent_format($number) {
+		static public function  percent_format($number) {
 			return Num::format($number, User::prefs()->percent_dec());
 		}
-
 		/**
 		 * @static
 		 *
@@ -105,17 +100,18 @@
 			$pow = pow(10, User::price_dec());
 			if ($pow >= $round_to) {
 				$mod = ($pow % $round_to);
-			} else {
+			}
+			else {
 				$mod = ($round_to % $pow);
 			}
 			if ($mod != 0) {
 				$price = ceil($price) - ($pow - $round_to) / $pow;
-			} else {
+			}
+			else {
 				$price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
 			}
 			return $price;
 		}
-
 		/**
 		 * @static
 		 *
@@ -150,7 +146,8 @@
 				$res .= (empty($res) ? "" : " ") . Num::to_words($Hn) . " Hundred";
 			}
 			$ones = array(
-				"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+				"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+				"Fourteen", "Fifteen", "Sixteen", "Seventeen",
 				"Eightteen", "Nineteen"
 			);
 			$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety");

@@ -6,7 +6,8 @@
 	 * Time: 5:35 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Query_Select extends DB_Query {
+	class DB_Query_Select extends DB_Query
+	{
 		/**
 		 * @var array
 		 */
@@ -35,10 +36,9 @@
 		 * @var array
 		 */
 		protected $union_or = array();
-
 		/***
 		 * @param string $columns,... Database columns to select
-		 * @param DB_C
+		 * @param        DB_C
 		 *
 		 * @return DB_Query_Select
 		 */
@@ -47,7 +47,6 @@
 			$this->type = DB::SELECT;
 			call_user_func_array(array($this, 'select'), $columns);
 		}
-
 		/***
 		 * @param mixed ... Database columns to select
 		 *
@@ -58,52 +57,55 @@
 			$this->select = array_merge($this->select, $columns);
 			return $this;
 		}
-
 		/***
 		 * @param null $tables
+		 *
 		 * @return DB_Query_Select
 		 */
 		public function from($tables = null) {
-			if (is_null($tables)) return $this;
+			if (is_null($tables)) {
+				return $this;
+			}
 			$tables = func_get_args();
 			$this->from = array_merge($this->from, $tables);
 			return $this;
 		}
-
 		/**
 		 * @param null $by
 		 *
 		 * @return DB_Query_Select
 		 */
 		function orderby($by = null) {
-			if (is_null($by)) return $this;
-
+			if (is_null($by)) {
+				return $this;
+			}
 			$by = func_get_args();
 			$this->orderby = array_merge($this->orderby, $by);
 			return $this;
 		}
-
 		/**
 		 * @param null $by
+		 *
 		 * @return DB_Query_Select
 		 */
 		function groupby($by = null) {
-			if (is_null($by)) return $this;
+			if (is_null($by)) {
+				return $this;
+			}
 			$by = func_get_args();
 			$this->groupby = array_merge($this->groupby, $by);
 			return $this;
 		}
-
 		/**
-		 * @param $start
+		 * @param      $start
 		 * @param null $quantity
+		 *
 		 * @return DB_Query_Select
 		 */
-		public function limit($start=0, $quantity = null) {
+		public function limit($start = 0, $quantity = null) {
 			$this->limit = ($quantity == null) ? $start : "$start, $quantity";
 			return $this;
 		}
-
 		/**
 		 * @return DB_Query_Select
 		 */
@@ -114,7 +116,6 @@
 			$this->resetWhere();
 			return $this;
 		}
-
 		/**
 		 * @param $condition
 		 * @param $var
@@ -122,7 +123,6 @@
 		public function union_or($condition, $var) {
 			$this->union_or[$condition] = $var;
 		}
-
 		/**
 		 * @return string
 		 */
@@ -132,7 +132,6 @@
 			}
 			return $this->_buildQuery();
 		}
-
 		/**
 		 * @return string
 		 */

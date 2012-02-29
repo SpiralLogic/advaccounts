@@ -16,7 +16,6 @@
 		 * @var
 		 */
 		public $link;
-
 		/**
 		 * @param $label
 		 * @param $link
@@ -40,7 +39,6 @@
 		 * @var array
 		 */
 		public $items = array();
-
 		/**
 		 * @param $title
 		 */
@@ -48,7 +46,6 @@
 			$this->title = $title;
 			$this->items;
 		}
-
 		/**
 		 * @param $label
 		 * @param $link
