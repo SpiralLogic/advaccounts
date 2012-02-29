@@ -209,7 +209,7 @@
 				echo "<div id='footer'>\n";
 				if (User::i()) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
-					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
+					echo "<span class='date'>" . Dates::today() . " | " . Dates::now() . "</span>\n";
 					if (User::i()->logged_in()) {
 				//		echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}

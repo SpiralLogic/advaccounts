@@ -132,7 +132,7 @@
 		 * @static
 		 * @return string
 		 */
-		static function Today() {
+		static function today() {
 			$year = date("Y");
 			$month = date("n");
 			$day = date("j");
@@ -148,7 +148,7 @@
 		 * @static
 		 * @return string
 		 */
-		static function Now() {
+		static function now() {
 			if (User::date_format() == 0) {
 				return date("h:i a");
 			}
@@ -168,7 +168,7 @@
 				$_SESSION['_default_date'] = $date;
 			}
 			if (!isset($_SESSION['_default_date']) || !User::sticky_date()) {
-				$_SESSION['_default_date'] = Dates::Today();
+				$_SESSION['_default_date'] = Dates::today();
 			}
 			return $_SESSION['_default_date'];
 		}

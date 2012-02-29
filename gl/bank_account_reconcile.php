@@ -25,7 +25,7 @@
 		$grouprefs = $_POST['ungroup_' . $groupid];
 			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE undeposited =" . DB::escape($groupid);
 			DB::query($sql, 'Couldn\'t update undesposited status');
-		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::today()) . "',
  undeposited=" . $groupid . " WHERE id=" . $groupid;
 		DB::query($sql, "Couldn't update removed group data");
 		update_data();
@@ -39,14 +39,14 @@
 	}
 	if (!isset($_POST['reconcile_date'])) { // init page
 		$_POST['reconcile_date'] = Dates::new_doc_date();
-		//	$_POST['bank_date'] = Dates::date2sql(Dates::Today());
+		//	$_POST['bank_date'] = Dates::date2sql(Dates::today());
 	}
 	if (list_updated('bank_account')) {
 		Ajax::i()->activate('bank_date');
 		update_data();
 	}
 	if (list_updated('bank_date')) {
-		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::Today() : Dates::sql2date($_POST['bank_date']);
+		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::today() : Dates::sql2date($_POST['bank_date']);
 		update_data();
 	}
 	if (get_post('_reconcile_date_changed')) {

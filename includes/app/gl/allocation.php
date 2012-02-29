@@ -86,7 +86,7 @@
 			}
 			else {
 				$this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
+				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
 			}
 			/* Now populate the array of possible (and previous actual) allocations
 																		for this customer/supplier. First get the transactions that have

@@ -260,7 +260,7 @@
 			$this->row -= ($this->lineHeight + 4);
 			$str = _("Print Out Date") . ':';
 			$this->Text($this->leftMargin, $str, $titleCol);
-			$str = Dates::Today() . ' ' . Dates::Now();
+			$str = Dates::today() . ' ' . Dates::now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -478,7 +478,7 @@
 			// Timestamp of when this copy of the report was generated
 			$str = _("Generated At") . ':';
 			$this->Text($this->leftMargin, $str, $headerFieldCol);
-			$str = Dates::Today() . ' ' . Dates::Now();
+			$str = Dates::today() . ' ' . Dates::now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}

@@ -181,11 +181,11 @@
 					$this->pos = User::pos();
 					$pos = Sales_Point::get($this->pos);
 					$this->cash = !$pos['credit_sale'];
-					if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Dates::Today()) {
+					if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Dates::today()) {
 						$this->pos = -1;
 					} // mark not editable payment type
 					else {
-						$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
+						$this->cash = Dates::date_diff2($this->due_date, Dates::today(), 'd') < 2;
 					}
 					if ($this->cash) {
 						$this->location = $pos['pos_location'];
@@ -935,9 +935,9 @@
 			if ($this->trans_type == ST_SALESINVOICE) {
 				$this->due_date = Sales_Order::get_invoice_duedate($customer_id, $this->document_date);
 				if ($this->pos != -1) {
-					$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
+					$this->cash = Dates::date_diff2($this->due_date, Dates::today(), 'd') < 2;
 				}
-				if ($this->due_date == Dates::Today()) {
+				if ($this->due_date == Dates::today()) {
 					$this->pos = -1;
 				}
 			}
@@ -1386,7 +1386,7 @@
 			$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
 			DB::query($sql, "order Detail Delete");
 			Ref::delete($trans_type, $order_no);
-			DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
+			DB_AuditTrail::add($trans_type, $order_no, Dates::today(), _("Deleted."));
 			DB::commit();
 		}
 

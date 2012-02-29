@@ -80,7 +80,7 @@ if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 $sql
  .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue, SUM(details.quantity - qty_done) as
+			AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue, SUM(details.quantity - qty_done) as
 			still_to_deliver
 		FROM debtors as debtor, branches as branch,debtor_trans as trans
 		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_no =
@@ -149,7 +149,7 @@ if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 	}
 	if ($_POST['filterType'] == '2') {
-		$today = Dates::date2sql(Dates::Today());
+		$today = Dates::date2sql(Dates::today());
 		$sql
 		 .= " AND trans.due_date < '$today'
 				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +

@@ -105,6 +105,7 @@
 				$tax_group_id = $this->tax_group_id;
 			}
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
+			Errors::log($taxes);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
@@ -283,7 +284,7 @@
 
 		static public function get_duedate_from_terms($creditor_trans) {
 			if (!Dates::is_date($creditor_trans->tran_date)) {
-				$creditor_trans->tran_date = Dates::Today();
+				$creditor_trans->tran_date = Dates::today();
 			}
 			if (substr($creditor_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
 				$creditor_trans->due_date = Dates::add_days(Dates::end_month($creditor_trans->tran_date), (int)substr($creditor_trans->terms, 1));

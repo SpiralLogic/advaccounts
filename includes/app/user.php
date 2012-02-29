@@ -161,7 +161,7 @@ class User
 		 = "\nvar user = {
 						 \n theme: '/themes/" . static::theme() . "/',
 						 \nloadtxt: '" . _('Requesting data...') . "',
-						 \ndate: '" . Dates::Today() . "',
+						 \ndate: '" . Dates::today() . "',
 						 \ndatesys: " . Config::get('accounts.datesystem') . ",
 						 \ndatefmt: " . static::date_format() . ",
 						 \ndatesep: '" . Config::get('date.ui_format') . "',

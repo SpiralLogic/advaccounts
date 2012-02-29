@@ -673,7 +673,7 @@
 				$dec = $item_info["decimals"];
 				$_POST['qty'] = Num::format(Creditor_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
 				$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
-				$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
+				$_POST['req_del_date'] = Dates::add_days(Dates::today(), 10);
 				$_POST['discount'] = Num::percent_format(0);
 				$qty_rcvd = '';
 			}

@@ -214,7 +214,7 @@
 					if (!$value || !is_numeric($value)) {
 						return self::$default_number;
 					}
-					return ($value === self::$default_number) ? true : $value;
+					return ($value === self::$default_number) ? true : $value+0;
 				case self::STRING:
 					if (!$value || !is_string($value)) {
 						return self::$default_string;

@@ -26,7 +26,7 @@
 	}
 	$update_pager = false;
 	if (list_updated('deposit_date')) {
-		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
+		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
 		update_data();
 	}
 	if (get_post('_deposit_date_changed')) {

@@ -33,7 +33,7 @@
 			$creditor_trans->tax_description = $myrow['tax_group_name'];
 			$creditor_trans->tax_group_id = $myrow['tax_group_id'];
 			if ($creditor_trans->tran_date == "") {
-				$creditor_trans->tran_date = Dates::Today();
+				$creditor_trans->tran_date = Dates::today();
 				if (!Dates::is_date_in_fiscalyear($creditor_trans->tran_date)) {
 					$creditor_trans->tran_date = Dates::end_fiscalyear();
 				}
@@ -236,7 +236,7 @@
 					}
 					$deliveries = Item::get_deliveries_between(
 						$entered_grn->item_code, $old_date,
-						Dates::Today()
+						Dates::today()
 					); // extend the period, if invoice is before any deliveries.
 					if ($deliveries[0] != 0) // have deliveries been done during the period?
 					{
@@ -416,7 +416,7 @@
 			$result = Purch_Line::get_for_invoice($type, $type_no);
 			// now remove this invoice/credit from any GRNs/POs that it's related to
 			if (DB::num_rows($result) > 0) {
-				$date_ = Dates::Today();
+				$date_ = Dates::today();
 				while ($details_row = DB::fetch($result))
 				{
 					if ((int)$details_row["grn_item_id"] > 0) // it can be empty for GL items

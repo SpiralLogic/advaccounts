@@ -150,7 +150,7 @@
 						$date = Dates::end_fiscalyear();
 					}
 					else {
-						$date = Dates::Today();
+						$date = Dates::today();
 					}
 					if ($type == 'DATEBEGINM') {
 						$date = Dates::begin_month($date);

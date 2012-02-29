@@ -56,7 +56,7 @@
 		static public function update($type, $id, $date_, $memo_) {
 			if ($date_ == null) {
 				DB_Comments::delete($type, $id);
-				DB_Comments::add($type, $id, Dates::Today(), $memo_);
+				DB_Comments::add($type, $id, Dates::today(), $memo_);
 			} else {
 				$date = Dates::date2sql($date_);
 				$sql = "UPDATE comments SET memo_=" . DB::escape($memo_)

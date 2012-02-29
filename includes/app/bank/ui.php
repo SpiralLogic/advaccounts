@@ -239,7 +239,7 @@
 		}
 
 		static public function	balance_row($bank_acc, $parms = '') {
-			$to = Dates::add_days(Dates::Today(), 1);
+			$to = Dates::add_days(Dates::today(), 1);
 			$bal = get_balance_before_for_bank_account($bank_acc, $to);
 			label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
 			 '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);

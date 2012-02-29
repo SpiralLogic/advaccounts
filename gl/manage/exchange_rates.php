@@ -124,7 +124,7 @@
 			label_row(_("Date to Use From:"), $_POST['date_']);
 		}
 		else {
-			$_POST['date_'] = Dates::Today();
+			$_POST['date_'] = Dates::today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}

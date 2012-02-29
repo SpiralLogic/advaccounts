@@ -19,7 +19,7 @@
 		Ajax::i()->activate('trans_tbl');
 	}
 	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
-		$date = Dates::Today();
+		$date = Dates::today();
 		$row = DB_Company::get_prefs();
 		$edate = Dates::add_months($date, -$row['tax_last']);
 		$edate = Dates::end_month($edate);

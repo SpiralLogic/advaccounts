@@ -13,7 +13,7 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
 	if (!isset($_POST['date_'])) {
-		$_POST['date_'] = Dates::Today();
+		$_POST['date_'] = Dates::today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}

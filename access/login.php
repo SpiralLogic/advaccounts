@@ -93,7 +93,7 @@
 	Display::div_end();
 	echo "<div class='center'>\n";
 	if (User::i()) {
-		echo     $date = Dates::Today() . " | " . Dates::Now();
+		echo     $date = Dates::today() . " | " . Dates::now();
 	}
 	else {
 		echo   $date = date("m/d/Y") . " | " . date("h.i am");

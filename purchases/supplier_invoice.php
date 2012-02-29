@@ -135,7 +135,7 @@
 			$sql = "UPDATE grn_items
 	 	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
-			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
+			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::today());
 			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			DB::commit();
 			Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
@@ -332,7 +332,10 @@ JS;
 		$margin = DB_Company::get_pref('po_over_charge');
 		if (Config::get('purchases.valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
-				if ($_POST['order_price' . $n] != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 +
+				if (Input::post('order_price' . $n,Input::NUMERIC,0) != 0 && Validation::input_num('ChgPrice' . $n) /
+				 $_POST['order_price' . $n]
+				 >
+				 (1 +
 				 ($margin / 100))) {
 					if (Session::i()->err_over_charge != true) {
 						Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge

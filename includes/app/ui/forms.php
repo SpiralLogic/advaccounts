@@ -832,7 +832,7 @@
 				$_POST[$name] = null;
 			}
 			else {
-				$dd = Dates::Today();
+				$dd = Dates::today();
 				if ($inc_days != 0) {
 					$dd = Dates::add_days($dd, $inc_days);
 				}
@@ -852,7 +852,7 @@
 		echo "<td>";
 		$class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
 		$aspect = $check ? ' data-aspect="cdate"' : '';
-		if ($check && (get_post($name) != Dates::Today())) {
+		if ($check && (get_post($name) != Dates::today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
 		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" .

@@ -192,7 +192,7 @@
 						$currency = $from_currency;
 					}
 					$rate = 0;
-					if ($date_ == Dates::Today()) {
+					if ($date_ == Dates::today()) {
 						$rate = GL_ExchangeRate::get_date($currency, $date_);
 						if (!$rate) {
 							$row = GL_Currency::get($currency);

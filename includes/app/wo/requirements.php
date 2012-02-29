@@ -62,7 +62,7 @@
 				$k = 0; //row colour counter
 				$has_marked = false;
 				if ($date == null) {
-					$date = Dates::Today();
+					$date = Dates::today();
 				}
 				while ($myrow = DB::fetch($result)) {
 					$qoh = 0;

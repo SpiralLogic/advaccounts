@@ -15,7 +15,7 @@
 		static public $qoh_stock = NULL;
 
 		static protected function load_stock_levels($location = '') {
-			$date = Dates::date2sql(Dates::Today());
+			$date = Dates::date2sql(Dates::today());
 			$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
 			if ($location != '') {
 				$sql .= " AND loc_code = " . DB::escape($location);

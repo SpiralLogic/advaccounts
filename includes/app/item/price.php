@@ -230,7 +230,7 @@
 						WHERE stock_id=" . DB::escape($stock_id);
 			DB::query($sql, "The cost details for the inventory item could not be updated");
 			$qoh = Item::get_qoh_on_date($_POST['stock_id']);
-			$date_ = Dates::Today();
+			$date_ = Dates::today();
 			if ($qoh > 0) {
 				$update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
 				if (!Dates::is_date_in_fiscalyear($date_)) {

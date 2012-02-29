@@ -219,12 +219,12 @@
 			$row = DB::fetch($result);
 			$order->supplier_to_order($row['supplier_id']);
 			foreach ($sales_order->line_items as $line_no => $line_item) {
-				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::today(), 10), 0, 0, 0);
 			}
 			if (isset($_GET[LOC_DROP_SHIP])) {
 				$item_info = Item::get('DS');
 				$_POST['location'] = $order->location = LOC_DROP_SHIP;
-				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
 					$address .= $sales_order->name . "\n";
