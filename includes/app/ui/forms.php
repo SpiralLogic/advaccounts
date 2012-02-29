@@ -90,7 +90,7 @@
 	 *
 	 * Universal sql combo generator
 	 * $sql must return selector values and selector texts in columns 0 & 1
-	 * Options are merged with defaults.
+	 * Options are merged with default.
 	 *
 	 * @param					$name
 	 * @param					$selected_id
@@ -1146,13 +1146,13 @@
 
 	function dateformats_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('formats_date'));
+		echo array_selector($name, $value, Config::get('date.formats'));
 		echo "</td></tr>\n";
 	}
 
 	function dateseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators_date'));
+		echo array_selector($name, $value, Config::get('date.separators'));
 		echo "</td></tr>\n";
 	}
 

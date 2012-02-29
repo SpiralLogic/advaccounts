@@ -7,6 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
+		'company' => 'default', //
 		'location' => 'KEYS', //
 		'tax_group' => 1, //
 		'area' => 1, //
