@@ -618,13 +618,13 @@
 			DB::query($sql, "order Cannot be Added");
 			$this->trans_no = array($order_no => 0);
 			$st_ids = array();
-			if (Config::get('accounts_stock_emailnotify') == 1) {
+			if (Config::get('accounts.stock_emailnotify') == 1) {
 				$st_names = array();
 				$st_num = array();
 				$st_reorder = array();
 			}
 			foreach ($this->line_items as $line) {
-				if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
+				if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 					$sql
 					 = "SELECT stock_location.*, locations.location_name, locations.email
 					FROM stock_location, locations
@@ -655,7 +655,7 @@
 			DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
-			if (isset($loc, $st_names, $st_reorder) && Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
+			if (isset($loc, $st_names, $st_reorder) && Config::get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
 				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
 
 			}
@@ -832,14 +832,14 @@
 			DB::query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 			$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $this->trans_type;
 			DB::query($sql, "Old order Cannot be Deleted");
-			if (Config::get('accounts_stock_emailnotify') == 1) {
+			if (Config::get('accounts.stock_emailnotify') == 1) {
 				$st_ids = array();
 				$st_names = array();
 				$st_num = array();
 				$st_reorder = array();
 			}
 			foreach ($this->line_items as $line) {
-				if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
+				if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 					$sql
 					 = "SELECT stock_location.*, locations.location_name, locations.email
 							FROM stock_location, locations
@@ -875,7 +875,7 @@
 			Ref::delete($this->trans_type, $order_no);
 			Ref::save($this->trans_type, $this->reference);
 			DB::commit();
-			if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
+			if (Config::get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
 				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
 			}
 		}

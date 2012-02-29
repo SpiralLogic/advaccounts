@@ -90,7 +90,7 @@
 			$this->formatTitle->setTop(2);
 			$this->formatTitle->setTopColor('gray');
 			$how = User::date_format();
-			$sep = Config::get('separators_date', User::date_sep());
+			$sep = Config::get('date.separators', User::date_sep());
 			if ($sep == '.') {
 				$sep = "\\.";
 			}

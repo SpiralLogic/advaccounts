@@ -39,8 +39,7 @@
 	define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
 	define('POWERED_BY', 'Advanced Accounting');
 	define('POWERED_URL', 'http://www.advancedgroup.com.au');
-	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
-	define('STORE_URL_EXTENSION', '.htm');
+
 	define('COMPANY_PATH', PATH_TO_ROOT . DS.'company' . DS);
 	define('THEME_PATH', PATH_TO_ROOT . DS.'themes' . DS);
 	define("BACKUP_PATH", COMPANY_PATH . 'backup' . DS);

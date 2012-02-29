@@ -9,11 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Errors {
-
+	class Errors
+	{
 		/**
 
-		 */const DB_DUPLICATE_ERROR_CODE = 1062;
+		 */
+		const DB_DUPLICATE_ERROR_CODE = 1062;
 		/** @var array Container for the system messages */
 		static public $messages = array();
 		/** @var array Container for the system errors */
@@ -29,24 +30,25 @@
 		/** @var array Error constants to text */
 		static protected $session = false;
 		/** @var array */
-		static protected $levels = array(
-			-1 => 'Fatal!',
-			0 => 'Error',
-			E_ERROR => 'Error',
-			E_WARNING => 'Warning',
-			E_PARSE => 'Parsing Error',
-			E_NOTICE => 'Notice',
-			E_CORE_ERROR => 'Core Error',
-			E_CORE_WARNING => 'Core Warning',
-			E_COMPILE_ERROR => 'Compile Error',
-			E_COMPILE_WARNING => 'Compile Warning',
-			E_USER_ERROR => 'User Error',
-			E_USER_WARNING => 'User Warning',
-			E_USER_NOTICE => 'User Notice',
-			E_STRICT => 'Runtime Notice',
-			E_ALL => 'No Error',
-			E_SUCCESS => 'Success!'
-		);
+		static protected $levels
+		 = array(
+			 -1 => 'Fatal!',
+			 0 => 'Error',
+			 E_ERROR => 'Error',
+			 E_WARNING => 'Warning',
+			 E_PARSE => 'Parsing Error',
+			 E_NOTICE => 'Notice',
+			 E_CORE_ERROR => 'Core Error',
+			 E_CORE_WARNING => 'Core Warning',
+			 E_COMPILE_ERROR => 'Compile Error',
+			 E_COMPILE_WARNING => 'Compile Warning',
+			 E_USER_ERROR => 'User Error',
+			 E_USER_WARNING => 'User Warning',
+			 E_USER_NOTICE => 'User Notice',
+			 E_STRICT => 'Runtime Notice',
+			 E_ALL => 'No Error',
+			 E_SUCCESS => 'Success!'
+		 );
 		/** @var string  temporary container for output html data before error box */
 		static public $before_box = '';
 		/** @var array Errors which terminate execution */
@@ -57,25 +59,14 @@
 		static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+		static protected $useConfigClasas;
 		/** @static Initialiser */
 		static function init() {
-			if (class_exists('Config') && class_exists('User') && Config::get('debug') && User::i()->user == 1) {
-				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-					/** @noinspection PhpIncludeInspection */
-					include(realpath(VENDORPATH . 'FirePHP/fb.chrome.php'));
-					FB::useFile(DOCROOT . 'tmp/chromelogs', DS . 'tmp' . DS . 'chromelogs');
-				}
-				else {
-					/** @noinspection PhpIncludeInspection */
-					include(realpath(VENDORPATH . 'FirePHP/FirePHP.class.php'));
-					/** @noinspection PhpIncludeInspection */
-					include(realpath(VENDORPATH . 'FirePHP/fb.php'));
-				}
+			static::$useConfigClasas = class_exists('Config');
+			error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+			if (class_exists('Event', false)) {
+				Event::register_shutdown(__CLASS__);
 			}
-			else {
-				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-			}
-			Event::register_shutdown(__CLASS__);
 		}
 		/**
 		 * @static
@@ -89,7 +80,7 @@
 			if (in_array($type, static::$ignore)) {
 				return true;
 			}
-			if (count(static::$errors) > 5) {
+			if (count(static::$errors) > 10 || (static::$useConfigClasas && count(static::$errors) > Config::get('debug.throttling'))) {
 				static::fatal();
 			}
 			if (static::$current_severity > $type) {
@@ -148,7 +139,6 @@
 				E_SUCCESS => array('SUCCESS', 'success_msg')
 			);
 			$content = '';
-
 			foreach (static::$messages as $msg) {
 				if (!isset($msg['type']) || $msg['type'] < E_USER_ERROR) {
 					$msg['type'] = E_USER_ERROR;
@@ -157,9 +147,10 @@
 				$content .= "<div class='$class[1]'>" . $msg['message'] . "</div>\n";
 			}
 			if (static::$current_severity > -1) {
-				JS::beforeload("Adv.showStatus();");
+				if (class_exists('JS', false)) {
+					JS::beforeload("Adv.showStatus();");
+				}
 			}
-
 			return $content;
 		}
 		/**
@@ -174,8 +165,12 @@
 
 		 */
 		static protected function send_debug_email() {
-
-			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog)) && Config::get('debug_email')) {
+			if (!class_exists('Reports_Email')) {
+				return;
+			}
+			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))
+			 && static::$useConfigClasas && Config::get('debug.email')
+			) {
 				$withbacktrace = $text = '';
 				if (count(static::$debugLog)) {
 					$text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
@@ -199,11 +194,9 @@
 				if (isset($_POST) && count($_POST)) {
 					$text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
 				}
-
 				if (isset($_GET) && count($_GET)) {
 					$text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
 				}
-
 				if (isset($_REQUEST) && count($_REQUEST)) {
 					$text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
 				}
@@ -262,13 +255,15 @@
 			static::$session = $_SESSION;
 			// Only show valid fatal errors
 			if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
-				Ajax::i()->aCommands = array();
+				if (class_exists('Ajax',false)) {
+					Ajax::i()->aCommands = array();
+				}
 				static::$current_severity = -1;
 				$error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
 					$last_error['line']);
 				static::exception_handler($error);
 			}
-			if (Ajax::in_ajax()) {
+			if (class_exists('Ajax',false) && Ajax::in_ajax()) {
 				Ajax::i()->run();
 			}
 			elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
@@ -293,7 +288,6 @@
 		static public function messageCount() {
 			return count(static::$messages);
 		}
-
 		/**
 		 * @static
 		 *
@@ -305,9 +299,13 @@
 			if (!$content) {
 				$content = '<div class="err_msg">A fatal error has occured!</div>';
 			}
-			Page::error_exit($content, false);
+			if (class_exists('Page')) {
+				Page::error_exit($content, false);
+			}
 			session_write_close();
-			fastcgi_finish_request();
+			if (function_exists('fastcgi_finish_request')) {
+				fastcgi_finish_request();
+			}
 			static::send_debug_email();
 			exit();
 		}
@@ -334,7 +332,7 @@
 				$message = end(static::$messages);
 				$status['status'] = $message['type'];
 				$status['message'] = $message['message'];
-				if (Config::get('debug')) {
+				if (static::$useConfigClasas && Config::get('debug.enabled')) {
 					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
 				}
 				$status['process'] = '';
@@ -386,7 +384,7 @@
 			foreach ($args as $arg) {
 				$content[] = var_export($arg, true);
 			}
-			static::$debugLog[] = array('line'=>$source['line'],'file'=>$source['file'],'content'=>$content);
+			static::$debugLog[] = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
 		}
 	}
 

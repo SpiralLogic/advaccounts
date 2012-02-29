@@ -231,7 +231,7 @@
 			if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT))) {
 				$amount = -$amount;
 			}
-			if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts_allocation_allowance')) {
+			if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts.allocation_allowance')) {
 				Event::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 				return false;
 			}
@@ -253,7 +253,7 @@
 			$doc->pos = User::pos();
 			$doc->ship_via = 11;
 			$doc->sales_type = 1;
-			$doc->location = Config::get('defaults.location');
+			$doc->location = Config::get('default.location');
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->salesman = User::i()->salesmanid;

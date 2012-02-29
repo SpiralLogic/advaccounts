@@ -102,7 +102,7 @@
 
 		static public function select($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
-			if (!$selected_id && !isset($_POST[$name])) $selected_id = Config::get('defaults.location');
+			if (!$selected_id && !isset($_POST[$name])) $selected_id = Config::get('default.location');
 			return select_box($name, $selected_id, $sql, 'loc_code', 'location_name',
 												array( 'spec_option' => $all_option === true ? _("All Locations") : $all_option,
 														 'spec_id' => ALL_TEXT,

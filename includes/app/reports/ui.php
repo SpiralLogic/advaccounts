@@ -40,7 +40,7 @@ class Reports_UI {
 
 	static public function pagesizes_row($label, $name, $value = null) {
 		$items = array();
-		foreach (Config::get('formats_paper_size') as $pz) {
+		foreach (Config::get('print_paper_sizes') as $pz) {
 			$items[$pz] = $pz;
 		}
 		echo "<tr><td class='label'>$label</td>\n<td>";

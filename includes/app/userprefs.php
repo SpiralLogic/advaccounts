@@ -34,14 +34,14 @@
 		function __construct($user = null) {
 			if ($user == null) {
 				// set default values, used before login
-				$this->date_sep = Config::get('ui_date_seperator');
-				$this->date_format = Config::get('ui_date_format');
+				$this->date_sep = Config::get('date.ui_separator');
+				$this->date_format = Config::get('date.ui_format');
 				$this->tho_sep = 0;
 				$this->dec_sep = 0;
 				$this->price_dec = 2;
 				$this->percent_dec = 2;
 
-				$this->language = Config::get('defaults.lang');
+				$this->language = Config::get('default.lang');
 				$this->theme = 'default';
 			} else {
 				$this->language = $user["language"];
@@ -110,7 +110,7 @@
 		}
 
 		function date_display() {
-			$sep = Config::get('separators_date', $this->date_sep);
+			$sep = Config::get('date.separators', $this->date_sep);
 			if ($this->date_format == 0) {
 				return "m" . $sep . "d" . $sep . "Y";
 			} elseif ($this->date_format == 1) {

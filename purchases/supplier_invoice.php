@@ -330,7 +330,7 @@ JS;
 			return false;
 		}
 		$margin = DB_Company::get_pref('po_over_charge');
-		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
+		if (Config::get('purchases.valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 +
 				 ($margin / 100))) {
@@ -347,7 +347,7 @@ JS;
 				}
 			}
 		}
-		if (Config::get('valid_charged_to_delivered_qty') == True) {
+		if (Config::get('purchases.valid_charged_to_delivered_qty') == True) {
 			if (Validation::input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 				Event::error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				JS::set_focus('this_quantity_inv' . $n);

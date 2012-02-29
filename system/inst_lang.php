@@ -94,7 +94,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 			$lang = Config::get('languages.installed');
 			$lang = $lang[$id]['code'];
 			$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
-			if ($lang == Config::get('defaults.lang')) {
+			if ($lang == Config::get('default.lang')) {
 				// on delete set default to current.
 				Config::set('default.lang', $_SESSION['Language']->code);
 			}
@@ -141,7 +141,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 					$rtl = _("No");
 				}
 				label_cell($rtl);
-				label_cell(Config::get('defaults.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
+				label_cell(Config::get('default.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
 				$edit = _("Edit");
 				$delete = _("Delete");
 				if (User::graphic_links()) {

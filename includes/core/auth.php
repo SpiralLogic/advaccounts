@@ -17,10 +17,6 @@
 		 */
 		protected $id;
 		/**
-		 * @var
-		 */
-		private $hasher;
-		/**
 		 * @param $username
 		 */
 		public function __construct($username) {
@@ -31,10 +27,10 @@
 		 * @param $password
 		 */
 		public function update_password($id, $password) {
-
-			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)
-			 ->value('change_password', 0)->where('id=', $id)->exec();
-
+			DB::update('users')->value('password', $this->hash_password($password))
+			 ->value('user_id', $this->username)
+			 ->value('change_password', 0)
+			 ->where('id=', $id)->exec();
 			session_regenerate_id();
 		}
 		/**
@@ -44,35 +40,39 @@
 		 */
 		public function hash_password(&$password) {
 			$password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
-	return $password;
+			return $password;
 		}
-
-
+		/**
+		 * @param $user_id
+		 * @param $password
+		 * @return bool|mixed
+		 */
 		public function check_user_password($user_id, $password) {
 			$result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
 			$this->hash_password($password);
-
 			if ($result['password'] != $password) {
 				$result = false;
-			}else {
+			}
+			else {
 				unset($result['password']);
 			}
 			DB::insert('user_login_log')->values(array(
-																								'user' => $user_id, 'IP' => Users::get_ip(), 'success' => (bool)$result))->exec();
-
+																								'user' => $user_id, 'IP' => Users::get_ip(), 'success' => (bool)$result
+																					 ))->exec();
 			return $result;
 		}
 		/**
 		 * @static
 		 *
-		 * @param			$password
+		 * @param      $password
 		 * @param bool $username
 		 *
 		 * @return array
 		 */
 		static public function checkPasswordStrength($password, $username = false) {
 			$returns = array(
-				'strength' => 0, 'error' => 0, 'text' => '');
+				'strength' => 0, 'error' => 0, 'text' => ''
+			);
 			$length = strlen($password);
 			if ($length < 8) {
 				$returns['error'] = 1;

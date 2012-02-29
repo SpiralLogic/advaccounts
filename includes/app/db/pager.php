@@ -821,7 +821,7 @@
 				$this->rec_count = $row[0];
 				$this->max_page = $this->page_len ?
 				 ceil($this->rec_count / $this->page_len) : 0;
-				if (Config::get('debug')) { // FIX - need column name parsing, but for now:
+				if (Config::get('debug.enabled')) { // FIX - need column name parsing, but for now:
 					// check if field names are set explicite in col def
 					// for all initially ordered columns
 					foreach ($this->columns as $col) {

@@ -7,6 +7,6 @@
  * To change this template use File | Settings | File Templates.
  */
 return array(
-	'purchases.valid_charged_to_delivered_qty' => true, // check price charged on invoices exceeds the purchaseorder price.
+	'valid_charged_to_delivered_qty' => true, // check price charged on invoices exceeds the purchase order price.
 	'valid_charged_to_delivered_price' => true, //
 	);

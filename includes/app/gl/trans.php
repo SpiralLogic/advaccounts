@@ -32,7 +32,7 @@
 			if ($dimension2 == null || $dimension2 < 0) {
 				$dimension2 = 0;
 			}
-			if (Config::get('logs_audits')) {
+			if (Config::get('accounts.logs_audits')) {
 				if ($memo_ == "" || $memo_ == null) {
 					$memo_ = User::i()->username;
 				} else {

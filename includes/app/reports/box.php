@@ -47,7 +47,7 @@
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug_pdf') ?
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug.pdf') ?
 																										 false :
 																										 'default process') . hidden('REP_ID', $report->id, false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());

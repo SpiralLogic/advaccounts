@@ -42,7 +42,7 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
-	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+	if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 		$th[2] = _("Balance Sheet");
 	}
 	inactive_control_column($th);
@@ -52,7 +52,7 @@
 		alt_table_row_color($k);
 		label_cell($myrow["cid"]);
 		label_cell($myrow['class_name']);
-		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+		if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 			$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
 		}
@@ -73,7 +73,7 @@
 			$myrow = GL_Class::get($selected_id);
 			$_POST['id'] = $myrow["cid"];
 			$_POST['name'] = $myrow["class_name"];
-			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+			if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			}
 			else {
@@ -88,7 +88,7 @@
 		text_row_ex(_("Class ID:"), 'id', 3);
 	}
 	text_row_ex(_("Class Name:"), 'name', 50, 60);
-	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+	if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
 	}
 	else {
@@ -109,7 +109,7 @@
 			JS::set_focus('name');
 			return false;
 		}
-		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+		if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 			$_POST['Balance'] = check_value('Balance');
 		}
 		return true;

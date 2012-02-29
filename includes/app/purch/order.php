@@ -97,7 +97,7 @@
 			$this->line_items = array();
 			$this->lines_on_order = $this->supplier_id = 0;
 			$this->set_salesman();
-			$this->location=Config::get('defaults.location');
+			$this->location=Config::get('default.location');
 			$this->order_no = $order_no;
 			$this->read($order_no, $view);
 			$_POST['OrderDate'] = Dates::new_doc_date();
