@@ -258,10 +258,10 @@
 				if (@$pager->inactive_ctrl) {
 					submit('Update', _('Update'), true, '', null);
 				} // inactive update
-				echo static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
-				echo static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
-				echo static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page);
-				echo static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page);
+				 static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
+				 static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
+				 static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page);
+				 static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page);
 				end_row();
 				echo "</table>";
 				$from = ($pager->curr_page - 1) * $pager->page_len + 1;
@@ -270,7 +270,7 @@
 					$to = $pager->rec_count;
 				}
 				$all = $pager->rec_count;
-				HTML::span(true, "Records $to-$from of $all");
+				HTML::span(true, "Records $from-$to of $all");
 				echo $inact;
 				echo "</td>";
 			}
@@ -814,6 +814,7 @@
 					return false;
 				}
 				$row = DB::fetch_row($result);
+
 				$this->rec_count = $row[0];
 				$this->max_page = $this->page_len ?
 				 ceil($this->rec_count / $this->page_len) : 0;
@@ -859,8 +860,11 @@
 			}
 			if ($count) {
 				$group = $group == '' ? "*" : "DISTINCT $group";
-				return "SELECT COUNT($group) FROM $from $where";
+				if (stristr($from,'left outer join')) $group = '*';
+				$sql = "SELECT COUNT($group) FROM $from $where";
+				return $sql;
 			}
+
 			$sql = "$select FROM $from $where";
 			if ($group) {
 				$sql .= " GROUP BY $group";
