@@ -23,8 +23,8 @@
 	$groupid = find_submit("_ungroup_");
 	if (isset($groupid) && $groupid > 1) {
 		$grouprefs = $_POST['ungroup_' . $groupid];
-			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE undeposited =" . DB::escape($groupid);
-			DB::query($sql, 'Couldn\'t update undesposited status');
+		$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE undeposited =" . DB::escape($groupid);
+		DB::query($sql, 'Couldn\'t update undesposited status');
 		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::today()) . "',
  undeposited=" . $groupid . " WHERE id=" . $groupid;
 		DB::query($sql, "Couldn't update removed group data");
@@ -151,7 +151,8 @@
 	Display::br(1);
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
 	end_form();
-	$js = <<<JS
+	$js
+	 = <<<JS
 	$(function() {
 		$("th:nth-child(9)").click(function() {
 	jQuery("#_trans_tbl_span").find("input").value("")
@@ -213,20 +214,20 @@ JS;
 	function fmt_person($row) {
 		if ($row['type'] == ST_BANKTRANSFER) {
 			return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
-		} elseif ($row['type'] == ST_GROUPDEPOSIT) {
-
-			$sql = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
+		}
+		elseif ($row['type'] == ST_GROUPDEPOSIT) {
+			$sql
+			 = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
 
 			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
 
-			WHERE bank_trans.bank_act='".$_POST['bank_account']."' AND bank_trans.type != ". ST_GROUPDEPOSIT.
-			 " AND bank_trans.undeposited>0 AND (undeposited = ".$row['id'].")";
-
+			WHERE bank_trans.bank_act='" . $_POST['bank_account'] . "' AND bank_trans.type != " . ST_GROUPDEPOSIT .
+			 " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
 			$result = DB::query($sql, 'Couldn\'t get deposit references');
 			$content = '';
 			foreach ($result as $trans) {
 				$name = Bank::payment_person_name($trans["person_type_id"], $trans["person_id"], true, $trans["trans_no"]);
-				$content .= $trans['ref'] .' <span class="u">'.$name.' ($'.Num::price_format($trans['amount']). ')</span>: ' . $trans['memo_'].'<br>';
+				$content .= $trans['ref'] . ' <span class="u">' . $name . ' ($' . Num::price_format($trans['amount']) . ')</span>: ' . $trans['memo_'] . '<br>';
 			}
 			return $content;
 		}

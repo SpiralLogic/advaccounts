@@ -18,12 +18,12 @@
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}
 	}
-
 	if (isset($_POST['ConfirmVoiding'])) {
 		if ($_SESSION['voiding'] != $_POST['trans_no'] . $_POST['filterType']) {
 			unset($_POST['ConfirmVoiding']);
 			$_POST['ProcessVoiding'] = true;
-		} else {
+		}
+		else {
 			handle_void_transaction();
 		}
 		Ajax::i()->activate('_page_body');
@@ -39,6 +39,12 @@
 	}
 	voiding_controls();
 	Page::end();
+	/**
+	 * @param $type
+	 * @param $type_no
+	 *
+	 * @return bool
+	 */
 	function exist_transaction($type, $type_no) {
 		$void_entry = Voiding::has($type, $type_no);
 		if ($void_entry > 0) {
@@ -110,7 +116,9 @@
 		}
 		return true;
 	}
-
+	/**
+	 *
+	 */
 	function voiding_controls() {
 		start_form();
 		start_table('tablestyle2');
@@ -148,7 +156,9 @@
 		}
 		end_form();
 	}
-
+	/**
+	 * @return bool
+	 */
 	function check_valid_entries() {
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
 			Event::error(_("The selected transaction was closed for edition and cannot be voided."));
@@ -172,9 +182,10 @@
 		}
 		return true;
 	}
-
+	/**
+	 * @return mixed
+	 */
 	function handle_void_transaction() {
-
 		if (check_valid_entries() == true) {
 			unset($_SESSION['voiding']);
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);

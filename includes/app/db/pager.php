@@ -860,9 +860,7 @@
 			}
 			if ($count) {
 				$group = $group == '' ? "*" : "DISTINCT $group";
-				if (stristr($from,'left outer join')) $group = '*';
-				$sql = "SELECT COUNT($group) FROM $from $where";
-				return $sql;
+				return "SELECT COUNT($group) FROM $from $where";
 			}
 
 			$sql = "$select FROM $from $where";

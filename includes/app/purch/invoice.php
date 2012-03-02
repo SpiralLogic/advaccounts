@@ -587,7 +587,7 @@
 				if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
 					$_POST['supplier_id'] = Session::i()->supplier_id;
 				}
-				Creditor::cells(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+				Creditor::cells(_("Supplier:"), 'supplier_id', null, false, true);
 				JS::set_focus('supplier_id');
 			}
 			if ($creditor_trans->supplier_id != $_POST['supplier_id']) {

@@ -131,7 +131,7 @@
 	}
 
 	function copy_to_order($order) {
-		$order->supplier_id = $_POST['supplier_id'];
+		$order->supplier_id = Input::post('supplier_id',Input::NUMERIC,null);
 		$order->orig_order_date = $_POST['OrderDate'];
 		$order->reference = $_POST['ref'];
 		$order->requisition_no = $_POST['Requisition'];

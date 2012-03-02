@@ -59,10 +59,10 @@
 		static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
 		/** @var array Errors to ignore comeletely */
 		static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
-		static protected $useConfigClasas;
+		static protected $useConfigClass;
 		/** @static Initialiser */
 		static function init() {
-			static::$useConfigClasas = class_exists('Config');
+			static::$useConfigClass = class_exists('Config');
 			error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			if (class_exists('Event', false)) {
 				Event::register_shutdown(__CLASS__);
@@ -80,7 +80,7 @@
 			if (in_array($type, static::$ignore)) {
 				return true;
 			}
-			if (count(static::$errors) > 10 || (static::$useConfigClasas && count(static::$errors) > Config::get('debug.throttling'))) {
+			if (count(static::$errors) > 10 || (static::$useConfigClass && count(static::$errors) > Config::get('debug.throttling'))) {
 				static::fatal();
 			}
 			if (static::$current_severity > $type) {
@@ -169,8 +169,7 @@
 				return;
 			}
 			if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))
-			 && static::$useConfigClasas && Config::get('debug.email')
-			) {
+			 && static::$useConfigClass && Config::get('debug.email')) {
 				$withbacktrace = $text = '';
 				if (count(static::$debugLog)) {
 					$text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
@@ -332,7 +331,7 @@
 				$message = end(static::$messages);
 				$status['status'] = $message['type'];
 				$status['message'] = $message['message'];
-				if (static::$useConfigClasas && Config::get('debug.enabled')) {
+				if (static::$useConfigClass && Config::get('debug.enabled')) {
 					$status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
 				}
 				$status['process'] = '';

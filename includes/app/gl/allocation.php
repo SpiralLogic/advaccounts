@@ -13,22 +13,64 @@
 		 Class for supplier/customer payment/credit allocations edition
 		 and related helpers.
 	 */
-	class Gl_Allocation {
+	/**
+	 *
+	 */
+	class Gl_Allocation
+	{
+		/**
+		 * @var
+		 */
 		public $trans_no;
+		/**
+		 * @var
+		 */
 		public $type;
+		/**
+		 * @var string
+		 */
 		public $person_id = '';
+		/**
+		 * @var string
+		 */
 		public $person_name = '';
+		/**
+		 * @var
+		 */
 		public $person_type;
+		/**
+		 * @var
+		 */
 		public $date_;
+		/**
+		 * @var int
+		 */
 		public $amount = 0; /*Total amount of the transaction in FX */
+		/**
+		 * @var array
+		 */
 		public $allocs; /*array of transactions allocated to */
+		/**
+		 * @param $type
+		 * @param $trans_no
+		 */
 		public function __construct($type, $trans_no) {
 			$this->allocs = array();
 			$this->trans_no = $trans_no;
 			$this->type = $type;
 			$this->read(); // read payment or credit
 		}
-
+		/**
+		 * @param $type
+		 * @param $type_no
+		 * @param $date_
+		 * @param $due_date
+		 * @param $amount
+		 * @param $amount_allocated
+		 * @param $current_allocated
+		 *
+		 * @return bool
+		 */
 		public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -38,7 +80,18 @@
 				return false;
 			}
 		}
-
+		/**
+		 * @param $index
+		 * @param $type
+		 * @param $type_no
+		 * @param $date_
+		 * @param $due_date
+		 * @param $amount
+		 * @param $amount_allocated
+		 * @param $current_allocated
+		 *
+		 * @return bool
+		 */
 		public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			if ($amount > 0) {
 				$this->allocs[$index] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
@@ -48,7 +101,17 @@
 				return false;
 			}
 		}
-
+		/**
+		 * @param $type
+		 * @param $type_no
+		 * @param $date_
+		 * @param $due_date
+		 * @param $amount
+		 * @param $amount_allocated
+		 * @param $current_allocated
+		 *
+		 * @return bool
+		 */
 		public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			for ($i = 0; $i < count($this->allocs); $i++) {
 				$item = $this->allocs[$i];
@@ -58,10 +121,12 @@
 			}
 			return $this->add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 		}
-
-		//
-		//	Read payment or credit current/available allocations to order.
-		//
+		/**
+		 * @param null $type
+		 * @param int  $trans_no
+		 *
+		 * @return mixed
+		 */
 		public function read($type = null, $trans_no = 0) {
 			if ($type == null) { // re-read
 				$type = $this->type;
@@ -70,7 +135,6 @@
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
 				$result = Bank_Trans::get($type, $trans_no);
 				$bank_trans = DB::fetch($result);
-
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
 			}
 			else {
@@ -100,8 +164,8 @@
 			$results = DB::fetch_all();
 			foreach ($results as $myrow) {
 				$this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
-					$myrow["alloc"], // trans total allocated
-					0); // this allocation
+												$myrow["alloc"], // trans total allocated
+												0); // this allocation
 			}
 			if ($trans_no == 0) {
 				return;
@@ -120,10 +184,9 @@
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
 		}
-
-		//
-		//	Update allocations in database.
-		//
+		/**
+		 *
+		 */
 		public function write() {
 			DB::begin();
 			if ($this->person_type) {
@@ -159,14 +222,19 @@
 			}
 			DB::commit();
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param $show_totals
+		 */
 		static public function show_allocatable($show_totals) {
 			global $systypes_array;
 			$k = $counter = $total_allocated = 0;
 			if (count($_SESSION['alloc']->allocs)) {
 				start_table('tablestyle width60');
 				$th = array(
-					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), _("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
+					_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), _("Other Allocations"), _("This Allocation"),
+					_("Left to Allocate"), '', ''
 				);
 				table_header($th);
 				foreach ($_SESSION['alloc']->allocs as $alloc_item) {
@@ -208,7 +276,10 @@
 			}
 			hidden('TotalNumberOfAllocs', $counter);
 		}
-
+		/**
+		 * @static
+		 * @return bool
+		 */
 		static public function check() {
 			$total_allocated = 0;
 			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
@@ -217,8 +288,6 @@
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
-				/*Now check to see that the AllocAmt is no greater than the
-																							 amount left to be allocated against the transaction under review */
 				if (Validation::input_num('amount' . $counter) > Validation::input_num('un_allocated' . $counter)) {
 					Event::error(_("At least one transaction is overallocated."));
 					JS::set_focus('amount' . $counter);
@@ -237,7 +306,19 @@
 			}
 			return true;
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param Debtor $customer
+		 * @param        $branch_id
+		 * @param        $date
+		 * @param        $memo
+		 * @param        $ref
+		 * @param        $amount
+		 * @param int    $discount
+		 *
+		 * @return bool
+		 */
 		static public function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
 			$type = ST_SALESINVOICE;
 			if (!User::i()->salesmanid) {
@@ -262,7 +343,14 @@
 			$doc->finish();
 			$_SESSION['alloc']->add_or_update_item($type, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param $alloc_result
+		 * @param $total
+		 *
+		 * @return mixed
+		 */
 		static public function display($alloc_result, $total) {
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows() == 0) {
@@ -298,7 +386,17 @@
 			end_row();
 			end_table(1);
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param $person_type
+		 * @param $person_id
+		 * @param $type
+		 * @param $type_no
+		 * @param $total
+		 *
+		 * @return mixed
+		 */
 		static public function from($person_type, $person_id, $type, $type_no, $total) {
 			switch ($person_type) {
 				case PT_CUSTOMER :
@@ -313,15 +411,48 @@
 		}
 	}
 
-	class allocation_item {
+	/**
+	 *
+	 */
+	class allocation_item
+	{
+		/**
+		 * @var
+		 */
 		public $type;
+		/**
+		 * @var
+		 */
 		public $type_no;
+		/**
+		 * @var
+		 */
 		public $date_;
+		/**
+		 * @var
+		 */
 		public $due_date;
+		/**
+		 * @var
+		 */
 		public $amount_allocated;
+		/**
+		 * @var
+		 */
 		public $amount;
+		/**
+		 * @var
+		 */
 		public $current_allocated;
-
+		/**
+		 * @param $type
+		 * @param $type_no
+		 * @param $date_
+		 * @param $due_date
+		 * @param $amount
+		 * @param $amount_allocated
+		 * @param $current_allocated
+		 */
 		public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
 			$this->type = $type;
 			$this->type_no = $type_no;
@@ -334,6 +465,9 @@
 	}
 
 	if (!function_exists('copy_from_order')) {
+		/**
+		 * @param $order
+		 */
 		function copy_from_order($order) {
 			$_POST['Comments'] = $order->Comments;
 			$_POST['OrderDate'] = $order->document_date;

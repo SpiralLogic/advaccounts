@@ -99,8 +99,7 @@
 			   WHERE   bt.bank_act = " . DB::quote($bank_account)
 			 . " AND bt.trans_date <= '" . Dates::date2sql($date) . "' AND bt.undeposited=0 AND (bt.reconciled IS NULL OR bt
 			 .reconciled='" .
-			 Dates::date2sql($date) . "') AND bt.amount!=0 GROUP BY bt.id,
-			 g.undeposited ORDER BY bt.trans_date ASC";
+			 Dates::date2sql($date) . "') AND bt.amount!=0 GROUP BY bt.id ORDER BY bt.trans_date ASC";
 
 			// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
 			return $sql;
