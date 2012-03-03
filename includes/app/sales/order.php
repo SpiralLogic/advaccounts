@@ -17,7 +17,8 @@
 		iii) a credit note
 		iv) a delivery note
 		*/
-	class Sales_Order {
+	class Sales_Order
+	{
 		public $trans_type; // invoice, order, quotation, delivery note ...
 		public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
 		public $so_type = 0; // for sales order: simple=0 template=1
@@ -25,7 +26,7 @@
 		public $line_items; //array of objects of class Sales_Line
 		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
 		public $src_date; // src document date (for info only)
-		public $source_no=null;
+		public $source_no = null;
 		public $document_date;
 		public $due_date;
 		public $salesman;
@@ -66,7 +67,6 @@
 		public $credit;
 		protected $uniqueid;
 		public $view_only = false;
-
 		//
 		// $trans_no==0 => open new/direct document
 		// $trans_no!=0 && $this->view_only==false => read for view
@@ -93,12 +93,10 @@
 			$this->read($type, $trans_no);
 			$this->generateID();
 		}
-
 		protected function generateID() {
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
 		}
-
 		/**
 		 * @param      $type
 		 * @param int  $trans_no
@@ -200,7 +198,6 @@
 			}
 			$this->credit = Debtor::get_credit($this->customer_id);
 		}
-
 		/**
 		 * Writing new/modified sales document to database.
 		 * Makes parent documents for direct delivery/invoice by recurent call.
@@ -255,7 +252,6 @@
 					}
 			}
 		}
-
 		/**
 		 * @param $cust_ref
 		 *
@@ -266,7 +262,6 @@
 			$result = DB::query($sql);
 			return (DB::num_rows($result) > 0) ? true : false;
 		}
-
 		/**
 		 * @param $customer_id
 		 * @param $customer_name
@@ -289,7 +284,6 @@
 				$this->credit = Debtor::get_credit($customer_id);
 			}
 		}
-
 		/**
 		 * @param        $branch_id
 		 * @param        $tax_group_id
@@ -305,7 +299,6 @@
 			$this->tax_group_id = $tax_group_id;
 			$this->tax_group_array = Tax_Groups::get_items_as_array($tax_group_id);
 		}
-
 		/**
 		 * @param null $salesman_code
 		 */
@@ -323,7 +316,6 @@
 				$this->salesman = $salesman_code;
 			}
 		}
-
 		/**
 		 * @param     $sales_type
 		 * @param     $sales_name
@@ -336,7 +328,6 @@
 			$this->tax_included = $tax_included;
 			$this->price_factor = $factor;
 		}
-
 		/**
 		 * @param $id
 		 * @param $name
@@ -345,7 +336,6 @@
 			$this->location = $id;
 			$this->location_name = $name;
 		}
-
 		/**
 		 * @param      $shipper
 		 * @param      $destination
@@ -360,7 +350,6 @@
 				$this->freight_cost = $freight_cost;
 			}
 		}
-
 		/**
 		 * @param      $line_no
 		 * @param      $stock_id
@@ -386,7 +375,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param        $line_no
 		 * @param        $qty
@@ -403,7 +391,6 @@
 			$this->line_items[$line_no]->price = $price;
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
-
 		/**
 		 * @param $discount
 		 */
@@ -412,7 +399,6 @@
 				$line->discount_percent = $discount;
 			}
 		}
-
 		/**
 		 * @param $line_no
 		 * @param $qty
@@ -420,14 +406,12 @@
 		public function update_add_order_item_qty($line_no, $qty) {
 			$this->line_items[$line_no]->quantity += $qty;
 		}
-
 		/**
 		 * @param $line_no
 		 */
 		public function remove_from_order($line_no) {
 			array_splice($this->line_items, $line_no, 1);
 		}
-
 		/**
 
 		 */
@@ -438,7 +422,6 @@
 			$this->trans_no = 0;
 			$this->customer_id = $this->order_no = 0;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -451,7 +434,6 @@
 			}
 			return $counter;
 		}
-
 		/**
 		 * @return float|int
 		 */
@@ -464,7 +446,6 @@
 			}
 			return $total;
 		}
-
 		/**
 		 * @return float|int
 		 */
@@ -477,7 +458,6 @@
 			}
 			return $total;
 		}
-
 		/**
 		 * @return bool
 		 */
@@ -489,7 +469,6 @@
 			}
 			return false;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -502,7 +481,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param $line_no
 		 *
@@ -515,7 +493,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -541,7 +518,6 @@
 			}
 			return $taxes;
 		}
-
 		/**
 		 * @param null $shipping_cost
 		 *
@@ -567,7 +543,6 @@
 			}
 			return $taxes;
 		}
-
 		/**
 		 * @return int
 		 */
@@ -579,7 +554,6 @@
 				return ($this->freight_cost - $this->get_shipping_tax());
 			}
 		}
-
 		/**
 		 * @return float
 		 */
@@ -601,7 +575,6 @@
 				return round($this->freight_cost * $tax_rate / 100, User::price_dec());
 			}
 		}
-
 		/**
 		 * @return int
 		 */
@@ -614,7 +587,17 @@
 			 = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, ord_date,
 			order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 			contact_email, freight_cost, from_stk_loc, delivery_date)
-			VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
+			VALUES (" . DB::escape($order_no) . "," .
+			 DB::escape($order_type)
+			 . "," . DB::escape($this->customer_id) . ", " .
+			 DB::escape($this->trans_type) . "," .
+			 DB::escape($this->Branch) . ", " .
+			 DB::escape($this->cust_ref) . "," .
+			 DB::escape($this->reference) . "," .
+			 DB::escape($this->salesman) . "," .
+			 DB::escape($this->Comments) . ",'" .
+			 Dates::date2sql($this->document_date) . "', " .
+			 DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
 			DB::query($sql, "order Cannot be Added");
 			$this->trans_no = array($order_no => 0);
 			$st_ids = array();
@@ -657,12 +640,10 @@
 			DB::commit();
 			if (isset($loc, $st_names, $st_reorder) && Config::get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
 				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
-
 			}
 			Orders::session_delete($this->order_id);
 			return $order_no;
 		}
-
 		/**
 		 * @param $order_no
 		 * @param $trans_type
@@ -697,7 +678,6 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @param      $new_item
 		 * @param      $new_item_qty
@@ -764,14 +744,12 @@
 				}
 			}
 		}
-
 		/**
 
 		 */
 		public function start() {
 			Orders::session_start($this);
 		}
-
 		/**
 
 		 */
@@ -780,14 +758,12 @@
 				Orders::session_delete($this->order_id);
 			}
 		}
-
 		/**
 		 * @return bool
 		 */
 		public static function active() {
 			return Orders::session_get();
 		}
-
 		/**
 
 		 */
@@ -797,7 +773,6 @@
 				DB::query($sql, 'Concurrent editing conflict while sales order update');
 			}
 		}
-
 		/**
 
 		 */
@@ -867,7 +842,7 @@
 					 discount_percent, qty_sent)
 					 VALUES (";
 				$sql .= DB::escape($line->id ? $line->id :
-				 0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+														0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
 						" . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
 				DB::query($sql, "Old order Cannot be Inserted");
 			} /* inserted line items into sales order details */
@@ -952,7 +927,6 @@
 			}
 			return $ret_error;
 		}
-
 		/**
 		 * @param      $title
 		 * @param bool $editable_items
@@ -1043,7 +1017,7 @@
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
 			label_cells(_("Total Discount"), $total_discount, "colspan=" . $colspan . " style='background:inherit; text-align:right;'",
-				"class='right'");
+									"class='right'");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1069,7 +1043,6 @@
 			}
 			Display::div_end();
 		}
-
 		/**
 		 * @param      $date_text
 		 * @param bool $display_tax_group
@@ -1255,7 +1228,6 @@
 			}
 			return $customer_error;
 		}
-
 		/**
 		 * @param $rowcounter
 		 * @param $line_no
@@ -1315,7 +1287,6 @@
 			}
 			end_row();
 		}
-
 		/**
 
 		 */
@@ -1372,7 +1343,6 @@
 			}
 			Display::div_end();
 		}
-
 		/**
 		 * @static
 		 *
@@ -1389,7 +1359,6 @@
 			DB_AuditTrail::add($trans_type, $order_no, Dates::today(), _("Deleted."));
 			DB::commit();
 		}
-
 		/**
 		 * @static
 		 *
@@ -1439,7 +1408,6 @@
 			}
 			return Event::error("Order does not exist!", E_USER_ERROR);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1458,7 +1426,6 @@
 		AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
 			return DB::query($sql, "Retreive order Line Items");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1472,7 +1439,6 @@
 			$row = DB::fetch_row($result);
 			return ($row[0] > 0);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1485,7 +1451,6 @@
 			SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
 			DB::query($sql, "The sales order detail record could not be updated");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1515,7 +1480,6 @@
 			}
 			return $duedate;
 		}
-
 		/**
 		 * @static
 		 *
@@ -1546,7 +1510,6 @@
 			$result = DB::query($sql, "Customer Record Retreive");
 			return DB::fetch($result);
 		}
-
 		/**
 		 * @static
 		 *
@@ -1569,7 +1532,6 @@
 					AND branches.debtor_no = " . DB::escape($customer_id);
 			return DB::query($sql, "Customer Branch Record Retreive");
 		}
-
 		/**
 		 * @static
 		 *
@@ -1593,7 +1555,6 @@
 			}
 			return $order;
 		}
-
 		/**
 		 * @static
 		 *
@@ -1626,7 +1587,6 @@
 			DB::query($sql, "The parent document detail record could not be updated");
 			return true;
 		}
-
 		public function convertToOrder() {
 			$this->trans_type = ST_SALESORDER;
 			$this->reference = Ref::get_next($this->trans_type);
