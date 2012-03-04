@@ -11,6 +11,9 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
+	if (isset($_GET['id'])) {
+		$_GET['customer_id'] = $_GET['id'];
+		}
 	Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, isset($_GET['customer_id']));
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
@@ -48,8 +51,7 @@
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
 		$searchArray = trim($_POST['ajaxsearch']);
 		$searchArray = explode(' ', $searchArray);
-		unset($_POST['customer_id']);
-		unset($_POST['filterType']);
+		unset($_POST['customer_id'], $_POST['filterType']);
 		if ($searchArray[0] == 'd') {
 			$filter = " AND type = " . ST_CUSTDELIVERY . " ";
 		}
@@ -380,9 +382,9 @@
 		}
 		HTML::setReturn(true);
 		UI::button(false, 'Email', array(
-																		'class' => 'button email-button',
-																		'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
-															 ));
+			'class' => 'button email-button',
+			'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
+		));
 		return HTML::setReturn(false);
 	}
 

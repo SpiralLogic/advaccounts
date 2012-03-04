@@ -25,7 +25,7 @@
 		header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
 		header("Pragma: public");
 		echo file_get_contents($path . $unique_name);
-		exit();
+ 		exit();
 	}
 	elseif (isset($_GET['xml'])) {
 		$filename    = $_GET['filename'];

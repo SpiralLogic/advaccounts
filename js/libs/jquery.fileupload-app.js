@@ -13,30 +13,30 @@
 /*global $ */
 
 $(function () {
-    'use strict';
+	'use strict';
 
-    // Initialize the jQuery File Upload widget:
-    $('#file_upload').fileupload();
+	// Initialize the jQuery File Upload widget:
+	$('#file_upload').fileupload();
 
-    // Load existing files:
-    $.getJSON($('#file_upload form').prop('action'), function (files) {
-        var fu = $('#file_upload').data('fileupload');
-        fu._adjustMaxNumberOfFiles(-files.length);
-        fu._renderDownload(files)
-            .appendTo($('#fileupload .files'))
-            .fadeIn(function () {
-                // Fix for IE7 and lower:
-                $(this).show();
-            });
-    });
+	// Load existing files:
+	$.getJSON($('#file_upload form').prop('action'), function (files) {
+		var fu = $('#file_upload').data('fileupload');
+		fu._adjustMaxNumberOfFiles(-files.length);
+		fu._renderDownload(files)
+		 .appendTo($('#fileupload .files'))
+		 .fadeIn(function () {
+							 // Fix for IE7 and lower:
+							 $(this).show();
+						 });
+	});
 
-    // Open download dialogs via iframes,
-    // to prevent aborting current uploads:
-    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
-        e.preventDefault();
-        $('<iframe style="display:none;"></iframe>')
-            .prop('src', this.href)
-            .appendTo('body');
-    });
+	// Open download dialogs via iframes,
+	// to prevent aborting current uploads:
+	$('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+		e.preventDefault();
+		$('<iframe style="display:none;"></iframe>')
+		 .prop('src', this.href)
+		 .appendTo('body');
+	});
 
 });

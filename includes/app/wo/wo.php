@@ -376,7 +376,8 @@
 			DB::query($sql, "The work order issued quantity couldn't be updated");
 		}
 
-		static public function void($woid) {
+		static public function void($type, $woid) {
+			if ($type != ST_WORKORDER) $type = ST_WORKORDER;
 			DB::begin();
 			$work_order = WO::get($woid);
 			if (!($work_order["type"] == WO_ADVANCED)) {
@@ -394,9 +395,9 @@
 				$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = " . DB::escape($woid);
 				DB::query($sql, "The work order couldn't be voided");
 				// void all related stock moves
-				Inv_Movement::void(ST_WORKORDER, $woid);
+				Inv_Movement::void($type, $woid);
 				// void any related gl trans
-				GL_Trans::void(ST_WORKORDER, $woid, true);
+				GL_Trans::void($type, $woid, true);
 				// clear the requirements units received
 				WO_Requirements::void($woid);
 			} else {
@@ -443,11 +444,11 @@
 				$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = " . DB::escape($woid);
 				DB::query($sql, "The work order couldn't be voided");
 				// void all related stock moves
-				Inv_Movement::void(ST_WORKORDER, $woid);
+				Inv_Movement::void($type, $woid);
 				// void any related gl trans
-				GL_Trans::void(ST_WORKORDER, $woid, true);
+				GL_Trans::void($type, $woid, true);
 				// clear the requirements units received
-				WO_Requirements::void($woid);
+				WO_Requirements::void(null,$woid);
 			}
 			DB::commit();
 		}

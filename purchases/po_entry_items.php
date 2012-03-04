@@ -148,10 +148,7 @@
 	}
 
 	function unset_form_variables() {
-		unset($_POST['stock_id']);
-		unset($_POST['qty']);
-		unset($_POST['price']);
-		unset($_POST['req_del_date']);
+		unset($_POST['stock_id'],$_POST['qty'],$_POST['price'],$_POST['req_del_date']);
 	}
 
 	/**

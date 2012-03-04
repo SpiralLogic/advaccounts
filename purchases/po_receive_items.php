@@ -200,9 +200,7 @@
 			Event::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
-			unset($order->line_items);
-			unset($order);
-			unset($_POST['ProcessGoodsReceived']);
+			unset($order->line_items,$order,$_POST['ProcessGoodsReceived']);
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}

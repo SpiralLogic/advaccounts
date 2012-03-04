@@ -18,7 +18,7 @@
 		/** @var array Container for the system messages */
 		static public $messages = array();
 		/** @var array Container for the system errors */
-		static protected $errors = array();
+		static $errors = array();
 		/** @var array */
 		static protected $debugLog = array();
 		/** @var array Container for DB errors */

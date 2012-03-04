@@ -22,10 +22,10 @@
 		@date_default_timezone_set(@date_default_timezone_get());
 	}
 	/**
-	 *
+
 	 */
-	class Dates
-	{
+	class Dates {
+
 		/**
 		 * @static
 		 *
@@ -633,6 +633,19 @@
 		}
 		/* Based on Hidri Date Script
 								Released under GNU General Public License */
+		/**
+		 * @static
+		 *
+		 * @param      $name
+		 * @param null $month
+		 */public static function months($name, $month = null) {
+			if ($month == null) $month = date('n');
+			$months = array();
+			for ($i = 1; $i < 13; $i++) {
+				$months[$i] = date('F', mktime(0, 0, 0, $i));
+			}
+			return array_selector($name, $month, $months);
+		}
 		/**
 		 * @static
 		 *

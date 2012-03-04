@@ -69,7 +69,8 @@
 				$doc_Due_Date = "Due Date";
 				$doc_Payment_Terms = _("Payment Terms");
 			} elseif ($doctype == ST_STATEMENT) {
-				$doc_Customers_Ref = "";
+				$doc_Date="Statement Date:";
+				$doc_Customers_Ref = "Customer ID";
 				$doc_Our_Ref = "";
 				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Fax";
@@ -149,8 +150,8 @@
 			}
 		} else if ($doctype == ST_STATEMENT) {
 			$this->title = _("STATEMENT");
-			$this->headers = array(_("Trans Type"), _("Invoice"), _("PO#"), _("Date"), _("DueDate"), _("Charges"), _("Credits"),
-														 _("Allocated"), _("Outstanding"));
+			$this->headers = array(_("Transaction"), _("Invoice"), _("PO#"), _("Date"), _("Due"), _("Debits"), _("Credits"),
+														 _("Outstanding"), _("Balance"));
 		}
 	}
 	if (isset($emailtype)) {
@@ -231,7 +232,10 @@
 	}
 	if ($doctype == ST_STATEMENT) {
 		$doc_Outstanding = _("Outstanding Transactions");
+		$doc_OpeningBalance= "Opening Balance";
+
 		$doc_Current = _("Current");
+
 		$doc_Total_Balance = _("Total Balance");
 		$doc_Statement = _("Your Statement");
 		$doc_Kindest_regards = _("Please pass this statement on to your accounts department.\n\nIf this is not the correct email address to send future statements to please respond to this email with the correct address.\n\nKindest regards");

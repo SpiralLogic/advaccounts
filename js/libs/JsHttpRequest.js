@@ -43,7 +43,7 @@ function JsHttpRequest() {
 	 * is identical to IE (most universal and common case). E.g., readyState -> 4
 	 * on abort() after send().
 	 */
-	t.abort = function() {
+	t.abort = function () {
 		with (this) {
 			if (_ldObj && _ldObj.abort) _ldObj.abort();
 			_cleanup();
@@ -65,7 +65,7 @@ function JsHttpRequest() {
 	 * Prepares the object for data loading.
 	 * You may also pass URLs like "GET url" or "script.GET url".
 	 */
-	t.open = function(method, url, asyncFlag, username, password) {
+	t.open = function (method, url, asyncFlag, username, password) {
 		with (this) {
 			// Extract methor and loader from the URL (if present).
 			if (url.match(/^((\w+)\.)?(GET|POST)\s+(.*)/i)) {
@@ -100,7 +100,7 @@ function JsHttpRequest() {
 	/**
 	 * Sends a request to a server.
 	 */
-	t.send = function(content) {
+	t.send = function (content) {
 		if (!this.readyState) {
 			// send without open or after abort: no action (IE behaviour).
 			return;
@@ -164,7 +164,7 @@ function JsHttpRequest() {
 	/**
 	 * Returns all response headers (if supported).
 	 */
-	t.getAllResponseHeaders = function() {
+	t.getAllResponseHeaders = function () {
 		with (this) {
 			return _ldObj && _ldObj.getAllResponseHeaders ? _ldObj.getAllResponseHeaders() : [];
 		}
@@ -173,7 +173,7 @@ function JsHttpRequest() {
 	/**
 	 * Returns one response header (if supported).
 	 */
-	t.getResponseHeader = function(label) {
+	t.getResponseHeader = function (label) {
 		with (this) {
 			return _ldObj && _ldObj.getResponseHeader ? _ldObj.getResponseHeader(label) : null;
 		}
@@ -182,7 +182,7 @@ function JsHttpRequest() {
 	/**
 	 * Adds a request header to a future query.
 	 */
-	t.setRequestHeader = function(label, value) {
+	t.setRequestHeader = function (label, value) {
 		with (this) {
 			_reqHeaders[_reqHeaders.length] = [label, value];
 		}
@@ -195,7 +195,7 @@ function JsHttpRequest() {
 	/**
 	 * Do all the work when a data is ready.
 	 */
-	t._dataReady = function(text, js) {
+	t._dataReady = function (text, js) {
 		with (this) {
 			if (caching && _ldObj) JsHttpRequest.CACHE[_ldObj.hash] = [text, js];
 			responseText = responseXML = text;
@@ -221,7 +221,7 @@ function JsHttpRequest() {
 	/**
 	 * Analog of sprintf(), but translates the first parameter by _errors.
 	 */
-	t._l = function(args) {
+	t._l = function (args) {
 		var i = 0, p = 0, msg = this._errors[args[0]];
 		// Cannot use replace() with a callback, because it is incompatible with IE5.
 		while ((p = msg.indexOf('%', p)) >= 0) {
@@ -235,7 +235,7 @@ function JsHttpRequest() {
 	/**
 	 * Called on error.
 	 */
-	t._error = function(msg) {
+	t._error = function (msg) {
 		msg = this._l(typeof(msg) == 'string' ? arguments : msg)
 		msg = "JsHttpRequest: " + msg;
 		if (!window.Error) {
@@ -255,7 +255,7 @@ function JsHttpRequest() {
 	 * If next value is scalar or hash, push it to queryText.
 	 * If next value is form element, push [name, element] to queryElem.
 	 */
-	t._hash2query = function(content, prefix, queryText, queryElem) {
+	t._hash2query = function (content, prefix, queryText, queryElem) {
 		if (prefix == null) prefix = "";
 		if (('' + typeof(content)).toLowerCase() == 'object') {
 			var formAdded = false;
@@ -302,7 +302,7 @@ function JsHttpRequest() {
 	/**
 	 * Remove last used script element (clean memory).
 	 */
-	t._cleanup = function() {
+	t._cleanup = function () {
 		var ldObj = this._ldObj;
 		if (!ldObj) return;
 		// Mark this loading as aborted.
@@ -311,7 +311,7 @@ function JsHttpRequest() {
 		if (!span) return;
 		// Do NOT use iframe.contentWindow.back() - it is incompatible with Opera 9!
 		ldObj.span = null;
-		var closure = function() {
+		var closure = function () {
 			span.parentNode.removeChild(span);
 		}
 		// IE5 crashes on setTimeout(function() {...}, ...) construction! Use tmp variable.
@@ -321,7 +321,7 @@ function JsHttpRequest() {
 	/**
 	 * Change current readyState and call trigger method.
 	 */
-	t._changeReadyState = function(s, reset) {
+	t._changeReadyState = function (s, reset) {
 		with (this) {
 			if (reset) {
 				status = statusText = responseJS = null;
@@ -335,7 +335,7 @@ function JsHttpRequest() {
 	/**
 	 * JS escape() does not quote '+'.
 	 */
-	t.escape = function(s) {
+	t.escape = function (s) {
 		return escape(s).replace(new RegExp('\\+', 'g'), '%2B');
 	}
 }
@@ -347,7 +347,7 @@ JsHttpRequest.MAX_URL_LEN = 2000;     // maximum URL length
 JsHttpRequest.CACHE = {};             // cached data
 JsHttpRequest.PENDING = {};           // pending loadings
 JsHttpRequest.LOADERS = {};           // list of supported data loaders (filled at the bottom of the file)
-JsHttpRequest._dummy = function() {
+JsHttpRequest._dummy = function () {
 }; // avoid memory leaks
 
 
@@ -369,14 +369,14 @@ JsHttpRequest.TIMEOUTS = { s:window.setTimeout, c:window.clearTimeout };
  * Wrapper for IE5 buggy setTimeout.
  * Use this function instead of a usual setTimeout().
  */
-JsHttpRequest.setTimeout = function(func, dt) {
+JsHttpRequest.setTimeout = function (func, dt) {
 	// Always save inside the window object before a call (for FF)!
 	window.JsHttpRequest_tmp = JsHttpRequest.TIMEOUTS.s;
 	if (typeof(func) == "string") {
 		id = window.JsHttpRequest_tmp(func, dt);
 	} else {
 		var id = null;
-		var mediator = function() {
+		var mediator = function () {
 			func();
 			delete JsHttpRequest.TIMEOUTS[id]; // remove circular reference
 		}
@@ -393,7 +393,7 @@ JsHttpRequest.setTimeout = function(func, dt) {
  * Complimental wrapper for clearTimeout.
  * Use this function instead of usual clearTimeout().
  */
-JsHttpRequest.clearTimeout = function(id) {
+JsHttpRequest.clearTimeout = function (id) {
 	window.JsHttpRequest_tmp = JsHttpRequest.TIMEOUTS.c;
 	delete JsHttpRequest.TIMEOUTS[id]; // remove circular reference
 	var r = window.JsHttpRequest_tmp(id);
@@ -407,10 +407,10 @@ JsHttpRequest.clearTimeout = function(id) {
  * Simple interface for most popular use-cases.
  * You may also pass URLs like "GET url" or "script.GET url".
  */
-JsHttpRequest.query = function(url, content, onready, nocache) {
+JsHttpRequest.query = function (url, content, onready, nocache) {
 	var req = new this();
 	req.caching = !nocache;
-	req.onreadystatechange = function() {
+	req.onreadystatechange = function () {
 		if (req.readyState == 4) {
 			onready(req.responseJS, req.responseText);
 		}
@@ -424,7 +424,7 @@ JsHttpRequest.query = function(url, content, onready, nocache) {
  * Global static function.
  * Called by server backend script on data load.
  */
-JsHttpRequest.dataReady = function(d) {
+JsHttpRequest.dataReady = function (d) {
 	var th = this.PENDING[d.id];
 	delete this.PENDING[d.id];
 	if (th) {
@@ -436,7 +436,7 @@ JsHttpRequest.dataReady = function(d) {
 
 
 // Adds all the properties of src to dest.
-JsHttpRequest.extend = function(dest, src) {
+JsHttpRequest.extend = function (dest, src) {
 	for (var k in src) {
 		dest[k] = src[k];
 	}
@@ -467,7 +467,7 @@ JsHttpRequest.extend = function(dest, src) {
 // [-] No support for loading from different domains.
 // [-] No uploading support.
 //
-JsHttpRequest.LOADERS.xml = { loader:function(req) {
+JsHttpRequest.LOADERS.xml = { loader:function (req) {
 	JsHttpRequest.extend(req._errors, {
 		xml_no:'Cannot use XMLHttpRequest or ActiveX loader: not supported',
 		xml_no_diffdom:'Cannot use XMLHttpRequest to load data from different domain %',
@@ -475,7 +475,7 @@ JsHttpRequest.LOADERS.xml = { loader:function(req) {
 		xml_no_form_upl:'Cannot use XMLHttpRequest loader: direct form elements using and uploading are not implemented'
 	});
 
-	this.load = function() {
+	this.load = function () {
 		if (this.queryElem.length) return ['xml_no_form_upl'];
 
 		// XMLHttpRequest (and MS ActiveX'es) cannot work with different domains.
@@ -527,7 +527,7 @@ JsHttpRequest.LOADERS.xml = { loader:function(req) {
 
 		// Assign the result handler.
 		var id = this.id;
-		xr.onreadystatechange = function() {
+		xr.onreadystatechange = function () {
 			if (xr.readyState != 4) return;
 			// Avoid memory leak by removing the closure.
 			xr.onreadystatechange = JsHttpRequest._dummy;
@@ -582,16 +582,16 @@ JsHttpRequest.LOADERS.xml = { loader:function(req) {
 	}
 
 	// Override req.getAllResponseHeaders method.
-	this.getAllResponseHeaders = function() {
+	this.getAllResponseHeaders = function () {
 		return this.xr.getAllResponseHeaders();
 	}
 
 	// Override req.getResponseHeader method.
-	this.getResponseHeader = function(label) {
+	this.getResponseHeader = function (label) {
 		return this.xr.getResponseHeader(label);
 	}
 
-	this.abort = function() {
+	this.abort = function () {
 		this.xr.abort();
 		this.xr = null;
 	}
@@ -607,13 +607,13 @@ JsHttpRequest.LOADERS.xml = { loader:function(req) {
 // [-] No uploading support.
 // [-] Backend data cannot be browser-cached.
 //
-JsHttpRequest.LOADERS.script = { loader:function(req) {
+JsHttpRequest.LOADERS.script = { loader:function (req) {
 	JsHttpRequest.extend(req._errors, {
 		script_only_get:'Cannot use SCRIPT loader: it supports only GET method',
 		script_no_form:'Cannot use SCRIPT loader: direct form elements using and uploading are not implemented'
 	})
 
-	this.load = function() {
+	this.load = function () {
 		// Move GET parameters to the URL itself.
 		if (this.queryText) this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + this.queryText;
 		this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + 'JsHttpRequest=' + this.id + '-' + 'script';
@@ -628,7 +628,7 @@ JsHttpRequest.LOADERS.script = { loader:function(req) {
 		if (!window.opera) {
 			// Safari, IE, FF, Opera 7.20.
 			this.span = s = d.createElement('SCRIPT');
-			var closure = function() {
+			var closure = function () {
 				s.language = 'JavaScript';
 				if (s.setAttribute) s.setAttribute('src', th.url); else s.src = th.url;
 				b.insertBefore(s, b.lastChild);
@@ -642,7 +642,7 @@ JsHttpRequest.LOADERS.script = { loader:function(req) {
 			s.style.display = 'none';
 			b.insertBefore(s, b.lastChild);
 			s.innerHTML = 'Workaround for IE.<s' + 'cript></' + 'script>';
-			var closure = function() {
+			var closure = function () {
 				s = s.getElementsByTagName('SCRIPT')[0]; // get with timeout!
 				s.language = 'JavaScript';
 				if (s.setAttribute) s.setAttribute('src', th.url); else s.src = th.url;
@@ -666,14 +666,14 @@ JsHttpRequest.LOADERS.script = { loader:function(req) {
 // [-] Backend data cannot be browser-cached.
 // [-] Pollutes browser history on some old browsers.
 //
-JsHttpRequest.LOADERS.form = { loader:function(req) {
+JsHttpRequest.LOADERS.form = { loader:function (req) {
 	JsHttpRequest.extend(req._errors, {
 		form_el_not_belong:'Element "%" does not belong to any form!',
 		form_el_belong_diff:'Element "%" belongs to a different form. All elements must belong to the same form!',
 		form_el_inv_enctype:'Attribute "enctype" of the form must be "%" (for IE), "%" given.'
 	})
 
-	this.load = function() {
+	this.load = function () {
 		var th = this;
 
 		if (!th.method) th.method = 'POST';
@@ -743,7 +743,7 @@ JsHttpRequest.LOADERS.form = { loader:function(req) {
 
 		// Function to safely set the form attributes. Parameter attr is NOT a hash
 		// but an array, because "for ... in" may badly iterate over derived attributes.
-		var setAttributes = function(e, attr) {
+		var setAttributes = function (e, attr) {
 			var sv = [];
 			var form = e;
 			// This strange algorythm is needed, because form may  contain element
@@ -769,7 +769,7 @@ JsHttpRequest.LOADERS.form = { loader:function(req) {
 		}
 
 		// Run submit with delay - for old Opera: it needs some time to create IFRAME.
-		var closure = function() {
+		var closure = function () {
 			// Save JsHttpRequest object to new IFRAME.
 			top.JsHttpRequestGlobal = JsHttpRequest;
 

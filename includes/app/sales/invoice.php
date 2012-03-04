@@ -9,8 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//	Add or update Sales Invoice
-	//
 	class Sales_Invoice
 	{
 		static public function add($invoice) {

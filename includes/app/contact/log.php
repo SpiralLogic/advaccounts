@@ -7,8 +7,6 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	class Contact_Log {
-		const CUSTOMER = 'C';
-		const SUPPLIER = 'S';
 		static private $dbTable = 'contact_log';
 
 		static public function add($contact_id, $contact_name, $type, $message) {

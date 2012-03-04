@@ -179,13 +179,7 @@
 		$_SESSION['alloc']->trans_no = $payment_id;
 		$_SESSION['alloc']->write();
 		//unset($_POST['supplier_id']);
-		unset($_POST['bank_account']);
-		unset($_POST['DatePaid']);
-		unset($_POST['currency']);
-		unset($_POST['memo_']);
-		unset($_POST['amount']);
-		unset($_POST['discount']);
-		unset($_POST['ProcessSuppPayment']);
+		unset($_POST['bank_account'],$_POST['DatePaid'],$_POST['currency'],$_POST['memo_'],$_POST['amount'],$_POST['discount'],$_POST['ProcessSuppPayment']);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
 	}
 

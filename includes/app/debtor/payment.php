@@ -34,7 +34,8 @@
 		 * @param int $tax
 		 *
 		 * @return int
-		 */static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
+		 */
+		static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
 			DB::begin();
 			$company_record = DB_Company::get_prefs();
 			$payment_no = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -87,7 +88,8 @@
 		 * @static
 		 * @param $type
 		 * @param $type_no
-		 */static public function void($type, $type_no) {
+		 */
+		static public function void($type, $type_no) {
 			DB::begin();
 			Bank_Trans::void($type, $type_no, true);
 			GL_Trans::void($type, $type_no, true);

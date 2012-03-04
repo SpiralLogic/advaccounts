@@ -133,8 +133,7 @@
 		$Mode = MODE_RESET;
 	}
 	if ($Mode == MODE_RESET) {
-		unset($_POST['trans_no']);
-		unset($_POST['description']);
+		unset($_POST['trans_no'],$_POST['description']);
 		$selected_id = -1;
 	}
 

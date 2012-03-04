@@ -17,55 +17,202 @@
 		iii) a credit note
 		iv) a delivery note
 		*/
-	class Sales_Order
-	{
+	/**
+
+	 */
+	class Sales_Order {
+
+		/**
+		 * @var int
+		 */
 		public $trans_type; // invoice, order, quotation, delivery note ...
+		/**
+		 * @var array
+		 */
 		public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
+		/**
+		 * @var int
+		 */
 		public $so_type = 0; // for sales order: simple=0 template=1
+		/**
+		 * @var
+		 */
 		public $order_id; // used to detect multi-tab edition conflits
+		/**
+		 * @var array
+		 */
 		public $line_items; //array of objects of class Sales_Line
+		/**
+		 * @var array
+		 */
 		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
+		/**
+		 * @var
+		 */
 		public $src_date; // src document date (for info only)
+		/**
+		 * @var null
+		 */
 		public $source_no = null;
+		/**
+		 * @var
+		 */
 		public $document_date;
+		/**
+		 * @var
+		 */
 		public $due_date;
+		/**
+		 * @var
+		 */
 		public $salesman;
+		/**
+		 * @var string
+		 */
 		public $sales_type; // set to the customer's sales type
+		/**
+		 * @var
+		 */
 		public $sales_type_name; // set to customer's sales type name
+		/**
+		 * @var
+		 */
 		public $tax_included;
+		/**
+		 * @var
+		 */
 		public $customer_currency; // set to the customer's currency
+		/**
+		 * @var
+		 */
 		public $default_discount; // set to the customer's discount %
+		/**
+		 * @var
+		 */
 		public $customer_name;
+		/**
+		 * @var
+		 */
 		public $customer_id;
+		/**
+		 * @var
+		 */
 		public $Branch;
+		/**
+		 * @var
+		 */
 		public $email;
+		/**
+		 * @var
+		 */
 		public $deliver_to;
+		/**
+		 * @var
+		 */
 		public $delivery_address;
+		/**
+		 * @var
+		 */
 		public $name;
+		/**
+		 * @var
+		 */
 		public $phone;
+		/**
+		 * @var
+		 */
 		public $cust_ref;
+		/**
+		 * @var
+		 */
 		public $reference;
+		/**
+		 * @var
+		 */
 		public $Comments;
+		/**
+		 * @var
+		 */
 		public $location;
+		/**
+		 * @var
+		 */
 		public $location_name;
+		/**
+		 * @var
+		 */
 		public $order_no; // the original order number
+		/**
+		 * @var int
+		 */
 		public $trans_link = 0;
+		/**
+		 * @var
+		 */
 		public $ship_via;
+		/**
+		 * @var int
+		 */
 		public $freight_cost = 0;
+		/**
+		 * @var
+		 */
 		public $tax_group_id;
+		/**
+		 * @var
+		 */
 		public $tax_group_name;
+		/**
+		 * @var null
+		 */
 		public $tax_group_array = null; // saves db queries
+		/**
+		 * @var
+		 */
 		public $price_factor; // ditto for price calculations
+		/**
+		 * @var
+		 */
 		public $pos; // user assigned POS
+		/**
+		 * @var
+		 */
 		public $cash; // cash transaction
+		/**
+		 * @var
+		 */
 		public $cash_account;
+		/**
+		 * @var
+		 */
 		public $account_name;
+		/**
+		 * @var int
+		 */
 		public $dimension_id;
+		/**
+		 * @var int
+		 */
 		public $dimension2_id;
+		/**
+		 * @var
+		 */
 		public $payment;
+		/**
+		 * @var
+		 */
 		public $payment_terms; // cached payment terms
+		/**
+		 * @var
+		 */
 		public $credit;
+		/**
+		 * @var
+		 */
 		protected $uniqueid;
+		/**
+		 * @var bool
+		 */
 		public $view_only = false;
 		//
 		// $trans_no==0 => open new/direct document
@@ -82,17 +229,13 @@
 			$this->line_items = array();
 			$this->sales_type = "";
 			$this->view_only = $view;
-			if ($type == ST_SALESQUOTE) {
-				$this->trans_type = $type;
-			}
-			else {
-				$this->trans_type = ST_SALESORDER;
-			}
-			$this->dimension_id = 0;
-			$this->dimension2_id = 0;
+			$this->trans_type = ($type == ST_SALESQUOTE) ?ST_SALESQUOTE: $this->trans_type = ST_SALESORDER;
 			$this->read($type, $trans_no);
 			$this->generateID();
 		}
+		/**
+
+		 */
 		protected function generateID() {
 			$this->uniqueid = uniqid();
 			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
@@ -842,7 +985,7 @@
 					 discount_percent, qty_sent)
 					 VALUES (";
 				$sql .= DB::escape($line->id ? $line->id :
-														0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+				 0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
 						" . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
 				DB::query($sql, "Old order Cannot be Inserted");
 			} /* inserted line items into sales order details */
@@ -854,6 +997,26 @@
 				$this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
 			}
 		}
+		/**
+
+		 */
+		public function convertToOrder() {
+			$this->trans_type = ST_SALESORDER;
+			$this->reference = Ref::get_next($this->trans_type);
+			$this->document_date = $this->due_date = Dates::new_doc_date();
+			$this->Comments = $this->Comments . "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
+			$this->trans_no = 0;
+			$this->order_no = 0;
+			$this->generateID();
+		}
+
+		/**
+		 * @param $loc
+		 * @param $st_ids
+		 * @param $st_names
+		 * @param $st_reorder
+		 * @param $st_num
+		 */
 		protected function email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num) {
 			$company = DB_Company::get_prefs();
 			$mail = new Reports_Email($company['coy_name'], $company['email']);
@@ -1017,7 +1180,7 @@
 			$display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
 			start_row();
 			label_cells(_("Total Discount"), $total_discount, "colspan=" . $colspan . " style='background:inherit; text-align:right;'",
-									"class='right'");
+				"class='right'");
 			HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
 			hidden('_discountall', '0', true);
 			HTML::td();
@@ -1349,14 +1512,14 @@
 		 * @param $order_no
 		 * @param $trans_type
 		 */
-		static public function delete($order_no, $trans_type) {
+		 public function delete() {
 			DB::begin();
-			$sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
+			$sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($this->order_no) . " AND trans_type=" . DB::escape($this->trans_type);
 			DB::query($sql, "order Header Delete");
-			$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
+			$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($this->order_no) . " AND trans_type=" . DB::escape($this->trans_type);
 			DB::query($sql, "order Detail Delete");
-			Ref::delete($trans_type, $order_no);
-			DB_AuditTrail::add($trans_type, $order_no, Dates::today(), _("Deleted."));
+			Ref::delete($this->trans_type, $this->order_no);
+			DB_AuditTrail::add($this->trans_type, $this->order_no, Dates::today(), _("Deleted."));
 			DB::commit();
 		}
 		/**
@@ -1433,8 +1596,8 @@
 		 *
 		 * @return bool
 		 */
-		static public function has_deliveries($order_no) {
-			$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
+		public function has_deliveries() {
+			$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::escape($this->order_no) . " AND trans_type=" . ST_SALESORDER . "";
 			$result = DB::query($sql, "could not query for sales order usage");
 			$row = DB::fetch_row($result);
 			return ($row[0] > 0);
@@ -1445,7 +1608,6 @@
 		 * @param $order_no
 		 */
 		static public function close($order_no) {
-			// set the quantity of each item to the already sent quantity. this will mark item as closed.
 			$sql
 			 = "UPDATE sales_order_details
 			SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
@@ -1586,15 +1748,6 @@
 			}
 			DB::query($sql, "The parent document detail record could not be updated");
 			return true;
-		}
-		public function convertToOrder() {
-			$this->trans_type = ST_SALESORDER;
-			$this->reference = Ref::get_next($this->trans_type);
-			$this->document_date = $this->due_date = Dates::new_doc_date();
-			$this->Comments = $this->Comments . "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
-			$this->trans_no = 0;
-			$this->order_no = 0;
-			$this->generateID();
 		}
 	}
 

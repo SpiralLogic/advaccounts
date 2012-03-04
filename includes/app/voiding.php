@@ -51,13 +51,13 @@
 					if (Inv_Transfer::get_items($type_no) == null) {
 						return false;
 					}
-					Inv_Transfer::void($type_no);
+					Inv_Transfer::void(ST_LOCTRANSFER, $type_no);
 					break;
 				case ST_INVADJUST : // it's a stock adjustment
 					if (Inv_Adjustment::get($type_no) == null) {
 						return false;
 					}
-					Inv_Adjustment::void($type_no);
+					Inv_Adjustment::void(ST_INVADJUST,$type_no);
 					break;
 				case ST_PURCHORDER : // it's a PO
 				case ST_SUPPRECEIVE : // it's a GRN
@@ -76,19 +76,19 @@
 					if (!WO::get($type_no, true)) {
 						return false;
 					}
-					WO::void($type_no);
+					WO::void(ST_WORKORDER,$type_no);
 					break;
 				case ST_MANUISSUE : // it's a work order issue
 					if (!WO_Issue::exists($type_no)) {
 						return false;
 					}
-					WO_Issue::void($type_no);
+					WO_Issue::void(ST_MANUISSUE,$type_no);
 					break;
 				case ST_MANURECEIVE : // it's a work order production
 					if (!WO_Produce::exists($type_no)) {
 						return false;
 					}
-					WO_Produce::void($type_no);
+					WO_Produce::void(ST_MANURECEIVE,$type_no);
 					break;
 				case ST_SALESORDER: // it's a sales order
 				case ST_SALESQUOTE: // it's a sales quotation

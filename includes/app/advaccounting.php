@@ -118,6 +118,14 @@
 
 		 */
 		static public function i() {
+			$buildversion = Cache::get('build.version', false);
+					if (!$buildversion) {
+						define('BUILD_VERSION', file_get_contents(DOCROOT . 'version'));
+						Cache::set('build.version', BUILD_VERSION);
+					} else {
+						define('BUILD_VERSION', $buildversion);
+			}
+			define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
 			array_walk($_POST, function(&$v) {
 				$v = is_string($v) ? trim($v) : $v;
 			});

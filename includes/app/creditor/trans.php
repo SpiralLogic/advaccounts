@@ -83,8 +83,7 @@
 		}
 
 		public function clear_items() {
-			unset($this->grn_items);
-			unset($this->gl_codes);
+			unset($this->grn_items,$this->gl_codes);
 			$this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
 			$this->grn_items = array();
 			$this->gl_codes = array();
@@ -105,7 +104,6 @@
 				$tax_group_id = $this->tax_group_id;
 			}
 			$taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
-			Errors::log($taxes);
 			///////////////// Joe Hunt 2009.08.18
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
@@ -234,7 +232,7 @@
 				return true;
 			}
 			if ($type == ST_SUPPRECEIVE) {
-				return Purch_GRN::void($type_no);
+				return Purch_GRN::void(ST_SUPPRECEIVE,$type_no);
 			}
 			return false;
 		}

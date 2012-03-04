@@ -6,10 +6,8 @@
 	$sql = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_no = b.debtor_no AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
 	$result = DB::query($sql, "The customer details could not be retrieved");
 	echo "<table id='table' class='grid center pad2'>";
-	echo "<tr><th></th><th>Name</th><th>Phone</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";
-
+	echo "<tr><th><button>All</button></th><th>Name</th><th>Phone</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";
 	$balance = $due = $overdue1 = $overdue2 = 0;
-
 	while ($row = DB::fetch($result)) {
 		echo "<tr><td class='aligncenter'><input class='email' type='checkbox' value='" . $row['debtor_no'] . "' checked></input>
 		</td>"
@@ -46,6 +44,7 @@ PARAM_3:'',
 PARAM_4:0,
 PARAM_5:0,
 PARAM_6:0
+PARAM_7:0
 };
 
 if (!v) return;

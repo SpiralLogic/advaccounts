@@ -504,7 +504,7 @@
 				$this->Text($pageNumCol, $str, 0, 0, 0, 'right', 0, 0, NULL, 1);
 			}
 			// Print gray line across the page
-			$this->Line($this->row - 5, 1);
+	 		$this->Line($this->row - 5, 1);
 			// Restore font size to user-defined size
 			$this->fontSize = $oldFontSize;
 			// restore user-specified cell padding for column headers

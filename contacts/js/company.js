@@ -1,20 +1,18 @@
 Adv.extend({
-
-
 	revertState:function () {
 		$('.ui-state-highlight').each(function () {
 			$(this).val($(this).data('init'));
 		});
-		Adv.o.custsearch.prop('disabled', false);
+		Adv.o.companysearch.prop('disabled', false);
 		Adv.btnConfirm.hide();
-		Adv.btnCancel.text('New Customer');
+		Adv.btnCancel.text('New');
 		Branches.btnBranchAdd();
 		Adv.Forms.resetHighlights();
 	},
 	resetState:function () {
 		$("#tabs0 input, #tabs0 textarea").empty();
-		$("#customer").val('');
-		Customer.fetch(0);
+		$("#company").val('');
+		Company.fetch(0);
 	}
 });
 Adv.extend({
@@ -31,14 +29,13 @@ Adv.extend({
 		var logbox = $("[id='messageLog']").val('');
 		var str = '';
 		$.each(data, function (key, message) {
-			str
-			 += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
+			str+= '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
 		});
 		logbox.val(str);
 	}
 });
 var Contacts = function () {
-	var blank, count = 0, adding = false, btn = $("#btnContact"), $Contacts = $("#Contacts");
+	var blank, count = 0, adding = false, $Contacts = $("#Contacts");
 	$('#contact').template('contact');
 	return {
 		list:function () {
@@ -71,7 +68,7 @@ var Contacts = function () {
 		setval:function (key, value) {
 			key = key.split('-');
 			if (value !== undefined)
-				{Customer.get().contacts[key[1]][key[0]] = value;}
+				{Company.get().contacts[key[1]][key[0]] = value;}
 		},
 		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
@@ -87,7 +84,7 @@ var Branches = function () {
 			list.change(function () {
 				if (!$(this).val().length)
 					{return;}
-				var ToBranch = Customer.get().branches[$(this).val()];
+				var ToBranch = Company.get().branches[$(this).val()];
 				Branches.change(ToBranch);
 			})
 		},
@@ -114,12 +111,12 @@ var Branches = function () {
 		},
 		setval:function (key, value) {
 			current[key] = value;
-			Customer.get().branches[current.branch_id][key] = value;
+			Company.get().branches[current.branch_id][key] = value;
 		},
 		change:function (data) {
 			if (typeof data !== 'object')
 				{
-					data = Customer.get().branches[data];
+					data = Company.get().branches[data];
 				}
 			$.each(data, function (key, value) {
 				Adv.Forms.setFormValue('br_' + key, value);
@@ -130,34 +127,32 @@ var Branches = function () {
 			if (current.branch_id > 0)
 				{
 					list.find("[value=0]").remove();
-					delete Customer.get().branches[0];
+					delete Company.get().branches[0];
 					Branches.adding = false;
 					Branches.btnBranchAdd();
 				}
 		},
 		New:function () {
-			$.post('search.php', {branch_id:0, id:Customer.get().id}, function (data) {
+			$.post('search.php', {branch_id:0, id:Company.get().id}, function (data) {
 				data = data.branch;
 				Branches.add(data).change(data);
-				Customer.get().branches[data.branch_id] = data;
+				Company.get().branches[data.branch_id] = data;
 				btn.hide();
 				Branches.adding = true;
 			}, 'json');
 		},
 		btnBranchAdd:function () {
 			btn.unbind('click');
-			if (!Branches.adding && current.branch_id > 0 && Customer.get().id > 0)
-				{
-					btn.text('Add New Branch').one('click',
-					 function (event) {
-						 Branches.New();
-						 Branches.adding = true;
-						 return false
-					 }).show();
-				} else
-				{
-					(current.branch_id > 0) ? btn.show() : btn.hide();
-				}
+			if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0) {
+				btn.text('Add New Branch').one('click',
+																			 function (event) {
+																				 Branches.New();
+																				 Branches.adding = true;
+																				 return false
+																			 }).show();
+			} else {
+				current.branch_id > 0 ? btn.show() : btn.hide();
+			}
 			return false;
 		}
 	};
@@ -171,13 +166,13 @@ var Accounts = function () {
 		}
 	}
 }();
-var Customer = function () {
-	var customer, transactions = $('#transactions'), customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete',
+var Company = function () {
+	var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete',
 	 'off');
 	return {
-		init:function () {
+		init:function (options) {
 			Branches.init();
-			$customerID.autocomplete({
+			$companyID.autocomplete({
 				source:function (request, response) {
 					var lastXhr = $.getJSON('#', request, function (data, status, xhr) {
 						if (xhr === lastXhr)
@@ -187,7 +182,7 @@ var Customer = function () {
 					});
 				},
 				select:function (event, ui) {
-					Customer.fetch(ui.item);
+					Company.fetch(ui.item);
 					return false;
 				},
 				focus:function () {
@@ -196,23 +191,18 @@ var Customer = function () {
 				autoFocus:false, delay:10, 'position':{
 					my:"left middle",
 					at:"right top",
-					of:$customerID,
+					of:$companyID,
 					collision:"none"
 				}
 			});
 		},
 		setValues:function (content) {
-			if (!content.customer)
+			if (!content.company)
 				{return;}
-			customer = data = content.customer;
-			if (customer.id)
-				{
-					Adv.tabs1.tabs('option', 'disabled', []);
-				} else
-				{
-					Adv.tabs1.tabs('option', 'disabled', [0, 1, 2, 3, 4]);
-
-				}
+			company = content.company;
+			var data = company;
+			var activetabs = (company.id) ? [0, 1, 2, 3, 4] : [];
+					Adv.tabs1.tabs('option', 'disabled', activetabs);
 			if (content.contact_log !== undefined)
 				{
 					Adv.setContactLog(content.contact_log);
@@ -221,11 +211,11 @@ var Customer = function () {
 				{
 					transactions.empty().append(content.transactions);
 				}
-			Contacts.init(data.contacts);
-			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
-			Accounts.change(data.accounts);
-			(customer.id) ? Customer.hideSearch() : Customer.showSearch();
-			$.each(customer, function (i, data) {
+			if (data.contacts) Contacts.init(data.contacts);
+			if (data.branches) Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
+			if (data.accounts) Accounts.change(data.accounts);
+			(company.id) ? Company.hideSearch() : Company.showSearch();
+			$.each(company, function (i, data) {
 				if (i !== 'contacts' && i !== 'branches' && i !== 'accounts')
 					{
 						Adv.Forms.setFormValue(i, data);
@@ -234,33 +224,32 @@ var Customer = function () {
 			Adv.Forms.resetHighlights();
 		},
 		hideSearch:function () {
-			$customerID.autocomplete('disable');
+			$companyID.autocomplete('disable');
 		},
 		showSearch:function () {
-			$customerID.autocomplete('enable');
+			$companyID.autocomplete('enable');
 		},
 		fetch:function (item) {
 			if (typeof(item) === "number")
 				{item = {id:item};}
-			$.post("customers.php", {"id":item.id}, function (data) {
-				Customer.setValues(data);
+			$.post('#', {"id":item.id}, function (data) {
+				Company.setValues(data);
 			}, 'json');
-			Customer.getFrames(item.id);
+			Company.getFrames(item.id);
 		},
 		getFrames:function (id, data) {
-			if (id === undefined && customer.id)
-				{ id = customer.id}
-
+			if (id === undefined && company.id)
+				{ id = company.id}
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 			 $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
 			if (!id)
 				{return;}
-			$invoiceFrame.load($invoiceFrameSrc, data + "&frame=1&customer_id=" + id);
+			$invoiceFrame.load($invoiceFrameSrc, data + "&frame=1&id=" + id);
 		},
 		Save:function () {
 			Branches.btnBranchAdd();
 			Adv.btnConfirm.prop('disabled', true);
-			$.post('customers.php', Customer.get(), function (data) {
+			$.post('#', Company.get(), function (data) {
 				if (data.status)
 					{
 						Adv.showStatus(data.status);
@@ -270,13 +259,13 @@ var Customer = function () {
 					}
 				Adv.Forms.resetHighlights();
 				Branches.adding = false;
-				Customer.setValues(data);
+				Company.setValues(data);
 			}, 'json');
 		},
 		set:function (key, value) {
 			if (key.substr(0, 4) == ('acc_'))
 				{
-					customer.accounts[key.substr(4)] = value;
+					company.accounts[key.substr(4)] = value;
 				} else
 				{
 					if (key.substr(0, 3) == ('br_'))
@@ -289,13 +278,13 @@ var Customer = function () {
 									Contacts.setval(key.substr(4), value);
 								} else
 								{
-									customer[key] = value;
+									company[key] = value;
 								}
 						}
 				}
 		},
 		get:function () {
-			return customer
+			return company
 		}
 	}
 }();
@@ -304,7 +293,7 @@ $(function () {
 		tabs:$("#tabs0"),
 		accFields:$("[name^='acc_']"),
 		btnConfirm:$("#btnConfirm").click(function () {
-			Customer.Save();
+			Company.Save();
 			return false;
 		}),
 		btnCancel:$("#btnCancel").click(function () {
@@ -315,7 +304,7 @@ $(function () {
 		tabs1:$("#tabs1").tabs({ select:function (event, ui) {
 			var url = $.data(ui.tab, 'load.tabs');
 			if (url)
-				{location.href = url + Customer.get().id;}
+				{location.href = url + Company.get().id;}
 			return false;
 		}, selected:-1 })
 	});
@@ -323,11 +312,11 @@ $(function () {
 		Adv.accFields.each(function () {
 			var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
 			$(this).val(newVal).trigger('change');
-			Customer.set($(this).attr('name'), newVal);
+			Company.set($(this).attr('name'), newVal);
 		});
 		return false;
 	});
-	Adv.o.custsearch = $('#custsearch');
+	Adv.o.companysearch = $('#companysearch');
 	$("#addLog").click(function (event) {
 		Adv.ContactLog.dialog("open");
 		return false;
@@ -344,7 +333,7 @@ $(function () {
 			"Ok":function () {
 				var data = {
 					contact_name:Adv.ContactLog.find("[name='contact_name']").val(),
-					contact_id:Customer.get().id,
+					contact_id:Company.get().id,
 					message:Adv.ContactLog.find("[name='message']").val(),
 					type:"C"
 				};
@@ -376,18 +365,18 @@ $(function () {
 				return;
 			}
 		Adv.Forms.stateModified($this);
-		Adv.o.custsearch.prop('disabled', true);
+		Adv.o.companysearch.prop('disabled', true);
 		Adv.btnCancel.text('Cancel Changes').show();
-		buttontext = (Customer.get().id) ? "Save Changes" : "Save New";
+		buttontext = (Company.get().id) ? "Save Changes" : "Save New";
 		Adv.btnConfirm.text(buttontext).show();
-		Customer.set($thisname, $this.val());
+		Company.set($thisname, $this.val());
 	});
 	$("#id").prop('disabled', true);
 
-	Customer.init();
+	Company.init();
 	Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {
-		Customer.getFrames(undefined, $('#invoiceForm').serialize());
+		Company.getFrames(undefined, $('#invoiceForm').serialize());
 		return false;
 	});
-	Customer.getFrames($("#id").val());
+	Company.getFrames($("#id").val());
 });

@@ -560,14 +560,14 @@
 		}
 		else {
 			if ($order->trans_no != 0) {
-				if ($order->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key($order->trans_no))) {
+				if ($order->trans_type == ST_SALESORDER && $order->has_deliveries(key($order->trans_no))) {
 					Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {
 					$trans_no = key($order->trans_no);
 					$trans_type = $order->trans_type;
 					if (!isset($_GET[REMOVED_ID])) {
-						Sales_Order::delete($trans_no, $trans_type);
+						$order->($trans_no, $trans_type);
 						$jb = new \Modules\Jobsboard();
 						$jb->removejob($trans_no);
 						Event::notice(_("Sales order has been cancelled as requested."), 1);

@@ -61,12 +61,12 @@
 		function adv_ob_flush_handler($text) {
 			return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 		}
-	}
+	}	include(DOCROOT . 'config' . DS . 'defines.php');
+		include(DOCROOT . 'config' . DS . 'types.php');
+		include(DOCROOT . 'config' . DS . 'access_levels.php');
 	Session::i();
 	Config::i();
 	Ajax::i();
 	ob_start('adv_ob_flush_handler', 0);
-	include(DOCROOT . 'config' . DS . 'defines.php');
-	include(DOCROOT . 'config' . DS . 'types.php');
-	include(DOCROOT . 'config' . DS . 'access_levels.php');
+
 	ADVAccounting::i();

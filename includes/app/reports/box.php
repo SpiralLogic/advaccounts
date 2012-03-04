@@ -6,8 +6,8 @@
 	 * Time: 8:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Reports_Box extends Report
-	{
+	class Reports_Box extends Report {
+
 		public $ar_classes;
 		public $ctrl_handlers = array();
 
@@ -48,8 +48,8 @@
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
 						$st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug.pdf') ?
-																										 false :
-																										 'default process') . hidden('REP_ID', $report->id, false) . '<br><br>';
+						 false :
+						 'default process') . hidden('REP_ID', $report->id, false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
 						$st_params .= "\n</form></td></tr></table>\n";
 						JS::set_focus('Rep' . $report->id);
@@ -134,8 +134,10 @@
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 					return select_box($name, '', $sql, 'curr_abrev', 'name', array(
-																																				'spec_option' => _("No Currency Filter"),
-																																				'spec_id' => ALL_TEXT, 'order' => false));
+						'spec_option' => _("No Currency Filter"),
+						'spec_id' => ALL_TEXT, 'order' => false));
+				case 'DATEMONTH':
+					return Dates::months($name);
 				case 'DATE':
 				case 'DATEBEGIN':
 				case 'DATEEND':
@@ -227,8 +229,8 @@
 					$sql = "SELECT debtor_no, name FROM debtors";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
 						return select_box($name, '', $sql, 'debtor_no', 'name', array(
-																																				 'spec_option' => _("No Customer Filter"),
-																																				 'spec_id' => ALL_NUMERIC));
+							'spec_option' => _("No Customer Filter"),
+							'spec_id' => ALL_NUMERIC));
 					} // FIX allitems numeric!
 					//						return Debtor::select($name, null, _("No Customer Filter"));
 					else {
@@ -240,8 +242,8 @@
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER') {
 						return select_box($name, '', $sql, 'supplier_id', 'supp_name', array(
-																																								'spec_option' => _("No Supplier Filter"),
-																																								'spec_id' => ALL_NUMERIC));
+							'spec_option' => _("No Supplier Filter"),
+							'spec_id' => ALL_NUMERIC));
 					} // FIX allitems numeric!
 					//						return Creditor::select($name, null, _("No Supplier Filter"));
 					else {
@@ -343,8 +345,8 @@
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM users";
 					return select_box($name, '', $sql, 'id', 'user_id', array(
-																																	 'spec_option' => _("No Users Filter"),
-																																	 'spec_id' => ALL_NUMERIC));
+						'spec_option' => _("No Users Filter"),
+						'spec_id' => ALL_NUMERIC));
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
 					if ($type == 'ACCOUNTTAGS') {
@@ -367,6 +369,6 @@
 				unset($types[$type]);
 			}
 			return array_selector($name, $value, $types, array(
-																												'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'async' => false,));
+				'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'async' => false,));
 		}
 	}

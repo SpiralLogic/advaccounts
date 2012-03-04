@@ -195,12 +195,7 @@
 	 *
 	 */
 	function clear_fields() {
-		unset($_POST['gl_code']);
-		unset($_POST['dimension_id']);
-		unset($_POST['dimension2_id']);
-		unset($_POST['amount']);
-		unset($_POST['memo_']);
-		unset($_POST['AddGLCodeToTrans']);
+		unset($_POST['gl_code'],$_POST['dimension_id'],$_POST['dimension2_id'],$_POST['amount'],$_POST['memo_'],$_POST['AddGLCodeToTrans']);
 		Ajax::i()->activate('gl_items');
 		JS::set_focus('gl_code');
 	}

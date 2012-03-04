@@ -152,7 +152,6 @@ Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSF
 				$_SESSION['transfer_items']->clear_items();
 				unset ($_SESSION['transfer_items']);
 			}
-			//session_register("transfer_items");
 			$_SESSION['transfer_items'] = new Item_Order(ST_LOCTRANSFER);
 			$_POST['AdjDate'] = Dates::new_doc_date();
 			if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {

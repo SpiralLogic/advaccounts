@@ -133,9 +133,7 @@
 		else {
 			if (!exist_transaction($_POST['filterType'], $_POST['trans_no'])) {
 				Event::error(_("The entered transaction does not exist or cannot be voided."));
-				unset($_POST['trans_no']);
-				unset($_POST['memo_']);
-				unset($_POST['date_']);
+				unset($_POST['trans_no'],$_POST['memo_'],$_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 			}
 			else {
@@ -191,18 +189,14 @@
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
 				Event::error(_("The selected transaction has already been voided."), true);
-				unset($_POST['trans_no']);
-				unset($_POST['memo_']);
-				unset($_POST['date_']);
+				unset($_POST['trans_no'],$_POST['memo_'],$_POST['date_']);
 				JS::set_focus('trans_no');
 				return;
 			}
 			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
 			if ($ret) {
 				Event::success(_("Selected transaction has been voided."));
-				unset($_POST['trans_no']);
-				unset($_POST['memo_']);
-				unset($_POST['date_']);
+				unset($_POST['trans_no'],$_POST['memo_'],$_POST['date_']);
 			}
 			else {
 				Event::error(_("The entered transaction does not exist or cannot be voided."));

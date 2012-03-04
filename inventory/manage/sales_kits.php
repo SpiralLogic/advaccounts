@@ -49,8 +49,7 @@
 	}
 	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
-		unset($_POST['quantity']);
-		unset($_POST['component']);
+		unset($_POST['quantity'],$_POST['component']);
 	}
 	start_form();
 	echo "<div class='center'>" . _("Select a sale kit:") . "&nbsp;";

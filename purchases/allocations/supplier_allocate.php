@@ -44,7 +44,6 @@ Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SU
 				unset($_SESSION['alloc']->allocs);
 				unset($_SESSION['alloc']);
 			}
-			//session_register("alloc");
 		}
 
 		function edit_allocations_for_transaction($type, $trans_no) {

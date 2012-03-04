@@ -236,8 +236,7 @@ JS;
 
 	function update_data() {
 		global $update_pager;
-		unset($_POST["beg_balance"]);
-		unset($_POST["end_balance"]);
+		unset($_POST["beg_balance"],$_POST["end_balance"]);
 		Ajax::i()->activate('summary');
 		$update_pager = true;
 	}

@@ -88,6 +88,7 @@
 		 * @var
 		 */
 		public $reference;
+		public $trans_type = ST_PURCHORDER;
 		/**
 		 * @param int  $order_no
 		 * @param bool $view
@@ -97,7 +98,7 @@
 			$this->line_items = array();
 			$this->lines_on_order = $this->supplier_id = 0;
 			$this->set_salesman();
-			$this->location=Config::get('default.location');
+			$this->location = Config::get('default.location');
 			$this->order_no = $order_no;
 			$this->read($order_no, $view);
 			$_POST['OrderDate'] = Dates::new_doc_date();
@@ -105,9 +106,13 @@
 				$_POST['OrderDate'] = Dates::end_fiscalyear();
 			}
 			$this->orig_order_date = $_POST['OrderDate'];
-			$this->uniqueid = uniqid();
-			$this->order_id = ST_PURCHORDER . '.' . sha1(ST_PURCHORDER . serialize($this->order_no));
+			$this->generateID();
 		}
+		protected function generateID() {
+			$this->uniqueid = uniqid();
+			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
+		}
+
 		/**
 		 * @param $line_no
 		 * @param $stock_id
@@ -515,7 +520,7 @@
 			text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 			Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
 			table_section(3);
-			if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "" ) {
+			if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
 				$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
 				$result = DB::query($sql, "could not get location info");
 				if (DB::num_rows($result) == 1) {
@@ -551,7 +556,7 @@
 			$total = 0;
 			$k = 0;
 			if (!$this->line_items) {
-			//	Event::warning('There are no line items on this Purchase Order');
+				//	Event::warning('There are no line items on this Purchase Order');
 			}
 			else
 			{

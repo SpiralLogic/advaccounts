@@ -21,7 +21,7 @@
 		 *
 		 * @return int
 		 */
-		static public function add($delivery, $bo_policy) {
+		static public function add(Sales_Order $delivery, $bo_policy) {
 			$trans_no = $delivery->trans_no;
 			if (is_array($trans_no)) {
 				$trans_no = key($trans_no);
@@ -51,7 +51,8 @@
 				GL_Trans::void_tax_details(ST_CUSTDELIVERY, $delivery_no);
 				DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
 			}
-			foreach ($delivery->line_items as $line_no => $delivery_line) {
+			/** @var Sales_Line $delivery_line */
+			foreach ($delivery->line_items as $delivery_line) {
 				$line_price = $delivery_line->line_price();
 				$line_taxfree_price = Tax::tax_free_price($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array);
 				$line_tax = Tax::full_price_for_item($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;

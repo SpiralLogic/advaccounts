@@ -37,8 +37,7 @@
 	if ($Mode == MODE_RESET) {
 		$selected_id = -1;
 		$_POST['id'] = $_POST['name'] = '';
-		unset($_POST['parent']);
-		unset($_POST['class_id']);
+		unset($_POST['parent'],$_POST['class_id']);
 	}
 	$result = GL_Type::get_all(check_value('show_inactive'));
 	start_form();

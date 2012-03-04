@@ -28,9 +28,10 @@
 			return $adj_id;
 		}
 
-		static public function void($type_no) {
-			GL_Trans::void(ST_INVADJUST, $type_no);
-			Inv_Movement::void(ST_INVADJUST, $type_no);
+		static public function void($type, $type_no) {
+			if ($type != ST_INVADJUST) $type = ST_INVADJUST;
+			GL_Trans::void($type, $type_no);
+			Inv_Movement::void($type, $type_no);
 		}
 
 		static public function get($trans_no) {

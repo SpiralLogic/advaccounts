@@ -163,7 +163,7 @@
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width90');
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-		$_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
+		$_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
 	}
 	start_row();
 	date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
