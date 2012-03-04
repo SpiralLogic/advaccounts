@@ -10,12 +10,9 @@
 		 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_CUSTSTATREP);
-
 	print_statements();
-
 	function getTransactions($debtorno, $date, $incAllocations = true, $month) {
 		$dateend = date('Y-m-d', mktime(0, 0, 0, $month, 0));
 		$datestart = date('Y-m-d', mktime(0, 0, 0, $month - 2, 1));
@@ -35,7 +32,6 @@
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - debtor_trans.alloc) != 0";
 		}
 		$sql .= " GROUP BY debtor_no, if(debtor_trans.due_date<'$datestart',0,debtor_trans.due_date) ORDER BY debtor_trans.branch_id, debtor_trans.tran_date, debtor_trans.type";
-		Errors::log($sql);
 		return DB::query($sql, "No transactions were returned");
 	}
 
@@ -60,11 +56,10 @@
 		$incPayments = $_POST['PARAM_5'];
 		$incAllocations = $_POST['PARAM_6'];
 		$month = $_POST['PARAM_7'] ? : date('n');
-
 		$doctype = ST_STATEMENT;
 		$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
 		$dec = User::price_dec();
-		$cols = array(10, 70, 120, 170, 225, 295, 345, 390, 460, 460);
+		$cols = array(5, 60,100, 170, 225, 295, 345, 390, 460, 460);
 		$aligns = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'left');
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
@@ -80,12 +75,13 @@
 		debtors c WHERE db.debtor_no = a.debtor_no AND c.debtor_no=db.debtor_no AND a.branch_ref = "Accounts" AND Balance>0  ';
 		if ($customer != ALL_NUMERIC) {
 			$sql .= " WHERE debtor_no = " . DB::escape($customer);
-		} else {
+		}
+		else {
 			$sql .= " ORDER by name";
 		}
 		$result = DB::query($sql, "The customers could not be retrieved");
 		while ($myrow = DB::fetch($result)) {
-			$date = $myrow['tran_date'] = date('Y-m-1');
+			$date = $myrow['tran_date'] = date('Y-m-1',strtotime("now - $month months"));
 			$myrow['order_'] = "";
 			$CustomerRecord = Debtor::get_details($myrow['debtor_no']);
 			if (round($CustomerRecord["Balance"], 2) == 0) {
@@ -117,17 +113,16 @@
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 			for ($i = 0; $i < count($transactions); $i++) {
-
 				$myrow2 = $transactions[$i];
 				if ($myrow2['OverDue']) {
 					$openingbalance = $myrow2['TotalAmount'] - $myrow2['Allocated'];
 					$balance += $openingbalance;
-				} else {
+				}
+				else {
 					$DisplayTotal = Num::format(abs($myrow2["TotalAmount"]), $dec);
 					$outstanding = abs($myrow2["TotalAmount"]) - $myrow2["Allocated"];
 					$displayOutstanding = Num::format($outstanding, $dec);
 					if (!$incPayments && !$incAllocations && Num::round($outstanding, 2) == 0) {
-
 						continue;
 					}
 					if (!$incPayments && ($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT || $myrow2['type'] == ST_BANKDEPOSIT)) {
@@ -146,7 +141,8 @@
 					$rep->NewLine();
 					if ($rep->currency != $myrow['curr_code']) {
 						include(DOCROOT . "reporting/includes/doctext2.php");
-					} else {
+					}
+					else {
 						include(DOCROOT . "reporting/includes/doctext.php");
 					}
 					$prev_branch = $transactions[$i]['branch_id'];
@@ -156,25 +152,17 @@
 					$rep->TextCol(8, 9, Num::format($openingbalance, $dec));
 					$rep->NewLine(2);
 					$openingbalance = 0;
-					$rep->SetTextColor(255, 0, 0);
-					$rep->fontSize += 20;
-					$rep->Font('bold');
-					$rep->TextWrapLines(0, $rep->pageWidth , 'WHAT THE FUCK???', 'C');
-					$rep->NewLine();
-					$rep->TextWrapLines(0, $rep->pageWidth , 'DON\'T LEAVE TOWN', 'C');
-					$rep->fontSize -= 20;
-
-					$rep->SetTextColor(0, 0, 0);
-					$rep->Font();
-
 					continue;
 				}
 				$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
-				if ($myrow2['type'] == ST_SALESINVOICE) $rep->Font('bold');
+				if ($myrow2['type'] == ST_SALESINVOICE) {
+					$rep->Font('bold');
+				}
 				$rep->TextCol(1, 2, $myrow2['reference'], -2);
 				if ($myrow2['type'] == '10') {
 					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
-				} else {
+				}
+				else {
 					$rep->TextCol(2, 3, '', -2);
 				}
 				$rep->Font();
@@ -184,7 +172,8 @@
 				}
 				if ($myrow2['type'] == ST_SALESINVOICE) {
 					$rep->TextCol(5, 6, $DisplayTotal, -2);
-				} else {
+				}
+				else {
 					$rep->TextCol(6, 7, $DisplayTotal, -2);
 				}
 				$rep->TextCol(7, 8, $displayOutstanding, -2);
@@ -200,17 +189,26 @@
 			$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
 			$pastdue2 = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;
 			$str = array($doc_Current, $nowdue, $pastdue1, $pastdue2, $doc_Total_Balance);
-
 			$str2 = array(
-				Num::format($CustomerRecord["Overdue2"], $dec),
-				Num::format(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
 				Num::format(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
+				Num::format(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
+				Num::format($CustomerRecord["Overdue2"], $dec),
 				Num::format(($CustomerRecord["Balance"] - $CustomerRecord["Due"]), $dec),
-				Num::format($CustomerRecord["Balance"], $dec));
-
+				Num::format($CustomerRecord["Balance"], $dec)
+			);
 			$col = array(
-				$rep->cols[0], $rep->cols[0] + 80, $rep->cols[0] + 170, $rep->cols[0] + 270, $rep->cols[0] + 360, $rep->cols[0] + 450);
-			$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
+				$rep->cols[0], $rep->cols[0] + 80, $rep->cols[0] + 170, $rep->cols[0] + 270, $rep->cols[0] + 360, $rep->cols[0] + 450
+			);
+			$rep->row = $rep->bottomMargin + (12 * $rep->lineHeight - 6);
+			if ($CustomerRecord["Balance"] > 0 && $CustomerRecord["Due"] - $CustomerRecord["Overdue1"] < $CustomerRecord["Balance"]) {
+				$rep->SetTextColor(255, 0, 0);
+				$rep->fontSize += 5;
+				$rep->Font('bold');
+				$rep->TextWrapLines(0, $rep->pageWidth, 'YOUR ACCOUNT IS OVERDUE, IMMEDIATE PAYMENT REQUIRED!', 'C');
+				$rep->fontSize -= 5;
+				$rep->SetTextColor(0, 0, 0);
+			}
+			$rep->NewLine();
 			for ($i = 0; $i < 5; $i++) {
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'center');
 			}

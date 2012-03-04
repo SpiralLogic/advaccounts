@@ -638,11 +638,10 @@
 		 *
 		 * @param      $name
 		 * @param null $month
-		 */public static function months($name, $month = null) {
-			if ($month == null) $month = date('n');
+		 */public static function months($name, $month = 0) {
 			$months = array();
-			for ($i = 1; $i < 13; $i++) {
-				$months[$i] = date('F', mktime(0, 0, 0, $i));
+			for ($i = 0; $i < 12; $i++) {
+				$months[$i] = date('F', strtotime("now - $i months"));
 			}
 			return array_selector($name, $month, $months);
 		}

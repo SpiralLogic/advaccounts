@@ -50,9 +50,9 @@
 	}
 	$this->LineTo($right, $iline2, $right, $iline4);
 	$this->LineTo($this->leftMargin, $iline5, $this->leftMargin, $iline7);
-	$adjustment = (end($this->aligns)=='right')?5:-5;
-	$bar = ($cols>count($this->aligns)) ? $cols-1:$cols-2;
-	$this->LineTo($this->cols[$bar] +$adjustment , $iline5, $this->cols[$bar] +$adjustment , $iline7);
+	$adjustment = (end($this->aligns) == 'right') ? 5 : -5;
+	$bar = ($cols > count($this->aligns)) ? $cols - 1 : $cols - 2;
+	$this->LineTo($this->cols[$bar] + $adjustment, $iline5, $this->cols[$bar] + $adjustment, $iline7);
 	$this->LineTo($right, $iline5, $right, $iline7);
 	$this->NewLine();
 	if ($this->company['coy_logo'] != '') {
@@ -70,8 +70,16 @@
 	$this->fontSize += 10;
 	$this->Font('bold');
 	$this->TextWrap($mcol, $this->row, $this->pageWidth - $this->rightMargin - $mcol - 20, $this->title, 'right');
-	$this->Font();
-	$this->fontSize -= 10;
+	$this->fontSize -= 5;
+	$temp = $this->row;
+	if ($doctype == ST_STATEMENT) {
+		$this->NewLine();
+		$this->NewLine();
+		$this->TextWrap($mcol+100, $this->row, 150, date('F Y',strtotime($myrow['tran_date'].'- 1 day')), 'center');
+		$this->Font();
+		$this->row = $temp;
+	}
+	$this->fontSize -= 5;
 	$this->NewLine();
 	$this->SetTextColor(0, 0, 0);
 	$adrline = $this->row;
@@ -82,11 +90,11 @@
 	$this->Font('italic');
 	if (!isset($companyto)) {
 		if (isset($myrow['debtor_no'])) {
-		$companyto = new Debtor($myrow['debtor_no']);
-	}elseif (isset($myrow['supplier_id'])) {
-			$companyto =new Creditor($myrow['supplier_id']);
+			$companyto = new Debtor($myrow['debtor_no']);
 		}
-
+		elseif (isset($myrow['supplier_id'])) {
+			$companyto = new Creditor($myrow['supplier_id']);
+		}
 	}
 	if (isset($branch['branch_id'])) {
 		$currentBranch = $companyto->branches[$branch['branch_id']];
@@ -267,10 +275,10 @@
 	}
 	elseif (isset($myrow["debtor_ref"])) {
 		$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
-	}elseif ($doctype==ST_STATEMENT) {
-			$this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
-
-		}
+	}
+	elseif ($doctype == ST_STATEMENT) {
+		$this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
+	}
 	$col += $width;
 	$report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 	if ($doctype == ST_PURCHORDER) {
@@ -364,10 +372,9 @@
 		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
 	}
 	# __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
-
 	if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
 		# __ADVANCEDEDIT__ END #
-			$this->row -= (2 * $this->lineHeight);
+		$this->row -= (2 * $this->lineHeight);
 		if ($doctype == ST_WORKORDER) {
 			$str = Dates::sql2date($myrow["required_by"]);
 		}
@@ -379,13 +386,11 @@
 			$str = $row["terms"];
 		}
 		$this->Font('bold');
-		$this->text($ccol, $doc_Payment_Terms . ": " . $str );
+		$this->text($ccol, $doc_Payment_Terms . ": " . $str);
 		$this->Font();
-		if ($doctype == ST_STATEMENT && isset($companyto->accounts->email)) {
-			$this->TextWrap($ccol+$right/2, $this->row, $right - $ccol, "Email: " . $companyto->accounts->email);
-
-			}
-
+		if ($doctype == ST_STATEMENT && !empty($companyto->accounts->email)) {
+			$this->TextWrap($ccol + $right / 2, $this->row, $right - $ccol, "Email: " . $companyto->accounts->email);
+		}
 	}
 	$this->row = $iline5 - $this->lineHeight - 1;
 	$this->Font('bold');
