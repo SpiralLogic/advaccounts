@@ -203,7 +203,7 @@
 			$sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
 		}
 		if ($trans_type == 32 && !check_value('show_all')) {
-			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::Today()) . "'";
+			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::today()) . "'";
 		}
 		if ($selected_customer != -1) {
 			$sql .= " AND sorder.debtor_no=" . DB::quote($selected_customer);
@@ -324,10 +324,10 @@
 	function check_overdue($row) {
 		global $trans_type;
 		if ($trans_type == ST_SALESQUOTE) {
-			return (Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])));
+			return (Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])));
 		}
 		else {
-			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
 		}
 	}
 

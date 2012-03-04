@@ -45,7 +45,7 @@
 			DB::query($sql, "The work requirements issued quantity couldn't be updated");
 		}
 
-		static public function void($woid) {
+		static public function void($type=null,$woid) {
 			$sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
 			DB::query($sql, "The work requirements issued quantity couldn't be voided");
 		}
@@ -62,7 +62,7 @@
 				$k = 0; //row colour counter
 				$has_marked = false;
 				if ($date == null) {
-					$date = Dates::Today();
+					$date = Dates::today();
 				}
 				while ($myrow = DB::fetch($result)) {
 					$qoh = 0;

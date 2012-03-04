@@ -90,7 +90,7 @@
 	 *
 	 * Universal sql combo generator
 	 * $sql must return selector values and selector texts in columns 0 & 1
-	 * Options are merged with defaults.
+	 * Options are merged with default.
 	 *
 	 * @param					$name
 	 * @param					$selected_id
@@ -832,7 +832,7 @@
 				$_POST[$name] = null;
 			}
 			else {
-				$dd = Dates::Today();
+				$dd = Dates::today();
 				if ($inc_days != 0) {
 					$dd = Dates::add_days($dd, $inc_days);
 				}
@@ -852,7 +852,7 @@
 		echo "<td>";
 		$class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
 		$aspect = $check ? ' data-aspect="cdate"' : '';
-		if ($check && (get_post($name) != Dates::Today())) {
+		if ($check && (get_post($name) != Dates::today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
 		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" .
@@ -1146,13 +1146,13 @@
 
 	function dateformats_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('formats_date'));
+		echo array_selector($name, $value, Config::get('date.formats'));
 		echo "</td></tr>\n";
 	}
 
 	function dateseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators_date'));
+		echo array_selector($name, $value, Config::get('date.separators'));
 		echo "</td></tr>\n";
 	}
 

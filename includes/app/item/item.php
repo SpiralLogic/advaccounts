@@ -220,7 +220,7 @@
 		 */
 		static public function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
 			if ($date_ == null) {
-				$date_ = Dates::Today();
+				$date_ = Dates::today();
 			}
 			$date = Dates::date2sql($date_);
 			$sql
@@ -370,7 +370,7 @@
 		}
 
 		static protected function load_stock_levels($location = '') {
-			$date = Dates::date2sql(Dates::Today());
+			$date = Dates::date2sql(Dates::today());
 			$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
 			if ($location != '') {
 				$sql .= " AND loc_code = " . DB::escape($location);

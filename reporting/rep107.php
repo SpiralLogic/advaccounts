@@ -31,9 +31,9 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 		$dec = User::price_dec();
 		$fno = explode("-", $from);
 		$tno = explode("-", $to);
-		$cols = array(4, 60, 330, 355, 380, 410, 450, 470, 495);
+		$cols = array(4, 70, 360, 380, 410, 450, 480, 510, 475);
 		// $headers in doctext.inc
-		$aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'center', 'right', 'right');
+		$aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'center', 'right');
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {

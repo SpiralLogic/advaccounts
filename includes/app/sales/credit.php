@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	/**
-	 * if ($writeoff_acc==0) return goods into $order->Location
+	 * if ($writeoff_acc==0) return goods into $order->location
 	 * if src_docs!=0 => credit invoice else credit note
 	 */
 	class Sales_Credit
@@ -156,9 +156,9 @@
 				if ($credited_invoice) {
 					$reference .= "Ex Inv: " . $credited_invoice;
 				}
-				Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, -$credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
+				Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->location, $credit_note->document_date, $reference, -$credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
 			}
-			Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
+			Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->location, $credit_note->document_date, $reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
 		}
 		/**
 		 * @static
@@ -246,12 +246,12 @@
 			) {
 				$old_order = (PHP_VERSION < 5) ? $order : clone($order);
 				$customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
-				$_POST['Location'] = $order->Location;
+				$_POST['location'] = $order->location;
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['name'] = $order->name;
 				$_POST['phone'] = $order->phone;
-				Ajax::i()->activate('Location');
+				Ajax::i()->activate('location');
 				Ajax::i()->activate('deliver_to');
 				Ajax::i()->activate('name');
 				Ajax::i()->activate('phone');
@@ -468,10 +468,10 @@
 			Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
 			if ($_POST['CreditType'] == "Return") {
 				/*if the credit note is a return of goods then need to know which location to receive them into */
-				if (!isset($_POST['Location'])) {
-					$_POST['Location'] = $credit->Location;
+				if (!isset($_POST['location'])) {
+					$_POST['location'] = $credit->location;
 				}
-				Inv_Location::row(_("Items Returned to Location"), 'Location', $_POST['Location']);
+				Inv_Location::row(_("Items Returned to Location"), 'location');
 			}
 			else {
 				/* the goods are to be written off to somewhere */

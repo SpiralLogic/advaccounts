@@ -242,15 +242,14 @@
 			$result = DB::query($sql, "Cannot query GRNs");
 			return (DB::num_rows($result) > 0);
 		}
-		static public function void($grn_batch) {
-			// if this grn is references on any invoices/credit notes, then it
-			// can't be voided
+		static public function void($type, $grn_batch) {
+			if ($type != ST_SUPPRECEIVE) $type = ST_SUPPRECEIVE;
 			if (static::exists_on_invoices($grn_batch)) {
 				return false;
 			}
 			DB::begin();
-			Bank_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
-			GL_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
+			Bank_Trans::void($type, $grn_batch, true);
+			GL_Trans::void($type, $grn_batch, true);
 			// clear the quantities of the grn items in the POs and invoices
 			$result = static::get_items($grn_batch);
 			if (DB::num_rows($result) > 0) {
@@ -266,7 +265,7 @@
 		WHERE grn_batch_id=" . DB::escape($grn_batch);
 			DB::query($sql, "A grn detail item could not be voided.");
 			// clear the stock move items
-			Inv_Movement::void(ST_SUPPRECEIVE, $grn_batch);
+			Inv_Movement::void($type, $grn_batch);
 			DB::commit();
 			return true;
 		}
@@ -287,11 +286,11 @@
 					$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
 				}
 				ref_cells(_("Reference"), 'ref', '', null, "class='label'");
-				if (!isset($_POST['Location'])) {
-					$_POST['Location'] = $po->Location;
+				if (!isset($_POST['location'])) {
+					$_POST['location'] = $po->location;
 				}
 				label_cell(_("Deliver Into Location"), "class='label'");
-				Inv_Location::cells(null, "Location", $_POST['Location']);
+				Inv_Location::cells(null, 'location', $_POST['location']);
 				if (!isset($_POST['DefaultReceivedDate'])) {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 				}
@@ -299,7 +298,7 @@
 			}
 			else {
 				label_cells(_("Reference"), $po->reference, "class='label'");
-				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
+				label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->location), "class='label'");
 			}
 			end_row();
 			if (!$editable) {

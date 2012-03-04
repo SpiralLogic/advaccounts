@@ -209,14 +209,14 @@
 				echo "<div id='footer'>\n";
 				if (User::i()) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
-					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
+					echo "<span class='date'>" . Dates::today() . " | " . Dates::now() . "</span>\n";
 					if (User::i()->logged_in()) {
 				//		echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}
 					echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
 			}
-			if (Config::get('debug')) {
+			if (Config::get('debug.enabled')) {
 				$this->display_loaded();
 			}
 			echo "</div>\n"; //end footer div

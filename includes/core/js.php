@@ -3,7 +3,8 @@
 	/**
 
 	 */
-	class JS {
+	class JS
+	{
 		/**
 		 * @var array
 		 */
@@ -88,12 +89,14 @@
 		static public function gmap($selector, $address, $title) {
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			$js = <<<JS
+			$js
+			 = <<<JS
 
 				Adv.maps = { api_key: '$apikey'}
 JS;
 			JS::beforeload($js);
-			$js = <<<JS
+			$js
+			 = <<<JS
 var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -213,7 +216,7 @@ JSS;
 			if (!AJAX_REFERRER) {
 				foreach (self::$_footerFiles as $dir => $file) {
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)),
-						false)->setReturn(false);
+																									false)->setReturn(false);
 				}
 				echo $files;
 			}
@@ -471,7 +474,7 @@ JSS;
 		 * @param $url
 		 */
 		static public function redirect($url) {
-			$data['status'] = array('status' => 'redirect', 'message' => $_SERVER['PHP_SELF']);
+			$data['status'] = array('status' => 'redirect', 'message' => $url);
 			static::renderJSON($data);
 		}
 

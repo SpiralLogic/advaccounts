@@ -13,7 +13,8 @@
 	/**
 
 	 */
-	class Jobsboard {
+	class Jobsboard
+	{
 		/**
 		 * @var
 		 */
@@ -26,7 +27,6 @@
 		 * @var
 		 */
 		public $order_no;
-
 		/***
 		 * @param $trans_no
 		 *
@@ -37,19 +37,20 @@
 			$job = $this->get_job($trans_no);
 			if ($this->jobExists($trans_no)) {
 				$this->currentJob['Customer'] = $job['Customer'] . ' - CANCELLED';
-				$this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
-				$this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . User::i()->name . '</div>' . $job['Next_Action_Required'];
+				$this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . \User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
+				$this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . \User::i()->name . '</div>' . $job['Next_Action_Required'];
 				$this->currentJob['order_ref'] = '';
 				$this->currentJob['Priority_Level'] = 5;
-				\DB::update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+				\DB::update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])
+				 ->exec();
 				\Event::success('Order ' . $trans_no . ' has been removed from the Jobs Board!');
-			} else {
+			}
+			else {
 				\Event::error('There is no current Order to remove from jobsboard');
 			}
 			\DB::change_connection();
 			return false;
 		}
-
 		/**
 		 * @param \Sales_Order $job_data
 		 *
@@ -60,7 +61,7 @@
 		 */
 		function addjob($job_data) {
 			$this->order_no = $order_no = $job_data->trans_no;
-			$user_name = User::i()->name;
+			$user_name = \User::i()->name;
 			$orderlines = $this->getOrderLines();
 			\DB::change_connection('jobsboard');
 			$update = var_export($job_data, true);
@@ -80,14 +81,17 @@
 				);
 			}
 			if ($exists) {
-				$deleted = array_diff_key($this->getLines(), $lines);
+				$jobslines = $this->getLines();
+				$deleted = array_diff_key($jobslines, $lines);
 				foreach ($deleted as $line) {
-					$lines[$line['line_id']]['quantity'] = 0;
-					$lines[$line['line_id']]['description'] .= " DELETED!";
+					if ($jobslines[$line['line_id']]['quantity']==0) continue;
+					$jobslines[$line['line_id']]['quantity'] = 0;
+					$jobslines[$line['line_id']]['description'] .= " DELETED!";
 				}
 				$update = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job Updated from acounts by ' . $user_name . ' ' . chr(13) . chr(10) . $job['Updates'];
 				$data['Next_Action_Required'] = '<div>Job has been updated from accounts ' . $user_name . '</div>' . $job['Next_Action_Required'];
-			} else {
+			}
+			else {
 				$data['Customer'] = $job_data->customer_name;
 				$data['Priority_Level'] = 3;
 				$data['Date_Ordered'] = date('Y-m-d', strtotime("now"));
@@ -119,8 +123,6 @@
 			\DB::change_connection();
 			return;
 		}
-
-
 		/**
 		 * @static
 
@@ -128,7 +130,7 @@
 		static function tasks() {
 			$webstore = \Config::get('webstore.type');
 			$webstore = '\\Modules\\' . $webstore;
-			/***	@var \Modules\Volusion $store */
+			/***  @var \Modules\Volusion $store */
 			$store = new $webstore();
 			$store->doWebsales();
 			\DB::change_connection('jobsboard');
@@ -156,7 +158,6 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			}
 			\DB::change_connection();
 		}
-
 		/***
 		 * @param $trans_no
 		 *
@@ -164,10 +165,11 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 		 */
 		function get_job($trans_no) {
 			$this->currentJob = \DB::select()->from('Job_List')->where('order_no=', $trans_no)->fetch()->one();
-			if ($this->currentJob) $this->getLines();
+			if ($this->currentJob) {
+				$this->getLines();
+			}
 			return $this->currentJob;
 		}
-
 		/***
 		 * @return bool
 		 * Returns if there is currently a job that exists stored in currentJob
@@ -178,10 +180,9 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			}
 			return (isset($this->currentJob['Advanced_Job_No']));
 		}
-
 		/**
-		 * @param array $data	Data to insert as job
-		 *										 Will insert lines
+		 * @param array $data  Data to insert as job
+		 *                     Will insert lines
 		 */
 		protected function insertJob($data) {
 			$result = \DB::insert('Job_List')->values($data)->exec();
@@ -191,7 +192,6 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 				$this->insertLines();
 			}
 		}
-
 		/**
 		 * @param array $data Data to update Jobsboard job
 		 */
@@ -201,7 +201,6 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 				$this->insertLines();
 			}
 		}
-
 		/**
 
 		 */
@@ -212,12 +211,12 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			foreach ($lines as $line) {
 				if (isset($currentLines[$line['line_id']])) {
 					$this->updateline($line);
-				} else {
+				}
+				else {
 					$this->insertLine($line);
 				}
 			}
 		}
-
 		/**
 		 * @param array $line Insert line into Jobsboard
 		 */
@@ -226,15 +225,14 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			$line_id = \DB::insert('JobListItems')->values($line)->exec();
 			$this->lines[$line_id] = $line;
 		}
-
 		/**
 		 * @param array $line Updateline into jobsboard
 		 */
 		protected function updateLine($line) {
 			$line['job_id'] = $this->currentJob['Advanced_Job_No'];
-			\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
+			\DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])
+			 ->and_where('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
 		}
-
 		/**
 		 * @return array Get lines from jobsboard for current order
 		 */
@@ -246,9 +244,9 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
 			}
 			return $result;
 		}
-
 		/***
 		 * Get line from order
+		 *
 		 * @return array Lines from accounting order
 		 */
 		protected function getOrderLines() {

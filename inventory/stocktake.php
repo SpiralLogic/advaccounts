@@ -108,7 +108,6 @@ Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
 				$_SESSION['adj_items']->clear_items();
 				unset ($_SESSION['adj_items']);
 			}
-			//session_register("adj_items");
 			$_SESSION['adj_items'] = new Item_Order(ST_INVADJUST);
 			$_POST['AdjDate'] = Dates::new_doc_date();
 			if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {

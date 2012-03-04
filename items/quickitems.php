@@ -104,7 +104,9 @@ HTML;
 	echo "<iframe id='locationFrame' data-src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' data-srcpre='" . Config::get('store_product_url')."' data-srcpost='".Config::get('store_url_extension') . "' style='width:100%'
+	echo "<iframe id='webFrame' data-srcpre='" . Config::get('webstore.product_url')."' data-srcpost='".Config::get
+	('webstore.url_extension') . "'
+	style='width:100%'
 	height='500' frameborder='0'></iframe> ";
 	$menu->endTab();
 	$menu->render();

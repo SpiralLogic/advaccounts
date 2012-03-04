@@ -69,12 +69,12 @@ class Apps_Sales extends Application
 		$this->add_lapp_function(2, _("Customer Allocation &Inquiry"),
 								 "sales/inquiry/customer_allocation_inquiry.php?", SA_SALESALLOC);
 		$this->add_lapp_function(2, '', '');
-		$this->add_rapp_function(2, _("Add and Manage &Customers"),
-								 "sales/manage/customers.php?", SA_CUSTOMER);
+	/*	$this->add_rapp_function(2, _("Add and Manage &Customers"),
+								 "sales/manage/customers.php?", SA_CUSTOMER);*/
 		$this->add_rapp_function(2, _("Customer and Sales &Reports"),"reporting/reports_main.php?Class=0", SA_SALESTRANSVIEW);
 		$this->add_rapp_function(2, _("Email Customer Statements"),"sales/email_statements.php", SA_SALESTRANSVIEW);
-		$this->add_rapp_function(2, _("Customer &Branches"),
-								 "sales/manage/customer_branches.php?", SA_CUSTOMER);
+/*		$this->add_rapp_function(2, _("Customer &Branches"),
+								 "sales/manage/customer_branches.php?", SA_CUSTOMER);*/
 		$this->add_module(_("Sales Setup"));
 
 		$this->add_lapp_function(3, _("Credit &Status Setup"),

@@ -260,7 +260,7 @@
 			$this->row -= ($this->lineHeight + 4);
 			$str = _("Print Out Date") . ':';
 			$this->Text($this->leftMargin, $str, $titleCol);
-			$str = Dates::Today() . ' ' . Dates::Now();
+			$str = Dates::today() . ' ' . Dates::now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -478,7 +478,7 @@
 			// Timestamp of when this copy of the report was generated
 			$str = _("Generated At") . ':';
 			$this->Text($this->leftMargin, $str, $headerFieldCol);
-			$str = Dates::Today() . ' ' . Dates::Now();
+			$str = Dates::today() . ' ' . Dates::now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -504,7 +504,7 @@
 				$this->Text($pageNumCol, $str, 0, 0, 0, 'right', 0, 0, NULL, 1);
 			}
 			// Print gray line across the page
-			$this->Line($this->row - 5, 1);
+	 		$this->Line($this->row - 5, 1);
 			// Restore font size to user-defined size
 			$this->fontSize = $oldFontSize;
 			// restore user-specified cell padding for column headers
@@ -763,7 +763,7 @@
 			} // call header template chosen by current report
 		}
 		public function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-			if (Config::get('debug_pdf') == 1) {
+			if (Config::get('debug.pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
 				$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 				ob_clean();

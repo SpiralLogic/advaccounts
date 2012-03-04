@@ -11,11 +11,11 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
 	/** @define "null" "VALUE" */
-
 	/**
 
 	 */
-	class ADVAccounting {
+	class ADVAccounting
+	{
 		/**
 		 * @var
 		 */
@@ -36,7 +36,6 @@
 		 * @var \Menu
 		 */
 		public $menu;
-
 		/**
 
 		 */
@@ -63,7 +62,6 @@
 			$this->add_application(new Apps_System());
 			$this->get_selected();
 		}
-
 		/**
 		 * @param $app
 		 */
@@ -73,7 +71,6 @@
 				$this->applications[strtolower($app->id)] = $app;
 			}
 		}
-
 		/**
 		 * @param $id
 		 *
@@ -85,7 +82,6 @@
 			}
 			return null;
 		}
-
 		/**
 		 * @return null
 		 */
@@ -105,7 +101,6 @@
 			}
 			return $this->selected;
 		}
-
 		/**
 
 		 */
@@ -114,14 +109,23 @@
 			$page->renderer->display_application($this);
 			Page::end();
 		}
-
+		/**
+		 * @param $app_id
+		 */
 		public function set_selected($app_id) { $this->selected = $this->get_application($app_id); }
-
 		/**
 		 * @static
 
 		 */
 		static public function i() {
+			$buildversion = Cache::get('build.version', false);
+					if (!$buildversion) {
+						define('BUILD_VERSION', file_get_contents(DOCROOT . 'version'));
+						Cache::set('build.version', BUILD_VERSION);
+					} else {
+						define('BUILD_VERSION', $buildversion);
+			}
+			define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
 			array_walk($_POST, function(&$v) {
 				$v = is_string($v) ? trim($v) : $v;
 			});
@@ -132,13 +136,11 @@
 				static::checkLogin();
 			}
 			Event::i();
-
 			if (!isset($_SESSION["App"])) {
 				$_SESSION["App"] = new static();
 			}
 			return $_SESSION["App"];
 		}
-
 		/**
 
 		 */
@@ -149,7 +151,7 @@
 			}
 			$currentUser = User::i();
 			if (Input::post("user_name")) {
-				$company = isset($_POST["login_company"]) ? $_POST["login_company"]: 'default';
+				$company = isset($_POST["login_company"]) ? $_POST["login_company"] : 'default';
 				if ($company) {
 					if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
 						// Incorrect password
@@ -167,7 +169,6 @@
 				Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 			}
 		}
-
 		/**
 
 		 */
@@ -185,7 +186,6 @@
 			}
 			exit();
 		}
-
 		/**
 
 		 */
@@ -199,7 +199,6 @@
 			Session::kill();
 			die();
 		}
-
 		/**
 		 * @static
 		 *

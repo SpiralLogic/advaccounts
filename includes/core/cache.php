@@ -6,7 +6,8 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache {
+	class Cache
+	{
 		/**
 		 * @var Memcached
 		 */
@@ -15,7 +16,6 @@
 		 * @var bool
 		 */
 		static protected $connected = false;
-
 		/**
 		 * @static
 		 * @return Memcached
@@ -42,12 +42,11 @@
 			}
 			return (static::$connected) ? static::$i : false;
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param		 $key
-		 * @param		 $value
+		 * @param     $key
+		 * @param     $value
 		 * @param int $expires
 		 *
 		 * @return mixed
@@ -61,7 +60,11 @@
 			}
 			return $value;
 		}
-
+		/**
+		 * @static
+		 *
+		 * @param $key
+		 */
 		static public function delete($key) {
 			if (static::i() !== false) {
 				static::i()->delete($key);
@@ -70,7 +73,6 @@
 				unset($_SESSION['cache'][$key]);
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -94,7 +96,6 @@
 			}
 			return $result;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -102,7 +103,6 @@
 		static public function getStats() {
 			return (static::$connected) ? static::i()->getStats() : false;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -110,7 +110,6 @@
 		static public function getVersion() {
 			return (static::$connected) ? static::i()->getVersion() : false;
 		}
-
 		/**
 		 * @static
 		 * @return mixed
@@ -118,7 +117,6 @@
 		static public function getServerList() {
 			return (static::$connected) ? static::i()->getServerList() : false;
 		}
-
 		/**
 		 * @static
 		 *

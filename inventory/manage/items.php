@@ -74,16 +74,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 	Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
 	Validation::check(Validation::ITEM_TAX_TYPES, _("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
 	function clear_data() {
-		unset($_POST['long_description']);
-		unset($_POST['description']);
-		unset($_POST['category_id']);
-		unset($_POST['tax_type_id']);
-		unset($_POST['units']);
-		unset($_POST['mb_flag']);
-		unset($_POST['NewStockID']);
-		unset($_POST['dimension_id']);
-		unset($_POST['dimension2_id']);
-		unset($_POST['no_sale']);
+		unset($_POST['long_description'],$_POST['description'],$_POST['category_id'],$_POST['tax_type_id'],$_POST['units'],$_POST['mb_flag'],$_POST['NewStockID'],$_POST['dimension_id'],$_POST['dimension2_id'],$_POST['no_sale']);
 	}
 
 	if (isset($_POST['addupdate']) || isset($_POST['addupdatenew'])) {
@@ -145,8 +136,7 @@ Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
 		}
 	}
 	if (get_post('clone')) {
-		unset($_POST['stock_id']);
-		unset($_POST['inactive']);
+		unset($_POST['stock_id'],$_POST['inactive']);
 		JS::set_focus('NewStockID');
 		Ajax::i()->activate('_page_body');
 	}

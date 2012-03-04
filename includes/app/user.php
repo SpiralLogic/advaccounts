@@ -47,7 +47,7 @@ class User
 	public $change_password = false;
 	function __construct() {
 		$this->loginname = $this->username = $this->name = "";
-		$this->company = Config::get('company_default') ? : 'default';
+		$this->company = Config::get('default.company') ? : 'default';
 		$this->logged = false;
 		$this->prefs = new userPrefs();
 	}
@@ -161,10 +161,10 @@ class User
 		 = "\nvar user = {
 						 \n theme: '/themes/" . static::theme() . "/',
 						 \nloadtxt: '" . _('Requesting data...') . "',
-						 \ndate: '" . Dates::Today() . "',
-						 \ndatesys: " . Config::get('accounts_datesystem') . ",
+						 \ndate: '" . Dates::today() . "',
+						 \ndatesys: " . Config::get('accounts.datesystem') . ",
 						 \ndatefmt: " . static::date_format() . ",
-						 \ndatesep: '" . Config::get('ui_date_format') . "',
+						 \ndatesep: '" . Config::get('date.ui_format') . "',
 						 \nts: '" . Config::get('separators_thousands', static::tho_sep()) . "',
 						 \nds: '" . Config::get('separators_decimal', static::dec_sep()) . "',
 						 \npdec: " . static::price_dec() . "}\n";

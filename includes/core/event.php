@@ -6,8 +6,8 @@
 	 * Time: 6:39 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Event {
-
+	class Event
+	{
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */

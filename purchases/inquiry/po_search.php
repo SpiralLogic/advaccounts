@@ -70,7 +70,7 @@ Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRAN
 	porder.ord_date,
 	supplier.curr_code,
 	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-	Sum(line.delivery_date < '" . Dates::date2sql(Dates::Today()) . "'
+	Sum(line.delivery_date < '" . Dates::date2sql(Dates::today()) . "'
 	AND (line.quantity_ordered > line.quantity_received)) As OverDue
 	FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
 	WHERE porder.order_no = line.order_no

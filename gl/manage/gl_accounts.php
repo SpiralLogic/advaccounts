@@ -37,13 +37,13 @@
 			Event::error(_("The account name cannot be empty."));
 			JS::set_focus('account_name');
 		}
-		elseif (!Config::get('accounts_allowcharacters') && !is_numeric($_POST['account_code'])) {
+		elseif (!Config::get('accounts.allowcharacters') && !is_numeric($_POST['account_code'])) {
 			$input_error = 1;
 			Event::error(_("The account code must be numeric."));
 			JS::set_focus('account_code');
 		}
 		if ($input_error != 1) {
-			if (Config::get('accounts_allowcharacters') == 2) {
+			if (Config::get('accounts.allowcharacters') == 2) {
 				$_POST['account_code'] = strtoupper($_POST['account_code']);
 			}
 			if (!isset($_POST['account_tags'])) {

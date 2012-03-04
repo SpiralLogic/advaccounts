@@ -23,70 +23,70 @@
 
 // Define a local copy of jQuery
 		var jQuery = function (selector, context) {
-			// The jQuery object is actually just the init constructor 'enhanced'
-			return new jQuery.fn.init(selector, context, rootjQuery);
-		},
+			 // The jQuery object is actually just the init constructor 'enhanced'
+			 return new jQuery.fn.init(selector, context, rootjQuery);
+		 },
 
-			// Map over jQuery in case of overwrite
+		// Map over jQuery in case of overwrite
 		 _jQuery = window.jQuery,
 
-			// Map over the $ in case of overwrite
+		// Map over the $ in case of overwrite
 		 _$ = window.$,
 
-			// A central reference to the root jQuery(document)
+		// A central reference to the root jQuery(document)
 		 rootjQuery,
 
-			// A simple way to check for HTML strings or ID strings
-			// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
+		// A simple way to check for HTML strings or ID strings
+		// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 		 quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
-			// Check if a string has a non-whitespace character in it
+		// Check if a string has a non-whitespace character in it
 		 rnotwhite = /\S/,
 
-			// Used for trimming whitespace
+		// Used for trimming whitespace
 		 trimLeft = /^\s+/,
 		 trimRight = /\s+$/,
 
-			// Check for digits
+		// Check for digits
 		 rdigit = /\d/,
 
-			// Match a standalone tag
+		// Match a standalone tag
 		 rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
-			// JSON RegExp
+		// JSON RegExp
 		 rvalidchars = /^[\],:{}\s]*$/,
 		 rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
 		 rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 		 rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
 
-			// Useragent RegExp
+		// Useragent RegExp
 		 rwebkit = /(webkit)[ \/]([\w.]+)/,
 		 ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
 		 rmsie = /(msie) ([\w.]+)/,
 		 rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
-			// Matches dashed string for camelizing
+		// Matches dashed string for camelizing
 		 rdashAlpha = /-([a-z]|[0-9])/ig,
 		 rmsPrefix = /^-ms-/,
 
-			// Used by jQuery.camelCase as callback to replace()
+		// Used by jQuery.camelCase as callback to replace()
 		 fcamelCase = function (all, letter) {
 			 return ( letter + "" ).toUpperCase();
 		 },
 
-			// Keep a UserAgent string for use with jQuery.browser
+		// Keep a UserAgent string for use with jQuery.browser
 		 userAgent = navigator.userAgent,
 
-			// For matching the engine and version of the browser
+		// For matching the engine and version of the browser
 		 browserMatch,
 
-			// The deferred used on DOM ready
+		// The deferred used on DOM ready
 		 readyList,
 
-			// The ready event handler
+		// The ready event handler
 		 DOMContentLoaded,
 
-			// Save a reference to some core methods
+		// Save a reference to some core methods
 		 toString = Object.prototype.toString,
 		 hasOwn = Object.prototype.hasOwnProperty,
 		 push = Array.prototype.push,
@@ -94,7 +94,7 @@
 		 trim = String.prototype.trim,
 		 indexOf = Array.prototype.indexOf,
 
-			// [[Class]] -> type pairs
+		// [[Class]] -> type pairs
 		 class2type = {};
 
 		jQuery.fn = jQuery.prototype = {
@@ -766,7 +766,7 @@
 											var value, key, ret = [],
 											 i = 0,
 											 length = elems.length,
-												// jquery objects are treated as arrays
+											// jquery objects are treated as arrays
 											 isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length - 1 ] ) || length === 0 || jQuery.isArray(elems) );
 
 											// Go through the array, translating each of the items to their
@@ -1020,19 +1020,19 @@
 
 		var // Actual callback list
 		 list = [],
-			// Stack of fire calls for repeatable lists
+		// Stack of fire calls for repeatable lists
 		 stack = [],
-			// Last fire value (for non-forgettable lists)
+		// Last fire value (for non-forgettable lists)
 		 memory,
-			// Flag to know if list is currently firing
+		// Flag to know if list is currently firing
 		 firing,
-			// First callback to fire (used internally by add and fireWith)
+		// First callback to fire (used internally by add and fireWith)
 		 firingStart,
-			// End of the loop when firing
+		// End of the loop when firing
 		 firingLength,
-			// Index of currently firing callback (modified by remove if needed)
+		// Index of currently firing callback (modified by remove if needed)
 		 firingIndex,
-			// Add one or several callbacks to the list
+		// Add one or several callbacks to the list
 		 add = function (args) {
 			 var i,
 				length,
@@ -1053,7 +1053,7 @@
 				 }
 			 }
 		 },
-			// Fire callbacks
+		// Fire callbacks
 		 fire = function (context, args) {
 			 args = args || [];
 			 memory = !flags.memory || [ context, args ];
@@ -1081,7 +1081,7 @@
 				 }
 			 }
 		 },
-			// Actual Callbacks object
+		// Actual Callbacks object
 		 self = {
 			 // Add a callback or a collection of callbacks to the list
 			 add:function () {
@@ -1706,16 +1706,16 @@
 										 internalKey = jQuery.expando,
 										 getByName = typeof name === "string",
 
-											// We have to handle DOM nodes and JS objects differently because IE6-7
-											// can't GC object references properly across the DOM-JS boundary
+										// We have to handle DOM nodes and JS objects differently because IE6-7
+										// can't GC object references properly across the DOM-JS boundary
 										 isNode = elem.nodeType,
 
-											// Only DOM nodes need the global jQuery cache; JS object data is
-											// attached directly to the object so GC can occur automatically
+										// Only DOM nodes need the global jQuery cache; JS object data is
+										// attached directly to the object so GC can occur automatically
 										 cache = isNode ? jQuery.cache : elem,
 
-											// Only defining an ID for JS objects if its cache already exists allows
-											// the code to shortcut on the same path as a DOM node with no cache
+										// Only defining an ID for JS objects if its cache already exists allows
+										// the code to shortcut on the same path as a DOM node with no cache
 										 id = isNode ? elem[ jQuery.expando ] : elem[ jQuery.expando ] && jQuery.expando,
 										 isEvents = name === "events";
 
@@ -1805,15 +1805,15 @@
 
 										var thisCache, i, l,
 
-											// Reference to internal data cache key
+										// Reference to internal data cache key
 										 internalKey = jQuery.expando,
 
 										 isNode = elem.nodeType,
 
-											// See jQuery.data for more information
+										// See jQuery.data for more information
 										 cache = isNode ? jQuery.cache : elem,
 
-											// See jQuery.data for more information
+										// See jQuery.data for more information
 										 id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
 
 										// If there is already no cache entry for this object, there is no
@@ -5363,12 +5363,12 @@
 
 	var runtil = /Until$/,
 	 rparentsprev = /^(?:parents|prevUntil|prevAll)/,
-		// Note: This RegExp should be improved, or likely pulled from Sizzle
+	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	 rmultiselector = /,/,
 	 isSimple = /^.[^:#\[\.,]*$/,
 	 slice = Array.prototype.slice,
 	 POS = jQuery.expr.match.POS,
-		// methods guaranteed to produce a unique set when starting from a unique set
+	// methods guaranteed to produce a unique set when starting from a unique set
 	 guaranteedUnique = {
 		 children:true,
 		 contents:true,
@@ -5578,10 +5578,10 @@
 							}, function (name, fn) {
 		jQuery.fn[ name ] = function (until, selector) {
 			var ret = jQuery.map(this, fn, until),
-				// The variable 'args' was introduced in
-				// https://github.com/jquery/jquery/commit/52a0238
-				// to work around a bug in Chrome 10 (Dev) and should be removed when the bug is fixed.
-				// http://code.google.com/p/v8/issues/detail?id=1050
+			// The variable 'args' was introduced in
+			// https://github.com/jquery/jquery/commit/52a0238
+			// to work around a bug in Chrome 10 (Dev) and should be removed when the bug is fixed.
+			// http://code.google.com/p/v8/issues/detail?id=1050
 			 args = slice.call(arguments);
 
 			if (!runtil.test(name)) {
@@ -5713,7 +5713,7 @@
 	 rnoInnerhtml = /<(?:script|style)/i,
 	 rnocache = /<(?:script|object|embed|option|style)/i,
 	 rnoshimcache = new RegExp("<(?:" + nodeNames.replace(" ", "|") + ")", "i"),
-		// checked="checked" or checked
+	// checked="checked" or checked
 	 rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	 rscriptType = /\/(java|ecma)script/i,
 	 rcleanScript = /^\s*<!(?:\[CDATA\[|\-\-)/,
@@ -6494,7 +6494,7 @@
 
 	var ralpha = /alpha\([^)]*\)/i,
 	 ropacity = /opacity=([^)]*)/,
-		// fixed for IE9, see #8346
+	// fixed for IE9, see #8346
 	 rupper = /([A-Z]|^ms)/g,
 	 rnumpx = /^-?\d+(?:px)?$/i,
 	 rnum = /^-?\d/,
@@ -6885,7 +6885,7 @@
 	 rhash = /#.*$/,
 	 rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
 	 rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
-		// #7653, #8125, #8152: local protocol detection
+	// #7653, #8125, #8152: local protocol detection
 	 rlocalProtocol = /^(?:about|app|app\-storage|.+\-extension|file|res|widget):$/,
 	 rnoContent = /^(?:GET|HEAD)$/,
 	 rprotocol = /^\/\//,
@@ -6896,34 +6896,34 @@
 	 rts = /([?&])_=[^&]*/,
 	 rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/,
 
-		// Keep a copy of the old load method
+	// Keep a copy of the old load method
 	 _load = jQuery.fn.load,
 
-		/* Prefilters
-		 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
-		 * 2) These are called:
-		 *    - BEFORE asking for a transport
-		 *    - AFTER param serialization (s.data is a string if s.processData is true)
-		 * 3) key is the dataType
-		 * 4) the catchall symbol "*" can be used
-		 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
-		 */
+	/* Prefilters
+	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
+	 * 2) These are called:
+	 *    - BEFORE asking for a transport
+	 *    - AFTER param serialization (s.data is a string if s.processData is true)
+	 * 3) key is the dataType
+	 * 4) the catchall symbol "*" can be used
+	 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
+	 */
 	 prefilters = {},
 
-		/* Transports bindings
-		 * 1) key is the dataType
-		 * 2) the catchall symbol "*" can be used
-		 * 3) selection will start with transport dataType and THEN go to "*" if needed
-		 */
+	/* Transports bindings
+	 * 1) key is the dataType
+	 * 2) the catchall symbol "*" can be used
+	 * 3) selection will start with transport dataType and THEN go to "*" if needed
+	 */
 	 transports = {},
 
-		// Document location
+	// Document location
 	 ajaxLocation,
 
-		// Document location segments
+	// Document location segments
 	 ajaxLocParts,
 
-		// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
+	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
 	 allTypes = ["*/"] + ["*"];
 
 // #8138, IE may throw an exception when accessing
@@ -7272,40 +7272,40 @@
 
 										var // Create the final options object
 										 s = jQuery.ajaxSetup({}, options),
-											// Callbacks context
+										// Callbacks context
 										 callbackContext = s.context || s,
-											// Context for global events
-											// It's the callbackContext if one was provided in the options
-											// and if it's a DOM node or a jQuery collection
+										// Context for global events
+										// It's the callbackContext if one was provided in the options
+										// and if it's a DOM node or a jQuery collection
 										 globalEventContext = callbackContext !== s &&
 																					( callbackContext.nodeType || callbackContext instanceof jQuery ) ?
 																					jQuery(callbackContext) : jQuery.event,
-											// Deferreds
+										// Deferreds
 										 deferred = jQuery.Deferred(),
 										 completeDeferred = jQuery.Callbacks("once memory"),
-											// Status-dependent callbacks
+										// Status-dependent callbacks
 										 statusCode = s.statusCode || {},
-											// ifModified key
+										// ifModified key
 										 ifModifiedKey,
-											// Headers (they are sent all at once)
+										// Headers (they are sent all at once)
 										 requestHeaders = {},
 										 requestHeadersNames = {},
-											// Response headers
+										// Response headers
 										 responseHeadersString,
 										 responseHeaders,
-											// transport
+										// transport
 										 transport,
-											// timeout handle
+										// timeout handle
 										 timeoutTimer,
-											// Cross-domain detection vars
+										// Cross-domain detection vars
 										 parts,
-											// The jqXHR state
+										// The jqXHR state
 										 state = 0,
-											// To know if global events are to be dispatched
+										// To know if global events are to be dispatched
 										 fireGlobals,
-											// Loop variable
+										// Loop variable
 										 i,
-											// Fake xhr
+										// Fake xhr
 										 jqXHR = {
 
 											 readyState:0,
@@ -7556,7 +7556,7 @@
 											if (s.cache === false) {
 
 												var ts = jQuery.now(),
-													// try replacing _= if it is there
+												// try replacing _= if it is there
 												 ret = s.url.replace(rts, "$1_=" + ts);
 
 												// if nothing was replaced, add timestamp to the end
@@ -7805,14 +7805,14 @@
 		 key,
 		 length = dataTypes.length,
 		 tmp,
-			// Current and previous dataTypes
+		// Current and previous dataTypes
 		 current = dataTypes[ 0 ],
 		 prev,
-			// Conversion expression
+		// Conversion expression
 		 conversion,
-			// Conversion function
+		// Conversion function
 		 conv,
-			// Conversion functions (transitive conversion)
+		// Conversion functions (transitive conversion)
 		 conv1,
 		 conv2;
 
@@ -9122,10 +9122,10 @@
 
 											 var elem = this[0],
 
-												 // Get *real* offsetParent
+											 // Get *real* offsetParent
 												offsetParent = this.offsetParent(),
 
-												 // Get correct offsets
+											 // Get correct offsets
 												offset = this.offset(),
 												parentOffset = rroot.test(offsetParent[0].nodeName) ? { top:0, left:0 } : offsetParent.offset();
 

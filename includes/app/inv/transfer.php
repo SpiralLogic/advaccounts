@@ -71,8 +71,8 @@
 			return $result;
 		}
 
-		static public function void($type_no) {
-			Inv_Movement::void(ST_LOCTRANSFER, $type_no);
+		static public function void($type, $type_no) {
+			Inv_Movement::void($type, $type_no);
 		}
 
 		static public function update_pid($type, $stock_id, $from, $to, $pid, $cost) {

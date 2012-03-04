@@ -75,7 +75,7 @@
 		possible separators can be added by modifying the array definition by editing that file */
 	Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::pagesize());
 	Users::tabs_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
-	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
+	/* The array Config::get('print_paper_sizes') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['profile'])) {
 		$_POST['profile'] = User::print_profile();

@@ -16,7 +16,7 @@
 				return;
 			}
 			if ($date_ == null) {
-				$date_ = Dates::Today();
+				$date_ = Dates::today();
 			}
 			$for_amount = 0;
 			// We have to calculate all the currency accounts belonging to the GL account

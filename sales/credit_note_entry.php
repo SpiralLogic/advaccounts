@@ -114,7 +114,7 @@
 		$order->Comments = $_POST['CreditText'];
 		$order->document_date = $_POST['OrderDate'];
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
-		$order->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
+		$order->location = (isset($_POST['location']) ? $_POST['location'] : "");
 		$order->sales_type = $_POST['sales_type_id'];
 		if ($order->trans_no == 0) {
 			$order->reference = $_POST['ref'];
@@ -132,7 +132,7 @@
 		$_POST['branch_id'] = $order->Branch;
 		$_POST['OrderDate'] = $order->document_date;
 		$_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['sales_type_id'] = $order->sales_type;
 		if ($order->trans_no == 0) {
 			$_POST['ref'] = $order->reference;

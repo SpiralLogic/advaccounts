@@ -6,36 +6,98 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Debtor extends Contact_Company
-	{
+	class Debtor extends Contact_Company {
+
+		/**
+		 * @var int
+		 */
 		public $debtor_no = 0;
+		/**
+		 * @var string
+		 */
 		public $name = 'New Customer';
+		/**
+		 * @var
+		 */
 		public $sales_type;
+		/**
+		 * @var string
+		 */
 		public $debtor_ref = '';
+		/**
+		 * @var
+		 */
 		public $credit_status;
+		/**
+		 * @var int
+		 */
 		public $payment_discount = 0;
+		/**
+		 * @var int
+		 */
 		public $pymt_discount = 0;
+		/**
+		 * @var int
+		 */
 		public $defaultBranch = 0;
+		/**
+		 * @var int
+		 */
 		public $defaultContact = 0;
+		/**
+		 * @var array
+		 */
 		public $branches = array();
+		/**
+		 * @var array
+		 */
 		public $contacts = array();
 		/**
 		 * @var Debtor_Account
 		 */
 		public $accounts;
+		/**
+		 * @var
+		 */
 		public $transactions;
+		/**
+		 * @var null
+		 */
 		public $webid = null;
+		/**
+		 * @var
+		 */
 		public $email;
+		/**
+		 * @var
+		 */
 		public $inactive;
+		/**
+		 * @var
+		 */
 		public $notes;
+		/**
+		 * @var string
+		 */
 		protected $_table = 'debtors';
+		/**
+		 * @var string
+		 */
 		protected $_id_column = 'debtor_no';
+		/**
+		 * @param null $id
+		 */
 		public function __construct($id = null) {
 			$this->id = &$this->debtor_no;
 			$this->pymt_discount =& $this->payment_discount;
 			parent::__construct($id);
 			$this->debtor_ref = substr($this->name, 0, 60);
 		}
+		/**
+		 * @param bool $string
+		 *
+		 * @return array|string
+		 */
 		public function getStatus($string = false) {
 			foreach ($this->branches as $branch) {
 				/** @var Debtor_Branch $branch */
@@ -48,12 +110,18 @@
 			$this->_status->append($this->accounts->getStatus());
 			return parent::getStatus();
 		}
+		/**
+		 * @param null $details
+		 */
 		public function addBranch($details = null) {
 			$branch = new Debtor_Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
 			$this->branches[$branch->branch_id] = $branch;
 		}
+		/**
+		 * @return array|null
+		 */
 		public function delete() {
 			if ($this->_countTransactions() > 0) {
 				return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
@@ -73,6 +141,9 @@
 			$this->_new();
 			return $this->_status(true, 'delete', "Customer deleted.");
 		}
+		/**
+		 * @return array|bool
+		 */
 		public function getEmailAddresses() {
 			$emails = array();
 			if (!empty($this->accounts->email)) {
@@ -90,6 +161,9 @@
 			}
 			return (count($emails) > 0) ? $emails : false;
 		}
+		/**
+		 * @return array
+		 */
 		public function getTransactions() {
 			if ($this->id == 0) {
 				return array();
@@ -113,6 +187,11 @@
 			}
 			return $results;
 		}
+		/**
+		 * @param null $changes
+		 *
+		 * @return bool|void
+		 */
 		public function save($changes = null) {
 			$data['debtor_ref'] = substr($this->name, 0, 29);
 			$data['discount'] = User::numeric($this->discount) / 100;
@@ -137,6 +216,9 @@
 			}
 			return $this->_setDefaults();
 		}
+		/**
+		 * @param null $changes
+		 */
 		protected function setFromArray($changes = NULL) {
 			parent::setFromArray($changes);
 			if (isset($changes['accounts']) && is_array($changes['accounts'])) {
@@ -154,6 +236,9 @@
 			}
 			$this->credit_limit = str_replace(',', '', $this->credit_limit);
 		}
+		/**
+		 * @return array|bool|null
+		 */
 		protected function _canProcess() {
 			if (strlen($this->name) == 0) {
 				return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
@@ -175,7 +260,7 @@
 			}
 			if ($this->id != 0) {
 				$previous = new Debtor($this->id);
-				if ((filter_var($this->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)!= filter_var($previous->credit_limit,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) || $this->payment_terms != $previous->payment_terms) && !User::i()->can_access
+				if ((filter_var($this->credit_limit, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) != filter_var($previous->credit_limit, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) || $this->payment_terms != $previous->payment_terms) && !User::i()->can_access
 				(SA_CUSTOMER_CREDIT)
 				) {
 					return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
@@ -183,22 +268,37 @@
 			}
 			return true;
 		}
+		/**
+		 * @return int
+		 */
 		protected function _countBranches() {
 			DB::select('COUNT(*)')->from('branches')->where('debtor_no=', $this->id);
 			return DB::num_rows();
 		}
+		/**
+		 * @return int
+		 */
 		protected function _countContacts() {
 			DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
 			return DB::num_rows();
 		}
+		/**
+		 * @return int
+		 */
 		protected function _countOrders() {
 			DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
 			return DB::num_rows();
 		}
+		/**
+		 * @return int
+		 */
 		protected function _countTransactions() {
 			DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
 			return DB::num_rows();
 		}
+		/**
+
+		 */
 		protected function _defaults() {
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
@@ -207,6 +307,9 @@
 			$this->discount = $this->pymt_discount = Num::percent_format(0);
 			$this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
 		}
+		/**
+
+		 */
 		protected function _getAccounts() {
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
 			$this->accounts = DB::fetch()->asClassLate('Debtor_Account')->one();
@@ -216,6 +319,9 @@
 				$this->accounts->save();
 			}
 		}
+		/**
+
+		 */
 		protected function _getBranches() {
 			DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
 
@@ -225,6 +331,9 @@
 			}
 			$this->defaultBranch = reset($this->branches)->id;
 		}
+		/**
+
+		 */
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
 			$contacts = DB::fetch()->asClassLate('Contact');
@@ -236,6 +345,9 @@
 			}
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
+		/**
+		 * @return array|null
+		 */
 		protected function _new() {
 			$this->_defaults();
 			$this->accounts = new Debtor_Account();
@@ -245,6 +357,11 @@
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize', 'Now working with a new customer');
 		}
+		/**
+		 * @param bool $id
+		 *
+		 * @return array
+		 */
 		protected function _read($id = false) {
 			if (!parent::_read($id)) {
 				return $this->_status->get();
@@ -256,19 +373,26 @@
 			$this->pymt_discount = $this->pymt_discount * 100;
 			$this->credit_limit = Num::price_format($this->credit_limit);
 		}
+		/**
+
+		 */
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_id;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
+		/**
+		 * @static
+
+		 */
 		static public function addEditDialog() {
 			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
 			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 			$customerBox->setOptions(array(
-																		'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715',
-																		'resizeable' => true
-															 ));
+				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715',
+				'resizeable' => true
+			));
 			$customerBox->show();
 			$js
 			 = <<<JS
@@ -277,14 +401,27 @@
 JS;
 			JS::addLiveEvent('#customer_id_label', 'click', $js);
 		}
+		/**
+		 * @static
+		 *
+		 * @param       $id
+		 * @param array $options
+		 */
 		static public function addSearchBox($id, $options = array()) {
 			echo UI::searchLine($id, '/contacts/search.php', $options);
 		}
+		/**
+		 * @static
+		 *
+		 * @param $terms
+		 *
+		 * @return array
+		 */
 		static public function search($terms) {
 			$data = array();
-			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms).'%') . ",0,5) as weight")
+			$sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
 			 ->from('debtors')->where('name LIKE ', "$terms%")
-			 ->or_where('name LIKE', str_replace(' ', '%','%'.trim($terms)) . "%");
+			 ->or_where('name LIKE', str_replace(' ', '%', '%' . trim($terms)) . "%");
 			if (is_numeric($terms)) {
 				$sql->or_where('debtor_no LIKE', "$terms%");
 			}
@@ -295,6 +432,14 @@ JS;
 			}
 			return $data;
 		}
+		/**
+		 * @static
+		 *
+		 * @param       $term
+		 * @param array $options
+		 *
+		 * @return array|string
+		 */
 		static public function searchOrder($term, $options = array()) {
 			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
@@ -318,6 +463,14 @@ JS;
 			}
 			return $data;
 		}
+		/**
+		 * @static
+		 *
+		 * @param      $customer_id
+		 * @param null $to
+		 *
+		 * @return Array|DB_Query_Result
+		 */
 		static public function get_details($customer_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");
@@ -386,17 +539,38 @@ JS;
 			}
 			return $customer_record;
 		}
+		/**
+		 * @static
+		 *
+		 * @param $customer_id
+		 *
+		 * @return Array|DB_Query_Result
+		 */
 		static public function get($customer_id) {
 			$sql = "SELECT * FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			return DB::fetch($result);
 		}
+		/**
+		 * @static
+		 *
+		 * @param $customer_id
+		 *
+		 * @return mixed
+		 */
 		static public function get_name($customer_id) {
 			$sql = "SELECT name FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
 			$result = DB::query($sql, "could not get customer");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
+		/**
+		 * @static
+		 *
+		 * @param $customer_id
+		 *
+		 * @return Array|DB_Query_Result
+		 */
 		static public function get_habit($customer_id) {
 			$sql
 			 = "SELECT debtors.pymt_discount,
@@ -407,26 +581,59 @@ JS;
 			$result = DB::query($sql, "could not query customers");
 			return DB::fetch($result);
 		}
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return mixed
+		 */
 		static public function get_area($id) {
 			$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return mixed
+		 */
 		static public function get_salesman_name($id) {
 			$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
 			$result = DB::query($sql, "could not get sales type");
 			$row = DB::fetch_row($result);
 			return $row[0];
 		}
+		/**
+		 * @static
+		 *
+		 * @param $customer_id
+		 *
+		 * @return int
+		 */
 		static public function get_credit($customer_id) {
 			$custdet = Debtor::get_details($customer_id);
 			return ($customer_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 		}
+		/**
+		 * @static
+		 *
+		 * @param $id
+		 *
+		 * @return bool
+		 */
 		static public function is_new($id) {
 			$tables = array('branches', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 			return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
 		}
+		/**
+		 * @static
+		 *
+		 * @param null $value
+		 */
 		static public function newselect($value = null) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
 			$focus = false;
@@ -435,7 +642,7 @@ JS;
 				JS::set_focus('stock_id');
 			}
 			elseif (!$value && Session::i()->global_customer) {
-				$_POST['customer_id']=Session::i()->global_customer;
+				$_POST['customer_id'] = Session::i()->global_customer;
 				$value = Debtor::get_name(Session::i()->global_customer);
 			}
 			elseif (!$value) {
@@ -443,9 +650,7 @@ JS;
 				$focus = true;
 			}
 			hidden('customer_id');
-			UI::search('customer', array(
-																	'url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => $focus, 'value' => $value
-														 ));
+			UI::search('customer', array('url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => $focus, 'value' => $value));
 			echo "</td>\n</tr>\n";
 			JS::beforeload("var Customer = function(data) {
 			var id = document.getElementById('customer_id');
@@ -455,6 +660,19 @@ JS;
 			JsHttpRequest.request(customer)}"
 			);
 		}
+		/**
+		 * @static
+		 *
+		 * @param      $name
+		 * @param null $selected_id
+		 * @param bool $spec_option
+		 * @param bool $submit_on_change
+		 * @param bool $show_inactive
+		 * @param bool $editkey
+		 * @param bool $async
+		 *
+		 * @return string
+		 */
 		static public function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors ";
 			$mode = DB_Company::get_pref('no_customer_list');
@@ -462,22 +680,34 @@ JS;
 				Display::set_editor('customer', $name, $editkey);
 			}
 			return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
-																																						 'format' => '_format_add_curr',
-																																						 'order' => array('debtor_ref'),
-																																						 'search_box' => $mode != 0,
-																																						 'type' => 1,
-																																						 'size' => 20,
-																																						 'spec_option' => $spec_option === true ?
-																																							_("All Customers") : $spec_option,
-																																						 'spec_id' => ALL_TEXT,
-																																						 'select_submit' => $submit_on_change,
-																																						 'async' => $async,
-																																						 'sel_hint' => $mode ?
-																																							_('Press Space tab to filter by name fragment; F2 - entry new customer') :
-																																							_('Select customer'),
-																																						 'show_inactive' => $show_inactive
-																																				));
+				'format' => '_format_add_curr',
+				'order' => array('debtor_ref'),
+				'search_box' => $mode != 0,
+				'type' => 1,
+				'size' => 20,
+				'spec_option' => $spec_option === true ?
+				 _("All Customers") : $spec_option,
+				'spec_id' => ALL_TEXT,
+				'select_submit' => $submit_on_change,
+				'async' => $async,
+				'sel_hint' => $mode ?
+				 _('Press Space tab to filter by name fragment; F2 - entry new customer') :
+				 _('Select customer'),
+				'show_inactive' => $show_inactive
+			));
 		}
+		/**
+		 * @static
+		 *
+		 * @param      $label
+		 * @param      $name
+		 * @param null $selected_id
+		 * @param bool $all_option
+		 * @param bool $submit_on_change
+		 * @param bool $show_inactive
+		 * @param bool $editkey
+		 * @param bool $async
+		 */
 		static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 			if ($label != null) {
 				echo "<td>$label</td>\n";
@@ -486,11 +716,34 @@ JS;
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
 			echo "</td>\n";
 		}
+		/**
+		 * @static
+		 *
+		 * @param      $label
+		 * @param      $name
+		 * @param null $selected_id
+		 * @param bool $all_option
+		 * @param bool $submit_on_change
+		 * @param bool $show_inactive
+		 * @param bool $editkey
+		 */
 		static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
 			echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td class='nowrap'>";
 			echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 			echo "</td>\n</tr>\n";
 		}
+		/**
+		 * @static
+		 *
+		 * @param        $type
+		 * @param        $trans_no
+		 * @param string $label
+		 * @param bool   $icon
+		 * @param string $class
+		 * @param string $id
+		 *
+		 * @return null|string
+		 */
 		static public function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 			$viewer = "sales/view/";
 			switch ($type) {

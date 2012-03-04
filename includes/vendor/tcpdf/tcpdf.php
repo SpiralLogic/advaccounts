@@ -8000,10 +8000,7 @@
 					}
 					$chardata = array_values($chardata2);
 					$numchars = count($chardata);
-					unset($chardata2);
-					unset($arabicarr);
-					unset($laaletter);
-					unset($charAL);
+					unset($chardata2,$arabicarr,$laaletter,$charAL);
 				}
 
 				// L2. From the highest level found in the text to the lowest odd level on each line, including intermediate levels not actually present in the text, reverse any contiguous sequence of characters that are at that level or higher.

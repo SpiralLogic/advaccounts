@@ -1,7 +1,6 @@
 <?php
 
 
-
 	/**
 	 *
 	 */
@@ -19,7 +18,6 @@
 		 * @var
 		 */
 		static private $inserted;
-
 		/**
 		 * @param $order_no
 		 * @param $options
@@ -65,7 +63,6 @@
 				$this->options = array_replace_recursive($this->options, $options);
 			}
 		}
-
 		/**
 		 * @param $file_name
 		 *
@@ -100,17 +97,15 @@
 				 */
 			return null;
 		}
-
 		/**
 		 * @return array
 		 */
 		private function get_file_objects() {
 			return array_values(array_filter(array_map(
-				array($this, 'get_file_object'),
-				scandir($this->options['upload_dir'])
-			)));
+																				 array($this, 'get_file_object'),
+																				 scandir($this->options['upload_dir'])
+																			 )));
 		}
-
 		/**
 		 * @param $file_name
 		 * @param $options
@@ -126,7 +121,7 @@
 			}
 			$scale = min(
 				$options['max_width'] / $img_width,
-			 $options['max_height'] / $img_height
+				$options['max_height'] / $img_height
 			);
 			if ($scale > 1) {
 				$scale = 1;
@@ -169,7 +164,6 @@
 			@imagedestroy($new_img);
 			return $success;
 		}
-
 		/**
 		 * @param $uploaded_file
 		 * @param $file
@@ -186,7 +180,8 @@
 			}
 			if ($uploaded_file && is_uploaded_file($uploaded_file)) {
 				$file_size = filesize($uploaded_file);
-			} else {
+			}
+			else {
 				$file_size = $_SERVER['CONTENT_LENGTH'];
 			}
 			if ($this->options['max_file_size'] && (
@@ -207,7 +202,6 @@
 			}
 			return $error;
 		}
-
 		/**
 		 * @param $uploaded_file
 		 * @param $name
@@ -239,10 +233,12 @@
 							fopen($uploaded_file, 'r'),
 							FILE_APPEND
 						);
-					} else {
+					}
+					else {
 						move_uploaded_file($uploaded_file, $file_path);
 					}
-				} else {
+				}
+				else {
 					// Non-multipart uploads (PUT method support)
 					file_put_contents(
 						$file_path,
@@ -259,7 +255,8 @@
 							 . rawurlencode($file->name);
 						}
 					}
-				} else if ($this->options['discard_aborted_uploads']) {
+				}
+				else if ($this->options['discard_aborted_uploads']) {
 					unlink($file_path);
 					$file->error = 'abort';
 				}
@@ -267,7 +264,8 @@
 				$file->delete_url = $this->options['script_url']
 				 . '?file=' . rawurlencode($file->name);
 				$file->delete_type = 'MODE_DELETE';
-			} else {
+			}
+			else {
 				$file->error = $error;
 			}
 			/* DB::begin();
@@ -277,7 +275,6 @@
 				 $file->id = $this->upload_id = $upload_id;*/
 			return $file;
 		}
-
 		/**
 		 * @return mixed
 		 */
@@ -298,7 +295,8 @@
 				$result = DB::query($sql, 'Could not retrieve upload information');
 				if (DB::num_rows($result) < 1) {
 					return;
-				} else {
+				}
+				else {
 					/** @noinspection PhpAssignmentInConditionInspection */
 					while ($row = DB::fetch_assoc($result)) {
 						$info[] = $row;
@@ -309,7 +307,6 @@
 				echo json_encode($info);
 			}
 		}
-
 		/**
 		 *
 		 */
@@ -337,7 +334,8 @@
 						$upload['error'][$index]
 					);
 				}
-			} else {
+			}
+			else {
 				$info[] = $this->handle_file_upload(
 					$upload['tmp_name'],
 					isset($_SERVER['HTTP_X_FILE_NAME']) ?
@@ -354,12 +352,12 @@
 			 (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
 			) {
 				header('Content-type: application/json');
-			} else {
+			}
+			else {
 				header('Content-type: text/plain');
 			}
 			echo json_encode($info);
 		}
-
 		/**
 		 * @static
 		 *
@@ -367,7 +365,9 @@
 		 */
 		static public function insert($id) {
 			if (!self::$inserted) {
-				JS::footerFile(array('/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'));
+				JS::footerFile(array(
+														'/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
+											 ));
 				self::$inserted = true;
 			}
 			echo '
@@ -416,7 +416,6 @@
 	</div></div>
 ';
 		}
-
 		/**
 		 *
 		 */
@@ -425,7 +424,6 @@
 			//@mkdir($this->upload_dir, 0777);
 			umask($old);
 		}
-
 		/**
 		 *
 		 */
@@ -439,19 +437,5 @@
 		}
 	}
 
-	if (!function_exists('getallheaders')) {
-		/**
-		 * @return array
-		 */
-		function getallheaders() {
-			$headers = array();
-			foreach ($_SERVER as $name => $value) {
-				if (substr($name, 0, 5) == 'HTTP_') {
-					$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-				}
-			}
-			return $headers;
-		}
-	}
 
 

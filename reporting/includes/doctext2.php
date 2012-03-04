@@ -200,6 +200,7 @@
 			}
 		} elseif ($doctype == ST_STATEMENT) {
 			$doc_Outstanding = "Outstanding Transactions";
+			$doc_OpeningBalance= "Opening Balance";
 			$doc_Current = "Current";
 			$doc_Total_Balance = "Total Balance";
 			$doc_Statement = "Statement";

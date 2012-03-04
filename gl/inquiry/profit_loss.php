@@ -55,7 +55,8 @@
 				continue;
 			}
 			if ($drilldown && $levelptr == 0) {
-				$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
+				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to
+				 . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
 				start_row("class='stockmankobg'");
 				label_cell($url);
 				amount_cell($per_balance * $convert);
@@ -91,7 +92,8 @@
 			) //END Patch#2
 				//elseif ($drilldown && $type != $_POST["AccGrp"])
 			{
-				$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
+				$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
+				 "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
 				alt_table_row_color($k);
 				label_cell($url);
 				amount_cell(($code_per_balance + $per_balance_total) * $convert);
@@ -191,7 +193,8 @@
 					$class_per_total += $TypeTotal[0];
 					$class_acc_total += $TypeTotal[1];
 					if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0) {
-						$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
+						$url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
+						 "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
 						alt_table_row_color($k);
 						label_cell($url);
 						amount_cell($TypeTotal[0] * $convert);

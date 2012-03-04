@@ -14,7 +14,6 @@
 		 * @var bool
 		 */
 		static protected $_return = false;
-
 		/**
 		 * @param $func
 		 * @param $args
@@ -24,7 +23,6 @@
 		function __call($func, $args) {
 			return static::__callStatic($func, $args);
 		}
-
 		/**
 		 * @param $func
 		 *
@@ -34,7 +32,6 @@
 			static::__callStatic($func);
 			return static::$_instance;
 		}
-
 		/**
 		 * @static
 		 *
@@ -49,16 +46,16 @@
 			static::$_return = ($state === null) ? !(static::$_return) : $state;
 			if (!static::$_return) {
 				return ob_get_clean();
-			} else {
+			}
+			else {
 				ob_start();
 			}
 			return static::$_instance;
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			 $func
+		 * @param       $func
 		 * @param array $args
 		 *
 		 * @return null
@@ -71,10 +68,9 @@
 			 : static::$_instance->_Builder($func, $args);
 			return static::$_instance;
 		}
-
 		/**
-		 * @param				$type
-		 * @param array	$attr
+		 * @param        $type
+		 * @param array  $attr
 		 * @param string $content
 		 */
 		protected function _openTag($type, $attr = array(), $content = '') {
@@ -82,23 +78,24 @@
 			foreach (
 				$attr as $key => $value
 			) {
-				if (is_bool($value) ) {$attrs .= ' '.$key;continue;}
-				$attrs .= (empty($value) || $key == 'content') ? '' : ' '.$key.'="'.$value.'"';
+				if (is_bool($value)) {
+					$attrs .= ' ' . $key;
+					continue;
+				}
+				$attrs .= (empty($value) || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
 			}
-			echo	'<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
+			echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
 		}
-
 		/**
 		 * @param $type
 		 */
 		protected function _closeTag($type) {
 			echo '</' . $type . '>';
 		}
-
 		/**
-		 * @param				$func
-		 * @param				$args
-		 * @param array	$attr
+		 * @param        $func
+		 * @param        $args
+		 * @param array  $attr
 		 * @param string $content
 		 */
 		protected function _Builder($func, $args, $attr = array(), $content = '') {
@@ -108,9 +105,11 @@
 			) {
 				if ($key == 0 && is_string($val)) {
 					$attr['id'] = $val;
-				} elseif (!isset($attr['content']) && is_string($val)) {
+				}
+				elseif (!isset($attr['content']) && is_string($val)) {
 					$content = $attr['content'] = $val;
-				} elseif (is_array($val)) {
+				}
+				elseif (is_array($val)) {
 					$attr = array_merge($attr, $val);
 				}
 			}
@@ -119,7 +118,8 @@
 					$this->_openTag($func, $attr, $content);
 				}
 				$this->_closeTag($func);
-			} else {
+			}
+			else {
 				$this->_openTag($func, $attr);
 			}
 		}

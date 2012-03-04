@@ -58,7 +58,7 @@
 	start_form();
 	start_table('tablestyle');
 	$th = array(
-		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
+		_('POS Name'), _('Credit sale'), _('Cash sale'), _('location'), _('Default account'), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;

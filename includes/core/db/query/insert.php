@@ -6,7 +6,8 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-	Class DB_Query_Insert extends DB_Query {
+	Class DB_Query_Insert extends DB_Query
+	{
 		/**
 		 * @var
 		 */
@@ -27,10 +28,9 @@
 		 * @var array
 		 */
 		public $data = array();
-
 		/**
 		 * @param bool $table
-		 * @param $db
+		 * @param      $db
 		 */
 		public function __construct($table = false, $db) {
 			parent::__construct($db);
@@ -49,7 +49,6 @@
 			}
 			return $this;
 		}
-
 		/**
 		 * @param $table
 		 *
@@ -59,7 +58,6 @@
 			$this->table = $table;
 			return $this;
 		}
-
 		/**
 		 * @param $values array key pair
 		 *
@@ -67,13 +65,12 @@
 		 */
 		public function values($values) {
 			$this->data = (array)$values + $this->data;
-
 			return $this;
 		}
-
 		/**
 		 * @param $feild
 		 * @param $value
+		 *
 		 * @return DB_Query_Insert
 		 * @throws Adv_Exception
 		 */
@@ -81,20 +78,23 @@
 			if (is_array($feild) && is_array($value)) {
 				if (count($feild) != count($value)) {
 					throw new Adv_Exception('Feild count and Value count unequal');
-				} else {
+				}
+				else {
 					$this->values(array_combine($feild, $value));
 				}
-			} elseif (is_array($feild) && !is_array($value)) {
+			}
+			elseif (is_array($feild) && !is_array($value)) {
 				$values = array_fill(0, count($feild), $value);
 				$this->values(array_combine($feild, $values));
-			} else {
+			}
+			else {
 				$this->values(array($feild => $value));
 			}
 			return $this;
 		}
-
 		/**
 		 * @param null $data
+		 *
 		 * @return string
 		 */
 		protected function execute($data = null) {
@@ -102,12 +102,9 @@
 				$this->values((array)$data);
 			}
 			$this->data = array_intersect_key($this->data, array_flip($this->hasfields));
-
 			$this->fields = array_keys($this->data);
-
 			return $this->_buildQuery();
 		}
-
 		/**
 		 * @return string
 		 */

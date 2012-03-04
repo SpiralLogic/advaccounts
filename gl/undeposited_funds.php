@@ -26,7 +26,7 @@
 	}
 	$update_pager = false;
 	if (list_updated('deposit_date')) {
-		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
+		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
 		update_data();
 	}
 	if (get_post('_deposit_date_changed')) {
@@ -84,8 +84,7 @@
 			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
 			DB::query($sql, "Can't change undeposited status");
 		}
-		unset($_POST);
-		unset($_SESSION['undeposited']);
+		unset($_POST,$_SESSION['undeposited']);
 		Display::meta_forward($_SERVER['PHP_SELF']);
 	}
 	$_POST['to_deposit'] = 0;

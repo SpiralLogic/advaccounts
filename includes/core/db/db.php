@@ -6,39 +6,39 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DBException extends PDOException {
-
+	class DBException extends PDOException
+	{
 	}
 
-	class DBUpdateException extends DBException {
-
-	}
-
-	;
-	class DBInsertException extends DBException {
-
+	class DBUpdateException extends DBException
+	{
 	}
 
 	;
-	class DBDeleteException extends DBException {
-
+	class DBInsertException extends DBException
+	{
 	}
 
 	;
-	class DBSelectException extends DBException {
+	class DBDeleteException extends DBException
+	{
+	}
 
+	;
+	class DBSelectException extends DBException
+	{
 	}
 
 	;
 	/**
 
 	 */
-	class DBDuplicateException extends DBException {
-
+	class DBDuplicateException extends DBException
+	{
 	}
 
-	class DB {
-
+	class DB
+	{
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
@@ -137,7 +137,6 @@
 				throw new DBException("There is no connection with this name");
 			}
 		}
-
 		static public function connect($config) {
 			static::i()->_connect($config);
 		}
@@ -220,7 +219,6 @@
 				$type = FALSE;
 			}
 			static::$data[] = array($value, $type);
-
 			return ' ? ';
 		}
 		/**

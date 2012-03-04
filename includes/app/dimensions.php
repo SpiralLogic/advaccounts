@@ -27,7 +27,8 @@
 			DB::begin();
 			$date = Dates::date2sql($date_);
 			$duedate = Dates::date2sql($due_date);
-			$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+			$sql
+			 = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . DB::escape($reference) . ", " . DB::escape($name) . ", " . DB::escape($type_) . ", '$date', '$duedate')";
 			DB::query($sql, "could not add dimension");
 			$id = DB::insert_id();
@@ -36,7 +37,6 @@
 			DB::commit();
 			return $id;
 		}
-
 		/**
 		 * @static
 		 *
@@ -63,7 +63,6 @@
 			DB::commit();
 			return $id;
 		}
-
 		/**
 		 * @static
 		 *
@@ -77,11 +76,10 @@
 			DB_Comments::delete(ST_DIMENSION, $id);
 			DB::commit();
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$id
+		 * @param      $id
 		 * @param bool $allow_null
 		 *
 		 * @return DB_Query_Result
@@ -94,12 +92,11 @@
 			}
 			return DB::fetch($result);
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param				$id
-		 * @param bool	 $html
+		 * @param        $id
+		 * @param bool   $html
 		 * @param string $space
 		 *
 		 * @return string
@@ -108,16 +105,17 @@
 			if ($id <= 0) {
 				if ($html) {
 					$dim = "&nbsp;";
-				} else {
+				}
+				else {
 					$dim = "";
 				}
-			} else {
+			}
+			else {
 				$row = Dimensions::get($id, true);
 				$dim = $row['reference'] . $space . $row['name'];
 			}
 			return $dim;
 		}
-
 		/**
 		 * @static
 		 * @return null|PDOStatement
@@ -126,7 +124,6 @@
 			$sql = "SELECT * FROM dimensions ORDER BY date_";
 			return DB::query($sql, "The dimensions could not be retrieved");
 		}
-
 		/**
 		 * @static
 		 *
@@ -137,7 +134,6 @@
 		static public function has_deposits($id) {
 			return Dimensions::has_payments($id);
 		}
-
 		/**
 		 * @static
 		 *
@@ -151,7 +147,6 @@
 			$row = DB::fetch_row($res);
 			return ($row[0] != 0.0);
 		}
-
 		/**
 		 * @static
 		 *
@@ -163,7 +158,6 @@
 			$result = Dimensions::get($id);
 			return ($result['closed'] == '1');
 		}
-
 		/**
 		 * @static
 		 *
@@ -173,7 +167,6 @@
 			$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not close dimension");
 		}
-
 		/**
 		 * @static
 		 *
@@ -183,7 +176,6 @@
 			$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
 			DB::query($sql, "could not reopen dimension");
 		}
-
 		/**
 		 * @static
 		 *
@@ -203,7 +195,8 @@
 			$result = DB::query($sql, "Transactions could not be calculated");
 			if (DB::num_rows($result) == 0) {
 				Event::warning(_("There are no transactions for this dimension for the selected period."));
-			} else {
+			}
+			else {
 				Display::heading(_("Balance for this Dimension"));
 				Display::br();
 				start_table('tablestyle');
@@ -223,7 +216,8 @@
 				if ($total >= 0) {
 					amount_cell($total, true);
 					label_cell("");
-				} else {
+				}
+				else {
 					label_cell("");
 					amount_cell(abs($total), true);
 				}
@@ -231,18 +225,17 @@
 				end_table();
 			}
 		}
-
 		// DIMENSIONS
 		/**
 		 * @static
 		 *
-		 * @param				$name
-		 * @param null	 $selected_id
-		 * @param bool	 $no_option
+		 * @param        $name
+		 * @param null   $selected_id
+		 * @param bool   $no_option
 		 * @param string $showname
-		 * @param bool	 $submit_on_change
-		 * @param bool	 $showclosed
-		 * @param int		$showtype
+		 * @param bool   $submit_on_change
+		 * @param bool   $showclosed
+		 * @param int    $showtype
 		 *
 		 * @return string
 		 */
@@ -260,17 +253,16 @@
 			}
 			return select_box($name, $selected_id, $sql, 'id', 'ref', $options);
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$label
-		 * @param			$name
+		 * @param      $label
+		 * @param      $name
 		 * @param null $selected_id
 		 * @param bool $no_option
 		 * @param null $showname
 		 * @param bool $showclosed
-		 * @param int	$showtype
+		 * @param int  $showtype
 		 * @param bool $submit_on_change
 		 */
 		static public function cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
@@ -281,17 +273,16 @@
 			echo Dimensions::select($name, $selected_id, $no_option, $showname, $submit_on_change, $showclosed, $showtype);
 			echo "</td>\n";
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$label
-		 * @param			$name
+		 * @param      $label
+		 * @param      $name
 		 * @param null $selected_id
 		 * @param bool $no_option
 		 * @param null $showname
 		 * @param bool $showclosed
-		 * @param int	$showtype
+		 * @param int  $showtype
 		 * @param bool $submit_on_change
 		 */
 		static public function select_row($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
@@ -299,14 +290,13 @@
 			Dimensions::cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
 			echo "</tr>\n";
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param				$type
-		 * @param				$trans_no
+		 * @param        $type
+		 * @param        $trans_no
 		 * @param string $label
-		 * @param bool	 $icon
+		 * @param bool   $icon
 		 * @param string $class
 		 * @param string $id
 		 *

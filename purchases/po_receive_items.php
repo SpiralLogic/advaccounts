@@ -200,17 +200,16 @@
 			Event::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
-			unset($order->line_items);
-			unset($order);
-			unset($_POST['ProcessGoodsReceived']);
+			unset($order->line_items,$order,$_POST['ProcessGoodsReceived']);
 			Ajax::i()->activate('_page_body');
 			Page::footer_exit();
 		}
 		$_SESSION['supplier_id'] = $order->supplier_id;
-		$grn = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
+		$grn = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
 		$_SESSION['delivery_po'] = $order->order_no;
 		Dates::new_doc_date($_POST['DefaultReceivedDate']);
 		unset($order->line_items);
+		$order->finish($_POST['order_id']);
 		unset($order);
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 	}

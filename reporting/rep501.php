@@ -29,7 +29,7 @@ Page::set_security(SA_DIMENSIONREP);
 
 	function getYTD($dim)
 	{
-		$date = Dates::Today();
+		$date = Dates::today();
 		$date = Dates::begin_fiscalyear($date);
 		Dates::date2sql($date);
 		$sql

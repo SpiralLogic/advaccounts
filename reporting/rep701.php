@@ -9,12 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-Page::set_security(SA_GLREP);
-
-	function display_type($type, $typename, &$dec, &$rep, $showbalance)
-	{
+	Page::set_security(SA_GLREP);
+	function display_type($type, $typename, &$dec, &$rep, $showbalance) {
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
 		$result = GL_Account::get_all(null, null, $type);
@@ -35,7 +32,7 @@ Page::set_security(SA_GLREP);
 				if (GL_Account::is_balancesheet($account["account_code"])) {
 					$begin = "";
 				}
-				$balance = GL_Trans::get_from_to($begin, ToDay(), $account["account_code"], 0);
+				$balance = GL_Trans::get_from_to($begin, Dates::today(), $account["account_code"], 0);
 			}
 			$rep->TextCol(0, 1, $account['account_code']);
 			$rep->TextCol(1, 2, $account['account_name']);
@@ -63,11 +60,8 @@ Page::set_security(SA_GLREP);
 		}
 	}
 
-
 	print_Chart_of_Accounts();
-
-	function print_Chart_of_Accounts()
-	{
+	function print_Chart_of_Accounts() {
 		$showbalance = $_POST['PARAM_0'];
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];

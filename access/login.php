@@ -17,8 +17,8 @@
 	else {
 		$demo_text = _("Please login here");
 	}
-	if (!Config::get('company_default') === false) {
-		Config::set('company_default', 1);
+	if (!Config::get('default.company') === false) {
+		Config::set('default.company', 1);
 	}
 	$def_theme = "default";
 	$login_timeout = User::i()->last_act;
@@ -93,7 +93,7 @@
 	Display::div_end();
 	echo "<div class='center'>\n";
 	if (User::i()) {
-		echo     $date = Dates::Today() . " | " . Dates::Now();
+		echo     $date = Dates::today() . " | " . Dates::now();
 	}
 	else {
 		echo   $date = date("m/d/Y") . " | " . date("h.i am");

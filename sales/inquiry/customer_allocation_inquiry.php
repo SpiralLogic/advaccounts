@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
 	if (isset($_GET['customer_id'])) {
@@ -25,8 +24,8 @@
 		}
 	}
 	if (list_updated('customer_id')) {
-			Ajax::i()->activate('customer_id');
-		}
+		Ajax::i()->activate('customer_id');
+	}
 	start_form(false, '', 'invoiceForm');
 	start_table('tablestyle_noborder');
 	start_row();
@@ -34,7 +33,18 @@
 		Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
 	}
 	Session::i()->global_customer = $_POST['customer_id'];
-
+	if (!isset($_POST['TransAfterDate']) && isset($_SESSION['global_TransAfterDate'])) {
+		$_POST['TransAfterDate'] = $_SESSION['global_TransAfterDate'];
+	}
+	elseif (isset($_POST['TransAfterDate'])) {
+		$_SESSION['global_TransAfterDate'] = $_POST['TransAfterDate'];
+	}
+	if (!isset($_POST['TransToDate']) && isset($_SESSION['global_TransToDate'])) {
+		$_POST['TransToDate'] = $_SESSION['global_TransToDate'];
+	}
+	elseif (isset($_POST['TransToDate'])) {
+		$_SESSION['global_TransToDate'] = $_POST['TransToDate'];
+	}
 	date_cells(_("from:"), 'TransAfterDate', '', null, -31, -12);
 	date_cells(_("to:"), 'TransToDate', '', null, 1);
 	Debtor_Payment::allocations_select(_("Type:"), 'filterType', null);
@@ -45,8 +55,11 @@
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql = "SELECT ";
-	if (Input::get('frame')) $sql .= " IF(trans.type=" . ST_SALESINVOICE . ",0,1), ";
-	$sql .= " trans.type,
+	if (Input::get('frame')) {
+		$sql .= " IF(trans.type=" . ST_SALESINVOICE . ",0,1), ";
+	}
+	$sql
+	 .= " trans.type,
 		trans.trans_no,
 		trans.reference,
 		trans.order_,
@@ -57,7 +70,7 @@
  	(trans.ov_amount + trans.ov_gst + trans.ov_freight			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 	trans.alloc AS credit,
 	trans.alloc AS Allocated,
-		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
+		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue
  	FROM debtor_trans as trans, debtors as debtor
  	WHERE debtor.debtor_no = trans.debtor_no
 			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
@@ -77,8 +90,9 @@
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
 		}
 		if ($_POST['filterType'] == '2') {
-			$today = Dates::date2sql(Dates::Today());
-			$sql .= " AND trans.due_date < '$today'
+			$today = Dates::date2sql(Dates::today());
+			$sql
+			 .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + " . "trans.ov_gst + trans.ov_freight + " . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,2) > 0) ";
 		}
 	}
@@ -115,12 +129,12 @@
 	$table->width = "80%";
 	DB_Pager::display($table);
 	end_form();
-	$action = <<<JS
+	$action
+	 = <<<JS
 
 $('#invoiceForm').find(':checkbox').each(function(){\$this =\$(this);\$this.prop('checked',!\$this.prop('checked'))});
 return false;
 JS;
-
 	JS::addLiveEvent('#emailInvoices', 'dblclick', $action, 'wrapper', true);
 	JS::addLiveEvent('#emailInvoices', 'click', 'return false;', 'wrapper', true);
 	Page::end();

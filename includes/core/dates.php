@@ -22,10 +22,10 @@
 		@date_default_timezone_set(@date_default_timezone_get());
 	}
 	/**
-	 *
+
 	 */
-	class Dates
-	{
+	class Dates {
+
 		/**
 		 * @static
 		 *
@@ -37,7 +37,7 @@
 		 */
 		static function __date($year, $month, $day) {
 			$how = User::date_format();
-			$sep = Config::get('separators_date', 0);
+			$sep = Config::get('date.separators', 0);
 			$day = (int)$day;
 			$month = (int)$month;
 			if ($day < 10) {
@@ -51,11 +51,11 @@
 			}
 			else if ($how == 1) {
 				return $day . $sep . $month . $sep . $year;
-			} else {
+			}
+			else {
 				return $year . $sep . $month . $sep . $day;
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -68,7 +68,7 @@
 				return 0;
 			}
 			$how = User::date_format();
-			$sep = Config::get('separators_date', 0);
+			$sep = Config::get('date.separators', 0);
 			$date_ = trim($date_);
 			$date_ = str_replace($sep, "", $date_);
 			$day = $month = $year = 0;
@@ -110,10 +110,10 @@
 				return 0;
 			}
 			if (is_long((int)$day) && is_long((int)$month) && is_long((int)$year)) {
-				if (Config::get('accounts_datesystem') == 1) {
+				if (Config::get('accounts.datesystem') == 1) {
 					list($year, $month, $day) = Dates::jalali_to_gregorian($year, $month, $day);
 				}
-				else if (Config::get('accounts_datesystem') == 2) {
+				else if (Config::get('accounts.datesystem') == 2) {
 					list($year, $month, $day) = Dates::islamic_to_gregorian($year, $month, $day);
 				}
 				if (checkdate((int)$month, (int)$day, (int)$year)) {
@@ -127,39 +127,37 @@
 				return 0;
 			}
 		}
-
 		//end of is_date function
 		/**
 		 * @static
 		 * @return string
 		 */
-		static function Today() {
+		static function today() {
 			$year = date("Y");
 			$month = date("n");
 			$day = date("j");
-			if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1) {
 				list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 			}
-			else if (Config::get('accounts_datesystem') == 2) {
+			else if (Config::get('accounts.datesystem') == 2) {
 				list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 			}
 			return Dates::__date($year, $month, $day);
 		}
-
 		/**
 		 * @static
 		 * @return string
 		 */
-		static function Now() {
+		static function now() {
 			if (User::date_format() == 0) {
 				return date("h:i a");
-			} else {
+			}
+			else {
 				return date("H:i");
 			}
 		}
-
 		/**
-		 *	Retrieve and optionally set default date for new document.
+		 *  Retrieve and optionally set default date for new document.
 		 *
 		 * @param null $date
 		 *
@@ -170,15 +168,14 @@
 				$_SESSION['_default_date'] = $date;
 			}
 			if (!isset($_SESSION['_default_date']) || !User::sticky_date()) {
-				$_SESSION['_default_date'] = Dates::Today();
+				$_SESSION['_default_date'] = Dates::today();
 			}
 			return $_SESSION['_default_date'];
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$date
+		 * @param      $date
 		 * @param bool $convert
 		 *
 		 * @return int
@@ -193,7 +190,8 @@
 			}
 			if ($convert) {
 				$date2 = Dates::sql2date($date);
-			} else {
+			}
+			else {
 				$date2 = $date;
 			}
 			$begin = Dates::sql2date($myrow['begin']);
@@ -203,7 +201,6 @@
 			}
 			return 1;
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -212,7 +209,6 @@
 			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['begin']);
 		}
-
 		/**
 		 * @static
 		 * @return string
@@ -221,7 +217,6 @@
 			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['end']);
 		}
-
 		/**
 		 * @static
 		 *
@@ -231,17 +226,16 @@
 		 */
 		static function begin_month($date) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
-			if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1) {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 			}
-			else if (Config::get('accounts_datesystem') == 2) {
+			else if (Config::get('accounts.datesystem') == 2) {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 			}
 			return Dates::__date($year, $month, 1);
 		}
-
 		/**
 		 * @static
 		 *
@@ -251,7 +245,7 @@
 		 */
 		static function end_month($date) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
-			if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1) {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 				$days_in_month = array(
@@ -260,7 +254,7 @@
 					 : 29)
 				);
 			}
-			else if (Config::get('accounts_datesystem') == 2) {
+			else if (Config::get('accounts.datesystem') == 2) {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 				$days_in_month
@@ -276,7 +270,6 @@
 			}
 			return Dates::__date($year, $month, $days_in_month[$month - 1]);
 		}
-
 		/**
 		 * @static
 		 *
@@ -288,18 +281,17 @@
 		static function add_days($date, $days) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month, $day + $days, $year);
-			if (Config::get('accounts_datesystem') == 1 || Config::get('accounts_datesystem') == 2) {
-				if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1 || Config::get('accounts.datesystem') == 2) {
+				if (Config::get('accounts.datesystem') == 1) {
 					list($year, $month, $day) = Dates::gregorian_to_jalali(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
-				else if (Config::get('accounts_datesystem') == 2) {
+				else if (Config::get('accounts.datesystem') == 2) {
 					list($year, $month, $day) = Dates::gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
 				return Dates::__date($year, $month, $day);
 			}
 			return date(User::date_display(), $timet);
 		}
-
 		/**
 		 * @static
 		 *
@@ -311,18 +303,17 @@
 		static function add_months($date, $months) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month + $months, $day, $year);
-			if (Config::get('accounts_datesystem') == 1 || Config::get('accounts_datesystem') == 2) {
-				if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1 || Config::get('accounts.datesystem') == 2) {
+				if (Config::get('accounts.datesystem') == 1) {
 					list($year, $month, $day) = Dates::gregorian_to_jalali(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
-				else if (Config::get('accounts_datesystem') == 2) {
+				else if (Config::get('accounts.datesystem') == 2) {
 					list($year, $month, $day) = Dates::gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
 				return Dates::__date($year, $month, $day);
 			}
 			return date(User::date_display(), $timet);
 		}
-
 		/**
 		 * @static
 		 *
@@ -334,18 +325,17 @@
 		static function add_years($date, $years) {
 			list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 			$timet = Mktime(0, 0, 0, $month, $day, $year + $years);
-			if (Config::get('accounts_datesystem') == 1 || Config::get('accounts_datesystem') == 2) {
-				if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1 || Config::get('accounts.datesystem') == 2) {
+				if (Config::get('accounts.datesystem') == 1) {
 					list($year, $month, $day) = Dates::gregorian_to_jalali(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
-				else if (Config::get('accounts_datesystem') == 2) {
+				else if (Config::get('accounts.datesystem') == 2) {
 					list($year, $month, $day) = Dates::gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
 				}
 				return Dates::__date($year, $month, $day);
 			}
 			return date(User::date_display(), $timet);
 		}
-
 		//_______________________________________________________________
 		/**
 		 * @static
@@ -369,10 +359,10 @@
 			if (!isset($date) && strlen($day) > 4) { /*chop off the time stuff */
 				$day = substr($day, 0, 2);
 			}
-			if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1) {
 				list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 			}
-			else if (Config::get('accounts_datesystem') == 2) {
+			else if (Config::get('accounts.datesystem') == 2) {
 				list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 			}
 			return Dates::__date($year, $month, $day);
@@ -380,7 +370,7 @@
 		/**
 		 * @static
 		 *
-		 * @param			$date_
+		 * @param      $date_
 		 * @param bool $pad
 		 *
 		 * @return int|string
@@ -389,7 +379,7 @@
 			/* takes a date in a the format specified in $DefaultDateFormat
 																	and converts to a yyyy/mm/dd format */
 			$how = User::date_format();
-			$sep = Config::get('separators_date', User::date_sep());
+			$sep = Config::get('date.separators', User::date_sep());
 			if ($date_ == null || strlen($date_) == 0) {
 				return "";
 			}
@@ -410,7 +400,7 @@
 				list($year, $month, $day) = explode($sep, $date_);
 			}
 			//to modify assumption in 2030
-			if (Config::get('accounts_datesystem') == 0 || Config::get('accounts_datesystem') == 3) {
+			if (Config::get('accounts.datesystem') == 0 || Config::get('accounts.datesystem') == 3) {
 				if ((int)$year < 60) {
 					$year = "20" . $year;
 				}
@@ -421,10 +411,10 @@
 			if ((int)$year > 9999) {
 				return 0;
 			}
-			if (Config::get('accounts_datesystem') == 1) {
+			if (Config::get('accounts.datesystem') == 1) {
 				list($year, $month, $day) = Dates::jalali_to_gregorian($year, $month, $day);
 			}
-			else if (Config::get('accounts_datesystem') == 2) {
+			else if (Config::get('accounts.datesystem') == 2) {
 				list($year, $month, $day) = Dates::islamic_to_gregorian($year, $month, $day);
 			}
 			// Pad with 0s if needed
@@ -442,7 +432,6 @@
 			$return .= ($day > 0) ? $day : '';
 			return $return;
 		}
-
 		// end of function
 		/**
 		 * @static
@@ -473,7 +462,6 @@
 			}
 			return 0;
 		}
-
 		/**
 		 * @static
 		 *
@@ -510,7 +498,6 @@
 					Return 0;
 			}
 		}
-
 		/**
 		 * @static
 		 *
@@ -528,7 +515,6 @@
 			list($year, $month, $day) = explode("-", $date);
 			return array($day, $month, $year);
 		}
-
 		/**
 		 * @static
 		 *
@@ -540,10 +526,9 @@
 		static function div($a, $b) {
 			return (int)($a / $b);
 		}
-
 		/* Based on converter to and from Gregorian and Jalali calendars.
-						Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
-						Released under GNU General Public License */
+								Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
+								Released under GNU General Public License */
 		/**
 		 * @static
 		 *
@@ -590,7 +575,6 @@
 			$jd = $j_day_no + 1;
 			return array($jy, $jm, $jd);
 		}
-
 		/**
 		 * @static
 		 *
@@ -624,7 +608,8 @@
 				$g_day_no %= 36524;
 				if ($g_day_no >= 365) {
 					$g_day_no++;
-				} else {
+				}
+				else {
 					$leap = false;
 				}
 			}
@@ -646,9 +631,21 @@
 			$gd = $g_day_no + 1;
 			return array($gy, $gm, $gd);
 		}
-
 		/* Based on Hidri Date Script
-						Released under GNU General Public License */
+								Released under GNU General Public License */
+		/**
+		 * @static
+		 *
+		 * @param      $name
+		 * @param null $month
+		 */public static function months($name, $month = null) {
+			if ($month == null) $month = date('n');
+			$months = array();
+			for ($i = 1; $i < 13; $i++) {
+				$months[$i] = date('F', mktime(0, 0, 0, $i));
+			}
+			return array_selector($name, $month, $months);
+		}
 		/**
 		 * @static
 		 *
@@ -678,7 +675,6 @@
 			$y = 30 * $n + $j - 30;
 			return array($y, $m, $d);
 		}
-
 		/**
 		 * @static
 		 *
@@ -719,7 +715,6 @@
 			}
 			return array($y, $m, $d);
 		}
-
 		/**
 		 * @static
 		 *

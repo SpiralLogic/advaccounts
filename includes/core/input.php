@@ -36,26 +36,24 @@
 		 * @var bool
 		 */
 		static protected $default_bool = false;
-
 		/***
 		 * @static
 		 *
-		 * @param mixed $var		 $_POST variable to return
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param mixed $var     $_POST variable to return
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @return bool|int|string|object
 		 */
 		static public function post($var, $type = null, $default = null) {
 			return static::_isset($_POST, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
-		 * @param			 $var
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param       $var
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @internal param mixed $public $_GET variable to return
 		 * @return bool|int|string|object
@@ -63,59 +61,54 @@
 		static public function get($var, $type = null, $default = null) {
 			return static::_isset($_GET, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
-		 * @param mixed $var		 $_REQUEST variable to return
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param mixed $var     $_REQUEST variable to return
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @return bool|int|string|object
 		 */
 		static public function request($var, $type = null, $default = null) {
 			return static::_isset($_REQUEST, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
-		 * @param mixed $var		 $_GET variable to return if it doesn't exist $_POST will be tried
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param mixed $var     $_GET variable to return if it doesn't exist $_POST will be tried
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @return bool|int|string|object
 		 */
 		static public function get_post($var, $type = null, $default = null) {
 			return static::get_post($_GET, $_POST, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
-		 * @param mixed $var		 $_POST	variable to return if it doesn't exist $_GET will be returned
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param mixed $var     $_POST  variable to return if it doesn't exist $_GET will be returned
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @return bool|int|string|object
 		 */
 		static public function post_get($var, $type = null, $default = null) {
 			return static::get_post($_POST, $_GET, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
-		 * @param mixed $var		 $_SESSION variable to return
-		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null	$default Default value if there is no current variable
+		 * @param mixed $var     $_SESSION variable to return
+		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+		 * @param null  $default Default value if there is no current variable
 		 *
 		 * @return bool|int|string|object
 		 */
 		static public function session($var = array(), $type = null, $default = null) {
 			return (!isset($_SESSION)) ? false : static::_isset($_SESSION, $var, $type, $default);
 		}
-
 		/***
 		 * @static
 		 *
@@ -129,7 +122,6 @@
 			}
 			return (static::_has($_POST, func_get_args()));
 		}
-
 		/***
 		 * @static
 		 *
@@ -143,7 +135,6 @@
 			}
 			return (static::_has($_GET, func_get_args()));
 		}
-
 		/***
 		 * @static
 		 *
@@ -157,7 +148,6 @@
 			}
 			return (static::_has($_REQUEST, func_get_args()));
 		}
-
 		/***
 		 * @static
 		 *
@@ -171,13 +161,12 @@
 			}
 			return (static::_has($_SESSION, func_get_args()));
 		}
-
 		/**
 		 * @static
 		 *
-		 * @param			$first
-		 * @param			$second
-		 * @param			$var
+		 * @param      $first
+		 * @param      $second
+		 * @param      $var
 		 * @param null $type
 		 * @param null $default
 		 *
@@ -187,12 +176,11 @@
 			$array = (static::_has($first, $var)) ? $first : $second;
 			return static::_isset($array, $var, $type, $default);
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param array $array
-		 * @param			 $vars
+		 * @param       $vars
 		 *
 		 * @return bool
 		 */
@@ -209,14 +197,13 @@
 			}
 			return true;
 		}
-
 		/**
 		 * @static
 		 *
 		 * @param array $array
-		 * @param			 $var
-		 * @param null	$type
-		 * @param null	$default
+		 * @param       $var
+		 * @param null  $type
+		 * @param null  $default
 		 *
 		 * @return bool|int|null|string
 		 */
@@ -227,7 +214,7 @@
 					if (!$value || !is_numeric($value)) {
 						return self::$default_number;
 					}
-					return ($value === self::$default_number) ? true : $value;
+					return ($value === self::$default_number) ? true : $value+0;
 				case self::STRING:
 					if (!$value || !is_string($value)) {
 						return self::$default_string;

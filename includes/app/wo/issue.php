@@ -108,15 +108,16 @@
 			}
 		}
 
-		static public function void($type_no) {
+		static public function void($type, $type_no) {
+			if ($type != ST_MANUISSUE) $type = ST_MANUISSUE;
 			DB::begin();
 			// void the actual issue items and their quantities
 			$sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id=" . DB::escape($type_no);
 			DB::query($sql, "A work order issue item could not be voided");
 			// void all related stock moves
-			Inv_Movement::void(ST_MANUISSUE, $type_no);
+			Inv_Movement::void($type, $type_no);
 			// void any related gl trans
-			GL_Trans::void(ST_MANUISSUE, $type_no, true);
+			GL_Trans::void($type, $type_no, true);
 			DB::commit();
 		}
 
@@ -216,7 +217,7 @@
 			}
 			yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"),
 				_("Issue Items to Work order"));
-			Inv_Location::row(_("From Location:"), 'Location');
+			Inv_Location::row(_("From Location:"), 'location');
 			workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 			date_row(_("Issue Date:"), 'date_');
 			textarea_row(_("Memo"), 'memo_', null, 50, 3);

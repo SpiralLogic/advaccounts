@@ -283,7 +283,7 @@
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-			if ($_GET[ADDED_DI] && isset($_SESSION['global_customer_id']) && $row == false) {
+			if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer_id']) && $row == false) {
 				echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}
@@ -307,7 +307,7 @@
 		$order->name = $_POST['name'];
 		$order->customer_name = Input::post('customer', Input::STRING);
 		$order->phone = $_POST['phone'];
-		$order->Location = $_POST['Location'];
+		$order->location = $_POST['location'];
 		$order->ship_via = $_POST['ship_via'];
 		if (isset($_POST['email'])) {
 			$order->email = $_POST['email'];
@@ -346,7 +346,7 @@
 		$_POST['name'] = $order->name;
 		$_POST['customer'] = $order->customer_name;
 		$_POST['phone'] = $order->phone;
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['ship_via'] = $order->ship_via;
 		$_POST['customer_id'] = $order->customer_id;
 		$_POST['branch_id'] = $order->Branch;
@@ -493,7 +493,7 @@
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
 		elseif ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
-			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
+			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['location'], $_POST['OrderDate']);
 			if (Validation::input_num('qty') > $qoh) {
 				$stock = Item::get($_POST['stock_id']);
 				Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id'])));
@@ -560,14 +560,14 @@
 		}
 		else {
 			if ($order->trans_no != 0) {
-				if ($order->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key($order->trans_no))) {
+				if ($order->trans_type == ST_SALESORDER && $order->has_deliveries(key($order->trans_no))) {
 					Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {
 					$trans_no = key($order->trans_no);
 					$trans_type = $order->trans_type;
 					if (!isset($_GET[REMOVED_ID])) {
-						Sales_Order::delete($trans_no, $trans_type);
+						$order->($trans_no, $trans_type);
 						$jb = new \Modules\Jobsboard();
 						$jb->removejob($trans_no);
 						Event::notice(_("Sales order has been cancelled as requested."), 1);
@@ -579,7 +579,7 @@
 			}
 		}
 		Ajax::i()->activate('_page_body');
-		$order->finish($_POST['order_id']);
+		$order->finish();
 		Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 		Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
 		Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);

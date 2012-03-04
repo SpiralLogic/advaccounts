@@ -56,7 +56,7 @@
 	end_row();
 	end_table();
 	function check_overdue($row) {
-		return (!$row["closed"] && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
+		return (!$row["closed"] && Dates::date_diff2(Dates::today(), Dates::sql2date($row["required_by"]), "d") > 0);
 	}
 
 	function view_link($dummy, $order_no) {
@@ -138,7 +138,7 @@
 		$sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
 	}
 	if (check_value('OverdueOnly')) {
-		$Today = Dates::date2sql(Dates::Today());
+		$Today = Dates::date2sql(Dates::today());
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}
 	$cols = array(

@@ -124,7 +124,7 @@
 			label_row(_("Date to Use From:"), $_POST['date_']);
 		}
 		else {
-			$_POST['date_'] = Dates::Today();
+			$_POST['date_'] = Dates::today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}
@@ -139,9 +139,7 @@
 	}
 
 	function clear_data() {
-		unset($_POST['selected_id']);
-		unset($_POST['date_']);
-		unset($_POST['BuyRate']);
+		unset($_POST['selected_id'],$_POST['date_'],$_POST['BuyRate']);
 	}
 
 ?>

@@ -127,7 +127,7 @@
 			$ars[] = 'REP_ID=' . urlencode($rep);
 			$url .= implode('&', $ars);
 			if ($class != '') {
-				$class = Config::get('debug_pdf') ? '' : " class='$class'";
+				$class = Config::get('debug.pdf') ? '' : " class='$class'";
 			}
 			if ($id != '') {
 				$id = " id='$id'";
@@ -166,7 +166,7 @@ JS;
 			$pars[] = 'REP_ID=' . urlencode($rep);
 			$url .= implode('&', $pars);
 			if ($class != '') {
-				$class = Config::get('debug_pdf') ? '' : " class='$class'";
+				$class = Config::get('debug.pdf') ? '' : " class='$class'";
 			}
 			if ($id != '') {
 				$id = " id='$id'";

@@ -50,7 +50,9 @@
 	}
 	$this->LineTo($right, $iline2, $right, $iline4);
 	$this->LineTo($this->leftMargin, $iline5, $this->leftMargin, $iline7);
-	$this->LineTo($this->cols[$cols - 2] + 4, $iline5, $this->cols[$cols - 2] + 4, $iline7);
+	$adjustment = (end($this->aligns)=='right')?5:-5;
+	$bar = ($cols>count($this->aligns)) ? $cols-1:$cols-2;
+	$this->LineTo($this->cols[$bar] +$adjustment , $iline5, $this->cols[$bar] +$adjustment , $iline7);
 	$this->LineTo($right, $iline5, $right, $iline7);
 	$this->NewLine();
 	if ($this->company['coy_logo'] != '') {
@@ -265,7 +267,10 @@
 	}
 	elseif (isset($myrow["debtor_ref"])) {
 		$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
-	}
+	}elseif ($doctype==ST_STATEMENT) {
+			$this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
+
+		}
 	$col += $width;
 	$report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 	if ($doctype == ST_PURCHORDER) {
@@ -359,19 +364,10 @@
 		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
 	}
 	# __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
-	if ($doctype == ST_STATEMENT && isset($currentBranch)) {
-		$this->NewLine();
-		$this->NewLine();
-		$this->TextWrap($ccol, $this->row, $right - $ccol, "Email: " . $companyto->accounts->email);
-	}
+
 	if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
 		# __ADVANCEDEDIT__ END #
-		if ($doctype == ST_STATEMENT) {
-			$this->NewLine();
-		}
-		else {
 			$this->row -= (2 * $this->lineHeight);
-		}
 		if ($doctype == ST_WORKORDER) {
 			$str = Dates::sql2date($myrow["required_by"]);
 		}
@@ -382,9 +378,14 @@
 			$row = DB::fetch($result);
 			$str = $row["terms"];
 		}
-		$this->Font('italic');
-		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ": " . $str . " " . $doc_customer_id . ": " . $companyto->id);
+		$this->Font('bold');
+		$this->text($ccol, $doc_Payment_Terms . ": " . $str );
 		$this->Font();
+		if ($doctype == ST_STATEMENT && isset($companyto->accounts->email)) {
+			$this->TextWrap($ccol+$right/2, $this->row, $right - $ccol, "Email: " . $companyto->accounts->email);
+
+			}
+
 	}
 	$this->row = $iline5 - $this->lineHeight - 1;
 	$this->Font('bold');

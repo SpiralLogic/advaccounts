@@ -186,7 +186,7 @@ Debtor::cells(_('Customer:'),'selected_customer',$_POST['selected_customer'],tru
 	}
 
 	function check_overdue($row) {
-		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
+		return Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
 	}
 
 ?>

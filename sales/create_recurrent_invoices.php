@@ -13,7 +13,7 @@
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESINVOICE);
 	if (isset($_GET['recurrent'])) {
-		$date = Dates::Today();
+		$date = Dates::today();
 		if (Dates::is_date_in_fiscalyear($date)) {
 			$invs = array();
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
@@ -63,7 +63,7 @@
 	);
 	table_header($th);
 	$k = 0;
-	$today = Dates::add_days(Dates::Today(), 1);
+	$today = Dates::add_days(Dates::today(), 1);
 	$due = false;
 	while ($myrow = DB::fetch($result)) {
 		$begin = Dates::sql2date($myrow["begin"]);
@@ -128,7 +128,7 @@
 		$doc->customer_to_order($customer_id, $branch_id);
 		$doc->trans_type = ST_SALESORDER;
 		$doc->trans_no = 0;
-		$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+		$doc->document_date = Dates::today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 		$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 		$doc->reference = Ref::get_next($doc->trans_type);
 		//$doc->Comments='';

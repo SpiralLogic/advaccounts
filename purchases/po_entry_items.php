@@ -122,7 +122,7 @@
 		$_POST['Requisition'] = $order->requisition_no;
 		$_POST['ref'] = $order->reference;
 		$_POST['Comments'] = $order->Comments;
-		$_POST['StkLocation'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['delivery_address'] = $order->delivery_address;
 		$_POST['freight'] = $order->freight;
 		$_POST['salesman'] = $order->salesman;
@@ -131,12 +131,12 @@
 	}
 
 	function copy_to_order($order) {
-		$order->supplier_id = $_POST['supplier_id'];
+		$order->supplier_id = Input::post('supplier_id',Input::NUMERIC,null);
 		$order->orig_order_date = $_POST['OrderDate'];
 		$order->reference = $_POST['ref'];
 		$order->requisition_no = $_POST['Requisition'];
 		$order->Comments = $_POST['Comments'];
-		$order->Location = $_POST['StkLocation'];
+		$order->location = $_POST['location'];
 		$order->delivery_address = $_POST['delivery_address'];
 		$order->freight = $_POST['freight'];
 		$order->salesman = $_POST['salesman'];
@@ -148,10 +148,7 @@
 	}
 
 	function unset_form_variables() {
-		unset($_POST['stock_id']);
-		unset($_POST['qty']);
-		unset($_POST['price']);
-		unset($_POST['req_del_date']);
+		unset($_POST['stock_id'],$_POST['qty'],$_POST['price'],$_POST['req_del_date']);
 	}
 
 	/**
@@ -219,12 +216,12 @@
 			$row = DB::fetch($result);
 			$order->supplier_to_order($row['supplier_id']);
 			foreach ($sales_order->line_items as $line_no => $line_item) {
-				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::today(), 10), 0, 0, 0);
 			}
 			if (isset($_GET[LOC_DROP_SHIP])) {
 				$item_info = Item::get('DS');
-				$_POST['StkLocation'] = $order->Location = LOC_DROP_SHIP;
-				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
+				$_POST['location'] = $order->location = LOC_DROP_SHIP;
+				$order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::today(), 10), 0, 0, 0);
 				$address = $sales_order->customer_name . "\n";
 				if (!empty($sales_order->name) && $sales_order->deliver_to == $sales_order->customer_name) {
 					$address .= $sales_order->name . "\n";
@@ -351,9 +348,9 @@
 			JS::set_focus('freight');
 			return false;
 		}
-		if (get_post('StkLocation') == '') {
+		if (get_post('location') == '') {
 			Event::error(_("There is no location specified to move any items into."));
-			JS::set_focus('StkLocation');
+			JS::set_focus('location');
 			return false;
 		}
 		if ($order->order_has_items() == false) {

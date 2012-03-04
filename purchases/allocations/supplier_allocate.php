@@ -24,7 +24,9 @@ Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SU
 	}
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		Display::meta_forward("/purchases/allocations/supplier_allocation_main.php");
+		$forward = (isset($_POST['inquiry'])) ? "/purchases/inquiry/supplier_allocation_inquiry.php" :
+		 "/purchases/allocations/supplier_allocation_main.php";
+				Display::meta_forward($forward);
 	}
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
 		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
@@ -42,12 +44,14 @@ Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SU
 				unset($_SESSION['alloc']->allocs);
 				unset($_SESSION['alloc']);
 			}
-			//session_register("alloc");
 		}
 
 		function edit_allocations_for_transaction($type, $trans_no) {
 			global $systypes_array;
 			start_form();
+			if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
+						hidden('inquiry', true);
+					}
 			Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
 			Display::heading($_SESSION['alloc']->person_name);
 			Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");

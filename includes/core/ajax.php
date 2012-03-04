@@ -24,7 +24,7 @@
 		 * Returns Ajax Instance
 		 */
 		static public function i() {
-			(static::$i === null) and	static::$i = new static;
+			(static::$i === null) and  static::$i = new static;
 			return static::$i;
 		}
 		/**
@@ -35,8 +35,8 @@
 		}
 		/**
 		 *
-		 *	 This function is used in ctrl routines to activate
-		 *	 update of ajaxified html element selected by given name/id.
+		 *   This function is used in ctrl routines to activate
+		 *   update of ajaxified html element selected by given name/id.
 		 *
 		 * @param $trigname
 		 */
@@ -45,8 +45,8 @@
 		}
 		/**
 		 *
-		 *	 Javascript clientside redirection.
-		 *	 This is the last command added to reponse (if any).
+		 *   Javascript clientside redirection.
+		 *   This is the last command added to reponse (if any).
 		 *
 		 * @param $url
 		 */
@@ -115,8 +115,8 @@
 		 *
 		 * Set disable state of element.
 		 *
-		 * @param			$trigger
-		 * @param			$sTarget
+		 * @param      $trigger
+		 * @param      $sTarget
 		 * @param bool $sData
 		 *
 		 * @return Ajax
@@ -131,8 +131,8 @@
 		 *
 		 * Set state of element to enabled.
 		 *
-		 * @param			$trigger
-		 * @param			$sTarget
+		 * @param      $trigger
+		 * @param      $sTarget
 		 * @param bool $sData
 		 *
 		 * @return Ajax

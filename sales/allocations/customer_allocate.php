@@ -42,10 +42,8 @@
 	Page::end();
 	function clear_allocations() {
 		if (isset($_SESSION['alloc'])) {
-			unset($_SESSION['alloc']->allocs);
-			unset($_SESSION['alloc']);
+			unset($_SESSION['alloc']->allocs,$_SESSION['alloc']);
 		}
-		session_register('alloc');
 	}
 
 	function edit_allocations_for_transaction($type, $trans_no) {

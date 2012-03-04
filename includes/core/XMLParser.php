@@ -56,14 +56,12 @@
 		 * @public string
 		 */
 		public $status = '';
-
 		/**
 		 * @param null $xml
 		 */
 		function __construct($xml = NULL) {
 			$this->rawXML = $xml;
 		}
-
 		/**
 		 * @param null $xml
 		 *
@@ -82,7 +80,6 @@
 			$this->status = 'parsing complete';
 			return $this->parsed;
 		}
-
 		/**
 		 * @return array
 		 */
@@ -140,7 +137,6 @@
 			}
 			return $found;
 		}
-
 		/**
 		 * @return bool
 		 */
@@ -156,7 +152,6 @@
 			xml_parser_free($parser);
 			return $res;
 		}
-
 		/**
 		 * @static
 		 *

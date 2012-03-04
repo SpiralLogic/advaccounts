@@ -91,7 +91,8 @@ Page::start(_($help_context = "Reports and Analysis"), SA_OPEN);
 																																			 _('Comments') => 'TEXTBOX',
 																																			 _('Include Negatives') => 'YES_NO',
 																																			 _('Include Payments') => 'YES_NO',
-																																			 _('Include Allocations') => 'YES_NO'
+																																			 _('Include Allocations') => 'YES_NO',
+																																			 _('Month') => 'DATEMONTH'
 																																	));
 	$reports->addReport(_('Customer'), 109, _('&Print Sales Orders'), array(
 																																				 _('From') => 'ORDERS',

@@ -46,9 +46,9 @@
 		 */
 		public $is_locale_file;
 		/**
-		 * @param				$name
-		 * @param				$code
-		 * @param				$encoding
+		 * @param        $name
+		 * @param        $code
+		 * @param        $encoding
 		 * @param string $dir
 		 */
 		public function __construct($name, $code, $encoding, $dir = 'ltr') {
@@ -94,7 +94,7 @@
 		 */
 		static public function set() {
 			if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
-				$l = Arr::search_value(Config::get('defaults.lang'), Config::get('languages.installed'), 'code');
+				$l = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
 				static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 				static::$i->set_language(static::$i->code);
 				if (file_exists(DOCROOT . "lang/" . static::$i->code . "/locale.php")) {
@@ -102,7 +102,8 @@
 					include(DOCROOT . "lang/" . static::$i->code . "/locale.php");
 				}
 				$_SESSION['Language'] = static::$i;
-			} else {
+			}
+			else {
 				static::$i = $_SESSION['Language'];
 			}
 		}

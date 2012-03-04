@@ -107,7 +107,7 @@ Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
 	// Returns array of defined reports
 	//
 	function get_reports() {
-		if (Config::get('debug') || !isset($_SESSION['reports'])) {
+		if (Config::get('debug.enabled') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
 			$paths = array(
 				PATH_TO_ROOT . '/reporting/', COMPANY_PATH . 'reporting/'

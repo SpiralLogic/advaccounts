@@ -6,17 +6,16 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-	Class DB_Query_Update extends DB_Query_Insert {
+	Class DB_Query_Update extends DB_Query_Insert
+	{
 		/**
 		 * @param bool $table
-		 * @param			$db
+		 * @param      $db
 		 */
 		public function __construct($table = false, $db) {
 			parent::__construct($table, $db);
 			$this->type = DB::UPDATE;
 		}
-
-
 		/**
 		 * @return string
 		 */

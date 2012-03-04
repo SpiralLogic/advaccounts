@@ -114,7 +114,7 @@
 			Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
 		}
 	}
-	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
+	if (isset($_POST['Update']) || isset($_POST['_location_update'])) {
 		Ajax::i()->activate('Items');
 	}
 	start_form();
@@ -140,11 +140,11 @@
 	label_cells(_("Sales Type"), $order->sales_type_name, "class='label'");
 	end_row();
 	start_row();
-	if (!isset($_POST['Location'])) {
-		$_POST['Location'] = $order->Location;
+	if (!isset($_POST['location'])) {
+		$_POST['location'] = $order->location;
 	}
 	label_cell(_("Delivery From"), "class='label'");
-	Inv_Location::cells(null, 'Location', null, false, true);
+	Inv_Location::cells(null, 'location', null, false, true);
 	if (!isset($_POST['ship_via'])) {
 		$_POST['ship_via'] = $order->ship_via;
 	}
@@ -163,7 +163,7 @@
 	echo "</td><td>"; // outer table
 	start_table('tablestyle width90');
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-		$_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
+		$_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
 	}
 	start_row();
 	date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
@@ -200,7 +200,7 @@
 			$show_qoh = false;
 		}
 		if ($show_qoh) {
-			$qoh = Item::get_qoh_on_date($line->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+			$qoh = Item::get_qoh_on_date($line->stock_id, $_POST['location'], $_POST['DispatchDate']);
 		}
 		if ($show_qoh && ($line->qty_dispatched > $qoh)) {
 			// oops, we don't have enough of one of the component items
@@ -300,7 +300,7 @@
 		$order->freight_cost = Validation::input_num('ChargeFreightCost');
 		$order->document_date = $_POST['DispatchDate'];
 		$order->due_date = $_POST['due_date'];
-		$order->Location = $_POST['Location'];
+		$order->location = $_POST['location'];
 		$order->Comments = $_POST['Comments'];
 		if ($order->trans_no == 0) {
 			$order->reference = $_POST['ref'];
@@ -313,7 +313,7 @@
 		$_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
 		$_POST['DispatchDate'] = $order->document_date;
 		$_POST['due_date'] = $order->due_date;
-		$_POST['Location'] = $order->Location;
+		$_POST['location'] = $order->location;
 		$_POST['Comments'] = $order->Comments;
 		$_POST['ref'] = $order->reference;
 		$_POST['order_id'] = $order->order_id;
@@ -361,7 +361,7 @@
 		if (!DB_Company::get_pref('allow_negative_stock')) {
 			foreach ($order->line_items as $itm) {
 				if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
-					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['location'], $_POST['DispatchDate']);
 					if ($itm->qty_dispatched > $qoh) {
 						Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
 						return false;

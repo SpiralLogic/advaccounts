@@ -65,7 +65,9 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-		static public function void($type_no) {
+		static public function void($type,$type_no) {
+			if ($type != ST_MANURECEIVE) $type = ST_MANURECEIVE;
+
 			DB::begin();
 			$row = WO_Produce::get($type_no);
 			// deduct the quantity of this production from the parent work order
@@ -75,9 +77,9 @@
 			$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
 			DB::query($sql, "Cannot void a wo production");
 			// void all related stock moves
-			Inv_Movement::void(ST_MANURECEIVE, $type_no);
+			Inv_Movement::void($type, $type_no);
 			// void any related gl trans
-			GL_Trans::void(ST_MANURECEIVE, $type_no, true);
+			GL_Trans::void($type, $type_no, true);
 			DB::commit();
 		}
 
