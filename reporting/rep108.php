@@ -131,7 +131,7 @@
 						$balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
 					}
 					else {
-						$balance += ($myrow2['type'] == ST_SALESINVOICE) ? $outstanding : 0;
+						$balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : 0;
 					}
 				}
 				$DisplayBalance = Num::format($balance, $dec);
