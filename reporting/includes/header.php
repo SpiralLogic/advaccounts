@@ -276,9 +276,7 @@
 	elseif (isset($myrow["debtor_ref"])) {
 		$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
 	}
-	elseif ($doctype == ST_STATEMENT) {
-		$this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
-	}
+
 	$col += $width;
 	$report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 	if ($doctype == ST_PURCHORDER) {
@@ -297,7 +295,9 @@
 	}
 	elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
 		$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
-	}
+	}	elseif ($doctype == ST_STATEMENT) {
+			$this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
+		}
 	$col += $width;
 	$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] :
 	 ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));

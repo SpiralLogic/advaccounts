@@ -55,12 +55,12 @@
 		$incNegatives = $_POST['PARAM_4'];
 		$incPayments = $_POST['PARAM_5'];
 		$incAllocations = $_POST['PARAM_6'];
-		$month = $_POST['PARAM_7'] ? : date('n');
+		$month = $_POST['PARAM_7'] ? : 0;
 		$doctype = ST_STATEMENT;
 		$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
 		$dec = User::price_dec();
-		$cols = array(5, 60,100, 170, 225, 295, 345, 390, 460, 460);
-		$aligns = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'left');
+		$cols = array(5, 60, 100, 170, 225, 295, 345, 390, 460, 460);
+		$aligns = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'right');
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
@@ -81,7 +81,7 @@
 		}
 		$result = DB::query($sql, "The customers could not be retrieved");
 		while ($myrow = DB::fetch($result)) {
-			$date = $myrow['tran_date'] = date('Y-m-1',strtotime("now - $month months"));
+			$date = $myrow['tran_date'] = date('Y-m-1', strtotime("now - $month months"));
 			$myrow['order_'] = "";
 			$CustomerRecord = Debtor::get_details($myrow['debtor_no']);
 			if (round($CustomerRecord["Balance"], 2) == 0) {
@@ -93,7 +93,7 @@
 			$baccount = Bank_Account::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 			$TransResult = getTransactions($myrow['debtor_no'], $date, !$incAllocations && !$incPayments, $month);
-			if ((DB::num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
+			if ((DB::num_rows($TransResult) == 0)) {
 				continue;
 			}
 			$transactions = array();
@@ -112,24 +112,23 @@
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
-			for ($i = 0; $i < count($transactions); $i++) {
-				$myrow2 = $transactions[$i];
-				if ($myrow2['OverDue']) {
-					$openingbalance = $myrow2['TotalAmount'] - $myrow2['Allocated'];
+			foreach ($transactions as $i => $trans) {
+				if ($trans['OverDue']) {
+					$openingbalance = $trans['TotalAmount'] - $trans['Allocated'];
 					$balance += $openingbalance;
 				}
 				else {
-					$DisplayTotal = Num::format(abs($myrow2["TotalAmount"]), $dec);
-					$outstanding = abs($myrow2["TotalAmount"]) - $myrow2["Allocated"];
+					$DisplayTotal = Num::format(abs($trans["TotalAmount"]), $dec);
+					$outstanding = abs($trans["TotalAmount"]) - $trans["Allocated"];
 					$displayOutstanding = Num::format($outstanding, $dec);
 					if (!$incPayments && !$incAllocations && Num::round($outstanding, 2) == 0) {
 						continue;
 					}
-					if (!$incPayments && ($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT || $myrow2['type'] == ST_BANKDEPOSIT)) {
+					if (!$incPayments && ($trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKPAYMENT || $trans['type'] == ST_BANKDEPOSIT)) {
 						continue;
 					}
 					if ($incAllocations || $incPayments) {
-						$balance += ($myrow2['type'] == ST_SALESINVOICE) ? $myrow2["TotalAmount"] : -$myrow2["TotalAmount"];
+						$balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
 					}
 					else {
 						$balance += ($myrow2['type'] == ST_SALESINVOICE) ? $outstanding : 0;
@@ -154,23 +153,23 @@
 					$openingbalance = 0;
 					continue;
 				}
-				$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
-				if ($myrow2['type'] == ST_SALESINVOICE) {
+				$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
+				if ($trans['type'] == ST_SALESINVOICE) {
 					$rep->Font('bold');
 				}
-				$rep->TextCol(1, 2, $myrow2['reference'], -2);
-				if ($myrow2['type'] == '10') {
-					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
+				$rep->TextCol(1, 2, $trans['reference'], -2);
+				if ($trans['type'] == '10') {
+					$rep->TextCol(2, 3, getTransactionPO($trans['order_']), -2);
 				}
 				else {
 					$rep->TextCol(2, 3, '', -2);
 				}
 				$rep->Font();
-				$rep->TextCol(3, 4, Dates::sql2date($myrow2['tran_date']), -2);
-				if ($myrow2['type'] == ST_SALESINVOICE) {
-					$rep->TextCol(4, 5, Dates::sql2date($myrow2['due_date']), -2);
+				$rep->TextCol(3, 4, Dates::sql2date($trans['tran_date']), -2);
+				if ($trans['type'] == ST_SALESINVOICE) {
+					$rep->TextCol(4, 5, Dates::sql2date($trans['due_date']), -2);
 				}
-				if ($myrow2['type'] == ST_SALESINVOICE) {
+				if ($trans['type'] == ST_SALESINVOICE) {
 					$rep->TextCol(5, 6, $DisplayTotal, -2);
 				}
 				else {
@@ -199,7 +198,7 @@
 			$col = array(
 				$rep->cols[0], $rep->cols[0] + 80, $rep->cols[0] + 170, $rep->cols[0] + 270, $rep->cols[0] + 360, $rep->cols[0] + 450
 			);
-			$rep->row = $rep->bottomMargin + (12 * $rep->lineHeight - 6);
+			$rep->row = $rep->bottomMargin + (13 * $rep->lineHeight - 6);
 			if ($CustomerRecord["Balance"] > 0 && $CustomerRecord["Due"] - $CustomerRecord["Overdue1"] < $CustomerRecord["Balance"]) {
 				$rep->SetTextColor(255, 0, 0);
 				$rep->fontSize += 5;

@@ -70,8 +70,8 @@
 				$doc_Payment_Terms = _("Payment Terms");
 			} elseif ($doctype == ST_STATEMENT) {
 				$doc_Date="Statement Date:";
-				$doc_Customers_Ref = "Customer ID";
-				$doc_Our_Ref = "";
+				$doc_Customers_Ref = "";
+				$doc_Our_Ref = "Customer ID";
 				$doc_Your_TAX_no = "Phone";
 				$doc_Our_Order_No = "Fax";
 				$doc_Due_Date = "";
