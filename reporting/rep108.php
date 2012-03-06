@@ -14,24 +14,26 @@
 	Page::set_security(SA_CUSTSTATREP);
 	print_statements();
 	function getTransactions($debtorno, $date, $incAllocations = true, $month) {
-		$dateend = date('Y-m-d', mktime(0, 0, 0, $month, 0));
-		$datestart = date('Y-m-d', mktime(0, 0, 0, $month - 2, 1));
+		$dateend = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
+		$datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
 		$sql = "SELECT debtor_trans.*,
 				SUM((debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount))
 				AS TotalAmount, SUM(debtor_trans.alloc) AS Allocated,
-				(debtor_trans.type = " . ST_SALESINVOICE . " AND debtor_trans.due_date < '$datestart') AS OverDue
+				( debtor_trans.due_date < '$datestart') AS OverDue
  			FROM debtor_trans
  			WHERE debtor_trans.tran_date <= '$dateend' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
- 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
-
- 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0	";
+ 				AND debtor_trans.type <> " . ST_CUSTDELIVERY;
 		if ($incAllocations) {
 			$sql .= " AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - debtor_trans.alloc) != 0";
 		}
-		$sql .= " GROUP BY debtor_no, if(debtor_trans.due_date<'$datestart',0,debtor_trans.due_date) ORDER BY debtor_trans.branch_id, debtor_trans.tran_date, debtor_trans.type";
+		else {
+			$sql .= "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0	";
+		}
+		$sql .= " GROUP BY debtor_no, if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no) ORDER BY debtor_trans.branch_id, debtor_trans.tran_date,
+		debtor_trans.type";
 		return DB::query($sql, "No transactions were returned");
 	}
 
@@ -113,9 +115,11 @@
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 			foreach ($transactions as $i => $trans) {
-				if ($trans['OverDue']) {
+				if ($trans['OverDue'] ) {
 					$openingbalance = $trans['TotalAmount'] - $trans['Allocated'];
+					if(!$openingbalance)continue;
 					$balance += $openingbalance;
+
 				}
 				else {
 					$DisplayTotal = Num::format(abs($trans["TotalAmount"]), $dec);

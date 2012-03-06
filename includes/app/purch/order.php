@@ -527,8 +527,8 @@
 					$loc_row = DB::fetch($result);
 					$_POST['delivery_address'] = $loc_row["delivery_address"];
 					Ajax::i()->activate('delivery_address');
-					$_SESSION['PO']->location = $_POST['location'];
-					$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+					$this->location = $_POST['location'];
+					$this->delivery_address = $_POST['delivery_address'];
 				}
 				else { /* The default location of the user is crook */
 					Event::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
