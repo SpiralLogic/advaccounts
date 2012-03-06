@@ -9,7 +9,7 @@
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 
-Adv.extend({
+Adv.extend({alloc:{
 						 alloc:function (i) {
 							 save_focus(i);
 							 i.setAttribute('_last', Adv.Forms.getAmount(i.name));
@@ -50,7 +50,7 @@ Adv.extend({
 							 Adv.Forms.priceFormat('amount' + doc, 0, user.pdec);
 							 Adv.Forms.priceFormat('amount', total - amount, user.pdec);
 						 }
-					 });
+					 }});
 Behaviour.register({
 										 '.amount':function (e) {
 											 e.onblur = function () {
