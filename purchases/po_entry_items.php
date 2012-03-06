@@ -102,7 +102,6 @@
 	}
 	Display::div_end();
 	end_form();
-	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();
 	if (isset($order->supplier_id)) {
 		Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);

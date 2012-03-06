@@ -1446,7 +1446,7 @@
 				JS::set_focus('qty');
 			}
 			else {
-				submit_cells(Orders::ADD_ITEM, _("Add Item"), 'class="center"', _('Add new item to document'), true);
+				submit_cells(Orders::ADD_ITEM, _("Add Item"), 'colspan=2 class="center"', _('Add new item to document'), true);
 			}
 			end_row();
 		}

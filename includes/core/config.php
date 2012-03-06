@@ -54,13 +54,14 @@
 		 * @throws Config_Exception
 		 */
 		static protected function load($group = 'config') {
-			$file = DOCROOT . "config" . DS . $group . '.php';
-			$group_name = $group;
 			if (is_array($group)) {
 				$group_name = implode('.', $group);
 				$group_file = array_pop($group) . '.php';
 				$group_path = implode(DS, $group);
 				$file = DOCROOT . "config" . $group_path . DS . $group_file;
+			}else {
+				$file = DOCROOT . "config" . DS . $group . '.php';
+							$group_name = $group;
 			}
 			if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
 				return;

@@ -170,12 +170,12 @@
 					$rep->TextCol(4, 5, Dates::sql2date($trans['due_date']), -2);
 				}
 				if ($trans['type'] == ST_SALESINVOICE) {
-					$rep->TextCol(5, 6, $DisplayTotal, -2);
+		if (isset($DisplayTotal))			$rep->TextCol(5, 6, $DisplayTotal, -2);
 				}
 				else {
-					$rep->TextCol(6, 7, $DisplayTotal, -2);
+					if (isset($DisplayTotal))				$rep->TextCol(6, 7, $DisplayTotal, -2);
 				}
-				$rep->TextCol(7, 8, $displayOutstanding, -2);
+				if (isset($displayOutstanding))	$rep->TextCol(7, 8, $displayOutstanding, -2);
 				$rep->TextCol(8, 9, $DisplayBalance, -2);
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight)) {
