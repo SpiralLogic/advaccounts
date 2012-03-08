@@ -194,9 +194,11 @@
 		echo "<tr><td>";
 		$order->summary($orderitems, true);
 		echo "</td></tr><tr><td>";
-		$order->display_delivery_details();
+		$order->display_delivery_details(); 
 		echo "</td></tr>";
 		end_table(1);
+		Display::div_start('controls', 'items_table');
+
 		if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION)) {
 			submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
 			submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
@@ -205,12 +207,13 @@
 		else {
 			submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
 		}
-		if ($order->trans_no == 0) {
-			submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
-		}
-		else {
-			submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
-		}
+		if (count($order->line_items)){
+			if ($order->trans_no > 0) {
+				submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
+			}
+			else {
+				submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
+			}}
 		if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
 			//UploadHandler::insert($_GET[Orders::MODIFY_ORDER]);
 		}
@@ -220,8 +223,9 @@
 		Session::i()->global_customer = null;
 		Page::footer_exit();
 	}
+	Display::div_end();
+
 	end_form();
-	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Debtor::addEditDialog();
 	Item::addEditDialog();
 	Page::end(true);
@@ -567,7 +571,7 @@
 					$trans_no = key($order->trans_no);
 					$trans_type = $order->trans_type;
 					if (!isset($_GET[REMOVED_ID])) {
-						$order->($trans_no, $trans_type);
+						$order->delete($trans_no, $trans_type);
 						$jb = new \Modules\Jobsboard();
 						$jb->removejob($trans_no);
 						Event::notice(_("Sales order has been cancelled as requested."), 1);
@@ -632,3 +636,4 @@
 		}
 		return copy_from_order($doc);
 	}
+
