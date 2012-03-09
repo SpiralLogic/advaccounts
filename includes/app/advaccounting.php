@@ -182,7 +182,7 @@
 				Ajax::i()->redirect($_SERVER['PHP_SELF']);
 			}
 			elseif (AJAX_REFERRER) {
-				JS::redirect(BASE_URL);
+				JS::redirect('/');
 			}
 			exit();
 		}
