@@ -29,13 +29,10 @@
 	define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
 	define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
 	define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
-	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
-	define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
 	define('CRLF', chr(13) . chr(10));
 	define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :  '.');
-	define('MBSTRING', function_exists('mb_get_info'));
 	set_error_handler(function ($severity, $message, $filepath, $line) {
 		(!class_exists('Errors', false)) and include(COREPATH . 'errors.php');
 		return \Errors::handler($severity, $message, $filepath, $line);
