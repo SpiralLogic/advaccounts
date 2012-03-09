@@ -54,7 +54,7 @@
 		Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
 		echo "<br>";
 		start_form();
-		if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
+		if (isset($_POST['inquiry'],$_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
 			hidden('inquiry', true);
 		}
 		Display::div_start('alloc_tbl');

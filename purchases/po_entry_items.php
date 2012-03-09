@@ -46,7 +46,7 @@
 		$order = create_order($order_no);
 	}
 	$id = find_submit(MODE_DELETE);
-	if ($id != -1) {
+	if ($id != -1 && $order) {
 		handle_delete_item($order, $id);
 	}
 	if (isset($_POST[COMMIT])) {

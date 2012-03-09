@@ -207,7 +207,9 @@
 					$subject .= static::$session['current_user']->username;
 				}
 				if (count(static::$session)) {
-					unset(static::$session['current_user'], static::$session['config'], static::$session['App'], static::$session['orders_tbl']);
+					unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
+					static::$session['orders_tbl']=count(	static::$session['orders_tbl']);
+					static::$session['pager']=count( static::$session['pager']);
 					$text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
 				}
 				if (isset(static::$levels[static::$current_severity])) {
