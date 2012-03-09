@@ -65,16 +65,16 @@
 		/**
 		 * @param int $id Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
 		 */
-		protected function __construct($id = 0) {
+		protected function __construct($id = 0,$extra=array()) {
 			if (is_numeric($id) && $id > 0) {
 				$this->id = $id;
-				$this->_read($id);
+				$this->_read($id,$extra);
 				return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
 			}
 			elseif (is_array($id)) {
 				$this->_defaults();
 				if (isset($id['id']) && $id['id']) {
-					$this->_read($id['id']);
+					$this->_read($id['id'],$extra);
 				}
 				else {
 					$this->_new();
@@ -89,13 +89,16 @@
 		 *
 		 * @return bool
 		 */
-		protected function _read($id = null) {
+		protected function _read($id = null,$extra=array()) {
 			if ($id === null) {
 				return $this->_status(false, 'read', 'No ' . get_class($this), ' ID to read');
 			}
 			$this->_defaults();
 			try {
-				DB::select()->from($this->_table)->where($this->_id_column . '=', $id);
+				$query = DB::select()->from($this->_table)->where($this->_id_column . '=', $id);
+				foreach($extra as $field=>$value) {
+					$query->and_where($field.'=',$value);
+				}
 				DB::fetch()->intoClass($this);
 			} catch (DBSelectException $e) {
 				return $this->_status(false, 'read', 'Could not read ' . get_class($this), (string)$id);

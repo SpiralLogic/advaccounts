@@ -39,6 +39,18 @@
 		public $payable_account;
 		public $payment_discount_account;
 		public $supp_ref = '';
+		public $contacts=array();
+		public $defaultContact;
+		public $city;
+		public $state;
+		public $postcode;		/**
+				 * @var string
+				 */
+				protected $_table = 'suppliers';
+				/**
+				 * @var string
+				 */
+				protected $_id_column = 'supplier_id';
 		public function __construct($id = null) {
 			$this->supplier_id = &$this->id;
 			$this->supp_name =& $this->name;
@@ -53,45 +65,39 @@
 			return array('Accounts' => array($this->id => array($this->name, $this->email)));
 		}
 		public function save($changes = null) {
-			if (is_array($changes)) {
-				$this->setFromArray($changes);
-			}
-			if (!$this->_canProcess()) {
+			$data['debtor_ref'] = substr($this->name, 0, 29);
+			$data['discount'] = User::numeric($this->discount) / 100;
+			if (!parent::save($changes)) {
+				$this->_setDefaults();
 				return false;
 			}
-			if ($this->id == 0) {
-				$this->_saveNew();
+
+			foreach ($this->contacts as $contact) {
+				$contact->save(array('parent_id' => $this->id));
+				$this->contacts[$contact->id] = $contact;
 			}
-			$sql = "UPDATE suppliers SET name=" . DB::escape($this->name) . ",
-							supp_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
-							address=" . DB::escape($this->address) . ",
-							supp_account_no=" . DB::escape($this->account_no) . ",
-							tax_id=" . DB::escape($this->tax_id) . ",
-							bank_account=" . DB::escape($this->bank_account) . ",
-							purchase_account=" . DB::escape($this->purchase_account) . ",
-							payable_account=" . DB::escape($this->payable_account) . ",
-							payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
-							curr_code=" . DB::escape($this->curr_code) . ",
-							email=" . DB::escape($this->email) . ",
-							website=" . DB::escape($this->website) . ",
-							fax=" . DB::escape($this->fax) . ",
-							phone=" . DB::escape($this->phone) . ",
-							phone2=" . DB::escape($this->phone2) . ",
-							inactive=" . DB::escape($this->inactive) . ",
-							dimension_id=" . DB::escape($this->dimension_id) . ",
-							dimension2_id=" . DB::escape($this->dimension2_id) . ",
-				 credit_status=" . DB::escape($this->credit_status) . ",
-				 payment_terms=" . DB::escape($this->payment_terms) . ",
-				 pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
-				 credit_limit=" . User::numeric($this->credit_limit) . ",
-				 notes=" . DB::escape($this->notes) . "
-				 WHERE debtor_no = " . DB::escape($this->id);
-			DB::query($sql, "The supplier could not be updated");
-			return $this->_status(true, 'Processing', "Supplier has been updated.");
+			return $this->_setDefaults();
 		}
 		public function delete() {
 			// TODO: Implement delete() method.
-		}
+		}			/**
+				 * @param null $changes
+				 */
+				protected function setFromArray($changes = NULL) {
+					parent::setFromArray($changes);
+					if (isset($changes['contacts']) && is_array($changes['contacts'])) {
+						foreach ($changes['contacts'] as $id => $contact) {
+							$this->contacts[$id] = new Contact(CT_SUPPLIER,$contact);
+						}
+					}
+					$this->credit_limit = str_replace(',', '', $this->credit_limit);
+				}	/**
+
+				 */
+				protected function _setDefaults() {
+					$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
+					$this->contacts[0] = new Contact(CT_SUPPLIER,array('parent_id' => $this->id));
+				}
 		protected function _canProcess() {
 			if (empty($this->name)) {
 				$this->_status(false, 'Processing', "The supplier name cannot be empty.", 'name');
@@ -109,38 +115,42 @@
 			$this->payable_account = $company_record["creditors_act"];
 			$this->purchase_account = $company_record["default_cogs_act"];
 			$this->payment_discount_account = $company_record['pyt_discount_act'];
+			$this->contacts[0] = new Contact(CT_SUPPLIER);
+			 $this->contacts[0]->parent_id = $this->id = 0;
+			$this->_setDefaults();
+			return $this->_status(true, 'Initialize', 'Now working with a new customer');
 		}
 		protected function _new() {
 			$this->_defaults();
 			return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
-		}
-		protected function _read($id = null) {
-			if ($id == null || empty($id)) {
-				return $this->_status(false, 'read', 'No supplier ID to read');
+		}		/**
+
+				 */
+				protected function _getContacts() {
+					DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=',CT_SUPPLIER);
+					$contacts = DB::fetch()->asClassLate('Contact',array(CT_SUPPLIER));
+					if (count($contacts)) {
+						foreach ($contacts as $contact) {
+							$this->contacts[$contact->id] = $contact;
+						}
+						$this->defaultContact = reset($this->contacts)->id;
+					}
+					$this->contacts[0] = new Contact(CT_SUPPLIER,array('parent_id' => $this->id));
+				}
+		/**
+		 * @param bool $id
+		 *
+		 * @return array
+		 */
+		protected function _read($id = false) {
+			if (!parent::_read($id)) {
+				return $this->_status->get();
 			}
-			$this->_defaults();
-			$this->id = $id;
-			$sql = "SELECT * FROM suppliers WHERE supplier_id = " . DB::escape($id);
-			$result = DB::query($sql, "check failed");
-			if (DB::num_rows($result) != 1) {
-				$this->_status(false, 'read', "Supplier could not be found!");
-				return false;
-			}
-			$result = DB::fetch_assoc($result);
-			$this->setFromArray($result);
+			$this->_getContacts();
+			$this->discount = $this->discount * 100;
 			$this->credit_limit = Num::price_format($this->credit_limit);
-			return $this->id;
 		}
-		protected function _saveNew() {
-			$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
-				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
-				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::escape($this->name) . ", " . DB::escape($this->supp_ref) . ", " . DB::escape($this->address) . ", " . DB::escape($this->post_address) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . ", " . DB::escape($this->tax_id) . ", " . DB::escape($this->email) . ", " . DB::escape($this->website) . ", " . DB::escape($this->contact_name) . ", " . DB::escape($this->account_no) . ", " . DB::escape($this->bank_account) . ", " . DB::escape($this->credit_limit) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->payment_terms) . ", " . DB::escape($this->payable_account) . ", " . DB::escape($this->purchase_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->tax_group_id) . ")";
-			DB::query($sql, "The supplier could not be added");
-			$this->id = DB::insert_id();
-			DB::commit();
-			$this->_status(true, 'Saving', "A Supplier has been added.");
-		}
+
 		static public function get_to_trans($supplier_id, $to = null) {
 			if ($to == null) {
 				$todate = date("Y-m-d");

@@ -18,7 +18,7 @@
 		$_SESSION['global_supplier_id'] = $supplier->id;
 	}
 	else {
-		$data['company'] = $supplier = new Debtor();
+		$data['company'] = $supplier = new Creditor();
 	}
 	if (AJAX_REFERRER) {
 		$data['status'] = $supplier->getStatus();
@@ -31,7 +31,6 @@
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	JS::onload("Company.setValues(" . json_encode($data) . ");");
 	$currentContact = $supplier->contacts[$supplier->defaultContact];
-	$currentBranch = $supplier->branches[$supplier->defaultBranch];
 	if (isset($_POST['delete'])) {
 		$supplier->delete();
 		$status = $supplier->getStatus();
@@ -67,62 +66,35 @@
 	table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
-	HTML::tr(true)->td('branchSelect', array(
-																					'colspan' => 2, 'class' => "center"
-																		 ));
-	UI::select('branchList', array_map(function($v) {
-		return $v->br_name;
-	}, $supplier->branches), array('name' => 'branchList'));
-	UI::button('addBranch', 'Add new address', array(
-																									'class' => 'invis', 'name' => 'addBranch'
-																						 ));
-	HTML::td()->tr;
-	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
+	text_row(_("Contact:"), 'contact', $supplier->contact, 35, 40);
 	//hidden('br_contact_name', $supplier->contact_name);
-	text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 35, 30);
-	text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 35, 30);
-	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 35, 30);
-	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
-	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
+	text_row(_("Phone Number:"), 'phone', $supplier->phone, 35, 30);
+	text_row(_("2nd Phone Number:"), 'phone2', $supplier->phone2, 35, 30);
+	text_row(_("Fax Number:"), 'fax', $supplier->fax, 35, 30);
+	email_row(_("Email:"), 'email', $supplier->email, 35, 55);
+
+	textarea_row(_("Street:"), 'address', $supplier->address, 35, 2);
 	Contact_Postcode::render(array(
-																'br_city', $currentBranch->city
+																'city', $supplier->city
 													 ), array(
-																	 'br_state', $currentBranch->state
+																	 'state', $supplier->state
 															), array(
-																			'br_postcode', $currentBranch->postcode
+																			'postcode', $supplier->postcode
 																 ));
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
-	HTML::tr(true)->td(array(
-													'class' => "center", 'colspan' => 2
-										 ));
-	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
-	text_row(_("Accounts Contact:"), 'acc_contact_name', $supplier->accounts->contact_name, 35, 40);
-	text_row(_("Phone Number:"), 'acc_phone', $supplier->accounts->phone, 35, 30);
-	text_row(_("Secondary Phone Number:"), 'acc_phone2', $supplier->accounts->phone2, 35, 30);
-	text_row(_("Fax Number:"), 'acc_fax', $supplier->accounts->fax, 35, 30);
-	email_row(_("E-mail:"), 'acc_email', $supplier->accounts->email, 35, 55);
-	textarea_row(_("Street:"), 'acc_br_address', $supplier->accounts->br_address, 35, 2);
-	Contact_Postcode::render(array(
-																'acc_city', $supplier->accounts->city
-													 ), array(
-																	 'acc_state', $supplier->accounts->state
-															), array(
-																			'acc_postcode', $supplier->accounts->postcode
-																 ));
+	textarea_row(_("Post address:"), 'post_address', $supplier->address, 35, 2);
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	hidden('accounts_id', $supplier->accounts->accounts_id);
 	start_outer_table('tablestyle2');
 	table_section(1);
 	table_section_title(_("Accounts Details:"), 2);
 	percent_row(_("Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" : " disabled");
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $supplier->pymt_discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" :
+	percent_row(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" :
 	 " disabled");
 	amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, null, 0, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" :
 	 " disabled");
-	Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $supplier->sales_type);
 	record_status_list_row(_("Supplier status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $supplier->tax_id, 35, 40);
 	if (!$supplier->id) {
@@ -133,7 +105,6 @@
 		hidden('curr_code', $supplier->curr_code);
 	}
 	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $supplier->payment_terms);
-	Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $supplier->credit_status);
 	table_section(2);
 	table_section_title(_("Contact log:"), 1);
 	start_row();
@@ -141,7 +112,7 @@
 								'class' => 'ui-widget-content center'
 					 ));
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
-	Contact_Log::read($supplier->id, 'C');
+	Contact_Log::read($supplier->id, CT_SUPPLIER);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->tr;
 	end_outer_table(1);
@@ -162,24 +133,15 @@
 	HTML::td()->tr->table->script->div->div;
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
 	start_outer_table('tablestyle2');
-	hidden('branch_id', $currentBranch->branch_id);
 	table_section(1);
 	table_section_title(_("Sales"));
-	Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
-	Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
-	Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
-	Inv_Location::row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
-	Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
-	Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
-	yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
 	table_section(2);
 	table_section_title(_("GL Accounts"));
-	GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, false, false, true);
-	GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
-	GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
-	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
+	GL_UI::all_row(_("Sales Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
+	GL_UI::all_row(_("Accounts Receivable Account:"), 'payable_account', $supplier->payable_account);
+	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
 	table_section_title(_("Notes"));
-	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
+	textarea_row(_("General Notes:"), 'notes', $supplier->notes, 35, 4);
 	end_outer_table(1);
 
 	hidden('frame', Input::request('frame'));
@@ -194,7 +156,7 @@
 	hidden('type', CT_SUPPLIER);
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	text_row('Contact:', 'contact_name', $supplier->accounts->contact_name, 35, 40);
+	text_row('Contact:', 'contact_name', $supplier->contact_name, 35, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
 	HTML::_div()->div(array('class' => 'center width50'));

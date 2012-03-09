@@ -280,8 +280,8 @@
 	define('ANY_NUMERIC', -1);
 	define('ALL_TEXT', '');
 	define('ALL_NUMERIC', -1);
-	define('CT_CUSTOMER', 'c');
-	define('CT_SUPPLIER', 's');
+	define('CT_CUSTOMER', 1);
+	define('CT_SUPPLIER', 2);
 	// Types of stock items
 	define('STOCK_MANUFACTURE', 'M');
 	define('STOCK_PURCHASED', 'B');

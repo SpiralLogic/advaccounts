@@ -7,6 +7,7 @@
 	{
 		public $id = 0;
 		public $parent_id = 0;
+		public $type;
 		public $name = "New Contact";
 		public $phone1 = '';
 		public $phone2 = '';
@@ -15,8 +16,9 @@
 		protected $_table = 'contacts';
 		protected $_id_column = 'id';
 
-		public function __construct($id = 0) {
-			parent::__construct($id);
+		public function __construct($type,$id = 0) {
+$this->type=$type;
+			parent::__construct($id,array('type'=>$type));
 		}
 
 		public function delete() {
@@ -28,9 +30,9 @@
 		}
 
 		protected function _saveNew() {
-			$temp = new Contact();
+			$temp = new Contact($this->type);
 			foreach ($this as $key => $value) {
-				if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key != $value) {
+				if ($key != 'parent_id' && $key != 'id' && $key != 'type' && $key != '_status' && $temp->$key != $value) {
 					return parent::_saveNew();
 				}
 			}

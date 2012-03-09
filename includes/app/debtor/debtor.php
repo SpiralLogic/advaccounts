@@ -231,7 +231,7 @@
 			}
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 				foreach ($changes['contacts'] as $id => $contact) {
-					$this->contacts[$id] = new Contact($contact);
+					$this->contacts[$id] = new Contact(CT_CUSTOMER,$contact);
 				}
 			}
 			$this->credit_limit = str_replace(',', '', $this->credit_limit);
@@ -335,15 +335,15 @@
 
 		 */
 		protected function _getContacts() {
-			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			$contacts = DB::fetch()->asClassLate('Contact');
+			DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=',CT_CUSTOMER);
+			$contacts = DB::fetch()->asClassLate('Contact', array(CT_CUSTOMER));
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(CT_CUSTOMER,array('parent_id' => $this->id));
 		}
 		/**
 		 * @return array|null
@@ -352,7 +352,7 @@
 			$this->_defaults();
 			$this->accounts = new Debtor_Account();
 			$this->branches[0] = new Debtor_Branch();
-			$this->contacts[0] = new Contact();
+			$this->contacts[0] = new Contact(CT_CUSTOMER);
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize', 'Now working with a new customer');
@@ -379,7 +379,7 @@
 		protected function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_id;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contact(CT_CUSTOMER,array('parent_id' => $this->id));
 		}
 		/**
 		 * @static
