@@ -33,7 +33,7 @@
 	display_profit_and_loss();
 	end_form();
 	Page::end();
-	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT) {
+	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown) {
 		global $levelptr, $k;
 		$code_per_balance = 0;
 		$code_acc_balance = 0;
@@ -236,5 +236,4 @@
 		end_table(1); // outer table
 		Display::div_end();
 	}
-
 ?>

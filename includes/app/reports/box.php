@@ -14,7 +14,7 @@
 		public function __construct() {
 		}
 
-		public function ReportClasses() {
+		public function reportClasses() {
 			$this->ar_classes = array();
 		}
 

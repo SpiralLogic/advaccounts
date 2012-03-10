@@ -71,5 +71,4 @@
 		Display::div_end();
 		end_form();
 	}
-
 ?>

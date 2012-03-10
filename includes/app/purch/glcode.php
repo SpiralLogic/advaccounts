@@ -8,7 +8,7 @@
 	 */
 	class Purch_GLCode
 	{
-		public $Counter;
+		public $counter;
 		public $gl_code;
 		public $gl_act_name;
 		public $gl_dim;
@@ -16,10 +16,10 @@
 		public $amount;
 		public $memo_;
 
-		public	function __construct($Counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
+		public	function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
 		{
 			/* Constructor function to add a new gl_codes object with passed params */
-			$this->Counter = $Counter;
+			$this->counter = $counter;
 			$this->gl_code = $gl_code;
 			$this->gl_act_name = $gl_act_name;
 			$this->gl_dim = $gl_dim;

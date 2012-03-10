@@ -161,7 +161,7 @@
 						label_cell($entered_gl_code->memo_);
 						amount_cell($entered_gl_code->amount, true);
 						if ($mode == 1) {
-							delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"), _('Remove line from document'));
+							delete_button_cell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
 							label_cell("");
 						}
 						end_row();

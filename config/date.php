@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'formats' => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
+		'formats' => array("mdY", "dmY", "Ymd"),
 		'ui_format' => 1, //
 		'ui_separator' => '/',
 		'separators' => array('/', ".", "-", " ")

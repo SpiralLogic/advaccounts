@@ -181,7 +181,9 @@ Adv.extend({
 									 height = Adv.hoverWindow.height
 								 }
 								 var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
-								 Adv.o.popupWindow.css('height', height);
+						console.log(top);
+						console.log(height);
+								 		 Adv.o.popupWindow.css('height', height);
 								 Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
 							 }},
 						 popupWindow:function () {
