@@ -151,9 +151,9 @@ Adv.extend({
 																	'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 						 },
 						 hoverWindow:{
-							 _init:false, width:600, height:600, init:function (width, height) {
-								 Adv.hoverWindow.width = width;
-								 Adv.hoverWindow.height = height;
+							 _init:false, init:function (width, height) {
+								 Adv.hoverWindow.width = width||600;
+								 Adv.hoverWindow.height = height||600;
 								 if (Adv.hoverWindow._init) {return;}
 								 Adv.hoverWindow._init = true;
 								 Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open',
@@ -181,8 +181,7 @@ Adv.extend({
 									 height = Adv.hoverWindow.height
 								 }
 								 var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
-						console.log(top);
-						console.log(height);
+
 								 		 Adv.o.popupWindow.css('height', height);
 								 Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
 							 }},
