@@ -13,7 +13,6 @@
 
 		public function __construct() {
 		}
-
 		public function reportClasses() {
 			$this->ar_classes = array();
 		}
