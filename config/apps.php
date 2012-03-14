@@ -10,8 +10,9 @@
 		'active' => array(
 			'sales', //
 			'debtors', //
-			'creditors', //
 			'purchases', //
+      'creditors', //
+
 			'inventory', //
 			'manufacturing', //
 			'dimensions', //
