@@ -171,5 +171,13 @@
 																		));
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();
-
+  if (!Input::get('frame')) {
+ 		HTML::div('shortcuts', array('class' => 'width50 center'));
+ 		$shortcuts = new MenuUI(array('noajax' => true));
+ 		$shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?supplier_id=', 'id');
+ 		$shortcuts->render();
+ 		/** @noinspection PhpUndefinedMethodInspection */
+ 		HTML::_div();
+ 		UI::emailDialogue('c');
+ 	}
 	Page::end(false, true);
