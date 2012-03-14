@@ -17,8 +17,8 @@
 	function get_invoices($customer_id, $to)
 	{
 		$todate = Dates::date2sql($to);
-		$PastDueDays1 = DB_Company::get_pref('past_due_days');
-		$PastDueDays2 = 2 * $PastDueDays1;
+		$past_due1 = DB_Company::get_pref('past_due_days');
+		$past_due2 = 2 * $past_due1;
 		// Revomed allocated from sql
 		$value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
 		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
@@ -29,8 +29,8 @@
 		debtor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due2,$value,0) AS Overdue2
 
 		FROM debtors,
 			payment_terms,
@@ -89,14 +89,14 @@
 		else {
 			$nozeros = _('No');
 		}
-		$PastDueDays1 = DB_Company::get_pref('past_due_days');
-		$PastDueDays2 = 2 * $PastDueDays1;
-		$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
-		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
-		$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
+		$past_due1 = DB_Company::get_pref('past_due_days');
+		$past_due2 = 2 * $past_due1;
+		$txt_now_due = "1-" . $past_due1 . " " . _('Days');
+		$txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
+		$txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
 		$cols = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
 		$headers = array(
-			_('Customer'), '', '', _('Current'), $nowdue, $pastdue1, $pastdue2,
+			_('Customer'), '', '', _('Current'), $txt_now_due, $txt_past_due1, $txt_past_due2,
 			_('Total Balance')
 		);
 		$aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
@@ -251,7 +251,7 @@
 		}
 		$rep->Line($rep->row - 8);
 		if ($graphics) {
-			$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
+			$pg->x = array(_('Current'), $txt_now_due, $txt_past_due1, $txt_past_due2);
 			$pg->title = $rep->title;
 			$pg->axis_x = _("Days");
 			$pg->axis_y = _("Amount");

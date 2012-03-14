@@ -126,13 +126,13 @@
 				$rep->TextCol(7, 8, $DisplayTaxTot, -2);
 				$rep->NewLine();
 				# __ADVANCEDEDIT__ END #
-				$DisplayTotal = Num::format($myrow["freight_cost"] + $SubTotal + $TaxTotal, $dec);
+				$display_total = Num::format($myrow["freight_cost"] + $SubTotal + $TaxTotal, $dec);
 				$rep->Font('bold');
 				#		if ($myrow['tax_included'] == 0)
 				#			$rep->TextCol(4, 7, $doc_TOTAL_ORDER, - 2);
 				#		else
 				$rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
-				$rep->TextCol(7, 8, $DisplayTotal, -2);
+				$rep->TextCol(7, 8, $display_total, -2);
 				$words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 				if ($words != "") {
 					$rep->NewLine(1);

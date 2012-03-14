@@ -151,10 +151,10 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 					}
 				}
 				$rep->NewLine();
-				$DisplayTotal = Num::format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+				$display_total = Num::format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
-				$rep->TextCol(7, 8, $DisplayTotal, -2);
+				$rep->TextCol(7, 8, $display_total, -2);
 				$words = Item_Price::to_words($myrow['Total'], $j);
 				$rep->NewLine();
 				$rep->NewLine();

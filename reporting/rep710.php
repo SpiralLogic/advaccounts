@@ -12,7 +12,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLANALYTIC);
 	print_audit_trail();
-	function getTransactions($from, $to, $type, $user) {
+	function get_transactions($from, $to, $type, $user) {
 		$fromdate = Dates::date2sql($from) . " 00:00:00";
 		$todate = Dates::date2sql($to) . " 23:59.59";
 		$sql = "SELECT a.*,
@@ -71,7 +71,7 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$trans = getTransactions($from, $to, $systype, $user);
+		$trans = get_transactions($from, $to, $systype, $user);
 		while ($myrow = DB::fetch($trans)) {
 			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
 			if (User::date_format() == 0) {

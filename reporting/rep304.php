@@ -14,7 +14,7 @@
 Page::set_security(SA_SALESANALYTIC);
 
 	print_inventory_sales();
-	function getTransactions($category, $location, $fromcust, $from, $to)
+	function get_transactions($category, $location, $fromcust, $from, $to)
 	{
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);
@@ -134,7 +134,7 @@ Page::set_security(SA_SALESANALYTIC);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res = getTransactions($category, $location, $fromcust, $from, $to);
+		$res = get_transactions($category, $location, $fromcust, $from, $to);
 		$total = $grandtotal = 0.0;
 		$total1 = $grandtotal1 = 0.0;
 		$total2 = $grandtotal2 = 0.0;

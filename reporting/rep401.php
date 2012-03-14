@@ -14,7 +14,7 @@
 Page::set_security(SA_BOMREP);
 
 	print_bill_of_material();
-	function getTransactions($from, $to)
+	function get_transactions($from, $to)
 	{
 		$sql = "SELECT bom.parent,
 			bom.component,
@@ -56,7 +56,7 @@ Page::set_security(SA_BOMREP);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res = getTransactions($frompart, $topart);
+		$res = get_transactions($frompart, $topart);
 		$parent = '';
 		while ($trans = DB::fetch($res)) {
 			if ($parent != $trans['parent']) {

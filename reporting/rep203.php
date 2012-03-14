@@ -14,7 +14,7 @@
 Page::set_security(SA_SUPPPAYMREP);
 
 	print_payment_report();
-	function getTransactions($supplier, $date)
+	function get_transactions($supplier, $date)
 	{
 		$date = Dates::date2sql($date);
 		$dec = User::price_dec();
@@ -108,7 +108,7 @@ Page::set_security(SA_SUPPPAYMREP);
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
 			}
-			$res = getTransactions($myrow['supplier_id'], $to);
+			$res = get_transactions($myrow['supplier_id'], $to);
 			if ($no_zeros && DB::num_rows($res) == 0) {
 				continue;
 			}

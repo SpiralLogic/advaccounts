@@ -145,10 +145,10 @@
 			$rep->TextCol(3, 6, 'Freight:', -2);
 			$rep->TextCol(6, 7, Num::format($myrow['freight'], $dec), -2);
 			$rep->NewLine();
-			$DisplayTotal = Num::format($SubTotal + $myrow['freight'], $dec);
+			$display_total = Num::format($SubTotal + $myrow['freight'], $dec);
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, Report::TOTAL_PO_EX_TAX, -2);
-			$rep->TextCol(6, 7, $DisplayTotal, -2);
+			$rep->TextCol(6, 7, $display_total, -2);
 			$words = Item_Price::to_words($SubTotal, ST_PURCHORDER);
 			if ($words != "" && isset($myrow['curr_code'])) {
 				$rep->NewLine(1);

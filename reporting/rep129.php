@@ -122,7 +122,7 @@
 				$TaxTotal += $myrow['freight_cost'] * .1;
 				$DisplaySubTot = Num::format($SubTotal, $dec);
 				$DisplayTaxTot = Num::format($TaxTotal, $dec);
-				$DisplayTotal = Num::format($SubTotal + $TaxTotal, $dec);
+				$display_total = Num::format($SubTotal + $TaxTotal, $dec);
 				$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 				$linetype = true;
 				$doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
@@ -148,7 +148,7 @@
 				#	$rep->TextCol(4, 7, $doc_TOTAL_ORDER, - 2);
 				#	else
 				$rep->TextCol(4, 7, _("TOTAL ORDER GST INCL."), -2);
-				$rep->TextCol(7, 8, $DisplayTotal, -2);
+				$rep->TextCol(7, 8, $display_total, -2);
 				$words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
 				if ($words != "") {
 					$rep->NewLine(1);

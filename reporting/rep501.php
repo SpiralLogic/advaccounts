@@ -14,7 +14,7 @@
 Page::set_security(SA_DIMENSIONREP);
 
 	print_dimension_summary();
-	function getTransactions($from, $to)
+	function get_transactions($from, $to)
 	{
 		$sql
 		 = "SELECT *
@@ -38,9 +38,9 @@ Page::set_security(SA_DIMENSIONREP);
 			gl_trans
 		WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
 		AND tran_date >= '$date'";
-		$TransResult = DB::query($sql, "No transactions were returned");
-		if (DB::num_rows($TransResult) == 1) {
-			$DemandRow = DB::fetch_row($TransResult);
+		$trans_rows = DB::query($sql, "No transactions were returned");
+		if (DB::num_rows($trans_rows) == 1) {
+			$DemandRow = DB::fetch_row($trans_rows);
 			$balance = $DemandRow[0];
 		}
 		else
@@ -75,7 +75,7 @@ Page::set_security(SA_DIMENSIONREP);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res = getTransactions($fromdim, $todim);
+		$res = get_transactions($fromdim, $todim);
 		while ($trans = DB::fetch($res))
 		{
 			$rep->TextCol(0, 1, $trans['reference']);

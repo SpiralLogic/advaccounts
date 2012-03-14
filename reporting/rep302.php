@@ -14,7 +14,7 @@
 Page::set_security(SA_ITEMSANALYTIC);
 
 	print_inventory_planning();
-	function getTransactions($category, $location)
+	function get_transactions($category, $location)
 		{
 			$sql
 			 = "SELECT stock_master.category_id,
@@ -64,8 +64,8 @@ Page::set_security(SA_ITEMSANALYTIC);
 			AND loc_code ='$location'
 			AND (type=13 OR type=11)
 			AND visible=1";
-			$TransResult = DB::query($sql, "No transactions were returned");
-			return DB::fetch($TransResult);
+			$trans_rows = DB::query($sql, "No transactions were returned");
+			return DB::fetch($trans_rows);
 		}
 
 
@@ -131,7 +131,7 @@ Page::set_security(SA_ITEMSANALYTIC);
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
-			$res = getTransactions($category, $location);
+			$res = get_transactions($category, $location);
 			$catt = '';
 			while ($trans = DB::fetch($res))
 			{

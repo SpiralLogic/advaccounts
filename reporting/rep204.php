@@ -15,7 +15,7 @@
 Page::set_security(SA_SUPPLIERANALYTIC);
 
 	print_outstanding_GRN();
-	function getTransactions($fromsupp)
+	function get_transactions($fromsupp)
 	{
 		$sql
 		 = "SELECT grn_batch.id,
@@ -81,7 +81,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 		$Tot_Val = 0;
 		$Supplier = '';
 		$SuppTot_Val = 0;
-		$res = getTransactions($fromsupp);
+		$res = get_transactions($fromsupp);
 		While ($GRNs = DB::fetch($res)) {
 			$dec2 = Item::qty_dec($GRNs['item_code']);
 			if ($Supplier != $GRNs['supplier_id']) {

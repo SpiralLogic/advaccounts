@@ -200,16 +200,16 @@
 	 * @param $customer_record
 	 */
 	function display_customer_summary($customer_record) {
-		$past1 = DB_Company::get_pref('past_due_days');
-		$past2 = 2 * $past1;
+		$past_due1 = DB_Company::get_pref('past_due_days');
+		$past_due2 = 2 * $past_due1;
 		if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
 			echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
 		}
-		$nowdue = "1-" . $past1 . " " . _('Days');
-		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+		$txt_now_due = "1-" . $past_due1 . " " . _('Days');
+		$txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
+		$txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
 		start_table('tablestyle width90');
-		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
+		$th = array(_("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"));
 		table_header($th);
 		start_row();
 		if (isset($customer_record["curr_code"])) {

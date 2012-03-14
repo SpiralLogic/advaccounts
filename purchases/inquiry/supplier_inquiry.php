@@ -37,14 +37,14 @@ Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
 	end_table();
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	function display_supplier_summary($supplier_record) {
-		$past1 = DB_Company::get_pref('past_due_days');
-		$past2 = 2 * $past1;
-		$nowdue = "1-" . $past1 . " " . _('Days');
-		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+		$past_due1 = DB_Company::get_pref('past_due_days');
+		$past_due2 = 2 * $past_due1;
+		$txt_now_due = "1-" . $past_due1 . " " . _('Days');
+		$txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
+		$txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
 		start_table('tablestyle width90');
 		$th = array(
-			_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
+			_("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"), _("Total For Search Period")
 		);
 		table_header($th);
 		start_row();

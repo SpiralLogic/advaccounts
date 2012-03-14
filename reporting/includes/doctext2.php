@@ -199,13 +199,13 @@
 				$doc_Total_Payment = "TOTAL REMITTANCE";
 			}
 		} elseif ($doctype == ST_STATEMENT) {
-			$doc_Outstanding = "Outstanding Transactions";
-			$doc_OpeningBalance= "Opening Balance";
-			$doc_Current = "Current";
-			$doc_Total_Balance = "Total Balance";
-			$doc_Statement = "Statement";
+			$txt_outstanding = "Outstanding Transactions";
+			$txt_opening_balance= "Opening Balance";
+			$txt_current = "Current";
+			$txt_total_balance = "Total Balance";
+			$txt_statement = "Statement";
 			$doc_as_of = "as of";
-			$doc_Days = "Days";
-			$doc_Over = "Over";
+			$txt_days = "Days";
+			$txt_over = "Over";
 		}
 	}

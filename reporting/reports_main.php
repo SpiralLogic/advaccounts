@@ -10,7 +10,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-//	JS::footerFile('/js/libs/jquery.megalist.js');
 Page::start(_($help_context = "Reports and Analysis"), SA_OPEN);
 $reports = new Reports_Box();
 $dim = DB_Company::get_pref('use_dimension');
@@ -89,8 +88,6 @@ $reports->addReport(_('Customer'), 108, _('Print &Statements'), array(
 																																		 _('Email Customers') => Report::YES_NO,
 																																		 _('Comments') => Report::TEXTBOX,
 																																		 _('Include Negatives') => Report::YES_NO,
-																																		 _('Include Payments') => Report::YES_NO,
-																																		 _('Include Allocations') => Report::YES_NO,
 																																		 _('Month') => Report::DATEMONTH
 																																));
 $reports->addReport(_('Customer'), 109, _('&Print Sales Orders'), array(
@@ -215,8 +212,8 @@ $reports->addReport(_('Manufacturing'), 401, _('&Bill of Material Listing'), arr
 																																									_('Destination') => Report::DESTINATION
 																																						 ));
 $reports->addReport(_('Manufacturing'), 409, _('Print &Work Orders'), array(
-																																					 _('From') => 'WORKORDER',
-																																					 _('To') => 'WORKORDER',
+																																					 _('From') => Report::WORKORDER,
+																																					 _('To') => Report::WORKORDER,
 																																					 _('Email Locations') => Report::YES_NO,
 																																					 _('Comments') => Report::TEXTBOX
 																																			));
@@ -250,7 +247,7 @@ $reports->addReport(_('General Ledger'), 701, _('Chart of &Accounts'), array(
 $reports->addReport(_('General Ledger'), 702, _('List of &Journal Entries'), array(
 																																									_('Start Date') => Report::DATEBEGINM,
 																																									_('End Date') => Report::DATEENDM,
-																																									_('Type') => 'SYS_TYPES',
+																																									_('Type') => Report::SYS_TYPES,
 																																									_('Comments') => Report::TEXTBOX,
 																																									_('Destination') => Report::DESTINATION
 																																						 ));

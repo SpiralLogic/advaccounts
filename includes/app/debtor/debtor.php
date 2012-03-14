@@ -478,8 +478,8 @@ JS;
 			else {
 				$todate = Dates::date2sql($to);
 			}
-			$past1 = DB_Company::get_pref('past_due_days');
-			$past2 = 2 * $past1;
+			$past_due1 = DB_Company::get_pref('past_due_days');
+			$past_due2 = 2 * $past_due1;
 			// removed - debtor_trans.alloc from all summations
 			$value
 			 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
@@ -489,8 +489,8 @@ JS;
 			 = "SELECT debtors.name, debtors.curr_code, payment_terms.terms,		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
 			Sum(" . $value . ") AS Balance,
 			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
-			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
-			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
+			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
+			Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due2,$value,0)) AS Overdue2
 			FROM debtors,
 				 payment_terms,
 				 credit_status,

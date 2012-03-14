@@ -14,7 +14,7 @@
 Page::set_security(SA_ITEMSVALREP);
 
 	print_inventory_valuation_report();
-	function getTransactions($category, $location)
+	function get_transactions($category, $location)
 	{
 		$sql
 		 = "SELECT stock_master.category_id,
@@ -107,7 +107,7 @@ Page::set_security(SA_ITEMSVALREP);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res = getTransactions($category, $location);
+		$res = get_transactions($category, $location);
 		$total = $grandtotal = 0.0;
 		$catt = '';
 		while ($trans = DB::fetch($res))

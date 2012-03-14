@@ -231,15 +231,15 @@
 		}
 	}
 	if ($doctype == ST_STATEMENT) {
-		$doc_Outstanding = _("Outstanding Transactions");
-		$doc_OpeningBalance= "Opening Balance";
+		$txt_outstanding = _("Outstanding Transactions");
+		$txt_opening_balance= "Opening Balance";
 
-		$doc_Current = _("Current");
+		$txt_current = _("Current");
 
-		$doc_Total_Balance = _("Total Balance");
-		$doc_Statement = _("Your Statement");
+		$txt_total_balance = _("Total Balance");
+		$txt_statement = _("Your Statement");
 		$doc_Kindest_regards = _("Please pass this statement on to your accounts department.\n\nIf this is not the correct email address to send future statements to please respond to this email with the correct address.\n\nKindest regards");
 		$doc_as_of = _("as of");
-		$doc_Days = _("Days");
-		$doc_Over = _("Over");
+		$txt_days = _("Days");
+		$txt_over = _("Over");
 	}

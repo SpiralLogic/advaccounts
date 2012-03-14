@@ -51,7 +51,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			return DB::fetch($result);
 		}
 
-	function getTransactions($supplier_id, $from, $to)
+	function get_transactions($supplier_id, $from, $to)
 		{
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
@@ -65,8 +65,8 @@ Page::set_security(SA_SUPPLIERANALYTIC);
  			WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
  			AND creditor_trans.supplier_id = '$supplier_id'
  				ORDER BY creditor_trans.tran_date";
-			$TransResult = DB::query($sql, "No transactions were returned");
-			return $TransResult;
+			$trans_rows = DB::query($sql, "No transactions were returned");
+			return $trans_rows;
 		}
 
 
@@ -153,7 +153,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					$total[$i] += $init[$i];
 					$grandtotal[$i] += $init[$i];
 				}
-				$res = getTransactions($myrow['supplier_id'], $from, $to);
+				$res = get_transactions($myrow['supplier_id'], $from, $to);
 				if ($no_zeros && DB::num_rows($res) == 0) {
 					continue;
 				}

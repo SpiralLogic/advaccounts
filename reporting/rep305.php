@@ -14,7 +14,7 @@
 Page::set_security(SA_SUPPLIERANALYTIC);
 
 	print_grn_valuation();
-	function getTransactions($from, $to)
+	function get_transactions($from, $to)
 	{
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);
@@ -66,7 +66,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res = getTransactions($from, $to);
+		$res = get_transactions($from, $to);
 		$total = $qtotal = $grandtotal = 0.0;
 		$stock_id = '';
 		while ($trans = DB::fetch($res))

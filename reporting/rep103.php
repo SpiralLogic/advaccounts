@@ -63,7 +63,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function getTransactions($debtorno, $branchcode, $date)
+	function get_transactions($debtorno, $branchcode, $date)
 	{
 		$date = Dates::date2sql($date);
 		$sql
@@ -154,7 +154,7 @@
 		{
 			$printcustomer = true;
 			if ($more != '' || $less != '') {
-				$turnover = getTransactions($myrow['debtor_no'], $myrow['branch_id'], $from);
+				$turnover = get_transactions($myrow['debtor_no'], $myrow['branch_id'], $from);
 				if ($more != 0.0 && $turnover <= (double)$more) {
 					$printcustomer = false;
 				}
