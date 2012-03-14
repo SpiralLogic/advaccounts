@@ -12,8 +12,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
-	if (isset($_GET['customer_id'])) {
-		$_POST['customer_id'] = $_GET['customer_id'];
+	if (isset($_GET['customer_id']) || isset($_GET['id'])) {
+		$_POST['customer_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['customer_id'];
 	}
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;

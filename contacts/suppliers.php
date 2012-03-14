@@ -1,7 +1,7 @@
 <?php
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	Session::i()->App->set_selected('Contacts');
+	Session::i()->App->set_selected('Creditors');
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Creditor::search($_GET['term']);
@@ -69,7 +69,6 @@
 	text_row(_("Contact:"), 'contact', $supplier->contact, 35, 40);
 	//hidden('br_contact_name', $supplier->contact_name);
 	text_row(_("Phone Number:"), 'phone', $supplier->phone, 35, 30);
-	text_row(_("2nd Phone Number:"), 'phone2', $supplier->phone2, 35, 30);
 	text_row(_("Fax Number:"), 'fax', $supplier->fax, 35, 30);
 	email_row(_("Email:"), 'email', $supplier->email, 35, 55);
 
@@ -84,8 +83,18 @@
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
-	textarea_row(_("Post address:"), 'post_address', $supplier->address, 35, 2);
-	end_outer_table(1);
+  text_row(_("Phone Number:"), 'phone2', $supplier->phone2, 35, 30);
+
+	textarea_row(_("Address:"), 'supp_address', $supplier->supp_address, 35, 2);
+  Contact_Postcode::render(array(
+  																'supp_city', $supplier->supp_city
+  													 ), array(
+  																	 'supp_state', $supplier->supp_state
+  															), array(
+  																			'supp_postcode', $supplier->supp_postcode
+  																 ));
+
+  end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
 	start_outer_table('tablestyle2');
 	table_section(1);
@@ -104,7 +113,12 @@
 		label_row(_("Supplier's Currency:"), $supplier->curr_code);
 		hidden('curr_code', $supplier->curr_code);
 	}
-	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $supplier->payment_terms);
+	GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $supplier->payment_terms);	table_section_title(_("GL Accounts"));
+		GL_UI::all_row(_("Sales Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
+		GL_UI::all_row(_("Accounts Receivable Account:"), 'payable_account', $supplier->payable_account);
+		GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
+		table_section_title(_("Notes"));
+		textarea_row(_("General Notes:"), 'notes', $supplier->notes, 35, 4);
 	table_section(2);
 	table_section_title(_("Contact log:"), 1);
 	start_row();
@@ -131,18 +145,7 @@
 	text_row("Email:", 'con_email-${id}', '${email}', 35, 40);
 	text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 	HTML::td()->tr->table->script->div->div;
-	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table('tablestyle2');
-	table_section(1);
-	table_section_title(_("Sales"));
-	table_section(2);
-	table_section_title(_("GL Accounts"));
-	GL_UI::all_row(_("Sales Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
-	GL_UI::all_row(_("Accounts Receivable Account:"), 'payable_account', $supplier->payable_account);
-	GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
-	table_section_title(_("Notes"));
-	textarea_row(_("General Notes:"), 'notes', $supplier->notes, 35, 4);
-	end_outer_table(1);
+
 
 	hidden('frame', Input::request('frame'));
 		end_form();

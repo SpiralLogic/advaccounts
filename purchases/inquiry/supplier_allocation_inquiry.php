@@ -12,7 +12,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
-	if (isset($_GET['supplier_id'])) {
+  if (isset($_GET['supplier_id']) || isset($_GET['id'])) {
+ 		$_POST['supplier_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['supplier_id'];
+ 	}	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
 	}
 	if (isset($_GET['FromDate'])) {

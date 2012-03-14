@@ -17,7 +17,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	Session::i()->App->selected_application = 'contacts';
+	Session::i()->App->selected_application = 'creditors';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Creditor::search($_GET['term']);

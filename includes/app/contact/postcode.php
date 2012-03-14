@@ -81,10 +81,9 @@ JS;
 						 fetch: function(data,item,ui) {
 						 		var set=$(ui).data("set");
 						 data = data.value.split('|');
-							sets[set].city.val(data[0]);
-						 sets[set].state.val(data[1]);
-						 sets[set].postcode.val(data[2]);
-						$.each(sets[set],function(k,v) {Adv.stateModified($(v))});
+							sets[set].city.val(data[0]).trigger('change');
+						 sets[set].state.val(data[1]).trigger('change');
+						 sets[set].postcode.val(data[2]).trigger('change');
 						 return false;
 						 }
 						 }

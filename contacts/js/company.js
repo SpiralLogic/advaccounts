@@ -170,7 +170,7 @@ var Company = function () {
 	var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete',
 	 'off');
 	return {
-		init:function (options) {
+		init:function () {
 			Branches.init();
 			$companyID.autocomplete({
 				source:function (request, response) {
@@ -237,14 +237,12 @@ var Company = function () {
 			}, 'json');
 			Company.getFrames(item.id);
 		},
-		getFrames:function (id, data) {
-			if (id === undefined && company.id)
-				{ id = company.id}
+		getFrames:function (id) {
+			if (id === undefined && company.id) { id = company.id}
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 			 $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
-			if (!id)
-				{return;}
-			$invoiceFrame.load($invoiceFrameSrc, data + "&frame=1&id=" + id);
+			if (!id) {return;}
+			$invoiceFrame.load($invoiceFrameSrc, "&frame=1&id=" + id);
 		},
 		Save:function () {
 			Branches.btnBranchAdd();

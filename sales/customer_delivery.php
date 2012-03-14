@@ -135,6 +135,7 @@
 	}
 	else {
 		label_cells(_("Reference"), $order->reference, "class='label'");
+    hidden('ref', $order->reference);
 	}
 	label_cells(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
 	label_cells(_("Sales Type"), $order->sales_type_name, "class='label'");

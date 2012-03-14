@@ -12,6 +12,9 @@
 		public $discount = '0';
 		public $name = '';
 		public $address;
+		public $city;
+		public $state;
+		public $postcode;
 		public $post_address = '';
 		public $tax_id;
 		public $contact_name;

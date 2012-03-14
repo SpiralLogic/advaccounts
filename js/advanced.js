@@ -270,7 +270,6 @@ Adv.extend({Forms:(function () {
 			 .blur(function () {$(this).data('active', false); })
 			 .bind('autocompleteclose',
 						 function () {
-							 var $this = $(this);
 							 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
 								 if (callback($this.data()['default'], event, this) !== false) {
 									 $this.val($this.data()['default'].label);

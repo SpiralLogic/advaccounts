@@ -10,11 +10,11 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
-	class Apps_Contacts extends Application
+	class Apps_Debtors extends Application
 	{
 		function __construct()
 			{
 				$this->direct = 'contacts/customers.php';
-				parent::__construct("Contacts", _($this->help_context = "&Customers"));
+				parent::__construct("Debtors", _($this->help_context = "&Customers"));
 			}
 	}

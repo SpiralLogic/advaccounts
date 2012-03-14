@@ -1,7 +1,7 @@
 <?php
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	Session::i()->App->set_selected('Contacts');
+	Session::i()->App->set_selected('Debtors');
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Debtor::search($_GET['term']);
