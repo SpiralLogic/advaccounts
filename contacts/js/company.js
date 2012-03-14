@@ -201,7 +201,7 @@ var Company = function () {
 				{return;}
 			company = content.company;
 			var data = company;
-			var activetabs = (company.id) ? [0, 1, 2, 3, 4] : [];
+			var activetabs = (!company.id) ? [0, 1, 2, 3, 4] : [];
 					Adv.tabs1.tabs('option', 'disabled', activetabs);
 			if (content.contact_log !== undefined)
 				{
