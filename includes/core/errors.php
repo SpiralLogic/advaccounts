@@ -64,9 +64,7 @@
 		static function init() {
 			static::$useConfigClass = class_exists('Config');
 			error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-			if (class_exists('Event', false)) {
 				Event::register_shutdown(__CLASS__);
-			}
 		}
 		/**
 		 * @static

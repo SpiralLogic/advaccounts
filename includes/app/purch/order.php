@@ -110,7 +110,7 @@
 		}
 		protected function generateID() {
 			$this->uniqueid = uniqid();
-			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
+			$this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->order_no));
 		}
 
 		/**

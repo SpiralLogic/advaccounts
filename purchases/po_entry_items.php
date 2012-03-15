@@ -12,6 +12,7 @@
 	/** @noinspection PhpIncludeInspection */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	JS::open_window(900, 500);
+
 	if (isset($_GET[Orders::MODIFY_ORDER])) {
 		Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
 	}
@@ -240,6 +241,7 @@
 			$order = new Purch_Order($order_no);
 		}
 		$order = copy_from_order($order);
+
 		return $order;
 	}
 

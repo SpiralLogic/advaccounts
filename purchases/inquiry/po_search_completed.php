@@ -151,7 +151,7 @@
 	}
 
 	function edit_link($row) {
-		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrder=" . $row["order_no"], ICON_EDIT);
+		return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER."=" . $row["order_no"], ICON_EDIT);
 	}
 
 	function prt_link($row) {

@@ -179,7 +179,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					}
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-					$rep->TextCol(1, 2, $trans['reference'] . ' - ' . $trans['supp_reference']);
+					$rep->TextCol(1, 2, $trans['supp_reference']);
 					$rep->DateCol(2, 3, $trans['tran_date'], true);
 					if ($trans['type'] == ST_SUPPINVOICE) {
 						$rep->DateCol(3, 4, $trans['due_date'], true);
