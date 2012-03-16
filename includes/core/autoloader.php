@@ -193,13 +193,7 @@
 		 * @return string
 		 */
 		static public function loadApp($classname) {
-			$class = str_replace('_', DS, $classname);
-			$lowerclass = strtolower($class);
-			$paths[] = APPPATH . $class . '.php';
-			$paths[] = APPPATH . $lowerclass . '.php';
-			$paths[] = APPPATH . $class . DS . $class . '.php';
-			$paths[] = APPPATH . $lowerclass . DS . $lowerclass . '.php';
-			return static::trypath($paths, $classname);
+			return static::makePaths($classname, APPPATH);
 		}
 		/**
 		 * @static
@@ -209,13 +203,7 @@
 		 * @return string
 		 */
 		static public function loadVendor($classname) {
-			$class = str_replace('_', DS, $classname);
-			$lowerclass = strtolower($class);
-			$paths[] = VENDORPATH . $class . '.php';
-			$paths[] = VENDORPATH . $lowerclass . '.php';
-			$paths[] = VENDORPATH . $class . DS . $class . '.php';
-			$paths[] = VENDORPATH . $lowerclass . DS . $lowerclass . '.php';
-			return static::trypath($paths, $classname);
+			return static::makePaths($classname, VENDORPATH);
 		}
 		/**
 		 * @static
@@ -225,12 +213,15 @@
 		 * @return string
 		 */
 		static public function loadCore($classname) {
+			return static::makePaths($classname, COREPATH);
+		}
+		static protected function makePaths($classname, $path) {
 			$class = str_replace('_', DS, $classname);
 			$lowerclass = strtolower($class);
-			$paths[] = COREPATH . $class . '.php';
-			$paths[] = COREPATH . $lowerclass . '.php';
-			$paths[] = COREPATH . $class . DS . $class . '.php';
-			$paths[] = COREPATH . $lowerclass . DS . $lowerclass . '.php';
+			$paths[] = $path . $class . '.php';
+			$paths[] = $path . $lowerclass . '.php';
+			$paths[] = $path . $class . DS . $class . '.php';
+			$paths[] = $path . $lowerclass . DS . $lowerclass . '.php';
 			return static::tryPath($paths, $classname);
 		}
 		/**

@@ -9,13 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_CUSTPAYMREP);
-
 	print_aged_customer_analysis();
-	function get_invoices($customer_id, $to)
-	{
+	function get_invoices($customer_id, $to) {
 		$todate = Dates::date2sql($to);
 		$past_due1 = DB_Company::get_pref('past_due_days');
 		$past_due2 = 2 * $past_due1;
@@ -46,9 +43,7 @@
 		return DB::query($sql, "The customer details could not be retrieved");
 	}
 
-
-	function print_aged_customer_analysis()
-	{
+	function print_aged_customer_analysis() {
 		global $systypes_array;
 		$to = $_POST['PARAM_0'];
 		$fromcust = $_POST['PARAM_1'];
@@ -60,7 +55,8 @@
 		$destination = $_POST['PARAM_7'];
 		if ($destination) {
 			include_once(APPPATH . "reports/excel.php");
-		} else {
+		}
+		else {
 			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($graphics) {
@@ -68,19 +64,22 @@
 		}
 		if ($fromcust == ALL_NUMERIC) {
 			$from = _('All');
-		} else {
+		}
+		else {
 			$from = Debtor::get_name($fromcust);
 		}
 		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
-		} else {
+		}
+		else {
 			$summary = _('Detailed Report');
 		}
 		if ($currency == ALL_TEXT) {
 			$convert = true;
 			$currency = _('Balances in Home Currency');
-		} else {
+		}
+		else {
 			$convert = false;
 		}
 		if ($no_zeros) {
@@ -142,8 +141,7 @@
 		}
 		$sql .= " ORDER BY name";
 		$result = DB::query($sql, "The customers could not be retrieved");
-		while ($myrow = DB::fetch($result))
-		{
+		while ($myrow = DB::fetch($result)) {
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
 			}
@@ -156,8 +154,7 @@
 			$custrec = Debtor::get_details($myrow['debtor_no'], $to);
 			foreach (
 				$custrec as $i => $value
-			)
-			{
+			) {
 				$custrec[$i] *= $rate;
 			}
 			$str = array(
@@ -183,8 +180,7 @@
 			$total[4] += $custrec["Balance"];
 			for (
 				$i = 0; $i < count($str); $i++
-			)
-			{
+			) {
 				$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 			}
 			$rep->NewLine(1, 2);
@@ -194,8 +190,7 @@
 					continue;
 				}
 				$rep->Line($rep->row + 4);
-				while ($trans = DB::fetch($res))
-				{
+				while ($trans = DB::fetch($res)) {
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 					$rep->TextCol(1, 2, $trans['reference'], -2);
@@ -211,8 +206,7 @@
 					}
 					foreach (
 						$trans as $i => $value
-					)
-					{
+					) {
 						$trans[$i] *= $rate;
 					}
 					$str = array(
@@ -224,8 +218,7 @@
 					);
 					for (
 						$i = 0; $i < count($str); $i++
-					)
-					{
+					) {
 						$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 					}
 				}
@@ -242,8 +235,7 @@
 		$rep->fontSize -= 2;
 		for (
 			$i = 0; $i < count($total); $i++
-		)
-		{
+		) {
 			$rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
 			if ($graphics && $i < count($total) - 1) {
 				$pg->y[$i] = abs($total[$i]);
@@ -260,7 +252,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = DOCROOT . "reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
+			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "images/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

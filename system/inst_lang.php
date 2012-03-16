@@ -173,7 +173,7 @@ Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
 			</script>";
 			start_table('tablestyle2');
 			if ($selected_id != -1) {
-				$conn = Config::get('languages.installed', $selected_id);
+				$conn = Config::get('languages.installed')[ $selected_id];
 				$_POST['code'] = $conn['code'];
 				$_POST['name'] = $conn['name'];
 				$_POST['encoding'] = $conn['encoding'];

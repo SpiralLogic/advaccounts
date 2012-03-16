@@ -36,7 +36,7 @@ class Dates
 	 * @return string
 	 */
 	static function __date($year, $month, $day) {
-		$how = Config::get('date.formats', User::date_format());
+		$how = Config::get('date.formats')[ User::date_format()];
 		$sep = Config::get('date.ui_separator');
 		$date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
 		$how = substr($how,0,1).$sep.substr($how,1,1).$sep.substr($how,2,1);
@@ -54,7 +54,7 @@ class Dates
 			return 0;
 		}
 		$how = User::date_format();
-		$sep = Config::get('date.separators', 0);
+		$sep = Config::get('date.separators')[ 0];
 		$date_ = trim($date_);
 		$date_ = str_replace($sep, "", $date_);
 		$day = $month = $year = 0;
@@ -374,7 +374,7 @@ class Dates
 		/* takes a date in a the format specified in $DefaultDateFormat
 																			and converts to a yyyy/mm/dd format */
 		$how = User::date_format();
-		$sep = Config::get('date.separators', User::date_sep());
+		$sep = Config::get('date.separators')[ User::date_sep()];
 		if ($date_ == null || strlen($date_) == 0) {
 			return "";
 		}

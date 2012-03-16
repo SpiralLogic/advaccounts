@@ -51,14 +51,15 @@
 		/***
 		 * @static
 		 *
-		 * @param       $var
-		 * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-		 * @param null  $default Default value if there is no current variable
+		 * @param             $var
+		 * @param \Input|null $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
+		 *                             Input::BOOL
+		 * @param mixed        $default Default value if there is no current variable
 		 *
 		 * @internal param mixed $public $_GET variable to return
 		 * @return bool|int|string|object
 		 */
-		static public function get($var, $type = null, $default = null) {
+		static public function get($var, Input $type = null, $default = null) {
 			return static::_isset($_GET, $var, $type, $default);
 		}
 		/***

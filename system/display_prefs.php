@@ -54,12 +54,10 @@
 	dateseps_list_row(_("Date Separator:"), "date_sep", User::date_sep());
 	/* The array $dateseps is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	thoseps_list_row(_("Thousand Separator:"), "tho_sep", User::tho_sep());
+	thoseps_list_row(_("Thousand Separator:"), "tho_sep", User::prefs()->tho_sep);
 	/* The array Config::get('separators_thousands') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	decseps_list_row(_("Decimal Separator:"), "dec_sep", User::dec_sep());
-	/* The array Config::get('separators_thousands',User::tho_sep()); is set up in config.php for modifications
-		possible separators can be added by modifying the array definition by editing that file */
+	decseps_list_row(_("Decimal Separator:"), "dec_sep", User::prefs()->dec_sep);
 	if (!isset($_POST['language'])) {
 		$_POST['language'] = $_SESSION['Language']->code;
 	}

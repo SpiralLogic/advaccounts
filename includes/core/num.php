@@ -58,8 +58,8 @@
 		 * @return int|string
 		 */
 		static public function  format($number, $decimals = 0) {
-			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
-			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
+			$tsep = User::tho_sep();
+			$dsep = User::dec_sep();
 			//return number_format($number, $decimals, $dsep,	$tsep);
 			$delta = ($number < 0 ? -.0000000001 : .0000000001);
 			$number = number_format($number + $delta, $decimals, $dsep, $tsep);

@@ -68,7 +68,7 @@
 			Config::set('default.company', $id);
 		}
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
-			$conn = Config::get($id, null, 'db');
+			$conn = Config::get('db.'.$id);
 			if (($db = DB_Utils::create($conn)) == 0) {
 				Event::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
@@ -98,7 +98,7 @@
 		}
 		else {
 			if ($_GET['c'] = 'u') {
-				$conn = Config::get($id, null, 'db');
+				$conn = Config::get('db.'.$id);
 				if (($db = DB_Utils::create($conn)) == 0) {
 					Event::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				}

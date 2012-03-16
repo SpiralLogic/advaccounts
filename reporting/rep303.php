@@ -14,6 +14,12 @@
 Page::set_security(SA_ITEMSVALREP);
 
 	print_stock_check();
+	/**
+	 * @param $category
+	 * @param $location
+	 *
+	 * @return null|PDOStatement
+	 */
 	function get_transactions($category, $location)
 		{
 			$sql
@@ -196,4 +202,4 @@ Page::set_security(SA_ITEMSVALREP);
 			$rep->End();
 		}
 
-?>
+

@@ -40,10 +40,10 @@
 				$this->dec_sep = 0;
 				$this->price_dec = 2;
 				$this->percent_dec = 2;
-
 				$this->language = Config::get('default.lang');
 				$this->theme = 'default';
-			} else {
+			}
+			else {
 				$this->language = $user["language"];
 				$_SESSION['Language']->set_language($this->language);
 				$this->qty_dec = $user["qty_dec"];
@@ -66,104 +66,88 @@
 				if (isset($user["sticky_doc_date"])) {
 					$this->sticky_date = $user["sticky_doc_date"];
 					$this->startup_tab = $user['startup_tab'];
-				} else {
+				}
+				else {
 					$this->sticky_date = 0;
 					$this->startup_tab = Config::get('apps.default');
 				}
 			}
 		}
-
 		function language() {
 			return $this->language;
 		}
-
 		function qty_dec() {
 			return $this->qty_dec;
 		}
-
 		function price_dec() {
 			return $this->price_dec;
 		}
-
 		function exrate_dec() {
 			return $this->exrate_dec;
 		}
-
 		function percent_dec() {
 			return $this->percent_dec;
 		}
-
 		function show_gl_info() {
 			return $this->show_gl_info;
 		}
-
 		function show_codes() {
 			return $this->show_codes;
 		}
-
 		function date_format() {
 			return $this->date_format;
 		}
-
 		function date_sep() {
 			return $this->date_sep;
 		}
-
 		function date_display() {
-			$sep = Config::get('date.separators', $this->date_sep);
+			$date_seps = Config::get('date.separators');
+			$sep = $date_seps[$this->date_sep];
 			if ($this->date_format == 0) {
 				return "m" . $sep . "d" . $sep . "Y";
-			} elseif ($this->date_format == 1) {
+			}
+			elseif ($this->date_format == 1) {
 				return "d" . $sep . "m" . $sep . "Y";
-			} else {
+			}
+			else {
 				return "Y" . $sep . "m" . $sep . "d";
 			}
 		}
-
 		function tho_sep() {
-			return $this->tho_sep;
+			$tho_seps = Config::get('separators_thousands');
+			return $tho_seps [$this->tho_sep];
 		}
-
 		function dec_sep() {
-			return $this->dec_sep;
+			$dec_seps = Config::get('separators_decimal');
+			return $dec_seps [$this->dec_sep];
 		}
-
 		function get_theme() {
 			return $this->theme;
 		}
-
 		function get_pagesize() {
 			return $this->pagesize;
 		}
-
 		function show_hints() {
 			return $this->show_hints;
 		}
-
 		function print_profile() {
 			return $this->print_profile;
 		}
-
 		function rep_popup() {
 			return $this->rep_popup;
 		}
-
 		function query_size() {
 			return $this->query_size;
 		}
-
 		function graphic_links() {
 			return $this->graphic_links;
 		}
-
 		function sticky_date() {
 			return $this->sticky_date;
 		}
-
 		function start_up_tab() {
 			return $this->startup_tab;
 		}
-
 		function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) {
 			$this->price_dec = $price_dec;
 			$this->qty_dec = $qty_dec;
@@ -172,7 +156,6 @@
 			$this->show_gl_info = $showgl;
 			$this->show_codes = $showcodes;
 		}
-
 		function set_format($date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize) {
 			$this->date_format = $date_format;
 			$this->date_sep = $date_sep;

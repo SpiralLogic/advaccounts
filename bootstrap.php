@@ -66,6 +66,6 @@
   include(DOCROOT . 'config' . DS . 'access_levels.php');
   \Session::i();
   \Config::i();
-  \Ajax::i();\Errors::log('test');
+  \Ajax::i();
   ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

@@ -59,9 +59,10 @@
 				$group_file = array_pop($group) . '.php';
 				$group_path = implode(DS, $group);
 				$file = DOCROOT . "config" . $group_path . DS . $group_file;
-			}else {
+			}
+			else {
 				$file = DOCROOT . "config" . DS . $group . '.php';
-							$group_name = $group;
+				$group_name = $group;
 			}
 			if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
 				return;
@@ -89,32 +90,24 @@
 		/***
 		 * @static
 		 *
-		 * @param      $var
-		 * @param null $array_key
-		 * @param null $group
-		 *
-		 * @return mixed
+		 * @param    string  $var
+		 * @param bool $default
+		 * @internal param null $array_key
+		 * @return Array|mixed
 		 */
-		static public function get($var, $array_key = null, $group = null) {
+		static public function get($var, $default = false) {
 			static::i();
 			if (!strstr($var, '.')) {
-				$group = 'config';
-			}
-			if ($group != null) {
-				$var = $group . '.' . $var;
+				$var = 'config.' . $var;
 			}
 			$group_array = explode('.', $var);
 			$var = array_pop($group_array);
 			$group = implode('.', $group_array);
-			(isset(static::$_vars[$group])) or static::load($group_array);
-			if ($var === null && $array_key === null) {
-				return static::get_all($group);
-			}
+			(isset(static::$_vars[$group], static::$_vars[$group][$var])) or static::load($group_array);
 			if (!isset(static::$_vars[$group][$var])) {
-				return false;
+				return $default;
 			}
-			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] :
-			 static::$_vars[$group][$var];
+			return static::$_vars[$group][$var];
 		}
 		/**
 		 * @static

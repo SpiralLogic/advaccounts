@@ -9,12 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLANALYTIC);
-
-	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
-	{
+	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
 		$code_open_balance = 0;
 		$code_period_balance = 0;
 		$open_balance_total = 0;
@@ -86,9 +83,7 @@
 	}
 
 	print_balance_sheet();
-
-	function print_balance_sheet()
-	{
+	function print_balance_sheet() {
 		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 		$from = $_POST['PARAM_0'];
@@ -100,13 +95,15 @@
 			$graphics = $_POST['PARAM_5'];
 			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
-		} else if ($dim == 1) {
+		}
+		else if ($dim == 1) {
 			$dimension = $_POST['PARAM_2'];
 			$decimals = $_POST['PARAM_3'];
 			$graphics = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
-		} else {
+		}
+		else {
 			$decimals = $_POST['PARAM_2'];
 			$graphics = $_POST['PARAM_3'];
 			$comments = $_POST['PARAM_4'];
@@ -114,7 +111,8 @@
 		}
 		if ($destination) {
 			include_once(APPPATH . "reports/excel.php");
-		} else {
+		}
+		else {
 			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($graphics) {
@@ -122,29 +120,42 @@
 		}
 		if (!$decimals) {
 			$dec = 0;
-		} else {
+		}
+		else {
 			$dec = User::price_dec();
 		}
 		$cols = array(0, 50, 200, 350, 425, 500);
 		//------------0--1---2----3----4----5--
 		$headers = array(
-			_('Account'), _('Account Name'), _('Open Balance'), _('Period'), _('Close Balance'));
+			_('Account'), _('Account Name'), _('Open Balance'), _('Period'), _('Close Balance')
+		);
 		$aligns = array('left', 'left', 'right', 'right', 'right');
 		if ($dim == 2) {
 			$params = array(
 				0 => $comments, 1 => array(
-					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
-					'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''), 3 => array(
-					'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''));
-		} else if ($dim == 1) {
+					'text' => _('Period'), 'from' => $from, 'to' => $to
+				), 2 => array(
+					'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
+				), 3 => array(
+					'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
+				)
+			);
+		}
+		else if ($dim == 1) {
 			$params = array(
 				0 => $comments, 1 => array(
-					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
-					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''));
-		} else {
+					'text' => _('Period'), 'from' => $from, 'to' => $to
+				), 2 => array(
+					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
+				)
+			);
+		}
+		else {
 			$params = array(
 				0 => $comments, 1 => array(
-					'text' => _('Period'), 'from' => $from, 'to' => $to));
+					'text' => _('Period'), 'from' => $from, 'to' => $to
+				)
+			);
 		}
 		$rep = new ADVReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
 		$rep->Font();
@@ -188,7 +199,8 @@
 				$equity_open += $class_open_total;
 				$equity_period += $class_period_total;
 				$econvert = $convert;
-			} elseif ($class['ctype'] == CL_LIABILITIES) {
+			}
+			elseif ($class['ctype'] == CL_LIABILITIES) {
 				$liability_open += $class_open_total;
 				$liability_period += $class_period_total;
 				$lconvert = $convert;
@@ -228,7 +240,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
+			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

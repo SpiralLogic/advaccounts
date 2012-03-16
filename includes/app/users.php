@@ -177,9 +177,10 @@ class Users
 	 * @return bool|mixed
 	 */
 	static public function  get_for_login($user_id, $password) {
-		// do not exclude inactive records or you lost access after source upgrade
-		// on sites using pre 2.2 database
 		$auth = new Auth($user_id);
+		if ($auth->isBruteForce()) {
+			return false;
+		}
 		return $auth->check_user_password($user_id, $password);
 	}
 	/**

@@ -24,7 +24,8 @@
 			else {
 				Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				// use current user display preferences as start point for new user
-				Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::tho_sep(), User::dec_sep(), User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
+				Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(),
+																		User::percent_dec(), User::show_gl_info(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::pagesize(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab());
 				Event::success(_("A new user has been added."));
 			}
 			$Mode = MODE_RESET;

@@ -10,7 +10,7 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-	$order = Orders::session_get() ? : [1];
+	$order = Orders::session_get() ? : null;
 	Security::set_page((!$order) ? : $order->trans_type, array(
 		ST_SALESORDER => SA_SALESORDER,
 		ST_SALESQUOTE => SA_SALESQUOTE,
@@ -25,7 +25,7 @@
 		Orders::NEW_INVOICE => SA_SALESINVOICE
 	));
 	JS::open_window(900, 500);
-	if (Input::get('customer_id', Input::NUMERIC)) {
+	if (Input::get('customer_id', 2)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		Ajax::i()->activate('customer_id');
 	}

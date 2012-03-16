@@ -49,6 +49,7 @@
 		 * @return bool|mixed
 		 */
 		public function check_user_password($user_id, $password) {
+
 			$result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
 			$this->hash_password($password);
 			if ($result['password'] != $password) {
@@ -135,5 +136,14 @@
 				}
 			}
 			return $returns;
+		}
+		/**
+		 * @return bool
+		 */
+		public function isBruteForce() {
+		$query  = DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP='
+												 .DB::escape
+		(Users::get_ip()));
+			return (DB::fetch($query)[0]>Config::get('max_login_attempts',50));
 		}
 	}

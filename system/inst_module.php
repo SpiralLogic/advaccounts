@@ -74,7 +74,7 @@
 				}
 			}
 			if (!advaccounting::write_extensions($newexts, $i)) {
-				Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i, 'name')));
+				Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i)[ 'name']));
 				return false;
 			}
 		}

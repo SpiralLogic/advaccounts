@@ -90,7 +90,8 @@
 			$this->formatTitle->setTop(2);
 			$this->formatTitle->setTopColor('gray');
 			$how = User::date_format();
-			$sep = Config::get('date.separators', User::date_sep());
+			$sep = Config::get('date.separators');
+			$sep = $sep[User::date_sep()];
 			if ($sep == '.') {
 				$sep = "\\.";
 			}
@@ -175,8 +176,6 @@
 		public function NumFormat($dec) {
 			if (!isset($this->formatAmount[$dec])) {
 				$dec = (int)$dec;
-				//$tsep = Config::get('separators_thousands',User::tho_sep());
-				//$dsep = Config::get('separators_decimal',User::dec_sep());
 				$tsep = ',';
 				$dsep = '.';
 				$format = "###{$tsep}###{$tsep}###{$tsep}##0";
