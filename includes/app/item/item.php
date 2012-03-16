@@ -487,9 +487,10 @@ s.category_id, editable, 0 as kit,
 							WHERE (s.item_code LIKE ? $termswhere) $where
 							AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
 							ORDER BY weight, s.category_id, s.item_code LIMIT 30";
-			DB::prepare($sql);
+			DB::prepare($sql,true);
 
-			$result = DB::execute($terms);
+			$result = DB::execute($terms,true);      \Errors::log(DB::$queryString);
+
 			return $result;
 		}
 

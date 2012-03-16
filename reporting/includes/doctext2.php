@@ -11,8 +11,8 @@
 	 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
 	if (isset($header2type)) {
-		$doc_Cust_no = "Cust no";
-		$doc_Date = "Date";
+		$txt_cust_no = "Cust no";
+		$txt_date = "Date";
 		if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
 			$doc_Charge_To = "Order To";
 			if ($doctype == ST_PURCHORDER) {
@@ -183,20 +183,20 @@
 			$doc_TOTAL_DELIVERY = "TOTAL DELIVERY INCL. VAT";
 		} elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 			$doc_Towards = "As advance / full / part / payment towards:";
-			$doc_by_Cheque = "By Cash / Cheque* / Draft No.";
-			$doc_Dated = "Dated";
+			$txt_by_Cheque = "By Cash / Cheque* / Draft No.";
+			$txt_dated = "Dated";
 			$doc_Drawn = "Drawn on Bank";
 			$doc_Drawn_Branch = "Branch";
-			$doc_Received = "Received / Sign";
-			$doc_Total_Allocated = "Total Allocated";
-			$doc_Left_To_Allocate = "Left to Allocate";
+			$txt_received = "Received / Sign";
+			$txt_total_allocated = "Total Allocated";
+			$txt_left_to_allocate = "Left to Allocate";
 			if ($doctype == ST_CUSTPAYMENT) {
-				$doc_Total_Payment = "TOTAL RECEIPT";
+				$txt_total_payment = "TOTAL RECEIPT";
 			}
 			if ($doctype == ST_CUSTREFUND) {
 				$doc_Total_Refund = "TOTAL REFUND";
 			} else {
-				$doc_Total_Payment = "TOTAL REMITTANCE";
+				$txt_total_payment = "TOTAL REMITTANCE";
 			}
 		} elseif ($doctype == ST_STATEMENT) {
 			$txt_outstanding = "Outstanding Transactions";

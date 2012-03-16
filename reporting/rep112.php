@@ -118,14 +118,14 @@
 						}
 					}
 					$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-					$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+					$rep->TextCol(3, 6, $txt_total_allocated, -2);
 					$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 					$rep->NewLine();
-					$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+					$rep->TextCol(3, 6, $txt_left_to_allocate, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 					$rep->NewLine();
 					$rep->Font('bold');
-					$rep->TextCol(3, 6, $doc_Total_Payment, -2);
+					$rep->TextCol(3, 6, $txt_total_payment, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 					$words = Item_Price::to_words($myrow['Total'], ST_CUSTPAYMENT);
 					if ($words != "") {
@@ -134,11 +134,11 @@
 					}
 					$rep->Font();
 					$rep->NewLine();
-					$rep->TextCol(6, 7, $doc_Received, -2);
+					$rep->TextCol(6, 7, $txt_received, -2);
 					$rep->NewLine();
-					$rep->TextCol(0, 2, $doc_by_Cheque, -2);
+					$rep->TextCol(0, 2, $txt_by_Cheque, -2);
 					$rep->TextCol(2, 4, "______________________________", -2);
-					$rep->TextCol(4, 5, $doc_Dated, -2);
+					$rep->TextCol(4, 5, $txt_dated, -2);
 					$rep->TextCol(5, 6, "__________________", -2);
 					$rep->NewLine(1);
 					$rep->TextCol(0, 2, $doc_Drawn, -2);

@@ -132,15 +132,15 @@
 						}
 					}
 					$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-					$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+					$rep->TextCol(3, 6, $txt_total_allocated, -2);
 					$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 					$rep->NewLine();
-					$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+					$rep->TextCol(3, 6, $txt_left_to_allocate, -2);
 					$myrow['Total'] *= -1;
 					$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 					$rep->NewLine();
 					$rep->Font('bold');
-					$rep->TextCol(3, 6, $doc_Total_Payment, -2);
+					$rep->TextCol(3, 6, $txt_total_payment, -2);
 					$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 					$words = Item_Price::to_words($myrow['Total'], ST_SUPPAYMENT);
 					if ($words != "") {

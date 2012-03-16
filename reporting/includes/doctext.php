@@ -14,8 +14,8 @@
 		$doctype = 0;
 	}
 	if (isset($header2type)) {
-		$doc_Cust_no = _("Cust no");
-		$doc_Date = _("Date");
+		$txt_cust_no = _("Cust no");
+		$txt_date = _("Date");
 		$doc_customer_id = "Customer ID";
 		if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
 			$doc_Charge_To = _("Order To");
@@ -69,7 +69,7 @@
 				$doc_Due_Date = "Due Date";
 				$doc_Payment_Terms = _("Payment Terms");
 			} elseif ($doctype == ST_STATEMENT) {
-				$doc_Date="Statement Date:";
+				$txt_date="Statement Date:";
 				$doc_Customers_Ref = "";
 				$doc_Our_Ref = "Customer ID";
 				$doc_Your_TAX_no = "Phone";
@@ -214,19 +214,19 @@
 			$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. GST");
 		} elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 			$doc_Towards = _("As advance / full / part / payment towards:");
-			$doc_by_Cheque = _("By Cash / Cheque* / Draft No.");
-			$doc_Dated = _("Dated");
+			$txt_by_Cheque = _("By Cash / Cheque* / Draft No.");
+			$txt_dated = _("Dated");
 			$doc_Drawn = _("Drawn on Bank");
 			$doc_Drawn_Branch = _("Branch");
-			$doc_Received = _("Received / Sign");
-			$doc_Total_Allocated = _("Total Allocated");
-			$doc_Left_To_Allocate = _("Left to Allocate");
+			$txt_received = _("Received / Sign");
+			$txt_total_allocated = _("Total Allocated");
+			$txt_left_to_allocate = _("Left to Allocate");
 			if ($doctype == ST_CUSTPAYMENT) {
-				$doc_Total_Payment = _("TOTAL RECEIPT");
+				$txt_total_payment = _("TOTAL RECEIPT");
 			} elseif ($doctype == ST_CUSTREFUND) {
-				$doc_Total_Payment = _("TOTAL REFUND");
+				$txt_total_payment = _("TOTAL REFUND");
 			} else {
-				$doc_Total_Payment = _("TOTAL REMITTANCE");
+				$txt_total_payment = _("TOTAL REMITTANCE");
 			}
 		}
 	}

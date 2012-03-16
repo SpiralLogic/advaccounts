@@ -107,7 +107,7 @@
 	$this->Font();
 	$this->row = $adrline;
 	$this->NewLine(3);
-	$this->Text($mcol + 100, $doc_Date);
+	$this->Text($mcol + 100, $txt_date);
 	$this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);

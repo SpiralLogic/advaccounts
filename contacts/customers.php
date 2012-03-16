@@ -16,7 +16,7 @@
 		$data['company'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
-		$_SESSION['global_customer_id'] = $customer->id;
+		$_SESSION['global_customer'] = $customer->id;
 	}
 	else {
 		$data['company'] = $customer = new Debtor();

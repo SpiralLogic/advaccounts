@@ -25,7 +25,7 @@
 		Orders::NEW_INVOICE => SA_SALESINVOICE
 	));
 	JS::open_window(900, 500);
-	if (Input::get('customer_id', 2)) {
+	if (Input::get('customer_id', Input::NUMERIC)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		Ajax::i()->activate('customer_id');
 	}
@@ -99,7 +99,7 @@
 		$so_type = $order->so_type;
 		$trans_type = $order->trans_type;
 		Dates::new_doc_date($order->document_date);
-		$_SESSION['global_customer_id'] = $order->customer_id;
+		$_SESSION['global_customer'] = $order->customer_id;
 		$order->write(1);
 		$jobsboard_order = clone ($order);
 		$trans_no = $jobsboard_order->trans_no = key($order->trans_no);
@@ -238,7 +238,7 @@
 	 * @param bool   $update
 	 */
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
-		$customer = new Debtor($_SESSION['global_customer_id']);
+		$customer = new Debtor($_SESSION['global_customer']);
 		$emails = $customer->getEmailAddresses();
 		Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
@@ -287,7 +287,7 @@
 				Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
 			}
 			Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-			if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer_id']) && $row == false) {
+			if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer']) && $row == false) {
 				echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}

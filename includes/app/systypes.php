@@ -95,7 +95,7 @@
 		}
 
 		static public function get() {
-			$sql = "SELECT * FROM sys_types";
+			$sql = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
 			$result = DB::query($sql, "could not query systypes table");
 			return $result;
 		}

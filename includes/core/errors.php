@@ -95,7 +95,7 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
-      error_log($message . " in file: $file on line:$line");
+      if (is_writable(DOCROOT.'../error_log')) error_log($error['type'].": ".$error['message'] . " in file: ".$error['file']." on line:".$error['line']."\n",3,DOCROOT.'../error_log');
       if (!in_array($type, static::$user_errors) || $type == E_USER_ERROR) {
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
         static::$errors[] = $error;
@@ -117,6 +117,7 @@
       );
       static::$current_severity = -1;
       static::$messages[] = $error;
+      if (is_writable(DOCROOT.'../error_log')) error_log($error['code'].": ".$error['message'] . " in file: ".$error['file']." on line:".$error['line']."\n",3,DOCROOT.'../error_log');
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
       static::$errors[] = $error;
     }
@@ -207,8 +208,8 @@
         }
         if (count(static::$session)) {
           unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
-          static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
-          static::$session['pager'] = count(static::$session['pager']);
+          if (isset(static::$session['orders_tbl']))static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
+          if (isset(static::$session['pager']))static::$session['pager'] = count(static::$session['pager']);
           $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
         }
         if (isset(static::$levels[static::$current_severity])) {

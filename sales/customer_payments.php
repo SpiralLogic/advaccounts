@@ -16,9 +16,9 @@
 	Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	if (list_updated('BranchID')) {
+	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = Sales_Branch::get(get_post('BranchID'));
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		Ajax::i()->activate('customer_id');
 	}
@@ -44,7 +44,7 @@
 	// validate inputs
 	if (isset($_POST['_customer_id_button'])) {
 		//	unset($_POST['branch_id']);
-		Ajax::i()->activate('BranchID');
+		Ajax::i()->activate('branch_id');
 	}
 	if (isset($_POST['_DateBanked_changed'])) {
 		Ajax::i()->activate('_ex_rate');
@@ -63,9 +63,9 @@
 			$rate = Validation::input_num('_ex_rate');
 		}
 		if (check_value('createinvoice')) {
-			Gl_Allocation::create_miscorder(new Debtor($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
+			Gl_Allocation::create_miscorder(new Debtor($_POST['customer_id']), $_POST['branch_id'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
 		}
-		$payment_no = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
+		$payment_no = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
@@ -81,7 +81,7 @@
 	if (isset($_POST["customer_id"])) {
 		Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
 	}
-	Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+	Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
 	read_customer_data();
 	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
@@ -150,9 +150,9 @@ JS;
 			JS::set_focus('customer_id');
 			return false;
 		}
-		if (!get_post('BranchID')) {
+		if (!get_post('branch_id')) {
 			Event::error(_("This customer has no branch defined."));
-			JS::set_focus('BranchID');
+			JS::set_focus('branch_id');
 			return false;
 		}
 		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {

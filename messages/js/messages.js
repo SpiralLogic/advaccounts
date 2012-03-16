@@ -14,7 +14,6 @@ $(function() {
             'subject':$('#subject').val()
         }
         $.post('#', data, function(data) {
-            console.log(data);
         })
     })
 })

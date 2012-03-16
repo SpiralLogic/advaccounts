@@ -134,7 +134,7 @@
 	$this->Font();
 	$this->row = $adrline;
 	$this->NewLine(3);
-	$this->Text($mcol + 100, $doc_Date);
+	$this->Text($mcol + 100, $txt_date);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
 		$this->Text($mcol + 180, Dates::sql2date($myrow['ord_date']));
 	}

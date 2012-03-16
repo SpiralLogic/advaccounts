@@ -27,12 +27,12 @@
 		}
 
 		static public function save($type, $reference) {
-			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference)) . " WHERE type_id = " . DB::escape($type);
+			$sql = "UPDATE sys_types SET next_reference= REPLACE(" . DB::escape(trim($reference)) . ",prefix,'') WHERE type_id = " . DB::escape($type);
 			DB::query($sql, "The next transaction ref for $type could not be updated");
 		}
 
 		static public function get_next($type) {
-			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
+			$sql = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::escape($type);
 			$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
 			$row = DB::fetch_row($result);
 			$ref = $row[0];
