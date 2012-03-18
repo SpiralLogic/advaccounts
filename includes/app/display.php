@@ -509,7 +509,7 @@
 				if (User::graphic_links() && $icon) {
 					$pars[0] = set_icon($icon, $pars[0]);
 				}
-				$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' $pars[1]>$pars[0]</a>";
+				$preview_str = "<a target='_blank' $class $id href='" . e(PATH_TO_ROOT . "/".$url)."' $pars[1]>$pars[0]</a>";
 			}
 			else {
 				$preview_str = $label;

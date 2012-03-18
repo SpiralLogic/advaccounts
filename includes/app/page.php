@@ -115,7 +115,7 @@
       $this->header = true;
       JS::open_window(900, 500);
       if (!headers_sent()) {
-        header("Content-type: text/html; charset='{$this->encoding}'");
+        header("Content-type: text/html; charset={$this->encoding}");
       }
       echo "<!DOCTYPE HTML>\n";
       echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :

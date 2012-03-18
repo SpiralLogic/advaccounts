@@ -1,11 +1,14 @@
 <?php
 	/**
-	 * Created by JetBrains PhpStorm.
-	 * User: Complex
-	 * Date: 8/10/11
-	 * Time: 7:27 PM
-	 * To change this template use File | Settings | File Templates.
-	 */
+	 * PHP version 5.4
+	 *
+	 * @category  PHP
+	 * @package   ADVAccounts
+	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+	 * @copyright 2010 - 2012
+	 * @link      http://www.advancedgroup.com.au
+	 *
+	 **/
 	class Autoload_Exception extends Exception
 	{
 	}
@@ -89,7 +92,10 @@
 		/**
 		 * @static
 		 *
-		 * @param $path
+		 * @param $paths
+		 * @param $classname
+		 *
+		 * @internal param $path
 		 *
 		 * @return string
 		 */
@@ -114,6 +120,7 @@
 		 * @param $filepath
 		 * @param $class
 		 *
+		 * @return bool
 		 * @throws Autoload_Exception
 		 */
 		static protected function includeFile($filepath, $class) {

@@ -1,11 +1,14 @@
 <?php
 	/**
-	 * Created by JetBrains PhpStorm.
-	 * User: Complex
-	 * Date: 22/08/11
-	 * Time: 12:24 AM
-	 * To change this template use File | Settings | File Templates.
-	 */
+	 * PHP version 5.4
+	 *
+	 * @category  PHP
+	 * @package   ADVAccounts
+	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+	 * @copyright 2010 - 2012
+	 * @link      http://www.advancedgroup.com.au
+	 *
+	 **/
 	abstract class DB_Query extends DB_Query_Where
 	{
 		/**
@@ -24,10 +27,7 @@
 		 * @var DB
 		 */
 		protected $conn;
-		/**
-		 * @abstract
-		 *
-		 */
+
 		protected abstract function execute();
 		/**
 		 * @param $conn

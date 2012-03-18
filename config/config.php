@@ -30,5 +30,5 @@
 		'separators_thousands' => array(",", ".", " "), //
 		'separators_decimal' => array(".", ","),
 		'session_lifetime' => 3600,
-		'max_login_attempts'=>10,
+		'max_login_attempts' => 10,
 	);

@@ -41,7 +41,7 @@
 	$result = GL_Class::get_all(check_value('show_inactive'));
 	start_form();
 	start_table('tablestyle');
-	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
+	$th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
 	if (Config::get('accounts.gl_oldconvertstyle') == 1) {
 		$th[2] = _("Balance Sheet");
 	}

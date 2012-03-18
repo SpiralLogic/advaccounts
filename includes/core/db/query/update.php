@@ -1,12 +1,15 @@
 <?php
 	/**
-	 * Created by JetBrains PhpStorm.
-	 * User: Complex
-	 * Date: 15/08/11
-	 * Time: 5:46 AM
+	 * PHP version 5.4
 	 *
-	 */
-	Class DB_Query_Update extends DB_Query_Insert
+	 * @category  PHP
+	 * @package   ADVAccounts
+	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+	 * @copyright 2010 - 2012
+	 * @link      http://www.advancedgroup.com.au
+	 *
+	 **/
+	class DB_Query_Update extends DB_Query_Insert
 	{
 		/**
 		 * @param bool $table

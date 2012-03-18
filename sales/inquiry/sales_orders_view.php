@@ -125,10 +125,11 @@
 		check_cells(_("Show All:"), 'show_all');
 	}
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-	hidden('order_view_mode', $_POST['order_view_mode']);
-	hidden('type', $trans_type);
 	end_row();
 	end_table(1);
+
+	hidden('order_view_mode', $_POST['order_view_mode']);
+	hidden('type', $trans_type);
 	//	Orders inquiry table
 	//
 	$sql = "SELECT
@@ -228,7 +229,9 @@
 				sorder.customer_ref,
 				sorder.deliver_to";
 	}
+	$ord=null;
 	if ($trans_type == ST_SALESORDER) {
+		$ord="Order #";
 		$cols = array(
 			_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
 			array('type' => 'skip'),
@@ -242,32 +245,25 @@
 			_("Delivery To"),
 			_("Total") => array('type' => 'amount', 'ord' => ''),
 			array('type' => 'skip'),
-			_("Currency") => array('align' => 'center')
+			_("Currency") => array('align' => 'center'),
 		);
 	}
 	else {
+		$ord="Quote #";
 		$cols = array(
-			_("Quote #") => array(
-				'fun' => 'view_link', 'ord' => 'desc'
-			),
+			_("Quote #") => array( 'fun' => 'view_link', 'ord' => 'desc' ),
 			array('type' => 'skip'),
 			_("Ref") => array('ord' => ''),
 			_("Customer") => array('ord' => ''),
 			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
-			_("PO#") => array('ord' => ''),
-			_("Date") => array(
-				'type' => 'date', 'ord' => ''
-			),
-			_("Valid until") => array(
-				'type' => 'date', 'ord' => ''
-			),
+			_("PO#") => array('type' => 'skip'),
+			_("Date") => array( 'type' => 'date', 'ord' => '' ),
+			_("Valid until") => array('type' => 'date', 'ord' => '' ),
 			_("Delivery To"),
-			_("Total") => array(
-				'type' => 'amount', 'ord' => ''
-			),
-			'type' => 'skip',
-			_("Currency") => array('align' => 'center')
+			_("Total") => array( 'type' => 'amount', 'ord' => '' 	),
+			array('type'=>'skip'),
+			_("Currency") => array('align' => 'center'),
 		);
 	}
 	if ($trans_type == ST_CUSTDELIVERY) {
@@ -287,12 +283,12 @@
 			Arr::append($cols, array(array('insert' => true, 'fun' => 'delivery_link')));
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
+
 			Arr::append($cols, array(
-															array('insert' => true, 'type' => 'skip'),
-															array('insert' => true, 'type' => 'skip'),
 															array('insert' => true, 'fun' => 'edit_link'),
 															array('insert' => true, 'fun' => 'order_link'),
 															array('insert' => true, 'fun' => 'email_link'),
+															array('insert' => true, 'fun' => 'prt_link2'),
 															array('insert' => true, 'fun' => 'prt_link')
 												 ));
 		}
@@ -312,12 +308,14 @@
 												 ));
 		}
 	}
-	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
+	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, null);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	DB_Pager::display($table);
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
+	UI::emailDialogue(CT_CUSTOMER);
+
 	Page::end();
 		//	Query format functions
 	//
@@ -348,8 +346,12 @@
 	}
 
 	function email_link($row) {
-		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
-	}
+		HTML::setReturn(true);
+				UI::button(false, 'Email', array(
+					'class' => 'button email-button',
+					'data-emailid' => $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']
+				));
+				return HTML::setReturn(false);	}
 
 	function dispatch_link($row) {
 		if ($row['trans_type'] == ST_SALESORDER) {

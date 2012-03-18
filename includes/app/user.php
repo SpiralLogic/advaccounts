@@ -36,7 +36,7 @@
 		protected $access_sections;
 		public $timeout;
 		public $last_act;
-		public $role_set = false;
+		public $role_set = array();
 		public $old_db;
 		public $logged = false;
 		public $ui_mode = 0;

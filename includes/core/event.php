@@ -1,11 +1,14 @@
 <?php
 	/**
-	 * Created by JetBrains PhpStorm.
-	 * User: Maidenii
-	 * Date: 26/12/11
-	 * Time: 6:39 AM
-	 * To change this template use File | Settings | File Templates.
-	 */
+	 * PHP version 5.4
+	 *
+	 * @category  PHP
+	 * @package   ADVAccounts
+	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+	 * @copyright 2010 - 2012
+	 * @link      http://www.advancedgroup.com.au
+	 *
+	 **/
 	class Event
 	{
 		/**

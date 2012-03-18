@@ -117,7 +117,7 @@
 				$convert = Systypes::get_class_type_convert($class["ctype"]);
 				$ctype = $class["ctype"];
 				$classname = $class["class_name"];
-				//Print Class Name
+				//Print class Name
 				table_section_title($class["class_name"]);
 				//Get Account groups/types under this group/type
 				$typeresult = GL_Type::get_all(false, $class['cid'], -1);
@@ -133,7 +133,7 @@
 					}
 					$classclose += $TypeTotal;
 				}
-				//Print Class Summary
+				//Print class Summary
 				start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_('Total') . " " . $class["class_name"]);
 				amount_cell($classclose * $convert);
@@ -171,7 +171,7 @@
 			$classid = $accounttype["class_id"];
 			$class = GL_Class::get($classid);
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
-			//Print Class Name
+			//Print class Name
 			table_section_title(GL_Type::get_name($_POST["AccGrp"]));
 			$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, PATH_TO_ROOT);
 		}

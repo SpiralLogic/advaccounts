@@ -1,27 +1,25 @@
 <?php
 	/**
-	 * Created by JetBrains PhpStorm.
-	 * User: Complex
-	 * Date: 21/08/11
-	 * Time: 11:24 PM
-	 * To change this template use File | Settings | File Templates.
-	 */
-	/***
+	 * PHP version 5
 	 *
-	 */
-	class DB_Query_Result implements \Countable, \Iterator
-	{
-		/***
+	 * @category  PHP
+	 * @package   ADVAccounts
+	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+	 * @copyright 2010 - 2012
+	 * @license   ADV http://www.advancedgroup.com.au
+	 * @link      http://www.advancedgroup.com.au
+	 *
+	 **/
+class DB_Query_Result implements \Countable, \Iterator
+{
+		/**
 		 * @var PDOStatement thing
 		 */
+
 		public $prepared;
-		/**
-		 * @var
-		 */
+
 		protected $current;
-		/**
-		 * @var
-		 */
+
 		protected $count;
 		/**
 		 * @var int

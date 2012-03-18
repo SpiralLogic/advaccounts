@@ -71,7 +71,7 @@
 			$href = PATH_TO_ROOT . $url;
 			$href = (Input::request('frame')) ? "javascript:window.parent.location='$href'"
 			 : PATH_TO_ROOT . $url;
-			return "<a href=\"$href\" class='button' >" . $link_text . "</a>";
+			return "<a href=\"".e($href)."\" class='button' >" . $link_text . "</a>";
 		}
 		static function navi($name, $value, $enabled = true, $icon = false) {
 			return "<button " . ($enabled ? '' : 'disabled')
@@ -108,7 +108,7 @@
 							$icon = 'sort_asc.gif';
 						}
 						else {
-							$icon = 'sort_none.gif';
+							$icon = false;
 						}
 						$headers[] = static::navi($pager->name . '_sort_' . $num_col, $col['head'], true, $icon);
 					}

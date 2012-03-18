@@ -193,7 +193,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	DB_Pager::display($table);
-	UI::emailDialogue('c');
+	UI::emailDialogue(CT_CUSTOMER);
 	end_form();
 	Page::end();
 	/**

@@ -223,7 +223,7 @@ JS
 		$shortcuts->render();
 		/** @noinspection PhpUndefinedMethodInspection */
 		HTML::_div();
-		UI::emailDialogue('c');
+		UI::emailDialogue(CT_CUSTOMER);
 	}
 
 	Page::end(false, true);

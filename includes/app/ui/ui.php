@@ -258,7 +258,7 @@ JS;
 			$action
 			 = <<<JS
 	 var emailID= $(this).data('emailid');
-	 $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
+	 $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
 	 \$emailBox.html(data).dialog('open');
 
 	 },'html');

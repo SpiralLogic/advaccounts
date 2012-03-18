@@ -166,16 +166,16 @@ JS;
 			$pars[] = 'REP_ID=' . urlencode($rep);
 			$url .= implode('&', $pars);
 			if ($class != '') {
-				$class = Config::get('debug.pdf') ? '' : " class='$class'";
+				$class = Config::get('debug.pdf') ? '' : "class='".e($class)."'";
 			}
 			if ($id != '') {
-				$id = " id='$id'";
+				$id = "id='".e($id)."'";
 			}
 			$pars = Display::access_string($link_text);
 			if (User::graphic_links() && $icon) {
 				$pars[0] = set_icon($icon, $pars[0]);
 			}
-			return "<a target='_blank' href='$url'$id$class $pars[1]>$pars[0]</a>";
+			return "<a target='_blank' href='".e($url)."' $id $class $pars[1]>$pars[0]</a>";
 		}
 	}
 

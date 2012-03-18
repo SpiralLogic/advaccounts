@@ -429,9 +429,9 @@
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
-		 * @param string $date					Date string to be formatted.
-		 * @param int		$input_format	Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int		$output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param string $date          Date string to be formatted.
+		 * @param int    $input_format  Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int    $output_format Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
 		 *
 		 * @access public
 		 */
