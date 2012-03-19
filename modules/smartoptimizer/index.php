@@ -46,80 +46,75 @@
 		"swf" => "application/x-shockwave-flash",
 		"ico" => "image/x-icon",
 	);
-	function headerExit($status)
-		{
-			header("HTTP/1.0 $status");
-			exit();
-		}
+	function headerExit($status) {
+		header("HTTP/1.0 $status");
+		exit();
+	}
 
-	function headerNoCache()
-		{
-			// already expired
-			header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-			// always modified
-			header("Last-Modified: " . gmdatestr());
-			// HTTP/1.1
-			header("Cache-Control: no-store, no-cache, must-revalidate");
-			header("Cache-Control: post-check=0, pre-check=0", false);
-			header("Cache-Control: max-age=0", false);
-			// HTTP/1.0
-			header("Pragma: no-cache");
-			//generate a unique Etag each time
-			header('Etag: ' . microtime());
-		}
+	function headerNoCache() {
+		// already expired
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+		// always modified
+		header("Last-Modified: " . gmdatestr());
+		// HTTP/1.1
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Cache-Control: post-check=0, pre-check=0", false);
+		header("Cache-Control: max-age=0", false);
+		// HTTP/1.0
+		header("Pragma: no-cache");
+		//generate a unique Etag each time
+		header('Etag: ' . microtime());
+	}
 
-	function headerNeverExpire()
-		{
-			header("Expires: " . gmdatestr(time() + 315360000));
-			header("Cache-Control: max-age=315360000");
-		}
+	function headerNeverExpire() {
+		header("Expires: " . gmdatestr(time() + 315360000));
+		header("Cache-Control: max-age=315360000");
+	}
 
-	function debugExit($msg)
-		{
-			global $settings;
-			if (!$settings['debug']) {
-				headerExit('404 Not Found');
-			}
-			headerNoCache();
-			header('Content-Type: text/html; charset=' . $settings['charSet']);
-			header("Content-Encoding: none");
-			echo "<script>\n";
-			echo "alert('SmartOptimizer Error: " . str_replace("\n", "\\n", addslashes($msg)) . "');\n";
-			echo "</script>\n";
-			exit();
+	function debugExit($msg) {
+		global $settings;
+		if (!$settings['debug']) {
+			headerExit('404 Not Found');
 		}
+		headerNoCache();
+		header('Content-Type: text/html; charset=' . $settings['charSet']);
+		header("Content-Encoding: none");
+		echo "<script>\n";
+		echo "alert('SmartOptimizer Error: " . str_replace("\n", "\\n", addslashes($msg)) . "');\n";
+		echo "</script>\n";
+		exit();
+	}
 
-	function gmdatestr($time = null)
-		{
-			if (is_null($time)) {
-				$time = time();
-			}
-			return gmdate("D, d M Y H:i:s", $time) . " GMT";
+	function gmdatestr($time = null) {
+		if (is_null($time)) {
+			$time = time();
 		}
+		return gmdate("D, d M Y H:i:s", $time) . " GMT";
+	}
 
-	function filesmtime()
-		{
-			global $files, $fileType;
-			static $filesmtime;
-			if ($filesmtime) {
-				return $filesmtime;
-			}
-			$filesmtime = max(@filemtime("minifiers/$fileType.php"), filemtime('index.php'), filemtime('config.php'));
-			foreach ($files as $file) {
-				if (!file_exists($file)) {
-					debugExit("File not found ($file).");
-				}
-				$filesmtime = max(filemtime($file), $filesmtime);
-			}
+	function filesmtime() {
+		global $files, $fileType;
+		static $filesmtime;
+		if ($filesmtime) {
 			return $filesmtime;
 		}
+		$filesmtime = max(@filemtime("minifiers/$fileType.php"), filemtime('index.php'), filemtime('config.php'));
+		foreach ($files as $file) {
+			if (!file_exists($file)) {
+				debugExit("File not found ($file).");
+			}
+			$filesmtime = max(filemtime($file), $filesmtime);
+		}
+		return $filesmtime;
+	}
 
 	@include('config.php');
 	list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
 	if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
 		$fileNames = $matchResult[2];
 		$fileDir = $settings['baseDir'] . $matchResult[1];
-	} else {
+	}
+	else {
 		debugExit("Invalid file name ($query)");
 	}
 	//if (strpos(realpath($fileDir), realpath($settings['baseDir'])) !== 0) debugExit("File is out of base directory.");
@@ -127,13 +122,15 @@
 		$files = explode('&', $fileNames);
 		$files = explode($settings['separator'], $files[0]);
 		$settings['concatenate'] = count($files) > 1;
-	} else {
+	}
+	else {
 		$files = array($fileNames);
 	}
 	foreach ($files as $key => $file) {
 		if (preg_match('/^[^\x00]+\.([a-z0-9]+)$/i', $file, $matchResult)) {
 			$fileTypes[] = strtolower($matchResult[1]);
-		} else {
+		}
+		else {
 			debugExit("Unsupported file ($file)");
 		}
 		$files[$key] = $fileDir . $file;
@@ -148,17 +145,17 @@
 		debugExit("Unsupported file type ($fileType)");
 	}
 	header("Content-Type: {$mimeTypes[$fileType]}; charset=" . $settings['charSet']);
-	$settings['gzip'] =
-	 ($settings['gzip'] &&
-		!in_array($fileType, $settings['gzipExceptions']) &&
-		in_array('gzip', array_map('trim', explode(',', @$_SERVER['HTTP_ACCEPT_ENCODING']))) &&
-		function_exists('gzencode'));
+	$settings['gzip']
+	 = ($settings['gzip'] &&
+	 !in_array($fileType, $settings['gzipExceptions']) &&
+	 in_array('gzip', array_map('trim', explode(',', @$_SERVER['HTTP_ACCEPT_ENCODING']))) &&
+	 function_exists('gzencode'));
 	if ($settings['gzip']) {
 		header("Content-Encoding: gzip");
 	}
 	$settings['minify'] = $settings['minify'] && file_exists('minifiers/' . $fileType . '.php');
 	$settings['embed'] = $settings['embed'] && $fileType == 'css' && (!preg_match('/msie/i',
-		$_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
+																																								$_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
 	$settings['serverCache'] = $settings['serverCache'] && ($settings['minify'] || $settings['gzip'] || $settings['concatenate'] || $settings['embed']);
 	if ($settings['serverCache']) {
 		$cachedFile = $settings['cacheDir'] . $settings['cachePrefix'] . md5($query . ($settings['embed'] ? '1' :
@@ -182,9 +179,11 @@
 		if ($settings['clientCache'] && $settings['clientCacheCheck']) {
 			header("Last-Modified: " . $mtimestr);
 			header("Cache-Control: must-revalidate");
-		} elseif ($settings['clientCache']) {
+		}
+		elseif ($settings['clientCache']) {
 			headerNeverExpire();
-		} else {
+		}
+		else {
 			headerNoCache();
 		}
 		if ($generateContent) {
@@ -202,18 +201,22 @@
 			if ($settings['gzip']) {
 				$content = gzencode($content, $settings['compressionLevel']);
 			}
-			if ($settings['serverCache']) {
-				$handle = @fopen($cachedFile, 'w') or debugExit("Could not create cache file($cachedFile).");
-				fwrite($handle, $content);
-				fclose($handle);
+			if (is_writable($cachedFile) && $settings['serverCache']) {
+				{
+					$handle = @fopen($cachedFile, 'w');
+					fwrite($handle, $content);
+					fclose($handle);
+				}
 			}
 			header('Content-Length: ' . strlen($content));
 			echo $content;
-		} else {
+		}
+		else {
 			header('Content-Length: ' . filesize($cachedFile));
 			readfile($cachedFile);
 		}
-	} else {
+	}
+	else {
 		headerExit('304 Not Modified');
 	}
 
