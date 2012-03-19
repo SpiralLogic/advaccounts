@@ -657,8 +657,8 @@
 			if (static::$errorInfo[1] == 1062) {
 				throw new DBDuplicateException(static::$errorInfo[2]);
 			}
-			if (!class_exists("Errors")) {
-				throw new DBException($error);
+			if (!class_exists('Errors')) {
+			//	throw new DBException($error);
 			}
 			Errors::db_error($error, static::$errorSql, $data);
 		}
