@@ -230,7 +230,6 @@
   end_form();
   Debtor::addEditDialog();
   Item::addEditDialog();
-  Errors::log($order);
   Page::end(true);
   unset($_SESSION['order_no']);
   /**
