@@ -15,15 +15,19 @@
   if (isset($_GET['supplier_id']) || isset($_GET['id'])) {
  		$_POST['supplier_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['supplier_id'];
  	}	if (isset($_GET['supplier_id'])) {
-		$_POST['supplier_id'] = $_GET['supplier_id'];
-	}
-	if (isset($_GET['FromDate'])) {
-		$_POST['TransAfterDate'] = $_GET['FromDate'];
-	}
-	if (isset($_GET['ToDate'])) {
-		$_POST['TransToDate'] = $_GET['ToDate'];
-	}
-	start_form();
+			$_POST['supplier_id'] = $_GET['supplier_id'];
+		}
+		if (isset($_GET['FromDate'])) {
+			$_POST['TransAfterDate'] = $_GET['FromDate'];
+		}
+		if (isset($_GET['ToDate'])) {
+			$_POST['TransToDate'] = $_GET['ToDate'];
+		}	if (isset($_GET['frame'])) {
+				foreach ($_GET as $k => $v) {
+					$_POST[$k] = $v;
+				}
+			}
+  start_form(false, '', 'invoiceForm');
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
@@ -40,9 +44,11 @@
 			$_SESSION['global_TransToDate'] = $_POST['TransToDate'];
 		}
 	start_table('tablestyle_noborder');
-	start_row();
+	start_row();	if (!Input::get('frame')) {
+
+
 	Creditor::cells(_("Select a supplier: "), 'supplier_id', null, true);
-	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
+}	date_cells(_("From:"), 'TransAfterDate', '', null, -90);
 	date_cells(_("To:"), 'TransToDate', '', null, 1);
 	Purch_Allocation::row("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
