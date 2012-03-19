@@ -917,8 +917,8 @@
 		if (is_null($dec)) {
 			$dec = User::price_dec();
 		}
-		if ($dec>0 && !strpos('step=',$inputparams)) $inputparams.=' step="'.pow(10,-1*$dec).'"';
-		if (!$negatives && !strpos('min=',$inputparams)) $inputparams.=' min=0';
+		if ($dec>0 && !strpos($inputparams,'step=')) $inputparams.=' step="'.pow(10,-1*$dec).'"';
+		if (!$negatives && !strpos($inputparams,'min=')) $inputparams.=' min=0';
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;

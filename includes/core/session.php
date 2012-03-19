@@ -57,19 +57,29 @@
 
 		 */
 		final protected function __construct() {
+			/** @noinspection PhpUndefinedConstantInspection */
+			/** @noinspection PhpUndefinedFunctionInspection */
+			if	(session_status()===PHP_SESSION_DISABLED)  throw new SessionException('Sessions are disasbled!');
+
 			ini_set('session.gc_maxlifetime', 3200); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			if (class_exists('Memcached', false)) {
-				ini_set('session.save_handler', 'Memcached');
-				ini_set('session.save_path', '127.0.0.1:11211');
-				(Memcached::HAVE_IGBINARY)  and ini_set('session.serialize_handler', 'igbinary');
-			}
-			if (!session_start()) {
-				ini_set('session.save_handler', 'files');
-				if (!session_start()) {
-					throw new SessionException('Could not start a Session Handler');
+			$old_serializer=$old_handler=$old_path=null;
+				if (session_status()===PHP_SESSION_NONE && extension_loaded('Memcached')) {
+					$old_handler=ini_set('session.save_handler', 'Memcached');
+					$old_path= ini_set('session.save_path', '127.0.0.1:11211');
+						(Memcached::HAVE_IGBINARY)  and  $old_serializer=ini_set('session.serialize_handler', 'igbinary');
+					session_start();
 				}
+			if (session_status()===PHP_SESSION_NONE) {
+				$old_handler and ini_set('session.save_handler', $old_handler);
+				$old_path and ini_set('session.save_path', $old_path);
+				$old_serializer and	ini_set('session.serialize_handler', $old_serializer);
 			}
+			/** @noinspection PhpUndefinedConstantInspection */
+			/** @noinspection PhpUndefinedFunctionInspection */
+		if	(session_status()===PHP_SESSION_ACTIVE)  throw new SessionException('Could not start a Session!');
+
+
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
 				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 				}
