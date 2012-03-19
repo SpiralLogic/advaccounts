@@ -999,16 +999,14 @@
         $this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
       }
     }
-    /**
-
-     */
     public function convertToOrder() {
       $this->trans_type = ST_SALESORDER;
       $this->reference = Ref::get_next($this->trans_type);
       $this->document_date = $this->due_date = Dates::new_doc_date();
-      $this->Comments = $this->Comments . "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
+      $this->Comments .= "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
       $this->trans_no = 0;
       $this->order_no = 0;
+
       $this->generateID();
     }
 
@@ -1583,11 +1581,8 @@
     static public function get_details($order_no, $trans_type) {
       $sql
         = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
-			 discount_percent,
-			 qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
-		FROM sales_order_details, stock_master
-		WHERE sales_order_details.stk_code = stock_master.stock_id
-		AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
+        discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
+        FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
       return DB::query($sql, "Retreive order Line Items");
     }
     /**
@@ -1701,10 +1696,12 @@
      * @return false|Purch_Order|Sales_Order
      */
     static public function check_edit_conflicts($order) {
+
       if (!isset($_POST['order_id'])) {
         $_POST['order_id'] = $order->order_id;
       }
       $session_order = Orders::session_get();
+
       if (!$order->view_only && $session_order && $session_order->uniqueid != $order->uniqueid) {
         if (!$session_order->trans_no && count($session_order->line_items) > 0) {
           Event::warning(_('You were in the middle of creating a new order, this order has been continued. If you would like to start a completely new order, push the cancel changes button at the bottom of the page'));
@@ -1714,6 +1711,8 @@
         }
         return $session_order;
       }
+
+
       return $order;
     }
     /**

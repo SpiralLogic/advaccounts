@@ -99,6 +99,7 @@
         \DB::change_connection('jobsboard');
       }
       $data['Phone'] = $job_data->phone;
+      $data['Email'] = $job_data->email;
       $data['order_ref'] = $job_data->reference;
       $data['Client_PO'] = $job_data->cust_ref;
       $data['debtor_no'] = $job_data->customer_id;
