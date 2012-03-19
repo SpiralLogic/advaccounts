@@ -45,11 +45,10 @@ input, select, textarea {
 }
 
 input, textarea {
-	min-width:             50px;
+	min-width:             80px;
 	border:                none;
 	-webkit-border-radius: 4px;
 	-moz-border-radius:    4px;
-	text-indent:           3px;
 	margin-left:           3px;
 }
 
@@ -59,8 +58,8 @@ textarea {
 
 select {
 	font-size: 11px;
-	padding:   1px;
-	min-width: 50px;
+	padding:   1px 2px;
+	min-width: 80px;
 	border:    lightgray solid 1px;
 }
 

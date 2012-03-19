@@ -199,7 +199,6 @@
     echo "</td></tr>";
     end_table(1);
     Display::div_start('controls', 'items_table');
-
     if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())) {
       submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
       submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));

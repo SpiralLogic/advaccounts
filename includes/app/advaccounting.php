@@ -36,10 +36,10 @@
      * @var \Menu
      */
     public $menu;
-    /**
-
-     */
-    public function __construct() {
+		/**
+		 *
+		 */
+		public function __construct() {
       $extensions = Config::get('extensions.installed');
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
@@ -50,9 +50,6 @@
         $this->add_application(new $app());
       }
       if (count($extensions) > 0) {
-        // Do not use global array directly here, or you suffer
-        // from buggy php behaviour (unexpected loop break
-        // because of same var usage in class constructor).
         foreach ($extensions as $ext) {
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
@@ -122,8 +119,9 @@
     static public function i() {
       $buildversion = Cache::get('build.version', false);
       if (!$buildversion) {
-        define('BUILD_VERSION', file_get_contents(DOCROOT . 'version'));
-        Cache::set('build.version', BUILD_VERSION);
+        is_readable(DOCROOT.'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version',null,null,null,6));
+        defined('BUILD_VERSION') or define('BUILD_VERSION',000);
+				Cache::set('build.version', BUILD_VERSION);
       }
       else {
         define('BUILD_VERSION', $buildversion);
@@ -142,9 +140,10 @@
       isset($_SESSION["App"]) or $_SESSION["App"] = new static();
       return $_SESSION["App"];
     }
+
     static protected function checkLogin() {
-      if (isset($_SESSION['HTTP_USER_AGENT']) && $_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
-        $_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
+      if (Arr::get($_SESSION,'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER,'HTTP_USER_AGENT',''))) {
+        $_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER,'HTTP_USER_AGENT',''));
         static::showLogin();
       }
       $currentUser = User::i();
@@ -168,7 +167,7 @@
       }
     }
     /**
-
+		 *
      */
     static protected function showLogin() {
       // strip ajax marker from uri, to force synchronous page reload
@@ -221,7 +220,6 @@
           .= "/* List of installed additional modules and plugins. If adding extensions manually
 			to the list make sure they have unique, so far not used extension_ids as a keys,
 			and \$next_extension_id is also updated.
-
 			'name' - name for identification purposes;
 			'type' - type of extension: 'module' or 'plugin'
 			'path' - ADV root based installation path

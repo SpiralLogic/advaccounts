@@ -855,7 +855,7 @@
 		if ($check && (get_post($name) != Dates::today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
-		echo "<input id='$name' type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" .
+		echo "<input id='$name' type='date' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" .
 		 $_POST[$name] . "\"" . ($title ?
 		 " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
@@ -901,13 +901,24 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
+		$inputparams.=' max=100 min=0 step=1';
 		small_amount_row($label, $name, $_POST[$name], null, "%", User::percent_dec(), 0, $inputparams);
 	}
+	function percent_cells($label, $name, $init = null, $inputparams = '') {
+		if (!isset($_POST[$name]) || $_POST[$name] == "") {
+			$_POST[$name] = ($init === null) ? '' : $init;
+		}
+		$inputparams.=' max=100 min=0 step=1';
+		small_amount_cells($label, $name,null, null, "%", User::percent_dec(), $inputparams);
+	}
 
-	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
+	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null,
+													 $id = null, $inputparams = '',$negatives=false) {
 		if (is_null($dec)) {
 			$dec = User::price_dec();
 		}
+		if ($dec>0 && !strpos('step=',$inputparams)) $inputparams.=' step="'.pow(10,-1*$dec).'"';
+		if (!$negatives && !strpos('min=',$inputparams)) $inputparams.=' min=0';
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;
@@ -944,7 +955,7 @@
 		if (!Input::post($name)) {
 			$_POST[$name] = number_format(0, $dec);
 		}
-		echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
+		echo "type='number' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
@@ -994,7 +1005,7 @@
 		if (!isset($dec)) {
 			$dec = User::qty_dec();
 		}
-		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec);
+		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec,null,null,true);
 	}
 
 	function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
@@ -1011,19 +1022,20 @@
 			$dec = User::qty_dec();
 		}
 		echo "<tr>";
-		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
+		small_amount_cells($label, $name, $init, $params, $post_label, $dec,null,true);
 		echo "</tr>\n";
 	}
 
-	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
-		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, null, $inputparams);
+	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,
+															$inputparams = '',$negatives=false) {
+		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, null, $inputparams,$negatives);
 	}
 
 	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
 		if (!isset($dec)) {
 			$dec = User::qty_dec();
 		}
-		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
+		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec,null,null,true);
 	}
 
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {

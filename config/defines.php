@@ -31,7 +31,6 @@
 	define('APP_TITLE', "Advanced Accounting");
 	define('POWERED_BY', 'Advanced Accounting');
 	define('POWERED_URL', 'http://www.advancedgroup.com.au');
-
 	define('COMPANY_PATH', PATH_TO_ROOT . DS.'company' . DS);
 	define('THEME_PATH', PATH_TO_ROOT . DS.'themes' . DS);
 	define("BACKUP_PATH", COMPANY_PATH . 'backup' . DS);
