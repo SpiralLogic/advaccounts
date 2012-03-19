@@ -70,7 +70,7 @@
 		static public function delete($type, $id) {
 			$sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
 			return DB::query($sql, "could not delete from reference table");
-			;
+
 		}
 
 		static public function update($type, $id, $reference) {

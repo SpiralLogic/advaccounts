@@ -199,7 +199,7 @@
 		end_table(1);
 		Display::div_start('controls', 'items_table');
 
-		if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION)) {
+		if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())) {
 			submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
 			submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
 			submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -228,6 +228,7 @@
 	end_form();
 	Debtor::addEditDialog();
 	Item::addEditDialog();
+  Errors::log($order);
 	Page::end(true);
 	unset($_SESSION['order_no']);
 	/**
@@ -564,7 +565,7 @@
 		}
 		else {
 			if ($order->trans_no != 0) {
-				if ($order->trans_type == ST_SALESORDER && $order->has_deliveries(key($order->trans_no))) {
+				if ($order->trans_type == ST_SALESORDER && $order->has_deliveries()) {
 					Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {

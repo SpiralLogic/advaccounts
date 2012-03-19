@@ -211,9 +211,15 @@ var Company = function () {
 				{
 					transactions.empty().append(content.transactions);
 				}
-			if (data.contacts) Contacts.init(data.contacts);
-			if (data.branches) Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
-			if (data.accounts) Accounts.change(data.accounts);
+			if (data.contacts) {
+				Contacts.init(data.contacts);
+			}
+			if (data.branches) {
+				Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
+			}
+			if (data.accounts) {
+				Accounts.change(data.accounts);
+			}
 			(company.id) ? Company.hideSearch() : Company.showSearch();
 			$.each(company, function (i, data) {
 				if (i !== 'contacts' && i !== 'branches' && i !== 'accounts')

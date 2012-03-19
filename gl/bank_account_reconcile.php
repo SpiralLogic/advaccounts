@@ -114,7 +114,7 @@
   end_row();
   table_header(_("Account Total"));
   start_row();
-  amount_cell($total);
+  amount_cell( $total);
   end_row();
   table_header(_("Reconciled Amount"));
   start_row();

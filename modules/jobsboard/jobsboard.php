@@ -22,7 +22,7 @@
     function removejob($trans_no) {
       \DB::change_connection('jobsboard');
       $job = $this->get_job($trans_no);
-      if ($this->jobExists($trans_no)) {
+      if ($trans_no && $this->jobExists($trans_no)) {
         $this->currentJob['Customer'] = $job['Customer'] . ' - CANCELLED';
         $this->currentJob['Updates'] = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . \User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
         $this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . \User::i()->name . '</div>' . $job['Next_Action_Required'];

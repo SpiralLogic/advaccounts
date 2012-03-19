@@ -62,7 +62,7 @@
 		 * @internal param mixed $public $_GET variable to return
 		 * @return bool|int|string|object
 		 */
-		static public function get($var, Input $type = null, $default = null) {
+		static public function get($var,  $type = null, $default = null) {
 			return static::_isset($_GET, $var, $type, $default);
 		}
 		/***
