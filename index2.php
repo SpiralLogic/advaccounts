@@ -9,5 +9,7 @@
 	 * @link      http://www.advancedgroup.com.au
 	 *
 	 **/
-	include('bootstrap.php');
+
+
+//	include('bootstrap.php');
 	phpinfo();
