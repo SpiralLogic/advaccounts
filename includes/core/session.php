@@ -77,7 +77,7 @@
 			}
 			/** @noinspection PhpUndefinedConstantInspection */
 			/** @noinspection PhpUndefinedFunctionInspection */
-		if	(session_status()===PHP_SESSION_ACTIVE)  throw new SessionException('Could not start a Session!');
+		if	(session_status()!==PHP_SESSION_ACTIVE)  throw new SessionException('Could not start a Session!');
 
 
 			if (isset($_SESSION['HTTP_USER_AGENT'])) {
