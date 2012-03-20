@@ -116,7 +116,7 @@
 				return true;
 			}
 			catch (PDOException $e) {
-				$this->_error($e);
+	//			$this->_error($e);
 				throw new DBException('Could not connect to database:'.$config['name'].', check configuration!');
 			}
 		}
