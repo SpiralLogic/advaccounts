@@ -43,7 +43,7 @@
 	Display::div_start('_page_body');
 	Display::br(2);
 	start_form(false, $_SESSION['timeout']['uri'], "loginform");
-	echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
+	echo "wawa<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
 	start_table('login');
 	start_row();
 	echo "<td class='center' colspan=2>";
