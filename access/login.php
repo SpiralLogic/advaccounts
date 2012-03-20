@@ -87,7 +87,7 @@
 	) {
 		// add all request variables to be resend together with login data
 		if (!in_array($p, array('ui_mode', 'user_name', 'password', 'SubmitUser', 'login_company'))) {
-			echo "<input type='hidden' name='$p' value='$val'>";
+			echo "<input type='hidden' name='".serialize($p)."' value='$val'>";
 		}
 	}
 	end_form(1);

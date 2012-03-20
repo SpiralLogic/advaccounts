@@ -17,11 +17,14 @@
      * @var
      */
     protected $id;
+    private $password;
     /**
      * @param $username
      */
     public function __construct($username) {
       $this->username = $username;
+      $this->password = $_POST['password'];
+
     }
     /**
      * @param $id
@@ -39,8 +42,8 @@
      *
      * @return string
      */
-    public function hash_password(&$password) {
-      $password = crypt($password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
+    public function hash_password() {
+      $password = crypt($this->password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
       return $password;
     }
     /**
@@ -49,11 +52,10 @@
      *
      * @return bool|mixed
      */
-    public function check_user_password($user_id, $password) {
-
+    public function check_user_password($user_id) {
+			$password =$this->hash_password($this->password);
       $result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
-      $this->hash_password($password);
-      if ($result['password'] != $password) {
+			if ($result['password'] != $password) {
         $result = false;
       }
       else {
@@ -72,7 +74,8 @@
      *
      * @return array
      */
-    static public function checkPasswordStrength($password, $username = false) {
+     public function checkPasswordStrength($username = false) {
+			$password=$this->password;
       $returns = array(
         'strength' => 0, 'error' => 0, 'text' => ''
       );

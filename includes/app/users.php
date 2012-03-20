@@ -175,12 +175,12 @@
      *
      * @return bool|mixed
      */
-    static public function  get_for_login($user_id, $password) {
+    static public function  get_for_login($user_id) {
       $auth = new Auth($user_id);
       if ($auth->isBruteForce()) {
         return false;
       }
-      return $auth->check_user_password($user_id, $password);
+      return $auth->check_user_password($user_id);
     }
     /**
      * @static

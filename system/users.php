@@ -13,9 +13,9 @@
 	Page::start(_($help_context = "Users"), SA_USERS);
 	list($Mode,$selected_id) = list($Mode,$selected_id) = Page::simple_mode(true);
 	if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
-		$user = new Auth($_POST['user_id']);
-		if (can_process($user)) {
-			$password = $user->hash_password($_POST['password']);
+		$auth = new Auth($_POST['user_id']);
+		if (can_process($auth)) {
+			$password = $auth->hash_password();
 			if ($Mode == UPDATE_ITEM) {
 				Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				Users::update_password($selected_id, $_POST['user_id'], $password);
@@ -130,33 +130,23 @@
 	 *
 	 * @return bool
 	 */
-	function can_process($user) {
+	function can_process(Auth $auth) {
 		if (strlen($_POST['user_id']) < 4) {
 			Event::error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
 			return false;
 		}
-		if ($_POST['password'] != "") {
-			if (strlen($_POST['password']) < 4) {
-				Event::error(_("The password entered must be at least 4 characters long."));
-				JS::set_focus('password');
-				return false;
-			}
-			if (strstr($_POST['password'], $_POST['user_id']) != false) {
-				Event::error(_("The password cannot contain the user login."));
-				JS::set_focus('password');
-				return false;
-			}
-			$check = ($user !== null) ? Auth::checkPasswordStrength($_POST['password']) : false;
+
+			$check = (is_a($auth,'Auth') ) ? $auth->checkPasswordStrength() : false;
 			if (!$check && $check['error'] > 0) {
 				Event::error($check['text']);
 				return false;
 			}
 			if (!$check && $check['strength'] < 3) {
-				Event::error(_("Password Too Weeak!"));
+				Event::error(_("Password Too Weak!"));
 				return false;
 			}
-		}
+
 		return true;
 	}
 

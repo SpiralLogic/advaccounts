@@ -83,10 +83,10 @@
      *
      * @return bool
      */
-    public function login($company, $loginname, $password) {
+    public function login($company, $loginname) {
       $this->set_company($company);
       $this->logged = false;
-      $myrow = Users::get_for_login($loginname, $password);
+      $myrow = Users::get_for_login($loginname);
       if ($myrow) {
         if (!$myrow["inactive"]) {
           $this->role_set = array();
