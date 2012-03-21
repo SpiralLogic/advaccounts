@@ -59,33 +59,27 @@
 		final protected function __construct() {
 			/** @noinspection PhpUndefinedConstantInspection */
 			/** @noinspection PhpUndefinedFunctionInspection */
-			if	(session_status()===PHP_SESSION_DISABLED)  throw new SessionException('Sessions are disasbled!');
-
+			if (session_status() === PHP_SESSION_DISABLED) {
+				throw new SessionException('Sessions are disasbled!');
+			}
 			ini_set('session.gc_maxlifetime', 3200); // 10hrs
 			session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-			$old_serializer=$old_handler=$old_path=null;
-				if (session_status()===PHP_SESSION_NONE && extension_loaded('Memcached')) {
-					$old_handler=ini_set('session.save_handler', 'Memcached');
-					$old_path= ini_set('session.save_path', '127.0.0.1:11211');
-						(Memcached::HAVE_IGBINARY)  and  $old_serializer=ini_set('session.serialize_handler', 'igbinary');
-					session_start();
-				}
-			if (session_status()===PHP_SESSION_NONE) {
+			$old_serializer = $old_handler = $old_path = null;
+			if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
+				$old_handler = ini_set('session.save_handler', 'Memcached');
+				$old_path = ini_set('session.save_path', '127.0.0.1:11211');
+				(Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+				session_start();
+			}
+			if (session_status() === PHP_SESSION_NONE) {
 				$old_handler and ini_set('session.save_handler', $old_handler);
 				$old_path and ini_set('session.save_path', $old_path);
-				$old_serializer and	ini_set('session.serialize_handler', $old_serializer);
+				$old_serializer and  ini_set('session.serialize_handler', $old_serializer);
 			}
 			/** @noinspection PhpUndefinedConstantInspection */
 			/** @noinspection PhpUndefinedFunctionInspection */
-		if	(session_status()!==PHP_SESSION_ACTIVE)  throw new SessionException('Could not start a Session!');
-
-
-			if (isset($_SESSION['HTTP_USER_AGENT'])) {
-				if ($_SESSION['HTTP_USER_AGENT'] != sha1($_SERVER['HTTP_USER_AGENT'])) {
-				}
-			}
-			else {
-				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
+			if (session_status() !== PHP_SESSION_ACTIVE) {
+				throw new SessionException('Could not start a Session!');
 			}
 			header("Cache-control: private");
 			$this->setTextSupport();
@@ -93,6 +87,16 @@
 			$this->_session = &$_SESSION;
 			// Ajax communication object
 			(!class_exists('Ajax'))  or Ajax::i();
+		}
+		public static function checkUserAgent() {
+			if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
+				static::setUserAgent();
+				return false;
+			}
+			return true;
+		}
+		protected static function setUserAgent() {
+			return $_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']));
 		}
 		/**
 		 * @return mixed

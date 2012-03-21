@@ -21,7 +21,7 @@
       return $data;
     }
     public $id, $supplier_id; //
-    public $name, $supp_name; //
+    public  $supp_name; //
     public $tax_id, $gst_no; //
     public $contact_name, $contact; //
     public $post_address, $supp_address; //
@@ -58,19 +58,19 @@
     protected $_id_column = 'supplier_id';
     public function __construct($id = null) {
       $this->supplier_id = &$this->id;
-      $this->supp_name =& $this->name;
       $this->gst_no = &$this->tax_id;
       $this->contact = &$this->contact_name;
       $this->supp_address = &$this->post_address;
       $this->supp_account_no = &$this->account_no;
       parent::__construct($id);
-      $this->supp_ref = substr($this->name, 0, 29);
+
+      $this->supp_ref = substr($this->supp_name, 0, 29);
     }
     public function getEmailAddresses() {
-      return array('Accounts' => array($this->id => array($this->name, $this->email)));
+      return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
     }
     public function save($changes = null) {
-      $data['debtor_ref'] = substr($this->name, 0, 29);
+      $data['debtor_ref'] = substr($this->supp_name, 0, 29);
       $data['discount'] = User::numeric($this->discount) / 100;
       if (!parent::save($changes)) {
         $this->_setDefaults();
@@ -106,8 +106,8 @@
       $this->contacts[0] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
     protected function _canProcess() {
-      if (empty($this->name)) {
-        $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+      if (empty($this->supp_name)) {
+        $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'supp_name');
         return false;
       }
       return true;
@@ -253,7 +253,7 @@
       return DB::fetch($result);
     }
     static public function get_name($supplier_id) {
-      $sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+      $sql = "SELECT supp_name AS supp_name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       $row = DB::fetch_row($result);
       return $row[0];
@@ -291,7 +291,7 @@
       echo "</td>\n";
     }
     static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
-      echo "<tr><td class='label' name='supplier_name'>$label</td><td>";
+      echo "<tr><td class='label' name='supp_name'>$label</td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";
     }

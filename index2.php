@@ -10,6 +10,5 @@
 	 *
 	 **/
 
-
-//	include('bootstrap.php');
+include('bootstrap.php');
 	phpinfo();

@@ -8,7 +8,7 @@
 			JS::renderJSON($data);
 		}
 	}
-	if (isset($_POST['name'])) {
+	if (isset($_POST['supp_name'])) {
 		$data['company'] = $supplier = new Creditor();
 		$data['company']->save($_POST);
 	}
@@ -50,10 +50,10 @@
 	HTML::div('companyIDs');
 	HTML::table(array("class" => "marginauto bold"))->tr(true)->td(true);
 	HTML::label(array(
-									 'for' => 'name', 'content' => 'Supplier name:'
+									 'for' => 'supp_name', 'content' => 'Supplier name:'
 							), false);
-	HTML::input('name', array(
-													 'value' => $supplier->name, 'name' => 'name', 'size' => 50
+	HTML::input('supp_name', array(
+													 'value' => $supplier->supp_name, 'name' => 'supp_name', 'size' => 50
 											));
 	HTML::td()->td(array(
 											'content' => _("Supplier ID: "), "style" => "width:90px"
