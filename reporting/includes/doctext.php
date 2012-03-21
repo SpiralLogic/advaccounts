@@ -56,6 +56,7 @@
 			$doc_Our_Ref = "Contact";
 			# __ADVANCEDEDIT__ BEGIN #
 			if ($doctype == ST_PURCHORDER) {
+        $txt_date = _("Date:");
 				$doc_Customers_Ref = "Acount Number";
 				$doc_Our_Ref = "";
 				$doc_Your_TAX_no = "Phone";

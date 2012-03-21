@@ -8,19 +8,17 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-Adv.extend({alloc:{focus:function (i) {
-	save_focus(i);
-	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
-},
+Adv.extend({alloc:{
+	focus:function (i) {
+		save_focus(i);
+		i.setAttribute('_last', Adv.Forms.getAmount(i.name));
+	},
 	blur:function (i) {
-
-		var last = +i.getAttribute('_last')
+		var last = +i.getAttribute('_last');
 		var left = Adv.Forms.getAmount('left_to_allocate', 1);
 		var cur = Math.min(Adv.Forms.getAmount(i.name), Adv.Forms.getAmount('maxval' + i.name.substr(6), 1), last + left)
-
 		Adv.Forms.priceFormat(i.name, cur, user.pdec);
-		change = cur - last;
-
+		var change = cur - last;
 		var total = Adv.Forms.getAmount('total_allocated', 1) + change;
 		left -= change;
 		Adv.Forms.priceFormat('left_to_allocate', left, user.pdec, 1, 1);
@@ -53,22 +51,22 @@ Adv.extend({alloc:{focus:function (i) {
 	}
 }});
 Behaviour.register({
-										 '.amount':function (e) {
-											 e.onblur = function () {
-												 Adv.alloc.blur(this);
-											 };
-											 e.onfocus = function () {
-												 Adv.alloc.focus(this);
-											 };
-										 },
-										 '.allocateAll':function (e) {
-											 e.onclick = function () {
-												 Adv.alloc.all(this.name.substr(5));
-											 };
-										 },
-										 '.allocateNone':function (e) {
-											 e.onclick = function () {
-												 Adv.alloc.none(this.name.substr(5));
-											 };
-										 }
-									 });
+	'.amount':function (e) {
+		e.onblur = function () {
+			Adv.alloc.blur(this);
+		};
+		e.onfocus = function () {
+			Adv.alloc.focus(this);
+		};
+	},
+	'.allocateAll':function (e) {
+		e.onclick = function () {
+			Adv.alloc.all(this.name.substr(5));
+		};
+	},
+	'.allocateNone':function (e) {
+		e.onclick = function () {
+			Adv.alloc.none(this.name.substr(5));
+		};
+	}
+});
