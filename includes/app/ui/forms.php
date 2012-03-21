@@ -955,7 +955,7 @@
 		if (!Input::post($name)) {
 			$_POST[$name] = number_format(0, $dec);
 		}
-		echo "type='number' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
+		echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);

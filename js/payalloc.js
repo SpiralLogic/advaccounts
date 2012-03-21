@@ -10,64 +10,68 @@
  ***********************************************************************/
 
 Adv.extend({alloc:{
-						 alloc:function (i) {
-							 save_focus(i);
-							 i.setAttribute('_last', Adv.Forms.getAmount(i.name));
-						 },
-						 blur:function (i) {
-							 var change = Adv.Forms.getAmount(i.name);
-							 if (i.name != 'amount' && i.name != 'charge' && i.name != 'discount') {
-								 change = Math.min(change, Adv.Forms.getAmount('maxval' + i.name.substr(6), 1));
-							 }
-							 Adv.Forms.priceFormat(i.name, change, user.pdec);
-							 if (i.name != 'amount' && i.name != 'charge') {
-								 if (change < 0) {change = 0;}
-								 change -= i.getAttribute('_last');
-								 if (i.name == 'discount') {change = -change;}
-								 var total = Adv.Forms.getAmount('amount') + change;
-								 Adv.Forms.priceFormat('amount', total, user.pdec, 0);
-							 }
-						 },
-						 all:function (doc) {
-							 var amount = Adv.Forms.getAmount('amount' + doc);
-							 var unallocated = Adv.Forms.getAmount('un_allocated' + doc);
-							 var total = Adv.Forms.getAmount('amount');
-							 var left = 0;
-							 total -= (amount - unallocated);
-							 left -= (amount - unallocated);
-							 amount = unallocated;
-							 if (left < 0) {
-								 total += left;
-								 amount += left;
-								 left = 0;
-							 }
-							 Adv.Forms.priceFormat('amount' + doc, amount, user.pdec);
-							 Adv.Forms.priceFormat('amount', total, user.pdec);
-						 },
-						 none:function (doc) {
-							 amount = Adv.Forms.getAmount('amount' + doc);
-							 total = Adv.Forms.getAmount('amount');
-							 Adv.Forms.priceFormat('amount' + doc, 0, user.pdec);
-							 Adv.Forms.priceFormat('amount', total - amount, user.pdec);
-						 }
-					 }});
+	alloc:function (i) {
+		save_focus(i);
+		i.setAttribute('_last', Adv.Forms.getAmount(i.name));
+	},
+	blur:function (i) {
+		var change = Adv.Forms.getAmount(i.name);
+		if (i.name != 'amount' && i.name != 'charge' && i.name != 'discount') {
+			change = Math.min(change, Adv.Forms.getAmount('maxval' + i.name.substr(6), 1));
+		}
+		Adv.Forms.priceFormat(i.name, change, user.pdec);
+		if (i.name != 'amount' && i.name != 'charge') {
+			if (change < 0) {
+				change = 0;
+			}
+			change -= i.getAttribute('_last');
+			if (i.name == 'discount') {
+				change = -change;
+			}
+			var total = Adv.Forms.getAmount('amount') + change;
+			Adv.Forms.priceFormat('amount', total, user.pdec, 0);
+		}
+	},
+	all:function (doc) {
+		var amount = Adv.Forms.getAmount('amount' + doc);
+		var unallocated = Adv.Forms.getAmount('un_allocated' + doc);
+		var total = Adv.Forms.getAmount('amount');
+		var left = 0;
+		total -= (amount - unallocated);
+		left -= (amount - unallocated);
+		amount = unallocated;
+		if (left < 0) {
+			total += left;
+			amount += left;
+			left = 0;
+		}
+		Adv.Forms.priceFormat('amount' + doc, amount, user.pdec);
+		Adv.Forms.priceFormat('amount', total, user.pdec);
+	},
+	none:function (doc) {
+		var amount = Adv.Forms.getAmount('amount' + doc);
+		var total = Adv.Forms.getAmount('amount');
+		Adv.Forms.priceFormat('amount' + doc, 0, user.pdec);
+		Adv.Forms.priceFormat('amount', total - amount, user.pdec);
+	}
+}});
 Behaviour.register({
-										 '.amount':function (e) {
-											 e.onblur = function () {
-												 Adv.alloc.blur(this);
-											 };
-											 e.onfocus = function () {
-												 Adv.alloc.focus(this);
-											 };
-										 },
-										 '.allocateAll':function (e) {
-											 e.onclick = function () {
-												 Adv.alloc.all(this.name.substr(5));
-											 }
-										 },
-										 '.allocateNone':function (e) {
-											 e.onclick = function () {
-												 Adv.alloc.none(this.name.substr(5));
-											 }
-										 }
-									 });
+	'.amount':function (e) {
+		e.onblur = function () {
+			Adv.alloc.blur(this);
+		};
+		e.onfocus = function () {
+			Adv.alloc.focus(this);
+		};
+	},
+	'.allocateAll':function (e) {
+		e.onclick = function () {
+			Adv.alloc.all(this.name.substr(5));
+		}
+	},
+	'.allocateNone':function (e) {
+		e.onclick = function () {
+			Adv.alloc.none(this.name.substr(5));
+		}
+	}
+});
