@@ -34,6 +34,9 @@ table {
 	margin:     0 auto;
 }
 
+input[type="search"]{
+	-webkit-appearance:none;
+}
 input, select, textarea {
 	padding:            1px 4px 1px 4px;
 	border-radius:      4px;
@@ -51,7 +54,6 @@ input, textarea {
 	-moz-border-radius:    4px;
 	margin-left:           3px;
 }
-
 textarea {
 	border-radius: 4px 4px 0 4px;
 }

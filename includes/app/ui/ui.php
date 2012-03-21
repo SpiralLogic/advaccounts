@@ -89,6 +89,7 @@
 			if ($o['focus']) {
 				$input_attr['autofocus'] = true;
 			}
+				$input_attr['type'] = 'search';
 			HTML::input($id, $input_attr);
 			if (!($o['nodiv'])) {
 				HTML::div();

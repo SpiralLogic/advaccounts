@@ -232,7 +232,7 @@
 			if (!isset($_POST['customer_id']) && (Session::i()->global_customer != ALL_TEXT)) {
 				$_POST['customer_id'] = Session::i()->global_customer;
 			}
-			Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
+			Debtor::newselect();
 			if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
 				// customer has changed
 				Ajax::i()->activate('branch_id');
