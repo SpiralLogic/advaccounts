@@ -227,7 +227,17 @@
 	}
 	elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
 		$name = $myrow['supp_name'];
-		$addr = $myrow['address'];
+
+		$addr = $myrow['address'] . "\n";
+		if ($myrow['city']) {
+			$addr .= $myrow['city'];
+		}
+		if ($myrow['state']) {
+			$addr .= ", " . strtoupper($myrow['state']);
+		}
+		if ($myrow['postcode']) {
+			$addr .= ", " . $myrow['postcode'];
+		}
 	}
 	$this->Text($ccol + 60, $name, $icol);
 	$this->NewLine();

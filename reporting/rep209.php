@@ -21,7 +21,7 @@
 		$sql
 		 = "SELECT purch_orders.*, suppliers.supp_name, suppliers.supp_account_no,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
- 		suppliers.email, suppliers.address, suppliers.contact
+ 		suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
