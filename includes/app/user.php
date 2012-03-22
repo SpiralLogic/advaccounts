@@ -69,7 +69,7 @@
 		 */
 		public function logged_in() {
 			$this->timeout();
-			if ((time() < $this->last_record + strtotime('+30 seconds'))) {
+			if ((time() < $this->last_record + strtotime('+5 minutes'))) {
 				Event::register_shutdown(__CLASS__);
 			}
 			return $this->logged;
@@ -373,10 +373,11 @@
 		}
 		static function _shutdown() {
 			//	\Modules\Jobsboard::tasks();
+			static::i()->last_record = time();
+			
 			DB::insert('user_login_log')->values(array(
 				'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
 			))->exec();
-			static::i()->last_record = time();
 			Users::update_visitdate(static::i()->username);
 		}
 	}
