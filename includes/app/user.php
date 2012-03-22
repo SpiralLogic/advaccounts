@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-  class User {
+	class User {
 
 		/***
 		 * @static
@@ -25,7 +25,7 @@
 		public $access;
 		public $timeout;
 		public $last_act;
-    public $role_set = array();
+		public $role_set = array();
 		public $old_db;
 		public $logged = false;
 		public $ui_mode = 0;
@@ -34,21 +34,22 @@
 		 */
 		public $prefs;
 		public $change_password = false;
-    protected $access_sections;
-    static protected $_instance = null;
+		protected $access_sections;
+		static protected $_instance = null;
+		public $last_record;
 
-    /**
+		/**
 
-     */
-    public function __construct() {
+		 */
+		public function __construct() {
 			$this->loginname = $this->username = $this->name = "";
 			$this->company = Config::get('default.company') ? : 'default';
 			$this->logged = false;
 			$this->prefs = new userPrefs();
 		}
-    /**
-     * @param null $salesmanid
-     */
+		/**
+		 * @param null $salesmanid
+		 */
 		public function set_salesman($salesmanid = null) {
 			if ($salesmanid == null) {
 				$salesman_name = $this->name;
@@ -63,30 +64,33 @@
 				$this->salesmanid = $salesmanid;
 			}
 		}
-    /**
-     * @return bool
-     */
+		/**
+		 * @return bool
+		 */
 		public function logged_in() {
 			$this->timeout();
+			if ((time() < $this->last_record + strtotime('+30 seconds'))) {
+				Event::register_shutdown(__CLASS__);
+			}
 			return $this->logged;
 		}
-    /**
-     * @param $company
-     */
+		/**
+		 * @param $company
+		 */
 		public function set_company($company) {
 			$this->company = $company;
 		}
-    /**
-     * @param $company
-     * @param $loginname
-     * @param $password
-     *
-     * @return bool
-     */
-    public function login($company, $loginname) {
+		/**
+		 * @param $company
+		 * @param $loginname
+		 * @param $password
+		 *
+		 * @return bool
+		 */
+		public function login($company, $loginname) {
 			$this->set_company($company);
 			$this->logged = false;
-      $myrow = Users::get_for_login($loginname,$_POST['password']);
+			$myrow = Users::get_for_login($loginname, $_POST['password']);
 			if ($myrow) {
 				if (!$myrow["inactive"]) {
 					$this->role_set = array();
@@ -114,14 +118,14 @@
 				$this->last_act = time();
 				$this->timeout = DB_Company::get_pref('login_tout');
 				$this->salesmanid = $this->get_salesmanid();
-				$_SESSION['HTTP_USER_AGENT'] = sha1($_SERVER['HTTP_USER_AGENT']);
+				Session::checkUserAgent();
 				Event::register_shutdown(__CLASS__);
 			}
 			return $this->logged;
 		}
-    /**
+		/**
 
-     */
+		 */
 		public function timeout() {
 			// skip timeout on logout page
 			if ($this->logged) {
@@ -132,11 +136,12 @@
 				$this->last_act = time();
 			}
 		}
-    /**
-     * @param $page_level
-     *
-     * @return bool
-     */
+
+		/**
+		 * @param $page_level
+		 *
+		 * @return bool
+		 */
 		public function can_access($page_level) {
 			global $security_areas;
 			if ($page_level === SA_OPEN) {
@@ -156,36 +161,36 @@
 			// only first registered company has site admin privileges
 			return $access && ($this->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
 		}
-    /**
-     * @param $page_level
-     *
-     * @return bool
-     */
+		/**
+		 * @param $page_level
+		 *
+		 * @return bool
+		 */
 		public function can_access_page($page_level) {
 			return $this->can_access($page_level);
 		}
-    /**
-     * @param $price_dec
-     * @param $qty_dec
-     * @param $exrate_dec
-     * @param $percent_dec
-     * @param $showgl
-     * @param $showcodes
-     * @param $date_format
-     * @param $date_sep
-     * @param $tho_sep
-     * @param $dec_sep
-     * @param $theme
-     * @param $pagesize
-     * @param $show_hints
-     * @param $profile
-     * @param $rep_popup
-     * @param $query_size
-     * @param $graphic_links
-     * @param $lang
-     * @param $stickydate
-     * @param $startup_tab
-     */
+		/**
+		 * @param $price_dec
+		 * @param $qty_dec
+		 * @param $exrate_dec
+		 * @param $percent_dec
+		 * @param $showgl
+		 * @param $showcodes
+		 * @param $date_format
+		 * @param $date_sep
+		 * @param $tho_sep
+		 * @param $dec_sep
+		 * @param $theme
+		 * @param $pagesize
+		 * @param $show_hints
+		 * @param $profile
+		 * @param $rep_popup
+		 * @param $query_size
+		 * @param $graphic_links
+		 * @param $lang
+		 * @param $stickydate
+		 * @param $startup_tab
+		 */
 		public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 			$user = array(
 				'prices_dec' => $price_dec, 'qty_dec' => $qty_dec, 'rates_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
@@ -199,34 +204,34 @@
 			}
 			$this->prefs = new userPrefs(Users::get($this->user));
 		}
-    /**
-     * @static
-     * @return User
-     */
-    static public function i() {
-      if (isset($_SESSION["current_user"])) {
-        static::$_instance = $_SESSION["current_user"];
-      }
-      elseif (static::$_instance === null) {
-        static::$_instance = $_SESSION["current_user"] = new static;
-      }
-      return static::$_instance;
-    }
+		/**
+		 * @static
+		 * @return User
+		 */
+		static public function i() {
+			if (isset($_SESSION["current_user"])) {
+				static::$_instance = $_SESSION["current_user"];
+			}
+			elseif (static::$_instance === null) {
+				static::$_instance = $_SESSION["current_user"] = new static;
+			}
+			return static::$_instance;
+		}
 
-    /**
-     * @static
-     * @return userPrefs
-     */
+		/**
+		 * @static
+		 * @return userPrefs
+		 */
 		static public function prefs() {
 			return static::i()->prefs;
 		}
-    /**
-     * @static
+		/**
+		 * @static
 
-     */
+		 */
 		static public function add_js_data() {
 			$js
-			 = "\nvar user = {
+				= "\nvar user = {
 						 \n theme: '/themes/" . static::theme() . "/',
 						 \nloadtxt: '" . _('Requesting data...') . "',
 						 \ndate: '" . Dates::today() . "',
@@ -238,20 +243,20 @@
 						 \npdec: " . static::price_dec() . "}\n";
 			JS::beforeload($js);
 		}
-    /**
-     * @static
-     * @return bool
-     */
+		/**
+		 * @static
+		 * @return bool
+		 */
 		static public function  fallback() {
 			return static::i()->ui_mode == 0;
 		}
-    /**
-     * @static
-     *
-     * @param $input
-     *
-     * @return bool|float|int|mixed|string
-     */
+		/**
+		 * @static
+		 *
+		 * @param $input
+		 *
+		 * @return bool|float|int|mixed|string
+		 */
 		static public function  numeric($input) {
 			$num = trim($input);
 			$sep = static::tho_sep();
@@ -265,53 +270,53 @@
 			if (!is_numeric($num)) {
 				return false;
 			}
-			$num = (float)$num;
-			if ($num == (int)$num) {
-				return (int)$num;
+			$num = (float) $num;
+			if ($num == (int) $num) {
+				return (int) $num;
 			}
 			else {
 				return $num;
 			}
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  pos() {
 			return static::i()->pos;
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  language() {
 			return static::prefs()->language();
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  qty_dec() {
 			return static::prefs()->qty_dec();
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  price_dec() {
 			return static::prefs()->price_dec();
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  exrate_dec() {
 			return static::prefs()->exrate_dec();
 		}
-    /**
-     * @static
-     * @return mixed
-     */
+		/**
+		 * @static
+		 * @return mixed
+		 */
 		static public function  percent_dec() {
 			return static::prefs()->percent_dec();
 		}
@@ -367,7 +372,11 @@
 			return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
 		}
 		static function _shutdown() {
-	//	\Modules\Jobsboard::tasks();
+			//	\Modules\Jobsboard::tasks();
+			DB::insert('user_login_log')->values(array(
+				'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
+			))->exec();
+			static::i()->last_record = time();
 			Users::update_visitdate(static::i()->username);
 		}
 	}
