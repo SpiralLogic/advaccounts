@@ -69,7 +69,6 @@
 		 */
 		public function logged_in() {
 			$this->timeout();
-			Event::notice(date('i',time()-$this->last_record));
 			if (date('i',time()-$this->last_record) >4  ) {
 				static::i()->last_record = time();
 
