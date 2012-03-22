@@ -30,7 +30,7 @@
 		 * @return int|string
 		 */
 		static public function  price_decimal($number, &$dec) {
-			$dec = User::price_dec();
+			$dec = User::prefs()->price_dec();
 			$str = strval($number);
 			$pos = strpos($str, '.');
 			if ($pos !== false) {
@@ -61,8 +61,8 @@
 		 * @return int|string
 		 */
 		static public function  format($number, $decimals = 0) {
-			$tsep = User::tho_sep();
-			$dsep = User::dec_sep();
+			$tsep = User::prefs()->tho_sep();
+			$dsep = User::prefs()->dec_sep();
 			//return number_format($number, $decimals, $dsep,	$tsep);
 			$delta = ($number < 0 ? -.0000000001 : .0000000001);
 			$number = number_format($number + $delta, $decimals, $dsep, $tsep);

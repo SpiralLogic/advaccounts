@@ -10,7 +10,7 @@
  ***********************************************************************/
 
 Adv.extend({alloc:{
-	alloc:function (i) {
+	focus:function (i) {
 		save_focus(i);
 		i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 	},

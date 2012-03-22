@@ -71,7 +71,6 @@
 			$this->timeout();
 			if ( $this->logged &&date('i',time()-$this->last_record) >4  ) {
 				static::i()->last_record = time();
-
 				Event::register_shutdown(__CLASS__);
 			}
 			return $this->logged;
@@ -374,11 +373,12 @@
 			return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
 		}
 		static function _shutdown() {
-			//	\Modules\Jobsboard::tasks();
 
 			DB::insert('user_login_log')->values(array(
 				'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
 			))->exec();
+			\Modules\Jobsboard::tasks();
+
 			Users::update_visitdate(static::i()->username);
 		}
 	}

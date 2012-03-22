@@ -306,7 +306,6 @@ Adv.extend({Forms:(function () {
 			return t;
 		},
 		priceFormat:function (post, num, dec, label, color) {
-
 			var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
 			//num = num.toString().replace(/\$|\,/g,'');
 			if (isNaN(num)) {
