@@ -69,7 +69,9 @@
 		 */
 		public function logged_in() {
 			$this->timeout();
-			if ((time() < $this->last_record + strtotime('+5 minutes'))) {			static::i()->last_record = time();
+			Event::notice(date('i',time()-$this->last_record));
+			if (date('i',time()-$this->last_record) >4  ) {
+				static::i()->last_record = time();
 
 				Event::register_shutdown(__CLASS__);
 			}
