@@ -9,18 +9,13 @@
 }
 
 body {
-	padding:          5px 0 0 0;
-	margin:           0;
-	font:             .7em Tahoma, Arial, sans-serif;
-	line-height:      1.7em;
-	color:            #454545;
-	background:       url(images/bg.gif) repeat-x,
-										-webkit-radial-gradient(white 25%, transparent 16%) 0 0,
-										-webkit-radial-gradient(white 25%, transparent 16%) 8px 8px,
-										-webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 0 1px,
-										-webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 8px 9px,
- rgba(250, 250, 250, .5);
-	background-size:  16px 16px;
+	padding:         5px 0 0 0;
+	margin:          0;
+	font:            .7em Tahoma, Arial, sans-serif;
+	line-height:     1.7em;
+	color:           #454545;
+	background:      url(images/bg.gif) repeat-x, -webkit-radial-gradient(white 25%, transparent 16%) 0 0, -webkit-radial-gradient(white 25%, transparent 16%) 8px 8px, -webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 0 1px, -webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 8px 9px, rgba(250, 250, 250, .5);
+	background-size: 16px 16px;
 }
 
 iframe {
@@ -45,7 +40,6 @@ input, select, textarea {
 	-moz-box-shadow:    0 0 2px #333 inset;
 	box-shadow:         0 0 2px #333 inset;
 	line-height:        20px;
-
 }
 
 input, textarea {
@@ -90,7 +84,6 @@ select, input {
 
 input {
 	height: 25px;
-
 }
 
 a, .ui-widget-content a table a {
@@ -170,7 +163,6 @@ img {
 	text-indent:    20px;
 	background:     white;
 	height:         60px;
-
 }
 
 #hints {
@@ -197,7 +189,6 @@ img#ajaxmark {
 	width:      100%;
 	position:   absolute;
 	text-align: center;
-
 }
 
 .titletext {
@@ -402,7 +393,6 @@ img#ajaxmark {
 	text-align: center;
 	margin:     0;
 	display:    inline-block;
-
 }
 
 #topmenu a {
@@ -444,7 +434,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
 	background: linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
-
 }
 
 .inventory #topmenu .active a, .inventory #topmenu a:hover, .manufacturing #topmenu .active a, .manufacturing #topmenu a:hover {
@@ -457,7 +446,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #e38881 0%, #db4949 45%, #b81d1d 100%);
 	background: linear-gradient(top, #e38881 0%, #db4949 45%, #b81d1d 100%);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e38881', endColorstr = '#b81d1d', GradientType = 0);
-
 }
 
 .gl #topmenu .active a, .gl #topmenu a:hover {
@@ -470,7 +458,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #ffe7aa 0%, #febf04 38%, #c99002 100%);
 	background: linear-gradient(top, #ffe7aa 0%, #febf04 38%, #c99002 100%);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe7aa', endColorstr = '#c99002', GradientType = 0);
-
 }
 
 /*--------------------------------- END TOP MENU -----------------------------------------------------------------*/
@@ -504,7 +491,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #80fe80 0%, #62bb46 100%);
 	background: linear-gradient(top, #80fe80 0%, #62bb46 100%);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#80fe80', endColorstr = '#62bb46', GradientType = 0);
-
 }
 
 .inventory .menu_group, .manufacturing .menu_group {
@@ -513,7 +499,6 @@ img#ajaxmark {
 	background: -webkit-linear-gradient(top, #E38881 0%, #DB4949 100%);
 	background: -o-linear-gradient(top, #E38881 0%, #DB4949 100%);
 	background: -ms-linear-gradient(top, #E38881 0%, #DB4949 100%);
-
 }
 
 .gl .menu_group {
@@ -554,7 +539,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #8ab9f2 0, #ffffff 150px);
 	background: linear-gradient(top, #8ab9f2 0, #ffffff 150px);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#8ab9f2', endColorstr = '#ffffff', GradientType = 0);
-
 }
 
 .gl #wrapper {
@@ -577,7 +561,6 @@ img#ajaxmark {
 	background: -ms-linear-gradient(top, #61bc47 0, #fefefd 150px);
 	background: linear-gradient(top, #61bc47 0, #fefefd 150px);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#61bc47', endColorstr = '#fefefd', GradientType = 0);
-
 }
 
 .manufacturing #wrapper, .inventory #wrapper {
@@ -602,7 +585,6 @@ img#ajaxmark {
 	margin:      0 auto;
 	font-weight: bold;
 	text-align:  center;
-
 }
 
 div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
@@ -657,7 +639,6 @@ div.success_msg {
 	background: -ms-linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
 	background: linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
-
 }
 
 div.warn_msg {
@@ -684,7 +665,6 @@ div.warn_msg {
 	border-collapse:  collapse;
 	background-color: #eeeeee;
 	box-shadow:       0 10px 25px 0 rgba(17, 17, 17, .5);
-
 	margin:           0 auto;
 }
 
@@ -942,7 +922,6 @@ button img {
 	background:         -ms-linear-gradient(top, #b9e0f5 100%, #92bdd6 0%);
 	background:         linear-gradient(top, #b9e0f5 100%, #92bdd6 0%);
 	filter:             progid:DXImageTransform.Microsoft.gradient(startColorstr = '#b9e0f5', endColorstr = '#92bdd6', GradientType = 0);
-
 	-moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	box-shadow:         0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
@@ -977,18 +956,17 @@ button img {
 }
 
 button.navibutton {
-	font-family:      Tahoma, Arial, sans-serif;
-	font-weight:      bold;
-	color:            #333;
-	padding:          0 3px;
-	background:       transparent none;
-	border-style:     none;
-	box-shadow:       none;
+	font-family:  Tahoma, Arial, sans-serif;
+	font-weight:  bold;
+	color:        #333;
+	padding:      0 3px;
+	background:   transparent none;
+	border-style: none;
+	box-shadow:   none;
 }
 
 button.navibutton:hover {
 	text-shadow: #111111 inset;
-
 }
 
 .navibutton span {
@@ -1011,7 +989,6 @@ th:hover span {
 
 .navibar {
 	font-size:       14px;
-
 	padding:         0 3px;
 	color:           #333;
 	border-collapse: collapse;
@@ -1035,6 +1012,10 @@ th:hover span {
 	font-weight:     bold;
 	text-decoration: underline;
 }
+
+#messages .subject span {
+	display: inline-block;
+	width:   50px; }
 
 #messages hr {
 	margin-top: 1px;
