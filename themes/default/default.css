@@ -1006,22 +1006,23 @@ th:hover span {
 
 /*--------------------------------- END BUTTONS -----------------------------------------------------------------*/
 /*--------------------------------- MESSAGES -----------------------------------------------------------------*/
-#messages .subject {
-	margin-top:      5px;
-	margin-bottom:   5px;
+#messagesbox .subject {
+	margin-bottom: 5px;
+}
+
+#messagesbox .subject span {
+	display: inline-block;
+	width:   70px;
 	font-weight:     bold;
+	margin-top:    5px;
 	text-decoration: underline;
 }
 
-#messages .subject span {
-	display: inline-block;
-	width:   50px; }
-
-#messages hr {
+#messagesbox hr {
 	margin-top: 1px;
 }
 
-#messages .message {
+#messagesbox .message {
 	padding-top:    5px;
 	margin-top:     5px;
 	padding-bottom: 10px;

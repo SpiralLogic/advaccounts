@@ -29,7 +29,7 @@ Adv.extend({
 		var logbox = $("[id='messageLog']").val('');
 		var str = '';
 		$.each(data, function (key, message) {
-			str+= '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
+			str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
 		});
 		logbox.val(str);
 	}
@@ -143,16 +143,18 @@ var Branches = function () {
 		},
 		btnBranchAdd:function () {
 			btn.unbind('click');
-			if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0) {
-				btn.text('Add New Branch').one('click',
-																			 function (event) {
-																				 Branches.New();
-																				 Branches.adding = true;
-																				 return false
-																			 }).show();
-			} else {
-				current.branch_id > 0 ? btn.show() : btn.hide();
-			}
+			if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0)
+				{
+					btn.text('Add New Branch').one('click',
+					 function (event) {
+						 Branches.New();
+						 Branches.adding = true;
+						 return false
+					 }).show();
+				} else
+				{
+					current.branch_id > 0 ? btn.show() : btn.hide();
+				}
 			return false;
 		}
 	};
@@ -202,7 +204,7 @@ var Company = function () {
 			company = content.company;
 			var data = company;
 			var activetabs = (!company.id) ? [0, 1, 2, 3, 4] : [];
-					Adv.tabs1.tabs('option', 'disabled', activetabs);
+			Adv.tabs1.tabs('option', 'disabled', activetabs);
 			if (content.contact_log !== undefined)
 				{
 					Adv.setContactLog(content.contact_log);
@@ -211,15 +213,18 @@ var Company = function () {
 				{
 					transactions.empty().append(content.transactions);
 				}
-			if (data.contacts) {
-				Contacts.init(data.contacts);
-			}
-			if (data.branches) {
-				Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
-			}
-			if (data.accounts) {
-				Accounts.change(data.accounts);
-			}
+			if (data.contacts)
+				{
+					Contacts.init(data.contacts);
+				}
+			if (data.branches)
+				{
+					Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
+				}
+			if (data.accounts)
+				{
+					Accounts.change(data.accounts);
+				}
 			(company.id) ? Company.hideSearch() : Company.showSearch();
 			$.each(company, function (i, data) {
 				if (i !== 'contacts' && i !== 'branches' && i !== 'accounts')
@@ -243,13 +248,15 @@ var Company = function () {
 			}, 'json');
 			Company.getFrames(item.id);
 		},
-		getFrames:function (id,data) {
-			if (id === undefined && company.id) { id = company.id}
+		getFrames:function (id, data) {
+			if (id === undefined && company.id)
+				{ id = company.id}
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g,
 			 $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
-			if (!id) {return;}
-			data = data ||'';
-			$invoiceFrame.load($invoiceFrameSrc, '&'+data+"&frame=1&id=" + id);
+			if (!id)
+				{return;}
+			data = data || '';
+			$invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
 		},
 		Save:function () {
 			Branches.btnBranchAdd();
@@ -314,8 +321,18 @@ $(function () {
 		}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
+		if (Adv.accFields.length === 0)
+			{
+				Adv.accFields = $("[name^='supp_'], [name='phone2']").not("[name='supp_name']");
+			}
 		Adv.accFields.each(function () {
 			var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
+			console.log(newVal);
+			if (!newVal || !newVal.length)
+				{
+					newVal = $("[name='" + $(this).attr('name').substr(5) + "']").val();
+				}
+			console.log(newVal);
 			$(this).val(newVal).trigger('change');
 			Company.set($(this).attr('name'), newVal);
 		});

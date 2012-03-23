@@ -31,6 +31,7 @@
     public $supp_postcode = "";
     public $phone = "";
     public $phone2 = "";
+    public $supp_phone = "";
     public $fax = "";
     public $notes = "";
     public $inactive = 0;
@@ -62,6 +63,7 @@
       $this->contact = &$this->contact_name;
       $this->supp_address = &$this->post_address;
       $this->supp_account_no = &$this->account_no;
+      $this->phone2 = &$this->supp_phone;
       parent::__construct($id);
 
       $this->supp_ref = substr($this->supp_name, 0, 29);

@@ -59,6 +59,7 @@
 		 * @var
 		 */
 		public $status;
+		public $XML;
 		/**
 
 		 */
@@ -82,6 +83,7 @@
 			if (!$result = file_get_contents($url)) {
 				\Event::warning('Could not retrieve web orders');
 			}
+			$this->XML = $result;
 			return $result;
 		}
 		/**

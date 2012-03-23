@@ -20,7 +20,7 @@
 			$sql
 			 = "SELECT creditor_trans.*,
  		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
- 		suppliers.supp_name, suppliers.supp_account_no,
+ 		suppliers.supp_name, suppliers.supp_account_no, suppliers.city, suppliers.postcode, suppliers.state,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
  		suppliers.email, suppliers.address, suppliers.contact
 		FROM creditor_trans, suppliers

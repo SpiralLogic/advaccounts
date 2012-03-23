@@ -101,6 +101,7 @@
 													'class' => "center", 'colspan' => 2
 										 ));
 	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
+	HTML::td(false)->_tr();
 	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 35, 40);
 	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 35, 30);
 	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 35, 30);

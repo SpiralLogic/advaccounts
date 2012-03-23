@@ -83,8 +83,11 @@
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
-  text_row(_("Phone Number:"), 'phone2', $supplier->phone2, 35, 30);
-
+	HTML::tr(true)->td(array(
+														'class' => "center", 'colspan' => 2
+											 ));	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
+	HTML::tr(false)->_td();
+	text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
 	textarea_row(_("Address:"), 'supp_address', $supplier->supp_address, 35, 2);
   Contact_Postcode::render(array(
   																'supp_city', $supplier->supp_city

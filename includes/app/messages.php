@@ -49,10 +49,7 @@
 		 * @param bool $user
 		 */
 		static public function show($user = false) {
-			if (AJAX_REFERRER || Ajax::in_ajax()) {
-				return;
-			}
-			if (!$user && User::i()) {
+				if (!$user && User::i()) {
 				$user = User::i()->user;
 			}
 			static::get($user);

@@ -13,12 +13,12 @@
 	if (!isset($doctype)) {
 		$doctype = 0;
 	}
+	$txt_date = _("Date:");
 	if (isset($header2type)) {
 		$txt_cust_no = _("Cust no");
-		$txt_date = _("Date");
 		$doc_customer_id = "Customer ID";
 		if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
-			$doc_Charge_To = _("Order To");
+ 				$doc_Charge_To = _("Order To");
 			if ($doctype == ST_PURCHORDER) {
 				$doc_Delivered_To = _("Deliver To");
 			} else {

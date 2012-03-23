@@ -377,7 +377,7 @@
 			DB::insert('user_login_log')->values(array(
 				'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
 			))->exec();
-			\Modules\Jobsboard::tasks();
+	//		\Modules\Jobsboard::tasks();
 
 			Users::update_visitdate(static::i()->username);
 		}
