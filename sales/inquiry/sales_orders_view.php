@@ -133,14 +133,15 @@
 	//	Orders inquiry table
 	//
 	$sql = "SELECT
-		sorder.order_no,
 		sorder.trans_type,
-		sorder.reference,
+		sorder.order_no,
+		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ?
+			 "sorder.comments, " : "sorder.customer_ref, ") . "
+		sorder.ord_date,
+		sorder.delivery_date,
 		debtor.name,
 		debtor.debtor_no,
-		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " :
-	 "sorder.customer_ref, ") . "sorder.ord_date,
-		sorder.delivery_date,
+		branch.br_name,
 		sorder.deliver_to,
 		Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
 		sorder.type,
@@ -190,7 +191,7 @@
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
 		}
 		$sql .= " GROUP BY sorder.ord_date,
- sorder.order_no,
+				 sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_id,
 				sorder.customer_ref,
@@ -233,37 +234,37 @@
 	if ($trans_type == ST_SALESORDER) {
 		$ord="Order #";
 		$cols = array(
-			_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
 			array('type' => 'skip'),
+			_("Order #") => array('fun' => 'view_link', 'ord' => ''),
 			_("Ref") => array('ord' => ''),
-			_("Customer") => array('ord' => ''),
+			_("PO#") => array('ord' => ''),
+			_("Date") => array('type' => 'date', 'ord' => 'desc'),
+			_("Required By") => array('type' => 'date', 'ord' => ''),
+			_("Customer") => array('ord' => 'asc'),
 			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
-			_("PO#") => array('ord' => ''),
-			_("Date") => array('type' => 'date', 'ord' => ''),
-			_("Required By") => array('type' => 'date', 'ord' => ''),
 			_("Delivery To"),
-			_("Total") => array('type' => 'amount', 'ord' => ''),
-			array('type' => 'skip'),
 			_("Currency") => array('align' => 'center'),
+			array('type' => 'skip'),
+			_("Total") => array('type' => 'amount', 'ord' => ''),
 		);
 	}
 	else {
 		$ord="Quote #";
 		$cols = array(
-			_("Quote #") => array( 'fun' => 'view_link', 'ord' => 'desc' ),
 			array('type' => 'skip'),
+			_("Quote #") => array( 'fun' => 'view_link', 'ord' => '' ),
 			_("Ref") => array('ord' => ''),
-			_("Customer") => array('ord' => ''),
+			_("PO#") => array('type' => 'skip'),
+			_("Date") => array( 'type' => 'date', 'ord' => 'desc' ),
+			_("Valid until") => array('type' => 'date', 'ord' => '' ),
+			_("Customer") => array('ord' => 'asc'),
 			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
-			_("PO#") => array('type' => 'skip'),
-			_("Date") => array( 'type' => 'date', 'ord' => '' ),
-			_("Valid until") => array('type' => 'date', 'ord' => '' ),
 			_("Delivery To"),
-			_("Total") => array( 'type' => 'amount', 'ord' => '' 	),
-			array('type'=>'skip'),
 			_("Currency") => array('align' => 'center'),
+			array('type'=>'skip'),
+			_("Total") => array( 'type' => 'amount', 'ord' => '' 	),
 		);
 	}
 	if ($trans_type == ST_CUSTDELIVERY) {

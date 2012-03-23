@@ -109,12 +109,12 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			else {
 				$nozeros = _('No');
 			}
-			$cols = array(0, 100, 180, 240, 270, 340, 405, 470, 515);
+			$cols = array(0, 70, 110,  170, 220, 250, 315, 385, 450, 515);
 			$headers = array(
-				_('Trans Type'), _('# - Invoice #'), _('Date'), _('Due Date'), _('Charges'),
+				_('Trans Type'),_('#'), _('Invoice #'), _('Date'), _('Due Date'), _('Charges'),
 				_('Credits'), _('Allocated'), _('Outstanding')
 			);
-			$aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
+			$aligns = array('left', 'left','left', 'left', 'left', 'right', 'right', 'right', 'right');
 			$params = array(
 				0 => $comments,
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
@@ -159,14 +159,14 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 				}
 				$rep->TextCol(0, 2, $myrow['name']);
 				if ($convert) {
-					$rep->TextCol(2, 3, $myrow['curr_code']);
+					$rep->TextCol(3, 4, $myrow['curr_code']);
 				}
 				$rep->fontSize -= 2;
-				$rep->TextCol(3, 4, _("Open Balance"));
-				$rep->AmountCol(4, 5, $init[0], $dec);
-				$rep->AmountCol(5, 6, $init[1], $dec);
-				$rep->AmountCol(6, 7, $init[2], $dec);
-				$rep->AmountCol(7, 8, $init[3], $dec);
+				$rep->TextCol(4, 5, _("Open Balance"));
+				$rep->AmountCol(5, 6, $init[0], $dec);
+				$rep->AmountCol(6, 7, $init[1], $dec);
+				$rep->AmountCol(7, 8, $init[2], $dec);
+				$rep->AmountCol(8, 9, $init[3], $dec);
 				$rep->NewLine(1, 2);
 				if (DB::num_rows($res) == 0) {
 					continue;
@@ -179,10 +179,11 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					}
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-					$rep->TextCol(1, 2, $trans['supp_reference']);
-					$rep->DateCol(2, 3, $trans['tran_date'], true);
+					$rep->TextCol(1, 2, $trans['reference']);
+					$rep->TextCol(2, 3, $trans['supp_reference']);
+					$rep->DateCol(3, 4, $trans['tran_date'], true);
 					if ($trans['type'] == ST_SUPPINVOICE) {
-						$rep->DateCol(3, 4, $trans['due_date'], true);
+						$rep->DateCol(4, 5, $trans['due_date'], true);
 					}
 					$item[0] = $item[1] = 0.0;
 					if ($convert) {
@@ -194,13 +195,13 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					}
 					if ($trans['TotalAmount'] > 0.0) {
 						$item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
-						$rep->AmountCol(4, 5, $item[0], $dec);
+						$rep->AmountCol(5, 6, $item[0], $dec);
 					} else {
 						$item[1] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
-						$rep->AmountCol(5, 6, $item[1], $dec);
+						$rep->AmountCol(6, 7, $item[1], $dec);
 					}
 					$item[2] = Num::round($trans['Allocated'] * $rate, $dec);
-					$rep->AmountCol(6, 7, $item[2], $dec);
+					$rep->AmountCol(7,8, $item[2], $dec);
 					/*
 								 if ($trans['type'] == 20)
 									 $item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
@@ -214,7 +215,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					{
 						$item[3] = $item[0] - $item[1] + $item[2];
 					}
-					$rep->AmountCol(7, 8, $item[3], $dec);
+					$rep->AmountCol(8, 9, $item[3], $dec);
 					for ($i = 0; $i < 4; $i++)
 					{
 						$total[$i] += $item[$i];
@@ -226,7 +227,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 				$rep->TextCol(0, 3, _('Total'));
 				for ($i = 0; $i < 4; $i++)
 				{
-					$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
+					$rep->AmountCol($i + 5, $i + 6, $total[$i], $dec);
 					$total[$i] = 0.0;
 				}
 				$rep->Line($rep->row - 4);
@@ -237,7 +238,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			$rep->fontSize -= 2;
 			for ($i = 0; $i < 4; $i++)
 			{
-				$rep->AmountCol($i + 4, $i + 5, $grandtotal[$i], $dec);
+				$rep->AmountCol($i + 5, $i + 6, $grandtotal[$i], $dec);
 			}
 			$rep->Line($rep->row - 4);
 			$rep->NewLine();

@@ -339,7 +339,7 @@
 					$this->due_date = Dates::add_days($this->document_date, DB_Company::get_pref('default_delivery_required'));
 				}
 			}
-			$this->order_no = $trans_no[0];
+		if ($this->trans_type==ST_SALESORDER)	$this->order_no = $trans_no[0];
 			$this->credit = Debtor::get_credit($this->customer_id);
 		}
 		/**

@@ -154,6 +154,7 @@ Debtor::cells(_('Customer:'),'selected_customer',$_POST['selected_customer'],tru
 		}
 		unset($_SESSION['Batch']);
 	}
+	Errors::log($sql);
 	$table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	//$table->width = "92%";

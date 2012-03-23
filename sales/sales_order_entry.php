@@ -179,7 +179,7 @@
     $porder = _("Place Quotation");
     $corder = _("Commit Quotations Changes");
   }
-  else {
+  elseif ($order && $order->trans_type == ST_SALESORDER) {
     $idate = _("Order Date:");
     $orderitems = _("Sales Order Items");
     $deliverydetails = _("Enter Delivery Details and Confirm Order");
