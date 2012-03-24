@@ -41,7 +41,7 @@
 				}
 			}
 			if ($success) {
-				\Event::success('Found ' . $success . ' new websales');
+				\Event::success('Added/Update ' . $success . ' websales');
 			}
 			return $orders;
 		}
