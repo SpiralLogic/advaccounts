@@ -1,16 +1,19 @@
 <?php
 	/**
 	 * PHP version 5.4
-	 *
 	 * @category  PHP
 	 * @package   ADVAccounts
 	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
 	 * @copyright 2010 - 2012
 	 * @link      http://www.advancedgroup.com.au
-	 *
 	 **/
-	class Event
-	{
+
+	class EventException extends \Exception {
+
+	}
+
+	class Event {
+
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */
@@ -27,6 +30,8 @@
 		 * @var string id for cache handler to store shutdown events
 		 */
 		protected static $shutdown_events_id;
+		/** @var Hooks */
+		protected static $hooks = null;
 		/**
 		 * @static
 
@@ -93,10 +98,16 @@
 		 *
 		 * @param $object
 		 */
-		static public function register_shutdown($object) {
-			if (!in_array($object, static::$shutdown_objects)) {
-				static::$shutdown_objects[] = $object;
+		static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
+			if (static::$hooks === null) {
+				static::$hooks = new Hooks();
 			}
+
+			$callback = $object . '::' . $function;
+			if (!is_callable($callback)) {
+				throw new EventException("Class $object doesn't have a callable function $function");
+			}
+			static::$hooks->add('shutdown', $callback, $arguments);
 		}
 		/*** @static Shutdown handler */
 		static public function shutdown() {
@@ -108,17 +119,13 @@
 			}
 			session_write_close();
 			/** @noinspection PhpUndefinedFunctionInspection */
-			fastcgi_finish_request();
-			static::$request_finsihed = true;
-			foreach (static::$shutdown_objects as $object) {
-				try {
-					if (method_exists($object, '_shutdown')) {
-						call_user_func($object . '::_shutdown');
-					}
-				}
-				catch (Exception $e) {
-					static::error('Error during post processing: ' . $e->getMessage());
-				}
+				fastcgi_finish_request();
+				static::$request_finsihed = true;
+			try {
+				static::$hooks->fire('shutdown');
+			}
+			catch (Exception $e) {
+				static::error('Error during post processing: ' . $e->getMessage());
 			}
 			Cache::set(static::$shutdown_events_id, static::$shutdown_events);
 			if (extension_loaded('xhprof')) {
