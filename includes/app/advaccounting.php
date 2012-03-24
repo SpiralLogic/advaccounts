@@ -136,7 +136,7 @@
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				static::checkLogin();
 			}
-			Event::i();
+			Event::init();
 			isset($_SESSION["App"]) or $_SESSION["App"] = new static();
 			return $_SESSION["App"];
 		}

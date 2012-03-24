@@ -15,7 +15,7 @@
 		 * This method is called before a test is executed.
 		 */
 		protected function setUp() {
-			Event::i();
+			Event::init();
 		}
 		/**
 		 * Tears down the fixture, for example, closes a network connection.

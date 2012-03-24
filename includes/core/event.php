@@ -8,12 +8,8 @@
 	 * @link      http://www.advancedgroup.com.au
 	 **/
 
-	class EventException extends \Exception {
-
-	}
-
 	class Event {
-
+use HookTrait;
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */
@@ -30,13 +26,11 @@
 		 * @var string id for cache handler to store shutdown events
 		 */
 		protected static $shutdown_events_id;
-		/** @var Hooks */
-		protected static $hooks = null;
 		/**
 		 * @static
 
 		 */
-		static public function i() {
+		static public function init() {
 			static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
 			$shutdown_events = Cache::get(static::$shutdown_events_id);
 			if ($shutdown_events) {
@@ -99,15 +93,10 @@
 		 * @param $object
 		 */
 		static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-			if (static::$hooks === null) {
-				static::$hooks = new Hooks();
-			}
-
-			$callback = $object . '::' . $function;
-			if (!is_callable($callback)) {
-				throw new EventException("Class $object doesn't have a callable function $function");
-			}
-			static::$hooks->add('shutdown', $callback, $arguments);
+			Event::_register('shutdown', $object, $function, $arguments);
+		}
+		static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
+			Event::_register('pre_shutdown', $object, $function, $arguments);
 		}
 		/*** @static Shutdown handler */
 		static public function shutdown() {
@@ -119,8 +108,8 @@
 			}
 			session_write_close();
 			/** @noinspection PhpUndefinedFunctionInspection */
-				fastcgi_finish_request();
-				static::$request_finsihed = true;
+			fastcgi_finish_request();
+			static::$request_finsihed = true;
 			try {
 				static::$hooks->fire('shutdown');
 			}
@@ -137,3 +126,18 @@
 		}
 	}
 
+trait HookTrait {
+	/** @var Hooks */
+	public  static $hooks = null;
+	public  static function _register($hook, $object, $function, $arguments = array()) {
+			if (static::$hooks === null) {
+				static::$hooks = new Hooks();
+			}
+			$callback = $object . '::' . $function;
+			if (!is_callable($callback)) {
+				throw new HookException("Class $object doesn't have a callable function $function");
+			}
+			static::$hooks->add($hook, $callback, $arguments);
+		}
+
+}
