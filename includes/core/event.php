@@ -1,16 +1,15 @@
 <?php
 	/**
 	 * PHP version 5.4
-	 *
 	 * @category  PHP
 	 * @package   ADVAccounts
 	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
 	 * @copyright 2010 - 2012
 	 * @link      http://www.advancedgroup.com.au
-	 *
 	 **/
-	class Event
-	{
+
+	class Event {
+use HookTrait;
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */
@@ -31,7 +30,7 @@
 		 * @static
 
 		 */
-		static public function i() {
+		static public function init() {
 			static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
 			$shutdown_events = Cache::get(static::$shutdown_events_id);
 			if ($shutdown_events) {
@@ -93,10 +92,11 @@
 		 *
 		 * @param $object
 		 */
-		static public function register_shutdown($object) {
-			if (!in_array($object, static::$shutdown_objects)) {
-				static::$shutdown_objects[] = $object;
-			}
+		static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
+			Event::_register('shutdown', $object, $function, $arguments);
+		}
+		static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
+			Event::_register('pre_shutdown', $object, $function, $arguments);
 		}
 		/*** @static Shutdown handler */
 		static public function shutdown() {
@@ -110,15 +110,11 @@
 			/** @noinspection PhpUndefinedFunctionInspection */
 			fastcgi_finish_request();
 			static::$request_finsihed = true;
-			foreach (static::$shutdown_objects as $object) {
-				try {
-					if (method_exists($object, '_shutdown')) {
-						call_user_func($object . '::_shutdown');
-					}
-				}
-				catch (Exception $e) {
-					static::error('Error during post processing: ' . $e->getMessage());
-				}
+			try {
+				static::$hooks->fire('shutdown');
+			}
+			catch (Exception $e) {
+				static::error('Error during post processing: ' . $e->getMessage());
 			}
 			Cache::set(static::$shutdown_events_id, static::$shutdown_events);
 			if (extension_loaded('xhprof')) {
@@ -130,3 +126,18 @@
 		}
 	}
 
+trait HookTrait {
+	/** @var Hooks */
+	public  static $hooks = null;
+	public  static function _register($hook, $object, $function, $arguments = array()) {
+			if (static::$hooks === null) {
+				static::$hooks = new Hooks();
+			}
+			$callback = $object . '::' . $function;
+			if (!is_callable($callback)) {
+				throw new HookException("Class $object doesn't have a callable function $function");
+			}
+			static::$hooks->add($hook, $callback, $arguments);
+		}
+
+}
