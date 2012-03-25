@@ -156,7 +156,7 @@
 			static::$prepared = null;
 			if ($cache) {
 				$md5 = md5($sql);
-				if (static::$i->useCache) {
+				if (static::i()->useCache) {
 					static::$results = Cache::get($md5);
 				}
 				if (static::$results) {

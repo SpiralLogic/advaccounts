@@ -478,6 +478,12 @@ JS;
 			else {
 				$todate = Dates::date2sql($to);
 			}
+
+			$customer_record["Balance"] = 0;
+			$customer_record["Due"] = 0;
+			$customer_record["Overdue1"] = 0;
+			$customer_record["Overdue2"] = 0;
+			if ($customer_id==0) return $customer_record;
 			$past_due1 = DB_Company::get_pref('past_due_days');
 			$past_due2 = 2 * $past_due1;
 			// removed - debtor_trans.alloc from all summations
@@ -528,14 +534,7 @@ JS;
 				$result = DB::query($sql, "The customer details could not be retrieved");
 			}
 			else {
-				$nil_balance = false;
-			}
-			$customer_record = DB::fetch($result);
-			if ($nil_balance == true) {
-				$customer_record["Balance"] = 0;
-				$customer_record["Due"] = 0;
-				$customer_record["Overdue1"] = 0;
-				$customer_record["Overdue2"] = 0;
+				$customer_record = DB::fetch($result);
 			}
 			return $customer_record;
 		}
