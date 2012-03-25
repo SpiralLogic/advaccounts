@@ -9,7 +9,9 @@
 	 **/
 
 	class Event {
-use HookTrait;
+
+	use HookTrait ;
+
 		/**
 		 * @var array all objects with methods to be run on shutdown
 		 */
@@ -93,10 +95,10 @@ use HookTrait;
 		 * @param $object
 		 */
 		static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-			Event::_register('shutdown', $object, $function, $arguments);
+//			Event::_register('shutdown', $object, $function, $arguments);
 		}
 		static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
-			Event::_register('pre_shutdown', $object, $function, $arguments);
+	//		Event::_register('pre_shutdown', $object, $function, $arguments);
 		}
 		/*** @static Shutdown handler */
 		static public function shutdown() {
@@ -120,24 +122,8 @@ use HookTrait;
 			if (extension_loaded('xhprof')) {
 				$profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
 				$xhprof_data = xhprof_disable();
-				$xhprof_runs = new XHProfRuns_Default();
+				$xhprof_runs = new \XHProfRuns_Default();
 				$xhprof_runs->save_run($xhprof_data, $profiler_namespace);
 			}
 		}
 	}
-
-trait HookTrait {
-	/** @var Hooks */
-	public  static $hooks = null;
-	public  static function _register($hook, $object, $function, $arguments = array()) {
-			if (static::$hooks === null) {
-				static::$hooks = new Hooks();
-			}
-			$callback = $object . '::' . $function;
-			if (!is_callable($callback)) {
-				throw new HookException("Class $object doesn't have a callable function $function");
-			}
-			static::$hooks->add($hook, $callback, $arguments);
-		}
-
-}

@@ -1,23 +1,21 @@
 <?php
 	/**
 	 * PHP version 5.4
-	 *
 	 * @category  PHP
 	 * @package   ADVAccounts
 	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
 	 * @copyright 2010 - 2012
 	 * @link      http://www.advancedgroup.com.au
-	 *
 	 **/
-	class Autoload_Exception extends Exception
-	{
+	class Autoload_Exception extends Exception {
+
 	}
 
 	/**
 
 	 */
-	class Autoloader
-	{
+	class Autoloader {
+
 		/**
 		 * @var array
 		 */
@@ -39,38 +37,30 @@
 
 		 */
 		static public function i() {
-			ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
 			spl_autoload_register('Autoloader::loadCore', true);
 			static::$classes = Cache::get('autoload.classes');
 			static::$loaded = Cache::get('autoload.paths');
 			if (!static::$classes) {
 				$core = include(DOCROOT . 'config' . DS . 'core.php');
 				$vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
-				static::add_classes((array)$core, COREPATH);
-				static::add_classes((array)$vendor, VENDORPATH);
-				Event::register_shutdown(__CLASS__);
+				static::add_classes((array) $core, COREPATH);
+				static::add_classes((array) $vendor, VENDORPATH);
 			}
+
 			spl_autoload_register('Autoloader::loadVendor', true, true);
 			spl_autoload_register('Autoloader::loadApp', true, true);
 			spl_autoload_register('Autoloader::loadInterface', true, true);
 			spl_autoload_register('Autoloader::loadModule', true, true);
 			spl_autoload_register('Autoloader::loadFromCache', true, true);
 		}
-		/**
-		 * @static
-		 *
-		 * @param $classname
-		 */
-		static public function load($classname) {
-			class_exists($classname);
-		}
+
 		/**
 		 * @static
 		 *
 		 * @param array $path
 		 */
 		static public function add_path($path = array()) {
-			$path = (array)$path;
+			$path = (array) $path;
 			$path[] .= get_include_path();
 			set_include_path(implode(PATH_SEPARATOR, $path));
 		}
@@ -81,7 +71,7 @@
 		 * @param       $type
 		 */
 		static protected function add_classes(array $classes, $type) {
-			$classes = array_flip(array_diff_key(array_flip($classes), (array)static::$loaded));
+			$classes = array_flip(array_diff_key(array_flip($classes), (array) static::$loaded));
 			foreach ($classes as $dir => $class) {
 				if (!is_string($dir)) {
 					$dir = '';
@@ -96,11 +86,10 @@
 		 * @param $classname
 		 *
 		 * @internal param $path
-		 *
 		 * @return string
 		 */
 		static protected function tryPath($paths, $classname) {
-			$paths = (array)$paths;
+			$paths = (array) $paths;
 			while ($path = array_shift($paths)) {
 				$filepath = realpath($path);
 				if ($filepath) {
@@ -156,7 +145,7 @@
 				$result = static::tryPath(static::$classes[$classname], $classname);
 			}
 			if (!$result) {
-				Event::register_shutdown(__CLASS__);
+			//	Event::register_shutdown(__CLASS__);
 			}
 			return $result;
 		}
@@ -197,6 +186,15 @@
 		 *
 		 * @param $classname
 		 *
+		 * @return bool|string
+		 */
+		static public function loadTrait($classname) {
+		}
+		/**
+		 * @static
+		 *
+		 * @param $classname
+		 *
 		 * @return string
 		 */
 		static public function loadApp($classname) {
@@ -220,6 +218,11 @@
 		 * @return string
 		 */
 		static public function loadCore($classname) {
+
+			if (substr($classname,  -5) == 'Trait') {
+				return static::makePaths(substr($classname,  0,-5), COREPATH . 'traits' . DS );
+			}
+
 			return static::makePaths($classname, COREPATH);
 		}
 		static protected function makePaths($classname, $path) {

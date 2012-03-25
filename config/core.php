@@ -30,7 +30,7 @@
 		'Event', //
 		'Files', //
 		'HTML', //
-		'Hooks', //
+		'Hook', //
 		'Input', //
 		'JS', //
 		'Language', //

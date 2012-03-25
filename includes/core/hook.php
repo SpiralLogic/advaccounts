@@ -11,7 +11,7 @@
 	}
 
 
-	class Hooks {
+	class Hook {
 
 		protected $hooks = array();
 		public function add($name, callable $callback, $arguments = array()) {
