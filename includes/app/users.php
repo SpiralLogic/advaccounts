@@ -126,7 +126,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function  get_all($all = false) {
+    static public function  get_all($all = FALSE) {
       $sql = "SELECT u.*, r.role FROM users u, security_roles r
 				WHERE u.role_id=r.id";
       if (!$all) {
@@ -178,7 +178,7 @@
     static public function  get_for_login($user_id) {
       $auth = new Auth($user_id);
       if ($auth->isBruteForce()) {
-        return false;
+        return FALSE;
       }
       return $auth->check_user_password($user_id);
     }
@@ -252,10 +252,10 @@
      * @param      $name
      * @param null $value
      */
-    static public function themes_row($label, $name, $value = null) {
+    static public function themes_row($label, $name, $value = NULL) {
       $themes = array();
       $themedir = opendir(THEME_PATH);
-      while (false !== ($fname = readdir($themedir))) {
+      while (FALSE !== ($fname = readdir($themedir))) {
         if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
           $themes[$fname] = $fname;
         }
@@ -273,16 +273,16 @@
      * @param null $selected_id
      * @param bool $all
      */
-    static public function tabs_row($label, $name, $selected_id = null, $all = false) {
+    static public function tabs_row($label, $name, $selected_id = NULL, $all = FALSE) {
       global $installed_extensions;
       $tabs = array();
       foreach (Session::i()->App->applications as $app) {
-        $tabs[$app->id] = Display::access_string($app->name, true);
+        $tabs[$app->id] = Display::access_string($app->name, TRUE);
       }
       if ($all) { // add also not active ext. modules
         foreach ($installed_extensions as $ext) {
           if ($ext['type'] == 'module' && !$ext['active']) {
-            $tabs[$ext['tab']] = Display::access_string($ext['title'], true);
+            $tabs[$ext['tab']] = Display::access_string($ext['title'], TRUE);
           }
         }
       }
@@ -300,7 +300,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = null, $spec_opt = false) {
+    static public function select($name, $selected_id = NULL, $spec_opt = FALSE) {
       $sql = "SELECT id, real_name, inactive FROM users";
       return select_box($name, $selected_id, $sql, 'id', 'real_name', array(
         'order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC
@@ -314,8 +314,8 @@
      * @param null $selected_id
      * @param bool $spec_opt
      */
-    static public function cells($label, $name, $selected_id = null, $spec_opt = false) {
-      if ($label != null) {
+    static public function cells($label, $name, $selected_id = NULL, $spec_opt = FALSE) {
+      if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
       echo "<td>\n";
@@ -330,9 +330,9 @@
      * @param null $selected_id
      * @param bool $spec_opt
      */
-    static public function row($label, $name, $selected_id = null, $spec_opt = false) {
+    static public function row($label, $name, $selected_id = NULL, $spec_opt = FALSE) {
       echo "<tr><td class='label'>$label</td>";
-      Users::cells(null, $name, $selected_id, $spec_opt);
+      Users::cells(NULL, $name, $selected_id, $spec_opt);
       echo "</tr>\n";
     }
     /**

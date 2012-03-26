@@ -21,7 +21,7 @@
       return $data;
     }
     public $id, $supplier_id; //
-    public  $supp_name; //
+    public $supp_name; //
     public $tax_id, $gst_no; //
     public $contact_name, $contact; //
     public $post_address, $supp_address; //
@@ -57,7 +57,7 @@
      * @var string
      */
     protected $_id_column = 'supplier_id';
-    public function __construct($id = null) {
+    public function __construct($id = NULL) {
       $this->supplier_id = &$this->id;
       $this->gst_no = &$this->tax_id;
       $this->contact = &$this->contact_name;
@@ -71,12 +71,12 @@
     public function getEmailAddresses() {
       return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
     }
-    public function save($changes = null) {
-      $data['debtor_ref'] = substr($this->supp_name, 0, 29);
+    public function save($changes = NULL) {
+      $data['supp_ref'] = substr($this->supp_name, 0, 29);
       $data['discount'] = User::numeric($this->discount) / 100;
       if (!parent::save($changes)) {
         $this->_setDefaults();
-        return false;
+        return FALSE;
       }
 
       foreach ($this->contacts as $contact) {
@@ -109,10 +109,10 @@
     }
     protected function _canProcess() {
       if (empty($this->supp_name)) {
-        $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'supp_name');
-        return false;
+        $this->_status(FALSE, 'Processing', "The supplier name cannot be empty.", 'supp_name');
+        return FALSE;
       }
-      return true;
+      return TRUE;
     }
     protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
@@ -127,11 +127,11 @@
       $this->contacts[0] = new Contact(CT_SUPPLIER);
       $this->contacts[0]->parent_id = $this->id = 0;
       $this->_setDefaults();
-      return $this->_status(true, 'Initialize', 'Now working with a new customer');
+      return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
     }
     protected function _new() {
       $this->_defaults();
-      return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
+      return $this->_status(TRUE, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
 
@@ -152,7 +152,7 @@
      *
      * @return array
      */
-    protected function _read($id = false) {
+    protected function _read($id = FALSE) {
       if (!parent::_read($id)) {
         return $this->_status->get();
       }
@@ -161,8 +161,8 @@
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
 
-    static public function get_to_trans($supplier_id, $to = null) {
-      if ($to == null) {
+    static public function get_to_trans($supplier_id, $to = NULL) {
+      if ($to == NULL) {
         $todate = date("Y-m-d");
       }
       else {
@@ -199,7 +199,7 @@
       $result = DB::query($sql, "The customer details could not be retrieved");
       if (DB::num_rows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-        $nil_balance = true;
+        $nil_balance = TRUE;
         $sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
 			FROM suppliers,
 				 payment_terms
@@ -209,10 +209,10 @@
         $result = DB::query($sql, "The customer details could not be retrieved");
       }
       else {
-        $nil_balance = false;
+        $nil_balance = FALSE;
       }
       $supp = DB::fetch($result);
-      if ($nil_balance == true) {
+      if ($nil_balance == TRUE) {
         $supp["Balance"] = 0;
         $supp["Due"] = 0;
         $supp["Overdue1"] = 0;
@@ -265,7 +265,7 @@
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
-    static public function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+    static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
       if ($editkey) {
@@ -276,23 +276,23 @@
         'order' => array('supp_ref'),
         'search_box' => $mode != 0,
         'type' => 1,
-        'spec_option' => $spec_option === true ? _("All Suppliers") : $spec_option,
+        'spec_option' => $spec_option === TRUE ? _("All Suppliers") : $spec_option,
         'spec_id' => ALL_TEXT,
         'select_submit' => $submit_on_change,
-        'async' => false,
+        'async' => FALSE,
         'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
           _('Select supplier'),
         'show_inactive' => $all
       ));
     }
-    static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
-      if ($label != null) {
+    static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
+      if ($label != NULL) {
         echo "<td class='label'>$label</td><td>\n";
       }
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td>\n";
     }
-    static public function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+    static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label' name='supp_name'>$label</td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";

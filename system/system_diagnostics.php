@@ -227,7 +227,7 @@
 		$test['comments'] = array();
 		$old = setlocale(LC_MESSAGES, '0');
 		$langs = array();
-		foreach (Config::get('languages.installed') as $lang) {
+		foreach (Config::get_all('languages') as $lang) {
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') {
 				continue;

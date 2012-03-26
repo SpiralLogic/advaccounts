@@ -14,11 +14,11 @@
     public $stock_id;
     public $tax_type_id = 1;
     public $mb_flag = STOCK_MANUFACTURE;
-    public $sales_account = null;
-    public $inventory_account = null;
-    public $cogs_account = null;
-    public $adjustment_account = null;
-    public $assembly_account = null;
+    public $sales_account = NULL;
+    public $inventory_account = NULL;
+    public $cogs_account = NULL;
+    public $adjustment_account = NULL;
+    public $assembly_account = NULL;
     public $dimension_id = 0;
     public $dimension2_id = 0;
     public $actual_cost = 0;
@@ -26,8 +26,8 @@
     public $material_cost = 0;
     public $labour_cost = 0;
     public $overhead_cost = 0;
-    public $inactive = false;
-    public $no_sale = false;
+    public $inactive = FALSE;
+    public $no_sale = FALSE;
     public $editable = 0;
     public $tax_type_name = 'GST';
     public $name;
@@ -65,7 +65,7 @@
      * @return bool
      */
     protected function _canProcess() {
-      return true;
+      return TRUE;
     }
     /**
 
@@ -78,11 +78,11 @@
      */
     protected function _defaults() {
       $this->id = 0;
-      $this->stock_id = null;
+      $this->stock_id = NULL;
       $this->tax_type_id = 1;
       $this->mb_flag = STOCK_PURCHASED;
       $this->sales_account = DB_Company::i()->default_inv_sales_act;
-      $this->inventory_account = null;
+      $this->inventory_account = NULL;
       $this->cogs_account = DB_Company::i()->default_cogs_act;
       $this->adjustment_account = DB_Company::i()->default_adj_act;
       $this->actual_cost = 0;
@@ -95,7 +95,7 @@
      */
     protected function _new() {
       $this->_defaults();
-      return $this->_status(true, 'Initialize new Item', 'Now working with a new Item');
+      return $this->_status(TRUE, 'Initialize new Item', 'Now working with a new Item');
     }
     /**
      * @return array|bool|int|null
@@ -110,7 +110,7 @@
       DB::fetch($result);
       Item_Code::add($this->stock_id, $this->stock_id, $this->description, $this->category_id, 1, 0);
       //	DB::commit();
-      return $this->_status(true, 'Processing', "Item has been updated.");
+      return $this->_status(TRUE, 'Processing', "Item has been updated.");
     }
     /**
      * @return void
@@ -123,24 +123,24 @@
      *
      * @return array|bool|int|null
      */
-    public function save($changes = null) {
+    public function save($changes = NULL) {
       if (is_array($changes)) {
         $this->setFromArray($changes);
       }
       if (!$this->_canProcess()) {
-        return false;
+        return FALSE;
       }
       if ($this->mb_flag == STOCK_MANUFACTURE || $this->mb_flag == STOCK_PURCHASED) {
         $this->inventory_account = DB_Company::i()->default_inventory_act;
       }
       else {
-        $this->inventory_account = null;
+        $this->inventory_account = NULL;
       }
       if ($this->mb_flag == STOCK_MANUFACTURE) {
         $this->assembly_account = DB_Company::i()->default_assembly_act;
       }
       else {
-        $this->assembly_account = null;
+        $this->assembly_account = NULL;
       }
       if ($this->id == 0) {
         return $this->_saveNew();
@@ -148,7 +148,7 @@
       DB::begin();
       DB::update('stock_master')->values((array) $this)->where('id=', $this->id)->exec();
       DB::commit();
-      return $this->_status(true, 'Processing', "Item has been updated.");
+      return $this->_status(TRUE, 'Processing', "Item has been updated.");
     }
     /**
 
@@ -189,9 +189,9 @@
      *
      * @return array|bool|mixed
      */
-    public function  getStockLevels($location = null) {
+    public function  getStockLevels($location = NULL) {
       if (!$this->id > 0) {
-        return false;
+        return FALSE;
       }
       $id = $this->id;
       $sql
@@ -205,11 +205,11 @@
 			LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
 				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.stockid = $id
 				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
-      if ($location !== null) {
+      if ($location !== NULL) {
         $sql .= " WHERE l.loc_code=" . DB::escape($location);
       }
       $result = DB::query($sql, 'Could not get item stock levels');
-      if ($location !== null) {
+      if ($location !== NULL) {
         return DB::fetch_assoc($result);
       }
       while ($row = DB::fetch_assoc($result)) {
@@ -228,7 +228,7 @@
       $sql = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DB::escape($this->id) . "' GROUP BY sales_orders.from_stk_loc";
       $result = DB::query($sql, "No transactions were returned");
       $row = DB::fetch($result);
-      if ($row === false) {
+      if ($row === FALSE) {
         return 0;
       }
       return $row['QtyDemand'];
@@ -249,8 +249,8 @@
      *
      * @return mixed
      */
-    static public function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
-      if ($date_ == null) {
+    static public function get_qoh_on_date($stock_id, $location = NULL, $date_ = NULL, $exclude = 0) {
+      if ($date_ == NULL) {
         $date_ = Dates::today();
       }
       $date = Dates::date2sql($date_);
@@ -258,7 +258,7 @@
         = "SELECT SUM(qty) FROM stock_moves
 	 		WHERE stock_id=" . DB::escape($stock_id) . "
 	 		AND tran_date <= '$date'";
-      if ($location != null) {
+      if ($location != NULL) {
         $sql .= " AND loc_code = " . DB::escape($location);
       }
       $result = DB::query($sql, "QOH calulcation failed");
@@ -269,7 +269,7 @@
 	 			WHERE stock_id=" . DB::escape($stock_id) . " AND type=" . DB::escape($exclude) . " AND tran_date = '$date'";
         $result = DB::query($sql, "QOH calulcation failed");
         $myrow2 = DB::fetch_row($result);
-        if ($myrow2 !== false) {
+        if ($myrow2 !== FALSE) {
           $myrow[0] -= $myrow2[0];
         }
       }
@@ -367,12 +367,12 @@
         return;
       }
       $from = Item::last_negative_stock_begin_date($stock_id, $to);
-      if ($from == false || $from == "") {
+      if ($from == FALSE || $from == "") {
         return;
       }
       $from = Dates::sql2date($from);
       $row = Item::get_deliveries_between($stock_id, $from, $to);
-      if ($row == false) {
+      if ($row == FALSE) {
         return;
       }
       $old_cost = $row[1];
@@ -447,7 +447,7 @@
       $sql .= "sales_order_details.stk_code = " . DB::escape($stock_id);
       $result = DB::query($sql, "No transactions were returned");
       $row = DB::fetch($result);
-      if ($row === false) {
+      if ($row === FALSE) {
         return 0;
       }
       return $row['QtyDemand'];
@@ -529,8 +529,8 @@ s.category_id, editable, 0 as kit,
 						 AND i.inactive = 0 GROUP BY i.item_code ORDER BY weight
 						 LIMIT 5)) as s , stock_category c, prices p WHERE s.id = p.item_code_id AND p.sales_type_id =1 AND
 						 s.category_id = c.category_id GROUP BY s.stock_id ORDER BY s.weight, s.category_id, s.stock_id ";
-      DB::prepare($sql, true);
-      DB::execute($finalterms, true);
+      DB::prepare($sql, TRUE);
+      DB::execute($finalterms, TRUE);
       exit();
     }
     /**
@@ -610,15 +610,15 @@ s.category_id, editable, 0 as kit,
 				item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'
       ));
       $stockbox->setOptions(array(
-        'autoopen' => false, 'modal' => true, 'width' => 940, 'height' => 630, 'resizeable' => true
+        'autoopen' => FALSE, 'modal' => TRUE, 'width' => 940, 'height' => 630, 'resizeable' => TRUE
       ));
       $stockbox->show();
       $action
         = <<<JS
 			$('#stockbox').html("<iframe src='/items/quickitems.php?frame=1&stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500'  style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-      JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
-      JS::addLiveEvent('label.stock', 'click', $action, "wrapper", true);
+      JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", TRUE);
+      JS::addLiveEvent('label.stock', 'click', $action, "wrapper", TRUE);
     }
     /**
      * @static
@@ -782,7 +782,7 @@ JS;
      *
      * @return int|string
      */
-    static public function  qty_format($number, $stock_id = null, &$dec) {
+    static public function  qty_format($number, $stock_id = NULL, &$dec) {
       $dec = Item::qty_dec($stock_id);
       return Num::format($number, $dec);
     }
@@ -793,7 +793,7 @@ JS;
      *
      * @return mixed
      */
-    static public function  qty_dec($stock_id = null) {
+    static public function  qty_dec($stock_id = NULL) {
       if (is_null($stock_id)) {
         $dec = User::qty_dec();
       }
@@ -818,11 +818,11 @@ JS;
      *
      * @return string
      */
-    static public function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false) {
+    static public function select($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $opts = array(), $editkey = FALSE, $legacy = FALSE) {
       if (!$legacy) {
         Item::addSearchBox($name, array_merge(array(
           'submitonselect' => $submit_on_change, 'selected' => $selected_id,
-          'purchase' => true, 'cells' => true
+          'purchase' => TRUE, 'cells' => TRUE
         ), $opts));
         return '';
       }
@@ -834,11 +834,11 @@ JS;
       }
       return select_box($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
         'format' => '_format_stock_items',
-        'spec_option' => $all_option === true ?
+        'spec_option' => $all_option === TRUE ?
           _("All Items") :
           $all_option,
         'spec_id' => ALL_TEXT,
-        'search_box' => false,
+        'search_box' => FALSE,
         'search' => array(
           "stock_id", "c.description",
           "s.description"
@@ -866,14 +866,14 @@ JS;
      * @param bool $editkey
      * @param bool $legacy
      */
-    static public function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
-      if ($label != null) {
+    static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE, $legacy = FALSE) {
+      if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
         'submitonselect' => $submit_on_change,
-        'cells' => true,
-        'purchase' => false,
+        'cells' => TRUE,
+        'purchase' => FALSE,
         'show_inactive' => $all,
         'editable' => $editkey
       ), $editkey, $legacy);
