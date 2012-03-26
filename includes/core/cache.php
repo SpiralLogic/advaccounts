@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Cache {
-
     /**
      * @var Memcached
      */
@@ -137,7 +137,7 @@
      * @param array|callable $constants
      * @param null           $name
      */
-    static public function define_constants($name ,$constants ) {
+    static public function define_constants($name, $constants) {
       if (function_exists('apc_load_constants')) {
         if (!apc_load_constants($name)) {
           if (is_callable($constants)) {
