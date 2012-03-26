@@ -13,7 +13,7 @@
     protected $_table;
     protected $_id_column;
     /** @var Status */
-    protected $_status = null;
+    protected $_status = NULL;
     abstract public function delete();
     abstract protected function _canProcess();
     abstract protected function _defaults();
@@ -23,7 +23,7 @@
      *
      * @return string|array
      */
-    public function getStatus($string = false) {
+    public function getStatus($string = FALSE) {
       if ($string) {
         return $this->_status;
       }
@@ -34,12 +34,12 @@
      *
      * @return array|bool|int|null
      */
-    public function save($changes = null) {
-      if ($changes !== null) {
+    public function save($changes = NULL) {
+      if ($changes !== NULL) {
         $this->setFromArray($changes);
       }
       if (!$this->_canProcess()) {
-        return false;
+        return FALSE;
       }
       if ($this->id == 0) {
         return $this->_saveNew();
@@ -74,7 +74,7 @@
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
         $this->_read($id, $extra);
-        return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
+        return $this->_status(TRUE, 'initalise', get_class($this) . " details loaded from DB!");
       }
       elseif (is_array($id)) {
         $this->_defaults();
@@ -85,7 +85,7 @@
           $this->_new();
         }
         $this->setFromArray($id);
-        return $this->_status(true, 'initalise', get_class($this) . " details constructed!");
+        return $this->_status(TRUE, 'initalise', get_class($this) . " details constructed!");
       }
       return $this->_new();
     }
@@ -95,9 +95,9 @@
      *
      * @return bool
      */
-    protected function _read($id = null, $extra = array()) {
-      if ($id === null) {
-        return $this->_status(false, 'read', 'No ' . get_class($this), ' ID to read');
+    protected function _read($id = NULL, $extra = array()) {
+      if ($id === NULL) {
+        return $this->_status(FALSE, 'read', 'No ' . get_class($this), ' ID to read');
       }
       $this->_defaults();
       try {
@@ -108,9 +108,9 @@
         DB::fetch()->intoClass($this);
       }
       catch (DBSelectException $e) {
-        return $this->_status(false, 'read', 'Could not read ' . get_class($this), (string) $id);
+        return $this->_status(FALSE, 'read', 'Could not read ' . get_class($this), (string) $id);
       }
-      return $this->_status(true, 'read', 'Successfully read ' . get_class($this), $id);
+      return $this->_status(TRUE, 'read', 'Successfully read ' . get_class($this), $id);
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed
@@ -120,12 +120,12 @@
         $this->id = DB::insert($this->_table)->values((array) $this)->exec();
       }
       catch (DBInsertException $e) {
-        return $this->_status(false, 'write', 'Could not add to databse: ' . get_class($this));
+        return $this->_status(FALSE, 'write', 'Could not add to databse: ' . get_class($this));
       }
       catch (DBDuplicateException $e) {
-        return $this->_status(false, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
+        return $this->_status(FALSE, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
-      return $this->_status(true, 'write', 'Added to databse: ' . get_class($this));
+      return $this->_status(TRUE, 'write', 'Added to databse: ' . get_class($this));
     }
     /**
      * @param null $changes
@@ -139,11 +139,11 @@
       foreach ($changes as $key => $value) {
 
         if (!is_array($value) && !is_object($value)) {
-          $value = (trim($value) == null) ? '' : trim($value);
+          $value = (trim($value) == NULL) ? '' : trim($value);
         }
         if (property_exists($this, $key)) {
-          if ($this->$key == null && ($value === '' || $value === 'null')) {
-            $value = null;
+          if ($this->$key == NULL && ($value === '' || $value === 'null')) {
+            $value = NULL;
           }
           $this->$key = $value;
         }
@@ -157,8 +157,8 @@
      *
      * @return Status|bool
      */
-    protected function _status($status = null, $process = null, $message = '', $var = null) {
-      if ($var === null) {
+    protected function _status($status = NULL, $process = NULL, $message = '', $var = NULL) {
+      if ($var === NULL) {
         $var = $this->id;
       }
       if (!$this->_status) {

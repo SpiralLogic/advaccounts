@@ -1,16 +1,15 @@
 <?php
-	/**
-	 * PHP version 5.4
-	 *
-	 * @category  PHP
-	 * @package   ADVAccounts
-	 * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-	 * @copyright 2010 - 2012
-	 * @link      http://www.advancedgroup.com.au
-	 *
-	 **/
+  /**
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   *
+   **/
   class Errors {
-
     /**
 
      */
@@ -24,11 +23,11 @@
     /** @var array Container for DB errors */
     static public $dberrors = array();
     /*** @var bool  Wether the json error status has been sent */
-    static protected $jsonerrorsent = false;
+    static protected $jsonerrorsent = FALSE;
     /*** @var int */
     static protected $current_severity = E_ALL;
     /** @var array Error constants to text */
-    static protected $session = false;
+    static protected $session = FALSE;
     /** @var array */
     static protected $levels
       = array(
@@ -76,9 +75,9 @@
      *
      * @return bool
      */
-    static function handler($type, $message, $file = null, $line = null) {
+    static function handler($type, $message, $file = NULL, $line = NULL) {
       if (in_array($type, static::$ignore)) {
-        return true;
+        return TRUE;
       }
       if (count(static::$errors) > 10 || (static::$useConfigClass && count(static::$errors) > Config::get('debug.throttling'))) {
         static::fatal();
@@ -95,12 +94,14 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
-      if (is_writable(DOCROOT.'../error_log')) error_log($error['type'].": ".$error['message'] . " in file: ".$error['file']." on line:".$error['line']."\n",3,DOCROOT.'../error_log');
+      if (is_writable(DOCROOT . '../error_log')) {
+        error_log($error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+      }
       if (!in_array($type, static::$user_errors) || $type == E_USER_ERROR) {
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
         static::$errors[] = $error;
       }
-      return true;
+      return TRUE;
     }
     /**
      * @static
@@ -117,7 +118,9 @@
       );
       static::$current_severity = -1;
       static::$messages[] = $error;
-      if (is_writable(DOCROOT.'../error_log')) error_log($error['code'].": ".$error['message'] . " in file: ".$error['file']." on line:".$error['line']."\n",3,DOCROOT.'../error_log');
+      if (is_writable(DOCROOT . '../error_log')) {
+        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+      }
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
       static::$errors[] = $error;
     }
@@ -149,7 +152,7 @@
         $content .= "<div class='$class[1]'>" . $msg['message'] . "</div>\n";
       }
       if (static::$current_severity > -1) {
-        if (class_exists('JS', false)) {
+        if (class_exists('JS', FALSE)) {
           JS::beforeload("Adv.showStatus();");
         }
       }
@@ -172,7 +175,7 @@
       ) {
         $withbacktrace = $text = '';
         if (count(static::$debugLog)) {
-          $text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
+          $text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, TRUE) . "\n\n";
         }
         if (count(static::$errors)) {
           $withbacktrace = array();
@@ -180,27 +183,27 @@
             $withbacktrace[] = $error;
             unset(static::$errors[$id]['backtrace']);
           }
-          $text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
+          $text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, TRUE) . "\n\n";
         }
         if (count(static::$dberrors)) {
-          $text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
+          $text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, TRUE) . "\n\n";
         }
         if (count(static::$messages)) {
-          $text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
+          $text .= "<h3>Messages: </h3>" . var_export(static::$messages, TRUE) . "\n\n";
         }
         $id = md5($text);
-        $text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
+        $text .= "<h3>SERVER: </h3>" . var_export($_SERVER, TRUE) . "\n\n";
         if (isset($_POST) && count($_POST)) {
-          $text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
+          $text .= "<h3>POST: </h3>" . var_export($_POST, TRUE) . "\n\n";
         }
         if (isset($_GET) && count($_GET)) {
-          $text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
+          $text .= "<h3>GET: </h3>" . var_export($_GET, TRUE) . "\n\n";
         }
         if (isset($_REQUEST) && count($_REQUEST)) {
-          $text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
+          $text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, TRUE) . "\n\n";
         }
         if ($withbacktrace) {
-          $text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($withbacktrace, true) . "\n\n";
+          $text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($withbacktrace, TRUE) . "\n\n";
         }
         $subject = 'Error log: ';
         if (isset(static::$session['current_user'])) {
@@ -208,9 +211,13 @@
         }
         if (count(static::$session)) {
           unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
-          if (isset(static::$session['orders_tbl']))static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
-          if (isset(static::$session['pager']))static::$session['pager'] = count(static::$session['pager']);
-          $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
+          if (isset(static::$session['orders_tbl'])) {
+            static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
+          }
+          if (isset(static::$session['pager'])) {
+            static::$session['pager'] = count(static::$session['pager']);
+          }
+          $text .= "<h3>Session: </h3>" . var_export(static::$session, TRUE) . "\n\n</pre></div>";
         }
         if (isset(static::$levels[static::$current_severity])) {
           $subject .= ', Severity: ' . static::$levels[static::$current_severity];
@@ -222,7 +229,6 @@
         $to = 'errors@advancedgroup.com.au';
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
         $headers .= "Reply-To: webmaster@example.com\r\n";
         $headers .= "X-Mailer: " . BUILD_VERSION . "\r\n";
@@ -258,7 +264,7 @@
       static::$session = $_SESSION;
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
-        if (class_exists('Ajax', false)) {
+        if (class_exists('Ajax', FALSE)) {
           Ajax::i()->aCommands = array();
         }
         static::$current_severity = -1;
@@ -266,7 +272,7 @@
           $last_error['line']);
         static::exception_handler($error);
       }
-      if (class_exists('Ajax', false) && Ajax::in_ajax()) {
+      if (class_exists('Ajax', FALSE) && Ajax::in_ajax()) {
         Ajax::i()->run();
       }
       elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
@@ -303,7 +309,7 @@
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
       if (class_exists('Page')) {
-        Page::error_exit($content, false);
+        Page::error_exit($content, FALSE);
       }
       session_write_close();
       if (function_exists('fastcgi_finish_request')) {
@@ -325,7 +331,7 @@
      * @return array|bool|string
      */
     static public function JSONError() {
-      $status = false;
+      $status = FALSE;
       if (count(static::$dberrors) > 0) {
         $dberror = end(static::$dberrors);
         $status['status'] = E_ERROR;
@@ -340,7 +346,7 @@
         }
         $status['process'] = '';
       }
-      static::$jsonerrorsent = true;
+      static::$jsonerrorsent = TRUE;
       return $status;
     }
     /**
@@ -359,7 +365,7 @@
      * @internal param bool $exit
      * @throws DBException
      */
-    static public function db_error($error, $sql = null, $data = array()) {
+    static public function db_error($error, $sql = NULL, $data = array()) {
       $errorCode = DB::error_no();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
@@ -385,7 +391,7 @@
       $args = func_get_args();
       $content = array();
       foreach ($args as $arg) {
-        $content[] = var_export($arg, true);
+        $content[] = var_export($arg, TRUE);
       }
       static::$debugLog[] = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
     }

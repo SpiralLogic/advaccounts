@@ -10,20 +10,20 @@
           See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-  $order = Orders::session_get() ? : null;
+  $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-    ST_SALESORDER => SA_SALESORDER,
-    ST_SALESQUOTE => SA_SALESQUOTE,
-    ST_CUSTDELIVERY => SA_SALESDELIVERY,
-    ST_SALESINVOICE => SA_SALESINVOICE
-  ), array(
-    Orders::NEW_ORDER => SA_SALESORDER,
-    Orders::MODIFY_ORDER => SA_SALESORDER,
-    Orders::NEW_QUOTE => SA_SALESQUOTE,
-    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-    Orders::NEW_INVOICE => SA_SALESINVOICE
-  ));
+                                                            ST_SALESORDER => SA_SALESORDER,
+                                                            ST_SALESQUOTE => SA_SALESQUOTE,
+                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
+                                                            ST_SALESINVOICE => SA_SALESINVOICE
+                                                       ), array(
+                                                               Orders::NEW_ORDER => SA_SALESORDER,
+                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
+                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
+                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
+                                                          ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
@@ -79,7 +79,6 @@
     $_POST['customer_id'] = $br['debtor_no'];
     Ajax::i()->activate('customer_id');
   }
-
   if (isset($_GET[REMOVED])) {
     if ($_GET['type'] == ST_SALESQUOTE) {
       Event::notice(_("This sales quotation has been deleted as requested."), 1);
@@ -113,8 +112,7 @@
       $jb = new      \Modules\Jobsboard();
       $jb->addjob($jobsboard_order);
     }
-
-    page_complete($trans_no, $trans_type, ($trans_type == ST_SALESORDER ? "Order" : "Quote"), true, $modified);
+    page_complete($trans_no, $trans_type, ($trans_type == ST_SALESORDER ? "Order" : "Quote"), TRUE, $modified);
   }
   if (isset($_POST['update'])) {
     Ajax::i()->activate('items_table');
@@ -193,13 +191,15 @@
   if ($customer_error == "") {
     start_table('tablesstyle center width90 pad10');
     echo "<tr><td>";
-    $order->summary($orderitems, true);
+    $order->summary($orderitems, TRUE);
     echo "</td></tr><tr><td>";
     $order->display_delivery_details();
     echo "</td></tr>";
     end_table(1);
     Display::div_start('controls', 'items_table');
-    if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())) {
+    if ($order->trans_no > 0 && User::i()
+      ->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())
+    ) {
       submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
       submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
       submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -221,15 +221,14 @@
   }
   else {
     Event::warning($customer_error);
-    Session::i()->global_customer = null;
+    Session::i()->global_customer = NULL;
     Page::footer_exit();
   }
   Display::div_end();
-
   end_form();
   Debtor::addEditDialog();
   Item::addEditDialog();
-  Page::end(true);
+  Page::end(TRUE);
   unset($_SESSION['order_no']);
   /**
    * @param        $order_no
@@ -238,7 +237,7 @@
    * @param bool   $edit
    * @param bool   $update
    */
-  function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
+  function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = FALSE, $update = FALSE) {
     $customer = new Debtor($_SESSION['global_customer']);
     $emails = $customer->getEmailAddresses();
     Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
@@ -247,11 +246,12 @@
       Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type);
     }
     Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-    Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
+    Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
     if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-      Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-      Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-        ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
+      Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+        ST_PROFORMAQ), $order_no, 'prtopt');
+      Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+        ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
     }
     if ($trans_type == ST_SALESORDER) {
       Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -266,7 +266,7 @@
     }
     elseif ($trans_type == ST_CUSTDELIVERY) {
       Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
-      Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
+      Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', NULL, 1);
       Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
       Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
       ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
@@ -277,7 +277,7 @@
       $sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
       $result = DB::query($sql, "could not retrieve customer allocation");
       $row = DB::fetch($result);
-      if ($row !== false) {
+      if ($row !== FALSE) {
         Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
       }
       Display::note(GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
@@ -288,7 +288,7 @@
         Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
       }
       Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-      if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer']) && $row == false) {
+      if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer']) && $row == FALSE) {
         echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
       }
     }
@@ -339,7 +339,9 @@
    * @return \Purch_Order|\Sales_Order
    */
   function copy_from_order($order) {
-    if (!Input::get(Orders::QUOTE_TO_ORDER)) $order = Sales_Order::check_edit_conflicts($order);
+    if (!Input::get(Orders::QUOTE_TO_ORDER)) {
+      $order = Sales_Order::check_edit_conflicts($order);
+    }
     $_POST['ref'] = $order->reference;
     $_POST['Comments'] = $order->Comments;
     $_POST['OrderDate'] = $order->document_date;
@@ -382,26 +384,26 @@
     if (!get_post('customer_id')) {
       Event::error(_("There is no customer selected."));
       JS::set_focus('customer_id');
-      return false;
+      return FALSE;
     }
     if (!get_post('branch_id')) {
       Event::error(_("This customer has no branch defined."));
       JS::set_focus('branch_id');
-      return false;
+      return FALSE;
     }
     if (!Dates::is_date($_POST['OrderDate'])) {
       Event::error(_("The entered date is invalid."));
       JS::set_focus('OrderDate');
-      return false;
+      return FALSE;
     }
     if (!$order) {
       Event::error(_("You are not currently editing an order! (Using the browser back button after committing an order does not go back to editing)"));
-      return false;
+      return FALSE;
     }
     if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
       Event::error(_("The entered date is not in fiscal year"));
       JS::set_focus('OrderDate');
-      return false;
+      return FALSE;
     }
     if (count($order->line_items) == 0) {
       if (!empty($_POST['stock_id'])) {
@@ -410,24 +412,24 @@
       else {
         Event::error(_("You must enter at least one non empty item line."));
         JS::set_focus(Orders::ADD_ITEM);
-        return false;
+        return FALSE;
       }
     }
     if ($order->trans_type == ST_SALESORDER && $order->trans_no == 0 && !empty($_POST['cust_ref']) && $order->check_cust_ref($_POST['cust_ref'])
     ) {
       Event::error(_("This customer already has a purchase order with this number."));
       JS::set_focus('cust_ref');
-      return false;
+      return FALSE;
     }
     if (strlen($_POST['deliver_to']) <= 1) {
       Event::error(_("You must enter the person or company to whom delivery should be made to."));
       JS::set_focus('deliver_to');
-      return false;
+      return FALSE;
     }
     if (strlen($_POST['delivery_address']) <= 1) {
       Event::error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
       JS::set_focus('delivery_address');
-      return false;
+      return FALSE;
     }
     if ($_POST['freight_cost'] == "") {
       $_POST['freight_cost'] = Num::price_format(0);
@@ -435,7 +437,7 @@
     if (!Validation::is_num('freight_cost', 0)) {
       Event::error(_("The shipping cost entered is expected to be numeric."));
       JS::set_focus('freight_cost');
-      return false;
+      return FALSE;
     }
     if (!Dates::is_date($_POST['delivery_date'])) {
       if ($order->trans_type == ST_SALESQUOTE) {
@@ -445,7 +447,7 @@
         Event::error(_("The delivery date is invalid."));
       }
       JS::set_focus('delivery_date');
-      return false;
+      return FALSE;
     }
     //if (Dates::date1_greater_date2($order->document_date, $_POST['delivery_date'])) {
     if (Dates::date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
@@ -456,22 +458,22 @@
         Event::error(_("The requested delivery date is before the date of the order."));
       }
       JS::set_focus('delivery_date');
-      return false;
+      return FALSE;
     }
     if ($order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
       Event::error(_("You must enter a Person Ordering name."));
       JS::set_focus('name');
-      return false;
+      return FALSE;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::set_focus('ref');
-      return false;
+      return FALSE;
     }
     if ($order->trans_no == 0 && !Ref::is_new($_POST['ref'], $order->trans_type)) {
       $_POST['ref'] = Ref::get_next($order->trans_type);
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -483,30 +485,30 @@
     if (!User::i()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
       Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
       JS::set_focus('qty');
-      return false;
+      return FALSE;
     }
     elseif (!Validation::is_num('price', 0)) {
       Event::error(_("Price for item must be entered and can not be less than 0"));
       JS::set_focus('price');
-      return false;
+      return FALSE;
     }
     elseif (!User::i()
       ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
     ) {
       JS::set_focus('qty');
       Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
-      return false;
+      return FALSE;
     } // Joe Hunt added 2008-09-22 -------------------------
     elseif ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
       $qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['location'], $_POST['OrderDate']);
       if (Validation::input_num('qty') > $qoh) {
         $stock = Item::get($_POST['stock_id']);
         Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id'])));
-        return false;
+        return FALSE;
       }
-      return true;
+      return TRUE;
     }
-    return true;
+    return TRUE;
   }
 
   /**

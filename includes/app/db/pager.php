@@ -30,7 +30,7 @@
      *
      * @return DB_Pager
      */
-    static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
+    static function &new_db_pager($name, $sql, $coldef, $table = NULL, $key = NULL, $page_len = 0, $sort = NULL) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = array();
       }
@@ -64,7 +64,7 @@
       $result = DB::query($sql, 'Couldnt do shit');
       return DB::num_rows($result);
     }
-    static function link($link_text, $url, $icon = false) {
+    static function link($link_text, $url, $icon = FALSE) {
       if (User::graphic_links() && $icon) {
         $link_text = set_icon($icon, $link_text);
       }
@@ -73,14 +73,14 @@
         : PATH_TO_ROOT . $url;
       return "<a href=\"" . e($href) . "\" class='button' >" . $link_text . "</a>";
     }
-    static function navi($name, $value, $enabled = true, $icon = false) {
+    static function navi($name, $value, $enabled = TRUE, $icon = FALSE) {
       return "<button " . ($enabled ? '' : 'disabled')
         . " class=\"navibutton\" type=\"submit\""
         . " name=\"$name\" id=\"$name\" value=\"$value\">"
         . ($icon ? "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '')
         . "<span>$value</span></button>\n";
     }
-    static function navi_cell($name, $value, $enabled = true) {
+    static function navi_cell($name, $value, $enabled = TRUE) {
       label_cell(static::navi($name, $value, $enabled));
     }
     /**
@@ -108,9 +108,9 @@
               $icon = 'sort_asc.gif';
             }
             else {
-              $icon = false;
+              $icon = FALSE;
             }
-            $headers[] = static::navi($pager->name . '_sort_' . $num_col, $col['head'], true, $icon);
+            $headers[] = static::navi($pager->name . '_sort_' . $num_col, $col['head'], TRUE, $icon);
           }
         }
       }
@@ -180,7 +180,7 @@
                 label_cell('');
               }
               else {
-                amount_cell($cell, false);
+                amount_cell($cell, FALSE);
               }
               break;
             case 'qty':
@@ -188,11 +188,11 @@
                 label_cell('');
               }
               else {
-                qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null);
+                qty_cell($cell, FALSE, isset($col['dec']) ? $col['dec'] : NULL);
               }
               break;
             case 'email':
-              email_cell($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
+              email_cell($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : NULL);
               break;
             case 'rate':
               label_cell(Num::format($cell, User::exrate_dec()), "class='center'");
@@ -241,15 +241,15 @@
       }
       start_row("class='navibar'");
       $colspan = count($pager->columns);
-      $inact = $pager->inactive_ctrl == true
-        ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact = $pager->inactive_ctrl == TRUE
+        ? ' ' . checkbox(NULL, 'show_inactive', NULL, TRUE) . _("Show also Inactive") : '';
       if ($pager->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
         $but_pref = $pager->name . '_page_';
         start_row();
         if (@$pager->inactive_ctrl) {
-          submit('Update', _('Update'), true, '', null);
+          submit('Update', _('Update'), TRUE, '', NULL);
         } // inactive update
         static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
         static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
@@ -263,7 +263,7 @@
           $to = $pager->rec_count;
         }
         $all = $pager->rec_count;
-        HTML::span(true, "Records $from-$to of $all");
+        HTML::span(TRUE, "Records $from-$to of $all");
         echo $inact;
         echo "</td>";
       }
@@ -276,7 +276,7 @@
         Event::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
       }
       Display::div_end();
-      return true;
+      return TRUE;
     }
     /**
      * @var
@@ -393,14 +393,14 @@
     /**
      * @var bool
      */
-    public $ready = false;
+    public $ready = FALSE;
     /**
      * @var bool
      * this var is false after change in sql before first
 
     and before first query.
      */
-    public $inactive_ctrl = false;
+    public $inactive_ctrl = FALSE;
     /**
      * @var
      */
@@ -420,7 +420,7 @@
      * @param null $table
      * @param int  $page_len
      */
-    public function __construct($sql, $name, $table = null, $page_len = 0) {
+    public function __construct($sql, $name, $table = NULL, $page_len = 0) {
       $this->width = "80%";
       if ($page_len == 0) {
         $page_len = User::query_size();
@@ -436,10 +436,10 @@
      * Set query result page
 
      */
-    public function change_page($page = null) {
+    public function change_page($page = NULL) {
       $this->set_page($page);
       $this->query();
-      return true;
+      return TRUE;
     }
     /**
      * @param $row
@@ -468,8 +468,8 @@
             DB::update_record_status($id, !$value, $table, $key);
             $value = !$value;
           }
-          echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'")
-            . hidden("LInact[$id]", $value, false) . '</td>';
+          echo '<td class="center">' . checkbox(NULL, $name, $value, TRUE, '', "class='center'")
+            . hidden("LInact[$id]", $value, FALSE) . '</td>';
         }
       }
       else {
@@ -485,12 +485,12 @@
       Ajax::i()->activate("_{$this->name}_span");
       $this->data = array();
       if (!$this->_init()) {
-        return false;
+        return FALSE;
       }
       if ($this->rec_count == 0) {
-        return true;
+        return TRUE;
       }
-      $sql = $this->_sql_gen(false);
+      $sql = $this->_sql_gen(FALSE);
       $result = DB::query($sql, 'Error browsing database: ' . $sql);
       if ($result) {
         // setting field names for subsequent queries
@@ -512,9 +512,9 @@
         }
       }
       else {
-        return false;
+        return FALSE;
       }
-      return true;
+      return TRUE;
     }
     /**
      * @param $name - base name for pager controls and $_SESSION object name
@@ -545,7 +545,7 @@
      */
     public function refresh_pager($name) {
       if (isset($_SESSION[$name])) {
-        $_SESSION[$name]->ready = false;
+        $_SESSION[$name]->ready = FALSE;
       }
     }
     /**
@@ -553,8 +553,8 @@
 
      */
     public function select_records() {
-      $page = find_submit($this->name . '_page_', false);
-      $sort = find_submit($this->name . '_sort_', true);
+      $page = find_submit($this->name . '_page_', FALSE);
+      $sort = find_submit($this->name . '_sort_', TRUE);
       if ($page) {
         $this->change_page($page);
         if ($page == 'next' && !$this->next_page
@@ -609,7 +609,7 @@
         }
         switch ($c['type']) {
           case 'inactive':
-            $this->inactive_ctrl = true;
+            $this->inactive_ctrl = TRUE;
             $c['head'] = $h;
             break;
           case 'insert':
@@ -668,10 +668,10 @@
         $page = $max;
       }
       $this->curr_page = $page;
-      $this->next_page = ($page < $max) ? $page + 1 : null;
-      $this->prev_page = ($page > 1) ? ($page - 1) : null;
-      $this->last_page = ($page < $max) ? $max : null;
-      $this->first_page = ($page != 1) ? 1 : null;
+      $this->next_page = ($page < $max) ? $page + 1 : NULL;
+      $this->prev_page = ($page > 1) ? ($page - 1) : NULL;
+      $this->last_page = ($page < $max) ? $max : NULL;
+      $this->first_page = ($page != 1) ? 1 : NULL;
     }
     /**
      * @param $sql
@@ -680,7 +680,7 @@
     public function set_sql($sql) {
       if ($sql != $this->sql) {
         $this->sql = $sql;
-        $this->ready = false;
+        $this->ready = FALSE;
         $parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
         if (count($parts) == 2) {
           $sql = $parts[0];
@@ -710,7 +710,7 @@
      * @return mixed
      * Set additional constraint on record set
      */
-    public function set_where($where = null) {
+    public function set_where($where = NULL) {
       if ($where) {
         if (!is_array($where)) {
           $where = array($where);
@@ -722,7 +722,7 @@
         }
       }
       $this->extra_where = $where;
-      $this->ready = false;
+      $this->ready = FALSE;
     }
     /**
      * @param $col
@@ -733,14 +733,14 @@
      */
     public function sort_table($col) {
       if (is_null($col)) {
-        return false;
+        return FALSE;
       }
       $ord = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
       $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
       $this->columns[$col]['ord'] = $ord;
       $this->set_page(1);
       $this->query();
-      return true;
+      return TRUE;
     }
     /**
      * @param        $func
@@ -783,11 +783,11 @@
      * Initialization after changing record set
      */
     protected function _init() {
-      if ($this->ready == false) {
-        $sql = $this->_sql_gen(true);
+      if ($this->ready == FALSE) {
+        $sql = $this->_sql_gen(TRUE);
         $result = DB::query($sql, 'Error reading record set');
-        if ($result == false) {
-          return false;
+        if ($result == FALSE) {
+          return FALSE;
         }
         $row = DB::fetch_row($result);
 
@@ -807,9 +807,9 @@
           }
         }
         $this->set_page(1);
-        $this->ready = true;
+        $this->ready = TRUE;
       }
-      return true;
+      return TRUE;
     }
     /**
      * @param bool $count
@@ -820,7 +820,7 @@
      * $count==true  - for total records count
 
      */
-    protected function _sql_gen($count = false) {
+    protected function _sql_gen($count = FALSE) {
       $select = $this->select;
       $from = $this->from;
       $where = $this->where;

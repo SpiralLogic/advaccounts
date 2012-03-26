@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Arr {
-
     /**
      * @static
      *
@@ -26,7 +26,7 @@
       }
       $head = array_splice($array, 0, $index);
       $array = array_merge($head, $elements, $array);
-      return true;
+      return TRUE;
     }
     /**
      * @static
@@ -39,7 +39,7 @@
      */
     static function remove(&$array, $index, $len = 1) {
       array_splice($array, $index, $len);
-      return true;
+      return TRUE;
     }
     /**
      * @static
@@ -50,7 +50,7 @@
      *
      * @return mixed null
      */
-    static function get(array $array, $key, $default = null) {
+    static function get(array $array, $key, $default = NULL) {
       return (isset($array[$key])) ? $array[$key] : $default;
     }
     /**
@@ -66,7 +66,7 @@
     static function substitute(&$array, $index, $len, $elements) {
       array_splice($array, $index, $len);
       Arr::insert($array, $index, $elements);
-      return true;
+      return TRUE;
     }
     /**
      * @static
@@ -93,14 +93,14 @@
      *
      * @return int|null
      */
-    static function search_value($needle, $haystack, $valuekey = null) {
+    static function search_value($needle, $haystack, $valuekey = NULL) {
       foreach ($haystack as $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;
         if ($needle == $val) {
           return $value;
         }
       }
-      return null;
+      return NULL;
     }
     /**
      * @static
@@ -111,14 +111,14 @@
      *
      * @return int|null|string
      */
-    static function search_key($needle, $haystack, $valuekey = null) {
+    static function search_key($needle, $haystack, $valuekey = NULL) {
       foreach ($haystack as $key => $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;
         if ($needle == $val) {
           return $key;
         }
       }
-      return null;
+      return NULL;
     }
     /**
      * @return array Returns the array sorted as required
@@ -130,7 +130,7 @@
      *
      * @desc Naturally sorts an array using by the column $strSortBy
      */
-    static function natsort($aryData, $strIndex, $strSortBy, $strSortType = false) {
+    static function natsort($aryData, $strIndex, $strSortBy, $strSortType = FALSE) {
       // if the parameters are invalid
       if (!is_array($aryData) || !$strSortBy
       ) // return the array

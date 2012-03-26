@@ -1,25 +1,25 @@
 <?php
 
-	class Sidemenu
-	{
-		protected $start
-		 = <<<HTML
+  class Sidemenu {
+
+    protected $start
+      = <<<HTML
 		<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
 		 <h3><a href="#">Search</a></h3>
 HTML;
-		protected $end
-		 = <<<HTML
+    protected $end
+      = <<<HTML
 	</div>
 HTML;
-		protected $customer
-		 = <<<HTML
+    protected $customer
+      = <<<HTML
 	 <h3><a href="#">Customer Search</a></h3>
 		<div>
 		<input size="14" id="quickCustomer"/>
 		</div>
 HTML;
-		protected $search
-		 = <<<HTML
+    protected $search
+      = <<<HTML
 <div id="search">
 		<ul>
 		 <li id="orders" data-href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</li>
@@ -27,8 +27,8 @@ HTML;
 		 <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed.php?">Purchase Order</li>
 		 <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry.php?">Supplier Invoices</li></ul></div>
 HTML;
-		protected $bank
-		 = <<<HTML
+    protected $bank
+      = <<<HTML
 				 <h3><a href="#">Banking</a></h3>
 		 <div>
 		 <a href="/gl/gl_bank.php?NewPayment=Yes">Payment</a>
@@ -37,8 +37,8 @@ HTML;
 		 <a href="/gl/undeposited_funds.php?">Undeposited</a>
 		 </div>
 HTML;
-		protected $sales
-		 = <<<HTML
+    protected $sales
+      = <<<HTML
 <h3><a href="#">Create</a></h3>
 		 <div>
 		 <a href="/sales/sales_order_entry.php?type=32">Quote</a>
@@ -47,15 +47,15 @@ HTML;
 		 <a href="/purchases/po_entry_items.php?New=0">Purchase Order</a>
 		 </div>
 HTML;
-		static function render() {
-			$sidemenu = new static;
-			echo $sidemenu->display;
-		}
-		protected function __construct() {
-			$this->display = $this->start . $this->search . $this->sales;
-			if (User::i()->can_access(SS_GL)) {
-				$this->display .= $this->bank;
-			}
-			$this->display .= $this->customer . $this->end;
-		}
-	}
+    static function render() {
+      $sidemenu = new static;
+      echo $sidemenu->display;
+    }
+    protected function __construct() {
+      $this->display = $this->start . $this->search . $this->sales;
+      if (User::i()->can_access(SS_GL)) {
+        $this->display .= $this->bank;
+      }
+      $this->display .= $this->customer . $this->end;
+    }
+  }

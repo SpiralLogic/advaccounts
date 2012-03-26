@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,6 +18,7 @@
     public $order_no;
     /**
      * @param $trans_no
+     *
      * @return mixed
      */
     function removejob($trans_no) {
@@ -36,7 +38,7 @@
         \Event::error('There is no current Order to remove from jobsboard');
       }
       \DB::change_connection();
-      return false;
+      return FALSE;
     }
     /**
      * @param \Sales_Order $job_data
@@ -51,7 +53,7 @@
       $user_name = \User::i()->name;
       $orderlines = $this->getOrderLines();
       \DB::change_connection('jobsboard');
-      $update = var_export($job_data, true);
+      $update = var_export($job_data, TRUE);
       $job = $this->get_job($order_no);
       $exists = ($job['Advanced_Job_No'] > 0);
       $lines = array();
@@ -124,7 +126,7 @@
       $store = new $webstore();
       $store->doWebsales();
       \DB::change_connection('jobsboard');
-      $result = false;
+      $result = FALSE;
       try {
         \DB::query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
 Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0');
@@ -135,7 +137,7 @@ Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employ
       if ($result) {
         \Event::notice($result . ' Jobs were returned to their previous responslble person.');
       }
-      $result = false;
+      $result = FALSE;
       try {
         \DB::query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
 Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
@@ -166,7 +168,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
      */
     protected function jobExists() {
       if (empty($this->currentJob)) {
-        return false;
+        return FALSE;
       }
       return (isset($this->currentJob['Advanced_Job_No']));
     }
@@ -236,6 +238,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
     }
     /***
      * Get line from order
+     *
      * @return array Lines from accounting order
      */
     protected function getOrderLines() {
