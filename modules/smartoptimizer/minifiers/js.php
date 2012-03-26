@@ -59,6 +59,7 @@
           $i++;
         }
       }
+
       $LF_needed = FALSE;
       if (preg_match('/[\n\r\t ]/', $str[$i])) {
         if (strlen($res) && preg_match('/[\n ]/', $res[strlen($res) - 1])) {
@@ -74,10 +75,13 @@
           $i++;
         }
       }
+
       if (strlen($str) <= $i + 1) {
         break;
       }
+
       $current_char = $str[$i];
+
       if ($LF_needed) {
         $current_char = "\n";
       }
@@ -87,6 +91,7 @@
       elseif ($current_char == "\r") {
         $current_char = "\n";
       }
+
       // detect unnecessary white spaces
       if ($current_char == " ") {
         if (strlen($res) &&
@@ -113,6 +118,7 @@
       else {
         $res .= $current_char;
       }
+
       // if the next charachter be a slash, detects if it is a divide operator or start of a regex
       if (preg_match('/[({[=+\-*\/%&|!><?:~^,;]/', $current_char)) {
         $maybe_regex = TRUE;
@@ -120,6 +126,7 @@
       elseif (!preg_match('/[\n ]/', $current_char)) {
         $maybe_regex = FALSE;
       }
+
       $i++;
     }
     if ($i < strlen($str) && preg_match('/[^\n\r\t ]/', $str[$i])) {

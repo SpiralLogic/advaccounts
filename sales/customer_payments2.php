@@ -13,6 +13,7 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . "bootstrap.php");
   JS::open_window(900, 500);
   JS::headerFile('/js/payalloc.js');
+
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT);
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));

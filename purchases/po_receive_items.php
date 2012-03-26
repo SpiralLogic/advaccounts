@@ -71,16 +71,7 @@
     Display::div_start('grn_items');
     start_table('tablestyle width90');
     $th = array(
-      _("Item Code"),
-      _("Description"),
-      _("Ordered"),
-      _("Units"),
-      _("Received"),
-      _("Outstanding"),
-      _("This Delivery"),
-      _("Price"),
-      _('Discount %'),
-      _("Total")
+      _("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total")
     );
     table_header($th);
     /*show the line items on the order with the quantity being received for modification */
@@ -131,8 +122,7 @@
     /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
     // Sherifoz 22.06.03 Compare against COMPLETED items only !!
     // Otherwise if you try to fullfill item quantities separately will give error.
-    $sql
-      = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+    $sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 			FROM purch_order_details
 			WHERE order_no=" . DB::escape($order->order_no) . " ORDER BY po_detail_item";
     $result = DB::query($sql, "could not query purch order details");

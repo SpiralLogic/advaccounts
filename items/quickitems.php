@@ -1,65 +1,65 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
-
-	$_SESSION['App']->selected_application = 'Items';
-	if (AJAX_REFERRER) {
-		if (isset($_GET['term'])) {
-			$data = Item::search($_GET['term']);
-		}
-		elseif (isset($_POST['id'])) {
-			if (isset($_POST['name'])) {
-				$item = new Item($_POST);
-				$item->save($_POST);
-			}
-			else {
-				$id = Item::getStockId($_POST['id']);
-				$item = new Item($id);
-			}
-			$data['item'] = $item;
-			$data['stockLevels'] = $item->getStockLevels();
-		}
-		if (isset($_GET['page'])) {
-			$data['page'] = $_GET['page'];
-		}
-		JS::renderJSON($data, JSON_NUMERIC_CHECK);
-	}
-	JS::footerFile("js/quickitems.js");
-	Page::start(_($help_context = "Items"), SA_CUSTOMER,isset($_GET['frame']));
-	$stock_cats = Item_Category::select('category_id');
-	$units = Item_Unit::select('uom');
-	$tax_itemtype = Tax_ItemType::select('tax_type_id');
-	$stock_type = Item_UI::type('mb_flag');
-	$sales_account = GL_UI::all('sales_account');
-	$inventory_account = GL_UI::all('inventory_account');
-	$cogs_account = GL_UI::all('cogs_account');
-	$adjustment_account = GL_UI::all('adjustment_account');
-	$assembly_account = GL_UI::all('assembly_account');
-	if (!isset($_GET['stock_id'])) {
-		HTML::div('itemSearch', array('class' => 'bold pad10 center'));
-		Item::addSearchBox('itemSearchId', array('label'=>'Item:','size'=>'50px',
-																				'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
-																	 ));
-		HTML::div();
-		$id = 0;
-	}
-	else {
-		$id = Item::getStockId($_GET['stock_id']);
-	}
-	$data['item'] = $item = new Item($id);
-	$data['stockLevels'] = $item->getStockLevels();
-	$data = json_encode($data, JSON_NUMERIC_CHECK);
-	$js = <<<JS
+  $_SESSION['App']->selected_application = 'Items';
+  if (AJAX_REFERRER) {
+    if (isset($_GET['term'])) {
+      $data = Item::search($_GET['term']);
+    }
+    elseif (isset($_POST['id'])) {
+      if (isset($_POST['name'])) {
+        $item = new Item($_POST);
+        $item->save($_POST);
+      }
+      else {
+        $id = Item::getStockId($_POST['id']);
+        $item = new Item($id);
+      }
+      $data['item'] = $item;
+      $data['stockLevels'] = $item->getStockLevels();
+    }
+    if (isset($_GET['page'])) {
+      $data['page'] = $_GET['page'];
+    }
+    JS::renderJSON($data, JSON_NUMERIC_CHECK);
+  }
+  JS::footerFile("js/quickitems.js");
+  Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
+  $stock_cats = Item_Category::select('category_id');
+  $units = Item_Unit::select('uom');
+  $tax_itemtype = Tax_ItemType::select('tax_type_id');
+  $stock_type = Item_UI::type('mb_flag');
+  $sales_account = GL_UI::all('sales_account');
+  $inventory_account = GL_UI::all('inventory_account');
+  $cogs_account = GL_UI::all('cogs_account');
+  $adjustment_account = GL_UI::all('adjustment_account');
+  $assembly_account = GL_UI::all('assembly_account');
+  if (!isset($_GET['stock_id'])) {
+    HTML::div('itemSearch', array('class' => 'bold pad10 center'));
+    Item::addSearchBox('itemSearchId', array(
+      'label' => 'Item:', 'size' => '50px',
+      'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
+    ));
+    HTML::div();
+    $id = 0;
+  }
+  else {
+    $id = Item::getStockId($_GET['stock_id']);
+  }
+  $data['item'] = $item = new Item($id);
+  $data['stockLevels'] = $item->getStockLevels();
+  $data = json_encode($data, JSON_NUMERIC_CHECK);
+  $js = <<<JS
 	Items.onload($data);
 JS;
-	JS::onload($js);
-	$menu = new MenuUI();
-	if (isset($_GET['page'])) {
-		$menu->firstPage = $_GET['page'];
-	}
-	$menu->startTab("Items", "Items");
-	echo <<<HTML
+  JS::onload($js);
+  $menu = new MenuUI();
+  if (isset($_GET['page'])) {
+    $menu->firstPage = $_GET['page'];
+  }
+  $menu->startTab("Items", "Items");
+  echo <<<HTML
 <div id="Items" class="left formbox" style='display:none'>
 <input type="hidden" value="\${id}" id="id">
 <label for="stock_id"><span>Code:</span><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></label>
@@ -77,11 +77,11 @@ JS;
 </table>
 </div>
 HTML;
-	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	UI::button('btnSave', 'Save', array("style" => "display:none"));
-	$menu->endTab();
-	$menu->startTab("Accounts", "Accounts");
-	echo <<<HTML
+  UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
+  UI::button('btnSave', 'Save', array("style" => "display:none"));
+  $menu->endTab();
+  $menu->startTab("Accounts", "Accounts");
+  echo <<<HTML
 	<div id="Accounts" class="left formbox">
 	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
 		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
@@ -92,22 +92,22 @@ HTML;
 	> {{/if}}
 	<label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label></div>
 HTML;
-	$menu->endTab();
+  $menu->endTab();
 
-	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe id='sellFrame' data-src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
-	$menu->endTab();
-	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe id='buyFrame' data-src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
-	$menu->endTab();
-	$menu->startTab("Locations", "Stock Locations");
-	echo "<iframe id='locationFrame' data-src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
-	$menu->endTab();
-	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' data-srcpre='" . Config::get('webstore.product_url')."' data-srcpost='".Config::get
-	('webstore.url_extension') . "'
+  $menu->startTab("Selling", "Sales Prices");
+  echo "<iframe id='sellFrame' data-src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
+  $menu->endTab();
+  $menu->startTab("Purchasing", "Purchasing Prices");
+  echo "<iframe id='buyFrame' data-src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+  $menu->endTab();
+  $menu->startTab("Locations", "Stock Locations");
+  echo "<iframe id='locationFrame' data-src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+  $menu->endTab();
+  $menu->startTab("Website", "Website page for product");
+  echo "<iframe id='webFrame' data-srcpre='" . Config::get('webstore.product_url') . "' data-srcpost='" . Config::get
+  ('webstore.url_extension') . "'
 	style='width:100%'
 	height='500' frameborder='0'></iframe> ";
-	$menu->endTab();
-	$menu->render();
-	Page::end(isset($_GET['frame']));
+  $menu->endTab();
+  $menu->render();
+  Page::end(isset($_GET['frame']));

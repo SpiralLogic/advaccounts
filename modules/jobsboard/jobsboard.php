@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,6 +12,7 @@
    * Jobsboard
    */
   class Jobsboard {
+
     protected $currentJob;
     protected $lines;
     public $order_no;
@@ -238,7 +238,6 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
     }
     /***
      * Get line from order
-     *
      * @return array Lines from accounting order
      */
     protected function getOrderLines() {

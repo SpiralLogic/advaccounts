@@ -1,15 +1,16 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   Class DB_Query_Insert extends DB_Query {
+
     /**
      * @var
      */
@@ -44,7 +45,7 @@
       if (!$this->hasfields) {
         $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), FALSE);
         /** @noinspection PhpAssignmentInConditionInspection */
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
           $this->hasfields[] = $row['COLUMN_NAME'];
         }
         Cache::set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);

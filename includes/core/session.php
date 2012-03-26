@@ -1,22 +1,23 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
-  class SessionException extends Exception {
+  namespace ADV\Core;
+
+  class Session_Exception extends \Exception {
+
   }
 
-  ;
   /**
-   *
+
    */
   class Session extends Input {
+
     /**
      * @static
      * @return Session|mixed
@@ -44,7 +45,7 @@
      */
     static private $i = NULL;
     /***
-     * @var gettextNativeSupport|gettext_php_support
+     * @var \gettextNativeSupport|\gettext_php_support
      */
     static public $get_text;
     /**
@@ -58,17 +59,21 @@
       /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_DISABLED) {
-        throw new SessionException('Sessions are disasbled!');
+        throw new Session_Exception('Sessions are disasbled!');
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = NULL;
+      /** @noinspection PhpUndefinedConstantInspection */
+      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path = ini_set('session.save_path', '127.0.0.1:11211');
-        (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+        (\Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
+      /** @noinspection PhpUndefinedConstantInspection */
+      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE) {
         $old_handler and ini_set('session.save_handler', $old_handler);
         $old_path and ini_set('session.save_path', $old_path);
@@ -77,7 +82,7 @@
       /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
-        throw new SessionException('Could not start a Session!');
+        throw new Session_Exception('Could not start a Session!');
       }
       header("Cache-control: private");
       $this->setTextSupport();
@@ -104,7 +109,7 @@
         static::$get_text = $_SESSION['get_text'];
         return;
       }
-      static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
+      static::$get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
     }
     /**
      * @param $var

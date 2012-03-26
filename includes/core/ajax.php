@@ -1,22 +1,22 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
-  class Ajax extends JsHttpRequest {
+  namespace ADV\Core;
+
+  class Ajax extends \JsHttpRequest {
+
     public $aCommands = array();
     public $triggers = array();
     static protected $i = NULL;
     /***
      * @static
      * @return Ajax
-     *
      * Returns Ajax Instance
      */
     static public function i() {
@@ -24,13 +24,12 @@
       return static::$i;
     }
     /**
-     *
+
      */
     function __construct() {
       parent::__construct($_SESSION['Language']->encoding);
     }
     /**
-     *
      *   This function is used in ctrl routines to activate
      *   update of ajaxified html element selected by given name/id.
      *
@@ -40,7 +39,6 @@
       (Ajax::in_ajax()) and $this->triggers[$trigname] = TRUE;
     }
     /**
-     *
      *   Javascript clientside redirection.
      *   This is the last command added to reponse (if any).
      *
@@ -53,7 +51,6 @@
       }
     }
     /**
-     *
      * Popup window (target=_blank)
      *
      * @param $url
@@ -62,7 +59,6 @@
       $this->_addCommand(TRUE, array('n' => 'pu'), $this->absolute_url($url));
     }
     /**
-     *
      * Adds an executable Javascript code.
      *
      * @param $trigger
@@ -75,7 +71,6 @@
       return $this;
     }
     /**
-     *
      * Assign target attribute with data.
      *
      * @param $trigger
@@ -87,12 +82,11 @@
      */
     function addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
-                                   ), $sData);
+        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+      ), $sData);
       return $this;
     }
     /**
-     *
      * Updates input element or label with data.
      *
      * @param $trigger
@@ -103,12 +97,11 @@
      */
     function addUpdate($trigger, $sTarget, $sData) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'up', 't' => $sTarget
-                                   ), $sData);
+        'n' => 'up', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
-     *
      * Set disable state of element.
      *
      * @param      $trigger
@@ -119,12 +112,11 @@
      */
     function addDisable($trigger, $sTarget, $sData = TRUE) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), $sData);
+        'n' => 'di', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
-     *
      * Set state of element to enabled.
      *
      * @param      $trigger
@@ -135,12 +127,11 @@
      */
     function addEnable($trigger, $sTarget, $sData = TRUE) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), !$sData);
+        'n' => 'di', 't' => $sTarget
+      ), !$sData);
       return $this;
     }
     /**
-     *
      * Set current focus.
      *
      * @param $trigger
@@ -153,7 +144,6 @@
       return $this;
     }
     /**
-     *
      * Internal procedure adding command to response.
      *
      * @param $trigger

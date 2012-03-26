@@ -133,10 +133,10 @@
   }
   else {
     Arr::append($cols, array(
-                            array('insert' => TRUE, 'fun' => 'email_link'), //
-                            array('insert' => TRUE, 'fun' => 'prt_link'), //
-                            array('insert' => TRUE, 'fun' => 'receive_link') //
-                       )//
+      array('insert' => TRUE, 'fun' => 'email_link'), //
+      array('insert' => TRUE, 'fun' => 'prt_link'), //
+      array('insert' => TRUE, 'fun' => 'receive_link') //
+    )//
     );
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
@@ -161,9 +161,9 @@
   function email_link($row) {
     HTML::setReturn(TRUE);
     UI::button(FALSE, 'Email', array(
-                                    'class' => 'button email-button',
-                                    'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
-                               ));
+      'class' => 'button email-button',
+      'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
+    ));
     return HTML::setReturn(FALSE);
   }
 

@@ -1,15 +1,16 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class Errors {
+
     /**
 
      */
@@ -61,7 +62,8 @@
     static protected $useConfigClass;
     /** @static Initialiser */
     static function init() {
-      static::$useConfigClass = class_exists('Config');
+      class_alias('ADV\\Core\\Errors', 'Errors');
+      static::$useConfigClass = class_exists('Config', FALSE);
       error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       Event::register_shutdown(__CLASS__);
     }
@@ -106,7 +108,7 @@
     /**
      * @static
      *
-     * @param Exception $e
+     * @param \Exception $e
      */
     static function exception_handler(\Exception $e) {
       $error = array(
@@ -229,6 +231,7 @@
         $to = 'errors@advancedgroup.com.au';
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
         $headers .= "Reply-To: webmaster@example.com\r\n";
         $headers .= "X-Mailer: " . BUILD_VERSION . "\r\n";
@@ -309,10 +312,11 @@
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
       if (class_exists('Page')) {
-        Page::error_exit($content, FALSE);
+        \Page::error_exit($content, FALSE);
       }
       session_write_close();
       if (function_exists('fastcgi_finish_request')) {
+        /** @noinspection PhpUndefinedFunctionInspection */
         fastcgi_finish_request();
       }
       static::send_debug_email();

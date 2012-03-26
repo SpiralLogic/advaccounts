@@ -11,6 +11,7 @@
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
   Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
@@ -72,8 +73,7 @@
       }
       else {
         /* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-        $sql
-          = "INSERT INTO branches (debtor_no, br_name, branch_ref, br_address,
+        $sql = "INSERT INTO branches (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes)
@@ -122,6 +122,7 @@
     $_POST['customer_id'] = $cust_id;
     Ajax::i()->activate('_page_body');
   }
+
   start_form();
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('customer_id', NULL, FALSE, TRUE);
@@ -129,8 +130,7 @@
   $num_branches = -0;
   if (Input::post('customer_id') > 0) {
     $num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
-    $sql
-      = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
+    $sql = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
 		 a.description, b.phone, b.fax, b.email, t.name AS tax_group_name, b.inactive
 		FROM branches b, debtors c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
@@ -186,8 +186,7 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing branch
-      $sql
-        = "SELECT * FROM branches
+      $sql = "SELECT * FROM branches
 			WHERE branch_id=" . DB::escape($_POST['branch_id']) . "
 			AND debtor_no=" . DB::escape($_POST['customer_id']);
       $result = DB::query($sql, "check failed");
@@ -219,8 +218,7 @@
   }
   elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
     if (!$num_branches) {
-      $sql
-        = "SELECT name, address, email, debtor_ref
+      $sql = "SELECT name, address, email, debtor_ref
 			FROM debtors WHERE debtor_no = " . DB::escape($_POST['customer_id']);
       $result = DB::query($sql, "check failed");
       $myrow = DB::fetch($result);

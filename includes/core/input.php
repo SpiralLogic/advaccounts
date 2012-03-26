@@ -1,29 +1,30 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class Input {
+
     /**
-     *
+
      */
     const NUMERIC = 'number';
     /**
-     *
+
      */
     const OBJECT = 'object';
     /**
-     *
+
      */
     const STRING = 'string';
     /**
-     *
+
      */
     const BOOL = 'boolean';
     /**
@@ -54,7 +55,7 @@
      * @static
      *
      * @param              $var
-     * @param \Input|null  $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
+     * @param Input|null   $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
      *                              Input::BOOL
      * @param mixed        $default Default value if there is no current variable
      *

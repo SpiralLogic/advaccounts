@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, TRUE);
   if (!isset($_GET['trans_no'])) {
@@ -23,14 +24,7 @@
   Display::heading(_("Line Details"));
   start_table('tablestyle width90');
   $th = array(
-    _("Item Code"),
-    _("Item Description"),
-    _("Delivery Date"),
-    _("Quantity"),
-    _("Unit"),
-    _("Price"),
-    _("Line Total"),
-    _("Quantity Invoiced")
+    _("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
   );
   table_header($th);
   $total = 0;

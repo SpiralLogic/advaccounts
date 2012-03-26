@@ -1,26 +1,29 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
     @date_default_timezone_set(@date_default_timezone_get());
   }
-  /**
-  date validation and parsing functions
-  These functions refer to the global variable defining the date format
-  The date format is defined in config.php called dateformats
-  this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-  "m/d/Y" for US/Canada format dates depending on setting in preferences.
+  /*
+       date validation and parsing functions
 
-   */
+       These functions refer to the global variable defining the date format
+       The date format is defined in config.php called dateformats
+       this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
+       "m/d/Y" for US/Canada format dates depending on setting in preferences.
+
+       */
+
   class Dates {
+
     /**
      * @static
      *
@@ -32,7 +35,7 @@
      */
     static function __date($year, $month, $day) {
       $formats = Config::get('date.formats');
-      $how = $formats [User::date_format()];
+      $how = $formats [\User::date_format()];
       $sep = Config::get('date.ui_separator');
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how = substr($how, 0, 1) . $sep . substr($how, 1, 1) . $sep . substr($how, 2, 1);
@@ -49,7 +52,7 @@
       if ($date_ == NULL || $date_ == "") {
         return 0;
       }
-      $how = User::date_format();
+      $how = \User::date_format();
       $sep = Config::get('date.separators')[0];
       $date_ = trim($date_);
       $date_ = str_replace($sep, "", $date_);
@@ -134,7 +137,7 @@
      * @return string
      */
     static function now() {
-      if (User::date_format() == 0) {
+      if (\User::date_format() == 0) {
         return date("h:i a");
       }
       else {
@@ -152,7 +155,7 @@
       if (isset($date) && $date != '') {
         $_SESSION['_default_date'] = $date;
       }
-      if (!isset($_SESSION['_default_date']) || !User::sticky_date()) {
+      if (!isset($_SESSION['_default_date']) || !\User::sticky_date()) {
         $_SESSION['_default_date'] = Dates::today();
       }
       return $_SESSION['_default_date'];
@@ -169,7 +172,7 @@
       if (!Config::get('use_fiscalyear')) {
         return 1;
       }
-      $myrow = DB_Company::get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       if ($myrow['closed'] == 1) {
         return 0;
       }
@@ -191,7 +194,7 @@
      * @return string
      */
     static function begin_fiscalyear() {
-      $myrow = DB_Company::get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       return Dates::sql2date($myrow['begin']);
     }
     /**
@@ -199,7 +202,7 @@
      * @return string
      */
     static function end_fiscalyear() {
-      $myrow = DB_Company::get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       return Dates::sql2date($myrow['end']);
     }
     /**
@@ -236,8 +239,7 @@
         /** @noinspection PhpUnusedLocalVariableInspection */
         list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
         $days_in_month = array(
-          31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30,
-          ((((((($year - (($year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)
+          31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, ((((((($year - (($year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)
         );
       }
       else {
@@ -277,7 +279,7 @@
         }
         return Dates::__date($year, $month, $day);
       }
-      return date(User::date_display(), $timet);
+      return date(\User::date_display(), $timet);
     }
     /**
      * @static
@@ -301,7 +303,7 @@
         }
         return Dates::__date($year, $month, $day);
       }
-      return date(User::date_display(), $timet);
+      return date(\User::date_display(), $timet);
     }
     /**
      * @static
@@ -325,7 +327,7 @@
         }
         return Dates::__date($year, $month, $day);
       }
-      return date(User::date_display(), $timet);
+      return date(\User::date_display(), $timet);
     }
     /**
      * @static
@@ -370,9 +372,9 @@
     static function date2sql($date_, $pad = TRUE) {
       /* takes a date in a the format specified in $DefaultDateFormat
                                                   and converts to a yyyy/mm/dd format */
-      $how = User::date_format();
-      $seps = Config::get('date.separators');
-      $sep = $seps[User::date_sep()];
+      $how = \User::date_format();
+      $sep = Config::get('date.separators');
+      $sep = $sep[\User::date_sep()];
       if ($date_ == NULL || strlen($date_) == 0) {
         return "";
       }
@@ -503,7 +505,7 @@
     static function explode_date_to_dmy($date_) {
       $date = Dates::date2sql($date_);
       if ($date == "") {
-        $disp = User::date_display();
+        $disp = \User::date_display();
         throw new Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
@@ -523,7 +525,6 @@
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
-     *
      * @static
      *
      * @param $g_y
@@ -616,10 +617,8 @@
     /**
      * @static
      *
-     * @param          $name
-     * @param int|null $month
-     *
-     * @return string
+     * @param      $name
+     * @param null $month
      */
     public static function months($name, $month = 0) {
       $months = array();
@@ -721,4 +720,4 @@
     }
   }
 
-?>
+  ?>

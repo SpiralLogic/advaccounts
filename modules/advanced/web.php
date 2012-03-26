@@ -7,6 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   require $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
   function getCustomers() {
     $customersXML = getCustomersXML();
     if (!$customersXML) {

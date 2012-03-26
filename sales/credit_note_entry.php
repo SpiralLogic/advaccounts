@@ -13,8 +13,10 @@
   //	Entry/Modify free hand Credit Note
   //
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   $order = Orders::session_get() ? : NULL;
+
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
     $order = handle_new_credit(0);

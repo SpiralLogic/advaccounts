@@ -12,18 +12,18 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-                                                            ST_SALESORDER => SA_SALESORDER,
-                                                            ST_SALESQUOTE => SA_SALESQUOTE,
-                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
-                                                            ST_SALESINVOICE => SA_SALESINVOICE
-                                                       ), array(
-                                                               Orders::NEW_ORDER => SA_SALESORDER,
-                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
-                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
-                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
-                                                          ));
+    ST_SALESORDER => SA_SALESORDER,
+    ST_SALESQUOTE => SA_SALESQUOTE,
+    ST_CUSTDELIVERY => SA_SALESDELIVERY,
+    ST_SALESINVOICE => SA_SALESINVOICE
+  ), array(
+    Orders::NEW_ORDER => SA_SALESORDER,
+    Orders::MODIFY_ORDER => SA_SALESORDER,
+    Orders::NEW_QUOTE => SA_SALESQUOTE,
+    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+    Orders::NEW_INVOICE => SA_SALESINVOICE
+  ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
@@ -79,6 +79,7 @@
     $_POST['customer_id'] = $br['debtor_no'];
     Ajax::i()->activate('customer_id');
   }
+
   if (isset($_GET[REMOVED])) {
     if ($_GET['type'] == ST_SALESQUOTE) {
       Event::notice(_("This sales quotation has been deleted as requested."), 1);
@@ -112,6 +113,7 @@
       $jb = new      \Modules\Jobsboard();
       $jb->addjob($jobsboard_order);
     }
+
     page_complete($trans_no, $trans_type, ($trans_type == ST_SALESORDER ? "Order" : "Quote"), TRUE, $modified);
   }
   if (isset($_POST['update'])) {
@@ -197,9 +199,7 @@
     echo "</td></tr>";
     end_table(1);
     Display::div_start('controls', 'items_table');
-    if ($order->trans_no > 0 && User::i()
-      ->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())
-    ) {
+    if ($order->trans_no > 0 && User::i()->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())) {
       submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
       submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
       submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
@@ -225,6 +225,7 @@
     Page::footer_exit();
   }
   Display::div_end();
+
   end_form();
   Debtor::addEditDialog();
   Item::addEditDialog();
@@ -248,8 +249,7 @@
     Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
     Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
     if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-      Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-        ST_PROFORMAQ), $order_no, 'prtopt');
+      Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
         ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
     }

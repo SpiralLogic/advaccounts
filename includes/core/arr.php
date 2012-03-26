@@ -1,14 +1,16 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Core;
+
   class Arr {
+
     /**
      * @static
      *
@@ -17,8 +19,7 @@
      * @param $elements
      * Inserts $elements into $array at position $index.
      * $elements is list of any objects
-     *
-     * @return bool
+
      */
     static function insert(&$array, $index, $elements) {
       if (!is_array($elements)) {
@@ -34,8 +35,6 @@
      * @param     $array
      * @param     $index
      * @param int $len
-     *
-     * @return bool
      */
     static function remove(&$array, $index, $len = 1) {
       array_splice($array, $index, $len);
@@ -60,8 +59,6 @@
      * @param $index
      * @param $len
      * @param $elements
-     *
-     * @return bool
      */
     static function substitute(&$array, $index, $len, $elements) {
       array_splice($array, $index, $len);

@@ -1,6 +1,7 @@
 <?php
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_("Email Statements"), SA_OPEN);
+
   echo "<pre>";
   $sql = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_no = b.debtor_no AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
   $result = DB::query($sql, "The customer details could not be retrieved");
@@ -13,19 +14,20 @@
       . "<td class='left'><span class='bold'>" . $row['name'] . "</span>(" . $row['email'] . ")</td>"
       . "<td>" . $row['phone'] . "</td>"
       . "<td>" . $row['Balance'] . "</td>"
+
       . "<td " . ($row['Due'] > 0 ? 'class="currentfg"' : '') . ">" . ($row['Due'] > 0 ? $row['Due'] : 0) . "</td>"
       . "<td " . ($row['Overdue1'] > 0 ? 'class="overduebg"' : '') . ">" . ($row['Overdue1'] > 0 ? $row['Overdue1'] : 0) . "</td>"
-      . "<td " . ($row['Overdue2'] > 0 ? 'class="overduebg"' : '') . ">" . ($row['Overdue2'] > 0 ? $row['Overdue2'] :
-      0) . "</td></tr>";
+      . "<td " . ($row['Overdue2'] > 0 ? 'class="overduebg"' : '') . ">" . ($row['Overdue2'] > 0 ? $row['Overdue2'] : 0) . "</td></tr>";
     $balance += $row['Balance'];
     $due += $row['Due'];
     $overdue1 += $row['Overdue1'];
     $overdue2 += $row['Overdue2'];
   }
+
   echo "<tfoot class='bold pad5'><tr><td>Totals:</td><td></td><td>$balance</td><td>$due</td><td>$overdue1</td><td>$overdue2</td></tr></tfoot>";
+
   echo "</table><div class='center'><button id='send'>Send Emails</button></div>";
-  $js
-    = <<<JS
+  $js = <<<JS
 $(function() {
 $("#send").click(sendstatements);
 })

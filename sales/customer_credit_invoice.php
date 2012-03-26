@@ -24,6 +24,7 @@
   else {
     $page_title = "Credit Invoice";
   }
+
   Page::start($page_title, SA_SALESCREDITINV);
   if (isset($_GET[ADDED_ID])) {
     $credit_no = $_GET[ADDED_ID];

@@ -192,7 +192,7 @@
   }
 
   /**
-   *
+
    */
   function clear_fields() {
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
@@ -226,7 +226,8 @@
     if (check_item_data($n)) {
       $complete = FALSE;
       Creditor_Trans::i()
-        ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "");
+        ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
+        $complete, $_POST['std_cost_unit' . $n], "");
     }
   }
 

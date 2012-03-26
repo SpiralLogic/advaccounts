@@ -16,6 +16,7 @@
   //
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
+
   $page_title = 'Sales Invoice Complete';
   if (isset($_GET[Orders::MODIFY_INVOICE])) {
     $page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
@@ -329,13 +330,11 @@
   end_row();
   $inv_items_total = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-  label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
-    0);
+  label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
   $taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
   $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-  label_row(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
-    0);
+  label_row(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
   end_table(1);
   Display::div_end();
   start_table('tablestyle2');
@@ -348,6 +347,7 @@
 	INVOICE"));
   }
   end_table();
+
   if (!$order->view_only) {
     submit_center_first('Update', _("Update"), _('Refresh document page'), TRUE);
     submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
@@ -427,6 +427,7 @@
    */
   function copy_from_order($order) {
     $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
+
     $order = Sales_Order::check_edit_conflicts($order);
     if (!$order->view_only) {
       $_POST['ship_via'] = $order->ship_via;

@@ -11,13 +11,12 @@
           See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   Security::set_page(Input::post('order_view_mode'), array(
-                                                          'OutstandingOnly' => SA_SALESDELIVERY,
-                                                          'InvoiceTemplates' => SA_SALESINVOICE
-                                                     ), array(
-                                                             'OutstandingOnly' => SA_SALESDELIVERY,
-                                                             'InvoiceTemplates' => SA_SALESINVOICE
-                                                        ));
+    'OutstandingOnly' => SA_SALESDELIVERY, 'InvoiceTemplates' => SA_SALESINVOICE
+  ), array(
+    'OutstandingOnly' => SA_SALESDELIVERY, 'InvoiceTemplates' => SA_SALESINVOICE
+  ));
   JS::open_window(900, 600);
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
@@ -79,6 +78,7 @@
   else {
     unset($selected_stock_item);
   }
+
   $id = find_submit('_chgtpl');
   if ($id != -1) {
     change_tpl_flag($id);
@@ -127,12 +127,12 @@
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   end_row();
   end_table(1);
+
   hidden('order_view_mode', $_POST['order_view_mode']);
   hidden('type', $trans_type);
   //	Orders inquiry table
   //
-  $sql
-    = "SELECT
+  $sql = "SELECT
 		sorder.trans_type,
 		sorder.order_no,
 		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ?
@@ -163,8 +163,7 @@
   else {
     $sql .= " AND sorder.trans_type = " . $trans_type;
   }
-  $sql
-    .= " AND sorder.debtor_no = debtor.debtor_no
+  $sql .= " AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_id = branch.branch_id
 		AND debtor.debtor_no = branch.debtor_no";
   if ($_POST['customer_id'] != ALL_TEXT) {
@@ -186,14 +185,12 @@
         continue;
       }
       $ajaxsearch = DB::quote("%" . trim($ajaxsearch) . "%");
-      $sql
-        .= " AND ( debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+      $sql .= " AND ( debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
     }
-    $sql
-      .= " GROUP BY sorder.ord_date,
+    $sql .= " GROUP BY sorder.ord_date,
 				 sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_id,
@@ -226,8 +223,7 @@
     ) {
       $sql .= " AND sorder.type=1";
     }
-    $sql
-      .= " GROUP BY sorder.ord_date,
+    $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_id,
@@ -275,8 +271,8 @@
   }
   if ($_POST['order_view_mode'] == 'OutstandingOnly') {
     Arr::append($cols, array(
-                            array('type' => 'skip'), array('fun' => 'dispatch_link')
-                       ));
+      array('type' => 'skip'), array('fun' => 'dispatch_link')
+    ));
   }
   elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
     Arr::substitute($cols, 3, 1, _("Description"));
@@ -288,19 +284,20 @@
       Arr::append($cols, array(array('insert' => TRUE, 'fun' => 'delivery_link')));
     }
     elseif ($trans_type == ST_SALESQUOTE) {
+
       Arr::append($cols, array(
-                              array('insert' => TRUE, 'fun' => 'edit_link'),
-                              array('insert' => TRUE, 'fun' => 'order_link'),
-                              array('insert' => TRUE, 'fun' => 'email_link'),
-                              array('insert' => TRUE, 'fun' => 'prt_link2'),
-                              array('insert' => TRUE, 'fun' => 'prt_link')
-                         ));
+        array('insert' => TRUE, 'fun' => 'edit_link'),
+        array('insert' => TRUE, 'fun' => 'order_link'),
+        array('insert' => TRUE, 'fun' => 'email_link'),
+        array('insert' => TRUE, 'fun' => 'prt_link2'),
+        array('insert' => TRUE, 'fun' => 'prt_link')
+      ));
     }
     elseif ($trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
-                              _("Tmpl") => array(
-                                'type' => 'skip', 'insert' => TRUE, 'fun' => 'tmpl_checkbox'
-                              ), array(
+        _("Tmpl") => array(
+          'type' => 'skip', 'insert' => TRUE, 'fun' => 'tmpl_checkbox'
+        ), array(
           'insert' => TRUE, 'fun' => 'edit_link'
         ), array(
           'insert' => TRUE, 'fun' => 'email_link'
@@ -309,7 +306,7 @@
         ), array(
           'insert' => TRUE, 'fun' => 'prt_link'
         )
-                         ));
+      ));
     }
   }
   $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, NULL);
@@ -319,6 +316,7 @@
   submit_center('Update', _("Update"), TRUE, '', NULL);
   end_form();
   UI::emailDialogue(CT_CUSTOMER);
+
   Page::end();
   //	Query format functions
   //
@@ -351,9 +349,9 @@
   function email_link($row) {
     HTML::setReturn(TRUE);
     UI::button(FALSE, 'Email', array(
-                                    'class' => 'button email-button',
-                                    'data-emailid' => $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']
-                               ));
+      'class' => 'button email-button',
+      'data-emailid' => $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']
+    ));
     return HTML::setReturn(FALSE);
   }
 

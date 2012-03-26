@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   start_form();
@@ -61,21 +62,13 @@
 
   $sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
   $cols = array(
-    _("Transaction Type") => array('fun' => 'systype_name'),
-    _("#") => array('fun' => 'trans_view'),
-    _("Reference"),
-    _("Date") => array(
+    _("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"), _("Date") => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'
-    ),
-    _("Supplier") => array('ord' => ''),
-    _("Currency") => array('align' => 'center'),
-    _("Total") => array(
+    ), _("Supplier") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Total") => array(
       'align' => 'right', 'fun' => 'amount_total'
-    ),
-    _("Left to Allocate") => array(
+    ), _("Left to Allocate") => array(
       'align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left'
-    ),
-    array(
+    ), array(
       'insert' => TRUE, 'fun' => 'alloc_link'
     )
   );

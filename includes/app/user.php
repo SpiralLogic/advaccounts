@@ -327,51 +327,115 @@
     static public function  percent_dec() {
       return static::prefs()->percent_dec();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  show_gl_info() {
       return static::prefs()->show_gl_info();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  show_codes() {
       return static::prefs()->show_codes();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  date_format() {
       return static::prefs()->date_format();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  date_display() {
       return static::prefs()->date_display();
     }
+    /**
+     * @static
+     * @return int
+     */
     static public function  date_sep() {
       return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : 0;
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  tho_sep() {
       return static::prefs()->tho_sep();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  dec_sep() {
       return static::prefs()->dec_sep();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  theme() {
       return static::prefs()->get_theme();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  pagesize() {
       return static::prefs()->get_pagesize();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  hints() {
       return static::prefs()->show_hints();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  print_profile() {
       return static::prefs()->print_profile();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  rep_popup() {
       return static::prefs()->rep_popup();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  query_size() {
       return static::prefs()->query_size();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  graphic_links() {
       return static::prefs()->graphic_links();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  sticky_date() {
       return static::prefs()->sticky_date();
     }
+    /**
+     * @static
+     * @return mixed
+     */
     static public function  startup_tab() {
       return static::prefs()->start_up_tab();
     }

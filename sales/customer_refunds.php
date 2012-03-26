@@ -33,6 +33,7 @@
     Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
     Page::footer_exit();
   }
+
   // validate inputs
   if (isset($_POST['AddRefundItem'])) {
     if (!can_process()) {

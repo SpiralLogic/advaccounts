@@ -10,9 +10,11 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
+
   if (isset($_POST['Process'])) {
     if (Gl_Allocation::check()) {
       $_SESSION['alloc']->write();

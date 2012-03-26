@@ -10,6 +10,7 @@
   use \Modules\Volusion\Orders as Orders;
 
   class Volusion {
+
     function doWebsales() {
       $orders = $this->getNewWebsales();
       if (!$orders) {

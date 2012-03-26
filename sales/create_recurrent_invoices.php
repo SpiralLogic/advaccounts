@@ -59,16 +59,7 @@
   $result = DB::query($sql, "could not get recurrent invoices");
   start_table('tablestyle width70');
   $th = array(
-    _("Description"),
-    _("Template No"),
-    _("Customer"),
-    _("Branch") . "/" . _("Group"),
-    _("Days"),
-    _("Monthly"),
-    _("Begin"),
-    _("End"),
-    _("Last Created"),
-    ""
+    _("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
   );
   table_header($th);
   $k = 0;

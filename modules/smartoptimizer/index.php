@@ -155,7 +155,7 @@
   }
   $settings['minify'] = $settings['minify'] && file_exists('minifiers/' . $fileType . '.php');
   $settings['embed'] = $settings['embed'] && $fileType == 'css' && (!preg_match('/msie/i',
-                                                                                $_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
+    $_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
   $settings['serverCache'] = $settings['serverCache'] && ($settings['minify'] || $settings['gzip'] || $settings['concatenate'] || $settings['embed']);
   if ($settings['serverCache']) {
     $cachedFile = $settings['cacheDir'] . $settings['cachePrefix'] . md5($query . ($settings['embed'] ? '1' :

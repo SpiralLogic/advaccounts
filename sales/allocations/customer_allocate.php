@@ -10,9 +10,11 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Customer Payment or Credit Note"), SA_SALESALLOC);
+
   if (isset($_POST['Process'])) {
     if (Gl_Allocation::check()) {
       $_SESSION['alloc']->write();
@@ -20,10 +22,10 @@
       $_POST['Cancel'] = 1;
     }
   }
+
   if (isset($_POST['Cancel'])) {
     clear_allocations();
-    $forward = (isset($_POST['inquiry'])) ? "/sales/inquiry/customer_allocation_inquiry.php" :
-      "/sales/allocations/customer_allocation_main.php";
+    $forward = (isset($_POST['inquiry'])) ? "/sales/inquiry/customer_allocation_inquiry.php" : "/sales/allocations/customer_allocation_main.php";
     Display::meta_forward($forward);
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {

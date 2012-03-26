@@ -48,6 +48,7 @@
   start_table('tablestyle_noborder');
   start_row();
   if (!Input::get('frame')) {
+
     Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, TRUE);
   }
   date_cells(_("From:"), 'TransAfterDate', '', NULL, -90);

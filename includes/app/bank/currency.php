@@ -7,6 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   class Bank_Currency {
+
     static public function is_company($currency) {
       return (static::for_company() == $currency);
     }

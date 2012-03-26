@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
   function can_process() {
@@ -31,6 +32,7 @@
     Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
     $Mode = MODE_RESET;
   }
+
   if ($Mode == MODE_DELETE) {
     if (can_delete($selected_id)) {
       Sales_CreditStatus::delete($selected_id);
@@ -86,8 +88,7 @@
   end_form();
   Page::end();
   function can_delete($selected_id) {
-    $sql
-      = "SELECT COUNT(*) FROM debtors
+    $sql = "SELECT COUNT(*) FROM debtors
 			WHERE credit_status=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query customers");
     $myrow = DB::fetch_row($result);

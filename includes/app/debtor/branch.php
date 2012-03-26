@@ -160,7 +160,7 @@
     static public function select($customer_id, $name, $selected_id = NULL, $spec_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       $sql
         = "SELECT branch_id, branch_ref FROM branches
-			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_no='" . $customer_id . "' ";
+			WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
       if ($editkey) {
         Display::set_editor('branch', $name, $editkey);
       }

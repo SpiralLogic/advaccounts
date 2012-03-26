@@ -84,12 +84,25 @@
      * @return void
      */
     public function testAppend() {
-      $people = array("Jack", "Jill");
-      $expected = array("Jack", "Jill", "Humpty");
-      Arr::append($people, ["Humpty"]);
-      $this->assertEquals($people, $expected);
+      // Remove the following lines when you implement this test.
+      $this->markTestIncomplete('This test has not been implemented yet.');
     }
-
+    /**
+     * @covers Arr::search_value
+     * @return void
+     */
+    public function testSearch_value() {
+      // Remove the following lines when you implement this test.
+      $this->markTestIncomplete('This test has not been implemented yet.');
+    }
+    /**
+     * @covers Arr::search_key
+     * @return void
+     */
+    public function testSearch_key() {
+      // Remove the following lines when you implement this test.
+      $this->markTestIncomplete('This test has not been implemented yet.');
+    }
     /**
      * @covers Arr::natsort
      * @return void

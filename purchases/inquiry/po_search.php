@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
   if (isset($_GET['order_number'])) {
@@ -47,6 +48,7 @@
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   end_row();
   end_table();
+
   if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
     $order_number = $_POST['order_number'];
   }
@@ -58,8 +60,7 @@
     unset($selected_stock_item);
   }
   //figure out the sql required from the inputs available
-  $sql
-    = "SELECT
+  $sql = "SELECT
 	porder.order_no, 
 	porder.reference,
 	supplier.supp_name,

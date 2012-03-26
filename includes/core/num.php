@@ -1,15 +1,37 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class Num {
+
+    public static $price_dec = 2;
+    public static $tho_sep = ',';
+    public static $dec_sep = '.';
+    public static $exrate_dec = '.';
+    public static $percent_dec;
+
+    protected static $i;
+    static public function i() {
+      if (static::$i === NULL) {
+        static::$i = new static();
+      }
+      return static::$i;
+    }
+    protected function __construct() {
+      static::$price_dec = \User::prefs()->price_dec();
+      static::$tho_sep = \User::tho_sep();
+      static::$dec_sep = \User::dec_sep();
+      static::$exrate_dec = \User::prefs()->exrate_dec();
+      static::$percent_dec = \User::prefs()->percent_dec();
+    }
+
     /**
      * @static
      *
@@ -18,7 +40,8 @@
      * @return int|string
      */
     static public function  price_format($number) {
-      return Num::format(Num::round($number, User::prefs()->price_dec() + 2), User::prefs()->price_dec());
+      static::i();
+      return static::format(static::round($number, static::$price_dec + 2), static::$price_dec);
     }
     /**
      * @static
@@ -29,7 +52,8 @@
      * @return int|string
      */
     static public function  price_decimal($number, &$dec) {
-      $dec = User::prefs()->price_dec();
+      static::i();
+      $dec = static::$price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
       if ($pos !== FALSE) {
@@ -60,8 +84,9 @@
      * @return int|string
      */
     static public function  format($number, $decimals = 0) {
-      $tsep = User::prefs()->tho_sep();
-      $dsep = User::prefs()->dec_sep();
+      static::i();
+      $tsep = static::$tho_sep;
+      $dsep = static::$dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
       $delta = ($number < 0 ? -.0000000001 : .0000000001);
       $number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -75,7 +100,8 @@
      * @return int|string
      */
     static public function  exrate_format($number) {
-      return Num::format($number, User::prefs()->exrate_dec());
+      static::i();
+      return static::format($number, static::$exrate_dec);
     }
     /**
      * @static
@@ -85,7 +111,8 @@
      * @return int|string
      */
     static public function  percent_format($number) {
-      return Num::format($number, User::prefs()->percent_dec());
+      static::i();
+      return static::format($number, static::$percent_dec);
     }
     /**
      * @static
@@ -99,7 +126,7 @@
       if ($price == 0) {
         return 0;
       }
-      $pow = pow(10, User::price_dec());
+      $pow = pow(10, static::$price_dec);
       if ($pow >= $round_to) {
         $mod = ($pow % $round_to);
       }

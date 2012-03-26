@@ -1,30 +1,35 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
-  class DBException extends PDOException {
+  namespace ADV\Core;
+
+  class DBException extends \PDOException {
+
   }
 
   class DBUpdateException extends DBException {
+
   }
 
   ;
   class DBInsertException extends DBException {
+
   }
 
   ;
   class DBDeleteException extends DBException {
+
   }
 
   ;
   class DBSelectException extends DBException {
+
   }
 
   ;
@@ -32,9 +37,11 @@
 
    */
   class DBDuplicateException extends DBException {
+
   }
 
   class DB {
+
     const SELECT = 0;
     const INSERT = 1;
     const UPDATE = 2;
@@ -45,7 +52,7 @@
     static protected $data = array();
     /*** @var string */
     static public $queryString = array();
-    /*** @var PDOStatement */
+    /*** @var \PDOStatement */
     static protected $prepared = NULL;
     /**   @var null */
     static protected $debug = NULL;
@@ -59,7 +66,7 @@
     protected $useCache = FALSE;
     protected $useConfig = FALSE;
     protected $intransaction = FALSE;
-    /*** @var PDO */
+    /*** @var \PDO */
     protected $conn = FALSE;
     /** @var DB */
     static protected $i = NULL;
@@ -69,7 +76,7 @@
      *
      * @param array $config
      *
-     * @internal PDO $conn
+     * @internal \PDO $conn
      * @return DB
      */
     static protected function i($config = array()) {
@@ -99,17 +106,16 @@
      */
     protected function _connect($config) {
       try {
-        $conn = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(PDO::MYSQL_ATTR_FOUND_ROWS => TRUE));
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
+        $conn = new \PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(\PDO::MYSQL_ATTR_FOUND_ROWS => TRUE));
+        $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $conn->setAttribute(\PDO::ATTR_ORACLE_NULLS, \PDO::NULL_TO_STRING);
         static::$connections[$config['name']] = $conn;
         if ($this->conn === FALSE) {
           $this->conn = $conn;
         }
         return TRUE;
       }
-      catch (PDOException $e) {
-        //			$this->_error($e);
+      catch (\PDOException $e) {
         throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
       }
     }
@@ -143,23 +149,25 @@
      * @param            $sql
      * @param null       $err_msg
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     static public function query($sql, $err_msg = NULL) {
       static::$prepared = NULL;
+
       try {
         static::$prepared = static::i()->_prepare($sql);
         try {
           static::$prepared->execute();
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
           static::i()->_error($e, " (execute) " . $err_msg);
         }
       }
-      catch (PDOException $e) {
+      catch (\PDOException $e) {
         static::i()->_error($e, " (prepare) " . $err_msg);
       }
       static::$data = array();
+
       return static::$prepared;
     }
     /**
@@ -186,16 +194,16 @@
       $value = trim($value);
       if (!isset($value) || is_null($value) || $value === "") {
         $value = ($null) ? 'NULL' : '';
-        $type = PDO::PARAM_NULL;
+        $type = \PDO::PARAM_NULL;
       }
       elseif (is_int($value)) {
-        $type = PDO::PARAM_INT;
+        $type = \PDO::PARAM_INT;
       }
       elseif (is_bool($value)) {
-        $type = PDO::PARAM_BOOL;
+        $type = \PDO::PARAM_BOOL;
       }
       elseif (is_string($value)) {
-        $type = PDO::PARAM_STR;
+        $type = \PDO::PARAM_STR;
       }
       else {
         $type = FALSE;
@@ -209,7 +217,7 @@
      * @param            $sql
      * @param bool       $debug
      *
-     * @return bool|PDOStatement
+     * @return bool|\PDOStatement
      * @throws DBException
      */
     protected function _prepare($sql, $debug = FALSE) {
@@ -229,7 +237,7 @@
           $k++;
         }
       }
-      catch (PDOException $e) {
+      catch (\PDOException $e) {
         $prepared = FALSE;
         $this->_error($e);
       }
@@ -245,7 +253,7 @@
      * @param            $sql
      * @param bool       $debug
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     static public function prepare($sql, $debug = FALSE) {
       static::$prepared = static::i()->_prepare($sql, $debug);
@@ -268,9 +276,9 @@
       static::$data = $data;
       try {
         static::$prepared->execute($data);
-        $result = static::$prepared->fetchAll(PDO::FETCH_ASSOC);
+        $result = static::$prepared->fetchAll(\PDO::FETCH_ASSOC);
       }
-      catch (PDOException $e) {
+      catch (\PDOException $e) {
         $result = static::i()->_error($e);
       }
       static::$data = array();
@@ -333,11 +341,11 @@
     /***
      * @static
      *
-     * @param PDOStatement $result The result of the query or whatever cunt
+     * @param \PDOStatement $result The result of the query or whatever cunt
      *
      * @return DB_Query_Result|Array This is something
      */
-    static public function fetch($result = NULL, $fetch_mode = PDO::FETCH_BOTH) {
+    static public function fetch($result = NULL, $fetch_mode = \PDO::FETCH_BOTH) {
       try {
         if ($result !== NULL) {
           return $result->fetch($fetch_mode);
@@ -347,7 +355,7 @@
         }
         return static::$prepared->fetch($fetch_mode);
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         static::_error($e);
       }
     }
@@ -356,20 +364,20 @@
      * @return mixed
      */
     static public function fetch_row($result = NULL) {
-      return static::fetch($result, PDO::FETCH_NUM);
+      return static::fetch($result, \PDO::FETCH_NUM);
     }
     /**
      * @static
      * @return mixed
      */
     static public function fetch_assoc() {
-      return is_a(static::$prepared, 'PDOStatement') ? static::$prepared->fetch(PDO::FETCH_ASSOC) : FALSE;
+      return is_a(static::$prepared, '\PDOStatement') ? static::$prepared->fetch(\PDO::FETCH_ASSOC) : FALSE;
     }
     /**
      * @static
      * @return array
      */
-    static public function fetch_all($fetch_type = PDO::FETCH_ASSOC) {
+    static public function fetch_all($fetch_type = \PDO::FETCH_ASSOC) {
       $results = static::$results;
       if (!static::$results) {
         $results = static::$prepared->fetchAll($fetch_type);
@@ -409,7 +417,7 @@
     /**
      * @static
      *
-     * @param int|PDO $value
+     * @param int|\PDO $value
      *
      * @return mixed
      */
@@ -429,7 +437,7 @@
     /**
      * @static
      *
-     * @param null|PDOStatement $sql
+     * @param null|\PDOStatement $sql
      *
      * @return int
      */
@@ -467,7 +475,7 @@
           static::i()->conn->beginTransaction();
           static::i()->intransaction = TRUE;
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
           static::i()->_error($e);
         }
       }
@@ -482,7 +490,7 @@
         try {
           static::i()->conn->commit();
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
           static::i()->_error($e);
         }
       }
@@ -497,7 +505,7 @@
           static::i()->intransaction = FALSE;
           static::i()->conn->rollBack();
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
           static::i()->_error($e);
         }
       }
@@ -514,7 +522,7 @@
      * @param $key
      * Update record activity status.
      *
-     * @return \DB_Query_Result
+     * @return DB_Query_Result
      */
     static public function update_record_status($id, $status, $table, $key) {
       try {
@@ -572,7 +580,7 @@
             return TRUE;
         }
       }
-      catch (PDOException $e) {
+      catch (\PDOException $e) {
         $this->_error($e);
         switch ($type) {
           case DB::SELECT:
@@ -608,14 +616,14 @@
       return $sql;
     }
     /**
-     * @param PDOException                        $e
-     * @param bool                                $msg
-     * @param string|bool                         $exit
+     * @param \PDOException                        $e
+     * @param bool                                 $msg
+     * @param string|bool                          $exit
      *
      * @return bool
      * @throws DBException
      */
-    protected function _error(PDOException $e, $msg = FALSE) {
+    protected function _error(\PDOException $e, $msg = FALSE) {
       $data = static::$data;
       static::$data = array();
       if ($data && is_array(reset($data))) {
@@ -628,7 +636,7 @@
       static::$errorInfo = $error = $e->errorInfo;
       $error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
       $error['message'] = ($msg != FALSE) ? $msg : $e->getMessage();
-      if (is_a($this->conn, 'PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
+      if (is_a($this->conn, '\PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
         $this->conn->rollBack();
         $this->intransaction = FALSE;
       }

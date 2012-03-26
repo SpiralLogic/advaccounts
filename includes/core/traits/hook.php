@@ -7,13 +7,14 @@
 	 * @copyright 2010 - 2012
 	 * @link      http://www.advancedgroup.com.au
 	 **/
+  namespace ADV\Core;
 
-	trait HookTrait {
+  trait HookTrait {
 
 		/** @var Hook */
-		public static $hooks = null;
+		public static $hooks = NULL;
 		public static function _register($hook, $object, $function, $arguments = array()) {
-			if (self::$hooks === null) {
+			if (self::$hooks === NULL) {
 				self::$hooks = new Hook();
 			}
 			$callback = $object . '::' . $function;

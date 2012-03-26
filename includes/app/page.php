@@ -44,6 +44,8 @@
       $this->lang_dir = $_SESSION['Language']->dir;
       if (!$this->ajaxpage) {
         $this->header();
+        JS::open_window(900, 500);
+
         if ($this->menu) {
           $this->menu_header();
         }
@@ -124,8 +126,8 @@
       echo "<meta charset='{$this->encoding}'>";
       echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
       $this->renderCSS();
-      if (class_exists('JS', FALSE)) {
-        JS::renderHeader();
+      if (class_exists('ADV\Core\JS')) {
+        ADV\Core\JS::renderHeader();
       }
       echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
       echo "<div id='content'>\n";
@@ -233,7 +235,7 @@
     }
 
     protected function renderCSS() {
-      $this->css += Config::get('assets.css') ? : array('default.css');
+      $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css = implode(',', $this->css);
       echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
@@ -244,6 +246,7 @@
       $page = new static('Fatal Error.', FALSE);
       $page->header();
       echo "<div id='msgbox'>$text</div></div></body></html>";
+
       ($exit)  and exit();
     }
   }

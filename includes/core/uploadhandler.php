@@ -1,15 +1,18 @@
 <?php
+
+
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class UploadHandler {
+
     /**
      * @var #Farray_replace_recursive|array|?
      */
@@ -70,12 +73,12 @@
     /**
      * @param $file_name
      *
-     * @return null|stdClass
+     * @return null|\stdClass
      */
     private function get_file_object($file_name) {
       $file_path = $this->options['upload_dir'] . $file_name;
       if (is_file($file_path) && $file_name[0] !== '.') {
-        $file = new stdClass();
+        $file = new \stdClass();
         $file->name = $file_name;
         $file->size = filesize($file_path);
         $file->url = $this->options['upload_url'] . rawurlencode($file->name);
@@ -106,9 +109,9 @@
      */
     private function get_file_objects() {
       return array_values(array_filter(array_map(
-                                         array($this, 'get_file_object'),
-                                         scandir($this->options['upload_dir'])
-                                       )));
+        array($this, 'get_file_object'),
+        scandir($this->options['upload_dir'])
+      )));
     }
     /**
      * @param $file_name
@@ -213,10 +216,10 @@
      * @param $type
      * @param $error
      *
-     * @return stdClass
+     * @return \stdClass
      */
     private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
-      $file = new stdClass();
+      $file = new \stdClass();
       // Remove path information and dots around the filename, to prevent uploading
       // into different directories or replacing hidden system files.
       // Also remove control characters and spaces (\x00..\x20) around the filename:
@@ -260,9 +263,11 @@
             }
           }
         }
-        else if ($this->options['discard_aborted_uploads']) {
-          unlink($file_path);
-          $file->error = 'abort';
+        else {
+          if ($this->options['discard_aborted_uploads']) {
+            unlink($file_path);
+            $file->error = 'abort';
+          }
         }
         $file->size = $file_size;
         $file->delete_url = $this->options['script_url']
@@ -312,7 +317,7 @@
       }
     }
     /**
-     *
+
      */
     public function post() {
       $upload = isset($_FILES[$this->options['param_name']]) ?
@@ -370,8 +375,8 @@
     static public function insert($id) {
       if (!self::$inserted) {
         JS::footerFile(array(
-                            '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
-                       ));
+          '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
+        ));
         self::$inserted = TRUE;
       }
       echo '
@@ -421,7 +426,7 @@
 ';
     }
     /**
-     *
+
      */
     private function make_dir() {
       $old = umask(0);
@@ -429,7 +434,7 @@
       umask($old);
     }
     /**
-     *
+
      */
     public function delete() {
       $name = isset($_REQUEST['file']) ? ($_REQUEST['file']) : NULL;

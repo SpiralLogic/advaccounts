@@ -38,7 +38,8 @@
       else {
         $sql
           = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
- 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days',
+          0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
         $note = _('New recurrent invoice has been added');
       }
       DB::query($sql, "The recurrent invoice could not be updated or added");

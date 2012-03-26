@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame'));
   Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
   if (isset($_GET['supplier_id'])) {
@@ -63,11 +64,11 @@
         Event::success(_("Supplier has been updated."));
       }
       else {
-        $sql
-          = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
+        $sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::escape($_POST['supp_name']) . ", " . DB::escape($_POST['supp_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['supp_address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['supp_account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
+				VALUES (" . DB::escape($_POST['supp_name']) . ", " . DB::escape($_POST['supp_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['supp_address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['supp_account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit',
+          0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
         DB::query($sql, "The supplier could not be added");
         $_POST['supplier_id'] = DB::insert_id();
         $new_supplier = FALSE;

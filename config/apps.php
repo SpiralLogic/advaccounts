@@ -12,7 +12,6 @@
       'debtors', //
       'purchases', //
       'creditors', //
-
       'inventory', //
       'manufacturing', //
       'dimensions', //

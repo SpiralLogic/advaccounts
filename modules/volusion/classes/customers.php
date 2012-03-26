@@ -1,10 +1,13 @@
 <?php
   namespace Modules\Volusion;
   class Customers {
+
     public $customers;
+
     public function __construct() {
       echo __NAMESPACE__;
     }
+
     function get() {
       $customersXML = $this->getXML();
       if (!$customersXML) {
@@ -13,6 +16,7 @@
       $customers = \XMLParser::XMLtoArray($customersXML);
       $this->customers = $customers;
     }
+
     function getXML() {
       $apiuser = \Config::get('webstore.apiuser');
       $apikey = \Config::get('webstore.apikey');
@@ -27,6 +31,7 @@
       ;
       return $result;
     }
+
     function insert() {
       $result = \DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {

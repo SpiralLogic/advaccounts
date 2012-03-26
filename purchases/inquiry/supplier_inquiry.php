@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
   if (isset($_GET['supplier_id'])) {
@@ -43,14 +44,7 @@
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     start_table('tablestyle width90');
     $th = array(
-      _("Currency"),
-      _("Terms"),
-      _("Current"),
-      $txt_now_due,
-      $txt_past_due1,
-      $txt_past_due2,
-      _("Total Balance"),
-      _("Total For Search Period")
+      _("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"), _("Total For Search Period")
     );
     table_header($th);
     start_row();
@@ -124,8 +118,7 @@
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
   $date_to = Dates::date2sql($_POST['TransToDate']);
   // Sherifoz 22.06.03 Also get the description
-  $sql
-    = "SELECT trans.type,
+  $sql = "SELECT trans.type,
 		trans.trans_no,
 		trans.reference, 
 		supplier.supp_name,
@@ -153,8 +146,7 @@
     }
   }
   else {
-    $sql
-      .= " AND trans . tran_date >= '$date_after'
+    $sql .= " AND trans . tran_date >= '$date_after'
 	 AND trans . tran_date <= '$date_to'";
   }
   if (Input::post('supplier_id')) {

@@ -12,6 +12,7 @@
   /** @noinspection PhpIncludeInspection */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
+
   if (isset($_GET[Orders::MODIFY_ORDER])) {
     Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
   }
@@ -174,7 +175,9 @@
     if (!$order) {
       Display::meta_forward('/index.php', 'application=Purchases');
     }
+
     //need to check that not already dispatched or invoiced by the supplier
+
     if (($order->order_no != 0) && $order->any_already_received() == 1) {
       Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
       return;
@@ -237,6 +240,7 @@
       $order = new Purch_Order($order_no);
     }
     $order = copy_from_order($order);
+
     return $order;
   }
 
@@ -294,8 +298,7 @@
     $allow_update = check_data();
     if ($allow_update == TRUE) {
       if ($allow_update == TRUE) {
-        $sql
-          = "SELECT long_description as description , units, mb_flag
+        $sql = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
         $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
         if (DB::num_rows($result) == 0) {

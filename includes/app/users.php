@@ -146,6 +146,8 @@
       $result = DB::query($sql, "could not get user $id");
       return DB::fetch($result);
     }
+    //	This static public function is necessary for admin prefs update after upgrade from 2.1
+    //
     /**
      * @static
      *
@@ -175,12 +177,12 @@
      *
      * @return bool|mixed
      */
-    static public function  get_for_login($user_id) {
+    static public function  get_for_login($user_id, $password) {
       $auth = new Auth($user_id);
       if ($auth->isBruteForce()) {
         return FALSE;
       }
-      return $auth->check_user_password($user_id);
+      return $auth->check_user_password($user_id, $password);
     }
     /**
      * @static
@@ -217,8 +219,33 @@
     }
     /**
      * @static
-     * @return mixed
+     * @return int|mixed
      */
+    static protected function get_online() {
+      $usersonline = Cache::get('users_online');
+      if ($usersonline) {
+        return $usersonline;
+      }
+      $result = DB::query("SHOW TABLES LIKE 'useronline'");
+      if (DB::num_rows($result) == 1) {
+        $timeoutseconds = 120;
+        $timestamp = time();
+        $timeout = $timestamp - $timeoutseconds;
+        $ip = static::get_ip();
+        // Add user to database
+        DB::insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['PHP_SELF']))->exec();
+        //Remove users that were not online within $timeoutseconds.
+        DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
+        // Select online users
+        $result = DB::query("SELECT DISTINCT ip FROM useronline");
+        $users = DB::num_rows($result);
+      }
+      else {
+        $users = 1;
+      }
+      Cache::set('users_online', $users, 300);
+      return $users;
+    }
     static public function get_ip() {
       /*
                                                                                This will find out if user is from behind proxy server.
@@ -334,34 +361,5 @@
       echo "<tr><td class='label'>$label</td>";
       Users::cells(NULL, $name, $selected_id, $spec_opt);
       echo "</tr>\n";
-    }
-    /**
-     * @static
-     * @return int|mixed
-     */
-    static protected function get_online() {
-      $usersonline = Cache::get('users_online');
-      if ($usersonline) {
-        return $usersonline;
-      }
-      $result = DB::query("SHOW TABLES LIKE 'useronline'");
-      if (DB::num_rows($result) == 1) {
-        $timeoutseconds = 120;
-        $timestamp = time();
-        $timeout = $timestamp - $timeoutseconds;
-        $ip = static::get_ip();
-        // Add user to database
-        DB::insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['PHP_SELF']))->exec();
-        //Remove users that were not online within $timeoutseconds.
-        DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
-        // Select online users
-        $result = DB::query("SELECT DISTINCT ip FROM useronline");
-        $users = DB::num_rows($result);
-      }
-      else {
-        $users = 1;
-      }
-      Cache::set('users_online', $users, 300);
-      return $users;
     }
   }

@@ -1,15 +1,15 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
   class MenuUI extends Menu {
+
     /**
      * @var array
      */
@@ -41,11 +41,11 @@
       return $this;
     }
     /**
-     * @param        $title
-     * @param string $tooltip
-     * @param string $link
-     * @param        $param_element element id to get extra paramater from
-     * @param null   $target
+     * @param              $title
+     * @param string       $tooltip
+     * @param string       $link
+     * @param   string     $param_element element id to get extra paramater from
+     * @param null         $target
      *
      * @return MenuUI
      */
@@ -97,7 +97,7 @@
       return $this;
     }
     /**
-     *
+
      */
     public function render() {
       $menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
@@ -124,9 +124,10 @@
   }
 
   /**
-   *
+
    */
   class MenuUi_item extends menu_item {
+
     /**
      * @var string
      */

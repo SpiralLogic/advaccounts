@@ -1,25 +1,26 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
-  class Autoload_Exception extends Exception {
+  namespace ADV\Core;
+  class Autoload_Exception extends \Exception {
+
   }
 
   /**
 
    */
   class Autoloader {
+
     /**
      * @var array
      */
-    static protected $loaded = array();
+    static $loaded = array();
     /**
      * @var array
      */
@@ -32,15 +33,20 @@
      * @var array
      */
     static protected $classes = array();
+    static protected $namespaces = array();
     /**
      * @static
 
      */
     static public function i() {
-      ini_set('unserialize_callback_func', 'Autoloader::load'); // set your callback_function
-      spl_autoload_register('Autoloader::loadCore', TRUE);
-      static::$classes = Cache::get('autoload.classes');
-      static::$loaded = Cache::get('autoload.paths');
+      class_alias(__CLASS__, '\Autoloader');
+      Autoloader::add_namespace('ADV\\Core', COREPATH);
+      Autoloader::add_namespace('\\', COREPATH);
+      ini_set('unserialize_callback_func', 'ADV\Core\Autoloader::load'); // set your callback_function
+      spl_autoload_register('ADV\Core\Autoloader::loadCore', TRUE);
+
+      static::$classes = Cache::get('autoload.classes', array());
+      static::$loaded = Cache::get('autoload.paths', array());
       if (!static::$classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
@@ -48,11 +54,11 @@
         static::add_classes((array) $vendor, VENDORPATH);
         Event::register_shutdown(__CLASS__);
       }
-      spl_autoload_register('Autoloader::loadVendor', TRUE, TRUE);
-      spl_autoload_register('Autoloader::loadApp', TRUE, TRUE);
-      spl_autoload_register('Autoloader::loadInterface', TRUE, TRUE);
-      spl_autoload_register('Autoloader::loadModule', TRUE, TRUE);
-      spl_autoload_register('Autoloader::loadFromCache', TRUE, TRUE);
+//			spl_autoload_register('ADV\Core\Autoloader::loadVendor', true, true);
+      spl_autoload_register('ADV\Core\Autoloader::loadApp', TRUE, TRUE);
+      //		spl_autoload_register('ADV\Core\Autoloader::loadInterface', true, true);
+      //	spl_autoload_register('ADV\Core\Autoloader::loadModule', true, true);
+      //		spl_autoload_register('ADV\Core\Autoloader::loadFromCache', true, true);
     }
     /**
      * @static
@@ -90,10 +96,7 @@
     /**
      * @static
      *
-     * @param $paths
-     * @param $classname
-     *
-     * @internal param $path
+     * @param $path
      *
      * @return string
      */
@@ -109,7 +112,7 @@
         unset (static::$loaded[$classname]);
       }
       static::$classes = FALSE;
-      Cache::delete('autoload.classes');
+      //	Cache::delete('autoload.classes');
       return FALSE;
     }
     /**
@@ -118,7 +121,6 @@
      * @param $filepath
      * @param $class
      *
-     * @return bool
      * @throws Autoload_Exception
      */
     static protected function includeFile($filepath, $class) {
@@ -132,7 +134,7 @@
       if (!isset(static::$loaded[$class])) {
         static::$loaded[$class] = $filepath;
         if ($class != 'Cache' && $class != 'Event') {
-          Event::register_shutdown(__CLASS__);
+          //				Event::register_shutdown(__CLASS__);
         }
       }
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
@@ -147,13 +149,23 @@
      */
     static public function loadFromCache($classname) {
       $result = FALSE;
-      if (isset(static::$loaded[$classname])) {
+      if (isset(static::$loaded['ADV\\Core\\' . $classname])) {
+        $result = static::tryPath(static::$loaded['ADV\\Core\\' . $classname], 'ADV\\Core\\' . $classname);
+        if ($result) {
+
+          class_alias('ADV\\Core\\' . $classname, $classname);
+        }
+      }
+      elseif (isset(static::$loaded[$classname])) {
         $result = static::tryPath(static::$loaded[$classname], $classname);
+        if ($result && strstr($classname, 'ADV\\Core\\')) {
+          class_alias($classname, str_replace('ADV\\Core\\', '', $classname));
+        }
       }
       elseif (isset(static::$classes[$classname])) {
         $result = static::tryPath(static::$classes[$classname], $classname);
       }
-      if (!$result) {
+      if (!$result && $classname != 'ADV\Core\Cache' && $classname != 'ADV\Core\Event') {
         Event::register_shutdown(__CLASS__);
       }
       return $result;
@@ -218,8 +230,23 @@
      * @return string
      */
     static public function loadCore($classname) {
-      return static::makePaths($classname, COREPATH);
+      $class = ltrim(strrchr($classname, '\\'), '\\') ? : $classname;
+      $namespace = ($classname == $class) ? '\\' : substr($classname, 0, -1 - strlen($class));
+      var_dump($class, $namespace);
+      if (array_key_exists($namespace, static::$namespaces)) {
+        if (substr($classname, -5) == 'Trait') {
+          $class = ltrim(strrchr('traits' . DS . substr($classname, 0, -5), '\\'), '\\') ? : $classname;
+        }
+
+        $path = static::$namespaces[$namespace] . strtolower($class) . '.php';
+        if (static::tryPath([$path], $classname)) {
+          class_alias($classname, $class);
+          return TRUE;
+        }
+      }
+      return FALSE;
     }
+
     static protected function makePaths($classname, $path) {
       $class = str_replace('_', DS, $classname);
       $lowerclass = strtolower($class);
@@ -229,17 +256,10 @@
       $paths[] = $path . $lowerclass . DS . $lowerclass . '.php';
       return static::tryPath($paths, $classname);
     }
-    /**
-     * @static
-     * @return array
-     */
-    static public function getPerf() {
-      array_walk(static::$loadperf, function(&$v) {
-        $v[1] = Files::convert_size($v[1]);
-        $v[2] = Dates::getReadableTime($v[2]);
-        $v[3] = Dates::getReadableTime($v[3]);
-      });
-      return static::$loadperf;
+    static public function import($class, $namespace = '') {
+    }
+    static public function add_namespace($namespace, $path) {
+      static::$namespaces[$namespace] = $path;
     }
     /**
      * @static

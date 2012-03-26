@@ -1,21 +1,28 @@
 <?php
   /**
    * PHP version 5
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @license   ADV http://www.advancedgroup.com.au
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class DB_Query_Result implements \Countable, \Iterator {
+
     /**
-     * @var PDOStatement thing
+     * @var \PDOStatement thing
      */
     public $prepared;
+    /**
+     * @var
+     */
     protected $current;
+    /**
+     * @var
+     */
     protected $count;
     /**
      * @var int
@@ -36,11 +43,11 @@
     public function __construct($prepared, $data = NULL) {
       $this->data = $data;
       $this->prepared = $prepared;
-      $this->prepared->setFetchMode(PDO::FETCH_ASSOC);
+      $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
       $this->execute();
     }
     /**
-     *
+
      */
     protected function execute() {
       $this->cursor = 0;
@@ -68,14 +75,14 @@
      * @return DB_Query_Result
      */
     public function assoc() {
-      $this->prepared->setFetchMode(PDO::FETCH_ASSOC);
+      $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
       return $this;
     }
     /**
      * @return DB_Query_Result
      */
     public function num() {
-      $this->prepared->setFetchMode(PDO::FETCH_NUM);
+      $this->prepared->setFetchMode(\PDO::FETCH_NUM);
       return $this;
     }
     /**
@@ -85,7 +92,7 @@
      * @return DB_Query_Result
      */
     public function asClassLate($class, $construct = array()) {
-      $this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class, $construct);
+      $this->prepared->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class, $construct);
       return $this;
     }
     /**
@@ -95,7 +102,7 @@
      * @return DB_Query_Result
      */
     public function asClass($class, $construct = array()) {
-      $this->prepared->setFetchMode(PDO::FETCH_CLASS, $class, $construct);
+      $this->prepared->setFetchMode(\PDO::FETCH_CLASS, $class, $construct);
       return $this;
     }
     /**
@@ -108,7 +115,7 @@
      * @param $object
      */
     public function intoObject($object) {
-      $this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
+      $this->prepared->setFetchMode(\PDO::FETCH_INTO, $object);
       $this->prepared->fetch();
       $this->count = $this->prepared->rowCount();
       $this->prepared = NULL;
@@ -118,13 +125,12 @@
      * @return DB_Query_Result
      */
     public function asObject() {
-      $this->prepared->setFetchMode(PDO::FETCH_OBJ);
+      $this->prepared->setFetchMode(\PDO::FETCH_OBJ);
       return $this;
     }
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the current element
-     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -134,7 +140,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Move forward to next element
-     *
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
@@ -145,9 +150,8 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
-     *
      * @link http://php.net/manual/en/iterator.key.php
-     * @return scalar scalar on success, integer
+     * @return mixed scalar scalar on success, integer
      * 0 on failure.
      */
     public function key() {
@@ -165,7 +169,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Rewind the Iterator to the first element
-     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -179,7 +182,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
-     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>

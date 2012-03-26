@@ -72,7 +72,7 @@
       return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
     }
     public function save($changes = NULL) {
-      $data['supp_ref'] = substr($this->supp_name, 0, 29);
+      $data['debtor_ref'] = substr($this->supp_name, 0, 29);
       $data['discount'] = User::numeric($this->discount) / 100;
       if (!parent::save($changes)) {
         $this->_setDefaults();

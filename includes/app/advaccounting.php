@@ -116,9 +116,7 @@
      * @static
 
      */
-
     static public function i() {
-
       $buildversion = Cache::get('build.version', FALSE);
       if (!$buildversion) {
         is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', NULL, NULL, NULL, 6));

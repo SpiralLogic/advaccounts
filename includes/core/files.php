@@ -1,15 +1,16 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
    **/
+  namespace ADV\Core;
+
   class Files {
+
     /**
      * @static
      *
@@ -77,7 +78,7 @@
         $cdrec .= $sub1 . $sub2;
         // length of filename, extra field length, file comment length, disk number start, internal file attributes, external file attributes - 'archive' bit set, offset
         $cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V',
-                                                                                                                              0);
+          0);
         $cdrec .= $name;
         // combine data
         $fileData = $fr . $cdrec . $eof_ctrl_dir;

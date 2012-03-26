@@ -383,9 +383,9 @@
     }
     HTML::setReturn(TRUE);
     UI::button(FALSE, 'Email', array(
-                                    'class' => 'button email-button',
-                                    'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
-                               ));
+      'class' => 'button email-button',
+      'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
+    ));
     return HTML::setReturn(FALSE);
   }
 
@@ -395,6 +395,7 @@
    * @return bool
    */
   function check_overdue($row) {
+
     return (isset($row['OverDue']) && $row['OverDue'] == 1) && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
   }
 

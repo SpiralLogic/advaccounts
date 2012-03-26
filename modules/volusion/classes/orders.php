@@ -4,6 +4,7 @@
    */ /**
 
    */ class Orders implements \Iterator, \Countable {
+
     /**
      * @var
      */
@@ -27,31 +28,29 @@
     /**
      * @var array
      */
-    static public $shipping_types
-      = array(
-        502 => "Pickup", //
-        902 => "To be calculated", //
-        903 => "Use own courier", //
-        998 => "Installation", //
-        1006 => "Medium Courier (VIC Metro)", //
-        1009 => "Small Parcel (0.5m,5kg)", //
-        1010 => "Medium Courier (1m,25kg)", //
-        1011 => "Medium Courier Rural (1.8m,25kg)"
-      );
+    static public $shipping_types = array(
+      502 => "Pickup", //
+      902 => "To be calculated", //
+      903 => "Use own courier", //
+      998 => "Installation", //
+      1006 => "Medium Courier (VIC Metro)", //
+      1009 => "Small Parcel (0.5m,5kg)", //
+      1010 => "Medium Courier (1m,25kg)", //
+      1011 => "Medium Courier Rural (1.8m,25kg)"
+    );
     /**
      * @var array
      */
-    static public $payment_types
-      = array(
-        1 => "Account", //
-        2 => "Cheque/Money Order", //
-        5 => "Visa/Mastercard", //
-        7 => "American Express", //
-        18 => "PayPal", //
-        23 => "Direct Deposit", //
-        24 => "Wait for Freight Quotation", //
-        26 => "Credit Card" //
-      );
+    static public $payment_types = array(
+      1 => "Account", //
+      2 => "Cheque/Money Order", //
+      5 => "Visa/Mastercard", //
+      7 => "American Express", //
+      18 => "PayPal", //
+      23 => "Direct Deposit", //
+      24 => "Wait for Freight Quotation", //
+      26 => "Credit Card" //
+    );
     /**
      * @var OrderDetails
      */
@@ -161,8 +160,7 @@
      */
     function exists() {
       $current = $this->current();
-      $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
-        ->fetch()->one();
+      $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->fetch()->one();
       return (count($results) > 0) ? $results[$this->idcolumn] : FALSE;
     }
     /**
@@ -178,7 +176,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the current element
-     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -191,7 +188,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
-     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return scalar scalar on success, integer
      * 0 on failure.
@@ -202,7 +198,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Checks if current position is valid
-     *
      * @link http://php.net/manual/en/iterator.valid.php
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
@@ -213,7 +208,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Rewind the Iterator to the first element
-     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -224,7 +218,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
-     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
@@ -241,6 +234,7 @@
 
    */
   class OrderDetails extends Orders implements \Iterator, \Countable {
+
     /**
      * @var OrderOptions
      */
@@ -301,6 +295,7 @@
 
    */
   class OrderOptions extends OrderDetails implements \Iterator, \Countable {
+
     /**
      * @var string
      */
@@ -324,8 +319,7 @@
      */
     function exists() {
       $current = $this->current();
-      $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
-        ->and_where('OrderDetailID=', $current['OrderDetailID'])
+      $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->and_where('OrderDetailID=', $current['OrderDetailID'])
         ->fetch()->all();
       return (count($results) > 0);
     }
