@@ -37,6 +37,9 @@
           static::$connected = ($i->getVersion() !== FALSE);
           if (static::$connected && isset($_GET['reload_cache'])) {
             $i->flush(0);
+            if (function_exists('apc_clear_cache')) {
+              apc_clear_cache('user');
+            }
           }
           static::$i = $i;
         }
@@ -139,8 +142,10 @@
      */
     static public function define_constants($name, $constants) {
       if (function_exists('apc_load_constants')) {
+
         if (!apc_load_constants($name)) {
           if (is_callable($constants)) {
+
             $constants = (array) call_user_func($constants);
           }
           apc_define_constants($name, $constants);

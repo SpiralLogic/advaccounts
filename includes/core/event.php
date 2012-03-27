@@ -121,7 +121,7 @@
       if (extension_loaded('xhprof')) {
         $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
         $xhprof_data = xhprof_disable();
-        $xhprof_runs = new XHProfRuns_Default();
+        $xhprof_runs = new \XHProfRuns_Default();
         $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
       }
     }
@@ -130,7 +130,17 @@
   trait HookTrait {
     /** @var Hooks */
     public static $hooks = NULL;
-    public static function _register($hook, $object, $function, $arguments = array()) {
+    /**
+     * @static
+     *
+     * @param string       $name      Name of the hook group
+     * @param string      $object    object name containing function to run
+     * @param string       $function  name of function to run
+     * @param array        $arguments array with arguments to call function with.
+     *
+     * @throws HookException
+     */
+    public static function _register($name, $object, $function, $arguments = array()) {
       if (static::$hooks === NULL) {
         static::$hooks = new Hooks();
       }
@@ -138,6 +148,6 @@
       if (!is_callable($callback)) {
         throw new HookException("Class $object doesn't have a callable function $function");
       }
-      static::$hooks->add($hook, $callback, $arguments);
+      static::$hooks->add($name, $callback, $arguments);
     }
   }

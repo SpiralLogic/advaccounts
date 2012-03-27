@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "System Diagnostics"), SA_SETUPCOMPANY);
   // Type of requirement for positive test result
@@ -25,7 +24,6 @@
     'tst_gettext',
     'tst_debug',
     'tst_logging',
-    'tst_dbversion',
     'tst_subdirs',
     'tst_langs',
     'tst_tmpdir',
@@ -34,7 +32,6 @@
     'tst_config',
     'tst_extconfig'
   );
-
   start_table('tablestyle width90');
   $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
   table_header($th);
@@ -51,26 +48,27 @@
     label_cell($res);
     $comm = isset($result['comments']) ? implode('<br>', (array) $result['comments']) : '';
     $color = ($result['result'] ? 'green' : ($result['type'] == 3 ? 'red' : ($result['type'] == 2 ? 'orange' : 'green')));
-    label_cell("<span style='color:$color'>" . ($result['result'] ? _('Ok') : '<span class="bold">' . $comm . '</span>') . '</span>');
+    label_cell("<span style='color:$color'>" . ($result['result'] ? _('Ok') :
+      '<span class="bold">' . $comm . '</span>') . '</span>');
     end_row();
   }
   end_table();
   Page::end();
   function tst_mysql() {
-    $test['descr'] = _('MySQL version') . ' >3.23.58';
+    $test['descr'] = _('MySQL version') . ' >5.0';
     $test['type'] = 3;
     $test['test'] = DB::getAttribute(PDO::ATTR_SERVER_VERSION);
-    $test['result'] = $test['test'] > '3.23.58';
-    $test['comments'] = _('Upgrade MySQL server to version at least 3.23.58');
+    $test['result'] = $test['test'] > '5.0';
+    $test['comments'] = _('Upgrade MySQL server to version at least 5.1');
     return $test;
   }
 
   function tst_php() {
-    $test['descr'] = _('PHP version') . ' >4.3.2';
+    $test['descr'] = _('PHP version') . ' >5.4';
     $test['type'] = 3;
     $test['test'] = phpversion();
-    $test['result'] = $test['test'] > '4.3.2';
-    $test['comments'] = _('Upgrade PHP to version at least 4.3.2');
+    $test['result'] = $test['test'] > '5.3';
+    $test['comments'] = _('Upgrade PHP to version at least 5.4');
     return $test;
   }
 
@@ -92,9 +90,10 @@
 
   function tst_sessionhandler() {
     $test['descr'] = _('Session handler');
-    $test['type'] = 0;
+    $test['type'] = 2;
     $test['test'] = session_module_name();
-    $test['result'] = TRUE;
+    $test['result'] = ($test['test'] == 'memcached');
+    $test['comments'] = 'For better performance Memcached is recommended.';
     return $test;
   }
 
@@ -157,15 +156,6 @@
   //
   //	Installed ADV database structure version
   //
-  function tst_dbversion() {
-    $test['descr'] = _('Current database version');
-    $test['type'] = 3;
-    $test['test'] = DB_Company::get_pref('version_id');
-    $test['result'] = $test['test'] == '2.2';
-    $test['comments'] = _('Database structure seems to be not upgraded to current version') . ' (2.2)';
-    return $test;
-  }
-
   function tst_subdirs() {
     $comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
     $test['descr'] = _('Company subdirectories consistency');

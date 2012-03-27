@@ -21,7 +21,6 @@
     Config::set('default.company', 1);
   }
   $def_theme = "default";
-
   $login_timeout = User::i()->last_act;
   $title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
   $encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";

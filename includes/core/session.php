@@ -27,7 +27,7 @@
     }
     /**
      * @static
-
+     * @return void
      */
     static public function kill() {
       session_unset();
@@ -35,6 +35,7 @@
     }
     /**
      * @static
+     * @return void
      */
     static public function regenerate() {
       session_regenerate_id();
@@ -52,7 +53,7 @@
      */
     protected $_session = array();
     /**
-
+     * @throws SessionException
      */
     final protected function __construct() {
       /** @noinspection PhpUndefinedConstantInspection */
@@ -66,16 +67,16 @@
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path = ini_set('session.save_path', '127.0.0.1:11211');
+
         (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
       if (session_status() === PHP_SESSION_NONE) {
-        $old_handler and ini_set('session.save_handler', $old_handler);
-        $old_path and ini_set('session.save_path', $old_path);
+        ini_set('session.save_handler', $old_handler);
+        ini_set('session.save_path', $old_path);
         $old_serializer and  ini_set('session.serialize_handler', $old_serializer);
+        session_start();
       }
-      /** @noinspection PhpUndefinedConstantInspection */
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
@@ -86,6 +87,10 @@
       // Ajax communication object
       (!class_exists('Ajax'))  or Ajax::i();
     }
+    /**
+     * @static
+     * @return bool
+     */
     public static function checkUserAgent() {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         static::setUserAgent();
@@ -93,8 +98,12 @@
       }
       return TRUE;
     }
+    /**
+     * @static
+     * @return bool
+     */
     protected static function setUserAgent() {
-      return $_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']));
+      return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
@@ -102,14 +111,15 @@
     protected function setTextSupport() {
       if (isset($_SESSION['get_text'])) {
         static::$get_text = $_SESSION['get_text'];
-        return;
       }
-      static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
+      else {
+        static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
+      }
     }
     /**
-     * @param $var
+     * @param string $var
      *
-     * @return null
+     * @return mixed|null
      */
     public function __get($var) {
       return isset($this->_session[$var]) ? $this->_session[$var] : NULL;
@@ -117,6 +127,8 @@
     /**
      * @param $var
      * @param $value
+     *
+     * @return void
      */
     public function __set($var, $value) {
       $this->_session[$var] = $value;
