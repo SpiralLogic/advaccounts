@@ -126,8 +126,8 @@
       echo "<meta charset='{$this->encoding}'>";
       echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
       $this->renderCSS();
-      if (class_exists('ADV\Core\JS')) {
-        ADV\Core\JS::renderHeader();
+      if (class_exists('JS')) {
+        JS::renderHeader();
       }
       echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
       echo "<div id='content'>\n";
@@ -245,8 +245,8 @@
       ob_get_clean();
       $page = new static('Fatal Error.', FALSE);
       $page->header();
-      echo "<div id='msgbox'>$text</div></div></body></html>";
-
+      echo "<div id='msgbox'>$text</div></div></body></html><pre>";
+      var_dump(Errors::$errors);
       ($exit)  and exit();
     }
   }

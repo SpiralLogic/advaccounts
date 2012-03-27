@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   class DB_Query_Select extends DB_Query {
 

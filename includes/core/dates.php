@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
     @date_default_timezone_set(@date_default_timezone_get());

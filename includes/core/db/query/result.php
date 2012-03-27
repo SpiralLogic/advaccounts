@@ -8,7 +8,7 @@
    * @license   ADV http://www.advancedgroup.com.au
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   class DB_Query_Result implements \Countable, \Iterator {
 

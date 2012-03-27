@@ -6,7 +6,7 @@
    * Time: 11:13 AM
    * To change this template use File | Settings | File Templates.
    */
-  class Autoloader extends \ADV\Core\Autoloader {
+  class Autoloader extends \Autoloader {
 
   }
 

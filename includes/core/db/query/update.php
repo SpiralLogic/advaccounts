@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   class DB_Query_Update extends DB_Query_Insert {
 

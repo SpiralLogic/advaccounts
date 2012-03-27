@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   class Errors {
 
@@ -62,7 +62,6 @@
     static protected $useConfigClass;
     /** @static Initialiser */
     static function init() {
-      class_alias('ADV\\Core\\Errors', 'Errors');
       static::$useConfigClass = class_exists('Config', FALSE);
       error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       Event::register_shutdown(__CLASS__);

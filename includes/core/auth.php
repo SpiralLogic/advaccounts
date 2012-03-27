@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
+
 
   /**
 
@@ -56,19 +56,16 @@
      *
      * @return bool|mixed
      */
-    public function check_user_password($user_id) {
+    public function check_user_password($username) {
       $password = $this->hash_password($this->password);
-      $result = DB::select()->from('users')->where('user_id=', $user_id)->fetch()->one();
-      $this->hash_password($password);
+      $result = DB::select()->from('users')->where('user_id=', $username)->and_where('password=',$password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = FALSE;
       }
       else {
         unset($result['password']);
       }
-      DB::insert('user_login_log')->values(array(
-        'user' => $user_id, 'IP' => \Users::get_ip(), 'success' => (bool) $result
-      ))->exec();
+      DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
       return $result;
     }
     /**

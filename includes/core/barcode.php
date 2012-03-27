@@ -24,7 +24,7 @@
      * GD
      * FPDF
      */
-  namespace ADV\Core;
+
 
   class Barcode {
 
