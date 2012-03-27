@@ -1,23 +1,22 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
+   *
    **/
-  namespace ADV\Core;
-
-  class Session_Exception extends \Exception {
-
+  class SessionException extends Exception {
   }
 
+  ;
   /**
-
+   *
    */
   class Session extends Input {
-
     /**
      * @static
      * @return Session|mixed
@@ -28,7 +27,7 @@
     }
     /**
      * @static
-
+     * @return void
      */
     static public function kill() {
       session_unset();
@@ -36,6 +35,7 @@
     }
     /**
      * @static
+     * @return void
      */
     static public function regenerate() {
       session_regenerate_id();
@@ -45,7 +45,7 @@
      */
     static private $i = NULL;
     /***
-     * @var \gettextNativeSupport|\gettext_php_support
+     * @var gettextNativeSupport|gettext_php_support
      */
     static public $get_text;
     /**
@@ -53,36 +53,32 @@
      */
     protected $_session = array();
     /**
-
+     * @throws SessionException
      */
     final protected function __construct() {
       /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_DISABLED) {
-        throw new Session_Exception('Sessions are disasbled!');
+        throw new SessionException('Sessions are disasbled!');
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = NULL;
-      /** @noinspection PhpUndefinedConstantInspection */
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path = ini_set('session.save_path', '127.0.0.1:11211');
-        (\Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+
+        (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
-      /** @noinspection PhpUndefinedConstantInspection */
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE) {
-        $old_handler and ini_set('session.save_handler', $old_handler);
-        $old_path and ini_set('session.save_path', $old_path);
+        ini_set('session.save_handler', $old_handler);
+        ini_set('session.save_path', $old_path);
         $old_serializer and  ini_set('session.serialize_handler', $old_serializer);
+        session_start();
       }
-      /** @noinspection PhpUndefinedConstantInspection */
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
-        throw new Session_Exception('Could not start a Session!');
+        throw new SessionException('Could not start a Session!');
       }
       header("Cache-control: private");
       $this->setTextSupport();
@@ -91,6 +87,10 @@
       // Ajax communication object
       (!class_exists('Ajax'))  or Ajax::i();
     }
+    /**
+     * @static
+     * @return bool
+     */
     public static function checkUserAgent() {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         static::setUserAgent();
@@ -98,8 +98,12 @@
       }
       return TRUE;
     }
+    /**
+     * @static
+     * @return bool
+     */
     protected static function setUserAgent() {
-      return $_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']));
+      return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
@@ -107,14 +111,15 @@
     protected function setTextSupport() {
       if (isset($_SESSION['get_text'])) {
         static::$get_text = $_SESSION['get_text'];
-        return;
       }
-      static::$get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
+      else {
+        static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
+      }
     }
     /**
-     * @param $var
+     * @param string $var
      *
-     * @return null
+     * @return mixed|null
      */
     public function __get($var) {
       return isset($this->_session[$var]) ? $this->_session[$var] : NULL;
@@ -122,6 +127,8 @@
     /**
      * @param $var
      * @param $value
+     *
+     * @return void
      */
     public function __set($var, $value) {
       $this->_session[$var] = $value;

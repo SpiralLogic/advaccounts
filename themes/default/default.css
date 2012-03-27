@@ -1011,10 +1011,10 @@ th:hover span {
 }
 
 #messagesbox .subject span {
-	display: inline-block;
-	width:   70px;
+	display:         inline-block;
+	width:           70px;
 	font-weight:     bold;
-	margin-top:    5px;
+	margin-top:      5px;
 	text-decoration: underline;
 }
 

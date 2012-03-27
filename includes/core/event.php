@@ -1,17 +1,15 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core;
-
   class Event {
-
-  use \ADV\Core\HookTrait;
+  use HookTrait;
 
     /**
      * @var array all objects with methods to be run on shutdown
@@ -34,10 +32,7 @@
 
      */
     static public function init() {
-      $ff = new \ReflectionClass('\ ADV\CoreEvent');
-      var_dump($ff->getMethods());
-      exit;
-      static::$shutdown_events_id = 'shutdown.events.' . \User::i()->username;
+      static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
       $shutdown_events = Cache::get(static::$shutdown_events_id);
       if ($shutdown_events) {
         while ($msg = array_pop($shutdown_events)) {
@@ -99,10 +94,10 @@
      * @param $object
      */
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      //self::_register('shutdown', $object, $function, $arguments);
+      Event::_register('shutdown', $object, $function, $arguments);
     }
     static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      //		Event::_register('pre_shutdown', $object, $function, $arguments);
+      Event::_register('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
     static public function shutdown() {
@@ -125,10 +120,34 @@
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
       if (extension_loaded('xhprof')) {
         $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-        /** @noinspection PhpUndefinedFunctionInspection */
         $xhprof_data = xhprof_disable();
         $xhprof_runs = new \XHProfRuns_Default();
         $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
       }
+    }
+  }
+
+  trait HookTrait {
+    /** @var Hooks */
+    public static $hooks = NULL;
+    /**
+     * @static
+     *
+     * @param string       $name      Name of the hook group
+     * @param string      $object    object name containing function to run
+     * @param string       $function  name of function to run
+     * @param array        $arguments array with arguments to call function with.
+     *
+     * @throws HookException
+     */
+    public static function _register($name, $object, $function, $arguments = array()) {
+      if (static::$hooks === NULL) {
+        static::$hooks = new Hooks();
+      }
+      $callback = $object . '::' . $function;
+      if (!is_callable($callback)) {
+        throw new HookException("Class $object doesn't have a callable function $function");
+      }
+      static::$hooks->add($name, $callback, $arguments);
     }
   }
