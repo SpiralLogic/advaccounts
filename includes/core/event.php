@@ -142,7 +142,7 @@
      */
     public static function _register($name, $object, $function, $arguments = array()) {
       if (static::$hooks === NULL) {
-        static::$hooks = new Hooks();
+        static::$hooks = new Hook();
       }
       $callback = $object . '::' . $function;
       if (!is_callable($callback)) {
