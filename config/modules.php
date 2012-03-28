@@ -7,5 +7,5 @@
    * To change this template use File | Settings | File Templates.
    */
   return array(
-    'Jobsboard',
+    'Jobsboard ',
   );
