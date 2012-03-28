@@ -1,9 +1,6 @@
 <?php
-  namespace Modules\Volusion; /**
-
-   */ /**
-
-   */ class Orders implements \Iterator, \Countable {
+  namespace Modules\Volusion;
+  class Orders implements \Iterator, \Countable {
 
     /**
      * @var

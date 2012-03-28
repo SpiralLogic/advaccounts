@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Modules;
+
   /**
    * Jobsboard
    */
@@ -20,6 +21,15 @@
      * @param $trans_no
      *
      * @return mixed
+     */
+    public function init() {
+      \User::register_login(__CLASS__, 'tasks');
+    }
+
+    /**
+     * @param $trans_no
+     *
+     * @return bool
      */
     function removejob($trans_no) {
       \DB::change_connection('jobsboard');
@@ -121,10 +131,11 @@
      */
     static function tasks() {
       $webstore = \Config::get('webstore.type');
-      $webstore = '\\Modules\\' . $webstore;
-      /***  @var \Modules\Volusion $store */
-      $store = new $webstore();
-      $store->doWebsales();
+      if ($webstore) {
+        $webstore = '\\Modules\\' . $webstore;
+        $store = new $webstore();
+        $store->doWebsales();
+      }
       \DB::change_connection('jobsboard');
       $result = FALSE;
       try {

@@ -63,7 +63,7 @@
       return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-  Cache::define_constants('defines',function() {
+  Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });
   include(DOCROOT . 'config' . DS . 'types.php');

@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
   /**
 
    */
@@ -58,7 +57,7 @@
      */
     public function check_user_password($username) {
       $password = $this->hash_password($this->password);
-      $result = DB::select()->from('users')->where('user_id=', $username)->and_where('password=',$password)->fetch()->one();
+      $result = DB::select()->from('users')->where('user_id=', $username)->and_where('password=', $password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = FALSE;
       }

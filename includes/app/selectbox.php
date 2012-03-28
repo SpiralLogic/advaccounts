@@ -39,6 +39,7 @@
     protected $category = FALSE; // category column name or false
     protected $show_inactive = FALSE; // show inactive records.
     protected $editable = FALSE; // false, or length of editable entry field
+    protected $rel = ''; // false, or length of editable entry field
     protected $name;
     protected $selected_id;
     protected $sql;
@@ -57,6 +58,8 @@
         if (property_exists($this, $option)) {
           $this->$option = $value;
         }
+        else {
+        }
       }
       if (!is_array($this->where)) {
         $this->where = array($this->where);
@@ -72,8 +75,6 @@
       // select set by select content field
       $search_button = $this->editable ? '_' . $this->name . '_button' : ($search_box ? $search_submit : FALSE);
       $select_submit = $this->select_submit;
-      $spec_id = $this->spec_id;
-      $spec_option = $this->spec_option;
       $by_id = ($this->type == 0);
       $class = $by_id ? 'combo' : 'combo2';
       $disabled = $this->disabled ? "disabled" : '';
@@ -95,8 +96,7 @@
         $this->selected_id = array((string) $this->selected_id);
       } // code is generalized for multiple selection support
       $txt = get_post($search_box);
-      $rel = '';
-      $limit = '';
+
       if (isset($_POST['_' . $this->name . '_update'])) { // select list or search box change
         if ($by_id) {
           $txt = $_POST[$this->name];
@@ -116,76 +116,18 @@
           Ajax::i()->activate($this->name);
         }
       }
-      if ($search_box) {
-        // search related sql modifications
-        $rel = "rel='$search_box'"; // set relation to list
-        if ($this->search_submit) {
-          if (isset($_POST[$search_button])) {
-            $this->selected_id = array(); // ignore selected_id while search
-            if (!$this->async) {
-              Ajax::i()->activate('_page_body');
-            }
-            else {
-              Ajax::i()->activate($this->name);
-            }
-          }
-          if ($txt == '') {
-            if ($spec_option === FALSE && $this->selected_id == array()) {
-              $limit = ' LIMIT 1';
-            }
-            else {
-              $this->where[] = $this->valfield . "='" . get_post($this->name, $spec_id) . "'";
-            }
-          }
-          else {
-            if ($txt != '*') {
-              $texts = explode(" ", trim($txt));
-              foreach ($texts as $text) {
-                if (empty($text)) {
-                  continue;
-                }
-                $search_fields = $this->search;
-                foreach ($search_fields as $i => $s) {
-                  $search_fields[$i] = $s . ' LIKE ' . DB::escape("%$text%");
-                }
-                $this->where[] = '(' . implode($search_fields, ' OR ') . ')';
-              }
-            }
-          }
-        }
-      }
-      // sql completion
-      if (count($this->where)) {
-        $where = strpos($this->sql, 'WHERE') == FALSE ? ' WHERE ' : ' AND ';
-        $where .= '(' . implode($this->where, ' AND ') . ')';
-        $group_pos = strpos($this->sql, 'GROUP BY');
-        if ($group_pos) {
-          $group = substr($this->sql, $group_pos);
-          $this->sql = substr($this->sql, 0, $group_pos) . $where . ' ' . $group;
-        }
-        else {
-          $this->sql .= $where;
-        }
-      }
-      if ($this->order != FALSE) {
-        if (!is_array($this->order)) {
-          $this->order = array($this->order);
-        }
-        $this->sql .= ' ORDER BY ' . implode(',', $this->order);
-      }
-      $this->sql .= $limit;
+      $this->generateSQL($search_box, $search_button, $txt);
       // ------ make selector ----------
       $selector = $first_opt = '';
       $first_id = FALSE;
       $found = FALSE;
       $lastcat = NULL;
       $edit = FALSE;
-      //if($this->name=='stock_id')	Event::notice('<pre>'.print_r($_POST, true).'</pre>');
-      //if($this->name=='curr_default') Event::notice($this->search_submit);
-      if ($result = DB::query($this->sql)) {
-        while ($contact_row = DB::fetch($result)) {
-          $value = $contact_row[0];
-          $descr = $this->format == NULL ? $contact_row[1] : call_user_func($this->format, $contact_row);
+
+      if ($result = $this->executeSQL()) {
+        while ($row = $this->getNext($result)) {
+          $value = $row[0];
+          $descr = $this->format == NULL ? $row[1] : call_user_func($this->format, $row);
           $sel = '';
           if (get_post($search_button) && ($txt == $value)) {
             $this->selected_id[] = $value;
@@ -193,23 +135,23 @@
           if (in_array((string) $value, $this->selected_id, TRUE)) {
             $sel = 'selected';
             $found = $value;
-            $edit = $this->editable && $contact_row['editable'] && (Input::post($search_box) == $value) ? $contact_row[1] :
+            $edit = $this->editable && $row['editable'] && (Input::post($search_box) == $value) ? $row[1] :
               FALSE; // get non-formatted description
             if ($edit) {
               break; // selected field is editable - abandon list construction
             }
           }
           // show selected option even if inactive
-          if ((!isset($this->show_inactive) || !$this->show_inactive) && isset($contact_row['inactive']) && @$contact_row['inactive'] && $sel === '') {
+          if ((!isset($this->show_inactive) || !$this->show_inactive) && isset($row['inactive']) && @$row['inactive'] && $sel === '') {
             continue;
           }
           else {
-            $optclass = (isset($contact_row['inactive']) && $contact_row['inactive']) ? "class='inactive'" : '';
+            $optclass = (isset($row['inactive']) && $row['inactive']) ? "class='inactive'" : '';
           }
           if ($first_id === FALSE) {
             $first_id = $value;
           }
-          $cat = $contact_row[$this->category];
+          $cat = $row[$this->category];
           if ($this->category !== FALSE && $cat != $lastcat) {
             if (isset($lastcat)) {
               $selector .= "</optgroup>";
@@ -222,13 +164,13 @@
         DB::free_result($result);
       }
       // Prepend special option.
-      if ($spec_option !== FALSE) { // if special option used - add it
-        $first_id = $spec_id;
-        $first_opt = $spec_option;
+      if ($this->spec_option !== FALSE) { // if special option used - add it
+        $first_id = $this->spec_id;
+        $first_opt = $this->spec_option;
         //	}
         //	if($first_id !== false) {
         $sel = $found === FALSE ? 'selected' : '';
-        $optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
+        $optclass = @$row['inactive'] ? "class='inactive'" : '';
         $selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
       }
       if (isset($lastcat)) {
@@ -240,16 +182,16 @@
       $_POST[$this->name] = $multi ? $this->selected_id : $this->selected_id[0];
 
       $selector = "<select id='$this->name' " . ($multi ? "multiple" : '') . ($this->height !== FALSE ? ' size="' . $this->height . '"' :
-        '') . "$disabled name='$this->name" . ($multi ? '[]' : '') . "' class='$class' title='" . $this->sel_hint . "' $rel>" . $selector . "</select>\n";
+        '') . "$disabled name='$this->name" . ($multi ? '[]' : '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != FALSE || $this->editable)) {
         // on first display show selector list
         if (isset($_POST[$search_box]) && $this->editable && $edit) {
           $selector = "<input type='hidden' name='$this->name' value='" . $_POST[$this->name] . "'>";
-          if (isset($contact_row['long_description'])) {
-            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='{$this->name}_text' $rel rows='2'>{$contact_row['long_description']}</textarea></td>\n";
+          if (isset($row['long_description'])) {
+            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='{$this->name}_text' " . $this->rel . " rows='2'>{$row['long_description']}</textarea></td>\n";
           }
           else {
-            $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' $rel value='$edit'>\n";
+            $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }
           JS::set_focus($this->name . '_text'); // prevent lost focus
         }
@@ -290,5 +232,86 @@
         $str = $edit_entry . $selector;
       }
       return $str;
+    }
+    function generateSQL($search_box, $search_button, $txt) {
+      $limit = '';
+      if ($search_box) {
+        // search related sql modifications
+        $this->rel = "rel='$search_box'"; // set relation to list
+        if ($this->search_submit) {
+          if (isset($_POST[$search_button])) {
+            $this->selected_id = array(); // ignore selected_id while search
+            if (!$this->async) {
+              Ajax::i()->activate('_page_body');
+            }
+            else {
+              Ajax::i()->activate($this->name);
+            }
+          }
+          if ($txt == '') {
+            if ($this->spec_option === FALSE && $this->selected_id == array()) {
+              $limit = ' LIMIT 1';
+            }
+            else {
+              $this->where[] = $this->valfield . "='" . get_post($this->name, $this->spec_id) . "'";
+            }
+          }
+          else {
+            if ($txt != '*') {
+              $texts = explode(" ", trim($txt));
+              foreach ($texts as $text) {
+                if (empty($text)) {
+                  continue;
+                }
+                $search_fields = $this->search;
+                foreach ($search_fields as $i => $s) {
+                  $search_fields[$i] = $s . ' LIKE ' . DB::escape("%$text%");
+                }
+                $this->where[] = '(' . implode($search_fields, ' OR ') . ')';
+              }
+            }
+          }
+        }
+      }
+      // sql completion
+      if (count($this->where)) {
+        $where = strpos($this->sql, 'WHERE') == FALSE ? ' WHERE ' : ' AND ';
+        $where .= '(' . implode($this->where, ' AND ') . ')';
+        $group_pos = strpos($this->sql, 'GROUP BY');
+        if ($group_pos) {
+          $group = substr($this->sql, $group_pos);
+          $this->sql = substr($this->sql, 0, $group_pos) . $where . ' ' . $group;
+        }
+        else {
+          $this->sql .= $where;
+        }
+      }
+      if ($this->order != FALSE) {
+        if (!is_array($this->order)) {
+          $this->order = array($this->order);
+        }
+        $this->sql .= ' ORDER BY ' . implode(',', $this->order);
+      }
+      $this->sql .= $limit;
+    }
+    private function executeSQL() {
+      $md5 = md5($this->sql);
+      $result = Cache::get($md5);
+      if ($result === FALSE) {
+        DB::query($this->sql);
+        $result = DB::fetch_all(\PDO::FETCH_BOTH);
+        Cache::set($md5, $result);
+      }
+
+      return $result;
+    }
+    private function getNext(&$result) {
+      if (is_array($result)) {
+        return array_shift($result);
+      }
+      elseif (is_a($result, 'PDOStatement')) {
+        return DB::fetch($result);
+      }
+      return FALSE;
     }
   }

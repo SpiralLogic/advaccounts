@@ -1,14 +1,15 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   class Event {
+
   use HookTrait;
 
     /**
@@ -94,10 +95,10 @@
      * @param $object
      */
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_register('shutdown', $object, $function, $arguments);
+      Event::_registerHook('shutdown', $object, $function, $arguments);
     }
     static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_register('pre_shutdown', $object, $function, $arguments);
+      Event::_registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
     static public function shutdown() {
@@ -112,7 +113,7 @@
       fastcgi_finish_request();
       static::$request_finsihed = TRUE;
       try {
-        static::$hooks->fire('shutdown');
+        Event::$hooks->fire('shutdown');
       }
       catch (Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
@@ -124,30 +125,5 @@
         $xhprof_runs = new \XHProfRuns_Default();
         $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
       }
-    }
-  }
-
-  trait HookTrait {
-    /** @var Hooks */
-    public static $hooks = NULL;
-    /**
-     * @static
-     *
-     * @param string       $name      Name of the hook group
-     * @param string      $object    object name containing function to run
-     * @param string       $function  name of function to run
-     * @param array        $arguments array with arguments to call function with.
-     *
-     * @throws HookException
-     */
-    public static function _register($name, $object, $function, $arguments = array()) {
-      if (static::$hooks === NULL) {
-        static::$hooks = new Hook();
-      }
-      $callback = $object . '::' . $function;
-      if (!is_callable($callback)) {
-        throw new HookException("Class $object doesn't have a callable function $function");
-      }
-      static::$hooks->add($name, $callback, $arguments);
     }
   }

@@ -131,6 +131,12 @@
         $v = is_string($v) ? trim($v) : $v;
       });
       require APPPATH . "main.php";
+      $modules = Config::get('modules', array());
+      foreach ($modules as $module) {
+        if (is_callable($module . '::init')) {
+          call_user_func($module . '::init');
+        }
+      }
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
       if (strstr($_SERVER['PHP_SELF'], 'logout.php') == FALSE) {

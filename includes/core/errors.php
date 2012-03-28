@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
   class Errors {
 
     /**
@@ -64,7 +63,7 @@
     static function init() {
       static::$useConfigClass = class_exists('Config', FALSE);
       error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-      Event::register_shutdown(__CLASS__);
+      Event::register_shutdown(__CLASS__, 'send_debug_email');
     }
     /**
      * @static
@@ -163,16 +162,8 @@
      * @static
 
      */
-    static public function _shutdown() {
-      static::send_debug_email();
-    }
-    /**
-     * @static
-
-     */
-    static protected function send_debug_email() {
+    static public function send_debug_email() {
       if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))
-        && static::$useConfigClass && Config::get('debug.email')
       ) {
         $withbacktrace = $text = '';
         if (count(static::$debugLog)) {
@@ -230,9 +221,8 @@
         $to = 'errors@advancedgroup.com.au';
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
-        $headers .= "Reply-To: webmaster@example.com\r\n";
+        $headers .= "Reply-To: errors@advancedgroup.com.au\r\n";
         $headers .= "X-Mailer: " . BUILD_VERSION . "\r\n";
         $success = mail($to, $subject, $text, $headers);
         if (!$success) {
