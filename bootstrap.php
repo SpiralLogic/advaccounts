@@ -63,6 +63,7 @@
       return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
+  class_alias('\\Core\\Cache', 'Cache');
   Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });

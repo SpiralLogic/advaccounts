@@ -34,7 +34,7 @@
      * @param $password
      */
     public function update_password($id, $password) {
-      DB::update('users')->value('password', $this->hash_password($password))
+      \DB::update('users')->value('password', $this->hash_password($password))
         ->value('user_id', $this->username)
         ->value('change_password', 0)
         ->where('id=', $id)->exec();
@@ -57,14 +57,14 @@
      */
     public function check_user_password($username) {
       $password = $this->hash_password($this->password);
-      $result = DB::select()->from('users')->where('user_id=', $username)->and_where('password=', $password)->fetch()->one();
+      $result = \DB::select()->from('users')->where('user_id=', $username)->and_where('password=', $password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = FALSE;
       }
       else {
         unset($result['password']);
       }
-      DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
+      \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
       return $result;
     }
     /**
@@ -145,8 +145,8 @@
      * @return bool
      */
     public function isBruteForce() {
-      $query = DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP='
-        . DB::escape(\Users::get_ip()));
-      return (DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
+      $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP='
+        . \DB::escape(\Users::get_ip()));
+      return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
   }

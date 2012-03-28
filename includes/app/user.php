@@ -10,7 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
   class User {
-use \HookTrait;
+use \Core\Traits\Hook;
     /***
      * @static
      * @return User
@@ -126,6 +126,13 @@ use \HookTrait;
       }
       return $this->logged;
     }
+    /**
+     * @static
+     *
+     * @param       $object
+     * @param       $function
+     * @param array $arguments
+     */
     public static function register_login($object,$function,$arguments=array()) {
       self::_registerHook('login', $object, $function, $arguments);
     }

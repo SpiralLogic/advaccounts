@@ -1,14 +1,16 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace Core;
+  use \Memcached as Memcached;
   class Cache {
+
     /**
      * @var Memcached
      */
@@ -23,7 +25,7 @@
      */
     static protected function i() {
       if (static::$i === NULL) {
-        if (class_exists('Memcached', FALSE)) {
+        if (class_exists('\\Memcached', FALSE)) {
           $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
           if (!count($i->getServerList())) {
             $i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
@@ -100,7 +102,7 @@
       }
       return $result;
     }
-    /**
+       /**
      * @static
      * @return mixed
      */

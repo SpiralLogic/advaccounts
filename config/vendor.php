@@ -12,7 +12,7 @@
     'SMTP', //
     'OLEwriter', //
     'JsHttpRequest', //
-    'tcpdf/' => 'TCPDF', //
+    'tcpdf' , //
     'Cpdf', //
     'JSMin'
   );

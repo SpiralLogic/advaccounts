@@ -7,39 +7,37 @@
    * To change this template use File | Settings | File Templates.
    */
   return array(
-    'Adv_Exception' => 'Adv_Exception', //
-    'Ajax' => 'Ajax', //
-    'Arr' => 'Arr', //
-    'Auth' => 'Auth', //
-    'Autoloader' => 'Autoloader', //
-    'Cache' => 'Cache', //
-    'Config' => 'Config', //
-    'Config' => 'Config', //
-    'DatePicker' => 'DatePicker', //
-    'Dates' => 'Dates', //
-    'DB' => 'DB', //
-    'DB_Connection' => 'DB_Connection', //
-    'DB_Query' => 'DB_Query', //
-    'DB_Query_Delete' => 'DB_Query_Delete', //
-    'DB_Query_Insert' => 'DB_Query_Insert', //
-    'DB_Query_Result' => 'DB_Query_Result', //
-    'DB_Query_Select' => 'DB_Query_Select', //
-    'DB_Query_Update' => 'DB_Query_Update', //
-    'DB_Query_Where' => 'DB_Query_Where', //
-    'Dialog' => 'Dialog', //
-    'Errors' => 'Errors', //
-    'Errors' => 'Errors', //
-    'Event' => 'Event', //
-    'Files' => 'Files', //
-    'HTML' => 'HTML', //
+    'Adv_Exception', //
+    'Ajax', //
+    'Arr', //
+    'Auth', //
+    'Autoloader', //
+    'Cache', //
+    'Config', //
+    'DatePicker', //
+    'Dates', //
+    'DB', //
+    'DB_Connection', //
+    'DB_Query', //
+    'DB_Query_Delete', //
+    'DB_Query_Insert', //
+    'DB_Query_Result', //
+    'DB_Query_Select', //
+    'DB_Query_Update', //
+    'DB_Query_Where', //
+    'Dialog', //
+    'Errors', //
+    'Event', //
+    'Files', //
+    'HTML', //
     'Hook', //
-    'Input' => 'Input', //
-    'JS' => 'JS', //
-    'Language' => 'Language', //
-    'Menu' => 'Menu', //
-    'MenuUi' => 'MenuUi', //
-    'Num' => 'Num', //
-    'Session' => 'Session', //
-    'Status' => 'Status', //
-    'UploadHandler' => 'UploadHandler', //
+    'Input', //
+    'JS', //
+    'Language', //
+    'Menu', //
+    'MenuUi', //
+    'Num', //
+    'Session', //
+    'Status', //
+    'UploadHandler', //
   );

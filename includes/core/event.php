@@ -10,7 +10,7 @@
 
   class Event {
 
-  use HookTrait;
+  use \Core\Traits\Hook;
 
     /**
      * @var array all objects with methods to be run on shutdown
@@ -95,10 +95,10 @@
      * @param $object
      */
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_registerHook('shutdown', $object, $function, $arguments);
+      //self::_registerHook('shutdown', $object, $function, $arguments);
     }
     static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_registerHook('pre_shutdown', $object, $function, $arguments);
+      //self::_registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
     static public function shutdown() {
@@ -127,3 +127,4 @@
       }
     }
   }
+Event::init();
