@@ -95,10 +95,10 @@
      * @param $object
      */
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_registerHook('shutdown', $object, $function, $arguments);
+      Event::registerHook('shutdown', $object, $function, $arguments);
     }
     static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
-      Event::_registerHook('pre_shutdown', $object, $function, $arguments);
+      Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
     static public function shutdown() {

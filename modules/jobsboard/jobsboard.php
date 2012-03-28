@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,12 +9,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Modules;
-
   /**
    * Jobsboard
    */
   class Jobsboard {
-
     protected $currentJob;
     protected $lines;
     public $order_no;
@@ -21,15 +20,6 @@
      * @param $trans_no
      *
      * @return mixed
-     */
-    public function init() {
-      \User::register_login(__CLASS__, 'tasks');
-    }
-
-    /**
-     * @param $trans_no
-     *
-     * @return bool
      */
     function removejob($trans_no) {
       \DB::change_connection('jobsboard');
@@ -83,11 +73,12 @@
         $jobslines = $this->getLines();
         $deleted = array_diff_key($jobslines, $lines);
         foreach ($deleted as $line) {
-          if ($jobslines[$line['line_id']]['quantity'] == 0) {
+          if ($line['quantity'] == 0) {
             continue;
           }
-          $jobslines[$line['line_id']]['quantity'] = 0;
-          $jobslines[$line['line_id']]['description'] .= " DELETED!";
+          $lines[$line['line_id']]= $line;
+          $lines[$line['line_id']]['quantity'] = 0;
+          $lines[$line['line_id']]['description'] .= " DELETED!";
         }
         $update = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job Updated from acounts by ' . $user_name . ' ' . chr(13) . chr(10) . $job['Updates'];
         $data['Next_Action_Required'] = '<div>Job has been updated from accounts ' . $user_name . '</div>' . $job['Next_Action_Required'];
@@ -131,11 +122,10 @@
      */
     static function tasks() {
       $webstore = \Config::get('webstore.type');
-      if ($webstore) {
-        $webstore = '\\Modules\\' . $webstore;
-        $store = new $webstore();
-        $store->doWebsales();
-      }
+      $webstore = '\\Modules\\' . $webstore;
+      /***  @var \Modules\Volusion $store */
+      $store = new $webstore();
+      $store->doWebsales();
       \DB::change_connection('jobsboard');
       $result = FALSE;
       try {
@@ -249,6 +239,7 @@ Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_b
     }
     /***
      * Get line from order
+     *
      * @return array Lines from accounting order
      */
     protected function getOrderLines() {

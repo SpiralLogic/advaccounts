@@ -12,7 +12,6 @@
     'Arr' => 'Arr', //
     'Auth' => 'Auth', //
     'Autoloader' => 'Autoloader', //
-    'Cache' => 'Cache', //
     'Config' => 'Config', //
     'Config' => 'Config', //
     'DatePicker' => 'DatePicker', //
