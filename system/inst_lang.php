@@ -172,19 +172,20 @@
 			</script>";
     start_table('tablestyle2');
     if ($selected_id != -1) {
-				$conn = Config::get('languages.installed')[ $selected_id];
-				$_POST['code'] = $conn['code'];
-				$_POST['name'] = $conn['name'];
-				$_POST['encoding'] = $conn['encoding'];
-				if (isset($conn['rtl'])) {
-          $_POST['rtl'] = $conn['rtl'];
-        }
-        else {
-          $_POST['rtl'] = FALSE;
-        }
-				$_POST['dflt'] = Config::set('default.lang', $conn['code']);
-				hidden('selected_id', $selected_id);
-			}
+      $languages = Config::get('languages.installed');
+      $conn = $languages[$selected_id];
+      $_POST['code'] = $conn['code'];
+      $_POST['name'] = $conn['name'];
+      $_POST['encoding'] = $conn['encoding'];
+      if (isset($conn['rtl'])) {
+        $_POST['rtl'] = $conn['rtl'];
+      }
+      else {
+        $_POST['rtl'] = FALSE;
+      }
+      $_POST['dflt'] = Config::set('default.lang', $conn['code']);
+      hidden('selected_id', $selected_id);
+    }
     text_row_ex(_("Language Code"), 'code', 20);
     text_row_ex(_("Language Name"), 'name', 20);
     text_row_ex(_("Encoding"), 'encoding', 20);
@@ -197,5 +198,3 @@
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
     end_form();
   }
-
-?>

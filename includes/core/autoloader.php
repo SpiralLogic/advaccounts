@@ -38,8 +38,8 @@
      */
     static public function i() {
       spl_autoload_register('Autoloader::load', TRUE);
-      static::$classes = \Core\Cache::get('autoload.classes');
-      static::$loaded = \Core\Cache::get('autoload.paths');
+      //static::$classes = \Core\Cache::get('autoload.classes');
+      //static::$loaded = \Core\Cache::get('autoload.paths');
       if (!static::$classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
@@ -66,7 +66,7 @@
      * @param       $type
      */
     static protected function add_classes(array $classes, $type) {
-      foreach ($classes as $dir => $class ) {
+      foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
         }
@@ -90,11 +90,6 @@
           return static::includeFile($filepath, $classname);
         }
       }
-      if (isset(static::$loaded[$classname])) {
-        unset (static::$loaded[$classname]);
-      }
-      static::$classes = FALSE;
-      \Core\Cache::delete('autoload.classes');
       return FALSE;
     }
     /**
@@ -110,15 +105,12 @@
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be found!');
       }
+      if (!is_readable($filepath)) {
+        throw new Autoload_Exception('File for class ' . $class . ' cannot be	read at: ' . $filepath);
+      }
       /** @noinspection PhpIncludeInspection */
       if (!include($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
-      }
-      if (!isset(static::$loaded[$class])) {
-        static::$loaded[$class] = $filepath;
-        if ($class != 'Cache' && $class != 'Event') {
-          Event::register_shutdown(__CLASS__);
-        }
       }
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
       return TRUE;
@@ -150,29 +142,29 @@
      *
      * @return bool|string
      */
-    static public function load($classname) {
-      $classname = ltrim($classname, '\\');
-      $filename = str_replace('_', DS, $classname);
-      $filename = strtolower($filename);
-      if ($lastNsPos = strripos($classname, '\\')) {
-        $namespace = substr($classname, 0, $lastNsPos);
-        $classname = substr($classname, $lastNsPos + 1);
-        $dir = DOCROOT . 'includes' . DS . strtolower(str_replace('\\', DS, $namespace) . DS . $classname);
+    static public function load($required_class) {
+      $classpath = ltrim($required_class, '\\');
+      $filename = strtolower(str_replace('_', DS, $classpath));
+      if ($lastNsPos = strripos($classpath, '\\')) {
+        $namespace = substr($classpath, 0, $lastNsPos);
+        $filename = substr($filename, $lastNsPos + 1);
+        $namespacepath = str_replace('\\', DS, $namespace);
+        $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
       }
-      elseif (isset(static::$classes[$classname])) {
-        $dir = static::$classes[$classname] . $filename;
+      elseif (isset(static::$classes[$required_class])) {
+        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
       }
       else {
         $dir = APPPATH . $filename;
       }
-      if (!is_readable($dir . '.php') && is_dir($dir)) {
+      $filename = strtolower($filename);
+      if (is_dir($dir)) {
         $filename = $dir . DS . $filename . '.php';
       }
       else {
         $filename = $dir . '.php';
       }
-      echo $filename . '<br >';
-      return static::trypath($filename, $classname);
+      return static::trypath($filename, $required_class);
     }
     static protected function makePaths($classname, $path) {
       $class = str_replace('_', DS, $classname);

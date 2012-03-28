@@ -12,7 +12,7 @@
 
     /** @var Hook */
     public static $hooks = NULL;
-    public static function _registerHook($hook, $object, $function, $arguments = array()) {
+    public static function registerHook($hook, $object, $function, $arguments = array()) {
       if (self::$hooks === NULL) {
         self::$hooks = new \Hook();
       }
