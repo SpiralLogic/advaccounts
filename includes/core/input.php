@@ -43,7 +43,7 @@
      * @static
      *
      * @param mixed $var     $_POST variable to return
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+     * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string|object
@@ -81,13 +81,13 @@
      * @static
      *
      * @param mixed $var     $_GET variable to return if it doesn't exist $_POST will be tried
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+     * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string|object
      */
     static public function get_post($var, $type = NULL, $default = NULL) {
-      return static::get_post($_GET, $_POST, $var, $type, $default);
+      return static::_get_post($_GET, $_POST, $var, $type, $default);
     }
     /***
      * @static
@@ -99,7 +99,7 @@
      * @return bool|int|string|object
      */
     static public function post_get($var, $type = NULL, $default = NULL) {
-      return static::get_post($_POST, $_GET, $var, $type, $default);
+      return static::_get_post($_POST, $_GET, $var, $type, $default);
     }
     /***
      * @static

@@ -62,15 +62,7 @@
     Session::i()->page_title = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title);
-  if (isset($_GET['selected_customer'])) {
-    $selected_customer = $_GET['selected_customer'];
-  }
-  elseif (isset($_POST['selected_customer'])) {
-    $selected_customer = $_POST['selected_customer'];
-  }
-  else {
-    $selected_customer = -1;
-  }
+  $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];
@@ -260,8 +252,6 @@
       array('type' => 'skip'),
       _("Branch") => array('ord' => ''),
       _("Delivery To"),
-      _("Currency") => array('align' => 'center'),
-      array('type' => 'skip'),
       _("Total") => array('type' => 'amount', 'ord' => ''),
     );
   }

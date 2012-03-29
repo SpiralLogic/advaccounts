@@ -20,15 +20,7 @@
     $_POST['OutstandingOnly'] = FALSE;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
-  if (isset($_GET['selected_customer'])) {
-    $selected_customer = $_GET['selected_customer'];
-  }
-  elseif (isset($_POST['selected_customer'])) {
-    $selected_customer = $_POST['selected_customer'];
-  }
-  else {
-    $selected_customer = -1;
-  }
+  $selected_customer= Input::get_post('customer_id', Input::NUMERIC, -1);
   if (isset($_POST[Orders::BATCH_INVOICE])) {
     // checking batch integrity
     $del_count = 0;
@@ -75,7 +67,7 @@
   start_form(FALSE, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   start_table('tablestyle_noborder');
   start_row();
-  Debtor::cells(_('Customer:'), 'selected_customer', $_POST['selected_customer'], TRUE);
+  Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
   ref_cells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
   date_cells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
   date_cells(_("to:"), 'DeliveryToDate', '', NULL, 1);
@@ -115,7 +107,7 @@
 			AND line.debtor_trans_type = trans.type
 			AND trans.branch_id = branch.branch_id
 			AND trans.debtor_no = branch.debtor_no ";
-  if ($_POST['OutstandingOnly'] == TRUE) {
+  if ($_POST['OutstandingOnly']) {
     $sql .= " AND line.qty_done < line.quantity ";
   }
   //figure out the sql required from the inputs available
@@ -128,13 +120,13 @@
     $sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
     $sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
     if ($selected_customer != -1) {
-      $sql .= " AND trans.debtor_no=" . DB::quote($_POST['customer_id']) . " ";
+      $sql .= " AND trans.debtor_no=" . DB::quote($selected_customer) . " ";
     }
     if (isset($selected_stock_item)) {
       $sql .= " AND line.stock_id=" . DB::quote($selected_stock_item) . " ";
     }
     if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-      $sql .= " AND sorder.from_stk_loc = " . DB::quote($_POST['StockLocation']) . " ";
+      $sql .= " AND sorder.from_stk_loc = " . DB::quote($_POST['StockLocation']);
     }
     $sql .= " GROUP BY trans.trans_no ";
   } //end no delivery number selected
@@ -161,7 +153,6 @@
     }
     unset($_SESSION['Batch']);
   }
-  Errors::log($sql);
   $table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
   $table->set_marker('check_overdue', _("Marked items are overdue."));
   //$table->width = "92%";

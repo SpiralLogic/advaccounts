@@ -445,10 +445,10 @@
   }
 
   function check_cells($label, $name, $value = NULL, $submit_on_change = FALSE, $title = FALSE, $params = '') {
-    if ($label != NULL) {
-      echo "<td>$label</td>\n";
-    }
     echo "<td $params>";
+    if ($label != NULL) {
+      echo "<label for=\"$name\"> $label</label>";
+    }
     echo check(NULL, $name, $value, $submit_on_change, $title);
     echo "</td>";
   }
@@ -484,16 +484,16 @@
       else {
         $_POST[$name] = "";
       }
-    }
+    }    echo "<td>";
+
     if ($label != NULL) {
-      echo "<td class='label'>$label</td>";
+      echo "<label for=\"$name\"> $label</label>";
     }
     if (!isset($max)) {
       $max = $size;
     }
-    echo "<td>";
     $class = $submit_on_change ? 'class="searchbox"' : '';
-    echo "<input $class type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
+    echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
     if ($post_label) {
       echo " " . $post_label;
     }
@@ -585,10 +585,10 @@
       }
     }
     $post_label = "";
-    if ($label != NULL) {
-      label_cell($label, $params);
-    }
     echo "<td>";
+    if ($label != NULL) {
+      echo "<label for=\"$name\"> $label</label>";
+      }
     $class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
     $aspect = $check ? ' data-aspect="cdate"' : '';
     if ($check && (get_post($name) != Dates::today())) {

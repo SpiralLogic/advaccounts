@@ -820,10 +820,13 @@ JS;
      */
     static public function select($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $opts = array(), $editkey = FALSE, $legacy = FALSE) {
       if (!$legacy) {
-        Item::addSearchBox($name, array_merge(array(
-          'submitonselect' => $submit_on_change, 'selected' => $selected_id,
-          'purchase' => TRUE, 'cells' => TRUE
-        ), $opts));
+        Item::addSearchBox($name,
+          array_merge(array(
+            'submitonselect' => $submit_on_change,
+            'selected' => $selected_id,
+            'purchase' => TRUE,
+            'cells' => TRUE
+          ), $opts));
         return '';
       }
       $sql
@@ -867,12 +870,9 @@ JS;
      * @param bool $legacy
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE, $legacy = FALSE) {
-      if ($label != NULL) {
-        echo "<td>$label</td>\n";
-      }
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
         'submitonselect' => $submit_on_change,
-        'cells' => TRUE,
+        'label' => $label, 'cells' => TRUE,
         'purchase' => FALSE,
         'show_inactive' => $all,
         'editable' => $editkey
