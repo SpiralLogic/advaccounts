@@ -244,8 +244,6 @@
       array('type' => 'skip'),
       _("Branch") => array('ord' => ''),
       _("Delivery To"),
-      _("Currency") => array('align' => 'center'),
-      array('type' => 'skip'),
       _("Total") => array('type' => 'amount', 'ord' => ''),
     );
   }
