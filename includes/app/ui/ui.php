@@ -133,7 +133,7 @@
         'disabled' => FALSE,
         'editable' => TRUE,
         'selected' => '',
-        'label' => FALSE,
+        'label' => NULL,
         'cells' => FALSE,
         'inactive' => FALSE,
         'purchase' => FALSE,

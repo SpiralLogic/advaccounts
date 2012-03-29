@@ -710,10 +710,11 @@ JS;
      * @param bool $async
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
-      if ($label != NULL) {
-        echo "<td>$label</td>\n";
-      }
       echo "<td class='nowrap'>";
+      if ($label != NULL) {
+              echo "<label for=\"$name\"> $label</label>";
+
+      }
       echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
       echo "</td>\n";
     }

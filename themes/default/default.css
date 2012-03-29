@@ -73,11 +73,6 @@ input.big {
 input.small {
 	width: 50px;
 }
-
-input[type="checkbox"] {
-	min-width: inherit;
-}
-
 select, input {
 	max-width: 300px;
 }
@@ -85,7 +80,13 @@ select, input {
 input {
 	height: 25px;
 }
-
+input[type="checkbox"] {
+	min-width: inherit;
+  height:auto;
+}
+label {
+  padding:          2px  5px ;
+}
 a, .ui-widget-content a table a {
 	color:           #2F637A;
 	text-decoration: none;
@@ -212,7 +213,7 @@ img#ajaxmark {
 	color:           #333;
 }
 
-.js *[data-aspect=fallback] {
+.js input.combo2,.js *[data-aspect=fallback] {
 	display: none;
 }
 
@@ -788,6 +789,7 @@ table.tablestyle {
 }
 
 table.tablestyle td {
+  padding:5px;
 	border-collapse:     collapse;
 	border:              1px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
@@ -831,7 +833,6 @@ table.tablestyle_inner td {
 .label, .tablestyle2 label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
-	padding:          4px;
 	font-size:        12px;
 }
 
@@ -1003,7 +1004,7 @@ th:hover span {
 	border:          1px solid #7096AB;
 	box-shadow:      none;
 }
-
+.navibar span {display:inline-block;font-weight:500;padding-top:7px;}
 /*--------------------------------- END BUTTONS -----------------------------------------------------------------*/
 /*--------------------------------- MESSAGES -----------------------------------------------------------------*/
 #messagesbox .subject {

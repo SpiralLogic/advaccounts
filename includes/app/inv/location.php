@@ -112,10 +112,10 @@
     }
 
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
-      if ($label != NULL) {
-        echo "<td>$label</td>\n";
-      }
       echo "<td>";
+      if ($label != NULL) {
+           echo "<label for=\"$name\"> $label</label>";
+      }
       echo Inv_Location::select($name, $selected_id, $all_option, $submit_on_change);
       echo "</td>\n";
     }
