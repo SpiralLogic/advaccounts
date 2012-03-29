@@ -216,10 +216,10 @@
 
     static public function  cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
       global $systypes_array;
-      if ($label != NULL) {
-        echo "<td>$label</td>\n";
-      }
       echo "<td>";
+      if ($label != NULL) {
+        echo "<label for=\"$name\"> $label</label>";
+      }
       $items = $systypes_array;
       // exclude quotes, orders and dimensions
       foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, ST_SALESQUOTE) as $excl) {

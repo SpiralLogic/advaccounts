@@ -295,14 +295,8 @@
       $this->sql .= $limit;
     }
     private function executeSQL() {
-      $md5 = md5($this->sql);
-      $result = Cache::get($md5);
-      if ($result === FALSE) {
-        DB::query($this->sql);
-        $result = DB::fetch_all(\PDO::FETCH_BOTH);
-        Cache::set($md5, $result);
-      }
-
+      $result = DB::query($this->sql);
+      $result = DB::fetch($result);
       return $result;
     }
     private function getNext(&$result) {
