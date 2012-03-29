@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
   class DBException extends \PDOException {
 
   }

@@ -38,8 +38,8 @@
      */
     static public function i() {
       spl_autoload_register('Autoloader::load', TRUE);
-      //static::$classes = \Core\Cache::get('autoload.classes');
-      //static::$loaded = \Core\Cache::get('autoload.paths');
+      static::$classes = \Core\Cache::get('autoload.classes');
+      static::$loaded = \Core\Cache::get('autoload.paths');
       if (!static::$classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
@@ -123,6 +123,7 @@
      * @return bool|string
      */
     static public function loadFromCache($classname) {
+
       $result = FALSE;
       if (isset(static::$loaded[$classname])) {
         $result = static::tryPath(static::$loaded[$classname], $classname);
@@ -138,8 +139,9 @@
     /**
      * @static
      *
-     * @param $classname
+     * @param $required_class
      *
+     * @internal param $classname
      * @return bool|string
      */
     static public function load($required_class) {
@@ -149,7 +151,12 @@
         $namespace = substr($classpath, 0, $lastNsPos);
         $filename = substr($filename, $lastNsPos + 1);
         $namespacepath = str_replace('\\', DS, $namespace);
-        $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
+        if (substr($classpath, 0, 7) === 'Modules') {
+          $dir = DOCROOT . strtolower($namespacepath) . DS . $filename;
+        }
+        else {
+          $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
+        }
       }
       elseif (isset(static::$classes[$required_class])) {
         $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
@@ -158,11 +165,11 @@
         $dir = APPPATH . $filename;
       }
       $filename = strtolower($filename);
-      if (is_dir($dir)) {
-        $filename = $dir . DS . $filename . '.php';
+      if (is_readable($dir . '.php')) {
+        $filename = $dir . '.php';
       }
       else {
-        $filename = $dir . '.php';
+        $filename = $dir . DS . $filename . '.php';
       }
       return static::trypath($filename, $required_class);
     }

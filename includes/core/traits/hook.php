@@ -18,7 +18,7 @@
       }
       $callback = $object . '::' . $function;
       if (!is_callable($callback)) {
-        throw new HookException("Class $object doesn't have a callable function $function");
+        throw new \HookException("Class $object doesn't have a callable function $function");
       }
       self::$hooks->add($hook, $callback, $arguments);
     }
