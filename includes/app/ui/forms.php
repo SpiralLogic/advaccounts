@@ -182,7 +182,7 @@
       $selected_id = array($first_id);
     }
     $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-    $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ?
+    $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ?
       '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
     Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
     $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";

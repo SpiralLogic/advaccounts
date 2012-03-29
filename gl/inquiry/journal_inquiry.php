@@ -28,10 +28,9 @@
   date_cells(_("From:"), 'FromDate', '', NULL, 0, -1, 0);
   date_cells(_("To:"), 'ToDate');
   check_cells(_("Show closed:"), 'AlsoClosed', NULL);
-  submit_cells('Search', _("Search"), '', '', 'default');
-  end_row();
-  start_row();
   ref_cells(_("Memo:"), 'Memo', '', NULL, _('Enter memo fragment or leave empty'));
+  submit_cells('Search', _("Search"), '', '', 'default');
+
   end_row();
   end_table();
   $editors = array(
