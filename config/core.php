@@ -37,7 +37,7 @@
     'Menu', //
     'MenuUi', //
     'Num', //
-    'Session', //
+    '\\Core\\Session', //
     'Status', //
     'UploadHandler', //
   );
