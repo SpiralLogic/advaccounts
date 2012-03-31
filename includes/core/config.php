@@ -50,8 +50,8 @@ namespace Core;
      *
      * @param string $group
      *
-     * @return mixed
      * @throws Config_Exception
+     * @return mixed
      */
     static protected function load($group = 'config') {
       if (is_array($group)) {

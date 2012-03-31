@@ -125,7 +125,7 @@
       $edit = FALSE;
 
       if ($result = $this->executeSQL()) {
-        while ($row = $this->getNext($result)) {
+        while ($row = DB::fetch($result)) {
           $value = $row[0];
           $descr = $this->format == NULL ? $row[1] : call_user_func($this->format, $row);
           $sel = '';
@@ -295,17 +295,10 @@
       $this->sql .= $limit;
     }
     private function executeSQL() {
-      $result = DB::query($this->sql);
-      $result = DB::fetch($result);
-      return $result;
+
+      return DB::query($this->sql);
     }
-    private function getNext(&$result) {
-      if (is_array($result)) {
-        return array_shift($result);
-      }
-      elseif (is_a($result, 'PDOStatement')) {
+    private function getNext($result) {
         return DB::fetch($result);
-      }
-      return FALSE;
     }
   }

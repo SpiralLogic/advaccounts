@@ -9,7 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
+  namespace Core;
   class Adv_Exception extends \Exception {
 
   }

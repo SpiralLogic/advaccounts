@@ -8,6 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
+  namespace Core;
+  use PDO, PDOStatement, PDOException, PDORow;
 
   abstract class DB_Query_Where {
 

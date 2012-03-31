@@ -143,7 +143,7 @@
     /**
      * @static
      *
-     * @param array|callable $constants
+     * @param array|closure $constants
      * @param null           $name
      */
     static public function define_constants($name, $constants) {

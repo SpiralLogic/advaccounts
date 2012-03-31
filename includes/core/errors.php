@@ -6,9 +6,7 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
-
-  class Errors {
+   **/  class Errors {
 
     /**
 
@@ -290,9 +288,10 @@
       return count(static::$messages);
     }
     /**
+     *
      * @static
      *
-     * @param null $e
+     * @internal param null $e
      */
     static protected function fatal() {
       ob_end_clean();
@@ -319,7 +318,7 @@
     /**
      * @static
      *
-     * @param bool $json
+     * @internal param bool $json
      *
      * @return array|bool|string
      */
@@ -352,11 +351,14 @@
     /**
      * @static
      *
-     * @param            $msg
-     * @param null       $sql_statement
+     * @param       $error
+     * @param null  $sql
+     * @param array $data
+     *
+     * @internal param $msg
+     * @internal param null $sql_statement
      *
      * @internal param bool $exit
-     * @throws DBException
      */
     static public function db_error($error, $sql = NULL, $data = array()) {
       $errorCode = DB::error_no();

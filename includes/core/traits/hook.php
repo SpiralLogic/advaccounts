@@ -13,7 +13,7 @@
    */
   trait Hook {
 
-    /** @var Hook */
+    /** @var \Hook $hooks */
     public static $hooks = NULL;
     /**
      * @static

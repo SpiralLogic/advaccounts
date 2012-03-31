@@ -2,6 +2,7 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
+   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -30,14 +31,15 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== FALSE));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? : '.');
+  define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
+    '.');
   set_error_handler(function ($severity, $message, $filepath, $line) {
     class_exists('Errors', FALSE) or include COREPATH . 'errors.php';
-    return \Errors::handler($severity, $message, $filepath, $line);
+    return Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
     class_exists('Errors', FALSE) or include COREPATH . 'errors.php';
-    \Errors::exception_handler($e);
+    Errors::exception_handler($e);
   });
   if (!function_exists('e')) {
     /**
@@ -68,8 +70,8 @@
   });
   include(DOCROOT . 'config' . DS . 'types.php');
   include(DOCROOT . 'config' . DS . 'access_levels.php');
- Session::i();
- Config::i();
+  Session::i();
+  Config::i();
   Ajax::i();
-  //ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

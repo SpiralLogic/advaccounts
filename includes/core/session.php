@@ -116,7 +116,7 @@
         static::$get_text = $_SESSION['get_text'];
       }
       else {
-        static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::i();
+        static::$get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
       }
     }
     /**

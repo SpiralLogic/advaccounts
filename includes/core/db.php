@@ -1,34 +1,32 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace Core;
+  use PDO, PDOStatement, PDOException, PDORow;
 
   class DBException extends \PDOException {
-
   }
 
   class DBUpdateException extends DBException {
-
   }
 
   ;
   class DBInsertException extends DBException {
-
   }
 
   ;
   class DBDeleteException extends DBException {
-
   }
 
   ;
   class DBSelectException extends DBException {
-
   }
 
   ;
@@ -36,11 +34,9 @@
 
    */
   class DBDuplicateException extends DBException {
-
   }
 
   class DB {
-
     const SELECT = 0;
     const INSERT = 1;
     const UPDATE = 2;
@@ -152,7 +148,6 @@
      */
     static public function query($sql, $err_msg = NULL) {
       static::$prepared = NULL;
-
       try {
         static::$prepared = static::i()->_prepare($sql);
         try {
@@ -166,7 +161,6 @@
         static::i()->_error($e, " (prepare) " . $err_msg);
       }
       static::$data = array();
-
       return static::$prepared;
     }
     /**

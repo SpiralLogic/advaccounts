@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
+  namespace Core;
   class Num {
 
     public static $price_dec = 2;

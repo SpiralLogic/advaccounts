@@ -1,18 +1,18 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
+  namespace Core;
   /**
 
    */
   class Auth {
-
     /**
      * @var
      */
@@ -41,7 +41,7 @@
       session_regenerate_id();
     }
     /**
-     * @param $password
+     * @internal param $password
      *
      * @return string
      */
@@ -50,8 +50,10 @@
       return $password;
     }
     /**
-     * @param $user_id
-     * @param $password
+     * @param $username
+     *
+     * @internal param $user_id
+     * @internal param $password
      *
      * @return bool|mixed
      */
@@ -64,7 +66,8 @@
       else {
         unset($result['password']);
       }
-      \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
+      \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))
+        ->exec();
       return $result;
     }
     /**
@@ -146,7 +149,7 @@
      */
     public function isBruteForce() {
       $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP='
-        . \DB::escape(\Users::get_ip()));
+                            . \DB::escape(\Users::get_ip()));
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
   }
