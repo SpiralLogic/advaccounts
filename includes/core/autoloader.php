@@ -46,7 +46,7 @@
         static::add_classes((array) $core, COREPATH);
         static::add_classes((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register('Autoloader::loadFromCache', TRUE);
+      //   spl_autoload_register('Autoloader::loadFromCache', TRUE);
     }
 
     /**
@@ -112,6 +112,7 @@
       if (!include($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
       }
+
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
       return TRUE;
     }
@@ -144,7 +145,13 @@
      */
     static public function load($required_class) {
       $classpath = ltrim($required_class, '\\');
-      $filename = strtolower(str_replace('_', DS, $classpath));
+      if (isset(static::$classes['\\Core\\' . $classpath]) ) {
+        if (class_alias('\\Core\\' . $classpath, $classpath)) {
+          return TRUE;
+        }
+      }
+
+      $filename = str_replace('_', DS, $classpath);
       if ($lastNsPos = strripos($classpath, '\\')) {
         $namespace = substr($classpath, 0, $lastNsPos);
         $filename = substr($filename, $lastNsPos + 1);
@@ -152,13 +159,14 @@
         $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
-        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
+
+        $dir = rtrim(static::$classes[$required_class], '/') . DS . strtolower($filename);
       }
       else {
-        $dir = APPPATH . $filename;
+        $dir = APPPATH . strtolower($filename);
       }
       $filename = strtolower($filename);
-      if (is_dir($dir)) {
+      if (!is_readable($dir . '.php')) {
         $filename = $dir . DS . $filename . '.php';
       }
       else {

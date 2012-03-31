@@ -9,7 +9,7 @@
    **/
 
 
-  class Ajax extends \JsHttpRequest {
+  class Ajax extends JsHttpRequest {
 
     public $aCommands = array();
     public $triggers = array();

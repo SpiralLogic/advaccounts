@@ -50,7 +50,7 @@
   require COREPATH . 'autoloader.php';
   register_shutdown_function(function () {
     class_exists('Event', FALSE) or  include(COREPATH . 'event.php');
-    \Event::shutdown();
+    Event::shutdown();
   });
   if (!function_exists('adv_ob_flush_handler')) {
     /**
@@ -63,14 +63,13 @@
       return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-  class_alias('\\Core\\Cache', 'Cache');
   Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });
   include(DOCROOT . 'config' . DS . 'types.php');
   include(DOCROOT . 'config' . DS . 'access_levels.php');
-  \Session::i();
-  \Config::i();
-  \Ajax::i();
-  ob_start('adv_ob_flush_handler', 0);
+ Session::i();
+ Config::i();
+  Ajax::i();
+  //ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

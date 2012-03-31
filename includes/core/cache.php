@@ -8,7 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Core;
-  use \Memcached as Memcached;
+  use \Memcached;
+
+  /**
+
+   */
   class Cache {
 
     /**
@@ -102,7 +106,7 @@
       }
       return $result;
     }
-       /**
+    /**
      * @static
      * @return mixed
      */

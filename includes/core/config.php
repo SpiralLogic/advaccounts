@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
+namespace Core;
 
   class Config_Exception extends \Exception {
 
@@ -145,7 +145,7 @@
 
      */
     static protected function js() {
-      JS::headerFile(static::get('assets.header'));
-      JS::footerFile(static::get('assets.footer'));
+      \JS::headerFile(static::get('assets.header'));
+      \JS::footerFile(static::get('assets.footer'));
     }
   }

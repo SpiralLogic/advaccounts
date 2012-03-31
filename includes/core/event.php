@@ -97,6 +97,13 @@
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
       Event::registerHook('shutdown', $object, $function, $arguments);
     }
+    /**
+     * @static
+     *
+     * @param        $object
+     * @param string $function
+     * @param array  $arguments
+     */
     static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
       Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }
