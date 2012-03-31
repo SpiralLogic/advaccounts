@@ -39,10 +39,10 @@
   start_form();
   start_table('tablestyle_noborder');
   start_row();
-  Creditor::cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), TRUE);
+  Creditor::cells(_("Supplier: "), 'supplier_id', Input::post('supplier_id'), TRUE);
   ref_cells(_("#:"), 'order_number', '', NULL, '', TRUE);
-  date_cells(_("from:"), 'OrdersAfterDate', '', NULL, -30);
-  date_cells(_("to:"), 'OrdersToDate');
+  date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+  date_cells(_("To:"), 'OrdersToDate');
   Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
   //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');

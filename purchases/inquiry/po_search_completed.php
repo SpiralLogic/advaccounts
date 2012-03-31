@@ -15,8 +15,7 @@
   if (isset($_GET['order_number'])) {
     $order_number = $_GET['order_number'];
   }
-  // Ajax updates
-  //
+      $_POST['supplier_id'] = Input::post_get('supplier_id',Input::NUMERIC,-1);
   if (get_post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
@@ -40,11 +39,12 @@
   if (!Input::request('frame')) {
     start_table('tablestyle_noborder');
     start_row();
+    Creditor::cells(_("Supplier: "), 'supplier_id', null, TRUE);
     ref_cells(_("#:"), 'order_number', '', NULL, '', TRUE);
-    date_cells(_("from:"), 'OrdersAfterDate', '', NULL, -30);
-    date_cells(_("to:"), 'OrdersToDate');
-    Inv_Location::cells(_("into location:"), 'StockLocation', NULL, TRUE);
-    Item::cells(_("for item:"), 'SelectStockFromList', NULL, TRUE);
+    date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+    date_cells(_("To:"), 'OrdersToDate');
+    Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
+    Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
     submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
     end_row();
     end_table();
@@ -98,6 +98,10 @@
     $sql .= "AND porder.reference LIKE " . DB::quote('%' . $order_number . '%');
   }
   else {
+
+    if (Input::post('supplier_id') != ALL_TEXT) {
+      $sql .= " AND porder.supplier_id = " . DB::quote(Input::post('supplier_id'));
+    }
     if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
       $sql .= " AND porder.into_stock_location = ";
       $sql .= (Input::get(LOC_NOT_FAXED_YET) == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : DB::quote($_POST['StockLocation']);
@@ -140,7 +144,7 @@
     );
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->width = "80";
+  $table->width =   (Input::request('frame')) ? '100': "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   UI::emailDialogue('s');

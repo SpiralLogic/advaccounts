@@ -49,12 +49,12 @@
   start_row();
   if (!Input::get('frame')) {
 
-    Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, TRUE);
+    Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
   }
   date_cells(_("From:"), 'TransAfterDate', '', NULL, -90);
   date_cells(_("To:"), 'TransToDate', '', NULL, 1);
   Purch_Allocation::row("filterType", NULL);
-  check_cells(_("show settled:"), 'showSettled', NULL);
+  check_cells(_("Show settled:"), 'showSettled', NULL);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Session::i()->supplier_id = $_POST['supplier_id'];
   end_row();
@@ -189,7 +189,7 @@
     _("Supplier") => array('ord' => '', 'type' => 'id'),
     _("Supplier ID") => array('skip'),
     _("Supp Reference"),
-    _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
+    _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
     _("Due Date") => array('fun' => 'due_date'),
     _("Currency") => array('align' => 'center'),
     _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
@@ -211,7 +211,7 @@
   }
   $table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
   $table->set_marker('check_overdue', _("Marked items are overdue."));
-  $table->width = "90%";
+  $table->width = "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   end_form();
