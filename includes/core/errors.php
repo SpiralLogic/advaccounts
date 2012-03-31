@@ -62,7 +62,7 @@
     /** @static Initialiser */
     static function init() {
       static::$useConfigClass = class_exists('Config', FALSE);
-      error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+      //error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       Event::register_shutdown(__CLASS__, 'send_debug_email');
     }
     /**

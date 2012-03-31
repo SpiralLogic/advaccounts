@@ -11,15 +11,31 @@
 
   }
 
+  /**
+
+   */
   class Hook {
 
     protected $hooks = array();
+    /**
+     * @param          $name
+     * @param callable $callback
+     * @param array    $arguments
+     */
     public function add($name, callable $callback, $arguments = array()) {
       $this->hooks[$name][] = [$callback, (array) $arguments];
     }
+    /**
+     * @param $name
+     *
+     * @return array
+     */
     public function getCallbacks($name) {
       return isset($this->hooks[$name]) ? $this->hooks[$name] : array();
     }
+    /**
+     * @param $name
+     */
     public function fire($name) {
       foreach ($this->getCallbacks($name) as $callback) {
         if (!is_callable($callback[0])) {

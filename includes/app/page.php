@@ -27,12 +27,19 @@
     public $ajaxpage;
     public $lang_dir = '';
 
+    /**
+     * @param      $title
+     * @param bool $index
+     */
     protected function __construct($title, $index = FALSE) {
       $this->is_index = $index;
       $this->title = $title;
       $this->frame = isset($_GET['frame']);
     }
 
+    /**
+     * @param $menu
+     */
     protected function init($menu) {
       $this->app = $_SESSION['App'];
       $this->sel_app = $this->app->selected;
@@ -62,6 +69,16 @@
       Display::div_start('_page_body');
     }
 
+    /**
+     * @static
+     *
+     * @param        $title
+     * @param string $security
+     * @param bool   $no_menu
+     * @param bool   $is_index
+     *
+     * @return null|Page
+     */
     static public function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
       static::set_security($security);
       if (static::$i === NULL) {
@@ -71,6 +88,13 @@
       return static::$i;
     }
 
+    /**
+     * @static
+     *
+     * @param bool $numeric_id
+     *
+     * @return array
+     */
     static public function simple_mode($numeric_id = TRUE) {
       $default = $numeric_id ? -1 : '';
       $selected_id = get_post('selected_id', $default);
@@ -97,22 +121,43 @@
       return array('', $selected_id);
     }
 
+    /**
+     * @static
+     *
+     * @param bool $file
+     */
     static public function add_css($file = FALSE) {
       static::$i->css[] = $file;
     }
 
+    /**
+     * @static
+     *
+     * @param $security
+     */
     static public function set_security($security) {
       static::$security = $security;
     }
 
+    /**
+     * @static
+     * @return null
+     */
     public static function get_security() { return static::$security; }
 
+    /**
+     * @static
+
+     */
     static public function footer_exit() {
       Display::br(2);
       static::$i->end_page(TRUE);
       exit;
     }
 
+    /**
+
+     */
     protected function header() {
       $this->header = TRUE;
       JS::open_window(900, 500);
@@ -133,6 +178,9 @@
       echo "<div id='content'>\n";
     }
 
+    /**
+
+     */
     protected function menu_header() {
       echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
 
@@ -151,6 +199,11 @@
       echo "</div>";
     }
 
+    /**
+     * @param null $context
+     *
+     * @return string
+     */
     protected function help_url($context = NULL) {
       global $help_context;
       $country = $_SESSION['Language']->code;
@@ -170,12 +223,20 @@
       ))) . '&ctxhelp=1&lang=' . $country;
     }
 
+    /**
+     * @static
+     *
+     * @param bool $hide_back_link
+     */
     static public function end($hide_back_link = FALSE) {
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
     }
 
+    /**
+     * @param $hide_back_link
+     */
     protected function end_page($hide_back_link) {
       if ($this->frame) {
         $hide_back_link = TRUE;
@@ -188,6 +249,9 @@
       $this->footer();
     }
 
+    /**
+     * @return mixed
+     */
     protected function footer() {
       $Validate = array();
 
@@ -208,6 +272,9 @@
       echo   "</html>\n";
     }
 
+    /**
+
+     */
     protected function menu_footer() {
       echo "</div>"; //end wrapper div
       if ($this->menu && !AJAX_REFERRER) {
@@ -224,6 +291,9 @@
       echo "</div>\n"; //end footer div
     }
 
+    /**
+
+     */
     protected function display_loaded() {
       $loaded = Autoloader::getPerf();
       $row = "<table id='autoloaded'>";
@@ -234,6 +304,9 @@
       echo $row . "</table>";
     }
 
+    /**
+
+     */
     protected function renderCSS() {
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
@@ -241,6 +314,12 @@
       echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
     }
 
+    /**
+     * @static
+     *
+     * @param      $text
+     * @param bool $exit
+     */
     public static function error_exit($text, $exit = TRUE) {
       ob_get_clean();
       $page = new static('Fatal Error.', FALSE);

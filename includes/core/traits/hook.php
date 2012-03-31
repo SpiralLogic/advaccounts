@@ -8,18 +8,27 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Core\Traits;
+  /**
+
+   */
   trait Hook {
 
     /** @var Hook */
     public static $hooks = NULL;
+    /**
+     * @static
+     *
+     * @param       $hook
+     * @param       $object
+     * @param       $function
+     * @param array $arguments
+     */
     public static function registerHook($hook, $object, $function, $arguments = array()) {
       if (self::$hooks === NULL) {
         self::$hooks = new \Hook();
       }
       $callback = $object . '::' . $function;
-      if (!is_callable($callback)) {
-        throw new \HookException("Class $object doesn't have a callable function $function");
-      }
+
       self::$hooks->add($hook, $callback, $arguments);
     }
   }

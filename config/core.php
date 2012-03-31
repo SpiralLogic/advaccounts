@@ -9,11 +9,11 @@
   return array(
     'Adv_Exception', //
     'Ajax', //
-    'Arr', //
+    '\\Core\\Arr', //
     'Auth', //
     'Autoloader', //
-    'Cache', //
-    'Config', //
+    '\\Core\\Cache', //
+    '\\Core\\Config', //
     'DatePicker', //
     'Dates', //
     'DB', //
@@ -37,7 +37,7 @@
     'Menu', //
     'MenuUi', //
     'Num', //
-    'Session', //
+    '\\Core\\Session', //
     'Status', //
     'UploadHandler', //
   );

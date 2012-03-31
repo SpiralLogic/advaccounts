@@ -38,15 +38,15 @@
      */
     static public function i() {
       spl_autoload_register('Autoloader::load', TRUE);
-      static::$classes = \Core\Cache::get('autoload.classes');
-      static::$loaded = \Core\Cache::get('autoload.paths');
+      //static::$classes = \Core\Cache::get('autoload.classes');
+      //static::$loaded = \Core\Cache::get('autoload.paths');
       if (!static::$classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::add_classes((array) $core, COREPATH);
         static::add_classes((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register('Autoloader::loadFromCache', TRUE);
+      //   spl_autoload_register('Autoloader::loadFromCache', TRUE);
     }
 
     /**
@@ -112,6 +112,7 @@
       if (!include($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
       }
+
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
       return TRUE;
     }
@@ -123,7 +124,6 @@
      * @return bool|string
      */
     static public function loadFromCache($classname) {
-
       $result = FALSE;
       if (isset(static::$loaded[$classname])) {
         $result = static::tryPath(static::$loaded[$classname], $classname);
@@ -139,37 +139,38 @@
     /**
      * @static
      *
-     * @param $required_class
+     * @param $classname
      *
-     * @internal param $classname
      * @return bool|string
      */
     static public function load($required_class) {
       $classpath = ltrim($required_class, '\\');
-      $filename = strtolower(str_replace('_', DS, $classpath));
+      if (isset(static::$classes['\\Core\\' . $classpath]) ) {
+        if (class_alias('\\Core\\' . $classpath, $classpath)) {
+          return TRUE;
+        }
+      }
+
+      $filename = str_replace('_', DS, $classpath);
       if ($lastNsPos = strripos($classpath, '\\')) {
         $namespace = substr($classpath, 0, $lastNsPos);
         $filename = substr($filename, $lastNsPos + 1);
         $namespacepath = str_replace('\\', DS, $namespace);
-        if (substr($classpath, 0, 7) === 'Modules') {
-          $dir = DOCROOT . strtolower($namespacepath) . DS . $filename;
-        }
-        else {
-          $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
-        }
+        $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
-        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
+
+        $dir = rtrim(static::$classes[$required_class], '/') . DS . strtolower($filename);
       }
       else {
-        $dir = APPPATH . $filename;
+        $dir = APPPATH . strtolower($filename);
       }
       $filename = strtolower($filename);
-      if (is_readable($dir . '.php')) {
-        $filename = $dir . '.php';
+      if (!is_readable($dir . '.php')) {
+        $filename = $dir . DS . $filename . '.php';
       }
       else {
-        $filename = $dir . DS . $filename . '.php';
+        $filename = $dir . '.php';
       }
       return static::trypath($filename, $required_class);
     }
