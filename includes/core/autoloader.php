@@ -7,7 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core;
+  /**
+
+   */
   class Autoload_Exception extends \Exception {
 
   }
@@ -40,7 +43,7 @@
      */
     static public function i() {
       class_alias(__CLASS__, 'Autoloader');
-      spl_autoload_register('\\Core\\Autoloader::load', TRUE);
+      spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
       //static::$classes = Cache::get('autoload.classes');
       //static::$loaded = Cache::get('autoload.paths');
       if (!static::$classes) {
@@ -49,7 +52,7 @@
         static::import_namespaces((array) $core);
         static::add_classes((array) $vendor, VENDORPATH);
       }
-      //spl_autoload_register('\\Core\\Autoloader::loadFromCache', TRUE);
+      //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE);
     }
     /**
      * @static
@@ -75,9 +78,20 @@
         static::$classes[$class] = $type . $dir;
       }
     }
+    /**
+     * @static
+     *
+     * @param $namespace
+     * @param $classes
+     */
     static protected function import_namespace($namespace, $classes) {
       static::$classes2 = array_merge(static::$classes2, array_fill_keys($classes, $namespace));
     }
+    /**
+     * @static
+     *
+     * @param array $namespaces
+     */
     static protected function import_namespaces(array $namespaces) {
       foreach ($namespaces as $namespace => $classes) {
         static::import_namespace($namespace, $classes);
@@ -120,7 +134,7 @@
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	read at: ' . $filepath);
       }
       /** @noinspection PhpIncludeInspection */
-      if (!include($filepath)) {
+      if (!include_once($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
       }
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
@@ -155,18 +169,21 @@
      * @return bool|string
      */
     static public function load($required_class) {
-      $classpath = ltrim($required_class, '\\');
-      if (isset(static::$classes2[$classpath])) {
-        if (class_alias(static::$classes2[$classpath] . $classpath, $classpath)) {
-          return TRUE;
-        }
+      if (isset(static::$classes2[$required_class])) {
+        $required_class = static::$classes2[$required_class] . $required_class;
       }
+      $alias = FALSE;
+      $classpath = ltrim($required_class, '\\');
       $filename = str_replace('_', DS, $classpath);
       if ($lastNsPos = strripos($classpath, '\\')) {
         $namespace = substr($classpath, 0, $lastNsPos);
         $filename = substr($filename, $lastNsPos + 1);
-        $namespacepath = str_replace('\\', DS, $namespace);
-        $dir = DOCROOT . 'includes' . DS . strtolower($namespacepath);
+        $class = substr($classpath, $lastNsPos + 1);
+        if (isset(static::$classes2[$class]) && static::$classes2[$class] == $namespace . '\\') {
+          $alias = TRUE;
+        }
+        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace);
+        $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
         $dir = rtrim(static::$classes[$required_class], '/') . DS . strtolower($filename);
@@ -181,7 +198,12 @@
       else {
         $filename = $dir . '.php';
       }
-      return static::trypath($filename, $required_class);
+      $result = static::trypath($filename, $required_class);
+
+      if ($alias && $class) {
+        class_alias(static::$classes2[$class] . $class, $class);
+      }
+      return $result;
     }
     /**
      * @static

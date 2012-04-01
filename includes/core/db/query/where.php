@@ -8,9 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  namespace Core\DB;
+  namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
+  /**
+
+   */
   abstract class Query_Where {
 
     /**
@@ -31,14 +34,14 @@
     protected $count = 0;
     protected function resetWhere() {
       $this->wheredata = $this->where = array();
-      $count = 0;
+      $this->count = 0;
     }
     /***
      * @param array  $conditions
      * @param string $type
      * @param null   $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     protected function _where($conditions, $type = 'AND', $uservar = NULL) {
       if (is_array($conditions)) {
@@ -65,7 +68,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query
+     * @return Query
      */
     public function where($condition, $uservar = NULL) {
       return $this->_where($condition, 'AND', $uservar);
@@ -74,7 +77,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function or_where($condition, $uservar = NULL) {
       return $this->_where($condition, 'OR', $uservar);
@@ -83,7 +86,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function and_where($condition, $uservar = NULL) {
       return $this->_where($condition, 'AND', $uservar);
@@ -92,7 +95,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function or_open($condition, $uservar = NULL) {
       return $this->_where($condition, 'OR (', $uservar);
@@ -101,7 +104,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function and_open($condition, $uservar = NULL) {
       return $this->_where($condition, 'AND (', $uservar);
@@ -110,7 +113,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function close_and($condition, $uservar = NULL) {
       return $this->_where($condition, ') AND', $uservar);
@@ -119,7 +122,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function close_or($condition, $uservar = NULL) {
       return $this->_where($condition, ') OR', $uservar);
@@ -128,7 +131,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function open($condition, $uservar = NULL) {
       if (empty($this->where)) {
@@ -137,7 +140,7 @@
       return $this->_where($condition, ' AND ', $uservar);
     }
     /**
-     * @return DB_Query_Where
+     * @return Query_Where
      */
     public function close() {
       array_push($this->where, array_pop($this->where) . ') ');

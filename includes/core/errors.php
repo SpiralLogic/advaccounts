@@ -1,15 +1,15 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core;
   class Errors {
+
     /**
 
      */
@@ -63,7 +63,9 @@
     static function init() {
       static::$useConfigClass = class_exists('Config', FALSE);
       //error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-      Event::register_shutdown(__CLASS__, 'send_debug_email');
+      if (class_exists('Event', FALSE)) {
+        Event::register_shutdown(__CLASS__, 'send_debug_email');
+      }
     }
     /**
      * @static
@@ -86,7 +88,7 @@
         static::$current_severity = $type;
       }
       if (in_array($type, static::$user_errors)) {
-        list($message, $file, $line) = explode('||', $message);
+        list($message, $file, $line) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given'];
       }
       $error = array(
         'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line
@@ -290,9 +292,7 @@
       return count(static::$messages);
     }
     /**
-     *
      * @static
-     *
      * @internal param null $e
      */
     static protected function fatal() {
@@ -319,9 +319,7 @@
     static public function getSeverity() { return static::$current_severity; }
     /**
      * @static
-     *
      * @internal param bool $json
-     *
      * @return array|bool|string
      */
     static public function JSONError() {
@@ -359,7 +357,6 @@
      *
      * @internal param $msg
      * @internal param null $sql_statement
-     *
      * @internal param bool $exit
      */
     static public function db_error($error, $sql = NULL, $data = array()) {

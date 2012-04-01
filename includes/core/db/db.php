@@ -8,8 +8,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core\DB;
-  use PDO, PDOStatement, PDOException, PDORow;
+  namespace ADV\Core\DB;
+  use PDO, PDOStatement, PDOException, PDORow,Cache;
 
   class DBException extends \PDOException {
   }

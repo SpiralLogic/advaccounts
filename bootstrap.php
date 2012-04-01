@@ -2,7 +2,6 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
-   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -34,13 +33,15 @@
   define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
     '.');
   set_error_handler(function ($severity, $message, $filepath, $line) {
-    class_exists('\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
-    return \Core\Errors::handler($severity, $message, $filepath, $line);
+    class_exists('Adv\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
+    return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
-    class_exists('Errors', FALSE) or include COREPATH . 'errors.php';
-    Errors::exception_handler($e);
+    var_dump(class_exists('\\ADV\\Core\\Errors', FALSE));
+    class_exists('ADV\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
+    ADV\Core\Errors::exception_handler($e);
   });
+  require COREPATH . 'autoloader.php';
   if (!function_exists('e')) {
     /**
      * @param $string
@@ -49,7 +50,6 @@
      */
     function e($string) { return Security::htmlentities($string); }
   }
-  require COREPATH . 'autoloader.php';
   register_shutdown_function(function () {
     class_exists('Event', FALSE) or  include(COREPATH . 'event.php');
     Event::shutdown();
@@ -73,5 +73,5 @@
   Session::i();
   Config::i();
   Ajax::i();
-  //ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

@@ -7,7 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   return array(
-    '\\Core\\' => array(
+    'ADV\\Core\\' => array(
       'Adv_Exception', //
       'Ajax', //
       'Arr', //
@@ -33,7 +33,7 @@
       'Status', //
       'UploadHandler', //
     ),
-    '\\Core\\DB\\' => array(
+    'ADV\\Core\\DB\\' => array(
       'DB', //
       'DB_Query', //
       'DB_Query_Delete', //

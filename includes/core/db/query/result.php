@@ -8,10 +8,12 @@
    * @license   ADV http://www.advancedgroup.com.au
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core\DB;
+  namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
+  /**
 
+   */
   class Query_Result implements \Countable, \Iterator {
 
     /**
@@ -74,14 +76,14 @@
       return ($column !== NULL && isset($result[$column])) ? $result[$column] : $result;
     }
     /**
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function assoc() {
       $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
       return $this;
     }
     /**
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function num() {
       $this->prepared->setFetchMode(\PDO::FETCH_NUM);
@@ -91,7 +93,7 @@
      * @param       $class
      * @param array $construct
      *
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function asClassLate($class, $construct = array()) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class, $construct);
@@ -101,7 +103,7 @@
      * @param       $class
      * @param array $construct
      *
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function asClass($class, $construct = array()) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS, $class, $construct);
@@ -124,7 +126,7 @@
       return $this->count;
     }
     /**
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function asObject() {
       $this->prepared->setFetchMode(\PDO::FETCH_OBJ);

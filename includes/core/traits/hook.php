@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core\Traits;
+  namespace ADV\Core\Traits;
   /**
 
    */
@@ -25,7 +25,7 @@
      */
     public static function registerHook($hook, $object, $function, $arguments = array()) {
       if (self::$hooks === NULL) {
-        self::$hooks = new \Core\Hook();
+        self::$hooks = new \ADV\Core\Hook();
       }
       $callback = $object . '::' . $function;
 
