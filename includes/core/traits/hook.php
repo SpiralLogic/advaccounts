@@ -25,7 +25,7 @@
      */
     public static function registerHook($hook, $object, $function, $arguments = array()) {
       if (self::$hooks === NULL) {
-        self::$hooks = new \Hook();
+        self::$hooks = new \Core\Hook();
       }
       $callback = $object . '::' . $function;
 

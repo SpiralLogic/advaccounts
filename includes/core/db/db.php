@@ -8,7 +8,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
   class DBException extends \PDOException {
@@ -53,7 +53,7 @@
     static protected $debug = NULL;
     /** @var bool */
     static protected $nested = FALSE;
-    /** @var DB_Query */
+    /** @var Query */
     static protected $query = FALSE;
     static protected $results = FALSE;
     static protected $errorSql = FALSE;
@@ -89,7 +89,7 @@
       if (!$config && !$this->useConfig) {
         throw new DBException('No database configuration provided');
       }
-      $config = $config ? : Config::get('db.default');
+      $config = $config ? : \Config::get('db.default');
       static::$debug = FALSE;
       $this->_connect($config);
       $this->default_connection = $config['name'];
@@ -118,7 +118,7 @@
       $name = $name ? : static::i()->default_connection;
       if (!isset(static::$connections[$name])) {
         if (static::i()->useConfig && $name && !is_array($name)) {
-          $config = Config::get('db.' . $name);
+          $config = \Config::get('db.' . $name);
         }
         elseif (is_array($name)) {
           $config = $name;
@@ -287,12 +287,12 @@
     /***
      * @param string $columns,... Database columns to select
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     static public function select($columns = NULL) {
       static::$prepared = NULL;
       $columns = (is_string($columns)) ? func_get_args() : array();
-      static::$query = new DB_Query_Select($columns, static::i());
+      static::$query = new Query_Select($columns, static::i());
       return static::$query;
     }
     /**
@@ -300,11 +300,11 @@
      *
      * @param $into
      *
-     * @return DB_Query_Update
+     * @return Query_Update
      */
     static public function update($into) {
       static::$prepared = NULL;
-      static::$query = new DB_Query_Update($into, static::i());
+      static::$query = new Query_Update($into, static::i());
       return static::$query;
     }
     /**
@@ -312,11 +312,11 @@
      *
      * @param $into
      *
-     * @return DB_Query_Insert
+     * @return Query_Insert
      */
     static public function insert($into) {
       static::$prepared = NULL;
-      static::$query = new DB_Query_Insert($into, static::i());
+      static::$query = new Query_Insert($into, static::i());
       return static::$query;
     }
     /**
@@ -324,11 +324,11 @@
      *
      * @param $into
      *
-     * @return DB_Query_Delete
+     * @return Query_Delete
      */
     static public function delete($into) {
       static::$prepared = NULL;
-      static::$query = new DB_Query_Delete($into, static::i());
+      static::$query = new Query_Delete($into, static::i());
       return static::$query;
     }
     /***
@@ -336,7 +336,7 @@
      *
      * @param \PDOStatement $result The result of the query or whatever cunt
      *
-     * @return DB_Query_Result|Array This is something
+     * @return Query_Result|Array This is something
      */
     static public function fetch($result = NULL, $fetch_mode = \PDO::FETCH_BOTH) {
       try {
@@ -515,7 +515,7 @@
      * @param $key
      * Update record activity status.
      *
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     static public function update_record_status($id, $status, $table, $key) {
       try {
@@ -533,7 +533,7 @@
      * @param $table
      * @param $key
      *
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     static public function insert_record_status($id, $status, $table, $key) {
       try {
@@ -548,7 +548,7 @@
      * @param            $type
      * @param null       $data
      *
-     * @return DB_Query_Result|int
+     * @return Query_Result|int
      */
     public function exec($sql, $type, $data = NULL) {
       static::$errorInfo = FALSE;
@@ -564,7 +564,7 @@
         $prepared = $this->_prepare($sql);
         switch ($type) {
           case DB::SELECT:
-            return new DB_Query_Result($prepared, $data);
+            return new Query_Result($prepared, $data);
           case DB::INSERT:
             $prepared->execute($data);
             return $this->conn->lastInsertId();

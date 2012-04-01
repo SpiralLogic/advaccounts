@@ -136,7 +136,7 @@
     label_row(_("Customer's Currency:"), $customer->curr_code);
     hidden('curr_code', $customer->curr_code);
   }
-  GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+  GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $customer->payment_terms);
   Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
   table_section(2);
   table_section_title(_("Contact log:"), 1);

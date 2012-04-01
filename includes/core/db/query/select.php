@@ -7,11 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
 
-  class DB_Query_Select extends DB_Query {
+  class Query_Select extends Query {
 
     /**
      * @var array

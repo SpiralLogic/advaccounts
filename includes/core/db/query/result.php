@@ -8,11 +8,11 @@
    * @license   ADV http://www.advancedgroup.com.au
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
 
-  class DB_Query_Result implements \Countable, \Iterator {
+  class Query_Result implements \Countable, \Iterator {
 
     /**
      * @var \PDOStatement thing

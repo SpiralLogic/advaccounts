@@ -7,11 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
 
-  class DB_Query_Update extends DB_Query_Insert {
+  class Query_Update extends Query_Insert {
 
     /**
      * @param bool $table

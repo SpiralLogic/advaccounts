@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,12 +9,14 @@
    **/
   namespace Core;
   class Autoload_Exception extends \Exception {
+
   }
 
   /**
 
    */
   class Autoloader {
+
     /**
      * @var array
      */
@@ -32,6 +33,7 @@
      * @var array
      */
     static protected $classes = array();
+    static protected $classes2 = array();
     /**
      * @static
 
@@ -39,15 +41,15 @@
     static public function i() {
       class_alias(__CLASS__, 'Autoloader');
       spl_autoload_register('\\Core\\Autoloader::load', TRUE);
-      static::$classes = Cache::get('autoload.classes');
-      static::$loaded = Cache::get('autoload.paths');
+      //static::$classes = Cache::get('autoload.classes');
+      //static::$loaded = Cache::get('autoload.paths');
       if (!static::$classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
-        static::add_classes((array) $core, COREPATH);
+        static::import_namespaces((array) $core);
         static::add_classes((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register('\\Core\\Autoloader::loadFromCache', TRUE);
+      //spl_autoload_register('\\Core\\Autoloader::loadFromCache', TRUE);
     }
     /**
      * @static
@@ -73,6 +75,15 @@
         static::$classes[$class] = $type . $dir;
       }
     }
+    static protected function import_namespace($namespace, $classes) {
+      static::$classes2 = array_merge(static::$classes2, array_fill_keys($classes, $namespace));
+    }
+    static protected function import_namespaces(array $namespaces) {
+      foreach ($namespaces as $namespace => $classes) {
+        static::import_namespace($namespace, $classes);
+      }
+    }
+
     /**
      * @static
      *
@@ -141,13 +152,12 @@
      * @param $required_class
      *
      * @internal param $classname
-     *
      * @return bool|string
      */
     static public function load($required_class) {
       $classpath = ltrim($required_class, '\\');
-      if (isset(static::$classes['\\Core\\' . $classpath])) {
-        if (class_alias('\\Core\\' . $classpath, $classpath)) {
+      if (isset(static::$classes2[$classpath])) {
+        if (class_alias(static::$classes2[$classpath] . $classpath, $classpath)) {
           return TRUE;
         }
       }

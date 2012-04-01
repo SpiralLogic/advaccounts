@@ -7,36 +7,40 @@
    * To change this template use File | Settings | File Templates.
    */
   return array(
-    '\\Core\\Adv_Exception', //
-    '\\Core\\Ajax', //
-    '\\Core\\Arr', //
-    '\\Core\\Auth', //
-    '\\Core\\Autoloader', //
-    '\\Core\\Cache', //
-    '\\Core\\Config', //
-    '\\Core\\DatePicker', //
-    '\\Core\\Dates', //
-    '\\Core\\DB', //
-    '\\Core\\DB_Query', //
-    '\\Core\\DB_Query_Delete', //
-    '\\Core\\DB_Query_Insert', //
-    '\\Core\\DB_Query_Result', //
-    '\\Core\\DB_Query_Select', //
-    '\\Core\\DB_Query_Update', //
-    '\\Core\\DB_Query_Where', //
-    '\\Core\\Dialog', //
-    '\\Core\\Errors', //
-    '\\Core\\Event', //
-    '\\Core\\Files', //
-    '\\Core\\HTML', //
-    '\\Core\\Hook', //
-    '\\Core\\Input', //
-    '\\Core\\JS', //
-    '\\Core\\Language', //
-    '\\Core\\Menu', //
-    '\\Core\\MenuUi', //
-    '\\Core\\Num', //
-    '\\Core\\Session', //
-    '\\Core\\Status', //
-    '\\Core\\UploadHandler', //
+    '\\Core\\' => array(
+      'Adv_Exception', //
+      'Ajax', //
+      'Arr', //
+      'Auth', //
+      'Autoloader', //
+      'Cache', //
+      'Config', //
+      'DatePicker', //
+      'Dates', //
+      'Dialog', //
+      'Errors', //
+      'Event', //
+      'Files', //
+      'HTML', //
+      'Hook', //
+      'Input', //
+      'JS', //
+      'Language', //
+      'Menu', //
+      'MenuUi', //
+      'Num', //
+      'Session', //
+      'Status', //
+      'UploadHandler', //
+    ),
+    '\\Core\\DB\\' => array(
+      'DB', //
+      'DB_Query', //
+      'DB_Query_Delete', //
+      'DB_Query_Insert', //
+      'DB_Query_Result', //
+      'DB_Query_Select', //
+      'DB_Query_Update', //
+      'DB_Query_Where', //
+    )
   );

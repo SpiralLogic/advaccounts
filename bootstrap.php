@@ -34,8 +34,8 @@
   define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
     '.');
   set_error_handler(function ($severity, $message, $filepath, $line) {
-    class_exists('Errors', FALSE) or include COREPATH . 'errors.php';
-    return Errors::handler($severity, $message, $filepath, $line);
+    class_exists('\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
+    return \Core\Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
     class_exists('Errors', FALSE) or include COREPATH . 'errors.php';
@@ -73,5 +73,5 @@
   Session::i();
   Config::i();
   Ajax::i();
-  ob_start('adv_ob_flush_handler', 0);
+  //ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

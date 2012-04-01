@@ -15,4 +15,5 @@
     'tcpdf' , //
     'Cpdf', //
     'JSMin'
+
   );

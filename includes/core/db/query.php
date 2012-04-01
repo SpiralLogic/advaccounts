@@ -7,10 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-namespace Core;
+namespace Core\DB;
 use PDO, PDOStatement, PDOException, PDORow;
 
-  abstract class DB_Query extends DB_Query_Where {
+  abstract class Query extends Query_Where {
 
     /**
      * @var DB_Query
