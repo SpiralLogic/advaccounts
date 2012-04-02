@@ -188,14 +188,14 @@
      *
      * @return bool
      */
-    static protected function _has(array $array, $vars) {
+    static  function _has(array $array, $vars) {
       if (is_null($vars)) {
         return TRUE;
       }
       $vars = func_get_args();
       array_shift($vars);
       foreach ($vars as $var) {
-        if (static::_isset($array, $var) === FALSE) {
+        if (static::_isset($array, $var) === NULL) {
           return FALSE;
         }
       }
