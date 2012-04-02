@@ -11,7 +11,7 @@
   namespace ADV\Core;
   use \JsHttpRequest;
 
-  class Ajax extends JsHttpRequest {
+  class Ajax extends \JsHttpRequest {
     public $aCommands = array();
     public $triggers = array();
     static protected $i = NULL;

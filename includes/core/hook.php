@@ -18,9 +18,9 @@
 
     protected $hooks = array();
     /**
-     * @param          $name
+     * @param                              $name
      * @param callable $callback
-     * @param array    $arguments
+     * @param array                        $arguments
      */
     public function add($name, callable $callback, $arguments = array()) {
       $this->hooks[$name][] = [$callback, (array) $arguments];

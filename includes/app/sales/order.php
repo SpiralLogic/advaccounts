@@ -423,8 +423,9 @@
       $this->payment = $payment;
       $this->payment_terms = DB_Company::get_payment_terms($payment);
       if ($this->payment_terms['cash_sale']) {
-        $this->location = $this->pos['pos_location'];
-        $this->location_name = $this->pos['location_name'];
+        $pos= Sales_Point::get($this->pos);
+        $this->location = $pos['pos_location'];
+        $this->location_name = $pos['location_name'];
       }
       if ($customer_id > 0) {
         $this->credit = Debtor::get_credit($customer_id);

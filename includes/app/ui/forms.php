@@ -502,7 +502,7 @@
   }
 
   function text_row($label, $name, $value, $size = FALSE, $max, $title = NULL, $params = "", $post_label = "") {
-    echo "<tr><td class='label'>$label</td>";
+    echo "<tr><td class='label'><label for='$name'>$label</label></td>";
     text_cells(NULL, $name, $value, $size, $max, $title, $params, $post_label);
     echo "</tr>\n";
   }
@@ -788,7 +788,7 @@
   }
 
   function textarea_row($label, $name, $value, $cols, $rows, $title = NULL, $params = "", $labelparams = "") {
-    echo "<tr><td class='label' $labelparams>$label</td>";
+    echo "<tr><td class='label' $labelparams><label for='$name'>$label</label></td>";
     textarea_cells(NULL, $name, $value, $cols, $rows, $title, $params);
     echo "</tr>\n";
   }

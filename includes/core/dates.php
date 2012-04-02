@@ -394,6 +394,10 @@
       {
         list($year, $month, $day) = explode($sep, $date_);
       }
+      if (!checkdate($month, $day, $year)) {
+        Event::error('Incorrect date entered!');
+        return FALSE;
+      }
       //to modify assumption in 2030
       if (Config::get('accounts.datesystem') == 0 || Config::get('accounts.datesystem') == 3) {
         if ((int) $year < 60) {

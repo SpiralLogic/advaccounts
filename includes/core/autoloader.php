@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -52,6 +53,7 @@
         static::import_namespaces((array) $core);
         static::add_classes((array) $vendor, VENDORPATH);
       }
+
       //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE);
     }
     /**
@@ -97,7 +99,6 @@
         static::import_namespace($namespace, $classes);
       }
     }
-
     /**
      * @static
      *
@@ -186,20 +187,18 @@
         $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
-        $dir = rtrim(static::$classes[$required_class], '/') . DS . strtolower($filename);
+        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
       }
       else {
         $dir = APPPATH . strtolower($filename);
       }
-      $filename = strtolower($filename);
-      if (!is_readable($dir . '.php')) {
-        $filename = $dir . DS . $filename . '.php';
-      }
-      else {
-        $filename = $dir . '.php';
-      }
-      $result = static::trypath($filename, $required_class);
 
+      $filename = strtolower($filename);
+      $paths[] = $dir . '.php';
+      $paths[] = $dir . DS . $filename . '.php';
+      $paths[] = $dir . DS . $filename . DS . $filename . '.php';
+      $paths[] = $dir . DS . 'classes' . DS . $filename . '.php';
+      $result = static::trypath($paths, $required_class);
       if ($alias && $class) {
         class_alias(static::$classes2[$class] . $class, $class);
       }

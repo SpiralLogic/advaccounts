@@ -35,6 +35,7 @@
 		const TOTAL_BALANCE = "Total Balance";
 		const TOTAL_PO_EX_TAX = "Total Ex GST";
 		const SUBTOTAL = "Subtotal";
+
 		const STATEMENT = "Statement";
 		const AS_OF = "as of";
 		const DAYS = "Days";

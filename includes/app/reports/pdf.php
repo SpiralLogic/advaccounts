@@ -824,6 +824,7 @@
           if (isset($_GET['Email'])) {
             $emailAddress = $_GET['Email'];
           }
+
           $mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
           $mail->subject($subject);
           $mail->text($msg . $sender);

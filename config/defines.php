@@ -33,7 +33,7 @@
     'APP_TITLE' => "Advanced Accounting",
     'POWERED_BY' => 'Advanced Accounting',
     'POWERED_URL' => 'http://www.advancedgroup.com.au',
-    'COMPANY_PATH' => PATH_TO_ROOT . DS . 'company' . DS,
+    'COMPANY_PATH' => DOCROOT. 'company' . DS,
     'THEME_PATH' => PATH_TO_ROOT . DS . 'themes' . DS,
     'BACKUP_PATH' => PATH_TO_ROOT . DS . 'company' . DS . 'backup' . DS,
 

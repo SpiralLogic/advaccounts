@@ -127,7 +127,7 @@
       try {
         Event::$hooks->fire('shutdown');
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);

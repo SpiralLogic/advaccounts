@@ -360,7 +360,7 @@
      * @internal param bool $exit
      */
     static public function db_error($error, $sql = NULL, $data = array()) {
-      $errorCode = DB::error_no();
+      $errorCode = DB\DB::error_no();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");

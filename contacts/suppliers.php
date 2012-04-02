@@ -45,7 +45,7 @@
     HTML::td()->tr->table->div;
   }
   start_form();
-  $menu = new MenuUi();
+  $menu = new MenuUI();
   $menu->startTab('Details', 'Supplier Details', '#', 'text-align:center');
   HTML::div('companyIDs');
   HTML::table(array("class" => "marginauto bold"))->tr(TRUE)->td(TRUE);

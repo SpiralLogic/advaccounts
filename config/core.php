@@ -27,11 +27,12 @@
       'JS', //
       'Language', //
       'Menu', //
-      'MenuUi', //
+      'MenuUI', //
       'Num', //
       'Session', //
       'Status', //
       'UploadHandler', //
+      'XMLParser', //
     ),
     'ADV\\Core\\DB\\' => array(
       'DB', //
