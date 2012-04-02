@@ -139,11 +139,13 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         }
         $display_balance = Num::format($balance, $dec);
 
-        if ($openingbalance) {
+        if (Num::format($openingbalance) > 0) {
           $rep->TextCol(0, 8, $txt_opening_balance);
           $rep->TextCol(8, 9, Num::format($openingbalance, $dec));
           $rep->NewLine(2);
-          $openingbalance = 0;
+        }
+        if ($openingbalance) {
+$openingbalance=0;
           continue;
         }
         $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
@@ -195,10 +197,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       $rep->row = $rep->bottomMargin + (13 * $rep->lineHeight - 6);
       if ($customer_record["Balance"] > 0 && $customer_record["Due"] - $customer_record["Overdue1"] < $customer_record["Balance"]) {
         $rep->SetTextColor(255, 0, 0);
-        $rep->fontSize += 5;
+        $rep->fontSize += 4;
         $rep->Font('bold');
-        $rep->TextWrapLines(0, $rep->pageWidth, 'YOUR ACCOUNT IS OVERDUE, IMMEDIATE PAYMENT REQUIRED!', 'C');
-        $rep->fontSize -= 5;
+        $rep->TextWrapLines(0, $rep->pageWidth-50, 'YOUR ACCOUNT IS OVERDUE, IMMEDIATE PAYMENT REQUIRED!', 'C');
+        $rep->fontSize -= 4;
         $rep->SetTextColor(0, 0, 0);
       }
       $rep->NewLine();
