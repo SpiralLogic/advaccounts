@@ -277,7 +277,7 @@ $(function () {
 		btnConfirm:$("#btnConfirm").click(function () {
 			Company.Save();
 			return false;
-		}),
+		}).hide(),
 		btnCancel: $("#btnCancel").click(function () {
 			(!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 			return false;

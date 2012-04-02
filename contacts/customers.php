@@ -203,10 +203,10 @@
   end_table();
   HTML::_div()->div(array('class' => 'center width50'));
   UI::button('btnConfirm', ($customer->id) ? 'Update Customer' : 'New Customer', array(
-    'name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'
+    'name' => 'submit', 'type' => 'submit', 'class' => 'ui-helper-hidden','style' => 'margin:10px;'
   ));
   UI::button('btnCancel', 'Cancel', array(
-    'name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
+    'name' => 'cancel', 'type' => 'submit',  'style' => 'margin:10px;'
   ));
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::_div();
