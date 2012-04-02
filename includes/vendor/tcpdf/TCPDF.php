@@ -169,12 +169,8 @@
 	/**
 	 * barcode class
 	 */
-//	require(dirname(__FILE__) . "/tcpdfbarcode.php");
+//	require(dirname(__FILE__) . "/TCPDFBarcode.php");
 
-	/**
-	 * HTML entity decode functions
-	 */
-	require(dirname(__FILE__) . "/html_entity_decode_php4.php");
 
 		/**
 		 * define default PDF document producer

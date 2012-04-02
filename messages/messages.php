@@ -22,4 +22,3 @@
   UI::button('btnSend', 'Send Message');
   HTML::_div();
   Page::end();
-?>

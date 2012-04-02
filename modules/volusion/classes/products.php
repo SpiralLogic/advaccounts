@@ -1,12 +1,21 @@
 <?php
   namespace Modules\Volusion;
+  /**
+
+   */
   class Products {
 
     public $products = array();
 
+    /**
+
+     */
     function __construct() {
     }
 
+    /**
+     * @return bool
+     */
     function get() {
       $productsXML = $this->getXML();
       if (!$productsXML) {
@@ -16,6 +25,9 @@
       return TRUE;
     }
 
+    /**
+     * @return string
+     */
     function getXML() {
       $apiuser = \Config::get('webstore.apiuser');
       $apikey = \Config::get('webstore.apikey');

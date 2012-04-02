@@ -3,6 +3,12 @@
    * SmartOptimizer CSS Minifier
    */
 
+  /**
+   * @param $url
+   * @param $count
+   *
+   * @return string
+   */
   function convertUrl($url, $count) {
     global $settings, $mimeTypes, $fileDir;
 
@@ -59,6 +65,11 @@
     return 'data:' . $mimeType . ';base64,' . $base64;
   }
 
+  /**
+   * @param $str
+   *
+   * @return string
+   */
   function minify_css($str) {
     $res = '';
     $i = 0;
@@ -143,4 +154,4 @@
     return $res;
   }
 
-?>
+

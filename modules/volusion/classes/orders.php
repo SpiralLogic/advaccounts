@@ -255,7 +255,7 @@
       $this->next();
     }
     /**
-
+     * @return bool|void
      */
     function next() {
       $this->current++;
@@ -321,7 +321,7 @@
       return (count($results) > 0);
     }
     /**
-
+     * @return bool|void
      */
     function next() {
       $this->current++;

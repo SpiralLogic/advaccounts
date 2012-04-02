@@ -2,6 +2,11 @@
   /*
    * SmartOptimizer JavaScript Minifier
    */
+  /**
+   * @param $str
+   *
+   * @return string
+   */
   function minify_js($str) {
     $res = '';
     $maybe_regex = TRUE;
@@ -135,4 +140,4 @@
     return $res;
   }
 
-?>
+

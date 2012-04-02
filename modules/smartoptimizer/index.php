@@ -220,4 +220,3 @@
     headerExit('304 Not Modified');
   }
 
-?>

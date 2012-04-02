@@ -9,10 +9,13 @@
   namespace Modules;
   use \Modules\Volusion\Orders as Orders;
 
-  class Volusion {
-public function init() {
+  /**
 
-}
+   */
+  class Volusion {
+
+    public function init() {
+    }
     function doWebsales() {
       $orders = $this->getNewWebsales();
       if (!$orders) {
@@ -31,6 +34,9 @@ public function init() {
       $this->notOnJobsboard();
       \DB::change_connection();
     }
+    /**
+     * @return bool|Volusion\Orders
+     */
     protected function getNewWebsales() {
       $orders = new Orders();
       if (!count($orders)) {
@@ -47,11 +53,17 @@ public function init() {
       }
       return $orders;
     }
+    /**
+     * @return array
+     */
     function getNotOnJobsboard() {
       \DB::change_connection();
       $results = \DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
       return $results;
     }
+    /**
+     * @return bool
+     */
     protected function notOnJobsboard() {
       $neworders = $this->getNotOnJobsboard();
       if (!$neworders) {
@@ -68,6 +80,11 @@ public function init() {
       }
       return TRUE;
     }
+    /**
+     * @param $id
+     *
+     * @return \ADV\Core\DB\Query_Result|bool|int|mixed
+     */
     protected function insertJob($id) {
       \DB::change_connection();
       $order = \DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
@@ -162,6 +179,10 @@ public function init() {
       }
       return $result;
     }
+    /**
+     * @param $lines
+     * @param $jobid
+     */
     function insertlines($lines, $jobid) {
       $existing_lines = $this->getLines($jobid);
       $deleted = array_diff_key($lines, $existing_lines);
@@ -180,6 +201,11 @@ public function init() {
         }
       }
     }
+    /**
+     * @param $jobid
+     *
+     * @return array
+     */
     function getLines($jobid) {
       $result = \DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
       return $result;

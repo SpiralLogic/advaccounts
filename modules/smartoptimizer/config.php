@@ -40,4 +40,4 @@
   $settings['clientCache'] = TRUE;
   //Setting this to false will force the browser to use cached files without checking for changes.
   $settings['clientCacheCheck'] = FALSE;
-?>
+

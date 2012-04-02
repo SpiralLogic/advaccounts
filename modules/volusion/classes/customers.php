@@ -1,13 +1,22 @@
 <?php
   namespace Modules\Volusion;
+  /**
+
+   */
   class Customers {
 
     public $customers;
 
+    /**
+
+     */
     public function __construct() {
       echo __NAMESPACE__;
     }
 
+    /**
+     * @return bool
+     */
     function get() {
       $customersXML = $this->getXML();
       if (!$customersXML) {
@@ -17,6 +26,9 @@
       $this->customers = $customers;
     }
 
+    /**
+     * @return string
+     */
     function getXML() {
       $apiuser = \Config::get('webstore.apiuser');
       $apikey = \Config::get('webstore.apikey');
