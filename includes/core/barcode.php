@@ -24,7 +24,7 @@
      * GD
      * FPDF
      */
-  namespace Core;
+  namespace ADV\Core;
   class Barcode {
     static public function       create($datas) {
       return self::_draw($datas);

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core;
   class MenuUI extends Menu {
 
     /**
@@ -37,7 +37,7 @@
      * @return MenuUI
      */
     protected function addTab($title, $tooltip = '', $link = '#') {
-      $this->items[] = new MenuUi_item($title, $tooltip, $link);
+      $this->items[] = new MenuUI_item($title, $tooltip, $link);
       return $this;
     }
     /**
@@ -50,7 +50,7 @@
      * @return MenuUI
      */
     public function addLink($title, $tooltip = '', $link, $param_element, $target = NULL) {
-      $this->items[] = new MenuUi_item($title, $tooltip, $link, $param_element, $target);
+      $this->items[] = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = TRUE;
       return $this;
     }
@@ -63,7 +63,7 @@
      * @return MenuUI
      */
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
-      $this->items[] = new MenuUi_item($title, $tooltip, '#' . $name);
+      $this->items[] = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = TRUE;
       JS::onload($onselect);
       return $this;
@@ -126,7 +126,7 @@
   /**
 
    */
-  class MenuUi_item extends menu_item {
+  class MenuUI_item extends menu_item {
 
     /**
      * @var string

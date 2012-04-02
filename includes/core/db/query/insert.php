@@ -7,11 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
-  use PDO, PDOStatement, PDOException, PDORow;
+  namespace ADV\Core\DB;
+  use PDO, PDOStatement, PDOException, PDORow,Cache;
 
+  /**
 
-  Class DB_Query_Insert extends DB_Query {
+   */
+  Class Query_Insert extends Query {
 
     /**
      * @var
@@ -57,7 +59,7 @@
     /**
      * @param $table
      *
-     * @return DB_Query_Insert
+     * @return Query_Insert
      */
     public function into($table) {
       $this->table = $table;
@@ -66,7 +68,7 @@
     /**
      * @param $values array key pair
      *
-     * @return DB_Query_Insert|DB_Query_Update
+     * @return Query_Insert|Query_Update
      */
     public function values($values) {
       $this->data = (array) $values + $this->data;
@@ -76,13 +78,13 @@
      * @param $feild
      * @param $value
      *
-     * @return DB_Query_Insert
-     * @throws Adv_Exception
+     * @return Query_Insert
+     * @throws DBException
      */
     public function value($feild, $value) {
       if (is_array($feild) && is_array($value)) {
         if (count($feild) != count($value)) {
-          throw new Adv_Exception('Feild count and Value count unequal');
+          throw new DBException('Feild count and Value count unequal');
         }
         else {
           $this->values(array_combine($feild, $value));

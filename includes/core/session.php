@@ -7,9 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core;
   use \Memcached;
 
+  /**
+
+   */
   class SessionException extends \Exception {
 
   }
@@ -48,7 +51,7 @@
      */
     static private $i = NULL;
     /***
-     * @var gettextNativeSupport|gettext_php_support
+     * @var \gettextNativeSupport|\gettext_php_support
      */
     static public $get_text;
     /**
@@ -85,10 +88,10 @@
       }
       header("Cache-control: private");
       $this->setTextSupport();
-      \Language::set();
+      Language::set();
       $this->_session = &$_SESSION;
       // Ajax communication object
-      (!class_exists('\Ajax'))  or \Ajax::i();
+      (!class_exists('Ajax'))  or Ajax::i();
     }
     /**
      * @static

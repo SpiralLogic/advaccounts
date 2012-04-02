@@ -8,11 +8,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core;
   use \User;
 
+  /**
+
+   */
   class Event {
-  use \Core\Traits\Hook;
+  use \ADV\Core\Traits\Hook;
 
     /**
      * @var array all objects with methods to be run on shutdown
@@ -124,7 +127,7 @@
       try {
         Event::$hooks->fire('shutdown');
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);

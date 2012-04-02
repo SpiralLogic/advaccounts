@@ -7,13 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-namespace Core;
+namespace ADV\Core\DB;
 use PDO, PDOStatement, PDOException, PDORow;
 
-  abstract class DB_Query extends DB_Query_Where {
+/**
+
+ */
+abstract class Query extends Query_Where {
 
     /**
-     * @var DB_Query
+     * @var Query
      */
     static protected $query = NULL;
     /**
@@ -30,7 +33,6 @@ use PDO, PDOStatement, PDOException, PDORow;
     protected $conn;
     /**
      * @abstract
-
      */
     protected abstract function execute();
     /**
@@ -54,14 +56,14 @@ use PDO, PDOStatement, PDOException, PDORow;
     /***
      * @param null $data
      *
-     * @return DB_Query_Result|int|bool
+     * @return Query_Result|int|bool
      */
     public function exec($data = NULL) {
       $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
       return $result;
     }
     /***
-     * @return DB_Query_Result
+     * @return Query_Result
      */
     public function fetch() {
       return $this->exec(NULL);

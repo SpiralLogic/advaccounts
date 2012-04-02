@@ -27,7 +27,7 @@
     public $toerror = "No vaild email address";
 
     public function __construct($defaults = TRUE) {
-      $this->mail = new PHPMailer();
+      $this->mail = new PHPMailer(true);
       $this->mail->IsSMTP(); // telling the class to use SMTP
       $this->mail->Host = Config::get('email.server'); // SMTP server
       $this->mail->Username = Config::get('email.username');
@@ -129,7 +129,13 @@
       if ($this->toerror) {
         return FALSE;
       }
-      $ret = $this->mail->Send();
-      return $ret;
+      try {
+        $ret = $this->mail->Send();
+        return $ret;
+      }
+      catch (phpmailerException $e) {
+        $this->toerror = $e->errorMessage();
+        return FALSE;
+      }
     }
   }

@@ -11,5 +11,5 @@
    * @param $constants
    **/
   include('bootstrap.php');
-  var_dump(class_exists('\Modules\Jobsboard'));
-  var_dump(is_callable('\Modules\Jobsboard::tasks'));
+  var_dump(class_exists('\\Modules\\Jobsboard'));
+  var_dump(is_callable('\\Modules\\Jobsboard::tasks'));

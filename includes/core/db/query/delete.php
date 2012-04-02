@@ -7,10 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
-  class DB_Query_Delete extends DB_Query {
+  /**
+
+   */
+  class Query_Delete extends Query {
 
     /**
      * @var bool

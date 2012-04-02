@@ -6,71 +6,74 @@
    * Time: 11:13 AM
    * To change this template use File | Settings | File Templates.
    */
-  class Arr extends Core\Arr {
+  class Arr extends ADV\Core\Arr {
   }
 
-  class Adv_Exception extends Core\Adv_Exception {
+  class Adv_Exception extends ADV\Core\Adv_Exception {
   }
 
-  class Ajax extends Core\Ajax {
+  class Ajax extends ADV\Core\Ajax {
   }
 
-  class Auth extends Core\Auth {
+  class Auth extends ADV\Core\Auth {
   }
 
-  class Cache extends Core\Cache {
+  class Cache extends ADV\Core\Cache {
   }
 
-  class Config extends Core\Config {
+  class Config extends ADV\Core\Config {
   }
 
-  class Dates extends Core\Dates {
+  class Dates extends ADV\Core\Dates {
   }
 
-  class DB extends Core\DB {
+  class DB extends ADV\Core\DB\DB {
   }
 
-  class DB_Query_Result extends Core\DB_Query_Result {
+  class Query_Result extends ADV\Core\DB\Query_Result {
   }
 
-  class Dialog extends Core\Dialog {
+  class Dialog extends ADV\Core\Dialog {
   }
 
-  class Event extends Core\Event {
+  class Event extends ADV\Core\Event {
   }
 
-  class Files extends Core\Files {
+  class Errors extends ADV\Core\Errors {
   }
 
-  class HTML extends Core\HTML {
+  class Files extends ADV\Core\Files {
   }
 
-  class Hook extends Core\Hook {
+  class HTML extends ADV\Core\HTML {
   }
 
-  class Input extends Core\Input {
+  class Hook extends ADV\Core\Hook {
   }
 
-  class JS extends Core\JS {
+  class Input extends ADV\Core\Input {
   }
 
-  class Language extends Core\Language {
+  class JS extends ADV\Core\JS {
   }
 
-  class Menu extends Core\Menu {
+  class Language extends ADV\Core\Language {
   }
 
-  class MenuUi extends Core\MenuUi {
+  class Menu extends ADV\Core\Menu {
   }
 
-  class Num extends Core\Num {
+  class MenuUI extends ADV\Core\MenuUI {
   }
 
-  class Session extends Core\Session {
+  class Num extends ADV\Core\Num {
   }
 
-  class Status extends Core\Status {
+  class Session extends ADV\Core\Session {
   }
 
-  class UploadHandler extends Core\UploadHandler {
+  class Status extends ADV\Core\Status {
+  }
+
+  class UploadHandler extends ADV\Core\UploadHandler {
   }

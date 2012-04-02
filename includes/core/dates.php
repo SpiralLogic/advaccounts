@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  namespace Core;
+  namespace ADV\Core;
   if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
     @date_default_timezone_set(@date_default_timezone_get());
   }
@@ -393,6 +393,10 @@
       else // $how == 2, YYYYMMDD
       {
         list($year, $month, $day) = explode($sep, $date_);
+      }
+      if (!checkdate($month, $day, $year)) {
+        Event::error('Incorrect date entered!');
+        return FALSE;
       }
       //to modify assumption in 2030
       if (Config::get('accounts.datesystem') == 0 || Config::get('accounts.datesystem') == 3) {

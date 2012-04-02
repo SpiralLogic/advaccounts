@@ -1724,7 +1724,7 @@
 		}
 
 		/////////////////////////////////////////////////
-		// CLASS METHODS, MESSAGE MODE_RESET
+  // CLASS METHODS, MESSAGE RESET
 		/////////////////////////////////////////////////
 		/**
 		 * Clears all recipients assigned in the TO array.	Returns void.
@@ -1954,18 +1954,95 @@
 		 * @return string MIME type of ext
 		 * @static
 		 */
-		static public function _mime_types($ext = '')
-		{
-			$mimes = array('hqx' => 'application/mac-binhex40', 'cpt' => 'application/mac-compactpro', 'doc' => 'application/msword', 'bin' => 'application/macbinary', 'dms' => 'application/octet-stream', 'lha' => 'application/octet-stream', 'lzh' => 'application/octet-stream',
-				'exe' => 'application/octet-stream', 'class' => 'application/octet-stream', 'psd' => 'application/octet-stream', 'so' => 'application/octet-stream', 'sea' => 'application/octet-stream', 'dll' => 'application/octet-stream', 'oda' => 'application/oda', 'pdf' => 'application/pdf',
-				'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'smi' => 'application/smil', 'smil' => 'application/smil', 'mif' => 'application/vnd.mif', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint',
-				'wbxml' => 'application/vnd.wap.wbxml', 'wmlc' => 'application/vnd.wap.wmlc', 'dcr' => 'application/x-director', 'dir' => 'application/x-director', 'dxr' => 'application/x-director', 'dvi' => 'application/x-dvi', 'gtar' => 'application/x-gtar', 'php' => 'application/x-httpd-php',
-				'php4' => 'application/x-httpd-php', 'php3' => 'application/x-httpd-php', 'phtml' => 'application/x-httpd-php', 'phps' => 'application/x-httpd-php-source', 'js' => 'application/x-javascript', 'swf' => 'application/x-shockwave-flash', 'sit' => 'application/x-stuffit',
-				'tar' => 'application/x-tar', 'tgz' => 'application/x-tar', 'xhtml' => 'application/xhtml+xml', 'xht' => 'application/xhtml+xml', 'zip' => 'application/zip', 'mid' => 'audio/midi', 'midi' => 'audio/midi', 'mpga' => 'audio/mpeg', 'mp2' => 'audio/mpeg', 'mp3' => 'audio/mpeg',
-				'aif' => 'audio/x-aiff', 'aiff' => 'audio/x-aiff', 'aifc' => 'audio/x-aiff', 'ram' => 'audio/x-pn-realaudio', 'rm' => 'audio/x-pn-realaudio', 'rpm' => 'audio/x-pn-realaudio-plugin', 'ra' => 'audio/x-realaudio', 'rv' => 'video/vnd.rn-realvideo', 'wav' => 'audio/x-wav', 'bmp' => 'image/bmp',
-				'gif' => 'image/gif', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'jpe' => 'image/jpeg', 'png' => 'image/png', 'tiff' => 'image/tiff', 'tif' => 'image/tiff', 'css' => 'text/css', 'html' => 'text/html', 'htm' => 'text/html', 'shtml' => 'text/html', 'txt' => 'text/plain',
-				'text' => 'text/plain', 'log' => 'text/plain', 'rtx' => 'text/richtext', 'rtf' => 'text/rtf', 'xml' => 'text/xml', 'xsl' => 'text/xml', 'mpeg' => 'video/mpeg', 'mpg' => 'video/mpeg', 'mpe' => 'video/mpeg', 'qt' => 'video/quicktime', 'mov' => 'video/quicktime', 'avi' => 'video/x-msvideo',
-				'movie' => 'video/x-sgi-movie', 'doc' => 'application/msword', 'word' => 'application/msword', 'xl' => 'application/excel', 'eml' => 'message/rfc822'
+  public static function _mime_types($ext = '') {
+    $mimes = array(
+      'hqx'   =>  'application/mac-binhex40',
+      'cpt'   =>  'application/mac-compactpro',
+      'doc'   =>  'application/msword',
+      'bin'   =>  'application/macbinary',
+      'dms'   =>  'application/octet-stream',
+      'lha'   =>  'application/octet-stream',
+      'lzh'   =>  'application/octet-stream',
+      'exe'   =>  'application/octet-stream',
+      'class' =>  'application/octet-stream',
+      'psd'   =>  'application/octet-stream',
+      'so'    =>  'application/octet-stream',
+      'sea'   =>  'application/octet-stream',
+      'dll'   =>  'application/octet-stream',
+      'oda'   =>  'application/oda',
+      'pdf'   =>  'application/pdf',
+      'ai'    =>  'application/postscript',
+      'eps'   =>  'application/postscript',
+      'ps'    =>  'application/postscript',
+      'smi'   =>  'application/smil',
+      'smil'  =>  'application/smil',
+      'mif'   =>  'application/vnd.mif',
+      'xls'   =>  'application/vnd.ms-excel',
+      'ppt'   =>  'application/vnd.ms-powerpoint',
+      'wbxml' =>  'application/vnd.wap.wbxml',
+      'wmlc'  =>  'application/vnd.wap.wmlc',
+      'dcr'   =>  'application/x-director',
+      'dir'   =>  'application/x-director',
+      'dxr'   =>  'application/x-director',
+      'dvi'   =>  'application/x-dvi',
+      'gtar'  =>  'application/x-gtar',
+      'php'   =>  'application/x-httpd-php',
+      'php4'  =>  'application/x-httpd-php',
+      'php3'  =>  'application/x-httpd-php',
+      'phtml' =>  'application/x-httpd-php',
+      'phps'  =>  'application/x-httpd-php-source',
+      'js'    =>  'application/x-javascript',
+      'swf'   =>  'application/x-shockwave-flash',
+      'sit'   =>  'application/x-stuffit',
+      'tar'   =>  'application/x-tar',
+      'tgz'   =>  'application/x-tar',
+      'xhtml' =>  'application/xhtml+xml',
+      'xht'   =>  'application/xhtml+xml',
+      'zip'   =>  'application/zip',
+      'mid'   =>  'audio/midi',
+      'midi'  =>  'audio/midi',
+      'mpga'  =>  'audio/mpeg',
+      'mp2'   =>  'audio/mpeg',
+      'mp3'   =>  'audio/mpeg',
+      'aif'   =>  'audio/x-aiff',
+      'aiff'  =>  'audio/x-aiff',
+      'aifc'  =>  'audio/x-aiff',
+      'ram'   =>  'audio/x-pn-realaudio',
+      'rm'    =>  'audio/x-pn-realaudio',
+      'rpm'   =>  'audio/x-pn-realaudio-plugin',
+      'ra'    =>  'audio/x-realaudio',
+      'rv'    =>  'video/vnd.rn-realvideo',
+      'wav'   =>  'audio/x-wav',
+      'bmp'   =>  'image/bmp',
+      'gif'   =>  'image/gif',
+      'jpeg'  =>  'image/jpeg',
+      'jpg'   =>  'image/jpeg',
+      'jpe'   =>  'image/jpeg',
+      'png'   =>  'image/png',
+      'tiff'  =>  'image/tiff',
+      'tif'   =>  'image/tiff',
+      'css'   =>  'text/css',
+      'html'  =>  'text/html',
+      'htm'   =>  'text/html',
+      'shtml' =>  'text/html',
+      'txt'   =>  'text/plain',
+      'text'  =>  'text/plain',
+      'log'   =>  'text/plain',
+      'rtx'   =>  'text/richtext',
+      'rtf'   =>  'text/rtf',
+      'xml'   =>  'text/xml',
+      'xsl'   =>  'text/xml',
+      'mpeg'  =>  'video/mpeg',
+      'mpg'   =>  'video/mpeg',
+      'mpe'   =>  'video/mpeg',
+      'qt'    =>  'video/quicktime',
+      'mov'   =>  'video/quicktime',
+      'avi'   =>  'video/x-msvideo',
+      'movie' =>  'video/x-sgi-movie',
+      'doc'   =>  'application/msword',
+      'word'  =>  'application/msword',
+      'xl'    =>  'application/excel',
+      'eml'   =>  'message/rfc822'
 			);
 			return (!isset($mimes[strtolower($ext)])) ? 'application/octet-stream' : $mimes[strtolower($ext)];
 		}
@@ -2139,8 +2216,15 @@
 			$DKIMlen = strlen($body); // Length of body
 			$DKIMb64 = base64_encode(pack("H*", sha1($body))); // Base64 of packed binary SHA-1 hash of body
 			$ident = ($this->DKIM_identity == '') ? '' : " i=" . $this->DKIM_identity . ";";
-			$dkimhdrs = "DKIM-Signature: v=1; a=" . $DKIMsignatureType . "; q=" . $DKIMquery . "; l=" . $DKIMlen . "; s=" . $this->DKIM_selector . ";\r\n\tt=" . $DKIMtime . "; c=" . $DKIMcanonicalization . ";\r\n\th=From:To:Subject;\r\n\td=" . $this->DKIM_domain . ";" . $ident
-			 . "\r\n\tz=$from\r\n\t|$to\r\n\t|$subject;\r\n\tbh=" . $DKIMb64 . ";\r\n\tb=";
+    $dkimhdrs = "DKIM-Signature: v=1; a=" . $DKIMsignatureType . "; q=" . $DKIMquery . "; l=" . $DKIMlen . "; s=" . $this->DKIM_selector . ";\r\n".
+                "\tt=" . $DKIMtime . "; c=" . $DKIMcanonicalization . ";\r\n".
+                "\th=From:To:Subject;\r\n".
+                "\td=" . $this->DKIM_domain . ";" . $ident . "\r\n".
+                "\tz=$from\r\n".
+                "\t|$to\r\n".
+                "\t|$subject;\r\n".
+                "\tbh=" . $DKIMb64 . ";\r\n".
+                "\tb=";
 			$toSign = $this->DKIM_HeaderC($from_header . "\r\n" . $to_header . "\r\n" . $subject_header . "\r\n" . $dkimhdrs);
 			$signed = $this->DKIM_Sign($toSign);
 			return "X-PHPMAILER-DKIM: phpmailer.worxware.com\r\n" . $dkimhdrs . $signed . "\r\n";

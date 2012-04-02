@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  namespace Core;
+  namespace ADV\Core;
   class Status {
 
     /**

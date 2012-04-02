@@ -11,7 +11,7 @@
    ***********************************************************************/
   class User {
 
-  use \Core\Traits\Hook;
+  use \ADV\Core\Traits\Hook;
 
     /***
      * @static

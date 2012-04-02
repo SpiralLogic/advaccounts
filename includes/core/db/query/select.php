@@ -7,11 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Core;
+  namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
+  /**
 
-  class DB_Query_Select extends DB_Query {
+   */
+  class Query_Select extends Query {
 
     /**
      * @var array
@@ -45,7 +47,7 @@
      * @param string $columns,... Database columns to select
      * @param        DB_C
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function __construct($columns, $db) {
       parent::__construct($db);
@@ -55,7 +57,7 @@
     /***
      * @param mixed ... Database columns to select
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function select() {
       $columns = func_get_args();
@@ -65,7 +67,7 @@
     /***
      * @param null $tables
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function from($tables = NULL) {
       if (is_null($tables)) {
@@ -78,7 +80,7 @@
     /**
      * @param null $by
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     function orderby($by = NULL) {
       if (is_null($by)) {
@@ -91,7 +93,7 @@
     /**
      * @param null $by
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     function groupby($by = NULL) {
       if (is_null($by)) {
@@ -105,14 +107,14 @@
      * @param      $start
      * @param null $quantity
      *
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function limit($start = 0, $quantity = NULL) {
       $this->limit = ($quantity == NULL) ? $start : "$start, $quantity";
       return $this;
     }
     /**
-     * @return DB_Query_Select
+     * @return Query_Select
      */
     public function union() {
       $this->union[] = '(' . $this->_buildQuery() . ')';
@@ -124,6 +126,7 @@
     /**
      * @param $condition
      * @param $var
+     * @return void
      */
     public function union_or($condition, $var) {
       $this->union_or[$condition] = $var;
