@@ -471,12 +471,12 @@ JS;
      *
      * @return Array|DB_Query_Result
      */
-    static public function get_details($customer_id, $to = NULL) {
+    static public function get_details($customer_id, $to = NULL, $istimestamp = FALSE) {
       if ($to == NULL) {
         $todate = date("Y-m-d");
       }
       else {
-        $todate = Dates::date2sql($to);
+       $todate = ($istimestamp) ? date("Y-m-d", $to) : Dates::date2sql($to);
       }
 
       $customer_record["Balance"] = 0;
@@ -712,8 +712,7 @@ JS;
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
       echo "<td class='nowrap'>";
       if ($label != NULL) {
-              echo "<label for=\"$name\"> $label</label>";
-
+        echo "<label for=\"$name\"> $label</label>";
       }
       echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
       echo "</td>\n";

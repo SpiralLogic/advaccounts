@@ -61,6 +61,7 @@ Behaviour.register({
 	},
 	'.allocateAll':function (e) {
 		e.onclick = function () {
+
 			Adv.alloc.all(this.name.substr(5));
 		};
 	},

@@ -248,7 +248,7 @@
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
           amount_cells(NULL, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
-          amount_cell($un_allocated, FALSE, '', 'maxval' . $counter);
+          amount_cell($un_allocated, FALSE, '');
           label_cell("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
           label_cell("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), FALSE));
           end_row();
