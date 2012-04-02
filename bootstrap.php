@@ -73,5 +73,5 @@
   Session::i();
   Config::i();
   Ajax::i();
-//  ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

@@ -321,7 +321,7 @@
      * @param bool $exit
      */
     public static function error_exit($text, $exit = TRUE) {
-      ob_get_clean();
+    //  ob_get_clean();
       $page = new static('Fatal Error.', FALSE);
       $page->header();
       echo "<div id='msgbox'>$text</div></div></body></html>";

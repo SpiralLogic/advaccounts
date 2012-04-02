@@ -51,6 +51,7 @@
         static::import_namespaces((array) $core);
         static::add_classes((array) $vendor, VENDORPATH);
       }
+
       //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE);
     }
     /**
@@ -184,11 +185,12 @@
         $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
-        $dir = rtrim(static::$classes[$required_class], '/') . DS . strtolower($filename);
+        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
       }
       else {
         $dir = APPPATH . strtolower($filename);
       }
+
       $filename = strtolower($filename);
       $paths[] = $dir . '.php';
       $paths[] = $dir . DS . $filename . '.php';

@@ -66,5 +66,5 @@ function toArray(obj) {
  return array;
 }
 JS;
-  JS::beforeload($js);
+  //JS::beforeload($js);
   Page::end();
