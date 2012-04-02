@@ -357,15 +357,15 @@ $(function () {
 
 		if (!Adv.changed && Adv.fieldsChanged > 0) {
 			buttontext = (Company.get().id) ? "Save Changes" : "Save New";
-			Adv.btnConfirm.text(buttontext);
-			Adv.btnCancel.text('Cancel Changes').show();
+			Adv.btnConfirm.text(buttontext).show();
+			Adv.btnCancel.text('Cancel Changes');
 			Adv.o.companysearch.prop('disabled', true);
 			Adv.changed = true;
 		} else {
 			if (Adv.changed && Adv.fieldsChanged === 0) {
 				Adv.changed = false;
-				Adv.btnConfirm.text("New Customer");
-				Adv.btnCancel.hide();
+				Adv.btnConfirm.hide();
+				Adv.btnCancel.text("New");
 			}
 		}
 		Company.set($thisname, $this.val());
