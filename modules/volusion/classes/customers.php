@@ -30,9 +30,9 @@
      * @return string
      */
     function getXML() {
-      $apiuser = \Config::get('webstore.apiuser');
-      $apikey = \Config::get('webstore.apikey');
-      $url = \Config::get('webstore.apiurl');
+      $apiuser = \Config::get('modules.webstore')['apiuser'];
+      $apikey = \Config::get('modules.webstore')['apikey'];
+      $url = \Config::get('modules.webstore')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Customers';

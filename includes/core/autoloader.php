@@ -184,7 +184,7 @@
           $alias = TRUE;
         }
         $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace);
-        $dir = DOCROOT . strtolower($namespacepath.DS.$filename);
+        $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$required_class])) {
         $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;

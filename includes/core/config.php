@@ -136,9 +136,11 @@
      *
      * @return mixed
      */
-    static public function get_all($group = 'config') {
+    static public function get_all($group = 'config',$default=array()) {
       static::i();
-      (isset(static::$_vars[$group])) or static::load($group);
+      if (!isset(static::$_vars[$group]) &&  static::load($group)==false){
+        return $default;
+      };
       return static::$_vars[$group];
     }
     /**

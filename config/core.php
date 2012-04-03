@@ -43,5 +43,11 @@
       'DB_Query_Select', //
       'DB_Query_Update', //
       'DB_Query_Where', //
+      'DBException', //
+      'DBDuplicateException', //
+      'DBDeleteException', //
+      'DBInsertException', //
+      'DBSelectException', //
+      'DBUpdateException', //
     )
   );
