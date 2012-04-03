@@ -467,7 +467,8 @@
     if ($value === NULL) {
       $value = get_post($name);
     }
-    echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">";
+    echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" .
+      ($title ? " title='$title'" : '') . ">";
     if ($post_label != "") {
       echo " " . $post_label;
     }
