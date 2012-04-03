@@ -11,3 +11,4 @@
    * @param $constants
    **/
   include 'bootstrap.php';
+DB::select('nothing')->from('users')->fetch()->all();
