@@ -210,7 +210,7 @@
      * @return string
      */
     public function absolute_url($url) {
-      return strpos($url, '..') === 0 ? dirname($_SERVER['PHP_SELF']) . '/' . $url : $url;
+      return strpos($url, '..') === 0 ? dirname($_SERVER['PHP_SELF']) . '/' . $url : str_replace(DOCROOT,'/',$url);
     }
   }
 

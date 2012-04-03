@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,9 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-
   class Input {
-
     /**
 
      */
@@ -42,9 +41,9 @@
     /***
      * @static
      *
-     * @param mixed $var     $_POST variable to return
+     * @param mixed     $var     $_POST variable to return
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-     * @param null  $default Default value if there is no current variable
+     * @param null      $default Default value if there is no current variable
      *
      * @return bool|int|string|object
      */
@@ -80,9 +79,9 @@
     /***
      * @static
      *
-     * @param mixed $var     $_GET variable to return if it doesn't exist $_POST will be tried
+     * @param mixed     $var     $_GET variable to return if it doesn't exist $_POST will be tried
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-     * @param null  $default Default value if there is no current variable
+     * @param null      $default Default value if there is no current variable
      *
      * @return bool|int|string|object
      */
@@ -188,12 +187,14 @@
      *
      * @return bool
      */
-    static  function _has(array $array, $vars) {
+    static function _has(array $array, $vars) {
       if (is_null($vars)) {
         return TRUE;
       }
-      $vars = func_get_args();
-      array_shift($vars);
+      elseif (!is_array($vars)) {
+        $vars = func_get_args();
+        array_shift($vars);
+      }
       foreach ($vars as $var) {
         if (static::_isset($array, $var) === NULL) {
           return FALSE;
