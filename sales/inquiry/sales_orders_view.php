@@ -104,7 +104,7 @@
   start_form();
   start_table('tablestyle_noborder');
   start_row();
-  Debtor::cells(_("Customer: "), 'customer_id', NULL, TRUE);
+  Debtor::cells(_("Customer: "), 'customer_id', $selected_customer, TRUE);
   ref_cells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
     ref_cells(_("Ref"), 'OrderReference', '', NULL, '', TRUE);
@@ -158,8 +158,8 @@
   $sql .= " AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_id = branch.branch_id
 		AND debtor.debtor_no = branch.debtor_no";
-  if ($_POST['customer_id'] != ALL_TEXT) {
-    $sql .= " AND sorder.debtor_no = " . DB::quote($_POST['customer_id']);
+  if ($selected_customer!= -1) {
+    $sql .= " AND sorder.debtor_no = " . DB::quote($selected_customer);
   }
   if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
     // search orders with number like
@@ -230,7 +230,7 @@
       _("Order #") => array('fun' => 'view_link', 'ord' => ''),
       _("Ref") => array('ord' => ''),
       _("PO#") => array('ord' => ''),
-      _("Date") => array('type' => 'date', 'ord' => 'desc'),
+      _("Date") => array('type' => 'date', 'ord' => 'asc'),
       _("Required By") => array('type' => 'date', 'ord' => ''),
       _("Customer") => array('ord' => 'asc'),
       array('type' => 'skip'),
@@ -297,7 +297,7 @@
       ));
     }
   }
-  $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, NULL);
+  $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, 4);
   $table->set_marker('check_overdue', _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);

@@ -484,7 +484,8 @@
       else {
         $_POST[$name] = "";
       }
-    }    echo "<td>";
+    }
+    echo "<td class='label'>";
 
     if ($label != NULL) {
       echo "<label for=\"$name\"> $label</label>";
@@ -585,10 +586,10 @@
       }
     }
     $post_label = "";
-    echo "<td>";
+    echo "<td class='label'>";
     if ($label != NULL) {
       echo "<label for=\"$name\"> $label</label>";
-      }
+    }
     $class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
     $aspect = $check ? ' data-aspect="cdate"' : '';
     if ($check && (get_post($name) != Dates::today())) {
