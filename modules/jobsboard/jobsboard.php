@@ -121,7 +121,7 @@
 
      */
     static function tasks() {
-      $webstore = \Config::get('webstore.type');
+      $webstore = \Config::get('modules.webstore')['type'];
       $webstore = '\\Modules\\' . $webstore;
       /***  @var \Modules\Volusion $store */
       $store = new $webstore();

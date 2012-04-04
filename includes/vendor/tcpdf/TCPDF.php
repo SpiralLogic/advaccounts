@@ -3915,7 +3915,7 @@
 							if ($resize) {
 								$imgr = imagecreatetruecolor($neww, $newh);
 								imagecopyresampled($imgr, $img, 0, 0, 0, 0, $neww, $newh, $pixw, $pixh);
-								$info = $this->_toJPEG($imgr);
+								$info = $this->_toJPEG($img);
 							} else {
 								$info = $this->_toJPEG($img);
 							}

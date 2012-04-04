@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,53 +8,15 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB;
-  use PDO, PDOStatement, PDOException, PDORow,Cache;
+  use PDO, PDOStatement, PDOException, PDORow, Cache;
+
+
 
   /**
-   *
-   */
-  class DBException extends \PDOException {
-  }
 
-  /**
-   *
-   */
-  class DBUpdateException extends DBException {
-  }
-
-  ;
-  /**
-   *
-   */
-  class
-  DBInsertException extends DBException {
-  }
-
-  ;
-  /**
-   *
-   */
-  class DBDeleteException extends DBException {
-  }
-
-  ;
-  /**
-   *
-   */
-  class DBSelectException extends DBException {
-  }
-
-  ;
-  /**
-
-   */
-  class DBDuplicateException extends DBException {
-  }
-
-  /**
-   *
    */
   class DB {
+
     const SELECT = 0;
     const INSERT = 1;
     const UPDATE = 2;
@@ -290,8 +251,7 @@
     /**
      * @static
      *
-     * @param $data
-     *
+     * @param      $data
      * @param bool $debug
      *
      * @return array|bool
@@ -372,7 +332,6 @@
      * @static
      *
      * @param \PDOStatement $result The result of the query or whatever cunt
-     *
      * @param int           $fetch_mode
      *
      * @return Query_Result|Array This is something
@@ -390,7 +349,8 @@
       catch (\Exception $e) {
         static::_error($e);
       }
-    return FALSE;}
+      return FALSE;
+    }
     /**
      * @static
      *
@@ -684,7 +644,6 @@
      * @throws DBDuplicateException
      * @throws DBException
      * @internal param bool|string $exit
-     *
      * @return bool
      */
     protected function _error(\Exception $e, $msg = FALSE) {

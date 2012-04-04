@@ -131,10 +131,10 @@
         $v = is_string($v) ? trim($v) : $v;
       });
       require APPPATH . "main.php";
-      $modules = Config::get('modules', array());
-      foreach ($modules as $module) {
-        if (is_callable($module . '::init')) {
-          call_user_func($module . '::init');
+      $modules = Config::get_all('modules', array());
+      foreach ($modules as $module=>$config) {
+        if (isset($config['init']) && $config['init'] && is_callable('\\Modules\\' . $module . '::init')) {
+          call_user_func('\\Modules\\' . $module . '::init');
         }
       }
       // logout.php is the only page we should have always

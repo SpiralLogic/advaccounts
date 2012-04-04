@@ -114,7 +114,7 @@
       $error = array(
         'type' => -1,
         'code' => $e->getCode(),
-        'message' => get_class($e) . ' ' . $e->getMessage(),
+        'message' =>  end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine()
       );
@@ -300,6 +300,11 @@
       $content = static::format();
       if (!$content) {
         $content = '<div class="err_msg">A fatal error has occured!</div>';
+      }
+
+      if (isset(static::$session['current_user']) &&static::$session['current_user']->username=='admin'){
+        $content .= '<pre class="left">'.var_export(Errors::$errors,true).'</pre>';
+
       }
       if (class_exists('Page')) {
         \Page::error_exit($content, FALSE);

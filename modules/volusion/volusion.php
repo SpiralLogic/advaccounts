@@ -7,13 +7,12 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace Modules;
-  use \Modules\Volusion\Orders as Orders;
+  use \Modules\Volusion\Orders as Orders,\ADV\Core\DB\DB,   \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DBDeleteException, \ADV\Core\DB\DBInsertException, \ADV\Core\DB\DBSelectException, \ADV\Core\DB\DBUpdateException;
 
   /**
 
    */
   class Volusion {
-
     public function init() {
     }
     function doWebsales() {
@@ -32,7 +31,7 @@
         }
       }
       $this->notOnJobsboard();
-      \DB::change_connection();
+      DB::change_connection();
     }
     /**
      * @return bool|Volusion\Orders
@@ -57,8 +56,8 @@
      * @return array
      */
     function getNotOnJobsboard() {
-      \DB::change_connection();
-      $results = \DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
+      DB::change_connection();
+      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
       return $results;
     }
     /**
@@ -83,18 +82,18 @@
     /**
      * @param $id
      *
-     * @return \ADV\Core\DB\Query_Result|bool|int|mixed
+     * @return \ADV\CoreDB\Query_Result|bool|int|mixed
      */
     protected function insertJob($id) {
-      \DB::change_connection();
-      $order = \DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
+      DB::change_connection();
+      $order = DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         \Event::error('Could not find job ' . $id . ' in database');
         return FALSE;
       }
-      $orderdetails = \DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
-      \DB::change_connection('jobsboard');
-      $jobsboard_no = \DB::select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
+      $orderdetails = DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
+      DB::change_connection('jobsboard');
+      $jobsboard_no = DB::select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
       $jobsboard_no = $jobsboard_no['Advanced_Job_No'];
       $lineitems = $lines = array();
       foreach ($orderdetails as $detail) {
@@ -120,7 +119,7 @@
           'websaleid' => $id,
           'Detail' => $detail,
         );
-        \DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
+        DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
         $this->insertLines($lineitems, $jobsboard_no);
         return $jobsboard_no;
       }
@@ -171,10 +170,10 @@
           }
         }
         $newJob['Updates'] = $updates;
-        $jobsboard_no = \DB::insert('Job_List')->values($newJob)->exec();
+        $jobsboard_no = DB::insert('Job_List')->values($newJob)->exec();
         $this->insertlines($lineitems, $jobsboard_no);
-        \DB::change_connection();
-        \DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
+        DB::change_connection();
+        DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
         $result = $jobsboard_no;
       }
       return $result;
@@ -189,15 +188,15 @@
       foreach ($deleted as $line) {
         $line['quantity'] = 0;
         $line['description'] .= " DELETED!";
-        \DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+        DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
       }
       foreach ($lines as $line) {
         $line['job_id'] = $jobid;
         try {
-          $line['line_id'] = \DB::insert('JobListItems')->values($line)->exec();
+          $line['line_id'] = DB::insert('JobListItems')->values($line)->exec();
         }
-        catch (\DBDuplicateException $e) {
-          \DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+        catch (DBDuplicateException $e) {
+          DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
         }
       }
     }
@@ -207,7 +206,7 @@
      * @return array
      */
     function getLines($jobid) {
-      $result = \DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
+      $result = DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
       return $result;
     }
   }
