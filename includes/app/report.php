@@ -68,7 +68,7 @@
      * @param $ar_params
      */
     protected function set_controls($ar_params) {
-      $this->controls = $ar_params;
+        $this->controls = $ar_params;
     }
     public function get_controls() {
       return $this->controls;

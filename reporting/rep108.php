@@ -13,7 +13,7 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::set_security(SA_CUSTSTATREP);
   print_statements();
-  function get_transactions($debtorno, $month) {
+  function get_transactions($debtorno, $month, $inc_all) {
     $dateend = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
     $sql
@@ -24,11 +24,10 @@
 				( debtor_trans.due_date < '$datestart') AS OverDue
  			FROM debtor_trans
  			WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
- 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans
- 				.ov_freight +
-						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-						 GROUP BY debtor_no, if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no)
-						 ORDER BY  debtor_trans.tran_date,	debtor_trans.type,	debtor_trans.branch_id";
+ 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
+						 GROUP BY debtor_no, ";
+    $sql .= ($inc_all) ? " debtor_trans.trans_no " : " if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no) ";
+    $sql .= " ORDER BY  debtor_trans.tran_date,	debtor_trans.type,	debtor_trans.branch_id";
 
     return DB::query($sql, "No transactions were returned");
   }
@@ -46,11 +45,13 @@
     $txt_statement = "Statement";
     $txt_opening_balance = 'Opening Balance';
     $doc_as_of = "as of";
-    $customer = $_POST['PARAM_0'];
-    $month = $_POST['PARAM_5'] ? : 0;
+    $customer = Input::post_get('PARAM_0',Input::NUMERIC,0);
+    $email = Input::post_get('PARAM_2',Input::STRING,0);
+    $comments = Input::post_get('PARAM_3',Input::STRING,'');
+    $month = Input::post_get('PARAM_4',Input::NUMERIC,0);
+    $inc_negatives = Input::post_get('PARAM_5',Input::NUMERIC,0);
+    $inc_all = Input::post_get('PARAM_6',Input::NUMERIC,0);
     $doctype = ST_STATEMENT;
-    $email = $_POST['PARAM_2'];
-    $comments = $_POST['PARAM_3'];
     $txt_outstanding = $txt_over = $txt_days = $txt_current = $txt_total_balance = NULL;
     $dec = User::price_dec();
     $cols = array(5, 60, 100, 170, 225, 295, 345, 390, 460, 460);
@@ -69,8 +70,8 @@
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
 		debtors c WHERE db.debtor_no = a.debtor_no AND c.debtor_no=db.debtor_no AND a.branch_ref = "Accounts" AND Balance>0  ';
-    if ($customer != ALL_NUMERIC) {
-      $sql .= " WHERE debtor_no = " . DB::escape($customer);
+    if ($customer > 0) {
+      $sql .= " AND c.debtor_no = " . DB::escape($customer);
     }
     else {
       $sql .= " ORDER by name";
@@ -88,11 +89,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       }
       $baccount = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
-      $trans_rows = get_transactions($myrow['debtor_no'], $month);
+      $trans_rows = get_transactions($myrow['debtor_no'], $month, $inc_all);
       if ((DB::num_rows($trans_rows) == 0)) {
         continue;
       }
-
       $transactions = array();
       $balance = 0;
       while ($transaction = DB::fetch_assoc($trans_rows)) {
@@ -124,7 +124,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       $rep->Info($params, $cols, NULL, $aligns);
       foreach ($transactions as $i => $trans) {
         $display_outstanding = $display_total = 0;
-        if ($trans['OverDue']) {
+        if ($trans['OverDue'] && !$inc_all) {
           $openingbalance = $trans['TotalAmount'] - $trans['Allocated'];
           if (!$openingbalance) {
             continue;
@@ -135,17 +135,26 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $display_total = Num::format(abs($trans["TotalAmount"]), $dec);
           $outstanding = abs($trans["TotalAmount"]) - $trans["Allocated"];
           $display_outstanding = Num::format($outstanding, $dec);
-          $balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
+          if ($inc_all) {
+            $balance += $outstanding;
+          }
+          else {
+            $balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
+          }
         }
         $display_balance = Num::format($balance, $dec);
 
-        if ($openingbalance) {
+        if ($inc_all && $outstanding == 0) {
+          continue;
+        }
+        if ($openingbalance || ($inc_all && $trans['OverDue'] == 0 && $openingbalance> 0)) {
           $rep->TextCol(0, 8, $txt_opening_balance);
           $rep->TextCol(8, 9, Num::format($openingbalance, $dec));
           $rep->NewLine(2);
           $openingbalance = 0;
           continue;
         }
+
         $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
         if ($trans['type'] == ST_SALESINVOICE) {
           $rep->Font('bold');
@@ -195,10 +204,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       $rep->row = $rep->bottomMargin + (13 * $rep->lineHeight - 6);
       if ($customer_record["Balance"] > 0 && $customer_record["Due"] - $customer_record["Overdue1"] < $customer_record["Balance"]) {
         $rep->SetTextColor(255, 0, 0);
-        $rep->fontSize += 5;
+        $rep->fontSize += 4;
         $rep->Font('bold');
-        $rep->TextWrapLines(0, $rep->pageWidth, 'YOUR ACCOUNT IS OVERDUE, IMMEDIATE PAYMENT REQUIRED!', 'C');
-        $rep->fontSize -= 5;
+        $rep->TextWrapLines(0, $rep->pageWidth-50, 'YOUR ACCOUNT IS OVERDUE, IMMEDIATE PAYMENT REQUIRED!', 'C');
+        $rep->fontSize -= 4;
         $rep->SetTextColor(0, 0, 0);
       }
       $rep->NewLine();

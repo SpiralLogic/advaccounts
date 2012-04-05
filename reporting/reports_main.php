@@ -87,9 +87,9 @@
     _('Currency Filter') => Report::CURRENCY,
     _('Email Customers') => Report::YES_NO,
     _('Comments') => Report::TEXTBOX,
-    _('Include Negatives') => Report::YES_NO,
-    _('Include Payments') => Report::YES_NO,
-    _('Include Allocations') => Report::YES_NO
+    _('Month') => Report::DATEMONTH,
+  _('Include Negatives') => Report::YES_NO,
+  _('Include All') => Report::YES_NO,
   ));
   $reports->addReport(_('Customer'), 109, _('&Print Sales Orders'), array(
     _('From') => Report::ORDERS,
