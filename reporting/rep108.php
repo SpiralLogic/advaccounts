@@ -133,10 +133,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         }
         else {
           $display_total = Num::format(abs($trans["TotalAmount"]), $dec);
-          $outstanding = abs($trans["TotalAmount"]) - $trans["Allocated"];
+          $outstanding = abs($trans["TotalAmount"] - $trans["Allocated"]);
           $display_outstanding = Num::format($outstanding, $dec);
           if ($inc_all) {
-            $balance += $outstanding;
+            $balance += ($trans['type'] == ST_SALESINVOICE) ?$outstanding:-$outstanding;
           }
           else {
             $balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
@@ -147,7 +147,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         if ($inc_all && $outstanding == 0) {
           continue;
         }
-        if ($openingbalance || ($inc_all && $trans['OverDue'] == 0 && $openingbalance> 0)) {
+        if ($openingbalance && !$inc_all) {
           $rep->TextCol(0, 8, $txt_opening_balance);
           $rep->TextCol(8, 9, Num::format($openingbalance, $dec));
           $rep->NewLine(2);

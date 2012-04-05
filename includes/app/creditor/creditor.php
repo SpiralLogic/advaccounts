@@ -9,7 +9,11 @@
   class Creditor extends Contact_Company {
 
     static public function search($terms) {
-      $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
+      $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
+      if (is_numeric($terms)) {
+        $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
+      }
+      $sql .= " LIMIT 20";
       $result = DB::query($sql, 'Couldn\'t Get Supplier');
       $data = '';
       while ($row = DB::fetch_assoc($result)) {
@@ -72,8 +76,8 @@
       return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
     }
     public function save($changes = NULL) {
-      $data['supp_ref'] = substr($this->supp_name, 0, 29);
-      $data['discount'] = User::numeric($this->discount) / 100;
+      $this->supp_ref = substr($this->supp_name, 0, 29);
+      $this->discount= User::numeric($this->discount) / 100;
       if (!parent::save($changes)) {
         $this->_setDefaults();
         return FALSE;
