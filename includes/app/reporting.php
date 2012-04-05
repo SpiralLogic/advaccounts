@@ -39,6 +39,16 @@
       return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
     }
 
+    /**
+     * @static
+     *
+     * @param     $type_no
+     * @param     $doc_no
+     * @param int $email
+     * @param int $extra
+     *
+     * @return array
+     */
     static public function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
       $ar = array();
       $rep = '';
@@ -119,6 +129,21 @@
       return array($ar, $rep);
     }
 
+    /**
+     * @static
+     *
+     * @param        $doc_no
+     * @param        $link_text
+     * @param bool   $link
+     * @param        $type_no
+     * @param string $class
+     * @param string $id
+     * @param array  $emails
+     * @param int    $extra
+     * @param bool   $return
+     *
+     * @return bool|string
+     */
     static public function email_link($doc_no, $link_text, $link = TRUE, $type_no, $class = 'EmailLink', $id = '',
                                       $emails = array(), $extra = 0, $return = FALSE) {
       if (empty($emails)) {
@@ -164,9 +189,20 @@ JS;
       JS::onload($js);
     }
 
-//
-//	Universal link to any kind of report.
-//
+    /**
+     * Universal link to any kind of report.
+     * @static
+     *
+     * @param        $link_text
+     * @param        $rep
+     * @param array  $pars
+     * @param string $dir
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     *
+     * @return string
+     */
     static public function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = FALSE, $class = 'printlink',
                                       $id = '') {
       $url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
@@ -189,5 +225,3 @@ JS;
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }
   }
-
-?>

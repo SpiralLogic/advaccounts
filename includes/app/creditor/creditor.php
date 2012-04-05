@@ -61,6 +61,9 @@
      * @var string
      */
     protected $_id_column = 'supplier_id';
+    /**
+     * @param int|null $id
+     */
     public function __construct($id = NULL) {
       $this->supplier_id = &$this->id;
       $this->gst_no = &$this->tax_id;
@@ -72,9 +75,17 @@
 
       $this->supp_ref = substr($this->supp_name, 0, 29);
     }
+    /**
+     * @return array
+     */
     public function getEmailAddresses() {
       return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
     }
+    /**
+     * @param array|null $changes
+     *
+     * @return array|bool|int|null|void
+     */
     public function save($changes = NULL) {
       $this->supp_ref = substr($this->supp_name, 0, 29);
       $this->discount= User::numeric($this->discount) / 100;
@@ -89,6 +100,7 @@
       }
       return $this->_setDefaults();
     }
+
     public function delete() {
       // TODO: Implement delete() method.
     }
@@ -111,6 +123,9 @@
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
       $this->contacts[0] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
+    /**
+     * @return bool
+     */
     protected function _canProcess() {
       if (empty($this->supp_name)) {
         $this->_status(FALSE, 'Processing', "The supplier name cannot be empty.", 'supp_name');
@@ -118,9 +133,13 @@
       }
       return TRUE;
     }
+
     protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
     }
+    /**
+     * @return bool|Status
+     */
     protected function _defaults() {
       $this->credit_limit = Num::price_format(0);
       $company_record = DB_Company::get_prefs();
@@ -133,6 +152,9 @@
       $this->_setDefaults();
       return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
     }
+    /**
+     * @return bool|Status
+     */
     protected function _new() {
       $this->_defaults();
       return $this->_status(TRUE, 'Initialize new supplier', 'Now working with a new supplier');
@@ -164,7 +186,14 @@
       $this->discount = $this->discount * 100;
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
-
+    /**
+     * @static
+     *
+     * @param      $supplier_id
+     * @param null $to
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_to_trans($supplier_id, $to = NULL) {
       if ($to == NULL) {
         $todate = date("Y-m-d");
@@ -253,22 +282,55 @@
       $results = DB::fetch($result);
       return $results['Total'];
     }
+    /**
+     * @static
+     *
+     * @param $supplier_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($supplier_id) {
       $sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param $supplier_id
+     *
+     * @return mixed
+     */
     static public function get_name($supplier_id) {
       $sql = "SELECT supp_name AS supp_name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       $row = DB::fetch_row($result);
       return $row[0];
     }
+    /**
+     * @static
+     *
+     * @param $supplier_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_accounts_name($supplier_id) {
       $sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $spec_option
+     * @param bool $submit_on_change
+     * @param bool $all
+     * @param bool $editkey
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
@@ -289,6 +351,17 @@
         'show_inactive' => $all
       ));
     }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $all_option
+     * @param bool $submit_on_change
+     * @param bool $all
+     * @param bool $editkey
+     */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       if ($label != NULL) {
         echo "<td class='label'>$label</td><td>\n";
@@ -296,6 +369,17 @@
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td>\n";
     }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $all_option
+     * @param bool $submit_on_change
+     * @param bool $all
+     * @param bool $editkey
+     */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label' name='supp_name'>$label</td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);

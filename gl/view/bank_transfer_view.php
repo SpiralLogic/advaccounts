@@ -69,4 +69,3 @@
   end_table(1);
   Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
   Page::end(TRUE);
-?>

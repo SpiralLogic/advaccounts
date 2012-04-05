@@ -107,4 +107,3 @@
 	 document.forms[0].user_name.focus();
 	 </script>";
   echo "</body></html>\n";
-?>

@@ -411,4 +411,3 @@
   JS::onload($js);
   echo $reports->getDisplay();
   Page::end();
-?>

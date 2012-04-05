@@ -110,5 +110,3 @@
       Validation::input_num('charge'));
     Display::meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
   }
-
-?>

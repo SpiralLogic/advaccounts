@@ -109,4 +109,3 @@
     GL_Allocation::from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
   }
   Page::end(TRUE);
-?>

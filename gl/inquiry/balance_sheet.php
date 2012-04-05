@@ -178,6 +178,3 @@
     end_table(1); // outer table
     Display::div_end();
   }
-
-?>
-

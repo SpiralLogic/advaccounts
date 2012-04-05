@@ -194,5 +194,3 @@
       Event::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
     }
   }
-
-?>

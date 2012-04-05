@@ -157,5 +157,3 @@
     $row = DB::fetch_row($result);
     return $row[0];
   }
-
-?>

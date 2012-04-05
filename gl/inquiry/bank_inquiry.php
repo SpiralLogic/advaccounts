@@ -90,5 +90,3 @@
   end_table(2);
   Display::div_end();
   Page::end();
-
-?>

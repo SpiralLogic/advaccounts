@@ -42,9 +42,6 @@
   start_form();
   start_table('tablestyle');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
-  if (Config::get('accounts.gl_oldconvertstyle') == 1) {
-    $th[2] = _("Balance Sheet");
-  }
   inactive_control_column($th);
   table_header($th);
   $k = 0;
@@ -52,13 +49,7 @@
     alt_table_row_color($k);
     label_cell($myrow["cid"]);
     label_cell($myrow['class_name']);
-    if (Config::get('accounts.gl_oldconvertstyle') == 1) {
-      $myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-      label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
-    }
-    else {
       label_cell($class_types[$myrow["ctype"]]);
-    }
     inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
     edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
     delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
@@ -73,12 +64,7 @@
       $myrow = GL_Class::get($selected_id);
       $_POST['id'] = $myrow["cid"];
       $_POST['name'] = $myrow["class_name"];
-      if (Config::get('accounts.gl_oldconvertstyle') == 1) {
-        $_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-      }
-      else {
         $_POST['ctype'] = $myrow["ctype"];
-      }
       hidden('selected_id', $selected_id);
     }
     hidden('id');
@@ -88,12 +74,7 @@
     text_row_ex(_("Class ID:"), 'id', 3);
   }
   text_row_ex(_("Class Name:"), 'name', 50, 60);
-  if (Config::get('accounts.gl_oldconvertstyle') == 1) {
-    check_row(_("Balance Sheet"), 'ctype', NULL);
-  }
-  else {
     GL_Class::types_row(_("Class Type:"), 'ctype', NULL);
-  }
   end_table(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
@@ -108,9 +89,6 @@
       Event::error(_("The account class name cannot be empty."));
       JS::set_focus('name');
       return FALSE;
-    }
-    if (Config::get('accounts.gl_oldconvertstyle') == 1) {
-      $_POST['Balance'] = check_value('Balance');
     }
     return TRUE;
   }
@@ -129,5 +107,3 @@
     }
     return TRUE;
   }
-
-?>

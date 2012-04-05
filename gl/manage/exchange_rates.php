@@ -141,5 +141,3 @@
   function clear_data() {
     unset($_POST['selected_id'], $_POST['date_'], $_POST['BuyRate']);
   }
-
-?>
