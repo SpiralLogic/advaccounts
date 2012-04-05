@@ -11,6 +11,3 @@
    * @param $constants
    **/
   include 'bootstrap.php';
-$_POST['type']=1;
-$_POST['id']=3;
-var_dump(Input::has_post('type','id'));

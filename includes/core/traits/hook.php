@@ -14,7 +14,7 @@
   trait Hook {
 
     /** @var \Hook $hooks */
-    public static $hooks = NULL;
+    protected static $hooks = NULL;
     /**
      * @static
      *
@@ -24,11 +24,15 @@
      * @param array $arguments
      */
     public static function registerHook($hook, $object, $function, $arguments = array()) {
-      if (self::$hooks === NULL) {
-        self::$hooks = new \ADV\Core\Hook();
+      if (static::$hooks === NULL) {
+        static::$hooks = new \ADV\Core\Hook();
       }
       $callback = $object . '::' . $function;
 
-      self::$hooks->add($hook, $callback, $arguments);
+      static::$hooks->add($hook, $callback, $arguments);
+    }
+    public static function fireHooks($hook) {
+      if (static::$hooks)
+        static::$hooks->fire($hook);
     }
   }

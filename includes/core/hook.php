@@ -22,7 +22,7 @@
      * @param callable $callback
      * @param array                        $arguments
      */
-    public function add($name, callable $callback, $arguments = array()) {
+    public function add($name, $callback, $arguments = array()) {
       $this->hooks[$name][] = [$callback, (array) $arguments];
     }
     /**
