@@ -16,10 +16,10 @@ class ArrTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsert()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+      $part_numbers=array('84256','84257','84258');
+      $expected_result=array('84256','84257','86732','84258');
+\ADV\Core\Arr::insert($part_numbers,2,('86732'));
+      $this->assertEquals($expected_result,$part_numbers);
     }
 
     /**
