@@ -18,18 +18,18 @@
   if (isset($_POST['Process'])) {
     if (Gl_Allocation::check()) {
       $_SESSION['alloc']->write();
-      clear_allocations();
+      Sales_Allocation::clear_allocations();
       $_POST['Cancel'] = 1;
     }
   }
 
   if (isset($_POST['Cancel'])) {
-    clear_allocations();
+    Sales_Allocation::clear_allocations();
     $forward = (isset($_POST['inquiry'])) ? "/sales/inquiry/customer_allocation_inquiry.php" : "/sales/allocations/customer_allocation_main.php";
     Display::meta_forward($forward);
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
-    clear_allocations();
+    Sales_Allocation::clear_allocations();
     $_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
   if (get_post('UpdateDisplay')) {
@@ -37,39 +37,9 @@
     Ajax::i()->activate('alloc_tbl');
   }
   if (isset($_SESSION['alloc'])) {
-    edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
+    Sales_Allocation::edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
   }
   Page::end();
-  function clear_allocations() {
-    if (isset($_SESSION['alloc'])) {
-      unset($_SESSION['alloc']->allocs, $_SESSION['alloc']);
-    }
-  }
 
-  function edit_allocations_for_transaction($type, $trans_no) {
-    global $systypes_array;
-    Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
-    Display::heading($_SESSION['alloc']->person_name);
-    Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
-    Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
-    echo "<br>";
-    start_form();
-    if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
-      hidden('inquiry', TRUE);
-    }
-    Display::div_start('alloc_tbl');
-    if (count($_SESSION['alloc']->allocs) > 0) {
-      Gl_Allocation::show_allocatable(TRUE);
-      submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
-      submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
-      submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
-    }
-    else {
-      Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-      submit_center('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
-    }
-    Display::div_end();
-    end_form();
-  }
 
 ?>

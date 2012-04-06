@@ -3,8 +3,14 @@
   /**
 
    */
+  use \ADV\Core\DB\DBDuplicateException;
+  use \ADV\Core\DB\DB;
+  use \Event;
+  use \ADV\Core\XMLParser;
+
   class Customers {
 
+    protected $status;
     public $customers;
 
     /**
@@ -12,6 +18,7 @@
      */
     public function __construct() {
       echo __NAMESPACE__;
+      $this->status = new \ADV\Core\Status();
     }
 
     /**
@@ -20,10 +27,31 @@
     function get() {
       $customersXML = $this->getXML();
       if (!$customersXML) {
-        return FALSE;
+        return $this->status->set(false, 'getxml', "Nothing retrieved from website");
       }
-      $customers = \XMLParser::XMLtoArray($customersXML);
+      $customers = XMLParser::XMLtoArray($customersXML);
       $this->customers = $customers;
+      if (!$customers) {
+        return $this->status->set(FALSE, 'paresexml', 'Nothing found from website.');
+      }
+      foreach ($customers as $customer) {
+        if (!empty($customer['CompanyName'])) {
+          $name = $customer['CompanyName'];
+        }
+        elseif (!empty($customer['FirstName']) || !empty($customer['LastnName'])) {
+          $name = $customer['CompanyName'] = ucwords($customer['FirstName'] . ' ' . $customer['LastName']);
+        }
+        else {
+          $name = $customer['CompanyName'] = $customer['EmailAddress'];
+        }
+        try {
+          DB::insert('WebCustomers')->values($customer)->exec();
+          $this->status->set(TRUE, 'insert', "Added Customer $name to website customer database!");
+        }
+        catch (DBDuplicateException $e) {
+          return $this->status->set(FALSE, 'insert', "Customer $name already exists!");
+        }
+      }
     }
 
     /**
@@ -38,21 +66,18 @@
       $url .= '&EDI_Name=Generic\Customers';
       $url .= '&SELECT_Columns=*';
       if (!$result = file_get_contents($url)) {
-        \Event::warning('Could not retrieve web customers');
+        Event::warning('Could not retrieve web customers');
       }
       ;
       return $result;
     }
 
     function insert() {
-      $result = \DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
+      $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
-        exit();
+        return $this->status->set(false, 'insert', "No new customers in database");
       }
       foreach ($result as $row) {
-        if (empty($row["CompanyName"])) {
-          continue;
-        }
         $c = new \Debtor();
         $c->name = $c->debtor_ref = $row["CompanyName"];
         $c->branches[0]->post_address = $row["BillingAddress2"];
@@ -82,7 +107,7 @@
           $d = new \Debtor((array) $c);
           $d->save();
         }
-        else {
+0        else {
           if ($c->id > 0) {
             \DB::update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
           }

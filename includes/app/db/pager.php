@@ -123,7 +123,7 @@
         if (method_exists($pager, $fun)) {
           $h = $pager->$fun($pager);
         }
-        elseif (function_exists($fun)) {
+        elseif (is_callable($fun)) {
           $h = call_user_func($fun, $pager);
         }
         foreach ($h as $c) { // draw header columns
@@ -149,7 +149,7 @@
             if (method_exists($pager, $fun)) {
               $cell = $pager->$fun($row, $cell);
             }
-            elseif (function_exists($fun)) {
+            elseif (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
             }
             else {
@@ -230,7 +230,7 @@
         if (method_exists($pager, $fun)) {
           $h = $pager->$fun($pager);
         }
-        elseif (function_exists($fun)) {
+        elseif (is_callable($fun)) {
           $h = call_user_func($fun, $pager);
         }
         foreach ($h as $c) { // draw footer columns

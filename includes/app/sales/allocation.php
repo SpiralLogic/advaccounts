@@ -135,4 +135,55 @@
       }
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }
+    static public function clear_allocations() {
+      if (isset($_SESSION['alloc'])) {
+        unset($_SESSION['alloc']->allocs, $_SESSION['alloc']);
+      }
+    }
+
+    static public function edit_allocations_for_transaction($type, $trans_no) {
+      global $systypes_array;
+      Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
+      Display::heading($_SESSION['alloc']->person_name);
+      Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
+      Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
+      echo "<br>";
+      start_form();
+      if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
+        hidden('inquiry', TRUE);
+      }
+      Display::div_start('alloc_tbl');
+      if (count($_SESSION['alloc']->allocs) > 0) {
+        Gl_Allocation::show_allocatable(TRUE);
+        submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
+        submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
+        submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      }
+      else {
+        Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
+        submit_center('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      }
+      Display::div_end();
+      end_form();
+    }
+    static public function systype_name($dummy, $type) {
+      global $systypes_array;
+      return $systypes_array[$type];
+    }
+
+    static public function trans_view($trans) {
+      return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+    }
+
+    static public function alloc_link($row) {
+      return DB_Pager::link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+    }
+
+    static public function amount_left($row) {
+      return Num::price_format($row["Total"] - $row["alloc"]);
+    }
+
+    static public function check_settled($row) {
+      return $row['settled'] == 1;
+    }
   }

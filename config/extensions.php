@@ -33,4 +33,3 @@
     'next_id' => $GLOBALS['next_id'],
     'installed' => $GLOBALS['installed_extensions']
   );
-?>

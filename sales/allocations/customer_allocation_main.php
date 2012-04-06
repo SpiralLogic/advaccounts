@@ -41,14 +41,15 @@
   }
   $sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
   $cols = array(
-    _("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"),
+    _("Transaction Type") => array('fun' => 'Sales_Allocation::systype_name'),
+    _("#") => array('fun' => 'Sales_Allocation::trans_view'), _("Reference"),
     _("Date") => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
     ), _("Customer") => array('ord' => ''),
     _("Currency") => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left'
+      'align' => 'right', 'insert' => TRUE, 'fun' => 'Sales_Allocation::amount_left'
     ), array(
-      'insert' => TRUE, 'fun' => 'alloc_link'
+      'insert' => TRUE, 'fun' => 'Sales_Allocation::alloc_link'
     )
   );
   if (isset($_POST['customer_id'])) {
@@ -56,30 +57,11 @@
     $cols[_("Currency")] = 'skip';
   }
   $table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
-  $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+  $table->set_marker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
   DB_Pager::display($table);
   end_form();
   Page::end();
-  function systype_name($dummy, $type) {
-    global $systypes_array;
-    return $systypes_array[$type];
-  }
 
-  function trans_view($trans) {
-    return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
-  }
-
-  function alloc_link($row) {
-    return DB_Pager::link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-  }
-
-  function amount_left($row) {
-    return Num::price_format($row["Total"] - $row["alloc"]);
-  }
-
-  function check_settled($row) {
-    return $row['settled'] == 1;
-  }
 
 ?>
