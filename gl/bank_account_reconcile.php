@@ -311,5 +311,3 @@ JS;
     JS::reset_focus();
     return TRUE;
   }
-
-?>

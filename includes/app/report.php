@@ -7,7 +7,6 @@
    * To change this template use File | Settings | File Templates.
    */
   class Report {
-
     public $id;
     public $name;
     public $ar_params;
@@ -64,12 +63,6 @@
         $this->set_controls($ar_params);
       }
     }
-    /**
-     * @param $ar_params
-     */
-    protected function set_controls($ar_params) {
-      $this->controls = $ar_params;
-    }
     public function get_controls() {
       return $this->controls;
     }
@@ -93,5 +86,11 @@
         /** @noinspection PhpIncludeInspection */
         include_once($file);
       }
+    }
+    /**
+     * @param $ar_params
+     */
+    protected function set_controls($ar_params) {
+      $this->controls = $ar_params;
     }
   }

@@ -8,7 +8,8 @@
    */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   if (!AJAX_REFERRER) {
-    die();
+    header("Location: /");
+    exit();
   }
   if (Input::has_post('contact_id', 'message', 'type')) {
     $message_id = Contact_Log::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);

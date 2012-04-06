@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,6 +14,7 @@
 
    */
   class Event {
+
   use \ADV\Core\Traits\Hook;
 
     /**
@@ -125,7 +125,8 @@
       fastcgi_finish_request();
       static::$request_finsihed = TRUE;
       try {
-        Event::$hooks->fire('shutdown');
+
+        Event::fireHooks('shutdown');
       }
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());

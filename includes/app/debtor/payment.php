@@ -134,4 +134,90 @@
       echo array_selector($name, $selected, $allocs);
       echo "</td>\n";
     }
+
+    static public  function read_customer_data() {
+      $myrow = Debtor::get_habit($_POST['customer_id']);
+      $_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+      $_POST['pymt_discount'] = $myrow["pymt_discount"];
+      $_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
+    }
+
+    static public   function can_process() {
+      if (!get_post('customer_id')) {
+        Event::error(_("There is no customer selected."));
+        JS::set_focus('customer_id');
+        return FALSE;
+      }
+      if (!get_post('branch_id')) {
+        Event::error(_("This customer has no branch defined."));
+        JS::set_focus('branch_id');
+        return FALSE;
+      }
+      if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
+        Event::error(_("The entered date is invalid. Please enter a valid date for the payment."));
+        JS::set_focus('DateBanked');
+        return FALSE;
+      }
+      elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+        Event::error(_("The entered date is not in fiscal year."));
+        JS::set_focus('DateBanked');
+        return FALSE;
+      }
+      if (!Ref::is_valid($_POST['ref'])) {
+        Event::error(_("You must enter a reference."));
+        JS::set_focus('ref');
+        return FALSE;
+      }
+      if (!Ref::is_new($_POST['ref'], ST_CUSTPAYMENT)) {
+        $_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
+      }
+      if (!Validation::is_num('amount', 0)) {
+        Event::error(_("The entered amount is invalid or negative and cannot be processed."));
+        JS::set_focus('amount');
+        return FALSE;
+      }
+      if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
+        Event::error(_("The entered amount is invalid or negative and cannot be processed."));
+        JS::set_focus('charge');
+        return FALSE;
+      }
+      if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
+        $charge_acct = DB_Company::get_pref('bank_charge_act');
+        if (GL_Account::get($charge_acct) == FALSE) {
+          Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+          JS::set_focus('charge');
+          return FALSE;
+        }
+      }
+      if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
+        Event::error(_("The exchange rate must be numeric and greater than zero."));
+        JS::set_focus('_ex_rate');
+        return FALSE;
+      }
+      if ($_POST['discount'] == "") {
+        $_POST['discount'] = 0;
+      }
+      if (!Validation::is_num('discount')) {
+        Event::error(_("The entered discount is not a valid number."));
+        JS::set_focus('discount');
+        return FALSE;
+      }
+      if (!User::i()->salesmanid) {
+        Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
+        return FALSE;
+      }
+      //if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
+      if (Validation::input_num('amount', 0, 0) <= 0) {
+        Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
+        JS::set_focus('discount');
+        return FALSE;
+      }
+      $_SESSION['alloc']->amount = Validation::input_num('amount');
+      if (isset($_POST["TotalNumberOfAllocs"])) {
+        return Gl_Allocation::check();
+      }
+      else {
+        return TRUE;
+      }
+    }
   }

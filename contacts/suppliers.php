@@ -1,5 +1,4 @@
 <?php
-
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Session::i()->App->set_selected('Creditors');
   if (AJAX_REFERRER) {

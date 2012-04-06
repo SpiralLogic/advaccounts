@@ -182,5 +182,3 @@
     end_table(1);
     submit_add_or_update_center($selected_id == '', '', 'both');
   }
-
-?>

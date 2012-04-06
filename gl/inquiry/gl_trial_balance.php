@@ -117,6 +117,3 @@
     end_table(1);
     Display::div_end();
   }
-
-?>
-

@@ -11,6 +11,4 @@
    * @param $constants
    **/
   include 'bootstrap.php';
-  $_POST['customer'] = 'test22';
-  $_POST['customer_id'] = '8480';
-  var_dump(Input::get('customer_id', Input::NUMERIC));
+  echo is_callable('Sales_Allocation::systype_name');

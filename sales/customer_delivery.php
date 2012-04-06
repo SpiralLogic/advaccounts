@@ -65,11 +65,11 @@
     $order->trans_no = 0;
     $order->reference = Ref::get_next(ST_CUSTDELIVERY);
     $order->document_date = Dates::new_doc_date();
-    copy_from_order($order);
+    Sales_Delivery::copy_from_order($order);
   }
   elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
     $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
-    copy_from_order($order);
+    Sales_Delivery::copy_from_order($order);
     if ($order->count_items() == 0) {
       Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
       echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
@@ -84,7 +84,7 @@
     exit;
   }
   else {
-    if (!check_quantities($order)) {
+    if (!Sales_Delivery::check_quantities($order)) {
       Event::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
     }
     elseif (!Validation::is_num('ChargeFreightCost', 0)) {
@@ -92,7 +92,7 @@
       JS::set_focus('ChargeFreightCost');
     }
   }
-  if (isset($_POST['process_delivery']) && check_data($order) && check_qoh($order)) {
+  if (isset($_POST['process_delivery']) && Sales_Delivery::check_data($order) && Sales_Delivery::check_qoh($order)) {
     $dn = $order;
     if ($_POST['bo_policy']) {
       $bo_policy = 0;
@@ -101,7 +101,7 @@
       $bo_policy = 1;
     }
     $newdelivery = ($dn->trans_no == 0);
-    copy_to_order($order);
+    Sales_Delivery::copy_to_order($order);
     if ($newdelivery) {
       Dates::new_doc_date($dn->document_date);
     }
@@ -252,125 +252,3 @@
   submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
   end_form();
   Page::end();
-  function check_data($order) {
-    if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
-      Event::error(_("The entered date of delivery is invalid."));
-      JS::set_focus('DispatchDate');
-      return FALSE;
-    }
-    if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
-      Event::error(_("The entered date of delivery is not in fiscal year."));
-      JS::set_focus('DispatchDate');
-      return FALSE;
-    }
-    if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-      Event::error(_("The entered dead-line for invoice is invalid."));
-      JS::set_focus('due_date');
-      return FALSE;
-    }
-    if ($order->trans_no == 0) {
-      if (!Ref::is_valid($_POST['ref'])) {
-        Event::error(_("You must enter a reference."));
-        JS::set_focus('ref');
-        return FALSE;
-      }
-      if ($order->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
-        $_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
-      }
-    }
-    if ($_POST['ChargeFreightCost'] == "") {
-      $_POST['ChargeFreightCost'] = Num::price_format(0);
-    }
-    if (!Validation::is_num('ChargeFreightCost', 0)) {
-      Event::error(_("The entered shipping value is not numeric."));
-      JS::set_focus('ChargeFreightCost');
-      return FALSE;
-    }
-    if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
-      Event::error(_("There are no item quantities on this delivery note."));
-      return FALSE;
-    }
-    if (!check_quantities($order)) {
-      return FALSE;
-    }
-    return TRUE;
-  }
-
-  function copy_to_order($order) {
-    $order->ship_via = $_POST['ship_via'];
-    $order->freight_cost = Validation::input_num('ChargeFreightCost');
-    $order->document_date = $_POST['DispatchDate'];
-    $order->due_date = $_POST['due_date'];
-    $order->location = $_POST['location'];
-    $order->Comments = $_POST['Comments'];
-    if ($order->trans_no == 0) {
-      $order->reference = $_POST['ref'];
-    }
-  }
-
-  function copy_from_order($order) {
-    $order = Sales_Order::check_edit_conflicts($order);
-    $_POST['ship_via'] = $order->ship_via;
-    $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-    $_POST['DispatchDate'] = $order->document_date;
-    $_POST['due_date'] = $order->due_date;
-    $_POST['location'] = $order->location;
-    $_POST['Comments'] = $order->Comments;
-    $_POST['ref'] = $order->reference;
-    $_POST['order_id'] = $order->order_id;
-    Orders::session_set($order);
-  }
-
-  function check_quantities($order) {
-    $ok = 1;
-    // Update order delivery quantities/descriptions
-    foreach ($order->line_items as $line => $itm) {
-      if (isset($_POST['Line' . $line])) {
-        if ($order->trans_no) {
-          $min = $itm->qty_done;
-          $max = $itm->quantity;
-        }
-        else {
-          $min = 0;
-          $max = $itm->quantity - $itm->qty_done;
-        }
-        if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
-          $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-        }
-        elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
-          $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-        }
-        else {
-          JS::set_focus('Line' . $line);
-          $ok = 0;
-        }
-      }
-      if (isset($_POST['Line' . $line . 'Desc'])) {
-        $line_desc = $_POST['Line' . $line . 'Desc'];
-        if (strlen($line_desc) > 0) {
-          $order->line_items[$line]->description = $line_desc;
-        }
-      }
-    }
-    // ...
-    //	else
-    //	 $order->freight_cost = Validation::input_num('ChargeFreightCost');
-    return $ok;
-  }
-
-  function check_qoh($order) {
-    if (!DB_Company::get_pref('allow_negative_stock')) {
-      foreach ($order->line_items as $itm) {
-        if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
-          $qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['location'], $_POST['DispatchDate']);
-          if ($itm->qty_dispatched > $qoh) {
-            Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
-            return FALSE;
-          }
-        }
-      }
-    }
-    return TRUE;
-  }
-
-?>

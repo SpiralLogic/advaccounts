@@ -193,5 +193,3 @@
     }
     $_SESSION['pay_items']->tran_date = $_POST['date_'];
   }
-
-?>

@@ -14,21 +14,25 @@ Adv.extend({alloc:{
 		i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 	},
 	blur:function (i) {
-		var last = +i.getAttribute('_last');
-		var left = Adv.Forms.getAmount('left_to_allocate', 1);
-		var cur = Math.min(Adv.Forms.getAmount(i.name), Adv.Forms.getAmount('maxval' + i.name.substr(6), 1), last + left)
+		var last = +i.getAttribute('_last'),
+		 left,
+		 cur ,
+		 change ,
+		 total;
+		left = Adv.Forms.getAmount('left_to_allocate', 1);
+		cur = Math.min(Adv.Forms.getAmount(i.name), Adv.Forms.getAmount('maxval' + i.name.substr(6), 1), last + left);
 		Adv.Forms.priceFormat(i.name, cur, user.pdec);
-		var change = cur - last;
-		var total = Adv.Forms.getAmount('total_allocated', 1) + change;
+		change = cur - last;
+		total = Adv.Forms.getAmount('total_allocated', 1) + change;
 		left -= change;
 		Adv.Forms.priceFormat('left_to_allocate', left, user.pdec, 1, 1);
 		Adv.Forms.priceFormat('total_allocated', total, user.pdec, 1, 1);
 	},
 	all:function (doc) {
-		var amount = Adv.Forms.getAmount('amount' + doc);
-		var unallocated = Adv.Forms.getAmount('un_allocated' + doc);
-		var total = Adv.Forms.getAmount('total_allocated', 1);
-		var left = Adv.Forms.getAmount('left_to_allocate', 1);
+		var amount = Adv.Forms.getAmount('amount' + doc),
+		 unallocated = Adv.Forms.getAmount('un_allocated' + doc),
+		 total = Adv.Forms.getAmount('total_allocated', 1),
+		 left = Adv.Forms.getAmount('left_to_allocate', 1);
 		total -= (amount - unallocated);
 		left += (amount - unallocated);
 		amount = unallocated;
@@ -42,9 +46,9 @@ Adv.extend({alloc:{
 		Adv.Forms.priceFormat('total_allocated', total, user.pdec, 1, 1);
 	},
 	none:function (doc) {
-		amount = Adv.Forms.getAmount('amount' + doc);
-		left = Adv.Forms.getAmount('left_to_allocate', 1);
-		total = Adv.Forms.getAmount('total_allocated', 1);
+		var amount = Adv.Forms.getAmount('amount' + doc),
+		 left = Adv.Forms.getAmount('left_to_allocate', 1),
+		 total = Adv.Forms.getAmount('total_allocated', 1);
 		Adv.Forms.priceFormat('left_to_allocate', amount + left, user.pdec, 1, 1);
 		Adv.Forms.priceFormat('amount' + doc, 0, user.pdec);
 		Adv.Forms.priceFormat('total_allocated', total - amount, user.pdec, 1, 1);

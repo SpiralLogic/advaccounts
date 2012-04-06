@@ -247,5 +247,3 @@
     Ajax::i()->activate('items_table');
     JS::set_focus('_code_id_edit');
   }
-
-?>

@@ -95,7 +95,7 @@
     $order->trans_no = 0;
     $order->reference = Ref::get_next(ST_SALESINVOICE);
     $order->due_date = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
-    copy_from_order($order);
+    Sales_Invoice::copy_from_order($order);
   }
   elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
     if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
@@ -106,7 +106,7 @@
     }
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]);
     $order->start();
-    copy_from_order($order);
+    Sales_Invoice::copy_from_order($order);
     if ($order->count_items() == 0) {
       echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice have been credited. There is
 			nothing to modify on this invoice") . "</span></div>";
@@ -115,7 +115,7 @@
   elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::VIEW_INVOICE]);
     $order->start();
-    copy_from_order($order);
+    Sales_Invoice::copy_from_order($order);
   }
   elseif (!$order && !isset($_GET['order_id'])) {
     /* This page can only be called with a delivery for invoicing or invoice no for edit */
@@ -124,7 +124,7 @@
     Page::end();
     exit;
   }
-  elseif ($order && !check_quantities($order)) {
+  elseif ($order && !Sales_Invoice::check_qty($order)) {
     Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
   }
   if (isset($_POST['Update'])) {
@@ -134,9 +134,9 @@
     $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
     Ajax::i()->activate('due_date');
   }
-  if (isset($_POST['process_invoice']) && check_data($order)) {
+  if (isset($_POST['process_invoice']) && Sales_Invoice::check_data($order)) {
     $newinvoice = $order->trans_no == 0;
-    copy_to_order($order);
+    Sales_Invoice::copy_to_order($order);
     if ($newinvoice) {
       Dates::new_doc_date($order->document_date);
     }
@@ -313,7 +313,7 @@
   }
   $accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
   if ($is_batch_invoice && $accumulate_shipping) {
-    set_delivery_shipping_sum(array_keys($order->src_docs));
+    Sales_Invoice::set_delivery_shipping_sum(array_keys($order->src_docs));
   }
   $colspan = 9;
   start_row();
@@ -357,138 +357,3 @@
   end_table();
   end_form();
   Page::end(FALSE);
-  /**
-   * @param $order
-   *
-   * @return int
-   */
-  function check_quantities($order) {
-    $ok = 1;
-    foreach ($order->line_items as $line_no => $itm) {
-      if (isset($_POST['Line' . $line_no])) {
-        if ($order->trans_no) {
-          $min = $itm->qty_done;
-          $max = $itm->quantity;
-        }
-        else {
-          $min = 0;
-          $max = $itm->quantity - $itm->qty_done;
-        }
-        if ($itm->quantity > 0 && Validation::is_num('Line' . $line_no, $min, $max)) {
-          $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
-        }
-        elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
-          $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
-        }
-        else {
-          $ok = 0;
-        }
-      }
-      if (isset($_POST['Line' . $line_no . 'Desc'])) {
-        $line_desc = $_POST['Line' . $line_no . 'Desc'];
-        if (strlen($line_desc) > 0) {
-          $order->line_items[$line_no]->description = $line_desc;
-        }
-      }
-    }
-    return $ok;
-  }
-
-  /**
-   * @param $delivery_notes
-   */
-  function set_delivery_shipping_sum($delivery_notes) {
-    $shipping = 0;
-    foreach ($delivery_notes as $delivery_num) {
-      $myrow = Debtor_Trans::get($delivery_num, 13);
-      //$branch = Sales_Branch::get($myrow["branch_id"]);
-      //$shipping += $sales_order['freight_cost'];
-      $shipping += $myrow['ov_freight'];
-    }
-    $_POST['ChargeFreightCost'] = Num::price_format($shipping);
-  }
-
-  /**
-   * @param $order
-   */
-  function copy_to_order($order) {
-    $order->ship_via = $_POST['ship_via'];
-    $order->freight_cost = Validation::input_num('ChargeFreightCost');
-    $order->document_date = $_POST['InvoiceDate'];
-    $order->due_date = $_POST['due_date'];
-    $order->Comments = $_POST['Comments'];
-    if ($order->trans_no == 0) {
-      $order->reference = $_POST['ref'];
-    }
-  }
-
-  /**
-   * @param $order
-   */
-  function copy_from_order($order) {
-    $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
-
-    $order = Sales_Order::check_edit_conflicts($order);
-    if (!$order->view_only) {
-      $_POST['ship_via'] = $order->ship_via;
-      $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-      $_POST['InvoiceDate'] = $order->document_date;
-      $_POST['due_date'] = $order->due_date;
-      $_POST['ref'] = $order->reference;
-    }
-    $_POST['order_id'] = $order->order_id;
-    $_POST['Comments'] = $order->Comments;
-    return Orders::session_set($order);
-  }
-
-  /**
-   * @param Sales_Order $order
-   *
-   * @return bool
-   */
-  function check_data($order) {
-    if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
-      Event::error(_("The entered invoice date is invalid."));
-      JS::set_focus('InvoiceDate');
-      return FALSE;
-    }
-    if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
-      Event::error(_("The entered invoice date is not in fiscal year."));
-      JS::set_focus('InvoiceDate');
-      return FALSE;
-    }
-    if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-      Event::error(_("The entered invoice due date is invalid."));
-      JS::set_focus('due_date');
-      return FALSE;
-    }
-    if ($order->trans_no == 0) {
-      if (!Ref::is_valid($_POST['ref'])) {
-        Event::error(_("You must enter a reference."));
-        JS::set_focus('ref');
-        return FALSE;
-      }
-      if (!Ref::is_new($_POST['ref'], ST_SALESINVOICE)) {
-        $_POST['ref'] = Ref::get_next(ST_SALESINVOICE);
-      }
-    }
-    if ($_POST['ChargeFreightCost'] == "") {
-      $_POST['ChargeFreightCost'] = Num::price_format(0);
-    }
-    if (!Validation::is_num('ChargeFreightCost', 0)) {
-      Event::error(_("The entered shipping value is not numeric."));
-      JS::set_focus('ChargeFreightCost');
-      return FALSE;
-    }
-    if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
-      Event::error(_("There are no item quantities on this invoice."));
-      return FALSE;
-    }
-    if (!check_quantities($order)) {
-      Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
-      return FALSE;
-    }
-    return TRUE;
-  }
-
-?>
