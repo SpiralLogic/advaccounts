@@ -11,4 +11,10 @@
    * @param $constants
    **/
   include 'bootstrap.php';
-  echo is_callable('Sales_Allocation::systype_name');
+
+  echo '<pre >';
+  $customers = new \Modules\Volusion\Customers();
+  $customers->get();
+  var_dump($customers->status);
+  $customers->insert();
+  var_dump($customers->status);

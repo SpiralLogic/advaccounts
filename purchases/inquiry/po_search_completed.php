@@ -15,7 +15,7 @@
   if (isset($_GET['order_number'])) {
     $order_number = $_GET['order_number'];
   }
-      $_POST['supplier_id'] = Input::post_get('supplier_id',Input::NUMERIC,-1);
+  $_POST['supplier_id'] = Input::post_get('supplier_id', Input::NUMERIC, -1);
   if (get_post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
@@ -39,7 +39,7 @@
   if (!Input::request('frame')) {
     start_table('tablestyle_noborder');
     start_row();
-    Creditor::cells(_("Supplier: "), 'supplier_id', null, TRUE);
+    Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
     ref_cells(_("#:"), 'order_number', '', NULL, '', TRUE);
     date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
     date_cells(_("To:"), 'OrdersToDate');
@@ -99,7 +99,7 @@
   }
   else {
 
-    if (Input::post('supplier_id') != ALL_TEXT) {
+    if (Input::post('supplier_id')>-1) {
       $sql .= " AND porder.supplier_id = " . DB::quote(Input::post('supplier_id'));
     }
     if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
@@ -144,7 +144,7 @@
     );
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->width =   (Input::request('frame')) ? '100': "90";
+  $table->width = (Input::request('frame')) ? '100' : "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   UI::emailDialogue('s');

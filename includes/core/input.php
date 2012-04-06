@@ -92,7 +92,7 @@
      * @static
      *
      * @param mixed $var     $_POST  variable to return if it doesn't exist $_GET will be returned
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+     * @param int|Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string|object

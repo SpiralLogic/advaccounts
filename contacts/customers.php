@@ -175,6 +175,13 @@
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
   Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
   yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
+  HTML::td()->td(array(
+    'content' => _("Website ID: "), "class" => "label"
+  ), FALSE)->td(TRUE);
+  HTML::input('webid', array(
+    'value' => $customer->webid,'disabled'=>true, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
+  ));
+  HTML::td()->tr;
   table_section(2);
   table_section_title(_("GL Accounts"));
   GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, FALSE, FALSE, TRUE);
