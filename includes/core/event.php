@@ -122,8 +122,8 @@
       }
       session_write_close();
       /** @noinspection PhpUndefinedFunctionInspection */
-      fastcgi_finish_request();
-      static::$request_finsihed = TRUE;
+      //fastcgi_finish_request();
+      //static::$request_finsihed = TRUE;
       try {
 
         Event::fireHooks('shutdown');
