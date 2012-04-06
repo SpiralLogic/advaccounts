@@ -11,7 +11,7 @@
   class Customers {
 
     public $status;
-    public $customers;
+    public $customers = array();
 
     /**
 
@@ -22,42 +22,50 @@
     }
 
     /**
-     * @return bool
+     * Gets XML from website containing customer information and stores in in $this->customers
+     * @return bool returns false if nothing was retrieved or true otherwise.
      */
     function get() {
       $customersXML = $this->getXML();
+
       if (!$customersXML) {
-        return $this->status->set(FALSE, 'getxml', "Nothing retrieved from website");
+        return $this->status->set(FALSE, 'get', "Nothing retrieved from website");
       }
-      $customers = XMLParser::XMLtoArray($customersXML);
-      $this->customers = $customers;
+      $this->customers = XMLParser::XMLtoArray($customersXML);
+      if (!$this->customers) {
+        return $this->status->set(FALSE, 'get', "Nothing retrieved from website");
+      }
+
+      return $this->status->set(TRUE, 'get', "Customers retrieved");
+    }
+    function insertCustomers($customers) {
       if (!$customers) {
         return $this->status->set(FALSE, 'paresexml', 'Nothing found from website.');
       }
       foreach ($customers as $customer) {
-        if (!empty($customer['CompanyName'])) {
-
-          $name = $customer['CompanyName'];
-        }
-        elseif (!empty($customer['FirstName']) || !empty($customer['LastName'])) {
-          $name = ucwords($customer['FirstName'] . ' ' . $customer['LastName']);
-        }
-        else {
-          $name = $customer['EmailAddress'];
-        }
-
-        try {
-          DB::insert('WebCustomers')->values($customer)->exec();
-          $this->status->set(TRUE, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
-        }
-        catch (DBDuplicateException $e) {
-          DB::update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
-          $this->status->set(FALSE, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
-        }
+        $this->insertCustomer($customer);
       }
-      return $this->status->set(FALSE, 'added to DB', "Finished adding Customers to DB!");
+      return $this->status->set(TRUE, 'added to DB', "Finished adding Customers to DB!");
     }
-
+    function insertCustomer($customer) {
+      if (!empty($customer['CompanyName'])) {
+        $name = $customer['CompanyName'];
+      }
+      elseif (!empty($customer['FirstName']) || !empty($customer['LastName'])) {
+        $name = ucwords($customer['FirstName'] . ' ' . $customer['LastName']);
+      }
+      else {
+        $name = $customer['EmailAddress'];
+      }
+      try {
+        DB::insert('WebCustomers')->values($customer)->exec();
+        $this->status->set(TRUE, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
+      }
+      catch (DBDuplicateException $e) {
+        DB::update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
+        $this->status->set(FALSE, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
+      }
+    }
     /**
      * @return string
      */
@@ -121,7 +129,7 @@
         $c->save();
         if (\Arr::get($c->getStatus(FALSE), 'status') == E_USER_ERROR) {
           $id = \DB::select('debtor_no')->from('debtors')->where('name=', $c->name)->fetch()->assoc()->one();
-          $this->status->set(TRUE, 'update', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>".$id.":".$row["EmailAddress"]);
+          $this->status->set(TRUE, 'update', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $id . ":" . $row["EmailAddress"]);
         }
         elseif ($c->debtor_no > 0) {
           $this->status->set(TRUE, 'update', "Customer {$c->name} has been updated. {$c->id} ");

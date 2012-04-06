@@ -7,6 +7,7 @@
 	<testsuites>
 		<testsuite name="core">
 			<directory suffix="Test.php">./tests/core</directory>
+			<directory suffix="Test.php">./tests/modules/volusion</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
