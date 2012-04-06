@@ -2,6 +2,7 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
+   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -37,7 +38,6 @@
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
-    var_dump(class_exists('\\ADV\\Core\\Errors', FALSE));
     class_exists('ADV\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
     ADV\Core\Errors::exception_handler($e);
   });
@@ -51,8 +51,8 @@
     function e($string) { return Security::htmlentities($string); }
   }
   register_shutdown_function(function () {
-    class_exists('Event', FALSE) or  include(COREPATH . 'event.php');
-    Event::shutdown();
+    class_exists('ADV\\Core\\Event', FALSE) or  include(COREPATH . 'event.php');
+    ADV\Core\Event::shutdown();
   });
   if (!function_exists('adv_ob_flush_handler')) {
     /**
@@ -65,14 +65,14 @@
       return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-  define('COMPANY_PATH' ,DOCROOT. 'company' . DS);
-  \ADV\Core\Cache::define_constants('defines', function() {
+  define('COMPANY_PATH', DOCROOT . 'company' . DS);
+  Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });
   include(DOCROOT . 'config' . DS . 'types.php');
   include(DOCROOT . 'config' . DS . 'access_levels.php');
-  \ADV\Core\Session::i();
-  \ADV\Core\Config::i();
-  \ADV\Core\Ajax::i();
+  Session::i();
+  Config::i();
+  Ajax::i();
   ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

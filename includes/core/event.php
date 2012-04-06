@@ -97,7 +97,9 @@
     /**
      * @static
      *
-     * @param $object
+     * @param        $object
+     * @param string $function
+     * @param array  $arguments
      */
     static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
       Event::registerHook('shutdown', $object, $function, $arguments);
@@ -125,7 +127,6 @@
       fastcgi_finish_request();
       static::$request_finsihed = TRUE;
       try {
-
         Event::fireHooks('shutdown');
       }
       catch (\Exception $e) {
