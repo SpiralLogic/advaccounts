@@ -109,20 +109,7 @@
       }
     }
     $customers = getCustomers();
-    if ($customers) {
-      foreach ($customers as $customer) {
-        if (!isset($customer['CompanyName'])) {
-          continue;
-        }
-        $name = $customer['CompanyName'];
-        try {
-          DB::insert('WebCustomers')->values($customer)->exec();
-          echo "<div>" . $customer['CompanyName'] . "</div>";
-        }
-        catch (DBDuplicateException $e) {
-          echo "<div>Customer already exists: " . $name . "</div>";
-        }
-      }
+
     }
     else {
       insertCustomers();

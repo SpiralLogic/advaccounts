@@ -11,3 +11,4 @@
    * @param $constants
    **/
   include 'bootstrap.php';
+  echo is_callable('Sales_Allocation::systype_name');
