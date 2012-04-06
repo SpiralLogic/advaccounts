@@ -66,14 +66,13 @@
     }
   }
   define('COMPANY_PATH' ,DOCROOT. 'company' . DS);
-
-  Cache::define_constants('defines', function() {
+  \ADV\Core\Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });
   include(DOCROOT . 'config' . DS . 'types.php');
   include(DOCROOT . 'config' . DS . 'access_levels.php');
-  Session::i();
-  Config::i();
-  Ajax::i();
+  \ADV\Core\Session::i();
+  \ADV\Core\Config::i();
+  \ADV\Core\Ajax::i();
   ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

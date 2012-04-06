@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,22 +9,23 @@
    **/
   namespace ADV\Core;
   class Input {
+
     /**
 
      */
-    const NUMERIC = 'number';
+    const NUMERIC = 1;
     /**
 
      */
-    const OBJECT = 'object';
+    const OBJECT = 2;
     /**
 
      */
-    const STRING = 'string';
+    const STRING = 3;
     /**
 
      */
-    const BOOL = 'boolean';
+    const BOOL = 4;
     /**
      * @var int
      */
@@ -54,7 +54,7 @@
      * @static
      *
      * @param              $var
-     * @param Input|null   $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
+     * @param Input|int   $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
      *                              Input::BOOL
      * @param mixed        $default Default value if there is no current variable
      *
@@ -68,7 +68,7 @@
      * @static
      *
      * @param mixed $var     $_REQUEST variable to return
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+     * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string|object
@@ -92,7 +92,7 @@
      * @static
      *
      * @param mixed $var     $_POST  variable to return if it doesn't exist $_GET will be returned
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
+     * @param int|Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string|object
@@ -217,12 +217,12 @@
       switch ($type) {
         case self::NUMERIC:
           if (!$value || !is_numeric($value)) {
-            return self::$default_number;
+            return ($default === NULL) ? self::$default_number : $default;
           }
           return ($value === self::$default_number) ? TRUE : $value + 0;
         case self::STRING:
           if (!$value || !is_string($value)) {
-            return self::$default_string;
+            return ($default === NULL) ? self::$default_string : $default;
           }
       }
       return $value;

@@ -206,7 +206,7 @@
     static public function menu_button($url, $label, $id = NULL) {
       $id = JS::default_focus($id);
       $pars = Display::access_string($label);
-      return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
+      return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
     }
 
     /**
@@ -259,7 +259,7 @@
       if ($center) {
         echo "<div class='center margin20'>";
       }
-      echo "<a class='button' href='javascript:(window.history.length <= 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ?
+      echo "<a class='button' href='javascript:(window.history.length === 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ?
         _("Close") : _("Back")) . "</a>\n";
       if ($center) {
         echo "</div>";
@@ -448,7 +448,7 @@
      * @param null $id
      */
     static public function submenu_option($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+      Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 1,0);
     }
 
     /**

@@ -100,12 +100,11 @@
       $this->set_salesman();
       $this->location = Config::get('default.location');
       $this->order_no = $order_no;
-      $this->read($order_no, $view);
-      $_POST['OrderDate'] = Dates::new_doc_date();
+      $this->orig_order_date = Dates::new_doc_date();
       if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-        $_POST['OrderDate'] = Dates::end_fiscalyear();
-      }
-      $this->orig_order_date = $_POST['OrderDate'];
+        $this->orig_order_date =  Dates::end_fiscalyear();
+      }      $this->read($order_no, $view);
+
       $this->generateID();
     }
     protected function generateID() {
