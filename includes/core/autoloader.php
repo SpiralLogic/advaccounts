@@ -148,9 +148,10 @@
         }
         if ($alias) {
           $class = substr($required_class, strripos($required_class, '\\') + 1);
-          class_alias(static::$global_classes[$required_class] . $class, $class);
+          class_alias(static::$global_classes[$class] . $class, $class);
         }
       }
+      if ($result)  var_dump('loaded from cache '.$required_class.'<br>');
       return $result;
     }
     /**
