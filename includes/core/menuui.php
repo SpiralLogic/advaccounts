@@ -101,10 +101,10 @@
      */
     public function render() {
       $menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
-			ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>";
+			ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>\n";
       foreach ($this->items as $key => $item) {
         $num = $key;
-        $menu .= "<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";
+        $menu .= "\n<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";
         if ($item->link != "#") {
           $menu .= ' href="' . $item->link . '" ';
           $menu .= ($item->param_element) ? ' data-paramel="' . $item->param_element . '" ' : '';
@@ -117,7 +117,7 @@
       }
       $menu .= "</ul>";
       $content = ob_get_clean();
-      echo $menu . $content . '</div>';
+      echo $menu . $content;
       JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
       MenuUI::$menuCount++;
     }

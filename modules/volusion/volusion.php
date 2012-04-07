@@ -120,7 +120,7 @@
           'Detail' => $detail,
         );
         DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
-        $this->insertLines($lineitems, $jobsboard_no);
+        $this->insertJobsboardlines($lineitems, $jobsboard_no);
         return $jobsboard_no;
       }
       $newJob = array(
@@ -171,7 +171,7 @@
         }
         $newJob['Updates'] = $updates;
         $jobsboard_no = DB::insert('Job_List')->values($newJob)->exec();
-        $this->insertlines($lineitems, $jobsboard_no);
+        $this->insertJobsboardlines($lineitems, $jobsboard_no);
         DB::change_connection();
         DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
         $result = $jobsboard_no;
@@ -182,8 +182,8 @@
      * @param $lines
      * @param $jobid
      */
-    function insertlines($lines, $jobid) {
-      $existing_lines = $this->getLines($jobid);
+    function insertJobsboardlines($lines, $jobid) {
+      $existing_lines = $this->getJobsboardLines($jobid);
       $deleted = array_diff_key($lines, $existing_lines);
       foreach ($deleted as $line) {
         $line['quantity'] = 0;
@@ -205,7 +205,7 @@
      *
      * @return array
      */
-    function getLines($jobid) {
+    function getJobsboardLines($jobid) {
       $result = DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
       return $result;
     }

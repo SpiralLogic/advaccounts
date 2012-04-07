@@ -67,7 +67,8 @@
   }
   else {
     $coy = User::i()->company;
-    echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='login_company'>\n";
+    echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
+    name='login_company'>\n";
     $companies = Config::get_all('db');
     foreach ($companies as $name => $company) {
       if (!$company['company']) {
