@@ -1,16 +1,20 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Tax_ItemType {
-
+    /**
+     * @static
+     *
+     * @param $name
+     * @param $exempt
+     * @param $exempt_from
+     */
     static public function add($name, $exempt, $exempt_from) {
       DB::begin();
 
@@ -26,7 +30,14 @@
 
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     * @param $name
+     * @param $exempt
+     * @param $exempt_from
+     */
     static public function update($id, $name, $exempt, $exempt_from) {
       DB::begin();
 
@@ -41,13 +52,22 @@
 
       DB::commit();
     }
-
+    /**
+     * @static
+     * @return null|PDOStatement
+     */
     static public function get_all() {
       $sql = "SELECT * FROM item_tax_types";
 
       return DB::query($sql, "could not get all item tax type");
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($id) {
       $sql = "SELECT * FROM item_tax_types WHERE id=" . DB::escape($id);
 
@@ -55,7 +75,13 @@
 
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_for_item($stock_id) {
       $sql = "SELECT item_tax_types.* FROM item_tax_types,stock_master WHERE
 		stock_master.stock_id=" . DB::escape($stock_id) . "
@@ -65,7 +91,11 @@
 
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     */
     static public function delete($id) {
       DB::begin();
 
@@ -77,7 +107,12 @@
 
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     * @param $exemptions
+     */
     static public function add_exemptions($id, $exemptions) {
       for ($i = 0; $i < count($exemptions); $i++) {
         $sql = "INSERT INTO item_tax_type_exemptions (item_tax_type_id, tax_type_id)
@@ -85,13 +120,23 @@
         DB::query($sql, "could not add item tax type exemptions");
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     */
     static public function delete_exemptions($id) {
       $sql = "DELETE FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::escape($id);
 
       DB::query($sql, "could not delete item tax type exemptions");
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return null|PDOStatement
+     */
     static public function get_exemptions($id) {
       $sql = "SELECT * FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::escape($id);
 
@@ -99,11 +144,25 @@
     }
 
     // ITEM TAX TYPES
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL) {
       $sql = "SELECT id, name FROM item_tax_types";
       return select_box($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -112,7 +171,13 @@
       echo Tax_ItemType::select($name, $selected_id);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Tax_ItemType::cells(NULL, $name, $selected_id);
@@ -120,4 +185,4 @@
     }
   }
 
-?>
+

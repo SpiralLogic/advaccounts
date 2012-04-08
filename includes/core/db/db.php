@@ -63,7 +63,7 @@
     /**
      * @param $config
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      */
     protected function __construct($config) {
       $this->useConfig = class_exists('Config');
@@ -79,7 +79,7 @@
     /**
      * @param  $config
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return bool
      */
     protected function _connect($config) {
@@ -102,7 +102,7 @@
      *
      * @param mixed $name
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return void
      */
     static public function change_connection($name = FALSE) {
@@ -206,7 +206,7 @@
      * @param            $sql
      * @param bool       $debug
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return bool|\PDOStatement
      */
     protected function _prepare($sql, $debug = FALSE) {
@@ -541,7 +541,7 @@
      * @param $table
      * @param $key
      *
-     * @throws DBUpdateException
+     * @throws \ADV\Core\DB\DBUpdateException
      * @return Query_Result
      */
     static public function insert_record_status($id, $status, $table, $key) {
@@ -555,12 +555,12 @@
     /***
      * @param            $sql
      * @param            $type
-     * @param null       $data
+     * @param array|null $data
      *
-     * @throws DBDeleteException
-     * @throws DBUpdateException
-     * @throws DBInsertException
-     * @throws DBSelectException
+     * @throws \ADV\Core\DB\DBDeleteException
+     * @throws \ADV\Core\DB\DBUpdateException
+     * @throws \ADV\Core\DB\DBInsertException
+     * @throws \ADV\Core\DB\DBSelectException
      * @return Query_Result|int
      */
     public function exec($sql, $type, $data = array()) {
@@ -641,8 +641,8 @@
      * @param \Exception|\PDOException             $e
      * @param bool                                 $msg
      *
-     * @throws DBDuplicateException
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBDuplicateException
+     * @throws \ADV\Core\DB\DBException
      * @internal param bool|string $exit
      * @return bool
      */

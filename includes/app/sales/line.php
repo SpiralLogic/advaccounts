@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:09 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Sales_Line extends \Sales_Order {
 
     public $id;
@@ -24,7 +25,17 @@
     public $qty_dispatched; // quantity selected to process
     public $qty_old = 0; // quantity dispatched before edition
     public $standard_cost;
-
+    /**
+     * @param           $stock_id
+     * @param array|int $qty
+     * @param bool      $prc
+     * @param           $disc_percent
+     * @param           $qty_done
+     * @param           $standard_cost
+     * @param           $description
+     * @param int       $id
+     * @param int       $src_no
+     */
     function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0) {
       /* Constructor function to add a new LineDetail object with passed params */
       $this->id = $id;
@@ -54,6 +65,9 @@
     }
 
     // get unit price as stated on document
+    /**
+     * @return bool
+     */
     function line_price() {
       return $this->price;
     }

@@ -10,6 +10,9 @@
    **/
 
   namespace ADV\Core;
+  /**
+   *
+   */
   class Adv_Exception extends \Exception {
 
   }

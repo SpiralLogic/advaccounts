@@ -1,15 +1,23 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 11/07/11
-   * Time: 4:29 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Contact_Postcode {
 
     static private $count = 1;
-
+    /**
+     * @static
+     *
+     * @param       $city
+     * @param       $state
+     * @param       $postcode
+     * @param array $options
+     */
     static public function render($city, $state, $postcode, $options = array()) {
       $o = array('url' => '/contacts/postcode.php');
       extract(array_merge($o, $options));
@@ -39,7 +47,13 @@
       HTML::td()->tr;
       static::registerJS("#" . $city[0], "#" . $state[0], "#" . $postcode[0]);
     }
-
+    /**
+     * @static
+     *
+     * @param $city
+     * @param $state
+     * @param $postcode
+     */
     static public function registerJS($city, $state, $postcode) {
       if (static::$count == 1) {
         static::initjs();
@@ -51,7 +65,13 @@ JS;
       JS::onload($js);
       static::$count++;
     }
-
+    /**
+     * @static
+     *
+     * @param string $city
+     *
+     * @return array
+     */
     static public function searchByCity($city = "*") {
       $sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
       $result = DB::query($sql, "Could not find city");
@@ -60,7 +80,13 @@ JS;
       }
       return $resultArray;
     }
-
+    /**
+     * @static
+     *
+     * @param string $postcode
+     *
+     * @return array
+     */
     static public function searchByPostcode($postcode = "*") {
       $sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
       $result = DB::query($sql, "Could not find postcode");

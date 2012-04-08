@@ -1,16 +1,25 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO_Issue {
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $ref
+     * @param $to_work_order
+     * @param $items
+     * @param $location
+     * @param $workcentre
+     * @param $date_
+     * @param $memo_
+     */
     static public function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_) {
       DB::begin();
       $details = WO::get($woid);
@@ -46,12 +55,24 @@
       DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($woid) {
       $sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid) . " ORDER BY issue_no";
       return DB::query($sql, "The work order issues could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return null|PDOStatement
+     */
     static public function get_additional($woid) {
       $sql = "SELECT wo_issues.*, wo_issue_items.*
 		FROM wo_issues, wo_issue_items
@@ -59,7 +80,13 @@
 		AND wo_issues.workorder_id=" . DB::escape($woid) . " ORDER BY wo_issue_items.id";
       return DB::query($sql, "The work order issues could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $issue_no
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($issue_no) {
       $sql = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
 		stock_master.description, locations.location_name, " . "workcentres.name AS WorkCentreName
@@ -72,7 +99,13 @@
       $result = DB::query($sql, "A work order issue could not be retrieved");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $issue_no
+     *
+     * @return null|PDOStatement
+     */
     static public function get_details($issue_no) {
       $sql = "SELECT wo_issue_items.*," . "stock_master.description, stock_master.units
 		FROM wo_issue_items, stock_master
@@ -81,13 +114,23 @@
 		ORDER BY wo_issue_items.id";
       return DB::query($sql, "The work order issue items could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $issue_no
+     *
+     * @return bool
+     */
     static public function exists($issue_no) {
       $sql = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
       $result = DB::query($sql, "Cannot retreive a wo issue");
       return (DB::num_rows($result) > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function display($woid) {
       $result = WO_Issue::get_all($woid);
       if (DB::num_rows($result) == 0) {
@@ -108,7 +151,12 @@
         end_table();
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       if ($type != ST_MANUISSUE) {
         $type = ST_MANUISSUE;
@@ -123,7 +171,14 @@
       GL_Trans::void($type, $type_no, TRUE);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     * @param $new_item
+     * @param $new_item_qty
+     * @param $standard_cost
+     */
     static public function add_to($order, $new_item, $new_item_qty, $standard_cost) {
       if ($order->find_order_item($new_item)) {
         Event::error(_("For Part: '") . $new_item . "' This item is already on this issue. You can change the quantity issued of the existing line if necessary.");
@@ -132,7 +187,12 @@
         $order->add_to_order(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $title
+     * @param $order
+     */
     static public function display_items($title, &$order) {
       Display::heading($title);
       Display::div_start('items_table');
@@ -172,7 +232,12 @@
       end_table();
       Display::div_end();
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     * @param $line_no
+     */
     static public function edit_controls($order, $line_no = -1) {
 
       start_row();
@@ -233,4 +298,4 @@
     }
   }
 
-?>
+

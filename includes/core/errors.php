@@ -8,6 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+  /**
+   *
+   */
+  /**
+   *
+   */
   class Errors {
 
     /**
@@ -302,7 +308,7 @@
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
 
-        $content .= '<pre class="left">'.var_export(Errors::$errors,true).'</pre>';
+        $content .= '<pre class="left">'.var_export(Errors::$errors,TRUE).'</pre>';
       if (class_exists('Page')) {
         \Page::error_exit($content, FALSE);
       }

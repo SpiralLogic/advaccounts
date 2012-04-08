@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 11:52 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Debtor_Branch extends DB_abstract {
 
     public $post_address = '';
@@ -40,7 +41,7 @@
     protected $_table = 'branches';
     protected $_id_column = 'branch_id';
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function __construct($id = NULL) {
       $this->id = &$this->branch_id;
@@ -83,12 +84,12 @@
       return TRUE;
     }
     /**
-
+     * @return void
      */
     protected function _countTransactions() {
     }
     /**
-
+     * @return void
      */
     protected function _defaults() {
       $company_record = DB_Company::get_prefs();
@@ -108,6 +109,7 @@
     }
     /**
      * @param null $changes
+     * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
       parent::setFromArray($changes);
@@ -119,9 +121,9 @@
       }
     }
     /**
-     * @param bool $params
+     * @param bool|int|null $params
      *
-     * @return array|null
+     * @return array|bool|null
      */
     protected function _read($params = FALSE) {
       if (!$params) {
@@ -186,6 +188,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     * @return void
      */
     static public function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       if ($label != NULL) {
@@ -206,6 +209,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     * @return void
      */
     static public function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label'>$label</td>";

@@ -1,16 +1,23 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_Allocation {
-
+    /**
+     * @static
+     *
+     * @param $amount
+     * @param $trans_type_from
+     * @param $trans_no_from
+     * @param $trans_type_to
+     * @param $trans_no_to
+     * @param $date_
+     */
     static public function add($amount, $trans_type_from, $trans_no_from,
                                $trans_type_to, $trans_no_to, $date_) {
       $date = Dates::date2sql($date_);
@@ -22,12 +29,23 @@
         . DB::escape($trans_no_to) . ", " . DB::escape($trans_type_to) . ")";
       DB::query($sql, "A supplier allocation could not be added to the database");
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_id
+     */
     static public function delete($trans_id) {
       $sql = "DELETE FROM creditor_allocations WHERE id = " . DB::escape($trans_id);
       DB::query($sql, "The existing allocation $trans_id could not be deleted");
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_type
+     * @param $trans_no
+     *
+     * @return mixed
+     */
     static public function get_balance($trans_type, $trans_no) {
       $sql = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
 		FROM creditor_trans WHERE trans_no="
@@ -36,17 +54,35 @@
       $myrow = DB::fetch_row($result);
       return $myrow[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_type
+     * @param $trans_no
+     * @param $alloc
+     */
     static public function update($trans_type, $trans_no, $alloc) {
       $sql = "UPDATE creditor_trans SET alloc = alloc + " . DB::escape($alloc) . "
 		WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
       DB::query($sql, "The supp transaction record could not be modified for the allocation against it");
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $type_no
+     * @param string $date
+     */
     static public function void($type, $type_no, $date = "") {
       return Purch_Allocation::clear($type, $type_no, $date);
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $type_no
+     * @param string $date
+     */
     static public function clear($type, $type_no, $date = "") {
       // clear any allocations for this transaction
       $sql = "SELECT * FROM creditor_allocations
@@ -73,7 +109,15 @@
 		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
       DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
     }
-
+    /**
+     * @static
+     *
+     * @param null $extra_fields
+     * @param null $extra_conditions
+     * @param null $extra_tables
+     *
+     * @return string
+     */
     static public function get_sql($extra_fields = NULL, $extra_conditions = NULL, $extra_tables = NULL) {
       $sql = "SELECT
 		trans.type,
@@ -105,7 +149,14 @@
       }
       return $sql;
     }
-
+    /**
+     * @static
+     *
+     * @param $supplier_id
+     * @param $settled
+     *
+     * @return string
+     */
     static public function get_allocatable_sql($supplier_id, $settled) {
       $settled_sql = "";
       if (!$settled) {
@@ -119,7 +170,15 @@
         "(type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . " OR type=" . ST_BANKPAYMENT . ") AND (ov_amount < 0) " . $settled_sql . $supp_sql);
       return $sql;
     }
-
+    /**
+     * @static
+     *
+     * @param      $supplier_id
+     * @param null $trans_no
+     * @param null $type
+     *
+     * @return null|PDOStatement
+     */
     static public function get_allocatable_to_trans($supplier_id, $trans_no = NULL, $type = NULL) {
       if ($trans_no != NULL && $type != NULL) {
         $sql = Purch_Allocation::get_sql("amt, supp_reference", "trans.trans_no = alloc.trans_no_to
@@ -136,7 +195,12 @@
       }
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected
+     */
     static public function row($name, $selected = NULL) {
       echo "<td>\n";
       $allocs = array(
@@ -147,4 +211,4 @@
     }
   }
 
-?>
+

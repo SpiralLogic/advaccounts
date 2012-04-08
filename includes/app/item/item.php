@@ -68,13 +68,13 @@
       return TRUE;
     }
     /**
-
+     * @return void
      */
     protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
     }
     /**
-
+     * @return void
      */
     protected function _defaults() {
       $this->id = 0;
@@ -151,7 +151,7 @@
       return $this->_status(TRUE, 'Processing', "Item has been updated.");
     }
     /**
-
+     * @return void
      */
     public function  getSalePrices() {
       $sql = "SELECT * FROM prices WHERE stockid = " . $this->id;
@@ -456,6 +456,7 @@
      * @static
      *
      * @param string $location
+     * @return void
      */
     static protected function load_stock_levels($location = '') {
       $date = Dates::date2sql(Dates::today());
@@ -490,6 +491,7 @@
      * @static
      *
      * @param $terms
+     * @return void
      */
     static public function searchSale($terms) {
       $terms = explode(' ', trim($terms));
@@ -600,6 +602,7 @@ s.category_id, editable, 0 as kit,
      * @static
      *
      * @param array $options
+     * @return void
      */
     static public function addEditDialog($options = array()) {
       $default = array('page' => 0);
@@ -677,6 +680,7 @@ JS;
      * @param        $dimension_id
      * @param        $dimension2_id
      * @param        $no_sale
+     * @return void
      */
     static public function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql = "UPDATE stock_master SET long_description=" . DB::escape($long_description) . ",
@@ -719,6 +723,7 @@ JS;
      * @param $dimension_id
      * @param $dimension2_id
      * @param $no_sale
+     * @return void
      */
     static public function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql
@@ -739,6 +744,7 @@ JS;
      * @static
      *
      * @param $stock_id
+     * @return void
      */
     static public function del($stock_id) {
       $sql = "DELETE FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
@@ -868,6 +874,7 @@ JS;
      * @param bool $all
      * @param bool $editkey
      * @param bool $legacy
+     * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE, $legacy = FALSE) {
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(

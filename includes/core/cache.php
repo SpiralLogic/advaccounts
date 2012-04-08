@@ -86,7 +86,9 @@
     /**
      * @static
      *
-     * @param $key
+     * @param      $key
+     *
+     * @param bool $default
      *
      * @return mixed
      */

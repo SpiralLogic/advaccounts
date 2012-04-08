@@ -9,6 +9,9 @@
    **/
 
   namespace ADV\Core;
+  /**
+   *
+   */
   class Num {
 
     public static $price_dec = 2;
@@ -24,6 +27,9 @@
       }
       return static::$i;
     }
+    /**
+     *
+     */
     protected function __construct() {
       static::$price_dec = \User::prefs()->price_dec();
       static::$tho_sep = \User::tho_sep();

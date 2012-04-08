@@ -75,7 +75,9 @@
       ;
       return $result;
     }
-
+    /**
+     * @return array
+     */
     function insert() {
       $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {

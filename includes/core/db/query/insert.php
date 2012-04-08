@@ -78,8 +78,8 @@
      * @param $feild
      * @param $value
      *
-     * @return Query_Insert
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
+     * @return \ADV\Core\DB\Query_Insert
      */
     public function value($feild, $value) {
       if (is_array($feild) && is_array($value)) {

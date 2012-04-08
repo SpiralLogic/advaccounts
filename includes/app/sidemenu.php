@@ -1,5 +1,12 @@
 <?php
-
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Sidemenu {
 
     protected $start
@@ -51,6 +58,9 @@ HTML;
       $sidemenu = new static;
       echo $sidemenu->display;
     }
+    /**
+     *
+     */
     protected function __construct() {
       $this->display = $this->start . $this->search . $this->sales;
       if (User::i()->can_access(SS_GL)) {

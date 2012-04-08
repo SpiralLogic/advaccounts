@@ -1,16 +1,26 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Inv_Adjustment {
-
+    /**
+     * @static
+     *
+     * @param $items
+     * @param $location
+     * @param $date_
+     * @param $type
+     * @param $increase
+     * @param $reference
+     * @param $memo_
+     *
+     * @return int
+     */
     static public function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
       DB::begin();
       $adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
@@ -27,7 +37,12 @@
       DB::commit();
       return $adj_id;
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       if ($type != ST_INVADJUST) {
         $type = ST_INVADJUST;
@@ -35,7 +50,13 @@
       GL_Trans::void($type, $type_no);
       Inv_Movement::void($type, $type_no);
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_no
+     *
+     * @return null|PDOStatement
+     */
     static public function get($trans_no) {
       $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
       if (DB::num_rows($result) == 0) {
@@ -43,7 +64,19 @@
       }
       return $result;
     }
-
+    /**
+     * @static
+     *
+     * @param $adj_id
+     * @param $stock_id
+     * @param $location
+     * @param $date_
+     * @param $type
+     * @param $reference
+     * @param $quantity
+     * @param $standard_cost
+     * @param $memo_
+     */
     static public function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
       $mb_flag = WO::get_mb_flag($stock_id);
       if (Input::post('mb_flag') == STOCK_SERVICE) {
@@ -61,7 +94,11 @@
           $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     */
     static public function header($order) {
       start_outer_table('tablestyle2 width70'); // outer table
       table_section(1);
@@ -77,7 +114,12 @@
       yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
       end_outer_table(1); // outer table
     }
-
+    /**
+     * @static
+     *
+     * @param $title
+     * @param $order
+     */
     static public function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
@@ -117,7 +159,12 @@
       end_table();
       Display::div_end();
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     * @param $line_no
+     */
     static public function item_controls($order, $line_no = -1) {
 
       start_row();
@@ -173,4 +220,4 @@
     }
   }
 
-?>
+

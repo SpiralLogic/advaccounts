@@ -121,16 +121,16 @@ class Arr {
       }
       return NULL;
     }
-    /**
-     * @return array Returns the array sorted as required
-     *
-     * @param        $aryData     Array containing data to sort
-     * @param string $strIndex    name of column to use as an index
-     * @param string $strSortBy   Column to sort the array by
-     * @param        $strSortType String containing either asc or desc [default to asc]
-     *
-     * @desc Naturally sorts an array using by the column $strSortBy
-     */
+  /**
+   * @return array Returns the array sorted as required
+   *
+   * @param             $aryData     Array containing data to sort
+   * @param string      $strIndex    name of column to use as an index
+   * @param string      $strSortBy   Column to sort the array by
+   * @param bool|String $strSortType String containing either asc or desc [default to asc]
+   *
+   * @desc Naturally sorts an array using by the column $strSortBy
+   */
     static function natsort($aryData, $strIndex, $strSortBy, $strSortType = FALSE) {
       // if the parameters are invalid
       if (!is_array($aryData) || !$strSortBy

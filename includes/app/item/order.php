@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Item_Order {
 
     public $trans_type;
@@ -25,12 +23,22 @@
     public $person_id;
     public $branch_id;
     public $reference;
-
+    /**
+     * @param $type
+     */
     public function __construct($type) {
       $this->trans_type = $type;
       $this->clear_items();
     }
-
+    /**
+     * @param      $line_no
+     * @param      $stock_id
+     * @param      $qty
+     * @param      $standard_cost
+     * @param null $description
+     *
+     * @return bool
+     */
     public function add_to_order($line_no, $stock_id, $qty, $standard_cost, $description = NULL) {
       if (isset($stock_id) && $stock_id != "" && isset($qty)) {
         $this->line_items[$line_no] = new Item_Line($stock_id, $qty, $standard_cost, $description);
@@ -42,7 +50,11 @@
       }
       return FALSE;
     }
-
+    /**
+     * @param $stock_id
+     *
+     * @return null
+     */
     public function find_order_item($stock_id) {
       foreach ($this->line_items as $line_no => $line) {
         if ($line->stock_id == $stock_id) {
@@ -51,20 +63,34 @@
       }
       return NULL;
     }
-
+    /**
+     * @param $line_no
+     * @param $qty
+     * @param $standard_cost
+     */
     public function update_order_item($line_no, $qty, $standard_cost) {
       $this->line_items[$line_no]->quantity = $qty;
       $this->line_items[$line_no]->standard_cost = $standard_cost;
     }
-
+    /**
+     * @param $line_no
+     */
     public function remove_from_order($line_no) {
       array_splice($this->line_items, $line_no, 1);
     }
-
+    /**
+     * @return int|void
+     */
     public function count_items() {
       return count($this->line_items);
     }
-
+    /**
+     * @param      $location
+     * @param      $date_
+     * @param bool $reverse
+     *
+     * @return int|string
+     */
     public function check_qoh($location, $date_, $reverse = FALSE) {
       foreach ($this->line_items as $line_no => $line_item) {
         $item_ret = $line_item->check_qoh($location, $date_, $reverse);
@@ -74,7 +100,16 @@
       }
       return -1;
     }
-
+    /**
+     * @param      $code_id
+     * @param      $dimension_id
+     * @param      $dimension2_id
+     * @param      $amount
+     * @param      $reference
+     * @param null $description
+     *
+     * @return bool
+     */
     public function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = NULL) {
       if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
         $this->gl_items[] = new Item_Gl($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
@@ -86,7 +121,15 @@
       }
       return FALSE;
     }
-
+    /**
+     * @param      $index
+     * @param      $code_id
+     * @param      $dimension_id
+     * @param      $dimension2_id
+     * @param      $amount
+     * @param      $reference
+     * @param null $description
+     */
     public function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = NULL) {
       $this->gl_items[$index]->code_id = $code_id;
       $this->gl_items[$index]->dimension_id = $dimension_id;
@@ -100,15 +143,21 @@
         $this->gl_items[$index]->description = $description;
       }
     }
-
+    /**
+     * @param $index
+     */
     public function remove_gl_item($index) {
       array_splice($this->gl_items, $index, 1);
     }
-
+    /**
+     * @return int|void
+     */
     public function count_gl_items() {
       return count($this->gl_items);
     }
-
+    /**
+     * @return int
+     */
     public function gl_items_total() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
@@ -116,7 +165,9 @@
       }
       return $total;
     }
-
+    /**
+     * @return int
+     */
     public function gl_items_total_debit() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
@@ -126,7 +177,9 @@
       }
       return $total;
     }
-
+    /**
+     * @return int
+     */
     public function gl_items_total_credit() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
@@ -143,7 +196,14 @@
       unset($this->gl_items);
       $this->gl_items = array();
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     * @param $new_item
+     * @param $new_item_qty
+     * @param $standard_cost
+     */
     static public function add_line($order, $new_item, $new_item_qty, $standard_cost) {
       if ($order->find_order_item($new_item)) {
         Event::error(_("For Part: '") . $new_item . "' This item is already on this order. You can change the quantity ordered of the existing line if necessary.");
@@ -154,4 +214,4 @@
     }
   }
 
-?>
+

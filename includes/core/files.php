@@ -8,7 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-
+  /**
+   *
+   */
   class Files {
 
     /**

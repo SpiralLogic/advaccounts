@@ -9,6 +9,9 @@
    **/
   namespace ADV\Core;
   include(DOCROOT . 'modules/smartoptimizer/minifiers/js.php');
+  /**
+   *
+   */
   class JS {
 
     /**
@@ -284,11 +287,13 @@ JSS;
     static public function setFocus($selector, $cached = FALSE) {
       $_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : FALSE;
     }
-
     /**
      * @static
      *
      * @param array $options
+     *
+     * @param array $funcs
+     * @param int   $level
      *
      * @return string
      */

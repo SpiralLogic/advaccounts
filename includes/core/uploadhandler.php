@@ -11,7 +11,9 @@
    **/
 
   namespace ADV\Core;
-
+  /**
+   *
+   */
   class UploadHandler {
 
     /**

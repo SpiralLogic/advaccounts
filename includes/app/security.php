@@ -1,13 +1,18 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 8/10/11
-   * Time: 7:22 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Security {
-
+    /**
+     * @static
+     *
+     * @param $page_security
+     */
     static function check_page($page_security) {
       if (!User::i()->can_access_page($page_security)) {
         echo "<div class='center'><br><br><br><span class='bold'>";
@@ -23,6 +28,15 @@
                GET start variable and/or some value stored in session variable.
                Before the call $page_security should be set to default page_security value.
              */
+    /**
+     * @static
+     *
+     * @param null  $value
+     * @param array $trans
+     * @param array $gtrans
+     *
+     * @return mixed
+     */
     static function set_page($value = NULL, $trans = array(), $gtrans = array()) {
 
       // first check is this is not start page call
@@ -38,6 +52,13 @@
         return;
       }
     }
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_role($id) {
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
       $ret = DB::query($sql, "could not retrieve security roles");
@@ -48,25 +69,65 @@
       }
       return $row;
     }
+    /**
+     * @static
+     *
+     * @param $name
+     * @param $description
+     * @param $sections
+     * @param $areas
+     */
     static public function add_role($name, $description, $sections, $areas) {
       $sql = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES (" . DB::escape($name) . "," . DB::escape($description) . "," . DB::escape(implode(';', $sections)) . "," . DB::escape(implode(';', $areas)) . ")";
       DB::query($sql, "could not add new security role");
     }
+    /**
+     * @static
+     *
+     * @param $id
+     * @param $name
+     * @param $description
+     * @param $sections
+     * @param $areas
+     */
     static public function update_role($id, $name, $description, $sections, $areas) {
       $sql = "UPDATE security_roles SET role=" . DB::escape($name) . ",description=" . DB::escape($description) . ",sections=" . DB::escape(implode(';', $sections)) . ",areas=" . DB::escape(implode(';', $areas)) . " WHERE id=$id";
       DB::query($sql, "could not update role");
     }
+    /**
+     * @static
+     *
+     * @param $id
+     */
     static public function get_profile($id) {
       $sql = "DELETE FROM security_roles WHERE id=$id";
       DB::query($sql, "could not delete role");
     }
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
     static public function check_role_used($id) {
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
       $ret = DB::query($sql, 'cannot check role usage');
       $row = DB::fetch($ret);
       return $row[0];
     }
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $new_item
+     * @param bool $submit_on_change
+     * @param bool $show_inactive
+     *
+     * @return string
+     */
     static public function  roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return select_box($name, $selected_id, $sql, 'id', 'description', array(
@@ -76,6 +137,16 @@
         'show_inactive' => $show_inactive
       ));
     }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $new_item
+     * @param bool $submit_on_change
+     * @param bool $show_inactive
+     */
     static public function  roles_cells($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -84,12 +155,29 @@
       echo Security::roles($name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</td>\n";
     }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $new_item
+     * @param bool $submit_on_change
+     * @param bool $show_inactive
+     */
     static public function  roles_row($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Security::roles_cells(NULL, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return array|string
+     * @throws RuntimeException
+     */
     public static function htmlentities($value) {
       static $already_cleaned = array();
 

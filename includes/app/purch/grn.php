@@ -1,17 +1,26 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
   class Purch_GRN {
-
+    /**
+     * @static
+     *
+     * @param      $supplier
+     * @param      $stock_id
+     * @param      $price
+     * @param      $qty
+     * @param      $date
+     * @param bool $adj_only
+     *
+     * @return float
+     */
     static public function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = FALSE) {
       if ($supplier != NULL) {
         $currency = Bank_Currency::for_creditor($supplier);
@@ -70,6 +79,16 @@
       DB::query($sql, "The cost details for the inventory item could not be updated");
       return $material_cost;
     }
+    /**
+     * @static
+     *
+     * @param $order
+     * @param $date_
+     * @param $reference
+     * @param $location
+     *
+     * @return string
+     */
     static public function add(&$order, $date_, $reference, $location) {
       DB::begin();
       $grn = static::add_batch($order->order_no, $order->supplier_id, $reference, $location, $date_);
@@ -98,6 +117,17 @@
       DB::commit();
       return $grn;
     }
+    /**
+     * @static
+     *
+     * @param $po_number
+     * @param $supplier_id
+     * @param $reference
+     * @param $location
+     * @param $date_
+     *
+     * @return string
+     */
     static public function add_batch($po_number, $supplier_id, $reference, $location, $date_) {
       $date = Dates::date2sql($date_);
       $sql = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
@@ -105,6 +135,20 @@
       DB::query($sql, "A grn batch record could not be inserted.");
       return DB::insert_id();
     }
+    /**
+     * @static
+     *
+     * @param $grn_batch_id
+     * @param $po_detail_item
+     * @param $item_code
+     * @param $description
+     * @param $standard_unit_cost
+     * @param $quantity_received
+     * @param $price
+     * @param $discount
+     *
+     * @return string
+     */
     static public function add_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount) {
       $sql = "UPDATE purch_order_details
  SET quantity_received = quantity_received + " . DB::escape($quantity_received) . ",
@@ -118,17 +162,39 @@
       DB::query($sql, "A GRN detail item could not be inserted.");
       return DB::insert_id();
     }
+    /**
+     * @static
+     *
+     * @param $item
+     *
+     * @return mixed
+     */
     static public function get_batch_for_item($item) {
       $sql = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
       $result = DB::query($sql, "Could not retreive GRN batch id");
       $row = DB::fetch_row($result);
       return $row[0];
     }
+    /**
+     * @static
+     *
+     * @param $grn
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_batch($grn) {
       $sql = "SELECT * FROM grn_batch WHERE id=" . DB::escape($grn);
       $result = DB::query($sql, "Could not retreive GRN batch id");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param $entered_grn
+     * @param $supplier
+     * @param $transno
+     * @param $date
+     */
     static public function set_item_credited(&$entered_grn, $supplier, $transno, $date) {
       $mcost = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
       $sql = "SELECT grn_batch.*, grn_items.*
@@ -151,6 +217,19 @@
       DB::query($sql);
       Inv_Movement::add(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
     }
+    /**
+     * @static
+     *
+     * @param int    $grn_batch_id
+     * @param string $supplier_id
+     * @param bool   $outstanding_only
+     * @param bool   $is_invoiced_only
+     * @param int    $invoice_no
+     * @param string $begin
+     * @param string $end
+     *
+     * @return null|PDOStatement
+     */
     static public function get_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = FALSE, $is_invoiced_only = FALSE, $invoice_no = 0, $begin = "", $end = "") {
       $sql = "SELECT " . "grn_batch.*, " . "grn_items.*, " . "purch_order_details.unit_price, " . "purch_order_details.std_cost_unit, units
  	 FROM " . "grn_batch, " . "grn_items, " . "purch_order_details, " . "stock_master";
@@ -184,6 +263,13 @@
       return DB::query($sql, "Could not retreive GRNS");
     }
     // get the details for a given grn item
+    /**
+     * @static
+     *
+     * @param $grn_item_no
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_item($grn_item_no) {
       $sql = "SELECT grn_items.*, purch_order_details.unit_price,
  	grn_items.qty_recd - grn_items.quantity_inv AS QtyOstdg,
@@ -195,6 +281,12 @@
       $result = DB::query($sql, "could not retreive grn item details");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param $grn_batch
+     * @param $order
+     */
     static public function get_items_to_order($grn_batch, &$order) {
       $result = static::get_items($grn_batch);
       if (DB::num_rows($result) > 0) {
@@ -211,6 +303,12 @@
       } //end of checks on returned data set
     }
     // read a grn into an order class
+    /**
+     * @static
+     *
+     * @param $grn_batch
+     * @param $order
+     */
     static public function get($grn_batch, &$order) {
       $sql = "SELECT *	FROM grn_batch WHERE id=" . DB::escape($grn_batch);
       $result = DB::query($sql, "The grn sent is not valid");
@@ -225,15 +323,36 @@
       }
     }
     // get the GRNs (batch info not details) for a given po number
+    /**
+     * @static
+     *
+     * @param $po_number
+     *
+     * @return null|PDOStatement
+     */
     static public function get_for_po($po_number) {
       $sql = "SELECT * FROM grn_batch WHERE purch_order_no=" . DB::escape($po_number);
       return DB::query($sql, "The grns for the po $po_number could not be retreived");
     }
+    /**
+     * @static
+     *
+     * @param $grn_batch
+     *
+     * @return bool
+     */
     static public function exists($grn_batch) {
       $sql = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
       $result = DB::query($sql, "Cannot retreive a grn");
       return (DB::num_rows($result) > 0);
     }
+    /**
+     * @static
+     *
+     * @param $grn_batch
+     *
+     * @return bool
+     */
     static public function exists_on_invoices($grn_batch) {
       $sql = "SELECT creditor_trans_details.id FROM creditor_trans_details,grn_items
 		WHERE creditor_trans_details.grn_item_id=grn_items.id
@@ -242,6 +361,14 @@
       $result = DB::query($sql, "Cannot query GRNs");
       return (DB::num_rows($result) > 0);
     }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $grn_batch
+     *
+     * @return bool
+     */
     static public function void($type, $grn_batch) {
       if ($type != ST_SUPPRECEIVE) {
         $type = ST_SUPPRECEIVE;
@@ -271,6 +398,12 @@
       DB::commit();
       return TRUE;
     }
+    /**
+     * @static
+     *
+     * @param      $po
+     * @param bool $editable
+     */
     static public function display(&$po, $editable = FALSE) {
       start_table('tablestyle2 width90');
       start_row();
@@ -312,6 +445,14 @@
       end_table(1);
     }
     //--------------
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     * @param $k
+     *
+     * @return bool
+     */
     static public function display_for_selection($creditor_trans, $k) {
       if ($creditor_trans->is_invoice) {
         $result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, TRUE);
@@ -390,6 +531,14 @@
     //		 = 1 display on invoice/credit page
     //		 = 2 display on view invoice
     //		 = 3 display on view credit
+    /**
+     * @static
+     *
+     * @param     $creditor_trans
+     * @param int $mode
+     *
+     * @return float|int
+     */
     static public function display_items($creditor_trans, $mode = 0) {
       $ret = TRUE;
       // if displaying in form, and no items, exit

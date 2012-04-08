@@ -59,7 +59,7 @@
      */
     protected $_session = array();
     /**
-     * @throws SessionException
+     * @throws \ADV\Core\SessionException
      */
     final protected function __construct() {
       /** @noinspection PhpUndefinedConstantInspection */

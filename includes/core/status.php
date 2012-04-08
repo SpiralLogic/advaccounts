@@ -9,6 +9,9 @@
    **/
 
   namespace ADV\Core;
+  /**
+   *
+   */
   class Status {
 
     /**
@@ -68,6 +71,8 @@
     }
     /**
      * @param array $status
+     *
+     * @param bool  $error_only
      *
      * @return mixed
      */

@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 4:07 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   abstract class Contact_Company extends DB_abstract {
 
     public $discount = '0';
@@ -23,12 +24,25 @@
     public $payment_terms = 1;
     public $curr_code = '';
     public $emailAddresses = array();
-
+    /**
+     * @abstract
+     * @return mixed
+     */
     abstract protected function _countTransactions();
-
+    /**
+     * @param $name
+     * @param $emails
+     * @param $trans
+     * @param $type
+     */
     protected function addEmailGroup($name, $emails, $trans, $type) {
     }
-
+    /**
+     * @static
+     *
+     * @param      $selector
+     * @param bool $id
+     */
     static public function addInfoDialog($selector, $id = FALSE) {
       if ($id) {
         $company = new static($id);
@@ -60,7 +74,13 @@ JS;
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();
     }
-
+    /**
+     * @static
+     *
+     * @param $emailid
+     *
+     * @return bool|string
+     */
     static public function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();

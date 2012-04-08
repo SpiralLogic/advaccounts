@@ -11,6 +11,9 @@
   namespace ADV\Core;
   use \JsHttpRequest;
 
+  /**
+   *
+   */
   class Ajax extends \JsHttpRequest {
     public $aCommands = array();
     public $triggers = array();
@@ -57,6 +60,7 @@
      * Popup window (target=_blank)
      *
      * @param $url
+     * @return void
      */
     function popup($url) {
       $this->_addCommand(TRUE, array('n' => 'pu'), $this->absolute_url($url));
@@ -152,6 +156,7 @@
      * @param $trigger
      * @param $aAttributes
      * @param $mData
+     * @return void
      */
     function _addCommand($trigger, $aAttributes, $mData) {
       if ($this->isActive() && ($trigger !== FALSE)) {

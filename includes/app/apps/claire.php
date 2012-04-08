@@ -1,13 +1,16 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 16/12/11
-   * Time: 12:04 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Apps_Claire extends Application {
-
+    /**
+     *
+     */
     function __construct() {
       parent::__construct("Claire", _($this->help_context = "&Claire"));
     }

@@ -9,6 +9,9 @@
    **/
 
   namespace ADV\Core;
+  /**
+   *
+   */
   class HTML {
 
     /**

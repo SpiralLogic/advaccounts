@@ -31,6 +31,11 @@
 
       static::$hooks->add($hook, $callback, $arguments);
     }
+    /**
+     * @static
+     *
+     * @param $hook
+     */
     public static function fireHooks($hook) {
       if (static::$hooks)
         static::$hooks->fire($hook);

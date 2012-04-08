@@ -1,16 +1,30 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO_Quick {
-
+    /**
+     * @static
+     *
+     * @param $wo_ref
+     * @param $loc_code
+     * @param $units_reqd
+     * @param $stock_id
+     * @param $type
+     * @param $date_
+     * @param $memo_
+     * @param $costs
+     * @param $cr_acc
+     * @param $labour
+     * @param $cr_lab_acc
+     *
+     * @return string
+     */
     static public function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
                                $cr_lab_acc) {
       DB::begin();
@@ -60,7 +74,19 @@
       DB::commit();
       return $woid;
     }
-
+    /**
+     * @static
+     *
+     * @param        $woid
+     * @param        $stock_id
+     * @param        $units_reqd
+     * @param        $date_
+     * @param int    $advanced
+     * @param int    $costs
+     * @param string $cr_acc
+     * @param int    $labour
+     * @param string $cr_lab_acc
+     */
     static public function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0,
                                  $cr_lab_acc = "") {
       global $wo_cost_types;
@@ -127,7 +153,12 @@
       // debit total components $total_cost
       GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"], 0, 0, NULL, -$total_cost);
     }
-
+    /**
+     * @static
+     *
+     * @param      $woid
+     * @param bool $suppress_view_link
+     */
     static public function display($woid, $suppress_view_link = FALSE) {
       global $wo_types_array;
       $myrow = WO::get($woid);
@@ -162,4 +193,4 @@
     }
   }
 
-?>
+

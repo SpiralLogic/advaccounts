@@ -638,4 +638,3 @@
 	$file = 'dejavu.z';
 	$ctg = 'dejavu.ctg.z';
 	$originalsize = 611552;
-?>

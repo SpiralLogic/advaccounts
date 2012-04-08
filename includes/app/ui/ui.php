@@ -1,13 +1,22 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 6/12/10
-   * Time: 5:47 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class UI extends HTML {
-
+    /**
+     * @static
+     *
+     * @param bool  $id
+     * @param bool  $content
+     * @param array $attr
+     *
+     * @return ADV\Core\HTML|null
+     */
     static function button($id = FALSE, $content = FALSE, $attr = array()) {
       if ($id) {
         $attr['id'] = $id;
@@ -21,7 +30,15 @@
       HTML::button($id, $content, $attr, FALSE);
       return static::$_instance;
     }
-
+    /**
+     * @static
+     *
+     * @param bool  $id
+     * @param array $options
+     * @param array $params
+     *
+     * @return ADV\Core\HTML|null
+     */
     static function select($id = FALSE, $options = array(), $params = array()) {
       HTML::setReturn(TRUE)->select($id, $params);
       foreach ((array) $options as $label => $option) {
@@ -245,7 +262,13 @@ JS;
       JS::addLive($js, $clean);
       return HTML::setReturn(FALSE);
     }
-
+    /**
+     * @static
+     *
+     * @param $contactType
+     *
+     * @return mixed
+     */
     static public function emailDialogue($contactType) {
       static $loaded = FALSE;
       if ($loaded == TRUE) {

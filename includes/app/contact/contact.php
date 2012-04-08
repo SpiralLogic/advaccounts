@@ -1,8 +1,12 @@
 <?php
   /**
-   * User: Sorijen
-   * Date: 15/04/11 - 4:08 PM
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Contact extends DB_abstract {
 
     public $id = 0;
@@ -15,7 +19,10 @@
     public $department = '';
     protected $_table = 'contacts';
     protected $_id_column = 'id';
-
+    /**
+     * @param int       $type
+     * @param array|int $id
+     */
     public function __construct($type, $id = 0) {
       $this->type = $type;
       parent::__construct($id, array('type' => $type));
@@ -24,11 +31,15 @@
     public function delete() {
       // TODO: Implement delete() method.
     }
-
+    /**
+     * @return bool
+     */
     protected function _canProcess() {
       return TRUE;
     }
-
+    /**
+     * @return bool|int
+     */
     protected function _saveNew() {
       $temp = new Contact($this->type);
       foreach ($this as $key => $value) {
@@ -45,7 +56,9 @@
 
     protected function _defaults() {
     }
-
+    /**
+     * @return bool|Status
+     */
     protected function _new() {
       $this->_defaults();
       return $this->_status(TRUE, 'Initialize new Contact', 'Now working with a new Contact');

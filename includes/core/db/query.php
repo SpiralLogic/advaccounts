@@ -33,6 +33,7 @@ abstract class Query extends Query_Where {
     protected $conn;
     /**
      * @abstract
+     * @return
      */
     protected abstract function execute();
     /**

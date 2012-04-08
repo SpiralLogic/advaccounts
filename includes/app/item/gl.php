@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:20 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Item_Gl {
 
     public $code_id;
@@ -14,7 +15,14 @@
     public $amount;
     public $reference;
     public $description;
-
+    /**
+     * @param      $code_id
+     * @param      $dimension_id
+     * @param      $dimension2_id
+     * @param      $amount
+     * @param      $reference
+     * @param null $description
+     */
     function __construct($code_id, $dimension_id, $dimension2_id, $amount, $reference,
                          $description = NULL) {
       //echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";

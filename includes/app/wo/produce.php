@@ -1,16 +1,23 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO_Produce {
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $ref
+     * @param $quantity
+     * @param $date_
+     * @param $memo_
+     * @param $close_wo
+     */
     static public function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
       DB::begin();
       $details = WO::get($woid);
@@ -43,7 +50,13 @@
       DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($id) {
       $sql = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
 		FROM wo_manufacture, workorders, stock_master
@@ -53,18 +66,35 @@
       $result = DB::query($sql, "The work order production could not be retrieved");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($woid) {
       $sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
       return DB::query($sql, "The work order issues could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return bool
+     */
     static public function exists($id) {
       $sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "Cannot retreive a wo production");
       return (DB::num_rows($result) > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       if ($type != ST_MANURECEIVE) {
         $type = ST_MANURECEIVE;
@@ -84,7 +114,11 @@
       GL_Trans::void($type, $type_no, TRUE);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function display($woid) {
       $result = WO_Produce::get_all($woid);
       if (DB::num_rows($result) == 0) {
@@ -112,4 +146,4 @@
     }
   }
 
-?>
+

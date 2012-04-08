@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   /*
      User authentication page popped up after login timeout during ajax call.
    */
@@ -19,4 +17,4 @@
     // Login form consists all post variables from last ajax call.
     echo "<script language=\"javascript\" type=\"text/javascript\">var o = opener;if (o) {o.JsHttpRequest.request(document.getElementsByName('SubmitUser')[0], o.document.forms[0]);close();}</script>";
   }
-?>
+

@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Maidenii
-   * Date: 11/01/12
-   * Time: 8:54 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   namespace Modules;
   use \Modules\Volusion\Orders as Orders,\ADV\Core\DB\DB,   \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DBDeleteException, \ADV\Core\DB\DBInsertException, \ADV\Core\DB\DBSelectException, \ADV\Core\DB\DBUpdateException;
 

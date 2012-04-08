@@ -1,19 +1,32 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Bank_Trans {
 
     // add a bank transaction
     // $amount is in $currency
     // $date_ is display date (non-sql)
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param        $bank_act
+     * @param        $ref
+     * @param        $date_
+     * @param        $amount
+     * @param        $person_type_id
+     * @param        $person_id
+     * @param string $currency
+     * @param string $err_msg
+     * @param int    $rate
+     */
     static public function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
       $sqlDate = Dates::date2sql($date_);
       // convert $amount to the bank's currency
@@ -42,11 +55,29 @@
       }
       DB::query($sql, $err_msg);
     }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     *
+     * @return bool
+     */
     static public function exists($type, $type_no) {
       $sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a bank transaction");
       return (DB::num_rows($result) > 0);
     }
+    /**
+     * @static
+     *
+     * @param      $type
+     * @param null $trans_no
+     * @param null $person_type_id
+     * @param null $person_id
+     *
+     * @return null|PDOStatement
+     */
     static public function get($type, $trans_no = NULL, $person_type_id = NULL, $person_id = NULL) {
       $sql = "SELECT *, bank_account_name, account_code, bank_curr_code
 		FROM bank_trans, bank_accounts
@@ -66,6 +97,13 @@
       $sql .= " ORDER BY trans_date, bank_trans.id";
       return DB::query($sql, "query for bank transaction");
     }
+    /**
+     * @static
+     *
+     * @param      $type
+     * @param      $type_no
+     * @param bool $nested
+     */
     static public function void($type, $type_no, $nested = FALSE) {
       if (!$nested) {
         DB::begin();

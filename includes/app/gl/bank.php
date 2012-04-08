@@ -1,16 +1,27 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class GL_Bank {
-
+    /**
+     * @static
+     *
+     * @param        $trans_type
+     * @param        $trans_no
+     * @param        $date_
+     * @param        $acc_id
+     * @param        $account
+     * @param        $currency
+     * @param null   $person_type_id
+     * @param string $person_id
+     *
+     * @return mixed
+     */
     static protected function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = NULL, $person_id = "") {
       if (Bank_Currency::is_company($currency)) {
         return;
@@ -55,6 +66,19 @@
     //	$from_account - source bank account id
     //	$to_account -	target bank account id
     //
+    /**
+     * @static
+     *
+     * @param     $from_account
+     * @param     $to_account
+     * @param     $date_
+     * @param     $amount
+     * @param     $ref
+     * @param     $memo_
+     * @param int $charge
+     *
+     * @return int
+     */
     static public function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
       DB::begin();
       $trans_type = ST_BANKTRANSFER;
@@ -94,6 +118,22 @@
     // $person_detail_id - customer branch id or not used
     //
     // returns an array of (inserted trans type, trans no)
+    /**
+     * @static
+     *
+     * @param      $trans_type
+     * @param      $from_account
+     * @param      $items
+     * @param      $date_
+     * @param      $person_type_id
+     * @param      $person_id
+     * @param      $person_detail_id
+     * @param      $ref
+     * @param      $memo_
+     * @param bool $use_transaction
+     *
+     * @return array
+     */
     static public function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = TRUE) {
       // we can only handle type 1 (payment)and type 2 (deposit)
       if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {

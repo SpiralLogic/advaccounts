@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Maidenii
-   * Date: 29/02/12
-   * Time: 3:24 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   return array(
     'valid_charged_to_delivered_qty' => TRUE, //
     /**check price charged on invoices exceeds the purchase order price.*/

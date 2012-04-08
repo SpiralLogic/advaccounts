@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   // insert/update sales delivery
   //
   class Sales_Delivery {
@@ -104,6 +102,12 @@
       DB::commit();
       return $delivery_no;
     }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       DB::begin();
       GL_Trans::void($type, $type_no, TRUE);
@@ -126,7 +130,13 @@
       Debtor_Trans::void($type, $type_no);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     *
+     * @return bool
+     */
     static public function check_data($order) {
       if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is invalid."));
@@ -170,7 +180,11 @@
       }
       return TRUE;
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     */
     static public function copy_to_order($order) {
       $order->ship_via = $_POST['ship_via'];
       $order->freight_cost = Validation::input_num('ChargeFreightCost');
@@ -182,7 +196,11 @@
         $order->reference = $_POST['ref'];
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     */
     static public function copy_from_order($order) {
       $order = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via'] = $order->ship_via;
@@ -195,7 +213,13 @@
       $_POST['order_id'] = $order->order_id;
       Orders::session_set($order);
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     *
+     * @return int
+     */
     static public function check_quantities($order) {
       $ok = 1;
       // Update order delivery quantities/descriptions
@@ -232,7 +256,13 @@
       //	 $order->freight_cost = Validation::input_num('ChargeFreightCost');
       return $ok;
     }
-
+    /**
+     * @static
+     *
+     * @param $order
+     *
+     * @return bool
+     */
     static public function check_qoh($order) {
       if (!DB_Company::get_pref('allow_negative_stock')) {
         foreach ($order->line_items as $itm) {

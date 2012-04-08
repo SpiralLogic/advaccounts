@@ -1,13 +1,16 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Maidenii
-   * Date: 7/12/11
-   * Time: 12:31 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'bootstrap.php';
-
+  /**
+   * @return bool
+   */
   function getCustomers() {
     $customersXML = getCustomersXML();
     if (!$customersXML) {
@@ -17,6 +20,9 @@
     return $customers;
   }
 
+  /**
+   * @return string
+   */
   function getCustomersXML() {
     $apiuser = 'admin@advancedroadsigns.com.au';
     $apikey = '48DA75C51705EF02B195A2AE63DCA10C92E2A24AF93ABFC8731F00E586BC3F94';
@@ -28,6 +34,9 @@
     return file_get_contents($url);
   }
 
+  /**
+   * @return bool
+   */
   function getProducts() {
     $productsXML = getProductsXML();
     if (!$productsXML) {
@@ -37,6 +46,9 @@
     return $products;
   }
 
+  /**
+   * @return string
+   */
   function getProductsXML() {
     $apiuser = 'admin@advancedroadsigns.com.au';
     $apikey = '48DA75C51705EF02B195A2AE63DCA10C92E2A24AF93ABFC8731F00E586BC3F94';

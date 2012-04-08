@@ -51,7 +51,7 @@
      *
      * @param string $group
      *
-     * @throws Config_Exception
+     * @throws \ADV\Core\Config_Exception
      * @return mixed
      */
     static protected function load($group = 'config') {
@@ -130,15 +130,17 @@
       Cache::set('config', static::$_vars);
     }
     /**
-     * @staticx
+     * @static
      *
      * @param string $group
+     *
+     * @param array  $default
      *
      * @return mixed
      */
     static public function get_all($group = 'config',$default=array()) {
       static::i();
-      if (!isset(static::$_vars[$group]) &&  static::load($group)==false){
+      if (!isset(static::$_vars[$group]) &&  static::load($group)==FALSE){
         return $default;
       };
       return static::$_vars[$group];

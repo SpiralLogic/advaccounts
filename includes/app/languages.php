@@ -1,13 +1,21 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 3/12/11
-   * Time: 1:49 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Languages {
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL) {
       $items = array();
       $langs = Config::get('languages.installed');
@@ -16,7 +24,13 @@
       }
       return array_selector($name, $selected_id, $items);
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -25,7 +39,13 @@
       echo Languages::select($name, $selected_id);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Languages::cells(NULL, $name, $selected_id);

@@ -1,17 +1,28 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 6/12/10
-   * Time: 5:36 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Messages {
 
     static protected $messages = '';
     static protected $count = 0;
+    /**
+     *
+     */
     public function __construct() {
     }
+    /**
+     * @static
+     *
+     * @param bool $userid
+     *
+     * @return bool|int
+     */
     static public function  get($userid = FALSE) {
       if (!$userid) {
         return FALSE;
@@ -38,6 +49,15 @@
       }
       return static::$count;
     }
+    /**
+     * @static
+     *
+     * @param $userid
+     * @param $subject
+     * @param $message
+     *
+     * @return null|PDOStatement
+     */
     static public function set($userid, $subject, $message) {
       $sql = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1, " . DB::escape(User::i()->user) . ")";
       $result = DB::query($sql, "Couldn't add message for $userid");

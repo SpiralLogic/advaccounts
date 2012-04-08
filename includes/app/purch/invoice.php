@@ -1,16 +1,19 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_Invoice {
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     * @param $supplier_id
+     */
     static public function get_supplier_to_trans($creditor_trans, $supplier_id) {
       $sql = "SELECT suppliers.supp_name, payment_terms.terms, "
         . "payment_terms.days_before_due,
@@ -44,7 +47,16 @@
       //}
       Creditor_Trans::get_duedate_from_terms($creditor_trans);
     }
-
+    /**
+     * @static
+     *
+     * @param      $id
+     * @param      $po_detail_item
+     * @param      $qty_invoiced
+     * @param null $chg_price
+     *
+     * @return array
+     */
     static public function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = NULL) {
       if ($chg_price != NULL) {
         $sql
@@ -82,7 +94,17 @@
       DB::query($sql, "The quantity invoiced off the items received record could not be updated");
       return array($ret, $date, $unit_price);
     }
-
+    /**
+     * @static
+     *
+     * @param $supplier
+     * @param $old_date
+     * @param $date
+     * @param $amount1
+     * @param $amount2
+     *
+     * @return float
+     */
     static public function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
       $dec = User::price_dec();
       Num::price_decimal($amount2, $dec);
@@ -94,7 +116,14 @@
       $diff = $amount2 - $amount1;
       return Num::round($diff, $dec);
     }
-
+    /**
+     * @static
+     *
+     * @param Creditor_Trans $creditor_trans
+     * @param int            $invoice_no
+     *
+     * @return int
+     */
     static public function add(Creditor_Trans $creditor_trans, $invoice_no = 0) // do not receive as ref because we change locally
     {
       //$company_currency = Bank_Currency::for_company();
@@ -333,6 +362,13 @@
     }
 
     // get all the invoices/credits for a given PO - quite long route to get there !
+    /**
+     * @static
+     *
+     * @param $po_number
+     *
+     * @return null|PDOStatement
+     */
     static public function get_po_credits($po_number) {
       $sql
         = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
@@ -346,7 +382,13 @@
 		AND purch_order_details.order_no = " . DB::escape($po_number);
       return DB::query($sql, "The invoices/credits for the po $po_number could not be retreived");
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_no
+     * @param $trans_type
+     * @param $creditor_trans
+     */
     static public function get($trans_no, $trans_type, $creditor_trans) {
       $sql
         = "SELECT creditor_trans.*, supp_name FROM creditor_trans,suppliers
@@ -396,7 +438,14 @@
         return Errors::db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, TRUE);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $po_item_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_for_item($stock_id, $po_item_id) {
       $sql
         = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
@@ -406,7 +455,12 @@
       $result = DB::query($sql, "Cannot retreive supplier transaction detail records");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       DB::begin();
       $trans = Creditor_Trans::get($type_no, $type);
@@ -496,7 +550,11 @@
       GL_Trans::void_tax_details($type, $type_no);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     */
     static public function copy_from_trans($creditor_trans) {
       $_POST['Comments'] = $creditor_trans->Comments;
       $_POST['tran_date'] = $creditor_trans->tran_date;
@@ -506,7 +564,11 @@
       $_POST['supplier_id'] = $creditor_trans->supplier_id;
       $_POST['ChgTax'] = $creditor_trans->tax_correction;
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     */
     static public function copy_to_trans($creditor_trans) {
       $creditor_trans->Comments = Input::post('Comments');
       $creditor_trans->tran_date = $_POST['tran_date'];
@@ -536,7 +598,11 @@
         }
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     */
     static public function header($creditor_trans) {
 
       // if vars have been lost, recopy
@@ -627,7 +693,11 @@
       end_table();
       end_outer_table(1);
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     */
     static public function totals($creditor_trans) {
       Purch_Invoice::copy_to_trans($creditor_trans);
       $dim = DB_Company::get_pref('use_dimension');

@@ -1,17 +1,24 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
   class GL_Currency {
-
+    /**
+     * @static
+     *
+     * @param $curr_abrev
+     * @param $symbol
+     * @param $currency
+     * @param $country
+     * @param $hundreds_name
+     * @param $auto_update
+     */
     static public function update($curr_abrev, $symbol, $currency, $country,
                                   $hundreds_name, $auto_update) {
       $sql = "UPDATE currencies SET currency=" . DB::escape($currency)
@@ -22,7 +29,16 @@
 
       DB::query($sql, "could not update currency for $curr_abrev");
     }
-
+    /**
+     * @static
+     *
+     * @param $curr_abrev
+     * @param $symbol
+     * @param $currency
+     * @param $country
+     * @param $hundreds_name
+     * @param $auto_update
+     */
     static public function add($curr_abrev, $symbol, $currency, $country,
                                $hundreds_name, $auto_update) {
       $sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
@@ -33,7 +49,11 @@
 
       DB::query($sql, "could not add currency for $curr_abrev");
     }
-
+    /**
+     * @static
+     *
+     * @param $curr_code
+     */
     static public function delete($curr_code) {
       $sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
       DB::query($sql, "could not delete currency	$curr_code");
@@ -41,7 +61,13 @@
       $sql = "DELETE FROM exchange_rates WHERE curr_code='$curr_code'";
       DB::query($sql, "could not delete exchange rates for currency $curr_code");
     }
-
+    /**
+     * @static
+     *
+     * @param $curr_code
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($curr_code) {
       $sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
       $result = DB::query($sql, "could not get currency $curr_code");
@@ -49,7 +75,13 @@
       $row = DB::fetch($result);
       return $row;
     }
-
+    /**
+     * @static
+     *
+     * @param bool $all
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($all = FALSE) {
       $sql = "SELECT * FROM currencies";
       if (!$all) {
@@ -59,6 +91,15 @@
     }
 
     // CURRENCIES
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL, $submit_on_change = FALSE) {
       $sql = "SELECT curr_abrev, currency, inactive FROM currencies";
       // default to the company currency
@@ -66,7 +107,14 @@
         'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => FALSE
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     */
     static public function cells($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -75,7 +123,14 @@
       echo GL_Currency::select($name, $selected_id, $submit_on_change);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     */
     static public function row($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       GL_Currency::cells(NULL, $name, $selected_id, $submit_on_change);

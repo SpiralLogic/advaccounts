@@ -1,13 +1,20 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 4:12 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Creditor extends Contact_Company {
-
+    /**
+     * @static
+     *
+     * @param $terms
+     *
+     * @return array|string
+     */
     static public function search($terms) {
       $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
@@ -106,6 +113,7 @@
     }
     /**
      * @param null $changes
+     * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
       parent::setFromArray($changes);
@@ -117,7 +125,7 @@
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
-
+     * @return void
      */
     protected function _setDefaults() {
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
@@ -160,7 +168,7 @@
       return $this->_status(TRUE, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
-
+     * @return void
      */
     protected function _getContacts() {
       DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=', CT_SUPPLIER);
@@ -174,9 +182,9 @@
       $this->contacts[0] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
     /**
-     * @param bool $id
+     * @param bool|int|null $id
      *
-     * @return array
+     * @return array|bool
      */
     protected function _read($id = FALSE) {
       if (!parent::_read($id)) {
@@ -361,6 +369,7 @@
      * @param bool $submit_on_change
      * @param bool $all
      * @param bool $editkey
+     * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       if ($label != NULL) {
@@ -379,6 +388,7 @@
      * @param bool $submit_on_change
      * @param bool $all
      * @param bool $editkey
+     * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label' name='supp_name'>$label</td><td>";

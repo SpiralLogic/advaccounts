@@ -83,7 +83,9 @@
      * @static
      *
      * @param $paths
-     * @param $classname
+     * @param $required_class
+     *
+     * @internal param $classname
      *
      * @internal param $path
      * @return string
@@ -102,10 +104,12 @@
      * @static
      *
      * @param $filepath
-     * @param $class
+     * @param $required_class
+     *
+     * @throws ADV\Core\Autoload_Exception
+     * @internal param $class
      *
      * @return bool
-     * @throws Autoload_Exception
      */
     static protected function includeFile($filepath, $required_class) {
       if (empty($filepath)) {

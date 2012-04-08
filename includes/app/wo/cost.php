@@ -1,16 +1,20 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO_Cost {
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $qty
+     * @param $date_
+     */
     static public function add_material($stock_id, $qty, $date_) {
       $m_cost = 0;
       $result = WO::get_bom($stock_id);
@@ -36,7 +40,14 @@
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $qty
+     * @param $date_
+     * @param $costs
+     */
     static public function add_overhead($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
@@ -59,7 +70,14 @@
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $qty
+     * @param $date_
+     * @param $costs
+     */
     static public function add_labour($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
@@ -82,7 +100,14 @@
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $qty
+     * @param $date_
+     * @param $costs
+     */
     static public function add_issue($stock_id, $qty, $date_, $costs) {
       if ($qty != 0) {
         $costs /= $qty;
@@ -106,4 +131,4 @@
     }
   }
 
-?>
+

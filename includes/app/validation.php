@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Validation {
 
     const CUSTOMERS = "debtors";
@@ -43,6 +41,17 @@
     const QUICK_ENTRIES = "quick_entries";
     const TAGS = "FROM tags WHERE type=";
     const EMPTY_RESULT = "";
+    /**
+     * @static
+     *
+     * @param        $validate
+     * @param string $msg
+     * @param null   $extra
+     * @param null   $default
+     *
+     * @return int|null
+     * @throws Adv_Exception
+     */
     static public function check($validate, $msg = '', $extra = NULL, $default = NULL) {
       if ($extra === FALSE) {
         return 0;
@@ -77,6 +86,15 @@
     //	Integer input check
     //	Return 1 if number has proper form and is within <min, max> range
     //
+    /**
+     * @static
+     *
+     * @param      $postname
+     * @param null $min
+     * @param null $max
+     *
+     * @return bool|int
+     */
     static public function is_int($postname, $min = NULL, $max = NULL) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
@@ -96,6 +114,16 @@
     //	Return 1 if number has proper form and is within <min, max> range
     //	Empty/not defined fields are defaulted to $dflt value.
     //
+    /**
+     * @static
+     *
+     * @param      $postname
+     * @param null $min
+     * @param null $max
+     * @param int  $default
+     *
+     * @return int
+     */
     static public function is_num($postname, $min = NULL, $max = NULL, $default = 0) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
@@ -114,6 +142,9 @@
      *
      * @param null $postname
      * @param int  $default
+     *
+     * @param null $min
+     * @param null $max
      *
      * @internal param int $dflt
      * @return bool|float|int|mixed|string

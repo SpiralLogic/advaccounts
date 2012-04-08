@@ -173,7 +173,8 @@
      * @static
      *
      * @param $user_id
-     * @param $password
+     *
+     * @internal param $password
      *
      * @return bool|mixed
      */

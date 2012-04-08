@@ -1,23 +1,36 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Tax_Types {
-
+    /**
+     * @static
+     *
+     * @param $name
+     * @param $sales_gl_code
+     * @param $purchasing_gl_code
+     * @param $rate
+     */
     static public function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
       $sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
 		VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
         . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
       DB::query($sql, "could not add tax type");
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     * @param $name
+     * @param $sales_gl_code
+     * @param $purchasing_gl_code
+     * @param $rate
+     */
     static public function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
       $sql = "UPDATE tax_types SET name=" . DB::escape($name) . ",
 		sales_gl_code=" . DB::escape($sales_gl_code) . ",
@@ -26,7 +39,13 @@
 		WHERE id=" . DB::escape($type_id);
       DB::query($sql, "could not update tax type");
     }
-
+    /**
+     * @static
+     *
+     * @param bool $all
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($all = FALSE) {
       $sql = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
@@ -40,12 +59,21 @@
       }
       return DB::query($sql, "could not get all tax types");
     }
-
+    /**
+     * @static
+     * @return null|PDOStatement
+     */
     static public function get_all_simple() {
       $sql = "SELECT * FROM tax_types";
       return DB::query($sql, "could not get all tax types");
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($type_id) {
       $sql = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
@@ -57,14 +85,24 @@
       $result = DB::query($sql, "could not get tax type");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     *
+     * @return mixed
+     */
     static public function get_default_rate($type_id) {
       $sql = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax type rate");
       $row = DB::fetch_row($result);
       return $row[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     */
     static public function delete($type_id) {
       DB::begin();
       $sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
@@ -74,12 +112,16 @@
       DB::query($sql, "could not delete item tax type exemptions");
       DB::commit();
     }
-
     /**
     Check if gl_code is used by more than 2 tax types,
     or check if the two gl codes are not used by any other
     than selected tax type.
     Necessary for pre-2.2 installations.
+     * @param $gl_code
+     * @param $gl_code2
+     * @param $selected_id
+     *
+     * @return bool
      */
     static public function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
       $purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
@@ -94,14 +136,31 @@
       $row = DB::fetch($res);
       return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
     }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
       return select_box($name, $selected_id, $sql, 'id', 'name', array(
         'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => FALSE,
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     */
     static public function cells($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -110,7 +169,15 @@
       echo Tax_Types::select($name, $selected_id, $none_option, $submit_on_change);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     */
     static public function row($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Tax_Types::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
@@ -118,4 +185,4 @@
     }
   }
 
-?>
+

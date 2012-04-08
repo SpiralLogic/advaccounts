@@ -1,13 +1,20 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 22/10/11
-   * Time: 3:45 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class DB_Utils extends DB {
-
+    /**
+     * @static
+     *
+     * @param $connection
+     *
+     * @return int|resource
+     */
     static public function create($connection) {
       $db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
       if (!mysql_select_db($connection["dbname"], $db)) {
@@ -19,7 +26,15 @@
       }
       return $db;
     }
-
+    /**
+     * @static
+     *
+     * @param      $filename
+     * @param null $connection
+     * @param bool $force
+     *
+     * @return bool
+     */
     static public function import($filename, $connection = NULL, $force = TRUE) {
       $allowed_commands = array(
         "create" => 'table_queries',
@@ -193,7 +208,15 @@
         return explode("\n", $file_data);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param        $conn
+     * @param string $ext
+     * @param string $comm
+     *
+     * @return bool|string
+     */
     static public function backup($conn, $ext = 'no', $comm = '') {
       $filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
       return DB_Utils::export($conn, $filename, $ext, $comm);

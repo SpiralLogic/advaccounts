@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 28/03/12
-   * Time: 8:36 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class SelectBox {
 
     protected $where = array(); // additional constraints
@@ -45,7 +46,14 @@
     protected $sql;
     protected $valfield;
     protected $namefield;
-
+    /**
+     * @param       $name
+     * @param null  $selected_id
+     * @param       $sql
+     * @param       $valfield
+     * @param       $namefield
+     * @param array $options
+     */
     function __construct($name, $selected_id = NULL, $sql, $valfield, $namefield, $options = array()) {
       $this->name = $name;
       $this->order = $namefield;
@@ -65,6 +73,9 @@
         $this->where = array($this->where);
       }
     }
+    /**
+     * @return string
+     */
     function create() {
 
       // ------ merge options with defaults ----------
@@ -233,6 +244,11 @@
       }
       return $str;
     }
+    /**
+     * @param $search_box
+     * @param $search_button
+     * @param $txt
+     */
     function generateSQL($search_box, $search_button, $txt) {
       $limit = '';
       if ($search_box) {
@@ -294,10 +310,18 @@
       }
       $this->sql .= $limit;
     }
+    /**
+     * @return null|PDOStatement
+     */
     private function executeSQL() {
 
       return DB::query($this->sql);
     }
+    /**
+     * @param $result
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     private function getNext($result) {
         return DB::fetch($result);
     }

@@ -8,6 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+  /**
+   *
+   */
   class MenuUI extends Menu {
 
     /**
@@ -97,7 +100,7 @@
       return $this;
     }
     /**
-
+     * @return void
      */
     public function render() {
       $menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
@@ -138,6 +141,8 @@
      * @param        $label
      * @param string $tooltip
      * @param string $link
+     * @param null   $param_element
+     * @param null   $target
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = NULL, $target = NULL) {
       $this->label = $label;
