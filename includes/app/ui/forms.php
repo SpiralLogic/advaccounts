@@ -1,14 +1,15 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /**
-   * @param bool $multi
+   * @param bool   $multi
    * @param string $action
    * @param string $name
    */
@@ -195,14 +196,17 @@
       $selected_id = array($first_id);
     }
     $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-    $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ?
+    $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' :
+      '') . "$disabled id='$name' name='$name" . ($multi ?
       '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
     Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
     $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
     if ($select_submit != FALSE) { // if submit on change is used - add select button
-      $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
+      $_select_button
+        = "<input %s type='submit' class='combo_select' style='border:0;background:url
 			(/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
-      $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
+      $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
+        'display:none;'), '_' . $name . '_update') . "\n";
     }
     JS::default_focus($name);
     return $selector;
@@ -455,7 +459,8 @@
    * @return string
    */
   function set_icon($icon, $title = FALSE) {
-    return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" : "") . " />\n";
+    return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" :
+      "") . " />\n";
   }
 
   /**
@@ -481,12 +486,13 @@
       {
         $icon = ICON_DELETE;
       }
-
-      return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" :
+      return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ?
+        " title='$title'" :
         " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
     }
     else {
-      return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
+      return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
+        " title='$title'" : '') . ($aspect ?
         " data-aspect='$aspect'" : '') . $rel . " />\n";
     }
   }
@@ -565,7 +571,8 @@
     if ($value === NULL) {
       $value = get_post($name, 0);
     }
-    $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
+    $str .= "<input" . ($value == 1 ? ' checked' :
+      '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
       '') . ($title ? " title='$title'" : '') . " >\n";
     Ajax::i()->addUpdate($name, $name, $value);
     return $str;
@@ -661,16 +668,18 @@
         $_POST[$name] = "";
       }
     }
-    echo "<td class='label'>";
-
     if ($label != NULL) {
-      echo "<label for=\"$name\"> $label</label>";
+      echo "<td class='label'><label for=\"$name\"> $label</label>";
+    }
+    else {
+      echo "<td >";
     }
     if (!isset($max)) {
       $max = $size;
     }
     $class = $submit_on_change ? 'class="searchbox"' : '';
-    echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
+    echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ?
+      " title='$title'" : '') . " >";
     if ($post_label) {
       echo " " . $post_label;
     }
@@ -824,9 +833,11 @@
       }
     }
     $post_label = "";
-    echo "<td class='label'>";
     if ($label != NULL) {
-      echo "<label for=\"$name\"> $label</label>";
+      echo "<td class='label'><label for=\"$name\"> $label</label>";
+    }
+    else {
+      echo "<td >";
     }
     $class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
     $aspect = $check ? ' data-aspect="cdate"' : '';
@@ -852,7 +863,7 @@
    * @param bool $submit_on_change
    */
   function date_row($label, $name, $title = NULL, $check = NULL, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = NULL, $submit_on_change = FALSE) {
-    echo "<tr><td class='label'>$label</td>";
+    echo "<tr><td class='label'><label for='$name'> $label</label></td>";
     date_cells(NULL, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
     echo "</tr>\n";
   }
@@ -911,7 +922,7 @@
    * @param bool $submit_on_change
    */
   function ref_row($label, $name, $title = NULL, $init = NULL, $submit_on_change = FALSE) {
-    echo "<tr><td class='label'>$label</td>";
+    echo "<tr><td class='label'><label for='$name'> $label</label></td>";
     ref_cells(NULL, $name, $title, $init, NULL, $submit_on_change);
     echo "</tr>\n";
   }
@@ -1169,7 +1180,8 @@
     if ($value === NULL) {
       $value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
     }
-    echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
+    echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" :
+      '') . ">$value</textarea></td>\n";
     Ajax::i()->addUpdate($name, $name, $value);
   }
 
@@ -1248,8 +1260,8 @@
     $items['0'] = strlen($name_no) ? $name_no : _("No");
     $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
     return array_selector($name, $selected_id, $items, array(
-      'select_submit' => $submit_on_change, 'async' => FALSE
-    )); // FIX?
+                                                            'select_submit' => $submit_on_change, 'async' => FALSE
+                                                       )); // FIX?
   }
 
   /**
@@ -1306,8 +1318,8 @@
       $items[$i] = "$i";
     }
     return array_selector($name, $selected, $items, array(
-      'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-    ));
+                                                         'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                    ));
   }
 
   /**
@@ -1431,7 +1443,8 @@
    * @return string
    */
   function _format_fiscalyears($row) {
-    return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+    return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
+      _('Active')) . "</option>\n";
   }
 
   /**

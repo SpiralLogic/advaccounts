@@ -13,7 +13,7 @@
   if (isset($_GET['order_number'])) {
     $order_number = $_GET['order_number'];
   }
-  $_POST['supplier_id'] = Input::post_get('supplier_id', Input::NUMERIC, -1);
+  $supplier_id= Input::post_get('supplier_id', Input::NUMERIC, -1);
   if (get_post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
@@ -97,8 +97,8 @@
   }
   else {
 
-    if (Input::post('supplier_id')>-1) {
-      $sql .= " AND porder.supplier_id = " . DB::quote(Input::post('supplier_id'));
+    if ($supplier_id>-1) {
+      $sql .= " AND porder.supplier_id = " . DB::quote($supplier_id);
     }
     if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
       $sql .= " AND porder.into_stock_location = ";
@@ -181,7 +181,6 @@
    * @return ADV\Core\HTML|string
    */
   function email_link($row) {
-
    return Reporting::emailDialogue($row['id'],ST_PURCHORDER,$row['order_no']);
   }
 

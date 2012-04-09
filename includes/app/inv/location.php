@@ -184,7 +184,7 @@
      * @param bool $submit_on_change
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
-      echo "<td class='label'>";
+      echo "<td >";
       if ($label != NULL) {
            echo "<label for=\"$name\"> $label</label>";
       }

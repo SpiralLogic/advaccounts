@@ -374,8 +374,9 @@
      * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
+      echo "<td class='label'>";
       if ($label != NULL) {
-        echo "<td class='label'>$label</td><td>\n";
+        echo "<label for='$name'>$label</label>";
       }
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td>\n";
@@ -393,7 +394,7 @@
      * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
-      echo "<tr><td class='label' name='supp_name'>$label</td><td>";
+      echo "<tr><td class='label' name='supp_name'><label for='$name'>$label</label></td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";
     }

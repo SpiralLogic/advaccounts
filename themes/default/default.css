@@ -902,10 +902,10 @@ button img {
 	filter:             progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ededed', endColorstr = '#c4c4c4', GradientType = 0);
 	border:             1px solid #999;
 	color:              #333;
-	line-height:        1.4;
 	cursor:             pointer;
 	white-space:        nowrap;
 	margin:             1px;
+	height:             auto;
 	-webkit-transition: -webkit-box-shadow 0.25s ease-in-out;
 	-moz-transition:    -moz-box-shadow 0.25s ease-in-out;
 	-o-transition:      -o-box-shadow 0.25s ease-in-out;
@@ -952,7 +952,7 @@ button img {
 	box-shadow:         none;
 }
 
-.printlink, .button-large {
+.button-large {
 	padding: .4em 1em;
 }
 

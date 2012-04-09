@@ -45,6 +45,7 @@
         $pager->sort_table($sort);
         $_SESSION['pager'][$name] = $pager;
       }
+      var_dump($_SESSION['pager'][$name]);
       return $_SESSION['pager'][$name];
     }
     /**
