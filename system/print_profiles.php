@@ -142,12 +142,20 @@
     return $_SESSION['reports'];
   }
 
+  /**
+   * @param $selected_id
+   */
   function clear_form(&$selected_id) {
     $selected_id = '';
     $_POST['name'] = '';
     Ajax::i()->activate('_page_body');
   }
 
+  /**
+   * @param $name
+   *
+   * @return int
+   */
   function check_delete($name) {
     // check if selected profile is used by any user
     if ($name == '') {

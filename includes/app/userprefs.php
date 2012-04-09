@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -139,6 +139,9 @@
       $tho_seps = Config::get('separators_thousands');
       return $tho_seps [$this->tho_sep];
     }
+    /**
+     * @return mixed
+     */
     function dec_sep() {
       $dec_seps = Config::get('separators_decimal');
       return $dec_seps [$this->dec_sep];

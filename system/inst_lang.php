@@ -34,6 +34,9 @@
   Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
   display_language_edit($selected_id);
   Page::end();
+  /**
+   * @return bool
+   */
   function check_data() {
     if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
       Event::error(_("Language name, code nor encoding cannot be empty"));
@@ -42,6 +45,9 @@
     return TRUE;
   }
 
+  /**
+   * @return bool
+   */
   function handle_submit() {
     $installed_languages = Config::get('languages.installed');
     if (!check_data()) {
@@ -153,6 +159,9 @@
     Event::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $selected_id
+   */
   function display_language_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;

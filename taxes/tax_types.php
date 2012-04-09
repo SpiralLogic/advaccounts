@@ -76,6 +76,11 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     $sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query tax groups");
@@ -87,6 +92,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_process($selected_id) {
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The tax type name cannot be empty."));

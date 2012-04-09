@@ -146,48 +146,97 @@
   Creditor::addInfoDialog('.pagerclick');
   end_form();
   Page::end();
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function due_date($row) {
     return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function gl_view($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function credit_link($row) {
     return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
       DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_debit($row) {
     $value = $row["TotalAmount"];
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_credit($row) {
     $value = -$row["TotalAmount"];
     return $value > 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
       return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), TRUE, ST_SUPPAYMENT, ICON_PRINT);
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
   }
 
+  /**
+   * @param $supplier_record
+   */
   function display_supplier_summary($supplier_record) {
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;

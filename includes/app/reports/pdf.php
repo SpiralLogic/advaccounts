@@ -3,7 +3,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -215,6 +215,7 @@
     /**
      * @param string $style
      * @param string $fontname
+     * @return void
      */
     public function Font($style = '', $fontname = '') {
       $this->selectFont($fontname, $style);
@@ -243,6 +244,7 @@
      * @param bool   $companylogoenable
      * @param bool   $footerenable
      * @param string $footertext
+     * @return void
      */
     public function Info($params, $cols, $headers, $aligns, $cols2 = NULL, $headers2 = NULL, $aligns2 = NULL, $companylogoenable = FALSE, $footerenable = FALSE, $footertext = '') {
       $this->addinfo('Title', $this->title);
@@ -359,6 +361,7 @@
      * @param null $sales_order
      * @param null $bankaccount
      * @param null $doctype
+     * @return void
      */
     public function Header2($myrow, $branch = NULL, $sales_order = NULL, $bankaccount = NULL, $doctype = NULL) {
       global $print_as_quote, $packing_slip;
@@ -616,6 +619,7 @@
      * @param $y
      * @param $w
      * @param $h
+     * @return void
      */
     public function AddImage($logo, $x, $y, $w, $h) {
       if (strpos($logo, ".png") || strpos($logo, ".PNG")) {
@@ -647,6 +651,7 @@
      * @param int $r
      * @param int $g
      * @param int $b
+     * @return void
      */
     public function SetDrawColor($r, $g, $b) {
       parent::SetDrawColor($r, $g, $b);
@@ -655,6 +660,7 @@
      * @param int $r
      * @param int $g
      * @param int $b
+     * @return void
      */
     public function SetTextColor($r, $g, $b) {
       parent::SetTextColor($r, $g, $b);
@@ -684,6 +690,7 @@
     // Seems to be just left and right margins...
     /**
      * @param float $pad
+     * @return void
      */
     public function SetCellPadding($pad) {
       parent::SetCellPadding($pad);
@@ -844,6 +851,7 @@
      * @param int  $fill
      * @param null $link
      * @param int  $stretch
+     * @return void
      */
     public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       $this->row -= $r;
@@ -859,6 +867,7 @@
      * @param null   $link
      * @param int    $stretch
      * @param bool   $spacebreak
+     * @return void
      */
     public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0, $spacebreak = TRUE) {
       $str = Explode("\n", $txt);
@@ -919,6 +928,7 @@
      * @param $row
      * @param $to
      * @param $row2
+     * @return void
      */
     public function LineTo($from, $row, $to, $row2) {
       parent::line($from, $row, $to, $row2);
@@ -926,6 +936,7 @@
     /**
      * @param float     $row
      * @param float|int $height
+     * @return void
      */
     public function Line($row, $height = 0) {
       $oldLineWidth = $this->GetLineWidth();
@@ -978,6 +989,7 @@
      * @param int  $l
      * @param int  $np
      * @param null $h
+     * @return void
      */
     public function NewLine($l = 1, $np = 0, $h = NULL) {
       // If the line height wasn't specified, use the current setting
@@ -998,6 +1010,7 @@
      * @param null $subject
      * @param null $myrow
      * @param int  $doctype
+     * @return void
      */
     public function End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
       if (Config::get('debug.pdf') == 1) {

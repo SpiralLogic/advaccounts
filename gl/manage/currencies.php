@@ -27,6 +27,9 @@
   display_currency_edit($Mode, $selected_id);
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_data() {
     if (strlen($_POST['Abbreviation']) == 0) {
       Event::error(_("The currency abbreviation must be entered."));
@@ -51,6 +54,12 @@
     return TRUE;
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$Mode, $selected_id) {
     if (!check_data()) {
       return FALSE;
@@ -66,6 +75,11 @@
     $Mode = MODE_RESET;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function check_can_delete($selected_id) {
     if ($selected_id == "") {
       return FALSE;
@@ -104,6 +118,10 @@
     return TRUE;
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function handle_delete(&$Mode, $selected_id) {
     if (check_can_delete($selected_id)) {
       //only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -151,6 +169,10 @@
     Event::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function display_currency_edit($Mode, $selected_id) {
     start_table('tablestyle2');
     if ($selected_id != '') {

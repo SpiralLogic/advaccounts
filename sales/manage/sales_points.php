@@ -10,26 +10,14 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "POS settings"), SA_POSSETUP);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
-  function can_process() {
-    if (strlen($_POST['name']) == 0) {
-      Event::error(_("The POS name cannot be empty."));
-      JS::set_focus('pos_name');
-      return FALSE;
-    }
-    if (!check_value('cash') && !check_value('credit')) {
-      Event::error(_("You must allow cash or credit sale."));
-      JS::set_focus('credit');
-      return FALSE;
-    }
-    return TRUE;
-  }
 
-  if ($Mode == ADD_ITEM && can_process()) {
+
+  if ($Mode == ADD_ITEM && Sales_Point::can_process()) {
     Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
     Event::success(_('New point of sale has been added'));
     $Mode = MODE_RESET;
   }
-  if ($Mode == UPDATE_ITEM && can_process()) {
+  if ($Mode == UPDATE_ITEM && Sales_Point::can_process()) {
     Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
     Event::success(_('Selected point of sale has been updated'));
     $Mode = MODE_RESET;

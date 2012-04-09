@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -21,6 +21,7 @@
     }
     /**
      * @param $class_name
+     * @return void
      */
     public function addReportClass($class_name) {
       $this->ar_classes[$class_name] = array();
@@ -30,6 +31,7 @@
      * @param      $id
      * @param      $rep_name
      * @param null $params
+     * @return void
      */
     public function addReport($class_name, $id, $rep_name, $params = NULL) {
       unset($this->ar_classes[$class_name][$id]); // unset std report if any
@@ -141,6 +143,7 @@
     // $handle - name of global function f($name, $type) returning html code for control
     /**
      * @param $handler
+     * @return void
      */
     public function register_controls($handler) {
       $this->ctrl_handlers[] = $handler;

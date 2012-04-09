@@ -14,7 +14,13 @@
 Page::set_security(SA_SUPPLIERANALYTIC);
 
 	print_supplier_balances();
-	function get_open_balance($supplier_id, $to, $convert)
+  /**
+   * @param $supplier_id
+   * @param $to
+   * @param $convert
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */function get_open_balance($supplier_id, $to, $convert)
 		{
 			$to = Dates::date2sql($to);
 			$sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
@@ -51,7 +57,13 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			return DB::fetch($result);
 		}
 
-	function get_transactions($supplier_id, $from, $to)
+  /**
+   * @param $supplier_id
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($supplier_id, $from, $to)
 		{
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
@@ -96,12 +108,12 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			}
 			$dec = User::price_dec();
 			if ($currency == ALL_TEXT) {
-				$convert = true;
+				$convert = TRUE;
 				$currency = _('Balances in Home currency');
 			}
 			else
 			{
-				$convert = false;
+				$convert = FALSE;
 			}
 			if ($no_zeros) {
 				$nozeros = _('Yes');
@@ -181,9 +193,9 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 					$rep->TextCol(1, 2, $trans['reference']);
 					$rep->TextCol(2, 3, $trans['supp_reference']);
-					$rep->DateCol(3, 4, $trans['tran_date'], true);
+					$rep->DateCol(3, 4, $trans['tran_date'], TRUE);
 					if ($trans['type'] == ST_SUPPINVOICE) {
-						$rep->DateCol(4, 5, $trans['due_date'], true);
+						$rep->DateCol(4, 5, $trans['due_date'], TRUE);
 					}
 					$item[0] = $item[1] = 0.0;
 					if ($convert) {

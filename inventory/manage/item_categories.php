@@ -33,10 +33,20 @@
       $Mode = MODE_RESET;
     }
   }
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return button("Edit" . $row["category_id"], _("Edit"));
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function delete_link($row) {
     return button("Delete" . $row["category_id"], _("Delete"));
   }

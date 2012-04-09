@@ -12,7 +12,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_SUPPLIERANALYTIC);
 	print_aged_supplier_analysis();
-	function get_invoices($supplier_id, $to) {
+  /**
+   * @param $supplier_id
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_invoices($supplier_id, $to) {
 		$todate = Dates::date2sql($to);
 		$past_due1 = DB_Company::get_pref('past_due_days');
 		$past_due2 = 2 * $past_due1;
@@ -74,11 +79,11 @@
 			$summary = _('Detailed Report');
 		}
 		if ($currency == ALL_TEXT) {
-			$convert = true;
+			$convert = TRUE;
 			$currency = _('Balances in Home Currency');
 		}
 		else {
-			$convert = false;
+			$convert = FALSE;
 		}
 		if ($no_zeros) {
 			$nozeros = _('Yes');
@@ -246,11 +251,11 @@
 			$pg->graphic_1 = $to;
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
-			$pg->built_in = false;
+			$pg->built_in = FALSE;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "pdf_files/test.png";
-			$pg->display($filename, true);
+			$pg->display($filename, TRUE);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;
 			$x = ($rep->pageWidth - $w) / 2;

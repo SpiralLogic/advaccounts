@@ -145,30 +145,51 @@
   $table->width = (Input::request('frame')) ? '100' : "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  UI::emailDialogue('s');
+  UI::emailDialogue(CT_SUPPLIER);
   end_form();
   Page::end();
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink');
   }
 
+  /**
+   * @param $row
+   *
+   * @return ADV\Core\HTML|string
+   */
   function email_link($row) {
-    HTML::setReturn(TRUE);
-    UI::button(FALSE, 'Email', array(
-      'class' => 'button email-button',
-      'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
-    ));
-    return HTML::setReturn(FALSE);
+
+   return Reporting::emailDialogue($row['id'],ST_PURCHORDER,$row['order_no']);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function receive_link($row) {
     if ($row['Received'] > 0) {
       return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);

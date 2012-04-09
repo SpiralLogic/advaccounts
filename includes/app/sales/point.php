@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -110,4 +110,22 @@
       ));
       echo "</td></tr>\n";
     }
+    /**
+     * @static
+     * @return bool
+     */
+    static public function can_process() {
+      if (strlen($_POST['name']) == 0) {
+        Event::error(_("The POS name cannot be empty."));
+        JS::set_focus('pos_name');
+        return FALSE;
+      }
+      if (!check_value('cash') && !check_value('credit')) {
+        Event::error(_("You must allow cash or credit sale."));
+        JS::set_focus('credit');
+        return FALSE;
+      }
+      return TRUE;
+    }
   }
+

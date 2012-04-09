@@ -140,6 +140,9 @@
   submit_center('Deposit', _("Deposit"), TRUE, '', FALSE);
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_date() {
     if (!Dates::is_date(get_post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
@@ -154,6 +157,11 @@
   //	if we would like to change page layout.
   //	if we would like to change page layout.
   //
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function dep_checkbox($row) {
     $name = "dep_" . $row['id'];
     $hidden = 'amount_' . $row['id'];
@@ -163,29 +171,60 @@
     return checkbox(NULL, $name, $chk_value, TRUE, _('Deposit this transaction')) . hidden($hidden, $value, FALSE);
   }
 
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function gl_view($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_debit($row) {
     $value = $row["amount"];
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_credit($row) {
     $value = -$row["amount"];
     return $value > 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function fmt_person($row) {
     return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
   }
@@ -198,6 +237,11 @@
 
   // Update db record if respective checkbox value has changed.
   //
+  /**
+   * @param $deposit_id
+   *
+   * @return bool
+   */
   function change_tpl_flag($deposit_id) {
     if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
     {

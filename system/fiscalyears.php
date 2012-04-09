@@ -23,6 +23,11 @@
   echo '<br>';
   display_fiscalyear_edit($Mode, $selected_id);
   Page::end();
+  /**
+   * @param $date
+   *
+   * @return bool
+   */
   function is_date_in_fiscalyears($date) {
     $date = Dates::date2sql($date);
     $sql = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
@@ -30,6 +35,11 @@
     return DB::fetch($result) !== FALSE;
   }
 
+  /**
+   * @param $date
+   *
+   * @return bool
+   */
   function is_bad_begin_date($date) {
     $bdate = Dates::date2sql($date);
     $sql = "SELECT MAX(end) FROM fiscal_year WHERE begin < '$bdate'";
@@ -42,6 +52,12 @@
     return ($max !== $date);
   }
 
+  /**
+   * @param      $date
+   * @param bool $closed
+   *
+   * @return bool
+   */
   function check_years_before($date, $closed = FALSE) {
     $date = Dates::date2sql($date);
     $sql = "SELECT COUNT(*) FROM fiscal_year WHERE begin < '$date'";
@@ -53,6 +69,9 @@
     return ($row[0] > 0);
   }
 
+  /**
+   * @return bool
+   */
   function check_data() {
     if (!Dates::is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']) || is_bad_begin_date($_POST['from_date'])
     ) {
@@ -73,6 +92,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $year
+   *
+   * @return bool
+   */
   function close_year($year) {
     $co = DB_Company::get_prefs();
     if (GL_Account::get($co['retained_earnings_act']) == FALSE || GL_Account::get($co['profit_loss_year_act']) == FALSE) {
@@ -101,6 +125,9 @@
     return TRUE;
   }
 
+  /**
+   * @param $year
+   */
   function open_year($year) {
     $myrow = DB_Company::get_fiscalyear($year);
     $from = Dates::sql2date($myrow['begin']);
@@ -109,6 +136,12 @@
     DB::commit();
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$Mode, $selected_id) {
     $ok = TRUE;
     if ($selected_id != -1) {
@@ -138,6 +171,11 @@
     $Mode = MODE_RESET;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function check_can_delete($selected_id) {
     $myrow = DB_Company::get_fiscalyear($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
@@ -152,6 +190,10 @@
     return TRUE;
   }
 
+  /**
+   * @param $type_no
+   * @param $trans_no
+   */
   function delete_attachments_and_comments($type_no, $trans_no) {
     $sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
     $result = DB::query($sql, "Could not retrieve attachments");
@@ -169,6 +211,9 @@
     DB::query($sql, "Could not delete refs");
   }
 
+  /**
+   * @param $selected_id
+   */
   function delete_this_fiscalyear($selected_id) {
     DB_Utils::backup(Config::get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
     DB::begin();
@@ -337,6 +382,10 @@
     DB::commit();
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function handle_delete(&$Mode, $selected_id) {
     if (check_can_delete($selected_id)) {
       //only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -389,6 +438,10 @@
     Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function display_fiscalyear_edit($Mode, $selected_id) {
     start_form();
     start_table('tablestyle2');

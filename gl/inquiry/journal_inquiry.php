@@ -31,27 +31,7 @@
 
   end_row();
   end_table();
-  $editors = array(
-    0 => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d", //	1=> Bank Payment,
-    //	2=> Bank Deposit,
-    //	4=> Funds Transfer,
-    ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d", // 11=>
-    // free hand (debtors_trans.order_==0)
-    //	"/sales/credit_note_entry.php?ModifyCredit=%d"
-    // credit invoice
-    //	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
-    //	 12=> Customer Payment,
-    ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
-    // 16=> Location Transfer,
-    // 17=> Inventory Adjustment,
-    // 20=> Supplier Invoice,
-    // 21=> Supplier Credit Note,
-    // 22=> Supplier Payment,
-    // 25=> Purchase Order Delivery,
-    // 28=> Work Order Issue,
-    // 29=> Work Order Production",
-    // 35=> Cost Update,
-  );
+
   /*
        // Tom Hallman 11 Nov 2009
        // IF(gl.type = 1... statement is for deposits/payments that may not actually result

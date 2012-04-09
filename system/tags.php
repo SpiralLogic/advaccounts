@@ -108,6 +108,9 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function can_process() {
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The tag name cannot be empty."));
@@ -117,6 +120,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     if ($selected_id == -1) {
       return FALSE;

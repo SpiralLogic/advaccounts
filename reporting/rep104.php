@@ -14,7 +14,11 @@
 	Page::set_security(SA_PRICEREP);
 
 	print_price_listing();
-	function fetch_items($category = 0)
+  /**
+   * @param int $category
+   *
+   * @return null|PDOStatement
+   */function fetch_items($category = 0)
 	{
 		$sql
 		 = "SELECT stock_master.stock_id, stock_master.description AS name,
@@ -33,7 +37,11 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function get_kits($category = 0)
+  /**
+   * @param int $category
+   *
+   * @return null|PDOStatement
+   */function get_kits($category = 0)
 	{
 		$sql
 		 = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit

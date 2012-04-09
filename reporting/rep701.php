@@ -11,10 +11,17 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLREP);
-	function display_type($type, $typename, &$dec, &$rep, $showbalance) {
+  /**
+   * @param $type
+   * @param $typename
+   * @param $dec
+   * @param $rep
+   * @param $showbalance
+   */
+  function display_type($type, $typename, &$dec, &$rep, $showbalance) {
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = GL_Account::get_all(null, null, $type);
+		$result = GL_Account::get_all(NULL, NULL, $type);
 		while ($account = DB::fetch($result))
 		{
 			//Print Type Title if it has atleast one non-zero account
@@ -43,7 +50,7 @@
 			$rep->NewLine();
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_Type::get_all(false, false, $type);
+		$result = GL_Type::get_all(FALSE, FALSE, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
@@ -81,7 +88,7 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$classresult = GL_Class::get_all(false);
+		$classresult = GL_Class::get_all(FALSE);
 		while ($class = DB::fetch($classresult))
 		{
 			$rep->Font('bold');
@@ -90,7 +97,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult))
 			{
 				display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);

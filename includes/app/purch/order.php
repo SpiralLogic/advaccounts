@@ -1,19 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /* Definition of the purch_order class to hold all the information for a purchase order and delivery
      */
   /**
 
    */
   class Purch_Order {
-
     /**
      * @var
      */
@@ -100,16 +100,15 @@
       $this->order_no = $order_no;
       $this->orig_order_date = Dates::new_doc_date();
       if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-        $this->orig_order_date =  Dates::end_fiscalyear();
-      }      $this->read($order_no, $view);
-
+        $this->orig_order_date = Dates::end_fiscalyear();
+      }
+      $this->read($order_no, $view);
       $this->generateID();
     }
     protected function generateID() {
       $this->uniqueid = uniqid();
       $this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->order_no));
     }
-
     /**
      * @param $line_no
      * @param $stock_id
@@ -235,10 +234,88 @@
       Orders::session_delete($this->order_id);
     }
     /**
+     * @return bool
+     */
+    public function can_receive() {
+      if (count($this->line_items) <= 0) {
+        Event::error(_("You are not currenty receiving an order."));
+        Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a purchase order to receive goods."));
+        Page::footer_exit();
+      }
+      if (!Dates::is_date($_POST['DefaultReceivedDate'])) {
+        Event::error(_("The entered date is invalid."));
+        JS::set_focus('DefaultReceivedDate');
+        return FALSE;
+      }
+      if (!Validation::is_num('freight', 0)) {
+        Event::error(_("The freight entered must be numeric and not less than zero."));
+        JS::set_focus('freight');
+        return FALSE;
+      }
+      if (!Ref::is_valid($_POST['ref'])) {
+        Event::error(_("You must enter a reference."));
+        JS::set_focus('ref');
+        return FALSE;
+      }
+      if (!Ref::is_new($_POST['ref'], ST_SUPPRECEIVE)) {
+        $_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
+      }
+      $something_received = 0;
+      foreach ($this->line_items as $order_line) {
+        if ($order_line->receive_qty > 0) {
+          $something_received = 1;
+          break;
+        }
+      }
+      // Check whether trying to deliver more items than are recorded on the actual purchase order (+ overreceive allowance)
+      $delivery_qty_too_large = 0;
+      foreach ($this->line_items as $order_line) {
+        if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + (DB_Company::get_pref('po_over_receive') / 100))) {
+          $delivery_qty_too_large = 1;
+          break;
+        }
+      }
+      if ($something_received == 0) { /*Then dont bother proceeding cos nothing to do ! */
+        Event::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+        return FALSE;
+      }
+      elseif ($delivery_qty_too_large == 1) {
+        Event::error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . DB_Company::get_pref('po_over_receive') . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
+        return FALSE;
+      }
+      return TRUE;
+    }
+    /**
+     * @return bool
+     */
+    public function has_changed() {
+      /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
+      // Sherifoz 22.06.03 Compare against COMPLETED items only !!
+      // Otherwise if you try to fullfill item quantities separately will give error.
+      $sql
+        = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+  			FROM purch_order_details
+  			WHERE order_no=" . DB::escape($this->order_no) . " ORDER BY po_detail_item";
+      $result = DB::query($sql, "could not query purch order details");
+      $line_no = 1;
+      while ($myrow = DB::fetch($result)) {
+        $ln_item = $this->line_items[$line_no];
+        // only compare against items that are outstanding
+        $qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
+        if ($qty_outstanding > 0) {
+          if ($ln_item->qty_inv != $myrow["qty_invoiced"] || $ln_item->stock_id != $myrow["item_code"] || $ln_item->quantity != $myrow["quantity_ordered"] || $ln_item->qty_received != $myrow["quantity_received"]
+          ) {
+            return TRUE;
+          }
+        }
+        $line_no++;
+      } /*loop through all line items of the order to ensure none have been invoiced */
+      return FALSE;
+    }
+    /**
      * @return int
      */
     public function add() {
-
       DB::begin();
       /*Insert to purchase order header record */
       if (!$this->order_no) {
@@ -288,7 +365,6 @@
       $sql .= " WHERE order_no = " . $this->order_no;
       DB::query($sql, "The purchase order could not be updated");
       /*Now Update the purchase order detail records */
-
       foreach ($this->line_items as $po_line) {
         if ($po_line->Deleted == TRUE) {
           // Sherifoz 21.06.03 Handle deleting existing lines

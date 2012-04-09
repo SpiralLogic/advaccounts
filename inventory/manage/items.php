@@ -140,6 +140,12 @@
     JS::set_focus('NewStockID');
     Ajax::i()->activate('_page_body');
   }
+  /**
+   * @param      $stock_id
+   * @param bool $dispmsg
+   *
+   * @return bool
+   */
   function check_usage($stock_id, $dispmsg = TRUE) {
     $sqls = array(
       "SELECT COUNT(*) FROM stock_moves WHERE stock_id=" => _('Cannot delete this item because there are stock movements that refer to this item.'),

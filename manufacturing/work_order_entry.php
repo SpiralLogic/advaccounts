@@ -66,6 +66,11 @@
       $_POST['date_'] = Dates::end_fiscalyear();
     }
   }
+  /**
+   * @param null $selected_id
+   *
+   * @return bool
+   */
   function can_process(&$selected_id = NULL) {
     if (!is_null($selected_id)) {
       if (!Ref::is_valid($_POST['wo_ref'])) {

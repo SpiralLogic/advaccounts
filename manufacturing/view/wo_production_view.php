@@ -14,6 +14,9 @@
   if ($_GET['trans_no'] != "") {
     $wo_production = $_GET['trans_no'];
   }
+  /**
+   * @param $prod_id
+   */
   function display_wo_production($prod_id) {
     $myrow = WO_Produce::get($prod_id);
     Display::br(1);

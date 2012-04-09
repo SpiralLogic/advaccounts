@@ -16,7 +16,11 @@
 	use \Reports\Report as Report;
 
 	print_po();
-	function get_po($order_no) {
+  /**
+   * @param $order_no
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */function get_po($order_no) {
 		# __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
 		$sql
 		 = "SELECT purch_orders.*, suppliers.supp_name, suppliers.supp_account_no,
@@ -30,7 +34,11 @@
 		return DB::fetch($result);
 	}
 
-	function get_po_details($order_no) {
+  /**
+   * @param $order_no
+   *
+   * @return null|PDOStatement
+   */function get_po_details($order_no) {
 		$sql
 		 = "SELECT purch_order_details.*, units
 		FROM purch_order_details
@@ -48,10 +56,10 @@
 		$currency = $_POST['PARAM_2'];
 		$email = $_POST['PARAM_3'];
 		$comments = $_POST['PARAM_4'];
-		if ($from == null) {
+		if ($from == NULL) {
 			$from = 0;
 		}
-		if ($to == null) {
+		if ($to == NULL) {
 			$to = 0;
 		}
 		$dec = User::price_dec();
@@ -64,7 +72,7 @@
 			$rep = new ADVReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->Info($params, $cols, null, $aligns);
+			$rep->Info($params, $cols, NULL, $aligns);
 		}
 		for ($i = $from; $i <= $to; $i++)
 		{
@@ -77,20 +85,20 @@
 				$rep->Font();
 				$rep->title = _('PURCHASE ORDER');
 				$rep->filename = "PurchaseOrder" . $i . ".pdf";
-				$rep->Info($params, $cols, null, $aligns);
+				$rep->Info($params, $cols, NULL, $aligns);
 			}
 			else
 			{
 				$rep->title = _('PURCHASE ORDER');
 			}
-			$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
+			$rep->Header2($myrow, NULL, $myrow, $baccount, ST_PURCHORDER);
 			$result = get_po_details($i);
 			$SubTotal = 0;
 			while ($myrow2 = DB::fetch($result))
 			{
 				if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
 					$data = Purch_Order::get_data($myrow['supplier_id'], $myrow2['item_code']);
-					if ($data !== false) {
+					if ($data !== FALSE) {
 						if ($data['supplier_description'] != "") {
 							$myrow2['item_code'] = $data['supplier_description'];
 						}
@@ -122,7 +130,7 @@
 					$rep->TextCol(6, 7, $DisplayNet, -2);
 					$rep->row = $newrow;
 					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-						$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
+						$rep->Header2($myrow, NULL, $myrow, $baccount, ST_PURCHORDER);
 					}
 				}
 			}
@@ -132,7 +140,7 @@
 			}
 			$DisplaySubTot = Num::format($SubTotal, $dec);
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-			$linetype = true;
+			$linetype = TRUE;
 			$doctype = ST_PURCHORDER;
 			if ($rep->currency != $myrow['curr_code']) {
 				include(DOCROOT . "reporting/includes/doctext2.php");

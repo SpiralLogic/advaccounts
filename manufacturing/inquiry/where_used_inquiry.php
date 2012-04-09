@@ -19,6 +19,11 @@
   echo Item::select('stock_id', $_POST['stock_id'], FALSE, TRUE);
   echo "<hr></div>";
   Session::i()->global_stock_id = $_POST['stock_id'];
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function select_link($row) {
     return DB_Pager::link($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
   }

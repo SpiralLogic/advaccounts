@@ -212,6 +212,11 @@
     end_form();
   }
   Page::end();
+  /**
+   * @param bool $numeric_id
+   *
+   * @return array
+   */
   function simple_page_mode2($numeric_id = TRUE) {
     $default = $numeric_id ? -1 : '';
     $selected_id2 = get_post('selected_id2', $default);
@@ -238,6 +243,11 @@
     return array('', $selected_id2);
   }
 
+  /**
+   * @param bool $add
+   * @param bool $title
+   * @param bool $async
+   */
   function submit_add_or_update_center2($add = TRUE, $title = FALSE, $async = FALSE) {
     echo "<div class='center'>";
     if ($add) {
@@ -250,6 +260,9 @@
     echo "</div>";
   }
 
+  /**
+   * @return bool
+   */
   function can_process() {
     if (strlen($_POST['description']) == 0) {
       Event::error(_("The Quick Entry description cannot be empty."));

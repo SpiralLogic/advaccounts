@@ -11,7 +11,25 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLANALYTIC);
-	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
+  /**
+   * @param $type
+   * @param $typename
+   * @param $from
+   * @param $to
+   * @param $begin
+   * @param $end
+   * @param $compare
+   * @param $convert
+   * @param $dec
+   * @param $pdec
+   * @param $rep
+   * @param $dimension
+   * @param $dimension2
+   * @param $pg
+   * @param $graphics
+   *
+   * @return array
+   */function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
 		$code_per_balance = 0;
 		$code_acc_balance = 0;
 		$per_balance_total = 0;
@@ -20,7 +38,7 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = GL_Account::get_all(null, null, $type);
+		$result = GL_Account::get_all(NULL, NULL, $type);
 		while ($account = DB::fetch($result)) {
 			$per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
@@ -55,7 +73,7 @@
 			$code_acc_balance += $acc_balance;
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_Type::get_all(false, false, $type);
+		$result = GL_Type::get_all(FALSE, FALSE, $type);
 		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -92,7 +110,12 @@
 	}
 
 	print_profit_and_loss_statement();
-	function Achieve($d1, $d2) {
+  /**
+   * @param $d1
+   * @param $d2
+   *
+   * @return float|int
+   */function Achieve($d1, $d2) {
 		if ($d1 == 0 && $d2 == 0) {
 			return 0;
 		}
@@ -203,7 +226,7 @@
 		$classacc = 0.0;
 		$salesper = 0.0;
 		$salesacc = 0.0;
-		$classresult = GL_Class::get_all(false, 0);
+		$classresult = GL_Class::get_all(FALSE, 0);
 		while ($class = DB::fetch($classresult)) {
 			$class_per_total = 0;
 			$class_acc_total = 0;
@@ -214,7 +237,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult)) {
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
 				$class_per_total += $classtotal[0];
@@ -255,11 +278,11 @@
 			$pg->graphic_2 = $headers[3];
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
-			$pg->built_in = false;
+			$pg->built_in = FALSE;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "pdf_files/test.png";
-			$pg->display($filename, true);
+			$pg->display($filename, TRUE);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;
 			$x = ($rep->pageWidth - $w) / 2;

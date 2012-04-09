@@ -42,6 +42,11 @@
       $Mode = MODE_RESET;
     }
   }
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     $sql = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock moves");

@@ -110,6 +110,9 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function can_process() {
     if (strlen($_POST['shipper_name']) == 0) {
       Event::error(_("The shipping company name cannot be empty."));

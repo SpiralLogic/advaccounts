@@ -1,12 +1,13 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /*
          Write/update customer payment.
        */
@@ -14,7 +15,6 @@
 
    */
   class Debtor_Payment {
-
     /**
      * @static
      *
@@ -132,18 +132,40 @@
       echo array_selector($name, $selected, $allocs);
       echo "</td>\n";
     }
-
-    static public  function read_customer_data() {
-      $myrow = Debtor::get_habit($_POST['customer_id']);
+    /**
+     * @static
+     *
+     * @param      $customer_id
+     * @param bool $refund
+     */
+    static public function read_customer_data($customer_id, $refund = FALSE) {
+      if ($refund == FALSE) {
+        $myrow = Debtor::get_habit($customer_id);
+        $type = ST_CUSTPAYMENT;
+      }
+      else {
+        $sql
+          = "SELECT debtors.pymt_discount,
+      			credit_status.dissallow_invoices
+      			FROM debtors, credit_status
+      			WHERE debtors.credit_status = credit_status.id
+      				AND debtors.debtor_no = " . $customer_id;
+        $result = DB::query($sql, "could not query customers");
+        $myrow = DB::fetch($result);
+        $type = ST_CUSTREFUND;
+      }
       $_POST['HoldAccount'] = $myrow["dissallow_invoices"];
       $_POST['pymt_discount'] = $myrow["pymt_discount"];
-      $_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
+      $_POST['ref'] = Ref::get_next($type);
     }
     /**
      * @static
+     *
+     * @param $type
+     *
      * @return bool
      */
-    static public   function can_process() {
+    static public function can_process($type) {
       if (!get_post('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
@@ -169,8 +191,8 @@
         JS::set_focus('ref');
         return FALSE;
       }
-      if (!Ref::is_new($_POST['ref'], ST_CUSTPAYMENT)) {
-        $_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
+      if (!Ref::is_new($_POST['ref'], $type)) {
+        $_POST['ref'] = Ref::get_next($type);
       }
       if (!Validation::is_num('amount', 0)) {
         Event::error(_("The entered amount is invalid or negative and cannot be processed."));
@@ -203,14 +225,20 @@
         JS::set_focus('discount');
         return FALSE;
       }
-      if (!User::i()->salesmanid) {
+      if ($type == ST_CUSTPAYMENT && !User::i()->salesmanid) {
         Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
         return FALSE;
       }
+
       //if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
-      if (Validation::input_num('amount', 0, 0) <= 0) {
+      if ($type == ST_CUSTPAYMENT && Validation::input_num('amount', 0, 0) <= 0) {
         Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
         JS::set_focus('discount');
+        return FALSE;
+      }
+      if ($type == ST_CUSTREFUND && Validation::input_num('amount') >= 0) {
+        Event::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
+        JS::setfocus('[name="amount"]');
         return FALSE;
       }
       $_SESSION['alloc']->amount = Validation::input_num('amount');

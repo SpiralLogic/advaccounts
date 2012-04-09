@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -34,6 +34,7 @@
      * @param $emails
      * @param $trans
      * @param $type
+     * @return void
      */
     protected function addEmailGroup($name, $emails, $trans, $type) {
     }
@@ -42,6 +43,7 @@
      *
      * @param      $selector
      * @param bool $id
+     * @return void
      */
     static public function addInfoDialog($selector, $id = FALSE) {
       if ($id) {

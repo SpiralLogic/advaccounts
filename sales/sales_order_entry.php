@@ -123,14 +123,60 @@
     $order = create_order($type, $order_no);
   }
   if (isset($_POST[Orders::DELETE_ORDER])) {
-    handle_cancel_order($order);
+    if (!User::i()->can_access(SS_SETUP)) {
+          Event::error('You don\'t have access to delete orders');
+          return;
+        }
+        if ($order->trans_type == ST_CUSTDELIVERY) {
+          Event::notice(_("Direct delivery has been cancelled as requested."), 1);
+          Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
+        }
+        elseif ($order->trans_type == ST_SALESINVOICE) {
+          Event::notice(_("Direct invoice has been cancelled as requested."), 1);
+          Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
+        }
+        else {
+          if ($order->trans_no != 0) {
+            if ($order->trans_type == ST_SALESORDER && $order->has_deliveries()) {
+              Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
+            }
+            else {
+              $trans_no = key($order->trans_no);
+              $trans_type = $order->trans_type;
+              if (!isset($_GET[REMOVED_ID])) {
+                $order->delete($trans_no, $trans_type);
+                $jb = new \Modules\Jobsboard();
+                $jb->removejob($trans_no);
+                Event::notice(_("Sales order has been cancelled as requested."), 1);
+              }
+            }
+          }
+          else {
+            Display::meta_forward('/index.php', 'application=sales');
+          }
+        }
+        Ajax::i()->activate('_page_body');
+        $order->finish();
+        Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+        Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
+        Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+        Page::footer_exit();
   }
   $id = find_submit(MODE_DELETE);
   if ($id != -1) {
-    handle_delete_item($order, $id);
+    if ($order->some_already_delivered($id) == 0) {
+      $order->remove_from_order($id);
+    }
+    else {
+      Event::error(_("This item cannot be deleted because some of it has already been delivered."));
+    }
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::UPDATE_ITEM])) {
-    handle_update_item($order);
+    if ($_POST[Orders::UPDATE_ITEM] != '' && check_item_data($order)) {
+      $order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+    }
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['discountall'])) {
     if (!is_numeric($_POST['_discountall'])) {
@@ -144,11 +190,13 @@
     }
     Ajax::i()->activate('_page_body');
   }
-  if (isset($_POST[Orders::ADD_ITEM])) {
-    handle_new_item($order);
+  if (isset($_POST[Orders::ADD_ITEM])&&check_item_data($order)) {
+    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+    $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
   Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
@@ -367,14 +415,6 @@
   }
 
   /**
-
-   */
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
-  }
-
-  /**
    * @param Sales_Order $order
    *
    * @return bool
@@ -405,12 +445,13 @@
       return FALSE;
     }
     if (count($order->line_items) == 0) {
-      if (!empty($_POST['stock_id'])) {
-        handle_new_item($order);
+      if (!empty($_POST['stock_id']) && check_item_data($order)) {
+        $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+        $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
       }
       else {
         Event::error(_("You must enter at least one non empty item line."));
-        JS::set_focus(Orders::ADD_ITEM);
+        Item_Line::start_focus('_stock_id_edit');
         return FALSE;
       }
     }
@@ -510,87 +551,6 @@
     return TRUE;
   }
 
-  /**
-   * @param Sales_Order $order
-   */
-  function handle_update_item($order) {
-    if ($_POST[Orders::UPDATE_ITEM] != '' && check_item_data($order)) {
-      $order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
-    }
-    line_start_focus();
-  }
-
-  /**
-   * @param Sales_Order $order
-   * @param             $line_no
-   */
-  function handle_delete_item($order, $line_no) {
-    if ($order->some_already_delivered($line_no) == 0) {
-      $order->remove_from_order($line_no);
-    }
-    else {
-      Event::error(_("This item cannot be deleted because some of it has already been delivered."));
-    }
-    line_start_focus();
-  }
-
-  /**
-   * @param Sales_Order $order
-   *
-   * @return mixed
-   */
-  function handle_new_item($order) {
-    if (!check_item_data($order)) {
-      return;
-    }
-    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
-    $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
-    line_start_focus();
-  }
-
-  /**
-   ** @param Sales_Order $order
-   */
-  function handle_cancel_order($order) {
-    if (!User::i()->can_access(SS_SETUP)) {
-      Event::error('You don\'t have access to delete orders');
-      return;
-    }
-    if ($order->trans_type == ST_CUSTDELIVERY) {
-      Event::notice(_("Direct delivery has been cancelled as requested."), 1);
-      Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
-    }
-    elseif ($order->trans_type == ST_SALESINVOICE) {
-      Event::notice(_("Direct invoice has been cancelled as requested."), 1);
-      Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
-    }
-    else {
-      if ($order->trans_no != 0) {
-        if ($order->trans_type == ST_SALESORDER && $order->has_deliveries()) {
-          Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-        }
-        else {
-          $trans_no = key($order->trans_no);
-          $trans_type = $order->trans_type;
-          if (!isset($_GET[REMOVED_ID])) {
-            $order->delete($trans_no, $trans_type);
-            $jb = new \Modules\Jobsboard();
-            $jb->removejob($trans_no);
-            Event::notice(_("Sales order has been cancelled as requested."), 1);
-          }
-        }
-      }
-      else {
-        Display::meta_forward('/index.php', 'application=sales');
-      }
-    }
-    Ajax::i()->activate('_page_body');
-    $order->finish();
-    Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
-    Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
-    Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
-    Page::footer_exit();
-  }
 
   /**
    * @param $type

@@ -136,6 +136,11 @@
   }
   end_form();
   Page::end();
+  /**
+   * @param $selected_account
+   *
+   * @return bool
+   */
   function can_delete($selected_account) {
     if ($selected_account == "") {
       return FALSE;

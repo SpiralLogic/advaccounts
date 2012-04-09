@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -293,11 +293,11 @@
       return DB::num_rows();
     }
     /**
-     * @return int
+     * @return int|mixed
      */
     protected function _countTransactions() {
       DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
-      return DB::num_rows();
+      return (int) DB::num_rows();
     }
     /**
      * @return void

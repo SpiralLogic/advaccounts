@@ -13,8 +13,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ?	 SA_SALESTRANSVIEW : SA_SALESBULKREP);
 	print_receipts();
-
-	function get_receipt($type, $trans_no)
+  /**
+   * @param $type
+   * @param $trans_no
+   *
+   * @return ADV\Core\DB\Query_Result|Array|bool
+   */
+  function get_receipt($type, $trans_no)
 		{
 			$sql
 			 = "SELECT debtor_trans.*,
@@ -29,12 +34,18 @@
 				AND debtor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
 			if (DB::num_rows($result) == 0) {
-				return false;
+				return FALSE;
 			}
 			return DB::fetch($result);
 		}
 
-	function get_allocations_for_receipt($debtor_id, $type, $trans_no)
+  /**
+   * @param $debtor_id
+   * @param $type
+   * @param $trans_no
+   *
+   * @return null|PDOStatement
+   */function get_allocations_for_receipt($debtor_id, $type, $trans_no)
 		{
 			$sql = Sales_Allocation::get_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
@@ -54,10 +65,10 @@
 			$to = $_POST['PARAM_1'];
 			$currency = $_POST['PARAM_2'];
 			$comments = $_POST['PARAM_3'];
-			if ($from == null) {
+			if ($from == NULL) {
 				$from = 0;
 			}
-			if ($to == null) {
+			if ($to == NULL) {
 				$to = 0;
 			}
 			$dec = User::price_dec();
@@ -71,7 +82,7 @@
 			$rep = new ADVReport(_('RECEIPT'), "ReceiptBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->Info($params, $cols, null, $aligns);
+			$rep->Info($params, $cols, NULL, $aligns);
 			for ($i = $fno[0]; $i <= $tno[0]; $i++)
 			{
 				if ($fno[0] == $tno[0] && isset($fno[1])) {
@@ -90,9 +101,9 @@
 					$baccount = Bank_Account::get_default($myrow['curr_code']);
 					$params['bankaccount'] = $baccount['id'];
 					$rep->title = _('RECEIPT');
-					$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+					$rep->Header2($myrow, NULL, $myrow, $baccount, ST_CUSTPAYMENT);
 					$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
-					$linetype = true;
+					$linetype = TRUE;
 					$doctype = ST_CUSTPAYMENT;
 					if ($rep->currency != $myrow['curr_code']) {
 						include(DOCROOT . "reporting/includes/doctext2.php");
@@ -114,7 +125,7 @@
 						$total_allocated += $myrow2['amt'];
 						$rep->NewLine(1);
 						if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-							$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+							$rep->Header2($myrow, NULL, $myrow, $baccount, ST_CUSTPAYMENT);
 						}
 					}
 					$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);

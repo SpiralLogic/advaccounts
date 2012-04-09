@@ -31,6 +31,11 @@
       $Mode = MODE_RESET;
     }
   }
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     $sql = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);

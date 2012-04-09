@@ -55,6 +55,11 @@
   }
   end_form();
   Page::end();
+  /**
+   * @param $extensions
+   *
+   * @return bool
+   */
   function update_extensions($extensions) {
     if (!advaccounting::write_extensions($extensions)) {
       Event::notice(_("Cannot update system extensions list."));
@@ -79,6 +84,12 @@
     return TRUE;
   }
 
+  /**
+   * @param $id
+   * @param $exts
+   *
+   * @return bool
+   */
   function check_data($id, $exts) {
     if ($_POST['name'] == "") {
       Event::error(_("Extension name cannot be empty."));
@@ -105,6 +116,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit($selected_id) {
     global $next_extension_id;
     $extensions = DB_Company::get_company_extensions();
@@ -179,6 +195,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_delete($selected_id) {
     $extensions = DB_Company::get_company_extensions();
     $id = $selected_id;
@@ -224,6 +245,9 @@
     end_table(1);
   }
 
+  /**
+   * @param $id
+   */
   function company_extensions($id) {
     start_table('tablestyle');
     $th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
@@ -255,6 +279,10 @@
     submit_center('Update', _('Update'), TRUE, FALSE, 'default');
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function display_ext_edit($Mode, $selected_id) {
     $extensions = DB_Company::get_company_extensions();
     start_table('tablestyle2');

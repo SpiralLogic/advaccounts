@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -152,6 +152,7 @@
      * @param $from_date
      * @param $to_date
      * @param $closed
+     * @return void
      */
     static public function add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::date2sql($from_date);
@@ -166,6 +167,7 @@
      * @param $daysOrFoll
      * @param $terms
      * @param $dayNumber
+     * @return void
      */
     static public function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
@@ -185,6 +187,7 @@
      * @static
      *
      * @param $id
+     * @return void
      */
     static public function delete_fiscalyear($id) {
       DB::begin();
@@ -196,6 +199,7 @@
      * @static
      *
      * @param $selected_id
+     * @return void
      */
     static public function delete_payment_terms($selected_id) {
       DB::query("DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id) . " could not delete a payment terms");
@@ -286,6 +290,7 @@
      * @param $daysOrFoll
      * @param $terms
      * @param $dayNumber
+     * @return void
      */
     static public function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
@@ -371,6 +376,7 @@
      *
      * @param $id
      * @param $closed
+     * @return void
      */
     static public function update_fiscalyear($id, $closed) {
       $sql = "UPDATE fiscal_year SET closed=" . DB::escape($closed) . "
@@ -381,6 +387,7 @@
      * @static
      *
      * @param array|null $data
+     * @return void
      */
     static public function update_gl_setup(array $data = NULL) {
       static::i()->save($data);
@@ -389,6 +396,7 @@
      * @static
      *
      * @param array|null $data
+     * @return void
      */
     static public function update_setup(array $data = NULL) {
       if (static::i()->f_year == NULL) {

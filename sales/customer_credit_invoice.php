@@ -105,6 +105,9 @@
   submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
   submit_center_last('ProcessCredit', _("Process Credit Note"), TRUE, '', 'default');
   Page::end();
+  /**
+   * @return int
+   */
   function check_quantities() {
     $ok = 1;
     foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $itm) {
@@ -129,6 +132,9 @@
     return $ok;
   }
 
+  /**
+   * @return bool
+   */
   function can_process() {
     if (!Dates::is_date($_POST['CreditDate'])) {
       Event::error(_("The entered date is invalid."));
@@ -174,6 +180,9 @@
     }
   }
 
+  /**
+   * @param $order
+   */
   function copy_from_order($order) {
     $order = Sales_Order::check_edit_conflicts($order);
     $_POST['ShipperID'] = $order->ship_via;

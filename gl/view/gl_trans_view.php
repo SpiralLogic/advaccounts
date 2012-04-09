@@ -75,7 +75,9 @@
   }
   Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
   Page::end(TRUE);
-
+  /**
+   * @param $myrow
+   */
   function display_gl_heading($myrow) {
     global $systypes_array;
     $trans_name = $systypes_array[$_GET['type_id']];

@@ -40,7 +40,7 @@
     handle_update_item();
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
     handle_new_order();
@@ -55,6 +55,9 @@
   submit_center_last('Process', _("Process Adjustment"), '', 'default');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_item_data() {
     if (!Validation::is_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
@@ -74,12 +77,15 @@
       $id = $_POST['LineNo'];
       $_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
+  /**
+   * @param $id
+   */
   function handle_delete_item($id) {
     $_SESSION['adj_items']->remove_from_order($id);
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
   function handle_new_item() {
@@ -87,13 +93,9 @@
       return;
     }
     Item_Order::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
-  }
 
   function handle_new_order() {
     if (isset($_SESSION['adj_items'])) {
@@ -108,6 +110,9 @@
     $_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
   }
 
+  /**
+   * @return bool
+   */
   function can_process() {
     $adj = &$_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {

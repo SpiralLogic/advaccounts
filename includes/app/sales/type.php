@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -131,6 +131,23 @@
       static::cells(NULL, $name, $selected_id, $submit_on_change, $special_option);
       echo "</tr>\n";
     }
+    /**
+     * @static
+     * @return bool
+     */
+    static public function can_process() {
+     if (strlen($_POST['sales_type']) == 0) {
+       Event::error(_("The sales type description cannot be empty."));
+       JS::set_focus('sales_type');
+       return FALSE;
+     }
+     if (!Validation::is_num('factor', 0)) {
+       Event::error(_("Calculation factor must be valid positive number."));
+       JS::set_focus('factor');
+       return FALSE;
+     }
+     return TRUE;
+   }
   }
 
 

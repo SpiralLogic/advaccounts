@@ -42,6 +42,12 @@
        $selected_component = get_post("selected_component", -1);
      }
      */
+  /**
+   * @param $ultimate_parent
+   * @param $component_to_check
+   *
+   * @return int
+   */
   function check_for_recursive_bom($ultimate_parent, $component_to_check) {
     /* returns true ie 1 if the bom contains the parent part as a component
                 ie the bom is recursive otherwise false ie 0 */
@@ -59,6 +65,9 @@
     } //end if $result is true
     return 0;
   } //end of function check_for_recursive_bom
+  /**
+   * @param $selected_parent
+   */
   function display_bom_items($selected_parent) {
     $result = WO::get_bom($selected_parent);
     Display::div_start('bom');
@@ -84,6 +93,12 @@
     Display::div_end();
   }
 
+  /**
+   * @param $selected_parent
+   * @param $selected_component
+   *
+   * @return mixed
+   */
   function on_submit($selected_parent, $selected_component = -1) {
     if (!Validation::is_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));

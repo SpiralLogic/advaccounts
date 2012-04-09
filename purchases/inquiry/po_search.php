@@ -121,22 +121,47 @@
   Creditor::addInfoDialog('.pagerclick');
   end_form();
   Page::end();
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
-    return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink');
+    return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_PURCHORDER, ICON_PRINT, 'button printlink');
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function receive_link($row) {
     return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return $row['OverDue'] == 1;
   }

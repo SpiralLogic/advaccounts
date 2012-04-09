@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -221,5 +221,12 @@ JS;
         $pars[0] = set_icon($icon, $pars[0]);
       }
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
+    }
+    public static function emailDialogue($id,$type,$type_no,$text="Email") {
+      HTML::setReturn(TRUE);
+      UI::button(FALSE, $text, array('class' => 'button email-button', 'data-emailid' => $id . '-' . $type . '-' .
+        $type_no
+      ));
+      return HTML::setReturn(FALSE);
     }
   }

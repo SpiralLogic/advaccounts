@@ -1,20 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   //
   //	Entry/Modify free hand Credit Note
   //
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
-
   JS::open_window(900, 500);
   $order = Orders::session_get() ? : NULL;
-
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
     $order = handle_new_credit(0);
@@ -56,16 +55,21 @@
   }
   $id = find_submit(MODE_DELETE);
   if ($id != -1) {
-    handle_delete_item($order, $id);
+    $order->remove_from_order($line_no);
+    Item_Line::start_focus('_stock_id_edit');
   }
-  if (isset($_POST[Orders::ADD_ITEM])) {
-    handle_new_item($order);
+  if (isset($_POST[Orders::ADD_ITEM]) && check_item_data()) {
+    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::UPDATE_ITEM])) {
-    handle_update_item($order);
+    if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
+      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+    }
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['ProcessCredit']) && can_process($order)) {
     if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
@@ -100,11 +104,6 @@
   echo "</tr></table></div>";
   end_form();
   Page::end();
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
-  }
-
   /***
    * @param $order
    *
@@ -125,6 +124,9 @@
     return $order;
   }
 
+  /**
+   * @param $order
+   */
   function copy_from_cn($order) {
     $order = Sales_Order::check_edit_conflicts($order);
     $_POST['CreditText'] = $order->Comments;
@@ -144,6 +146,11 @@
     Orders::session_set($order);
   }
 
+  /**
+   * @param $trans_no
+   *
+   * @return Sales_Order
+   */
   function handle_new_credit($trans_no) {
     $order = new Sales_Order(ST_CUSTCREDIT, $trans_no);
     Orders::session_delete($order->order_id);
@@ -152,6 +159,11 @@
     return $order;
   }
 
+  /**
+   * @param $order
+   *
+   * @return bool
+   */
   function can_process($order) {
     $input_error = 0;
     if ($order->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
@@ -180,6 +192,9 @@
     return ($input_error == 0);
   }
 
+  /**
+   * @return bool
+   */
   function check_item_data() {
     if (!Validation::is_num('qty', 0)) {
       Event::error(_("The quantity must be greater than zero."));
@@ -198,25 +213,3 @@
     }
     return TRUE;
   }
-
-  function handle_update_item($order) {
-    if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
-      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
-    }
-    line_start_focus();
-  }
-
-  function handle_delete_item($order, $line_no) {
-    $order->remove_from_order($line_no);
-    line_start_focus();
-  }
-
-  function handle_new_item($order) {
-    if (!check_item_data()) {
-      return;
-    }
-    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
-    line_start_focus();
-  }
-
-

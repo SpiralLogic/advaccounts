@@ -51,6 +51,11 @@
     require($rep_file);
   }
   exit();
+  /**
+   * @param $rep
+   *
+   * @return null|string
+   */
   function find_report_file($rep) {
     global $installed_extensions;
     // customized per company versions

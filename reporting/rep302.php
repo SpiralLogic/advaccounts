@@ -14,7 +14,12 @@
 Page::set_security(SA_ITEMSANALYTIC);
 
 	print_inventory_planning();
-	function get_transactions($category, $location)
+  /**
+   * @param $category
+   * @param $location
+   *
+   * @return null|PDOStatement
+   */function get_transactions($category, $location)
 		{
 			$sql
 			 = "SELECT stock_master.category_id,
@@ -45,7 +50,12 @@ Page::set_security(SA_ITEMSANALYTIC);
 			return DB::query($sql, "No transactions were returned");
 		}
 
-	function getPeriods($stockid, $location)
+  /**
+   * @param $stockid
+   * @param $location
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */function getPeriods($stockid, $location)
 		{
 			$date5 = date('Y-m-d');
 			$date4 = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));

@@ -114,6 +114,11 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     $sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock master");

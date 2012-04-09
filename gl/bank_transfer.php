@@ -56,6 +56,9 @@
     end_form();
   }
 
+  /**
+   * @return bool
+   */
   function check_valid_entries() {
     if (!Dates::is_date($_POST['DatePaid'])) {
       Event::error(_("The entered date is invalid ."));

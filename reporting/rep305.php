@@ -14,7 +14,12 @@
 Page::set_security(SA_SUPPLIERANALYTIC);
 
 	print_grn_valuation();
-	function get_transactions($from, $to)
+  /**
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($from, $to)
 	{
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);

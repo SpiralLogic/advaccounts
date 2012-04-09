@@ -9,6 +9,9 @@
      **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
+  /**
+   * @return bool
+   */
   function can_process() {
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));

@@ -14,8 +14,13 @@
 Page::set_security(SA_BANKREP);
 
 	print_bank_transactions();
-
-	function get_bank_balance_to($to, $account)
+  /**
+   * @param $to
+   * @param $account
+   *
+   * @return mixed
+   */
+  function get_bank_balance_to($to, $account)
 		{
 			$to = Dates::date2sql($to);
 			$sql
@@ -26,7 +31,13 @@ Page::set_security(SA_BANKREP);
 			return $row[0];
 		}
 
-	function get_bank_transactions($from, $to, $account)
+  /**
+   * @param $from
+   * @param $to
+   * @param $account
+   *
+   * @return null|PDOStatement
+   */function get_bank_transactions($from, $to, $account)
 		{
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
@@ -101,8 +112,8 @@ Page::set_security(SA_BANKREP);
 						$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
 						$rep->TextCol(1, 2, $myrow['trans_no']);
 						$rep->TextCol(2, 3, $myrow['ref']);
-						$rep->DateCol(3, 4, $myrow["trans_date"], true);
-						$rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
+						$rep->DateCol(3, 4, $myrow["trans_date"], TRUE);
+						$rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], FALSE));
 						if ($myrow['amount'] > 0.0) {
 							$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 							$total_debit += abs($myrow['amount']);
@@ -138,9 +149,9 @@ Page::set_security(SA_BANKREP);
 				$net_change = ($total - $prev_balance);
 				$rep->TextCol(3, 5, _("Net Change"));
 				if ($total > 0.0) {
-					$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
+					$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, NULL, 1, TRUE);
 				} else {
-					$rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
+					$rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, NULL, 1, TRUE);
 				}
 			}
 			$rep->End();

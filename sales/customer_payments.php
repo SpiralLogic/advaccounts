@@ -49,7 +49,7 @@
   if (Input::post('customer_id') || list_updated('bank_account')) {
     Ajax::i()->activate('_page_body');
   }
-  if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process()) {
+  if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process(ST_CUSTPAYMENT)) {
     $cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
     $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
     $comp_currency = Bank_Currency::for_company();
@@ -79,7 +79,7 @@
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
   }
   Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
-  Debtor_Payment::read_customer_data();
+  Debtor_Payment::read_customer_data($_POST['customer_id']);
   Session::i()->global_customer = $_POST['customer_id'];
   if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
     end_outer_table();
@@ -133,5 +133,4 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
   JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', TRUE);
-  (Input::request('frame')) ? Page::end() : Page::end(TRUE);
-
+  Page::end(!Input::request('frame')) ;

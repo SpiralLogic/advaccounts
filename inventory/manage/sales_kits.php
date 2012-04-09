@@ -110,7 +110,9 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-
+  /**
+   * @param $selected_kit
+   */
   function display_kit_items($selected_kit) {
     $result = Item_Code::get_kit($selected_kit);
     Display::div_start('bom');
@@ -134,6 +136,13 @@
     Display::div_end();
   }
 
+  /**
+   * @param $Mode
+   * @param $kit_code
+   * @param $selected_item
+   *
+   * @return mixed
+   */
   function update_component(&$Mode, $kit_code, $selected_item) {
     global $selected_kit;
     if (!Validation::is_num('quantity', 0)) {

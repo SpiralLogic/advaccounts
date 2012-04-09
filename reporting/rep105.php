@@ -14,8 +14,16 @@
 Page::set_security(SA_SALESBULKREP);
 
 	print_order_status_list();
-
-	function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
+  /**
+   * @param      $from
+   * @param      $to
+   * @param int  $category
+   * @param null $location
+   * @param int  $backorder
+   *
+   * @return null|PDOStatement
+   */
+  function GetSalesOrders($from, $to, $category = 0, $location = NULL, $backorder = 0)
 	{
 		$fromdate = Dates::date2sql($from);
 		$todate = Dates::date2sql($to);
@@ -44,7 +52,7 @@ Page::set_security(SA_SALESBULKREP);
 		if ($category > 0) {
 			$sql .= " AND stock_master.category_id=" . DB::escape($category);
 		}
-		if ($location != null) {
+		if ($location != NULL) {
 			$sql .= " AND sales_orders.from_stk_loc=" . DB::escape($location);
 		}
 		if ($backorder) {
@@ -75,7 +83,7 @@ Page::set_security(SA_SALESBULKREP);
 			$category = 0;
 		}
 		if ($location == ALL_TEXT) {
-			$location = null;
+			$location = NULL;
 		}
 		if ($category == 0) {
 			$cat = _('All');
@@ -84,7 +92,7 @@ Page::set_security(SA_SALESBULKREP);
 		{
 			$cat = Item_Category::get_name($category);
 		}
-		if ($location == null) {
+		if ($location == NULL) {
 			$loc = _('All');
 		}
 		else
@@ -141,7 +149,7 @@ Page::set_security(SA_SALESBULKREP);
 				$orderno = 0;
 				$rep->Header();
 			}
-			$rep->NewLine(0, 2, false, $orderno);
+			$rep->NewLine(0, 2, FALSE, $orderno);
 			if ($orderno != $myrow['order_no']) {
 				if ($orderno != 0) {
 					$rep->Line($rep->row);
@@ -151,8 +159,8 @@ Page::set_security(SA_SALESBULKREP);
 				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_no']));
 				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_id']));
 				$rep->TextCol(3, 4, $myrow['customer_ref']);
-				$rep->DateCol(4, 5, $myrow['ord_date'], true);
-				$rep->DateCol(5, 6, $myrow['delivery_date'], true);
+				$rep->DateCol(4, 5, $myrow['ord_date'], TRUE);
+				$rep->DateCol(5, 6, $myrow['delivery_date'], TRUE);
 				$rep->TextCol(6, 7, $myrow['from_stk_loc']);
 				$rep->NewLine(2);
 				$orderno = $myrow['order_no'];

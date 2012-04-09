@@ -15,11 +15,22 @@
   // is properly placed under related section regardless of
   // unique extension number, with order inside sections preserved.
   //
+  /**
+   * @param $area1
+   * @param $area2
+   *
+   * @return int
+   */
   function comp_areas($area1, $area2) {
     $sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
     return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
   }
 
+  /**
+   * @param $areas
+   *
+   * @return array
+   */
   function sort_areas($areas) {
     $old_order = 0;
     foreach ($areas as $key => $area) {

@@ -1,16 +1,16 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /** @noinspection PhpIncludeInspection */
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
-
   if (isset($_GET[Orders::MODIFY_ORDER])) {
     Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
   }
@@ -46,28 +46,100 @@
   }
   $id = find_submit(MODE_DELETE);
   if ($id != -1 && $order) {
-    handle_delete_item($order, $id);
+    if ($order->some_already_received($id) == 0) {
+      $order->remove_from_order($id);
+      unset_form_variables();
+    }
+    else {
+      Event::error(_("This item cannot be deleted because some of it has already been received."));
+    }
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[COMMIT])) {
-    handle_commit_order($order);
+    copy_to_order($order);
+    if (can_commit($order)) {
+      if ($order->order_no == 0) {
+        /*its a new order to be inserted */
+        $order_no = $order->add();
+        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
+        Dates::new_doc_date($order->orig_order_date);
+        Orders::session_delete($_POST['order_id']);
+        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
+      }
+      else {
+        /*its an existing order need to update the old order info */
+        $order_no = $order->update();
+        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
+        Orders::session_delete($_POST['order_id']);
+        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
+      }
+    }
   }
-  if (isset($_POST[UPDATE_ITEM])) {
-    handle_update_item($order);
+  if (isset($_POST[UPDATE_ITEM]) && check_data()) {
+    if ($order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
+      Event::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+      JS::set_focus('qty');
+    }
+    else {
+      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100);
+      unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
+      Item_Line::start_focus('_stock_id_edit');
+    }
   }
   if (isset($_POST[ADD_ITEM])) {
-    handle_add_new_item($order);
+    $allow_update = check_data();
+    if ($allow_update == TRUE) {
+      if ($allow_update == TRUE) {
+        $sql
+          = "SELECT long_description as description , units, mb_flag
+				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
+        $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
+        if (DB::num_rows($result) == 0) {
+          $allow_update = FALSE;
+        }
+        if ($allow_update) {
+          $myrow = DB::fetch($result);
+          $order->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+          unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
+          $_POST['stock_id'] = "";
+        }
+        else {
+          Event::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
+        }
+      } /* end of if not already on the order and allow input was true*/
+    }
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::CANCEL])) {
-    handle_cancel_po($order);
+    if (!$order) {
+      Display::meta_forward('/index.php', 'application=Purchases');
+    }
+    //need to check that not already dispatched or invoiced by the supplier
+    if (($order->order_no != 0) && $order->any_already_received() == 1) {
+      Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
+    }
+    else {
+      Orders::session_delete($order->order_id);
+      if ($order->order_no != 0) {
+        $order->delete();
+      }
+      else {
+        Display::meta_forward('/index.php', 'application=Purchases');
+      }
+      Orders::session_delete($order->order_id);
+      Event::notice(_("This purchase order has been cancelled."));
+      Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
+      Page::footer_exit();
+    }
   }
   if (isset($_POST[CANCEL])) {
-    unset_form_variables();
+    unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
   }
   if (isset($_GET[Orders::MODIFY_ORDER]) && $_GET[Orders::MODIFY_ORDER] != "") {
     $order = create_order($_GET[Orders::MODIFY_ORDER]);
   }
   elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($order)) {
     $order = create_order();
@@ -128,6 +200,9 @@
     return Orders::session_set($order);
   }
 
+  /**
+   * @param $order
+   */
   function copy_to_order($order) {
     $order->supplier_id = Input::post('supplier_id', Input::NUMERIC, NULL);
     $order->orig_order_date = $_POST['OrderDate'];
@@ -138,61 +213,6 @@
     $order->delivery_address = $_POST['delivery_address'];
     $order->freight = $_POST['freight'];
     $order->salesman = $_POST['salesman'];
-  }
-
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
-  }
-
-  function unset_form_variables() {
-    unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
-  }
-
-  /**
-   * @param Purch_Order $order
-   * @param             $line_no
-   */
-  function handle_delete_item($order, $line_no) {
-    if ($order->some_already_received($line_no) == 0) {
-      $order->remove_from_order($line_no);
-      unset_form_variables();
-    }
-    else {
-      Event::error(_("This item cannot be deleted because some of it has already been received."));
-    }
-    line_start_focus();
-  }
-
-  /**
-   * @param Purch_Order $order
-   *
-   * @return mixed
-   */
-  function handle_cancel_po($order) {
-    if (!$order) {
-      Display::meta_forward('/index.php', 'application=Purchases');
-    }
-
-    //need to check that not already dispatched or invoiced by the supplier
-
-    if (($order->order_no != 0) && $order->any_already_received() == 1) {
-      Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
-      return;
-    }
-    Orders::session_delete($order->order_id);
-    if ($order->order_no != 0) {
-      $order->delete();
-    }
-    else {
-      Display::meta_forward('/index.php', 'application=Purchases');
-    }
-    Orders::session_delete($order->order_id);
-    Event::notice(_("This purchase order has been cancelled."));
-    Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
-    echo "<br>";
-    Page::end(TRUE);
-    exit;
   }
 
   /**
@@ -238,10 +258,12 @@
       $order = new Purch_Order($order_no);
     }
     $order = copy_from_order($order);
-
     return $order;
   }
 
+  /**
+   * @return bool
+   */
   function check_data() {
     $dec = Item::qty_dec($_POST['stock_id']);
     $min = 1 / pow(10, $dec);
@@ -267,53 +289,6 @@
       return FALSE;
     }
     return TRUE;
-  }
-
-  /**
-   * @param Purch_Order $order
-   *
-   * @return mixed
-   */
-  function handle_update_item($order) {
-    $allow_update = check_data();
-    if ($allow_update) {
-      if ($order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
-        Event::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
-        JS::set_focus('qty');
-        return;
-      }
-      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100);
-      unset_form_variables();
-    }
-    line_start_focus();
-    return;
-  }
-
-  /**
-   * @param Purch_Order $order
-   */
-  function handle_add_new_item($order) {
-    $allow_update = check_data();
-    if ($allow_update == TRUE) {
-      if ($allow_update == TRUE) {
-        $sql = "SELECT long_description as description , units, mb_flag
-				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
-        $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
-        if (DB::num_rows($result) == 0) {
-          $allow_update = FALSE;
-        }
-        if ($allow_update) {
-          $myrow = DB::fetch($result);
-          $order->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
-          unset_form_variables();
-          $_POST['stock_id'] = "";
-        }
-        else {
-          Event::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
-        }
-      } /* end of if not already on the order and allow input was true*/
-    }
-    line_start_focus();
   }
 
   /**
@@ -366,30 +341,6 @@
       }
     }
     return TRUE;
-  }
-
-  /**
-   * @param Purch_Order $order
-   */
-  function handle_commit_order($order) {
-    copy_to_order($order);
-    if (can_commit($order)) {
-      if ($order->order_no == 0) {
-        /*its a new order to be inserted */
-        $order_no = $order->add();
-        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
-        Dates::new_doc_date($order->orig_order_date);
-        Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
-      }
-      else {
-        /*its an existing order need to update the old order info */
-        $order_no = $order->update();
-        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
-        Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
-      }
-    }
   }
 
 

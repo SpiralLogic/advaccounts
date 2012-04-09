@@ -1,14 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Item_Price {
-
     const PURCHASE = 1;
     const SALE = 2;
     const SORT_UPDATE = 'last_update';
@@ -16,6 +16,7 @@
     const SORT_CODE = 'stock_id';
     public $stockid;
     protected $_type;
+    public $id;
     /**
      * @static
      *
@@ -24,7 +25,6 @@
      * @param string $sort
      *
      * @return array
-     * @throws
      */
     static function getPrices($stockid, $type = self::SALE, $sort = self::SORT_PRICE) {
       switch ($type) {
@@ -37,7 +37,8 @@
             ->asClassLate('Item_Price', array(self::SALE))->all();
           break;
         default:
-          throw Exception();
+          $result = [];
+          Event::error('Could not retrieve prices for item');
       }
       if ($sort != self::SORT_CODE) {
         $result = array_reverse($result);
@@ -63,7 +64,6 @@
     public function __construct($type) {
       $this->_type = $type;
     }
-
     public function save() {
       DB::update('prices')->where('stockid=', $this->stockid)->and_where('id=', $this->id)->exec($this);
     }
@@ -80,7 +80,8 @@
       if ($item_code_id == NULL) {
         $item_code_id = Item_Code::get_id($stock_id);
       }
-      $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+      $sql
+        = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
 			VALUES (" . DB::escape($item_code_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($sales_type_id) . ", " . DB::escape($curr_abrev) . ", " . DB::escape($price) . ")";
       DB::query($sql, "an item price could not be added");
     }
@@ -115,7 +116,8 @@
      * @return null|PDOStatement
      */
     static public function get_all($stock_id) {
-      $sql = "SELECT sales_types.sales_type, prices.*
+      $sql
+        = "SELECT sales_types.sales_type, prices.*
 			FROM prices, sales_types
 			WHERE prices.sales_type_id = sales_types.id
 			AND stock_id=" . DB::escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
@@ -185,7 +187,8 @@
       $base_id = DB_Company::get_base_sales_type();
       $home_curr = Bank_Currency::for_company();
       //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-      $sql = "SELECT price, curr_abrev, sales_type_id
+      $sql
+        = "SELECT price, curr_abrev, sales_type_id
 			FROM prices
 			WHERE stock_id = " . DB::escape($stock_id) . "
 				AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
@@ -242,7 +245,6 @@
         return Num::round($price, User::price_dec());
       }
     }
-
     /***
      *  Get price for given item or kit.
      * When $std==true price is calculated as a sum of all included stock items,
@@ -275,7 +277,7 @@
         else {
           // stock item
           $kit_price += $item['quantity'] * static::get_calculated_price($item['stock_id'], $currency, $sales_type_id, $factor,
-            $date);
+                                                                         $date);
         }
       }
       return $kit_price;
@@ -289,7 +291,8 @@
      * @return float|int
      */
     static public function get_purchase($supplier_id, $stock_id) {
-      $sql = "SELECT price, conversion_factor FROM purch_data
+      $sql
+        = "SELECT price, conversion_factor FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -313,7 +316,6 @@
      * @return int
      */
     static public function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
-      $mb_flag = WO::get_mb_flag($stock_id);
       if (Input::post('mb_flag') == STOCK_SERVICE) {
         Errors::db_error("Cannot do cost update for Service item : $stock_id", "");
       }
@@ -337,9 +339,9 @@
         $value_of_change = $qoh * ($new_cost - $last_cost);
         $memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
         GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"],
-          $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
+                               $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
         GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_,
-          $value_of_change);
+                               $value_of_change);
       }
       DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);
       DB::commit();
@@ -354,11 +356,6 @@
      * @return string
      */
     static public function to_words($amount, $document = 0) {
-      global $Hooks;
-      // use local Item_Price::to_words() if the hook is defined
-      if (method_exists($Hooks, 'price_in_words')) {
-        return $Hooks->price_in_words($amount, $document);
-      }
       // Only usefor Remittance and Receipts as default
       if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CUSTREFUND || $document == ST_CHEQUE)) {
         return "";

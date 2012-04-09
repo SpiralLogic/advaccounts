@@ -1,12 +1,13 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   JS::footerFile('/js/payalloc.js');
@@ -44,13 +45,25 @@
     Display::link_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id'], TRUE, 'class="button"');
     Page::footer_exit();
   }
-  if (isset($_POST['ProcessSuppPayment'])) {
-    /*First off check for valid inputs */
-    if (check_inputs() == TRUE) {
-      handle_add_payment();
-      Page::end();
-      exit;
+  if (isset($_POST['ProcessSuppPayment']) && Creditor_Payment::can_process()) {
+    $supp_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
+    $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+    $comp_currency = Bank_Currency::for_company();
+    if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
+      $rate = 0;
     }
+    else {
+      $rate = Validation::input_num('_ex_rate');
+    }
+    $payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
+    Dates::new_doc_date($_POST['DatePaid']);
+    $_SESSION['alloc']->trans_no = $payment_id;
+    $_SESSION['alloc']->write();
+    //unset($_POST['supplier_id']);
+    unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
+    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
+    Page::end();
+    exit;
   }
   start_form();
   start_outer_table('tablestyle2 width60 pad5');
@@ -89,96 +102,4 @@
   submit_center('ProcessSuppPayment', _("Enter Payment"), TRUE, '', 'default');
   end_form();
   Page::end();
-  function check_inputs() {
-    if (!get_post('supplier_id')) {
-      Event::error(_("There is no supplier selected."));
-      JS::set_focus('supplier_id');
-      return FALSE;
-    }
-    if ($_POST['amount'] == "") {
-      $_POST['amount'] = Num::price_format(0);
-    }
-    if (!Validation::is_num('amount', 0)) {
-      Event::error(_("The entered amount is invalid or less than zero."));
-      JS::set_focus('amount');
-      return FALSE;
-    }
-    if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-      Event::error(_("The entered amount is invalid or less than zero."));
-      JS::set_focus('charge');
-      return FALSE;
-    }
-    if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
-      $charge_acct = DB_Company::get_pref('bank_charge_act');
-      if (GL_Account::get($charge_acct) == FALSE) {
-        Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-        JS::set_focus('charge');
-        return FALSE;
-      }
-    }
-    if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-      Event::error(_("The exchange rate must be numeric and greater than zero."));
-      JS::set_focus('_ex_rate');
-      return FALSE;
-    }
-    if ($_POST['discount'] == "") {
-      $_POST['discount'] = 0;
-    }
-    if (!Validation::is_num('discount', 0)) {
-      Event::error(_("The entered discount is invalid or less than zero."));
-      JS::set_focus('amount');
-      return FALSE;
-    }
-    //if (Validation::input_num('amount') - Validation::input_num('discount') <= 0)
-    if (Validation::input_num('amount') <= 0) {
-      Event::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
-      JS::set_focus('amount');
-      return FALSE;
-    }
-    if (!Dates::is_date($_POST['DatePaid'])) {
-      Event::error(_("The entered date is invalid."));
-      JS::set_focus('DatePaid');
-      return FALSE;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-      Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('DatePaid');
-      return FALSE;
-    }
-    if (!Ref::is_valid($_POST['ref'])) {
-      Event::error(_("You must enter a reference."));
-      JS::set_focus('ref');
-      return FALSE;
-    }
-    if (!Ref::is_new($_POST['ref'], ST_SUPPAYMENT)) {
-      $_POST['ref'] = Ref::get_next(ST_SUPPAYMENT);
-    }
-    $_SESSION['alloc']->amount = -Validation::input_num('amount');
-    if (isset($_POST["TotalNumberOfAllocs"])) {
-      return Gl_Allocation::check();
-    }
-    else {
-      return TRUE;
-    }
-  }
-
-  function handle_add_payment() {
-    $supp_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
-    $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
-    $comp_currency = Bank_Currency::for_company();
-    if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
-      $rate = 0;
-    }
-    else {
-      $rate = Validation::input_num('_ex_rate');
-    }
-    $payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
-    Dates::new_doc_date($_POST['DatePaid']);
-    $_SESSION['alloc']->trans_no = $payment_id;
-    $_SESSION['alloc']->write();
-    //unset($_POST['supplier_id']);
-    unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
-  }
-
 

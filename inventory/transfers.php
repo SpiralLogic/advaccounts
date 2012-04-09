@@ -86,7 +86,7 @@
     handle_update_item();
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
     handle_new_order();
@@ -105,6 +105,9 @@
   submit_center_last('Process', _("Process Transfer"), '', 'default');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_item_data() {
     if (!Validation::is_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
@@ -122,12 +125,15 @@
       }
       $_SESSION['transfer_items']->update_order_item($id, Validation::input_num('qty'), $_POST['std_cost']);
     }
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
+  /**
+   * @param $id
+   */
   function handle_delete_item($id) {
     $_SESSION['transfer_items']->remove_from_order($id);
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
   function handle_new_item() {
@@ -138,13 +144,9 @@
       $_POST['std_cost'] = 0;
     }
     Item_Order::add_line($_SESSION['transfer_items'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['std_cost']);
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
-  }
 
   function handle_new_order() {
     if (isset($_SESSION['transfer_items'])) {

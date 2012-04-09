@@ -14,6 +14,9 @@
   if ($_GET['trans_no'] != "") {
     $wo_issue_no = $_GET['trans_no'];
   }
+  /**
+   * @param $issue_no
+   */
   function display_wo_issue($issue_no) {
     $myrow = WO_Issue::get($issue_no);
     Display::br(1);
@@ -36,6 +39,9 @@
     Display::is_voided(28, $issue_no, _("This issue has been voided."));
   }
 
+  /**
+   * @param $issue_no
+   */
   function display_wo_issue_details($issue_no) {
     $result = WO_Issue::get_details($issue_no);
     if (DB::num_rows($result) == 0) {

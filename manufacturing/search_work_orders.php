@@ -53,36 +53,78 @@
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   end_row();
   end_table();
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return (!$row["closed"] && Dates::date_diff2(Dates::today(), Dates::sql2date($row["required_by"]), "d") > 0);
   }
 
+  /**
+   * @param $dummy
+   * @param $order_no
+   *
+   * @return null|string
+   */
   function view_link($dummy, $order_no) {
     return GL_UI::trans_view(ST_WORKORDER, $order_no);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function view_stock($row) {
     return Item_UI::status($row["stock_id"], $row["description"], FALSE);
   }
 
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function wo_type_name($dummy, $type) {
     global $wo_types_array;
     return $wo_types_array[$type];
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return $row['closed'] ? '<i>' . _('Closed') . '</i>' : DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function release_link($row) {
     return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
       DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function produce_link($row) {
     return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function costs_link($row) {
     /*
                            return $row["closed"] || !$row["released"] ? '' :
@@ -93,6 +135,11 @@
     return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function view_gl_link($row) {
     if ($row['closed'] == 0) {
       return '';
@@ -100,6 +147,12 @@
     return GL_UI::view(ST_WORKORDER, $row['id']);
   }
 
+  /**
+   * @param $row
+   * @param $amount
+   *
+   * @return int|string
+   */
   function dec_amount($row, $amount) {
     return Num::format($amount, $row['decimals']);
   }

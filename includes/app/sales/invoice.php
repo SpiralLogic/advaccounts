@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -290,5 +290,36 @@
       }
       return TRUE;
     }
-
+    /**
+     * @static
+     *
+     * @param $customer_id
+     * @param $branch_id
+     * @param $order_no
+     * @param $tmpl_no
+     *
+     * @return int|void
+     */
+    static public  function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
+      $doc = new Sales_Order(ST_SALESORDER, array($order_no));
+      $doc->customer_to_order($customer_id, $branch_id);
+      $doc->trans_type = ST_SALESORDER;
+      $doc->trans_no = 0;
+      $doc->document_date = Dates::today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+      $doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
+      $doc->reference = Ref::get_next($doc->trans_type);
+      //$doc->Comments='';
+      foreach ($doc->line_items as $line_no => $item) {
+        $line = &$doc->line_items[$line_no];
+        $line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type, $doc->price_factor, $doc->document_date);
+      }
+      $order = $doc;
+      $order->trans_type = ST_SALESINVOICE;
+      $order->reference = Ref::get_next($order->trans_type);
+      $invno = $order->write(1);
+          $date = Dates::date2sql($order->document_date);
+          $sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($tmpl_no);
+          DB::query($sql, "The recurrent invoice could not be updated or added");
+      return $invno;
+    }
   }

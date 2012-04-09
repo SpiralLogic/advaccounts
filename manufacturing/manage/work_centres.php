@@ -31,6 +31,11 @@
       $Mode = MODE_RESET;
     }
   }
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     $sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");

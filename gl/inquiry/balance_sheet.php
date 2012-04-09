@@ -28,6 +28,16 @@
   display_balance_sheet();
   end_form();
   Page::end();
+  /**
+   * @param $type
+   * @param $typename
+   * @param $from
+   * @param $to
+   * @param $convert
+   * @param $drilldown
+   *
+   * @return int|mixed
+   */
   function display_type($type, $typename, $from, $to, $convert, $drilldown) {
     global $levelptr, $k;
     $dimension = $dimension2 = 0;

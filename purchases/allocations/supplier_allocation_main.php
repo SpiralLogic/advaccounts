@@ -33,27 +33,58 @@
   if (isset($_POST['supplier_id'])) {
     $supplier_id = $_POST['supplier_id'];
   }
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function alloc_link($row) {
     return DB_Pager::link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function amount_left($row) {
     return Num::price_format(-$row["Total"] - $row["alloc"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function amount_total($row) {
     return Num::price_format(-$row["Total"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_settled($row) {
     return $row['settled'] == 1;
   }

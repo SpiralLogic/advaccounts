@@ -14,8 +14,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ?	 SA_SUPPTRANSVIEW : SA_SUPPBULKREP);
 	print_remittances();
-
-	function get_remittance($type, $trans_no)
+  /**
+   * @param $type
+   * @param $trans_no
+   *
+   * @return ADV\Core\DB\Query_Result|Array|bool
+   */
+  function get_remittance($type, $trans_no)
 		{
 			$sql
 			 = "SELECT creditor_trans.*,
@@ -29,12 +34,18 @@
 		AND creditor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
 			if (DB::num_rows($result) == 0) {
-				return false;
+				return FALSE;
 			}
 			return DB::fetch($result);
 		}
 
-	function get_allocations_for_remittance($supplier_id, $type, $trans_no)
+  /**
+   * @param $supplier_id
+   * @param $type
+   * @param $trans_no
+   *
+   * @return null|PDOStatement
+   */function get_allocations_for_remittance($supplier_id, $type, $trans_no)
 		{
 			$sql = Purch_Allocation::get_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
@@ -55,10 +66,10 @@
 			$currency = $_POST['PARAM_2'];
 			$email = $_POST['PARAM_3'];
 			$comments = $_POST['PARAM_4'];
-			if ($from == null) {
+			if ($from == NULL) {
 				$from = 0;
 			}
-			if ($to == null) {
+			if ($to == NULL) {
 				$to = 0;
 			}
 			$dec = User::price_dec();
@@ -73,7 +84,7 @@
 				$rep = new ADVReport(_('REMITTANCE'), "RemittanceBulk", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
-				$rep->Info($params, $cols, null, $aligns);
+				$rep->Info($params, $cols, NULL, $aligns);
 			}
 			for ($i = $fno[0]; $i <= $tno[0]; $i++)
 			{
@@ -98,15 +109,15 @@
 						$rep->Font();
 						$rep->title = _('REMITTANCE');
 						$rep->filename = "Remittance" . $i . ".pdf";
-						$rep->Info($params, $cols, null, $aligns);
+						$rep->Info($params, $cols, NULL, $aligns);
 					}
 					else
 					{
 						$rep->title = _('REMITTANCE');
 					}
-					$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+					$rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
 					$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
-					$linetype = true;
+					$linetype = TRUE;
 					$doctype = ST_SUPPAYMENT;
 					if ($rep->currency != $myrow['curr_code']) {
 						include(DOCROOT . "reporting/includes/doctext2.php");
@@ -128,7 +139,7 @@
 						$total_allocated += $myrow2['amt'];
 						$rep->NewLine(1);
 						if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-							$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+							$rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
 						}
 					}
 					$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);

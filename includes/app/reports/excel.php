@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -210,6 +210,7 @@
     /**
      * @param string $fontname
      * @param string $style
+     * @return void
      */
     public function Font($fontname = '', $style = 'normal') {
     }
@@ -221,6 +222,7 @@
      * @param null $cols2
      * @param null $headers2
      * @param null $aligns2
+     * @return void
      */
     public function Info($params, $cols, $headers, $aligns, $cols2 = NULL, $headers2 = NULL, $aligns2 = NULL) {
       $this->company = DB_Company::get_prefs();
@@ -596,6 +598,7 @@
      * @param int  $fill
      * @param null $link
      * @param int  $stretch
+     * @return void
      */
     public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       $txt = html_entity_decode($txt);
@@ -621,6 +624,7 @@
      * @param null $link
      * @param int  $stretch
      * @param bool $color_red
+     * @return void
      */
     public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE) {
       if (!is_numeric($txt)) {
@@ -642,6 +646,7 @@
      * @param bool $color_red
      * @param null $amount_locale
      * @param null $amount_format
+     * @return void
      */
     public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE, $amount_locale = NULL, $amount_format = NULL) {
       if (!is_numeric($txt)) {
@@ -660,6 +665,7 @@
      * @param int  $fill
      * @param null $link
      * @param int  $stretch
+     * @return void
      */
     public function DateCol($c, $n, $txt, $conv = FALSE, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       if (!$conv) {
@@ -679,6 +685,7 @@
      * @param int  $fill
      * @param null $link
      * @param int  $stretch
+     * @return void
      */
     public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       $txt = html_entity_decode($txt);
@@ -801,6 +808,7 @@
      * @param int  $l
      * @param int  $np
      * @param null $h
+     * @return void
      */
     public function NewLine($l = 1, $np = 0, $h = NULL) {
       $this->y += $l;
@@ -866,6 +874,7 @@
      * @param null $subject
      * @param null $myrow
      * @param int  $doctype
+     * @return void
      */
     public function End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
       for ($i = 0; $i < $this->numcols; $i++) {

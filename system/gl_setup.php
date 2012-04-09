@@ -98,6 +98,9 @@
   submit_center('submit', _("Update"), TRUE, '', 'default');
   end_form(2);
   Page::end();
+  /**
+   * @return bool
+   */
   function can_process() {
     if (!Validation::is_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));

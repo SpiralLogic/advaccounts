@@ -2,7 +2,7 @@
   /**
      * PHP version 5.4
      * @category  PHP
-     * @package   ADVAccounts
+     * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
@@ -184,7 +184,7 @@
      * @param bool $submit_on_change
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
-      echo "<td>";
+      echo "<td class='label'>";
       if ($label != NULL) {
            echo "<label for=\"$name\"> $label</label>";
       }

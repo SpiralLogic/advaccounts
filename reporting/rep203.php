@@ -14,7 +14,12 @@
 Page::set_security(SA_SUPPPAYMREP);
 
 	print_payment_report();
-	function get_transactions($supplier, $date)
+  /**
+   * @param $supplier
+   * @param $date
+   *
+   * @return null|PDOStatement
+   */function get_transactions($supplier, $date)
 	{
 		$date = Dates::date2sql($date);
 		$dec = User::price_dec();
@@ -63,12 +68,12 @@ Page::set_security(SA_SUPPPAYMREP);
 		}
 		$dec = User::price_dec();
 		if ($currency == ALL_TEXT) {
-			$convert = true;
+			$convert = TRUE;
 			$currency = _('Balances in Home Currency');
 		}
 		else
 		{
-			$convert = false;
+			$convert = FALSE;
 		}
 		if ($no_zeros) {
 			$nozeros = _('Yes');
@@ -139,11 +144,11 @@ Page::set_security(SA_SUPPPAYMREP);
 				$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 				$rep->TextCol(1, 2, $trans['supp_reference']);
 				if ($trans['type'] == ST_SUPPINVOICE) {
-					$rep->DateCol(2, 3, $trans['due_date'], true);
+					$rep->DateCol(2, 3, $trans['due_date'], TRUE);
 				}
 				else
 				{
-					$rep->DateCol(2, 3, $trans['tran_date'], true);
+					$rep->DateCol(2, 3, $trans['tran_date'], TRUE);
 				}
 				if ($trans['type'] != ST_SUPPINVOICE) {
 					$trans['TranTotal'] = -$trans['TranTotal'];

@@ -61,6 +61,11 @@
       $Mode = MODE_RESET;
     }
   }
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     if ($selected_id == -1) {
       return FALSE;

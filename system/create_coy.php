@@ -31,6 +31,11 @@
   Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
   display_company_edit($selected_id);
   Page::end();
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function check_data(&$selected_id) {
     if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
       return FALSE;
@@ -47,6 +52,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$selected_id) {
     $comp_subdirs = Config::get('company_subdirs');
     $error = FALSE;
@@ -207,6 +217,9 @@
     Event::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $selected_id
+   */
   function display_company_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;

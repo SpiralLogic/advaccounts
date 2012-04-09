@@ -157,10 +157,21 @@
   DB_Pager::display($table);
   end_form();
   Page::end();
+  /**
+   * @param $trans
+   * @param $trans_no
+   *
+   * @return null|string
+   */
   function trans_view($trans, $trans_no) {
     return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function batch_checkbox($row) {
     $name = "Sel_" . $row['trans_no'];
     return $row['Done'] ? '' :
@@ -168,20 +179,40 @@
         . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return $row["Outstanding"] == 0 ? '' :
       DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function invoice_link($row) {
     return $row["Outstanding"] == 0 ? '' :
       DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
   }

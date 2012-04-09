@@ -31,6 +31,24 @@
   display_profit_and_loss();
   end_form();
   Page::end();
+  /**
+   * @param     $type
+   * @param     $typename
+   * @param     $from
+   * @param     $to
+   * @param     $begin
+   * @param     $end
+   * @param     $compare
+   * @param     $convert
+   * @param     $dec
+   * @param     $pdec
+   * @param     $rep
+   * @param int $dimension
+   * @param int $dimension2
+   * @param     $drilldown
+   *
+   * @return array
+   */
   function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown) {
     global $levelptr, $k;
     $code_per_balance = 0;
@@ -105,6 +123,12 @@
     return $totals_arr;
   }
 
+  /**
+   * @param $d1
+   * @param $d2
+   *
+   * @return float|int
+   */
   function Achieve($d1, $d2) {
     if ($d1 == 0 && $d2 == 0) {
       return 0;

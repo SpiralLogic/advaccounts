@@ -15,7 +15,13 @@
 
 	// trial_inquiry_controls();
 	print_customer_balances();
-	function get_open_balance($debtorno, $to, $convert)
+  /**
+   * @param $debtorno
+   * @param $to
+   * @param $convert
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */function get_open_balance($debtorno, $to, $convert)
 		{
 			$to = Dates::date2sql($to);
 			$sql = "SELECT SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
@@ -60,7 +66,13 @@
 			return DB::fetch($result);
 		}
 
-	function get_transactions($debtorno, $from, $to)
+  /**
+   * @param $debtorno
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($debtorno, $from, $to)
 		{
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
@@ -106,12 +118,12 @@
 			}
 			$dec = User::price_dec();
 			if ($currency == ALL_TEXT) {
-				$convert = true;
+				$convert = TRUE;
 				$currency = _('Balances in Home Currency');
 			}
 			else
 			{
-				$convert = false;
+				$convert = FALSE;
 			}
 			if ($no_zeros) {
 				$nozeros = _('Yes');

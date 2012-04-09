@@ -88,6 +88,14 @@ You have to clean database manually to enable them, or try to perform forced upg
   submit_center('Upgrade', _('Upgrade system'), TRUE, _('Save database and perform upgrade'), 'process');
   end_form();
   Page::end();
+  /**
+   * @param      $pref
+   * @param      $table
+   * @param null $field
+   * @param null $properties
+   *
+   * @return int
+   */
   function check_table($pref, $table, $field = NULL, $properties = NULL) {
     $tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
     if (!DB::num_rows($tables)) {
@@ -116,6 +124,9 @@ You have to clean database manually to enable them, or try to perform forced upg
   //
   //	Creates table of installer objects sorted by version.
   //
+  /**
+   * @return array
+   */
   function get_installers() {
     $patchdir = DOCROOT . "sql/";
     $upgrades = array();
@@ -141,6 +152,12 @@ You have to clean database manually to enable them, or try to perform forced upg
   //
   //	Apply one differential data set.
   //
+  /**
+   * @param $index
+   * @param $conn
+   *
+   * @return bool
+   */
   function upgrade_step($index, $conn) {
     global $installers;
     $inst = $installers[$index];
@@ -168,6 +185,11 @@ You have to clean database manually to enable them, or try to perform forced upg
     return $ret;
   }
 
+  /**
+   * @param $conn
+   *
+   * @return bool|resource
+   */
   function db_open($conn) {
     $db = mysql_connect($conn["host"], $conn["dbuser"], $conn["dbpassword"]);
     if (!$db) {

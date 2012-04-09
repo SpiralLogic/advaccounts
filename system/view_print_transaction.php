@@ -23,10 +23,20 @@
   handle_search();
   end_form(2);
   Page::end();
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function view_link($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
     ) // customer payment or bank deposit printout not defined yet.
@@ -35,6 +45,11 @@
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function gl_view($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
@@ -57,6 +72,9 @@
     end_table(1);
   }
 
+  /**
+   * @return bool
+   */
   function check_valid_entries() {
     if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
       Event::error(_("The starting transaction number is expected to be numeric and greater than zero."));

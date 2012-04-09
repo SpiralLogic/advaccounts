@@ -273,18 +273,38 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function branch_email($row) {
     return '<a href = "mailto:' . $row["email"] . '">' . $row["email"] . '</a>';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function del_link($row) {
     return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function select_link($row) {
     return button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
   }

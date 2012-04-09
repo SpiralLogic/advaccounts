@@ -21,6 +21,11 @@
     Event::warning("This page must be called with a work order reference");
     exit;
   }
+  /**
+   * @param $myrow
+   *
+   * @return bool
+   */
   function can_process($myrow) {
     if ($myrow['released']) {
       Event::error(_("This work order has already been released."));

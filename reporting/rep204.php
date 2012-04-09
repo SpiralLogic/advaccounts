@@ -15,7 +15,11 @@
 Page::set_security(SA_SUPPLIERANALYTIC);
 
 	print_outstanding_GRN();
-	function get_transactions($fromsupp)
+  /**
+   * @param $fromsupp
+   *
+   * @return null|PDOStatement
+   */function get_transactions($fromsupp)
 	{
 		$sql
 		 = "SELECT grn_batch.id,

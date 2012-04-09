@@ -44,6 +44,10 @@
     }
   }
 
+  /**
+   * @param $type
+   * @param $trans_no
+   */
   function edit_allocations_for_transaction($type, $trans_no) {
     global $systypes_array;
     start_form();

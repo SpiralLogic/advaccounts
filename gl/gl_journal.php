@@ -112,13 +112,13 @@
     handle_update_item();
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
   if (isset($_POST['go'])) {
     Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('total_amount'), QE_JOURNAL);
     $_POST['total_amount'] = Num::price_format(0);
     Ajax::i()->activate('total_amount');
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
   start_form();
   GL_Journal::header($_SESSION['journal_items']);
@@ -133,6 +133,9 @@
   submit_center('Process', _("Process Journal Entry"), TRUE, _('Process journal entry only if debits equal to credits'), 'default');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_item_data() {
     if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && Dimensions::is_closed($_POST['dimension_id'])) {
       Event::error(_("Dimension is closed."));
@@ -183,12 +186,15 @@
       }
       $_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
     }
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
+  /**
+   * @param $id
+   */
   function handle_delete_item($id) {
     $_SESSION['journal_items']->remove_gl_item($id);
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
   function handle_new_item() {
@@ -202,9 +208,13 @@
       $amount = -Validation::input_num('AmountCredit');
     }
     $_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
+  /**
+   * @param int $type
+   * @param int $trans_no
+   */
   function create_order($type = ST_JOURNAL, $trans_no = 0) {
     if (isset($_SESSION['journal_items'])) {
       unset ($_SESSION['journal_items']);
@@ -239,9 +249,4 @@
     $_POST['ref'] = $order->reference;
     $_POST['date_'] = $order->tran_date;
     $_SESSION['journal_items'] = &$order;
-  }
-
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_code_id_edit');
   }

@@ -14,7 +14,12 @@
 Page::set_security(SA_ITEMSVALREP);
 
 	print_inventory_valuation_report();
-	function get_transactions($category, $location)
+  /**
+   * @param $category
+   * @param $location
+   *
+   * @return null|PDOStatement
+   */function get_transactions($category, $location)
 	{
 		$sql
 		 = "SELECT stock_master.category_id,

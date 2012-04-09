@@ -10,26 +10,14 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Sales Types"), SA_SALESTYPES);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
-  function can_process() {
-    if (strlen($_POST['sales_type']) == 0) {
-      Event::error(_("The sales type description cannot be empty."));
-      JS::set_focus('sales_type');
-      return FALSE;
-    }
-    if (!Validation::is_num('factor', 0)) {
-      Event::error(_("Calculation factor must be valid positive number."));
-      JS::set_focus('factor');
-      return FALSE;
-    }
-    return TRUE;
-  }
 
-  if ($Mode == ADD_ITEM && can_process()) {
+
+  if ($Mode == ADD_ITEM && Sales_Type::can_process()) {
     Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
     Event::success(_('New sales type has been added'));
     $Mode = MODE_RESET;
   }
-  if ($Mode == UPDATE_ITEM && can_process()) {
+  if ($Mode == UPDATE_ITEM && Sales_Type::can_process()) {
     Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 :
       0, Validation::input_num('factor'));
     Event::success(_('Selected sales type has been updated'));

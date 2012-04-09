@@ -12,7 +12,14 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLANALYTIC);
 	print_audit_trail();
-	function get_transactions($from, $to, $type, $user) {
+  /**
+   * @param $from
+   * @param $to
+   * @param $type
+   * @param $user
+   *
+   * @return null|PDOStatement
+   */function get_transactions($from, $to, $type, $user) {
 		$fromdate = Dates::date2sql($from) . " 00:00:00";
 		$todate = Dates::date2sql($to) . " 23:59.59";
 		$sql = "SELECT a.*,
@@ -84,14 +91,14 @@
 			$rep->TextCol(3, 4, Dates::sql2date($myrow['gl_date']));
 			$rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
 			$rep->TextCol(5, 6, $myrow['trans_no']);
-			if ($myrow['gl_seq'] == null) {
+			if ($myrow['gl_seq'] == NULL) {
 				$action = _('Changed');
 			}
 			else {
 				$action = _('Closed');
 			}
 			$rep->TextCol(6, 7, $action);
-			if ($myrow['amount'] != null) {
+			if ($myrow['amount'] != NULL) {
 				$rep->AmountCol(7, 8, $myrow['amount'], $dec);
 			}
 			$rep->NewLine(1, 2);

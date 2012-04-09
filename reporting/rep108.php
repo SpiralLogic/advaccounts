@@ -13,6 +13,13 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::set_security(SA_CUSTSTATREP);
   print_statements();
+  /**
+   * @param $debtorno
+   * @param $month
+   * @param $inc_all
+   *
+   * @return null|PDOStatement
+   */
   function get_transactions($debtorno, $month, $inc_all) {
     $dateend = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
@@ -32,6 +39,11 @@
     return DB::query($sql, "No transactions were returned");
   }
 
+  /**
+   * @param $no
+   *
+   * @return mixed
+   */
   function getTransactionPO($no) {
     $sql = "SELECT customer_ref FROM sales_orders WHERE order_no=" . DB::escape($no);
     $result = DB::query($sql, "Could not retrieve any branches");

@@ -33,6 +33,9 @@
     Event::error(_("The order number sent is not valid."));
     exit;
   }
+  /**
+   * @return bool
+   */
   function can_process() {
     global $wo_details;
     if (!Ref::is_valid($_POST['ref'])) {

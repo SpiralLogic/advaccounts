@@ -77,7 +77,7 @@
     label_cell(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
     if ($myrow["debtor_no"] == 0) {
       label_cell("");
-      label_cell(get_sales_group_name($myrow["group_no"]));
+      label_cell(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
       label_cell(Debtor::get_name($myrow["debtor_no"]));
@@ -131,11 +131,3 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-  function get_sales_group_name($group_no) {
-    $sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-    $result = DB::query($sql, "could not get group");
-    $row = DB::fetch($result);
-    return $row[0];
-  }
-
-

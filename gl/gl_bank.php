@@ -102,14 +102,14 @@
     handle_update_item();
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
   if (isset($_POST['go'])) {
     GL_QuickEntry::show_menu($_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'), $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
       QE_PAYMENT : QE_DEPOSIT);
     $_POST['total_amount'] = Num::price_format(0);
     Ajax::i()->activate('total_amount');
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
   start_form();
   Bank_UI::header($_SESSION['pay_items']);
@@ -126,10 +126,6 @@
   end_form();
   Page::end();
 
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_code_id_edit');
-  }
 
   /**
    * @return bool
@@ -163,12 +159,15 @@
     if ($_POST['UpdateItem'] != "" && check_item_data()) {
       $_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
     }
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
+  /**
+   * @param $id
+   */
   function handle_delete_item($id) {
     $_SESSION['pay_items']->remove_gl_item($id);
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
   function handle_new_item() {
@@ -177,9 +176,12 @@
     }
     $amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
     $_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
-    line_start_focus();
+    Item_Line::start_focus('_code_id_edit');
   }
 
+  /**
+   * @param $type
+   */
   function handle_new_order($type) {
     if (isset($_SESSION['pay_items'])) {
       unset ($_SESSION['pay_items']);

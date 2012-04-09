@@ -170,6 +170,9 @@
   hidden('frame', Input::request('frame'));
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function can_process() {
     if (strlen($_POST['CustName']) == 0) {
       Event::error(_("The customer name cannot be empty."));

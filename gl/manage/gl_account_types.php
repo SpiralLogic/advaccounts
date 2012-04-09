@@ -88,6 +88,11 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_delete($selected_id) {
     if ($selected_id == -1) {
       return FALSE;
@@ -112,6 +117,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function can_process(&$selected_id) {
     if (!Validation::input_num('id')) {
       Event::error(_("The account id must be an integer and cannot be empty."));
