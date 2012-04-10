@@ -34,7 +34,7 @@
   }
   Session::i()->global_stock_id = $_POST['stock_id'];
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-    if (!Validation::is_num('price', 0)) {
+    if (!Validation::post_num('price', 0)) {
       $input_error = 1;
       Event::error(_("The price entered must be numeric."));
       JS::set_focus('price');

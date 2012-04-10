@@ -281,7 +281,7 @@
     static public function check() {
       $total_allocated = 0;
       for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
-        if (!Validation::is_num('amount' . $counter, 0)) {
+        if (!Validation::post_num('amount' . $counter, 0)) {
           Event::error(_("The entry for one or more amounts is invalid or negative."));
           JS::set_focus('amount' . $counter);
           return FALSE;

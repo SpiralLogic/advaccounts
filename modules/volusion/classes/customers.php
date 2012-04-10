@@ -1,13 +1,12 @@
 <?php
   namespace Modules\Volusion;
-  /**
-   * Class for getting Customers from Volusion and putting them in to the intermediate database.
-   */
   use \ADV\Core\DB\DBDuplicateException;
   use \ADV\Core\DB\DB;
   use \Event;
   use \ADV\Core\XMLParser;
-
+  /**
+   * Class for getting Customers from Volusion and putting them in to the intermediate database.
+   */
   class Customers {
 
     public $status;

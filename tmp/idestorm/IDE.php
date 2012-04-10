@@ -53,6 +53,7 @@
   }
 
   class Input extends ADV\Core\Input {
+
   }
 
   class JS extends ADV\Core\JS {

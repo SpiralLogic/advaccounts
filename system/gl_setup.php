@@ -102,17 +102,17 @@
    * @return bool
    */
   function can_process() {
-    if (!Validation::is_num('po_over_receive', 0, 100)) {
+    if (!Validation::post_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));
       JS::set_focus('po_over_receive');
       return FALSE;
     }
-    if (!Validation::is_num('po_over_charge', 0, 100)) {
+    if (!Validation::post_num('po_over_charge', 0, 100)) {
       Event::error(_("The invoice over-charge allowance must be between 0 and 100."));
       JS::set_focus('po_over_charge');
       return FALSE;
     }
-    if (!Validation::is_num('past_due_days', 0, 100)) {
+    if (!Validation::post_num('past_due_days', 0, 100)) {
       Event::error(_("The past due days interval allowance must be between 0 and 100."));
       JS::set_focus('past_due_days');
       return FALSE;

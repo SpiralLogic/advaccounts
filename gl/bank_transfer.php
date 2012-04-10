@@ -70,12 +70,12 @@
       JS::set_focus('DatePaid');
       return FALSE;
     }
-    if (!Validation::is_num('amount', 0)) {
+    if (!Validation::post_num('amount', 0)) {
       Event::error(_("The entered amount is invalid or less than zero ."));
       JS::set_focus('amount');
       return FALSE;
     }
-    if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
+    if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
       Event::error(_("The entered amount is invalid or less than zero ."));
       JS::set_focus('charge');
       return FALSE;

@@ -41,7 +41,7 @@
   $result = Inv_Location::get_details($_POST['stock_id']);
   $updated = FALSE;
   while ($myrow = DB::fetch($result)) {
-    if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
+    if (isset($_POST['UpdateData']) && Validation::post_num($myrow["loc_code"])) {
       $myrow["reorder_level"] = Validation::input_num($myrow["loc_code"]);
       Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], Validation::input_num($myrow["loc_code"]));
       Inv_Location::set_shelves($_POST['stock_id'], $myrow["loc_code"], $_POST['shelf_primary' . $myrow["loc_code"]], $_POST["shelf_secondary" . $myrow["loc_code"]]);

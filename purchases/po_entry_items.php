@@ -267,18 +267,18 @@
   function check_data() {
     $dec = Item::qty_dec($_POST['stock_id']);
     $min = 1 / pow(10, $dec);
-    if (!Validation::is_num('qty', $min)) {
+    if (!Validation::post_num('qty', $min)) {
       $min = Num::format($min, $dec);
       Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
       JS::set_focus('qty');
       return FALSE;
     }
-    if (!Validation::is_num('price', 0)) {
+    if (!Validation::post_num('price', 0)) {
       Event::error(_("The price entered must be numeric and not less than zero."));
       JS::set_focus('price');
       return FALSE;
     }
-    if (!Validation::is_num('discount', 0, 100)) {
+    if (!Validation::post_num('discount', 0, 100)) {
       Event::error(_("Discount percent can not be less than 0 or more than 100."));
       JS::set_focus('discount');
       return FALSE;
@@ -316,7 +316,7 @@
       JS::set_focus('delivery_address');
       return FALSE;
     }
-    if (!Validation::is_num('freight', 0)) {
+    if (!Validation::post_num('freight', 0)) {
       Event::error(_("The freight entered must be numeric and not less than zero."));
       JS::set_focus('freight');
       return FALSE;

@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class Input {
 
@@ -57,7 +57,7 @@
      * @static
      *
      * @param              $var
-     * @param Input|int   $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
+     * @param Input|int    $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
      *                              Input::BOOL
      * @param mixed        $default Default value if there is no current variable
      *
@@ -70,9 +70,9 @@
     /***
      * @static
      *
-     * @param mixed $var     $_REQUEST variable to return
+     * @param mixed     $var     $_REQUEST variable to return
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-     * @param null  $default Default value if there is no current variable
+     * @param null      $default Default value if there is no current variable
      *
      * @return bool|int|string|object
      */
@@ -91,12 +91,29 @@
     static public function get_post($var, $type = NULL, $default = NULL) {
       return static::_get_post($_GET, $_POST, $var, $type, $default);
     }
+    /**
+     * @static
+     *
+     * @param      $var
+     * @param      $type
+     * @param null $default
+     *
+     * @return bool|int|null|string
+     */
+    public static function get_post_global($var, $type, $default = NULL) {
+      $result = static::_get_post($_GET, $_POST, $var, $type, FALSE);
+      if ($result === FALSE) {
+        $result = static::_get_global($var, $type, $default);
+      }
+      return $result;
+    }
+
     /***
      * @static
      *
-     * @param mixed $var     $_POST  variable to return if it doesn't exist $_GET will be returned
+     * @param mixed     $var     $_POST  variable to return if it doesn't exist $_GET will be returned
      * @param int|Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
-     * @param null  $default Default value if there is no current variable
+     * @param null      $default Default value if there is no current variable
      *
      * @return bool|int|string|object
      */
@@ -167,6 +184,23 @@
       }
       return (static::_has($_SESSION, func_get_args()));
     }
+    /**
+     * @static
+     *
+     * @param $var
+     * @param $type
+     * @param $default
+     *
+     * @return bool|int|null|string
+     */
+    protected static function _get_global($var, $type, $default) {
+      if (!isset($_SESSION['globals'])) {
+        $_SESSION['globals'] = array();
+        return NULL;
+      }
+      return static::_isset($_SESSION['globals'], $var, $type, $default);
+    }
+
     /**
      * @static
      *

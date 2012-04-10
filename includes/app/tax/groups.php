@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Tax_Groups {
 
     static public function clear_shipping_tax_group() {
@@ -84,13 +84,19 @@
      * @static
      *
      * @param $id
+     *
+     * @return bool
      */
     static public function delete($id) {
+      if (can_delete($id)) {
+        return FALSE;
+      }
       DB::begin();
       $sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
       DB::query($sql, "could not delete tax group");
       static::delete_items($id);
       DB::commit();
+      Event::notice(_('Selected tax group has been deleted'));
     }
     /**
      * @static
@@ -233,6 +239,31 @@
       echo "<tr><td class='label'>$label</td>";
       Tax_Groups::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
       echo "</tr>\n";
+    }
+    /**
+     * @param $selected_id
+     *
+     * @return bool
+     */
+    static public function can_delete($selected_id) {
+      if ($selected_id == -1) {
+        return FALSE;
+      }
+      $sql = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
+      $result = DB::query($sql, "could not query customers");
+      $myrow = DB::fetch_row($result);
+      if ($myrow[0] > 0) {
+        Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
+        return FALSE;
+      }
+      $sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
+      $result = DB::query($sql, "could not query suppliers");
+      $myrow = DB::fetch_row($result);
+      if ($myrow[0] > 0) {
+        Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
+        return FALSE;
+      }
+      return TRUE;
     }
   }
 

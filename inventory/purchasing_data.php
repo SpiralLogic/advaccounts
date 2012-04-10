@@ -23,12 +23,12 @@
       Event::error(_("There is no item selected."));
       JS::set_focus('stock_id');
     }
-    elseif (!Validation::is_num('price', 0)) {
+    elseif (!Validation::post_num('price', 0)) {
       $input_error = 1;
       Event::error(_("The price entered was not numeric."));
       JS::set_focus('price');
     }
-    elseif (!Validation::is_num('conversion_factor')) {
+    elseif (!Validation::post_num('conversion_factor')) {
       $input_error = 1;
       Event::error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
       JS::set_focus('conversion_factor');

@@ -50,7 +50,7 @@
     else {
       $myrow = DB::fetch_row($result);
       $gl_act_name = $myrow[1];
-      if (!Validation::is_num('amount')) {
+      if (!Validation::post_num('amount')) {
         Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
         JS::set_focus('amount');
         $input_error = TRUE;
@@ -192,12 +192,12 @@
    * @return bool
    */
   function check_item_data($n) {
-    if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
+    if (!Validation::post_num('This_QuantityCredited' . $n, 0)) {
       Event::error(_("The quantity to credit must be numeric and greater than zero."));
       JS::set_focus('This_QuantityCredited' . $n);
       return FALSE;
     }
-    if (!Validation::is_num('ChgPrice' . $n, 0)) {
+    if (!Validation::post_num('ChgPrice' . $n, 0)) {
       Event::error(_("The price is either not numeric or negative."));
       JS::set_focus('ChgPrice' . $n);
       return FALSE;

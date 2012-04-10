@@ -59,12 +59,12 @@
    * @return bool
    */
   function check_item_data() {
-    if (!Validation::is_num('qty', 0)) {
+    if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::set_focus('qty');
       return FALSE;
     }
-    if (!Validation::is_num('std_cost', 0)) {
+    if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
       JS::set_focus('std_cost');
       return FALSE;

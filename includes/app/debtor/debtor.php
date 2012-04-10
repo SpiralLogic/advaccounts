@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Debtor extends \Contact_Company {
 
     /**
@@ -113,6 +113,7 @@
     }
     /**
      * @param null $details
+     *
      * @return void
      */
     public function addBranch($details = NULL) {
@@ -220,6 +221,7 @@
     }
     /**
      * @param null $changes
+     *
      * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
@@ -243,22 +245,26 @@
      * @return array|bool|null
      */
     protected function _canProcess() {
+
       if (strlen($this->name) == 0) {
         return $this->_status(FALSE, 'Processing', "The customer name cannot be empty.", 'name');
       }
       if (strlen($this->debtor_ref) == 0) {
         $data['debtor_ref'] = substr($this->name, 0, 29);
       }
-      if (!is_numeric($this->credit_limit)) {
+      if (!Validation::is_num($this->credit_limit, 0)) {
+        JS::set_focus('credit_limit');
         return $this->_status(FALSE, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
-      if (!is_numeric($this->pymt_discount)) {
+      if (!Validation::is_num($this->pymt_discount, 0, 100)) {
+        JS::set_focus('pymt_discount');
         return $this->_status(FALSE, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'pymt_discount');
       }
-      if (!is_numeric($this->discount)) {
+      if (!Validation::is_num($this->discount, 0, 100)) {
+        JS::set_focus('discount');
         return $this->_status(FALSE, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount');
       }
-      if (!is_numeric($this->webid)) {
+      if (Validation::is_num($this->webid, 0)) {
         $this->webid = NULL;
       }
       if ($this->id != 0) {
@@ -409,6 +415,7 @@ JS;
      *
      * @param       $id
      * @param array $options
+     *
      * @return void
      */
     static public function addSearchBox($id, $options = array()) {
@@ -472,7 +479,6 @@ JS;
      *
      * @param      $customer_id
      * @param null $to
-     *
      * @param bool $istimestamp
      *
      * @return Array|\DB_Query_Result
@@ -482,7 +488,7 @@ JS;
         $todate = date("Y-m-d");
       }
       else {
-       $todate = ($istimestamp) ? date("Y-m-d", $to) : Dates::date2sql($to);
+        $todate = ($istimestamp) ? date("Y-m-d", $to) : Dates::date2sql($to);
       }
 
       $customer_record["Balance"] = 0;
@@ -640,6 +646,7 @@ JS;
      * @static
      *
      * @param null $value
+     *
      * @return void
      */
     static public function newselect($value = NULL) {
@@ -715,6 +722,7 @@ JS;
      * @param bool $show_inactive
      * @param bool $editkey
      * @param bool $async
+     *
      * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
@@ -735,6 +743,7 @@ JS;
      * @param bool $submit_on_change
      * @param bool $show_inactive
      * @param bool $editkey
+     *
      * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE) {
@@ -794,6 +803,43 @@ JS;
         $preview_str .= Display::viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type", $class, $id, $icon);
       }
       return $preview_str;
+    }
+    /**
+     * @param $customer_record
+     * @return void
+     */
+    static public function display_summary($customer_record) {
+      $past_due1 = DB_Company::get_pref('past_due_days');
+      $past_due2 = 2 * $past_due1;
+      if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
+        echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
+      }
+      $txt_now_due = "1-" . $past_due1 . " " . _('Days');
+      $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
+      $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
+      start_table('tablestyle width90');
+      $th = array(_("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"));
+      table_header($th);
+      start_row();
+      if (isset($customer_record["curr_code"])) {
+        label_cell($customer_record["curr_code"]);
+      }
+      else {
+        unset($th[0]);
+      }
+      if (isset($customer_record["curr_code"])) {
+        label_cell($customer_record["terms"]);
+      }
+      else {
+        unset($th[0]);
+      }
+      amount_cell($customer_record["Balance"] - $customer_record["Due"]);
+      amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
+      amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
+      amount_cell($customer_record["Overdue2"]);
+      amount_cell($customer_record["Balance"]);
+      end_row();
+      end_table();
     }
   }
 

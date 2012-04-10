@@ -12,14 +12,9 @@
   JS::open_window(900, 500);
   JS::footerFile('/js/payalloc.js');
   Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
-  if (isset($_GET['supplier_id'])) {
-    $_POST['supplier_id'] = $_GET['supplier_id'];
-  }
+  $_POST['supplier_id'] = Input::get_post_global('supplier_id',Input::NUMERIC,-1);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->supplier_id;
-  }
   if (!isset($_POST['DatePaid'])) {
     $_POST['DatePaid'] = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {

@@ -11,7 +11,7 @@
   Page::start(_($help_context = "Company Setup"), SA_SETUPCOMPANY);
   if (isset($_POST['update']) && $_POST['update'] != "") {
     $input_error = 0;
-    if (!Validation::is_num('login_tout', 10)) {
+    if (!Validation::post_num('login_tout', 10)) {
       Event::error(_("Login timeout must be positive number not less than 10."));
       JS::set_focus('login_tout');
       $input_error = 1;

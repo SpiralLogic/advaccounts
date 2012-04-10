@@ -173,10 +173,10 @@
             $min = 0;
             $max = $itm->quantity - $itm->qty_done;
           }
-          if ($itm->quantity > 0 && Validation::is_num('Line' . $line_no, $min, $max)) {
+          if ($itm->quantity > 0 && Validation::post_num('Line' . $line_no, $min, $max)) {
             $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
           }
-          elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
+          elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line_no, $max, $min)) {
             $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
           }
           else {
@@ -275,7 +275,7 @@
       if ($_POST['ChargeFreightCost'] == "") {
         $_POST['ChargeFreightCost'] = Num::price_format(0);
       }
-      if (!Validation::is_num('ChargeFreightCost', 0)) {
+      if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
         JS::set_focus('ChargeFreightCost');
         return FALSE;

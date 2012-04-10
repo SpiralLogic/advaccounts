@@ -100,7 +100,7 @@
    * @return mixed
    */
   function on_submit($selected_parent, $selected_component = -1) {
-    if (!Validation::is_num('quantity', 0)) {
+    if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
       JS::set_focus('quantity');
       return;

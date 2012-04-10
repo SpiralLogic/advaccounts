@@ -85,7 +85,7 @@
     if (!Sales_Delivery::check_quantities($order)) {
       Event::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
     }
-    elseif (!Validation::is_num('ChargeFreightCost', 0)) {
+    elseif (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("Freight cost cannot be less than zero"));
       JS::set_focus('ChargeFreightCost');
     }

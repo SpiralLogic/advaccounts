@@ -145,7 +145,7 @@
    */
   function update_component(&$Mode, $kit_code, $selected_item) {
     global $selected_kit;
-    if (!Validation::is_num('quantity', 0)) {
+    if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
       JS::set_focus('quantity');
       return;

@@ -474,7 +474,7 @@
     if ($_POST['freight_cost'] == "") {
       $_POST['freight_cost'] = Num::price_format(0);
     }
-    if (!Validation::is_num('freight_cost', 0)) {
+    if (!Validation::post_num('freight_cost', 0)) {
       Event::error(_("The shipping cost entered is expected to be numeric."));
       JS::set_focus('freight_cost');
       return FALSE;
@@ -522,18 +522,18 @@
    * @return bool
    */
   function check_item_data($order) {
-    if (!User::i()->can_access(SA_SALESCREDIT) && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
+    if (!User::i()->can_access(SA_SALESCREDIT) && (!Validation::post_num('qty', 0) || !Validation::post_num('Disc', 0, 100))) {
       Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
       JS::set_focus('qty');
       return FALSE;
     }
-    elseif (!Validation::is_num('price', 0)) {
+    elseif (!Validation::post_num('price', 0)) {
       Event::error(_("Price for item must be entered and can not be less than 0"));
       JS::set_focus('price');
       return FALSE;
     }
     elseif (!User::i()
-      ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::is_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
+      ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $order->line_items[$_POST[LineNo]]->qty_done)
     ) {
       JS::set_focus('qty');
       Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));

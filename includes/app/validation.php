@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Validation {
 
     const CUSTOMERS = "debtors";
@@ -124,11 +124,24 @@
      *
      * @return int
      */
-    static public function is_num($postname, $min = NULL, $max = NULL, $default = 0) {
+    static public function post_num($postname, $min = NULL, $max = NULL, $default = 0) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
-      $result = filter_var($_POST[$postname], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
+      return Validation::is_num($_POST[$postname], $min, $max, $default);
+    }
+    /**
+     * @static
+     *
+     * @param      $value
+     * @param null $min
+     * @param null $max
+     * @param int  $default
+     *
+     * @return int
+     */
+    static public function is_num($value, $min = NULL, $max = NULL, $default = 0) {
+      $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== NULL && $result < $min) {
         $result = FALSE;
       }
@@ -142,7 +155,6 @@
      *
      * @param null $postname
      * @param int  $default
-     *
      * @param null $min
      * @param null $max
      *

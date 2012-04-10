@@ -73,12 +73,16 @@
 
   $id = find_submit('_chgtpl');
   if ($id != -1) {
-    change_tpl_flag($id);
+    $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
+    DB::query($sql, "Can't change sales order type");
+    Ajax::i()->activate('orders_tbl');
   }
   if (isset($_POST['Update']) && isset($_POST['last'])) {
     foreach ($_POST['last'] as $id => $value) {
       if ($value != check_value('chgtpl' . $id)) {
-        change_tpl_flag($id);
+        $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
+        DB::query($sql, "Can't change sales order type");
+        Ajax::i()->activate('orders_tbl');
       }
     }
   }
@@ -158,7 +162,7 @@
   $sql .= " AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_id = branch.branch_id
 		AND debtor.debtor_no = branch.debtor_no";
-  if ($selected_customer!= -1) {
+  if ($selected_customer != -1) {
     $sql .= " AND sorder.debtor_no = " . DB::quote($selected_customer);
   }
   if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
@@ -227,7 +231,12 @@
     $ord = "Order #";
     $cols = array(
       array('type' => 'skip'),
-      _("Order #") => array('fun' => 'view_link', 'ord' => ''),
+      _("Order #") => array(
+        'fun' => function ($row, $order_no) {
+          return Debtor::trans_view($row['trans_type'], $order_no);
+        }
+      , 'ord' => ''
+      ),
       _("Ref") => array('ord' => ''),
       _("PO#") => array('ord' => ''),
       _("Date") => array('type' => 'date', 'ord' => 'asc'),
@@ -243,7 +252,12 @@
     $ord = "Quote #";
     $cols = array(
       array('type' => 'skip'),
-      _("Quote #") => array('fun' => 'view_link', 'ord' => ''),
+      _("Quote #") => array(
+        'fun' => function ($row, $order_no) {
+          return Debtor::trans_view($row['trans_type'], $order_no);
+        }
+      , 'ord' => ''
+      ),
       _("Ref") => array('ord' => ''),
       _("PO#") => array('type' => 'skip'),
       _("Date") => array('type' => 'date', 'ord' => 'desc'),
@@ -259,192 +273,130 @@
   }
   if ($_POST['order_view_mode'] == 'OutstandingOnly') {
     Arr::append($cols, array(
-      array('type' => 'skip'), array('fun' => 'dispatch_link')
+      array('type' => 'skip'), array(
+        'fun' => function ($row) {
+          if ($row['trans_type'] == ST_SALESORDER) {
+            return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+          }
+          else {
+            return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+          }
+        }
+      )
     ));
   }
   elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
     Arr::substitute($cols, 3, 1, _("Description"));
-    Arr::append($cols, array(array('insert' => TRUE, 'fun' => 'invoice_link')));
+    Arr::append($cols, array(
+      array(
+        'insert' => TRUE, 'fun' => function ($row) {
+        if ($row['trans_type'] == ST_SALESORDER) {
+          return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
+        }
+        else {
+          return '';
+        }
+      }
+      )
+    ));
   }
   else {
     if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
       Arr::substitute($cols, 3, 1, _("Description"));
-      Arr::append($cols, array(array('insert' => TRUE, 'fun' => 'delivery_link')));
+      Arr::append($cols, array(
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
+        }
+        )
+      ));
     }
     elseif ($trans_type == ST_SALESQUOTE) {
 
       Arr::append($cols, array(
-        array('insert' => TRUE, 'fun' => 'edit_link'),
-        array('insert' => TRUE, 'fun' => 'order_link'),
-        array('insert' => TRUE, 'fun' => 'email_link'),
-        array('insert' => TRUE, 'fun' => 'prt_link2'),
-        array('insert' => TRUE, 'fun' => 'prt_link')
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
+        }
+        ),
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
+        }
+        ),
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
+        }
+        ),
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
+        }
+        ),
+        array(
+          'insert' => TRUE, 'fun' => function ($row) {
+          return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_SALESQUOTE, ICON_PRINT, 'button printlink');
+        }
+        )
       ));
     }
     elseif ($trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
         _("Tmpl") => array(
-          'type' => 'skip', 'insert' => TRUE, 'fun' => 'tmpl_checkbox'
+          'type' => 'skip', 'insert' => TRUE, 'fun' => function ($row) {
+            global $trans_type;
+            if ($trans_type == ST_SALESQUOTE) {
+              return '';
+            }
+            $name = "chgtpl" . $row['order_no'];
+            $value = $row['type'] ? 1 : 0;
+            // save also in hidden field for testing during 'Update'
+            return checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row
+            ['order_no'] . ']', $value, FALSE);
+          }
+
         ), array(
-          'insert' => TRUE, 'fun' => 'edit_link'
+          'insert' => TRUE, 'fun' => function ($row) {
+            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . ST_SALESORDER, ICON_EDIT);
+          }
+
         ), array(
-          'insert' => TRUE, 'fun' => 'email_link'
+          'insert' => TRUE, 'fun' => function ($row) {
+            Reporting::emailDialogue($row['debtor_no'], ST_SALESORDER, $row['order_no']);
+          }
+
         ), array(
-          'insert' => TRUE, 'fun' => 'prt_link2'
+          'insert' => TRUE, 'fun' => function ($row) {
+            return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
+          }
+
         ), array(
-          'insert' => TRUE, 'fun' => 'prt_link'
+          'insert' => TRUE, 'fun' => function ($row) {
+            return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_SALESORDER, ICON_PRINT, 'button printlink');
+          }
+
         )
       ));
     }
   }
   $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, 4);
-  $table->set_marker('check_overdue', _("Marked items are overdue."));
+  $table->set_marker(function ($row) {
+      global $trans_type;
+      if ($trans_type == ST_SALESQUOTE) {
+        return (Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])));
+      }
+      else {
+        return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+      }
+    }
+    , _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);
   submit_center('Update', _("Update"), TRUE, '', NULL);
   end_form();
 
   Page::end();
-  //	Query format functions
-  //
-  /**
-   * @param $row
-   *
-   * @return bool|int
-   */
-  function check_overdue($row) {
-    global $trans_type;
-    if ($trans_type == ST_SALESQUOTE) {
-      return (Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])));
-    }
-    else {
-      return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
-    }
-  }
 
-  /**
-   * @param $row
-   * @param $order_no
-   *
-   * @return null|string
-   */
-  function view_link($row, $order_no) {
-    return Debtor::trans_view($row['trans_type'], $order_no);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function prt_link($row) {
-    return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, $row['trans_type'], ICON_PRINT, 'button printlink');
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function prt_link2($row) {
-    return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function edit_link($row) {
-    return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return ADV\Core\HTML|string
-   */
-  function email_link($row) {
-    HTML::setReturn(TRUE);
-    UI::button(FALSE, 'Email', array(
-      'class' => 'button email-button',
-      'data-emailid' => $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']
-    ));
-    return HTML::setReturn(FALSE);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function dispatch_link($row) {
-    if ($row['trans_type'] == ST_SALESORDER) {
-      return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
-    }
-    else {
-      return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
-    }
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function invoice_link($row) {
-    if ($row['trans_type'] == ST_SALESORDER) {
-      return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
-    }
-    else {
-      return '';
-    }
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function delivery_link($row) {
-    return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function order_link($row) {
-    return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function tmpl_checkbox($row) {
-    global $trans_type;
-    if ($trans_type == ST_SALESQUOTE) {
-      return '';
-    }
-    $name = "chgtpl" . $row['order_no'];
-    $value = $row['type'] ? 1 : 0;
-    // save also in hidden field for testing during 'Update'
-    return checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row
-    ['order_no'] . ']', $value, FALSE);
-  }
-
-  // Update db record if respective checkbox value has changed.
-  //
-  /**
-   * @param $id
-   */
-  function change_tpl_flag($id) {
-    $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-    DB::query($sql, "Can't change sales order type");
-    Ajax::i()->activate('orders_tbl');
-  }
 
 

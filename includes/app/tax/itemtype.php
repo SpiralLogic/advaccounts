@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Tax_ItemType {
+
     /**
      * @static
      *
@@ -95,17 +96,21 @@
      * @static
      *
      * @param $id
+     *
+     * @return bool
      */
     static public function delete($id) {
+      if (!can_delete($id)) {
+        return FALSE;
+      }
+
       DB::begin();
-
       $sql = "DELETE FROM item_tax_types WHERE id=" . DB::escape($id);
-
       DB::query($sql, "could not delete item tax type");
       // also delete all exemptions
       static::delete_exemptions($id);
-
       DB::commit();
+      Event::notice(_('Selected item tax type has been deleted'));
     }
     /**
      * @static
@@ -142,8 +147,6 @@
 
       return DB::query($sql, "could not get item tax type exemptions");
     }
-
-    // ITEM TAX TYPES
     /**
      * @static
      *
@@ -182,6 +185,23 @@
       echo "<tr><td class='label'>$label</td>";
       Tax_ItemType::cells(NULL, $name, $selected_id);
       echo "</tr>\n";
+    }
+    /**
+     * @static
+     *
+     * @param $selected_id
+     *
+     * @return bool
+     */
+    static public function can_delete($selected_id) {
+      $sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
+      $result = DB::query($sql, "could not query stock master");
+      $myrow = DB::fetch_row($result);
+      if ($myrow[0] > 0) {
+        Event::error(_("Cannot delete this item tax type because items have been created referring to it."));
+        return FALSE;
+      }
+      return TRUE;
     }
   }
 

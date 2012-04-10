@@ -54,7 +54,7 @@
     else {
       $myrow = DB::fetch_row($result);
       $gl_act_name = $myrow[1];
-      if (!Validation::is_num('amount')) {
+      if (!Validation::post_num('amount')) {
         Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
         JS::set_focus('amount');
         $input_error = TRUE;
@@ -301,17 +301,17 @@ JS;
    * @return bool
    */
   function check_item_data($n) {
-    if (!Validation::is_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
+    if (!Validation::post_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
       Event::error(_("The quantity to invoice must be numeric and greater than zero."));
       JS::set_focus('this_quantity_inv' . $n);
       return FALSE;
     }
-    if (!Validation::is_num('ChgPrice' . $n)) {
+    if (!Validation::post_num('ChgPrice' . $n)) {
       Event::error(_("The price is not numeric."));
       JS::set_focus('ChgPrice' . $n);
       return FALSE;
     }
-    if (!Validation::is_num('ExpPrice' . $n)) {
+    if (!Validation::post_num('ExpPrice' . $n)) {
       Event::error(_("The price is not numeric."));
       JS::set_focus('ExpPrice' . $n);
       return FALSE;

@@ -131,7 +131,7 @@
    * @return bool
    */
   function check_item_data() {
-    //if (!Validation::is_num('amount', 0))
+    //if (!Validation::post_num('amount', 0))
     //{
     //	Event::error( _("The amount entered is not a valid number or is less than zero."));
     //	JS::set_focus('amount');

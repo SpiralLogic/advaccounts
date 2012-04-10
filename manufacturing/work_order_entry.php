@@ -82,7 +82,7 @@
         $_POST['ref'] = Ref::get_next(ST_WORKORDER);
       }
     }
-    if (!Validation::is_num('quantity', 0)) {
+    if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is invalid or less than zero."));
       JS::set_focus('quantity');
       return FALSE;
@@ -107,7 +107,7 @@
       if ($_POST['Labour'] == "") {
         $_POST['Labour'] = Num::price_format(0);
       }
-      if (!Validation::is_num('Labour', 0)) {
+      if (!Validation::post_num('Labour', 0)) {
         Event::error(_("The labour cost entered is invalid or less than zero."));
         JS::set_focus('Labour');
         return FALSE;
@@ -115,7 +115,7 @@
       if ($_POST['Costs'] == "") {
         $_POST['Costs'] = Num::price_format(0);
       }
-      if (!Validation::is_num('Costs', 0)) {
+      if (!Validation::post_num('Costs', 0)) {
         Event::error(_("The cost entered is invalid or less than zero."));
         JS::set_focus('Costs');
         return FALSE;

@@ -109,7 +109,7 @@
    * @return bool
    */
   function check_item_data() {
-    if (!Validation::is_num('qty', 0)) {
+    if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
       JS::set_focus('qty');
       return FALSE;

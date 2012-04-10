@@ -20,7 +20,7 @@
     elseif (empty($_POST['host'])) {
       Event::notice(_("You have selected printing to server at user IP."));
     }
-    elseif (!Validation::is_num('tout', 0, 60)) {
+    elseif (!Validation::post_num('tout', 0, 60)) {
       $error = 1;
       Event::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
       JS::set_focus('tout');

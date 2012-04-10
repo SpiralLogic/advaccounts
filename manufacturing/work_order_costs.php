@@ -35,7 +35,7 @@
    */
   function can_process() {
     global $wo_details;
-    if (!Validation::is_num('costs', 0)) {
+    if (!Validation::post_num('costs', 0)) {
       Event::error(_("The amount entered is not a valid number or less then zero."));
       JS::set_focus('costs');
       return FALSE;

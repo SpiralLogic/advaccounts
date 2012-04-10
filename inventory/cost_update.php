@@ -19,7 +19,7 @@
     $old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldOverheadCost'];
     $new_cost = Validation::input_num('material_cost') + Validation::input_num('labour_cost') + Validation::input_num('overhead_cost');
     $should_update = TRUE;
-    if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost') || !Validation::is_num('overhead_cost')
+    if (!Validation::post_num('material_cost') || !Validation::post_num('labour_cost') || !Validation::post_num('overhead_cost')
     ) {
       Event::error(_("The entered cost is not numeric."));
       JS::set_focus('material_cost');

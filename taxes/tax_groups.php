@@ -27,7 +27,7 @@
                {
                  if (isset($_POST['tax_type_id' . $i]) &&
                    $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
-                   !Validation::is_num('rate' . $i, 0))
+                   !Validation::post_num('rate' . $i, 0))
                  {
                  Event::error( _("An entered tax rate is invalid or less than zero."));
                    $input_error = 1;
@@ -61,37 +61,10 @@
       $Mode = MODE_RESET;
     }
   }
-  /**
-   * @param $selected_id
-   *
-   * @return bool
-   */
-  function can_delete($selected_id) {
-    if ($selected_id == -1) {
-      return FALSE;
-    }
-    $sql = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query customers");
-    $myrow = DB::fetch_row($result);
-    if ($myrow[0] > 0) {
-      Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
-      return FALSE;
-    }
-    $sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query suppliers");
-    $myrow = DB::fetch_row($result);
-    if ($myrow[0] > 0) {
-      Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
-      return FALSE;
-    }
-    return TRUE;
-  }
+
 
   if ($Mode == MODE_DELETE) {
-    if (can_delete($selected_id)) {
       Tax_Groups::delete($selected_id);
-      Event::notice(_('Selected tax group has been deleted'));
-    }
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {

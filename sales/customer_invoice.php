@@ -304,7 +304,7 @@
     else {
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
     }
-    if (!Validation::is_num('ChargeFreightCost')) {
+    if (!Validation::post_num('ChargeFreightCost')) {
       $_POST['ChargeFreightCost'] = Num::price_format(0);
     }
   }

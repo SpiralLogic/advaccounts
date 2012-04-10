@@ -153,12 +153,12 @@
       JS::set_focus('AmountDebit');
       return FALSE;
     }
-    if (strlen($_POST['AmountDebit']) && !Validation::is_num('AmountDebit', 0)) {
+    if (strlen($_POST['AmountDebit']) && !Validation::post_num('AmountDebit', 0)) {
       Event::error(_("The debit amount entered is not a valid number or is less than zero."));
       JS::set_focus('AmountDebit');
       return FALSE;
     }
-    elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0)) {
+    elseif (strlen($_POST['AmountCredit']) && !Validation::post_num('AmountCredit', 0)) {
       Event::error(_("The credit amount entered is not a valid number or is less than zero."));
       JS::set_focus('AmountCredit');
       return FALSE;

@@ -104,12 +104,12 @@
       if ($_POST['amount'] == "") {
         $_POST['amount'] = Num::price_format(0);
       }
-      if (!Validation::is_num('amount', 0)) {
+      if (!Validation::post_num('amount', 0)) {
         Event::error(_("The entered amount is invalid or less than zero."));
         JS::set_focus('amount');
         return FALSE;
       }
-      if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
+      if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
         Event::error(_("The entered amount is invalid or less than zero."));
         JS::set_focus('charge');
         return FALSE;
@@ -122,7 +122,7 @@
           return FALSE;
         }
       }
-      if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
+      if (isset($_POST['_ex_rate']) && !Validation::post_num('_ex_rate', 0.000001)) {
         Event::error(_("The exchange rate must be numeric and greater than zero."));
         JS::set_focus('_ex_rate');
         return FALSE;
@@ -130,7 +130,7 @@
       if ($_POST['discount'] == "") {
         $_POST['discount'] = 0;
       }
-      if (!Validation::is_num('discount', 0)) {
+      if (!Validation::post_num('discount', 0)) {
         Event::error(_("The entered discount is invalid or less than zero."));
         JS::set_focus('amount');
         return FALSE;

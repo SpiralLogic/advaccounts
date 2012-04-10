@@ -250,7 +250,7 @@
         JS::set_focus('DefaultReceivedDate');
         return FALSE;
       }
-      if (!Validation::is_num('freight', 0)) {
+      if (!Validation::post_num('freight', 0)) {
         Event::error(_("The freight entered must be numeric and not less than zero."));
         JS::set_focus('freight');
         return FALSE;

@@ -38,7 +38,7 @@
     foreach ($order->line_items as $line) {
       if (($line->quantity - $line->qty_received) > 0) {
         $_POST[$line->line_no] = max($_POST[$line->line_no], 0);
-        if (!Validation::is_num($line->line_no)) {
+        if (!Validation::post_num($line->line_no)) {
           $_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
         }
         if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {

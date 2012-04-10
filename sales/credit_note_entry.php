@@ -166,7 +166,7 @@
    */
   function can_process($order) {
     $input_error = 0;
-    if ($order->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0))) {
+    if ($order->count_items() == 0 && (!Validation::post_num('ChargeFreightCost', 0))) {
       return FALSE;
     }
     if ($order->trans_no == 0) {
@@ -196,17 +196,17 @@
    * @return bool
    */
   function check_item_data() {
-    if (!Validation::is_num('qty', 0)) {
+    if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity must be greater than zero."));
       JS::set_focus('qty');
       return FALSE;
     }
-    if (!Validation::is_num('price', 0)) {
+    if (!Validation::post_num('price', 0)) {
       Event::error(_("The entered price is negative or invalid."));
       JS::set_focus('price');
       return FALSE;
     }
-    if (!Validation::is_num('Disc', 0, 100)) {
+    if (!Validation::post_num('Disc', 0, 100)) {
       Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
       JS::set_focus('Disc');
       return FALSE;

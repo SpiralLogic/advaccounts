@@ -46,7 +46,7 @@
     if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
       $_POST['ref'] = Ref::get_next(ST_MANURECEIVE);
     }
-    if (!Validation::is_num('quantity', 0)) {
+    if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is not a valid number or less then zero."));
       JS::set_focus('quantity');
       return FALSE;

@@ -115,7 +115,7 @@
         continue; // this line was fully credited/removed
       }
       if (isset($_POST['Line' . $line_no])) {
-        if (Validation::is_num('Line' . $line_no, 0, $itm->quantity)) {
+        if (Validation::post_num('Line' . $line_no, 0, $itm->quantity)) {
           Orders::session_get($_POST['order_id'])->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
         }
       }
@@ -156,7 +156,7 @@
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }
     }
-    if (!Validation::is_num('ChargeFreightCost', 0)) {
+    if (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("The entered shipping cost is invalid or less than zero."));
       JS::set_focus('ChargeFreightCost');
       return FALSE;
@@ -258,7 +258,7 @@
       amount_cell($line_total);
       end_row();
     }
-    if (!Validation::is_num('ChargeFreightCost')) {
+    if (!Validation::post_num('ChargeFreightCost')) {
       $_POST['ChargeFreightCost'] = Num::price_format(Orders::session_get($_POST['order_id'])->freight_cost);
     }
     $colspan = 7;

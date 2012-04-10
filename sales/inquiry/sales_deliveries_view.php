@@ -129,20 +129,40 @@
     $sql .= " GROUP BY trans.trans_no ";
   } //end no delivery number selected
   $cols = array(
-    _("Delivery #") => array('fun' => 'trans_view'), _("Customer"), _("branch_id") => 'skip', _("Contact"), _("Address"),
+    _("Delivery #") => array('fun' =>   function ($trans, $trans_no) {
+        return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
+      }
+    ), _("Customer"), _("branch_id") => 'skip', _("Contact"), _("Address"),
     _("Reference"), _("Cust Ref"), _("Delivery Date") => array(
       'type' => 'date', 'ord' => ''
     ), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
     ), _("Currency") => array('align' => 'center'),
     submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
-      'insert' => TRUE, 'fun' => 'batch_checkbox', 'align' => 'center'
+      'insert' => TRUE, 'fun' =>   function ($row) {
+          $name = "Sel_" . $row['trans_no'];
+          return $row['Done'] ? '' :
+            "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
+              . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
+        }
+      , 'align' => 'center'
     ), array(
-      'insert' => TRUE, 'fun' => 'edit_link'
+      'insert' => TRUE, 'fun' =>   function ($row) {
+          return $row["Outstanding"] == 0 ? '' :
+            DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
+        }
+
     ), array(
-      'insert' => TRUE, 'fun' => 'invoice_link'
+      'insert' => TRUE, 'fun' =>   function ($row) {
+          return $row["Outstanding"] == 0 ? '' :
+            DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
+        }
+
     ), array(
-      'insert' => TRUE, 'fun' => 'prt_link'
+      'insert' => TRUE, 'fun' =>   function ($row) {
+          return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
+        }
+
     )
   );
   if (isset($_SESSION['Batch'])) {
@@ -152,70 +172,11 @@
     unset($_SESSION['Batch']);
   }
   $table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
-  $table->set_marker('check_overdue', _("Marked items are overdue."));
+  $table->set_marker(  function ($row) {
+      return Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
+    }
+  , _("Marked items are overdue."));
   //$table->width = "92%";
   DB_Pager::display($table);
   end_form();
   Page::end();
-  /**
-   * @param $trans
-   * @param $trans_no
-   *
-   * @return null|string
-   */
-  function trans_view($trans, $trans_no) {
-    return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function batch_checkbox($row) {
-    $name = "Sel_" . $row['trans_no'];
-    return $row['Done'] ? '' :
-      "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
-        . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function edit_link($row) {
-    return $row["Outstanding"] == 0 ? '' :
-      DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function prt_link($row) {
-    return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function invoice_link($row) {
-    return $row["Outstanding"] == 0 ? '' :
-      DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return bool
-   */
-  function check_overdue($row) {
-    return Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
-  }
-
-
-

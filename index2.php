@@ -11,3 +11,4 @@
    * @param $constants
    **/
   include 'bootstrap.php';
+unset($_SESSION['globals']['supplier_id']);

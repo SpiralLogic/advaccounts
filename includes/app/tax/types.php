@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Tax_Types {
+
     /**
      * @static
      *
@@ -102,8 +103,14 @@
      * @static
      *
      * @param $type_id
+     *
+     * @return bool
      */
     static public function delete($type_id) {
+      if (static::can_delete($type_id)) {
+        return FALSE;
+      }
+
       DB::begin();
       $sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
       DB::query($sql, "could not delete tax type");
@@ -111,6 +118,7 @@
       $sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
       DB::query($sql, "could not delete item tax type exemptions");
       DB::commit();
+      Event::notice(_('Selected tax type has been deleted'));
     }
     /**
     Check if gl_code is used by more than 2 tax types,
@@ -183,6 +191,51 @@
       Tax_Types::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
       echo "</tr>\n";
     }
+
+    /**
+     * @static
+     *
+     * @param $selected_id
+     *
+     * @return bool
+     */
+    static public function can_delete($selected_id) {
+      $sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
+      $result = DB::query($sql, "could not query tax groups");
+      $myrow = DB::fetch_row($result);
+      if ($myrow[0] > 0) {
+        Event::error(_("Cannot delete this tax type because tax groups been created referring to it."));
+        return FALSE;
+      }
+      return TRUE;
+    }
+    /**
+     * @static
+     *
+     * @param $selected_id
+     *
+     * @return bool
+     */
+    static public function can_process($selected_id) {
+      if (strlen($_POST['name']) == 0) {
+        Event::error(_("The tax type name cannot be empty."));
+        JS::set_focus('name');
+        return FALSE;
+      }
+      elseif (!Validation::post_num('rate', 0)) {
+        Event::error(_("The default tax rate must be numeric and not less than zero."));
+        JS::set_focus('rate');
+        return FALSE;
+      }
+      if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
+        Event::error(_("Selected GL Accounts cannot be used by another tax type."));
+        JS::set_focus('sales_gl_code');
+        return FALSE;
+      }
+      return TRUE;
+    }
+
+
   }
 
 

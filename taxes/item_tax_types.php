@@ -40,10 +40,7 @@
     }
   }
   if ($Mode == MODE_DELETE) {
-    if (can_delete($selected_id)) {
-      delete($selected_id);
-      Event::notice(_('Selected item tax type has been deleted'));
-    }
+      Tax_ItemType::delete($selected_id);
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
@@ -119,15 +116,6 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
-    $sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query stock master");
-    $myrow = DB::fetch_row($result);
-    if ($myrow[0] > 0) {
-      Event::error(_("Cannot delete this item tax type because items have been created referring to it."));
-      return FALSE;
-    }
-    return TRUE;
-  }
+
 
 

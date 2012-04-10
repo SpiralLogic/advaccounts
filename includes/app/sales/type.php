@@ -141,7 +141,7 @@
        JS::set_focus('sales_type');
        return FALSE;
      }
-     if (!Validation::is_num('factor', 0)) {
+     if (!Validation::post_num('factor', 0)) {
        Event::error(_("Calculation factor must be valid positive number."));
        JS::set_focus('factor');
        return FALSE;
