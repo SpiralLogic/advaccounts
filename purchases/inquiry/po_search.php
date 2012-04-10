@@ -1,19 +1,20 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
-  if (isset($_GET['order_number'])) {
-    $_POST['order_number'] = $_GET['order_number'];
-  }
+  $_POST['order_number'] = Input::get_post('order_number', Input::NUMERIC);
+  $_POST['StockLocation'] = Input::get_post('StockLocation', Input::STRING, '');
+  $_POST['SelectStockFromList'] = Input::get_post('SelectStockFromList', Input::STRING, '');
+  $_POST['supplier_id'] = Input::get_post('supplier_id', Input::NUMERIC, 0);
   // Ajax updates
   //
   if (get_post('SearchOrders')) {
@@ -47,16 +48,6 @@
   end_row();
   end_table();
 
-  if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
-    $order_number = $_POST['order_number'];
-  }
-  if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
-  ) {
-    $selected_stock_item = $_POST['SelectStockFromList'];
-  }
-  else {
-    unset($selected_stock_item);
-  }
   //figure out the sql required from the inputs available
   $sql = "SELECT
 	porder.order_no, 
@@ -75,95 +66,48 @@
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
-  if ($_POST['supplier_id'] != ALL_TEXT) {
+  if ($_POST['supplier_id']) {
     $sql .= " AND supplier.supplier_id = " . DB::quote($_POST['supplier_id']);
   }
-  if (isset($order_number) && $order_number != "") {
-    $sql .= "AND porder.reference LIKE " . DB::quote($order_number);
+  if ($_POST['order_number']) {
+    $sql .= "AND porder.reference LIKE " . DB::quote($_POST['order_number']);
   }
   else {
     $data_after = Dates::date2sql($_POST['OrdersAfterDate']);
     $data_before = Dates::date2sql($_POST['OrdersToDate']);
     $sql .= " AND porder.ord_date >= '$data_after'";
     $sql .= " AND porder.ord_date <= '$data_before'";
-    if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
+    if ($_POST['StockLocation']) {
       $sql .= " AND porder.into_stock_location = " . DB::quote($_POST['StockLocation']);
     }
     if (isset($selected_stock_item)) {
-      $sql .= " AND line.item_code=" . DB::quote($selected_stock_item);
+      $sql .= " AND line.item_code=" . DB::quote($_POST['SelectStockFromList']);
     }
   } //end not order number selected
   $sql .= " GROUP BY porder.order_no";
   $result = DB::query($sql, "No orders were returned");
   /*show a table of the orders returned by the sql */
   $cols = array(
-    _("#") => array(
-      'fun' => 'trans_view', 'ord' => ''
-    ), _("Reference"), _("Supplier") => array(
-      'ord' => '', 'type' => 'id'
-    ), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"), _("Order Date") => array(
-      'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'
-    ), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
-      'insert' => TRUE, 'fun' => 'edit_link'
-    ), array(
-      'insert' => TRUE, 'fun' => 'prt_link'
-    ), array(
-      'insert' => TRUE, 'fun' => 'receive_link'
-    )
+    _("#") => array('fun' => function ($trans) {return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);}, 'ord' => ''),
+    _("Reference"),
+    _("Supplier") => array('ord' => '', 'type' => 'id'),
+    _("Supplier ID") => 'skip',
+    _("Location"),
+    _("Supplier's Reference"),
+    _("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Currency") => array('align' => 'center'),
+    _("Order Total") => 'amount',
+    array('insert' => TRUE, 'fun' => function ($row) {return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);}),
+    array('insert' => TRUE, 'fun' => function ($row) {return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_PURCHORDER, ICON_PRINT, 'button printlink');}),
+    array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); })
   );
   if (get_post('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->set_marker('check_overdue', _("Marked orders have overdue items."));
+  $table->set_marker(function ($row) { return $row['OverDue'] == 1; }, _("Marked orders have overdue items."));
   $table->width = "80%";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   end_form();
   Page::end();
-  /**
-   * @param $trans
-   *
-   * @return null|string
-   */
-  function trans_view($trans) {
-    return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function edit_link($row) {
-    return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function prt_link($row) {
-    return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_PURCHORDER, ICON_PRINT, 'button printlink');
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function receive_link($row) {
-    return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return bool
-   */
-  function check_overdue($row) {
-    return $row['OverDue'] == 1;
-  }
-
-

@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Inv_Location {
+
     /**
      * @static
      *
@@ -165,7 +166,7 @@
     static public function select($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT loc_code, location_name, inactive FROM locations";
       if (!$selected_id && !isset($_POST[$name])) {
-        $selected_id = Config::get('default.location');
+        $selected_id = $all_option === TRUE ? -1 : Config::get('default.location');
       }
       return select_box($name, $selected_id, $sql, 'loc_code', 'location_name',
         array(
@@ -186,7 +187,7 @@
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       echo "<td >";
       if ($label != NULL) {
-           echo "<label for=\"$name\"> $label</label>";
+        echo "<label for=\"$name\"> $label</label>";
       }
       echo Inv_Location::select($name, $selected_id, $all_option, $submit_on_change);
       echo "</td>\n";
