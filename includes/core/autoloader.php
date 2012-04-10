@@ -19,12 +19,22 @@
 
    */
   class Autoloader {
+
+    /**
+     * @var int
+     */
     static protected $time = 0;
     /**
      * @var array
      */
     static protected $classes = array();
+    /**
+     * @var array
+     */
     static protected $global_classes = array();
+    /**
+     * @var array
+     */
     static  $loaded = array();
     /**
      * @static

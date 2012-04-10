@@ -9,7 +9,13 @@
      **/
   class WO {
 
+    /**
+     * @var array
+     */
     static public $bom_list = array();
+    /**
+     * @var null
+     */
     static public $qoh_stock = NULL;
     /**
      * @static

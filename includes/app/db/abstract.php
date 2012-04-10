@@ -9,8 +9,17 @@
    **/
   abstract class DB_abstract {
 
+    /**
+     * @var int
+     */
     public $id = 0;
+    /**
+     * @var
+     */
     protected $_table;
+    /**
+     * @var
+     */
     protected $_id_column;
     /** @var Status */
     protected $_status = NULL;

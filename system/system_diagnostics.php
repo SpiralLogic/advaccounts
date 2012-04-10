@@ -276,6 +276,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_config() {
     $test['descr'] = _('Main config file');
     $test['type'] = 2;

@@ -9,8 +9,17 @@
      **/
   class Debtor_Account extends Debtor_Branch {
 
+    /**
+     * @var int
+     */
     public $accounts_id = 0;
+    /**
+     * @var string
+     */
     public $br_name = 'Accounts Department';
+    /**
+     * @var string
+     */
     public $branch_ref = 'accounts';
     /**
      * @param int|null $id

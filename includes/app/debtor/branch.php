@@ -9,36 +9,129 @@
      **/
   class Debtor_Branch extends DB_abstract {
 
+    /**
+     * @var string
+     */
     public $post_address = '';
+    /**
+     * @var int
+     */
     public $branch_id = 0;
+    /**
+     * @var string
+     */
     public $br_name = "New Address";
+    /**
+     * @var string
+     */
     public $br_address = '';
+    /**
+     * @var string
+     */
     public $city = '';
+    /**
+     * @var string
+     */
     public $state = '';
+    /**
+     * @var string
+     */
     public $postcode = '';
+    /**
+     * @var int
+     */
     public $area = DEFAULT_AREA;
+    /**
+     * @var
+     */
     public $br_post_address;
+    /**
+     * @var
+     */
     public $debtor_no;
+    /**
+     * @var string
+     */
     public $branch_ref = "New";
+    /**
+     * @var string
+     */
     public $contact_name = "";
+    /**
+     * @var
+     */
     public $default_location;
+    /**
+     * @var int
+     */
     public $default_ship_via = DEFAULT_SHIP_VIA;
+    /**
+     * @var int
+     */
     public $disable_trans = 0;
+    /**
+     * @var string
+     */
     public $phone = '';
+    /**
+     * @var string
+     */
     public $phone2 = '';
+    /**
+     * @var string
+     */
     public $fax = '';
+    /**
+     * @var string
+     */
     public $website = '';
+    /**
+     * @var string
+     */
     public $email = '';
+    /**
+     * @var int
+     */
     public $inactive = 0;
+    /**
+     * @var string
+     */
     public $notes = '';
+    /**
+     * @var int
+     */
     public $group_no = 1;
+    /**
+     * @var
+     */
     public $payment_discount_account;
+    /**
+     * @var
+     */
     public $receivables_account;
+    /**
+     * @var string
+     */
     public $sales_account = "";
+    /**
+     * @var
+     */
     public $sales_discount_account;
+    /**
+     * @var
+     */
     public $salesman;
+    /**
+     * @var int
+     */
     public $tax_group_id = DEFAULT_TAX_GROUP;
+    /**
+     * @var string
+     */
     protected $_table = 'branches';
+    /**
+     * @var string
+     */
     protected $_id_column = 'branch_id';
     /**
      * @param int|null $id

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::set_focus('account');
   JS::open_window(800, 500);
@@ -29,6 +29,9 @@
   tax_inquiry_controls();
   show_results();
   Page::end();
+  /**
+
+   */
   function tax_inquiry_controls() {
     start_form();
     //start_table('tablestyle2');
@@ -42,6 +45,9 @@
     end_form();
   }
 
+  /**
+
+   */
   function show_results() {
     /*Now get the transactions */
     Display::div_start('trans_tbl');

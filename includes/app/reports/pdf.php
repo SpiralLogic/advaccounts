@@ -10,40 +10,133 @@
      **/
   class ADVReport extends Cpdf {
 
+    /**
+     * @var array
+     */
     public $size;
+    /**
+     * @var
+     */
     public $company;
+    /**
+     * @var
+     */
     public $user;
+    /**
+     * @var
+     */
     public $host;
+    /**
+     * @var
+     */
     public $fiscal_year;
+    /**
+     * @var string
+     */
     public $title;
+    /**
+     * @var string
+     */
     public $filename;
+    /**
+     * @var int
+     */
     public $pageWidth;
+    /**
+     * @var int
+     */
     public $pageHeight;
+    /**
+     * @var int
+     */
     public $topMargin;
+    /**
+     * @var int
+     */
     public $bottomMargin;
+    /**
+     * @var int
+     */
     public $leftMargin;
+    /**
+     * @var int
+     */
     public $rightMargin;
+    /**
+     * @var int
+     */
     public $endLine;
+    /**
+     * @var int
+     */
     public $lineHeight;
     //public $rtl;
+    /**
+     * @var
+     */
     public $cols;
+    /**
+     * @var
+     */
     public $params;
+    /**
+     * @var
+     */
     public $headers;
+    /**
+     * @var
+     */
     public $aligns;
+    /**
+     * @var
+     */
     public $headers2;
+    /**
+     * @var
+     */
     public $aligns2;
+    /**
+     * @var
+     */
     public $cols2;
+    /**
+     * @var int
+     */
     public $pageNumber;
+    /**
+     * @var int
+     */
     public $fontSize;
+    /**
+     * @var int
+     */
     public $oldFontSize;
+    /**
+     * @var string
+     */
     public $currency;
+    /**
+     * @var
+     */
     public $companyLogoEnable;
     // select whether to use a company logo graphic in some header templates
+    /**
+     * @var bool
+     */
     public $scaleLogoWidth;
+    /**
+     * @var
+     */
     public $footerEnable;
     // select whether to print a page footer or not
+    /**
+     * @var
+     */
     public $footerText;
     // store user-generated footer text
+    /**
+     * @var string
+     */
     public $headerFunc; // store the name of the currently selected header public function
     /**
      * @param string       $title

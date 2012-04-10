@@ -9,25 +9,85 @@
      **/
   class userPrefs {
 
+    /**
+     * @var Array|mixed
+     */
     public $language;
+    /**
+     * @var
+     */
     public $qty_dec;
+    /**
+     * @var int
+     */
     public $price_dec;
+    /**
+     * @var
+     */
     public $exrate_dec;
+    /**
+     * @var int
+     */
     public $percent_dec;
+    /**
+     * @var
+     */
     public $show_gl_info;
+    /**
+     * @var
+     */
     public $show_codes;
+    /**
+     * @var Array|mixed
+     */
     public $date_format;
+    /**
+     * @var Array|mixed
+     */
     public $date_sep;
+    /**
+     * @var int
+     */
     public $tho_sep;
+    /**
+     * @var int
+     */
     public $dec_sep;
+    /**
+     * @var string
+     */
     public $theme;
+    /**
+     * @var
+     */
     public $print_profile;
+    /**
+     * @var
+     */
     public $rep_popup;
+    /**
+     * @var
+     */
     public $pagesize; // for printing
+    /**
+     * @var
+     */
     public $show_hints;
+    /**
+     * @var
+     */
     public $query_size; // table pager page length
+    /**
+     * @var
+     */
     public $graphic_links; // use graphic links
+    /**
+     * @var int
+     */
     public $sticky_date; // save date on subsequent document entry
+    /**
+     * @var Array|mixed
+     */
     public $startup_tab; // default start-up menu tab
     /**
      * @param null $user

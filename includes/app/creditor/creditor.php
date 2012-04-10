@@ -31,34 +31,133 @@
       }
       return $data;
     }
+    /**
+     * @var
+     */
+    /**
+     * @var
+     */
     public $id, $supplier_id; //
+    /**
+     * @var
+     */
     public $supp_name; //
+    /**
+     * @var
+     */
+    /**
+     * @var
+     */
     public $tax_id, $gst_no; //
+    /**
+     * @var
+     */
+    /**
+     * @var
+     */
     public $contact_name, $contact; //
+    /**
+     * @var
+     */
+    /**
+     * @var
+     */
     public $post_address, $supp_address; //
 
+    /**
+     * @var string
+     */
     public $supp_city = "";
+    /**
+     * @var string
+     */
     public $supp_state = "";
+    /**
+     * @var string
+     */
     public $supp_postcode = "";
+    /**
+     * @var string
+     */
     public $phone = "";
+    /**
+     * @var string
+     */
     public $phone2 = "";
+    /**
+     * @var string
+     */
     public $supp_phone = "";
+    /**
+     * @var string
+     */
     public $fax = "";
+    /**
+     * @var string
+     */
     public $notes = "";
+    /**
+     * @var int
+     */
     public $inactive = 0;
+    /**
+     * @var
+     */
     public $website;
+    /**
+     * @var string
+     */
     public $email = "";
+    /**
+     * @var string
+     */
+    /**
+     * @var string
+     */
     public $account_no = '', $supp_account_no = ''; //
+    /**
+     * @var
+     */
     public $bank_account;
+    /**
+     * @var string
+     */
     public $tax_group_id = '';
+    /**
+     * @var
+     */
     public $purchase_account;
+    /**
+     * @var
+     */
     public $payable_account;
+    /**
+     * @var
+     */
     public $payment_discount_account;
+    /**
+     * @var string
+     */
     public $supp_ref = '';
+    /**
+     * @var array
+     */
     public $contacts = array();
+    /**
+     * @var
+     */
     public $defaultContact;
+    /**
+     * @var
+     */
     public $city;
+    /**
+     * @var
+     */
     public $state;
+    /**
+     * @var
+     */
     public $postcode;
     /**
      * @var string

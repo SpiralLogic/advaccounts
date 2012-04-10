@@ -9,6 +9,9 @@
      **/
   class Contact_Log {
 
+    /**
+     * @var string
+     */
     static private $dbTable = 'contact_log';
     /**
      * @static

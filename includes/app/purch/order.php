@@ -86,6 +86,9 @@
      * @var
      */
     public $reference;
+    /**
+     * @var int
+     */
     public $trans_type = ST_PURCHORDER;
     /**
      * @param int  $order_no

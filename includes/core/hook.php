@@ -18,6 +18,10 @@
 
    */
   class Hook {
+
+    /**
+     * @var array
+     */
     protected $hooks = array();
     /**
      * @param                              $name

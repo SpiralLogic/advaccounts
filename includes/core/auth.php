@@ -21,6 +21,9 @@
      * @var
      */
     protected $id;
+    /**
+     * @var
+     */
     private $password;
     /**
      * @param $username

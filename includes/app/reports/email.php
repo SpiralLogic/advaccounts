@@ -10,18 +10,45 @@
 
   class Reports_Email {
 
+    /**
+     * @var array
+     */
     public $to = array();
+    /**
+     * @var array
+     */
     public $cc = array();
+    /**
+     * @var array
+     */
     public $bcc = array();
+    /**
+     * @var array
+     */
     public $attachment = array();
+    /**
+     * @var string
+     */
     public $boundary = "";
+    /**
+     * @var string
+     */
     public $header = "";
+    /**
+     * @var string
+     */
     public $subject = "";
+    /**
+     * @var string
+     */
     public $body = "";
     /**
      * @var \PHPMailer
      */
     public $mail;
+    /**
+     * @var string
+     */
     public $toerror = "No vaild email address";
     /**
      * @param bool $defaults

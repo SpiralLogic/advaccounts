@@ -135,7 +135,13 @@
      * @var string
      */
     public $tooltip = '';
+    /**
+     * @var null|string
+     */
     public $param_element = '';
+    /**
+     * @var null|string
+     */
     public $target = '';
     /**
      * @param        $label

@@ -11,6 +11,9 @@
    */
   class Creditor_Trans {
 
+    /**
+     * @var null
+     */
     static protected $_instance = NULL;
     /***
      * @static
@@ -33,24 +36,81 @@
       unset($_SESSION["Creditor_Trans"]);
     }
 
+    /**
+     * @var array
+     */
     public $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
+    /**
+     * @var array
+     */
     public $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
+    /**
+     * @var
+     */
     public $supplier_id;
+    /**
+     * @var
+     */
     public $supplier_name;
+    /**
+     * @var
+     */
     public $terms_description;
+    /**
+     * @var
+     */
     public $terms;
+    /**
+     * @var
+     */
     public $tax_description;
+    /**
+     * @var
+     */
     public $tax_group_id;
+    /**
+     * @var
+     */
     public $is_invoice;
+    /**
+     * @var
+     */
     public $Comments;
+    /**
+     * @var
+     */
     public $tran_date;
+    /**
+     * @var
+     */
     public $due_date;
+    /**
+     * @var
+     */
     public $supp_reference;
+    /**
+     * @var
+     */
     public $reference;
+    /**
+     * @var
+     */
     public $ov_amount;
+    /**
+     * @var
+     */
     public $ov_discount;
+    /**
+     * @var int
+     */
     public $tax_correction = 0;
+    /**
+     * @var int
+     */
     public $total_correction = 0;
+    /**
+     * @var int
+     */
     public $gl_codes_counter = 0;
     /**
      *

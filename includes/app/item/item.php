@@ -10,34 +10,121 @@
 
   class Item extends DB_abstract {
 
+    /**
+     * @var int
+     */
     public $id = 0;
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var int
+     */
     public $tax_type_id = 1;
+    /**
+     * @var string
+     */
     public $mb_flag = STOCK_MANUFACTURE;
+    /**
+     * @var null
+     */
     public $sales_account = NULL;
+    /**
+     * @var null
+     */
     public $inventory_account = NULL;
+    /**
+     * @var null
+     */
     public $cogs_account = NULL;
+    /**
+     * @var null
+     */
     public $adjustment_account = NULL;
+    /**
+     * @var null
+     */
     public $assembly_account = NULL;
+    /**
+     * @var int
+     */
     public $dimension_id = 0;
+    /**
+     * @var int
+     */
     public $dimension2_id = 0;
+    /**
+     * @var int
+     */
     public $actual_cost = 0;
+    /**
+     * @var int
+     */
     public $last_cost = 0;
+    /**
+     * @var int
+     */
     public $material_cost = 0;
+    /**
+     * @var int
+     */
     public $labour_cost = 0;
+    /**
+     * @var int
+     */
     public $overhead_cost = 0;
+    /**
+     * @var bool
+     */
     public $inactive = FALSE;
+    /**
+     * @var bool
+     */
     public $no_sale = FALSE;
+    /**
+     * @var int
+     */
     public $editable = 0;
+    /**
+     * @var string
+     */
     public $tax_type_name = 'GST';
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var int
+     */
     public $category_id = 6;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $long_description;
+    /**
+     * @var string
+     */
     public $units = 'ea';
+    /**
+     * @var array
+     */
     public $salePrices = array();
+    /**
+     * @var array
+     */
     public $purchPrices = array();
+    /**
+     * @var array
+     */
     protected $stockLevels = array();
+    /**
+     * @var
+     */
     static public $qoh_stock;
     /***
      * @param int $id

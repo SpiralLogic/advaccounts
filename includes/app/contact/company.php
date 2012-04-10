@@ -9,20 +9,65 @@
      **/
   abstract class Contact_Company extends DB_abstract {
 
+    /**
+     * @var string
+     */
     public $discount = '0';
+    /**
+     * @var string
+     */
     public $name = '';
+    /**
+     * @var
+     */
     public $address;
+    /**
+     * @var
+     */
     public $city;
+    /**
+     * @var
+     */
     public $state;
+    /**
+     * @var
+     */
     public $postcode;
+    /**
+     * @var string
+     */
     public $post_address = '';
+    /**
+     * @var
+     */
     public $tax_id;
+    /**
+     * @var
+     */
     public $contact_name;
+    /**
+     * @var int
+     */
     public $credit_limit = 0;
+    /**
+     * @var int
+     */
     public $dimension_id = 0;
+    /**
+     * @var int
+     */
     public $dimension2_id = 0;
+    /**
+     * @var int
+     */
     public $payment_terms = 1;
+    /**
+     * @var string
+     */
     public $curr_code = '';
+    /**
+     * @var array
+     */
     public $emailAddresses = array();
     /**
      * @abstract

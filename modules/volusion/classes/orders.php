@@ -68,6 +68,9 @@
      * @var
      */
     public $status;
+    /**
+     * @var
+     */
     public $XML;
     /**
 

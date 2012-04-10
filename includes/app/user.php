@@ -16,26 +16,77 @@
      * @return User
      */
     public $user;
+    /**
+     * @var string
+     */
     public $loginname;
+    /**
+     * @var
+     */
     public $username;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var string
+     */
     public $company;
+    /**
+     * @var
+     */
     public $pos;
+    /**
+     * @var bool
+     */
     public $salesmanid = FALSE;
+    /**
+     * @var
+     */
     public $access;
+    /**
+     * @var
+     */
     public $timeout;
+    /**
+     * @var
+     */
     public $last_act;
+    /**
+     * @var array
+     */
     public $role_set = array();
+    /**
+     * @var
+     */
     public $old_db;
+    /**
+     * @var bool
+     */
     public $logged = FALSE;
+    /**
+     * @var int
+     */
     public $ui_mode = 0;
     /***
      * @var \userPrefs
      */
     public $prefs;
+    /**
+     * @var bool
+     */
     public $change_password = FALSE;
+    /**
+     * @var
+     */
     protected $access_sections;
+    /**
+     * @var null
+     */
     static protected $_instance = NULL;
+    /**
+     * @var
+     */
     public $last_record;
 
     /**

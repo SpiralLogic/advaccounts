@@ -14,12 +14,30 @@
    */
   class Num {
 
+    /**
+     * @var int
+     */
     public static $price_dec = 2;
+    /**
+     * @var string
+     */
     public static $tho_sep = ',';
+    /**
+     * @var string
+     */
     public static $dec_sep = '.';
+    /**
+     * @var string
+     */
     public static $exrate_dec = '.';
+    /**
+     * @var
+     */
     public static $percent_dec;
 
+    /**
+     * @var
+     */
     protected static $i;
     static public function i() {
       if (static::$i === NULL) {

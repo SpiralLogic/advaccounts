@@ -64,6 +64,9 @@
     static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
     /** @var array Errors to ignore comeletely */
     static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+    /**
+     * @var
+     */
     static protected $useConfigClass;
     /** @static Initialiser */
     static function init() {

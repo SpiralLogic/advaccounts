@@ -11,20 +11,65 @@
 
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
               all the info to do the necessary entries without looking up ie additional queries of the database again */
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $po_detail_item;
+    /**
+     * @var
+     */
     public $item_code;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $qty_recd;
+    /**
+     * @var
+     */
     public $prev_quantity_inv;
+    /**
+     * @var
+     */
     public $this_quantity_inv;
+    /**
+     * @var
+     */
     public $order_price;
+    /**
+     * @var
+     */
     public $chg_price;
+    /**
+     * @var null
+     */
     public $exp_price;
+    /**
+     * @var int
+     */
     public $discount;
+    /**
+     * @var
+     */
     public $Complete;
+    /**
+     * @var
+     */
     public $std_cost_unit;
+    /**
+     * @var
+     */
     public $gl_code;
+    /**
+     * @var
+     */
     public $freight;
     /**
      * @param      $id

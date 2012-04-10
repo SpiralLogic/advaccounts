@@ -52,6 +52,9 @@
       }
       return $_SESSION['pager'][$name];
     }
+    /**
+     * @return array
+     */
     public function __sleep() {
 
       foreach ($this->columns as &$column) {

@@ -9,11 +9,29 @@
      **/
   class Item_Gl {
 
+    /**
+     * @var
+     */
     public $code_id;
+    /**
+     * @var
+     */
     public $dimension_id;
+    /**
+     * @var
+     */
     public $dimension2_id;
+    /**
+     * @var
+     */
     public $amount;
+    /**
+     * @var
+     */
     public $reference;
+    /**
+     * @var mixed|null
+     */
     public $description;
     /**
      * @param      $code_id

@@ -5,6 +5,9 @@
    */
   class Products {
 
+    /**
+     * @var array
+     */
     public $products = array();
 
     /**

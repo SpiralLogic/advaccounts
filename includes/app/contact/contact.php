@@ -9,15 +9,45 @@
      **/
   class Contact extends DB_abstract {
 
+    /**
+     * @var int
+     */
     public $id = 0;
+    /**
+     * @var int
+     */
     public $parent_id = 0;
+    /**
+     * @var int
+     */
     public $type;
+    /**
+     * @var string
+     */
     public $name = "New Contact";
+    /**
+     * @var string
+     */
     public $phone1 = '';
+    /**
+     * @var string
+     */
     public $phone2 = '';
+    /**
+     * @var string
+     */
     public $email = '';
+    /**
+     * @var string
+     */
     public $department = '';
+    /**
+     * @var string
+     */
     protected $_table = 'contacts';
+    /**
+     * @var string
+     */
     protected $_id_column = 'id';
     /**
      * @param int       $type

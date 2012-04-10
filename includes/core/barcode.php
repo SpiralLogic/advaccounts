@@ -248,6 +248,10 @@
    *
    */
   class BarcodeDatamatrix {
+
+    /**
+     * @var array
+     */
     static private $encoding
       = array(
         '101010011', '101011001', '101001011', '110010101', //
@@ -256,6 +260,9 @@
         '1101011011', '1101101011', '1101101101', '1011011011', //
         '1011001001', '1010010011', '1001001011', '1010011001'
       );
+    /**
+     * @var array
+     */
     static private $lengthRows
       = array(
         10, 12, 14, 16, 18, 20, 22, 24, 26, // 24 squares et 6 rectangular
@@ -263,6 +270,9 @@
         88, 96, 104, 120, 132, 144, 8, 8, //
         12, 12, 16, 16
       );
+    /**
+     * @var array
+     */
     static private $lengthCols
       = array(
         10, 12, 14, 16, 18, 20, 22, 24, 26, // Number of columns for the entire datamatrix
@@ -270,6 +280,9 @@
         88, 96, 104, 120, 132, 144, 18, 32, //
         26, 36, 36, 48
       );
+    /**
+     * @var array
+     */
     static private $mappingRows
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, 24, // Number of rows for the mapping matrix
@@ -277,6 +290,9 @@
         80, 88, 96, 108, 120, 132, 6, 6, 10, //
         10, 14, 14
       );
+    /**
+     * @var array
+     */
     static private $mappingCols
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, 24, // Number of columns for the mapping matrix
@@ -284,6 +300,9 @@
         80, 88, 96, 108, 120, 132, 16, 28, //
         24, 32, 32, 44
       );
+    /**
+     * @var array
+     */
     static private $dataCWCount
       = array(
         3, 5, 8, 12, 18, 22, 30, 36, // Number of data codewords for the datamatrix
@@ -292,6 +311,9 @@
         816, 1050, 1304, 1558, 5, 10, //
         16, 22, 32, 49
       );
+    /**
+     * @var array
+     */
     static private $solomonCWCount
       = array(
         5, 7, 10, 12, 14, 18, 20, 24, 28, // Number of Reed-Solomon codewords for the datamatrix
@@ -299,6 +321,9 @@
         192, 224, 272, 336, 408, 496, 620, //
         7, 11, 14, 18, 24, 28
       );
+    /**
+     * @var array
+     */
     static private $dataRegionRows
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, // Number of rows per region
@@ -306,6 +331,9 @@
         16, 18, 20, 22, 24, 18, 20, 22, //
         6, 6, 10, 10, 14, 14
       );
+    /**
+     * @var array
+     */
     static private $dataRegionCols
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, // Number of columns per region
@@ -313,6 +341,9 @@
         16, 18, 20, 22, 24, 18, 20, 22, //
         16, 14, 24, 16, 16, 22
       );
+    /**
+     * @var array
+     */
     static private $regionRows
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of regions per row
@@ -320,6 +351,9 @@
         4, 4, 4, 4, 4, 6, 6, 6, //
         1, 1, 1, 1, 1, 1
       );
+    /**
+     * @var array
+     */
     static private $regionCols
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of regions per column
@@ -327,6 +361,9 @@
         4, 4, 4, 4, 4, 6, 6, 6, //
         1, 2, 1, 2, 2, 2
       );
+    /**
+     * @var array
+     */
     static private $interleavedBlocks
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of blocks
@@ -334,6 +371,9 @@
         4, 4, 4, 4, 6, 6, 8, 8, //
         1, 1, 1, 1, 1, 1
       );
+    /**
+     * @var array
+     */
     static private $logTab
       = array(
         -255, 255, 1, 240, 2, 225, 241, 53, 3, // Table of log for the Galois field
@@ -364,6 +404,9 @@
         249, 70, 214, 250, 168, 71, 201, 156, 64, //
         60, 237, 130, 111, 20, 93, 122, 177, 150
       );
+    /**
+     * @var array
+     */
     static private $aLogTab
       = array(
         1, 2, 4, 8, 16, 32, 64, 128, 45, 90, // Table of aLog for the Galois field

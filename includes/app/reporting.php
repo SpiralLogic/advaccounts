@@ -222,6 +222,16 @@ JS;
       }
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }
+    /**
+     * @static
+     *
+     * @param        $id
+     * @param        $type
+     * @param        $type_no
+     * @param string $text
+     *
+     * @return ADV\Core\HTML|string
+     */
     public static function emailDialogue($id,$type,$type_no,$text="Email") {
       HTML::setReturn(TRUE);
       UI::button(FALSE, $text, array('class' => 'button email-button', 'data-emailid' => $id . '-' . $type . '-' .

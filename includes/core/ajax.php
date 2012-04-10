@@ -15,8 +15,18 @@
    *
    */
   class Ajax extends \JsHttpRequest {
+
+    /**
+     * @var array
+     */
     public $aCommands = array();
+    /**
+     * @var array
+     */
     public $triggers = array();
+    /**
+     * @var null
+     */
     static protected $i = NULL;
     /***
      * @static

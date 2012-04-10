@@ -9,19 +9,61 @@
      **/
   class Purch_Line {
 
+    /**
+     * @var
+     */
     public $line_no;
+    /**
+     * @var
+     */
     public $po_detail_rec;
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $quantity;
+    /**
+     * @var
+     */
     public $price;
+    /**
+     * @var
+     */
     public $units;
+    /**
+     * @var
+     */
     public $req_del_date;
+    /**
+     * @var
+     */
     public $qty_inv;
+    /**
+     * @var
+     */
     public $qty_received;
+    /**
+     * @var
+     */
     public $discount;
+    /**
+     * @var int
+     */
     public $standard_cost;
+    /**
+     * @var int
+     */
     public $receive_qty;
+    /**
+     * @var bool
+     */
     public $Deleted;
     /**
      * @param $line_no

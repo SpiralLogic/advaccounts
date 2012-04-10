@@ -9,6 +9,9 @@
      **/
   class Contact_Postcode {
 
+    /**
+     * @var int
+     */
     static private $count = 1;
     /**
      * @static

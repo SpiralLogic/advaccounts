@@ -9,15 +9,24 @@
      **/
   class Sidemenu {
 
+    /**
+     * @var string
+     */
     protected $start
       = <<<HTML
 		<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
 		 <h3><a href="#">Search</a></h3>
 HTML;
+    /**
+     * @var string
+     */
     protected $end
       = <<<HTML
 	</div>
 HTML;
+    /**
+     * @var string
+     */
     protected $customer
       = <<<HTML
 	 <h3><a href="#">Customer Search</a></h3>
@@ -25,6 +34,9 @@ HTML;
 		<input size="14" id="quickCustomer"/>
 		</div>
 HTML;
+    /**
+     * @var string
+     */
     protected $search
       = <<<HTML
 <div id="search">
@@ -34,6 +46,9 @@ HTML;
 		 <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed.php?">Purchase Order</li>
 		 <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry.php?">Supplier Invoices</li></ul></div>
 HTML;
+    /**
+     * @var string
+     */
     protected $bank
       = <<<HTML
 				 <h3><a href="#">Banking</a></h3>
@@ -44,6 +59,9 @@ HTML;
 		 <a href="/gl/undeposited_funds.php?">Undeposited</a>
 		 </div>
 HTML;
+    /**
+     * @var string
+     */
     protected $sales
       = <<<HTML
 <h3><a href="#">Create</a></h3>

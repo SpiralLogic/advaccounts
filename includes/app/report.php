@@ -8,9 +8,22 @@
      * @link      http://www.advancedgroup.com.au
      **/
   class Report {
+
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var
+     */
     public $ar_params;
+    /**
+     * @var
+     */
     public $controls;
     const DATEBEGIN = 'DATEBEGIN';
     const DATEENDM = 'DATEENDM';

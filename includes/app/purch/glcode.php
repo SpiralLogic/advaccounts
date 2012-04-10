@@ -9,12 +9,33 @@
      **/
   class Purch_GLCode {
 
+    /**
+     * @var
+     */
     public $counter;
+    /**
+     * @var
+     */
     public $gl_code;
+    /**
+     * @var
+     */
     public $gl_act_name;
+    /**
+     * @var
+     */
     public $gl_dim;
+    /**
+     * @var
+     */
     public $gl_dim2;
+    /**
+     * @var
+     */
     public $amount;
+    /**
+     * @var
+     */
     public $memo_;
     /**
      * @param $counter

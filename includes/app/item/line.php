@@ -9,12 +9,33 @@
      **/
   class Item_Line {
 
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var null
+     */
     public $description;
+    /**
+     * @var
+     */
     public $units;
+    /**
+     * @var
+     */
     public $mb_flag;
+    /**
+     * @var
+     */
     public $quantity;
+    /**
+     * @var int
+     */
     public $price;
+    /**
+     * @var null
+     */
     public $standard_cost;
     /**
      * @param      $stock_id

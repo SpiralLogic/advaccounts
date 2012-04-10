@@ -9,7 +9,13 @@
      **/
   class Reports_Box extends Report {
 
+    /**
+     * @var
+     */
     public $ar_classes;
+    /**
+     * @var array
+     */
     public $ctrl_handlers = array();
     /**
      *

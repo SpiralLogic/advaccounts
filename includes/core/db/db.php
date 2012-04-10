@@ -35,16 +35,37 @@
     static protected $nested = FALSE;
     /** @var Query */
     static protected $query = FALSE;
+    /**
+     * @var bool
+     */
     static protected $results = FALSE;
+    /**
+     * @var bool
+     */
     static protected $errorSql = FALSE;
+    /**
+     * @var bool
+     */
     static protected $errorInfo = FALSE;
+    /**
+     * @var bool
+     */
     protected $useCache = FALSE;
+    /**
+     * @var bool
+     */
     protected $useConfig = FALSE;
+    /**
+     * @var bool
+     */
     protected $intransaction = FALSE;
     /*** @var \PDO */
     protected $conn = FALSE;
     /** @var DB */
     static protected $i = NULL;
+    /**
+     * @var
+     */
     protected $default_connection;
     /***
      * @static

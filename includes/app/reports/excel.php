@@ -15,41 +15,149 @@
    */
   class ADVReport extends Spreadsheet_Excel_Writer_Workbook {
 
+    /**
+     * @var string
+     */
     public $size;
+    /**
+     * @var
+     */
     public $company;
+    /**
+     * @var
+     */
     public $user;
+    /**
+     * @var
+     */
     public $host;
+    /**
+     * @var
+     */
     public $fiscal_year;
+    /**
+     * @var
+     */
     public $title;
+    /**
+     * @var string
+     */
     public $filename;
+    /**
+     * @var string
+     */
     public $unique_name;
+    /**
+     * @var string
+     */
     public $path;
+    /**
+     * @var string
+     */
     public $code;
+    /**
+     * @var int
+     */
     public $bottomMargin = 0;
+    /**
+     * @var int
+     */
     public $lineHeight;
+    /**
+     * @var int
+     */
     public $leftMargin = 0;
+    /**
+     * @var
+     */
     public $cols;
+    /**
+     * @var
+     */
     public $params;
+    /**
+     * @var
+     */
     public $headers;
+    /**
+     * @var
+     */
     public $aligns;
+    /**
+     * @var
+     */
     public $headers2;
+    /**
+     * @var
+     */
     public $aligns2;
+    /**
+     * @var
+     */
     public $cols2;
+    /**
+     * @var int
+     */
     public $fontSize;
+    /**
+     * @var int
+     */
     public $oldFontSize;
+    /**
+     * @var string
+     */
     public $currency;
+    /**
+     * @var int
+     */
     public $row = 9999999;
+    /**
+     * @var int
+     */
     public $y;
+    /**
+     * @var
+     */
     public $numcols;
+    /**
+     * @var float
+     */
     public $excelColWidthFactor;
+    /**
+     * @var int
+     */
     public $endLine;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatTitle;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatDateTime;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatDate;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatHeaderLeft;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatHeaderRight;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatFooter;
+    /**
+     * @var array
+     */
     public $formatAmount = array();
+    /**
+     * @var mixed
+     */
     public $sheet;
     /**
      * @param        $title

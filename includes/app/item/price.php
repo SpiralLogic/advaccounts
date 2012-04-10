@@ -14,8 +14,17 @@
     const SORT_UPDATE = 'last_update';
     const SORT_PRICE = 'price';
     const SORT_CODE = 'stock_id';
+    /**
+     * @var
+     */
     public $stockid;
+    /**
+     * @var
+     */
     protected $_type;
+    /**
+     * @var
+     */
     public $id;
     /**
      * @static

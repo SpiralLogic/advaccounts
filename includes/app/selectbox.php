@@ -9,42 +9,132 @@
      **/
   class SelectBox {
 
+    /**
+     * @var array
+     */
     protected $where = array(); // additional constraints
+    /**
+     * @var
+     */
     protected $order; // list sort order
     // special option parameters
+    /**
+     * @var bool
+     */
     protected $spec_option = FALSE; // option text or false
+    /**
+     * @var int
+     */
     protected $spec_id = 0; // option id
+    /**
+     * @var bool
+     */
     protected $cache = FALSE; // option id
     // submit on select parameters
+    /**
+     * @var string
+     */
     protected $default = ''; // default value when $_POST is not set
+    /**
+     * @var bool
+     */
     protected $multi = FALSE; // multiple select
+    /**
+     * @var bool
+     */
     protected $select_submit = FALSE; //submit on select: true/false
+    /**
+     * @var bool
+     */
     protected $async = TRUE; // select update via ajax (true) vs _page_body reload
     // search box parameters
+    /**
+     * @var null
+     */
     protected $sel_hint = NULL;
+    /**
+     * @var bool
+     */
     protected $search_box = FALSE; // name or true/false
+    /**
+     * @var int
+     */
     protected $type = 0; // type of extended selector:
     // 0 - with (optional) visible search box, search by id
     // 1 - with hidden search box, search by option text
     // 2 - TODO reverse: box with hidden selector available via enter; this
     // would be convenient for optional ad hoc adding of new item
+    /**
+     * @var bool
+     */
     protected $search_submit = TRUE; //search submit button: true/false
+    /**
+     * @var int
+     */
     protected $size = 8; // size and max of box tag
+    /**
+     * @var int
+     */
     protected $max = 50;
+    /**
+     * @var bool
+     */
     protected $height = FALSE; // number of lines in select box
+    /**
+     * @var bool
+     */
     protected $cells = FALSE; // combo displayed as 2 <td></td> cells
+    /**
+     * @var array
+     */
     protected $search = array(); // sql field names to search
+    /**
+     * @var null
+     */
     protected $format = NULL; // format functions for regular options
+    /**
+     * @var bool
+     */
     protected $disabled = FALSE;
+    /**
+     * @var null
+     */
     protected $box_hint = NULL; // box/selectors hints; null = std see below
+    /**
+     * @var bool
+     */
     protected $category = FALSE; // category column name or false
+    /**
+     * @var bool
+     */
     protected $show_inactive = FALSE; // show inactive records.
+    /**
+     * @var bool
+     */
     protected $editable = FALSE; // false, or length of editable entry field
+    /**
+     * @var string
+     */
     protected $rel = ''; // false, or length of editable entry field
+    /**
+     * @var
+     */
     protected $name;
+    /**
+     * @var null
+     */
     protected $selected_id;
+    /**
+     * @var
+     */
     protected $sql;
+    /**
+     * @var
+     */
     protected $valfield;
+    /**
+     * @var
+     */
     protected $namefield;
     /**
      * @param       $name

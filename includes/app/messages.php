@@ -9,7 +9,13 @@
      **/
   class Messages {
 
+    /**
+     * @var string
+     */
     static protected $messages = '';
+    /**
+     * @var int
+     */
     static protected $count = 0;
     /**
      *

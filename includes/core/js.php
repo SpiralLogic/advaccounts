@@ -42,6 +42,9 @@
      * @var bool
      */
     static private $_focus = FALSE;
+    /**
+     * @var bool
+     */
     static public $outputted = FALSE;
     /**
      * @var bool

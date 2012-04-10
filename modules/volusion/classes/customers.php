@@ -10,7 +10,13 @@
 
   class Customers {
 
+    /**
+     * @var \ADV\Core\Status
+     */
     public $status;
+    /**
+     * @var
+     */
     public $customers;
 
     /**

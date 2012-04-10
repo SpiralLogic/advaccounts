@@ -9,19 +9,64 @@
      **/
   class Item_Order {
 
+    /**
+     * @var
+     */
     public $trans_type;
+    /**
+     * @var
+     */
     public $line_items;
+    /**
+     * @var
+     */
     public $gl_items;
+    /**
+     * @var
+     */
     public $order_id;
+    /**
+     * @var
+     */
+    /**
+     * @var
+     */
     public $editing_item, $deleting_item;
+    /**
+     * @var
+     */
     public $from_loc;
+    /**
+     * @var
+     */
     public $to_loc;
+    /**
+     * @var
+     */
     public $tran_date;
+    /**
+     * @var
+     */
     public $transfer_type;
+    /**
+     * @var
+     */
     public $increase;
+    /**
+     * @var
+     */
     public $memo_;
+    /**
+     * @var
+     */
     public $person_id;
+    /**
+     * @var
+     */
     public $branch_id;
+    /**
+     * @var
+     */
     public $reference;
     /**
      * @param $type
