@@ -162,7 +162,10 @@
           'insert' => TRUE, 'fun' => 'edit_link'
         ),
         array(
-          'insert' => TRUE, 'fun' => 'del_link'
+          'insert' => TRUE, 'fun' =>   function ($row) {
+              return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
+            }
+
         )
       );
       if (!Input::request('frame')) {
@@ -296,9 +299,6 @@
    *
    * @return string
    */
-  function del_link($row) {
-    return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
-  }
 
   /**
    * @param $row

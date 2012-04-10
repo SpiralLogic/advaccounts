@@ -1,19 +1,19 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   *
+
   Controler part of database table pager with column sort.
   To display actual html object call DB_Pager::display($name) inside
   any form.
 
    */
   class DB_Pager {
+
     /**
      * @static
      *
@@ -45,8 +45,21 @@
         $pager->sort_table($sort);
         $_SESSION['pager'][$name] = $pager;
       }
-      var_dump($_SESSION['pager'][$name]);
+      foreach ($_SESSION['pager'][$name]->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
       return $_SESSION['pager'][$name];
+    }
+    public function __sleep() {
+
+      foreach ($this->columns as &$column) {
+        if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
+          unset($column['fun']);
+        }
+      }
+      return array_keys((array)$this);
     }
     /**
      * @static
@@ -169,11 +182,11 @@
           $cell = isset($col['name']) ? $row[$col['name']] : '';
           if (isset($col['fun'])) { // use data input function if defined
             $fun = $col['fun'];
-            if (method_exists($pager, $fun)) {
-              $cell = $pager->$fun($row, $cell);
-            }
-            elseif (is_callable($fun)) {
+            if (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
+            }
+            elseif (method_exists($pager, $fun)) {
+              $cell = $pager->$fun($row, $cell);
             }
             else {
               $cell = '';
@@ -609,6 +622,7 @@
         $flds = array($flds);
       }
       foreach ($flds as $colnum => $coldef) {
+
         if (is_string($colnum)) { // 'colname'=>params
           $h = $colnum;
           $c = $coldef;
@@ -642,6 +656,9 @@
           case 'skip': // skip the column (no header)
             unset($c['head']);
             break;
+        }
+        if (isset($coldef['fun'])) {
+          $c['funkey'] = $colnum;
         }
         $this->columns[] = $c;
       }

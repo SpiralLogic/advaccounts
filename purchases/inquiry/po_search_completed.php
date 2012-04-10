@@ -1,19 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
   if (isset($_GET['order_number'])) {
     $order_number = $_GET['order_number'];
   }
-  $supplier_id= Input::post_get('supplier_id', Input::NUMERIC, -1);
+  $supplier_id = Input::post_get('supplier_id', Input::NUMERIC, -1);
   if (get_post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
@@ -97,7 +97,7 @@
   }
   else {
 
-    if ($supplier_id>-1) {
+    if ($supplier_id > -1) {
       $sql .= " AND porder.supplier_id = " . DB::quote($supplier_id);
     }
     if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET[LOC_NOT_FAXED_YET])) {
@@ -116,7 +116,11 @@
   } //end not order number selected
   $sql .= " GROUP BY porder.order_no";
   $cols = array(
-    _("#") => array('fun' => 'trans_view', 'ord' => ''), //
+    _("#") => array(
+      'fun' => function ($trans) {
+        return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
+      }, 'ord' => ''
+    ), //
     _("Reference"), //
     _("Supplier") => array('ord' => '', 'type' => 'id'), //
     _("Supplier ID") => 'skip', //
@@ -125,7 +129,11 @@
     _("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
     _("Currency") => array('align' => 'center'), //
     _("Order Total") => 'amount', //
-    array('insert' => TRUE, 'fun' => 'edit_link') //
+    array(
+      'insert' => TRUE, 'fun' => function ($row) {
+      return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT);
+    }
+    ) //
   );
   if (get_post('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
@@ -135,9 +143,27 @@
   }
   else {
     Arr::append($cols, array(
-      array('insert' => TRUE, 'fun' => 'email_link'), //
-      array('insert' => TRUE, 'fun' => 'prt_link'), //
-      array('insert' => TRUE, 'fun' => 'receive_link') //
+      array(
+        'insert' => TRUE, 'fun' => function ($row) {
+        return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
+      }
+      ), //
+      array(
+        'insert' => TRUE, 'fun' => function ($row) {
+        return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink');
+      }
+      ), //
+      array(
+        'insert' => TRUE, 'fun' => function ($row) {
+        if ($row['Received'] > 0) {
+          return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+        }
+        elseif ($row['Invoiced'] > 0) {
+          return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+        }
+        return '';
+      }
+      ) //
     )//
     );
   }
@@ -148,55 +174,3 @@
   UI::emailDialogue(CT_SUPPLIER);
   end_form();
   Page::end();
-  /**
-   * @param $trans
-   *
-   * @return null|string
-   */
-  function trans_view($trans) {
-    return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function edit_link($row) {
-    return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function prt_link($row) {
-    return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink');
-  }
-
-  /**
-   * @param $row
-   *
-   * @return ADV\Core\HTML|string
-   */
-  function email_link($row) {
-   return Reporting::emailDialogue($row['id'],ST_PURCHORDER,$row['order_no']);
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function receive_link($row) {
-    if ($row['Received'] > 0) {
-      return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-    }
-    elseif ($row['Invoiced'] > 0) {
-      return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
-    }
-    //advaccounts/purchases/supplier_invoice.php?New=1
-  }
-
-
