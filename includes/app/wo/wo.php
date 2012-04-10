@@ -1,19 +1,27 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO {
 
+    /**
+     * @var array
+     */
     static public $bom_list = array();
+    /**
+     * @var null
+     */
     static public $qoh_stock = NULL;
-
+    /**
+     * @static
+     *
+     * @param string $location
+     */
     static protected function load_stock_levels($location = '') {
       $date = Dates::date2sql(Dates::today());
       $sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
@@ -26,7 +34,17 @@
         static::$qoh_stock[$row[0]] = $row[1];
       }
     }
-
+    /**
+     * @static
+     *
+     * @param     $stock_id
+     * @param     $qty
+     * @param     $demand_id
+     * @param     $location
+     * @param int $level
+     *
+     * @return float
+     */
     static protected function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level = 0) {
       $demand = 0.0;
       if ($level > 10) {
@@ -83,7 +101,14 @@
       }
       return $demand;
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $location
+     *
+     * @return float
+     */
     static public function get_demand_asm_qty($stock_id, $location) {
       $demand_qty = 0.0;
       $sql = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
@@ -107,7 +132,14 @@
       }
       return $demand_qty;
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $location
+     *
+     * @return int
+     */
     static public function get_on_porder_qty($stock_id, $location) {
       $sql = "SELECT SUM(purch_order_details.quantity_ordered - "
         . "purch_order_details.quantity_received) AS qoo
@@ -128,7 +160,14 @@
       }
       return $qoo;
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     * @param $location
+     *
+     * @return float
+     */
     static public function get_on_worder_qty($stock_id, $location) {
       $sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
 		(wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
@@ -164,7 +203,13 @@
       }
       return $qoo;
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     *
+     * @return int
+     */
     static public function get_mb_flag($stock_id) {
       $sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
         . DB::escape($stock_id);
@@ -175,7 +220,13 @@
       $myrow = DB::fetch_row($result);
       return $myrow[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $item
+     *
+     * @return null|PDOStatement
+     */
     static public function get_bom($item) {
       $sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
  	stock_master.description, stock_master.mb_flag AS ResourceType,
@@ -187,12 +238,22 @@
 		AND bom.loc_code = locations.loc_code ORDER BY bom.id";
       return DB::query($sql, "The bill of material could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $item
+     *
+     * @return bool
+     */
     static public function has_bom($item) {
       $result = WO::get_bom($item);
       return (DB::num_rows($result) != 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $item_check
+     */
     static public function display_bom($item_check) {
       $result = WO::get_bom($item_check);
       if (DB::num_rows($result) == 0) {
@@ -231,11 +292,28 @@
         end_table();
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $mb_flag
+     *
+     * @return bool
+     */
     static public function has_stock_holding($mb_flag) {
       return $mb_flag == STOCK_PURCHASED || $mb_flag == STOCK_MANUFACTURE;
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param string $label
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     *
+     * @return null
+     */
     static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $viewer = "manufacturing/view/";
       if ($type == ST_MANUISSUE) {
@@ -256,7 +334,24 @@
       }
       return viewer_link($label, $viewer, $class, $id, $icon);
     }
-
+    /**
+     * @static
+     *
+     * @param $wo_ref
+     * @param $loc_code
+     * @param $units_reqd
+     * @param $stock_id
+     * @param $type
+     * @param $date_
+     * @param $required_by
+     * @param $memo_
+     * @param $costs
+     * @param $cr_acc
+     * @param $labour
+     * @param $cr_lab_acc
+     *
+     * @return string
+     */
     static public function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $required_by, $memo_, $costs, $cr_acc,
                                $labour, $cr_lab_acc) {
       if (!($type == WO_ADVANCED)) {
@@ -279,7 +374,17 @@
       DB::commit();
       return $woid;
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $loc_code
+     * @param $units_reqd
+     * @param $stock_id
+     * @param $date_
+     * @param $required_by
+     * @param $memo_
+     */
     static public function update($woid, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_) {
       DB::begin();
       WO_Cost::add_material($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
@@ -296,7 +401,11 @@
       DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Updated."));
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function delete($woid) {
       DB::begin();
       WO_Cost::add_material($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
@@ -309,7 +418,14 @@
       DB_AuditTrail::add(ST_WORKORDER, $woid, $_POST['date_'], _("Canceled."));
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param      $woid
+     * @param bool $allow_null
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($woid, $allow_null = FALSE) {
       $sql = "SELECT workorders.*, stock_master.description As StockItemName,
 				locations.location_name, locations.delivery_address
@@ -324,26 +440,50 @@
       }
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return bool
+     */
     static public function has_productions($woid) {
       $sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
       $result = DB::query($sql, "query work order for productions");
       $myrow = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return bool
+     */
     static public function has_issues($woid) {
       $sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
       $result = DB::query($sql, "query work order for issues");
       $myrow = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return bool
+     */
     static public function has_payments($woid) {
       $result = GL_Trans::get_wo_cost($woid);
       return (DB::num_rows($result) != 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $releaseDate
+     * @param $memo_
+     */
     static public function release($woid, $releaseDate, $memo_) {
       DB::begin();
       $myrow = WO::get($woid);
@@ -358,26 +498,47 @@
       DB_AuditTrail::add(ST_WORKORDER, $woid, $releaseDate, _("Released."));
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function close($woid) {
       $sql = "UPDATE workorders SET closed=1 WHERE id = " . DB::escape($woid);
       DB::query($sql, "could not close work order");
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return bool
+     */
     static public function is_closed($woid) {
       $sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
       $result = DB::query($sql, "could not query work order");
       $row = DB::fetch_row($result);
       return ($row[0] > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param     $woid
+     * @param     $quantity
+     * @param int $force_close
+     */
     static public function update_finished_quantity($woid, $quantity, $force_close = 0) {
       $sql = "UPDATE workorders SET units_issued = units_issued + " . DB::escape($quantity) . ",
 				closed = ((units_issued >= units_reqd) OR " . DB::escape($force_close) . ")
 				WHERE id = " . DB::escape($woid);
       DB::query($sql, "The work order issued quantity couldn't be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $woid
+     */
     static public function void($type, $woid) {
       if ($type != ST_WORKORDER) {
         $type = ST_WORKORDER;
@@ -457,7 +618,14 @@
       }
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $cost_type
+     *
+     * @return int
+     */
     static public function get_gl($woid, $cost_type) {
       $cost = 0;
       $result = GL_Trans::get_wo_cost($woid, $cost_type);
@@ -466,7 +634,11 @@
       }
       return $cost;
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function display_payments($woid) {
       global $wo_cost_types;
       //$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
@@ -491,7 +663,12 @@
         end_table();
       }
     }
-
+    /**
+     * @static
+     *
+     * @param      $woid
+     * @param bool $suppress_view_link
+     */
     static public function display($woid, $suppress_view_link = FALSE) {
       global $wo_types_array;
       $myrow = WO::get($woid);

@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Access setup"), SA_SECROLES);
   $new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
@@ -17,11 +15,22 @@
   // is properly placed under related section regardless of
   // unique extension number, with order inside sections preserved.
   //
+  /**
+   * @param $area1
+   * @param $area2
+   *
+   * @return int
+   */
   function comp_areas($area1, $area2) {
     $sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
     return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
   }
 
+  /**
+   * @param $areas
+   *
+   * @return array
+   */
   function sort_areas($areas) {
     $old_order = 0;
     foreach ($areas as $key => $area) {
@@ -207,4 +216,4 @@
   end_form();
   Page::end();
 
-?>
+

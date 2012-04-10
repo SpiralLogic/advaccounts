@@ -1,16 +1,32 @@
 <?php
-
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Sidemenu {
 
+    /**
+     * @var string
+     */
     protected $start
       = <<<HTML
 		<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
 		 <h3><a href="#">Search</a></h3>
 HTML;
+    /**
+     * @var string
+     */
     protected $end
       = <<<HTML
 	</div>
 HTML;
+    /**
+     * @var string
+     */
     protected $customer
       = <<<HTML
 	 <h3><a href="#">Customer Search</a></h3>
@@ -18,6 +34,9 @@ HTML;
 		<input size="14" id="quickCustomer"/>
 		</div>
 HTML;
+    /**
+     * @var string
+     */
     protected $search
       = <<<HTML
 <div id="search">
@@ -27,6 +46,9 @@ HTML;
 		 <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed.php?">Purchase Order</li>
 		 <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry.php?">Supplier Invoices</li></ul></div>
 HTML;
+    /**
+     * @var string
+     */
     protected $bank
       = <<<HTML
 				 <h3><a href="#">Banking</a></h3>
@@ -37,6 +59,9 @@ HTML;
 		 <a href="/gl/undeposited_funds.php?">Undeposited</a>
 		 </div>
 HTML;
+    /**
+     * @var string
+     */
     protected $sales
       = <<<HTML
 <h3><a href="#">Create</a></h3>
@@ -51,6 +76,9 @@ HTML;
       $sidemenu = new static;
       echo $sidemenu->display;
     }
+    /**
+     *
+     */
     protected function __construct() {
       $this->display = $this->start . $this->search . $this->sales;
       if (User::i()->can_access(SS_GL)) {

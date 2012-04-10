@@ -1,14 +1,11 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************
+  /**
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
 
   Controler part of database table pager with column sort.
   To display actual html object call DB_Pager::display($name) inside
@@ -48,7 +45,24 @@
         $pager->sort_table($sort);
         $_SESSION['pager'][$name] = $pager;
       }
+      foreach ($_SESSION['pager'][$name]->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
       return $_SESSION['pager'][$name];
+    }
+    /**
+     * @return array
+     */
+    public function __sleep() {
+
+      foreach ($this->columns as &$column) {
+        if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
+          unset($column['fun']);
+        }
+      }
+      return array_keys((array)$this);
     }
     /**
      * @static
@@ -64,15 +78,33 @@
       $result = DB::query($sql, 'Couldnt do shit');
       return DB::num_rows($result);
     }
+    /**
+     * @static
+     *
+     * @param      $link_text
+     * @param      $url
+     * @param bool $icon
+     *
+     * @return string
+     */
     static function link($link_text, $url, $icon = FALSE) {
       if (User::graphic_links() && $icon) {
         $link_text = set_icon($icon, $link_text);
       }
       $href = PATH_TO_ROOT . $url;
-      $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'"
-        : PATH_TO_ROOT . $url;
-      return "<a href=\"" . e($href) . "\" class='button' >" . $link_text . "</a>";
+      $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+      return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param      $value
+     * @param bool $enabled
+     * @param bool $icon
+     *
+     * @return string
+     */
     static function navi($name, $value, $enabled = TRUE, $icon = FALSE) {
       return "<button " . ($enabled ? '' : 'disabled')
         . " class=\"navibutton\" type=\"submit\""
@@ -80,6 +112,13 @@
         . ($icon ? "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '')
         . "<span>$value</span></button>\n";
     }
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param      $value
+     * @param bool $enabled
+     */
     static function navi_cell($name, $value, $enabled = TRUE) {
       label_cell(static::navi($name, $value, $enabled));
     }
@@ -146,11 +185,11 @@
           $cell = isset($col['name']) ? $row[$col['name']] : '';
           if (isset($col['fun'])) { // use data input function if defined
             $fun = $col['fun'];
-            if (method_exists($pager, $fun)) {
-              $cell = $pager->$fun($row, $cell);
-            }
-            elseif (is_callable($fun)) {
+            if (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
+            }
+            elseif (method_exists($pager, $fun)) {
+              $cell = $pager->$fun($row, $cell);
             }
             else {
               $cell = '';
@@ -586,6 +625,7 @@
         $flds = array($flds);
       }
       foreach ($flds as $colnum => $coldef) {
+
         if (is_string($colnum)) { // 'colname'=>params
           $h = $colnum;
           $c = $coldef;
@@ -619,6 +659,9 @@
           case 'skip': // skip the column (no header)
             unset($c['head']);
             break;
+        }
+        if (isset($coldef['fun'])) {
+          $c['funkey'] = $colnum;
         }
         $this->columns[] = $c;
       }
@@ -790,7 +833,6 @@
           return FALSE;
         }
         $row = DB::fetch_row($result);
-
         $this->rec_count = $row[0];
         $this->max_page = $this->page_len ?
           ceil($this->rec_count / $this->page_len) : 0;
@@ -837,7 +879,6 @@
         $group = $group == '' ? "*" : "DISTINCT $group";
         return "SELECT COUNT($group) FROM $from $where";
       }
-
       $sql = "$select FROM $from $where";
       if ($group) {
         $sql .= " GROUP BY $group";

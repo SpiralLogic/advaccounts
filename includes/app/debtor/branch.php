@@ -1,46 +1,140 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 11:52 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Debtor_Branch extends DB_abstract {
 
+    /**
+     * @var string
+     */
     public $post_address = '';
+    /**
+     * @var int
+     */
     public $branch_id = 0;
+    /**
+     * @var string
+     */
     public $br_name = "New Address";
+    /**
+     * @var string
+     */
     public $br_address = '';
+    /**
+     * @var string
+     */
     public $city = '';
+    /**
+     * @var string
+     */
     public $state = '';
+    /**
+     * @var string
+     */
     public $postcode = '';
+    /**
+     * @var int
+     */
     public $area = DEFAULT_AREA;
+    /**
+     * @var
+     */
     public $br_post_address;
+    /**
+     * @var
+     */
     public $debtor_no;
+    /**
+     * @var string
+     */
     public $branch_ref = "New";
+    /**
+     * @var string
+     */
     public $contact_name = "";
+    /**
+     * @var
+     */
     public $default_location;
+    /**
+     * @var int
+     */
     public $default_ship_via = DEFAULT_SHIP_VIA;
+    /**
+     * @var int
+     */
     public $disable_trans = 0;
+    /**
+     * @var string
+     */
     public $phone = '';
+    /**
+     * @var string
+     */
     public $phone2 = '';
+    /**
+     * @var string
+     */
     public $fax = '';
+    /**
+     * @var string
+     */
     public $website = '';
+    /**
+     * @var string
+     */
     public $email = '';
+    /**
+     * @var int
+     */
     public $inactive = 0;
+    /**
+     * @var string
+     */
     public $notes = '';
+    /**
+     * @var int
+     */
     public $group_no = 1;
+    /**
+     * @var
+     */
     public $payment_discount_account;
+    /**
+     * @var
+     */
     public $receivables_account;
+    /**
+     * @var string
+     */
     public $sales_account = "";
+    /**
+     * @var
+     */
     public $sales_discount_account;
+    /**
+     * @var
+     */
     public $salesman;
+    /**
+     * @var int
+     */
     public $tax_group_id = DEFAULT_TAX_GROUP;
+    /**
+     * @var string
+     */
     protected $_table = 'branches';
+    /**
+     * @var string
+     */
     protected $_id_column = 'branch_id';
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function __construct($id = NULL) {
       $this->id = &$this->branch_id;
@@ -83,12 +177,12 @@
       return TRUE;
     }
     /**
-
+     * @return void
      */
     protected function _countTransactions() {
     }
     /**
-
+     * @return void
      */
     protected function _defaults() {
       $company_record = DB_Company::get_prefs();
@@ -108,6 +202,7 @@
     }
     /**
      * @param null $changes
+     * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
       parent::setFromArray($changes);
@@ -119,9 +214,9 @@
       }
     }
     /**
-     * @param bool $params
+     * @param bool|int|null $params
      *
-     * @return array|null
+     * @return array|bool|null
      */
     protected function _read($params = FALSE) {
       if (!$params) {
@@ -186,6 +281,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     * @return void
      */
     static public function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       if ($label != NULL) {
@@ -206,6 +302,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     * @return void
      */
     static public function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label'>$label</td>";

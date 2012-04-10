@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Create/Update Company"), SA_CREATECOMPANY);
   if (isset($_GET['selected_id'])) {
@@ -33,6 +31,11 @@
   Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
   display_company_edit($selected_id);
   Page::end();
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function check_data(&$selected_id) {
     if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
       return FALSE;
@@ -49,6 +52,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$selected_id) {
     $comp_subdirs = Config::get('company_subdirs');
     $error = FALSE;
@@ -209,6 +217,9 @@
     Event::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $selected_id
+   */
   function display_company_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;
@@ -263,4 +274,4 @@
     end_form();
   }
 
-?>
+

@@ -1,16 +1,20 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class WO_Requirements {
-
+    /**
+     * @static
+     *
+     * @param $woid
+     *
+     * @return null|PDOStatement
+     */
     static public function get($woid) {
       $sql = "SELECT wo_requirements.*, stock_master.description,
 		stock_master.mb_flag,
@@ -23,7 +27,12 @@
 		AND workcentres.id=workcentre";
       return DB::query($sql, "The work order requirements could not be retrieved");
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $stock_id
+     */
     static public function add($woid, $stock_id) {
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
@@ -33,23 +42,45 @@
         DB::query($sql, "The work order requirements could not be added");
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     */
     static public function delete($woid) {
       $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
       DB::query($sql, "The work order requirements could not be deleted");
     }
-
+    /**
+     * @static
+     *
+     * @param $woid
+     * @param $stock_id
+     * @param $quantity
+     */
     static public function update($woid, $stock_id, $quantity) {
       $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
 		WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
       DB::query($sql, "The work requirements issued quantity couldn't be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param null $type
+     * @param      $woid
+     */
     static public function void($type = NULL, $woid) {
       $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
       DB::query($sql, "The work requirements issued quantity couldn't be voided");
     }
-
+    /**
+     * @static
+     *
+     * @param      $woid
+     * @param      $quantity
+     * @param bool $show_qoh
+     * @param null $date
+     */
     static public function display($woid, $quantity, $show_qoh = FALSE, $date = NULL) {
       $result = WO_Requirements::get($woid);
       if (DB::num_rows($result) == 0) {
@@ -113,4 +144,4 @@
     }
   }
 
-?>
+

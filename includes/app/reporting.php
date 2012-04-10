@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   // Link to printing single document with bulk report template file.
   // Ex. label_cell(static::print_doc_link($myrow['order_no'], _("Print")), $type);
   // or Event::warning(static::print_doc_link($order_no, _("Print this order")));
@@ -223,5 +221,22 @@ JS;
         $pars[0] = set_icon($icon, $pars[0]);
       }
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
+    }
+    /**
+     * @static
+     *
+     * @param        $id
+     * @param        $type
+     * @param        $type_no
+     * @param string $text
+     *
+     * @return ADV\Core\HTML|string
+     */
+    public static function emailDialogue($id,$type,$type_no,$text="Email") {
+      HTML::setReturn(TRUE);
+      UI::button(FALSE, $text, array('class' => 'button email-button', 'data-emailid' => $id . '-' . $type . '-' .
+        $type_no
+      ));
+      return HTML::setReturn(FALSE);
     }
   }

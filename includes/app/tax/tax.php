@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Tax {
 
     /***
@@ -93,7 +91,17 @@
       }
       return $price * (($tax_multiplier / 100));
     }
-
+    /**
+     * @static
+     *
+     * @param      $stock_id
+     * @param      $price
+     * @param      $tax_group
+     * @param      $tax_included
+     * @param null $tax_group_array
+     *
+     * @return int
+     */
     static public function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = NULL) {
       // if price is zero, then can't be taxed !
       if ($price == 0) {
@@ -256,7 +264,13 @@
       }
       return $ret_tax_array;
     }
-
+    /**
+     * @static
+     *
+     * @param $account_code
+     *
+     * @return bool
+     */
     static public function is_account($account_code) {
       $sql
         = "SELECT id FROM tax_types WHERE
@@ -270,7 +284,17 @@
         return FALSE;
       }
     }
-
+    /**
+     * @static
+     *
+     * @param      $taxes
+     * @param      $columns
+     * @param      $tax_included
+     * @param int  $leftspan
+     * @param bool $tax_correcting
+     *
+     * @return int|string
+     */
     static public function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = FALSE) {
       $total = 0;
       foreach (
@@ -296,4 +320,4 @@
     }
   }
 
-?>
+

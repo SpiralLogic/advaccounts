@@ -14,7 +14,15 @@
 Page::set_security(SA_SALESANALYTIC);
 
 	print_inventory_sales();
-	function get_transactions($category, $location, $fromcust, $from, $to)
+  /**
+   * @param $category
+   * @param $location
+   * @param $fromcust
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($category, $location, $fromcust, $from, $to)
 	{
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);
@@ -204,4 +212,4 @@ Page::set_security(SA_SALESANALYTIC);
 		$rep->End();
 	}
 
-?>
+

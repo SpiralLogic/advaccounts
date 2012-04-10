@@ -1,16 +1,13 @@
 <?php
 
-  /* * ********************************************************************
-         Copyright (C) Advanced Group PTY LTD
-         Released under the terms of the GNU General Public License, GPL,
-         as published by the Free Software Foundation, either version 3
-         of the License, or (at your option) any later version.
-         This program is distributed in the hope that it will be useful,
-         but WITHOUT ANY WARRANTY; without even the implied warranty of
-         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-         See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-        * ********************************************************************* */
-  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   JS::headerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
@@ -36,7 +33,7 @@
 
   // validate inputs
   if (isset($_POST['AddRefundItem'])) {
-    if (!can_process()) {
+    if (!Debtor_Payment::can_process(ST_CUSTREFUND)) {
       unset($_POST['AddRefundItem']);
     }
   }
@@ -80,7 +77,7 @@
   else {
     hidden('branch_id', ANY_NUMERIC);
   }
-  read_customer_data();
+  Debtor_Payment::read_customer_data($customer->id,true);
   Session::i()->global_customer = $customer->id;
   $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
   table_section(2);
@@ -112,91 +109,4 @@
   submit_center('AddRefundItem', _("Add Refund"), TRUE, '', 'default');
   Display::br();
   end_form();
-  if (Input::request('frame')) {
-    Page::end(TRUE);
-  }
-  else {
-    Page::end();
-  }
-  function read_customer_data() {
-    global $customer;
-    $sql
-      = "SELECT debtors.pymt_discount,
-			credit_status.dissallow_invoices
-			FROM debtors, credit_status
-			WHERE debtors.credit_status = credit_status.id
-				AND debtors.debtor_no = " . $customer->id;
-    $result = DB::query($sql, "could not query customers");
-    $myrow = DB::fetch($result);
-    $_POST['HoldAccount'] = $myrow["dissallow_invoices"];
-    $_POST['pymt_discount'] = 0;
-    $_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
-  }
-
-  function can_process() {
-    if (!get_post('customer_id')) {
-      Event::error(_("There is no customer selected."));
-      JS::setfocus('[name="customer_id"]');
-      return FALSE;
-    }
-    if (!get_post('branch_id')) {
-      Event::error(_("This customer has no branch defined."));
-      JS::setfocus('[name="branch_id"]');
-      return FALSE;
-    }
-    if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
-      Event::error(_("The entered date is invalid. Please enter a valid date for the refund."));
-      JS::setfocus('[name="DateBanked"]');
-      return FALSE;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
-      Event::error(_("The entered date is not in fiscal year."));
-      JS::setfocus('[name="DateBanked"]');
-      return FALSE;
-    }
-    if (!Ref::is_valid($_POST['ref'])) {
-      Event::error(_("You must enter a reference."));
-      JS::setfocus('[name="ref"]');
-      return FALSE;
-    }
-    if (!Ref::is_new($_POST['ref'], ST_CUSTREFUND)) {
-      $_POST['ref'] = Ref::get_next(ST_CUSTREFUND);
-    }
-    if (!Validation::is_num('amount', 0, NULL)) {
-      Event::error(_("The entered amount is invalid or positive and cannot be processed."));
-      JS::setfocus('[name="amount"]');
-      return FALSE;
-    }
-    if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-      Event::error(_("The entered amount is invalid or negative and cannot be processed."));
-      JS::setfocus('[name="charge"]');
-      return FALSE;
-    }
-    if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
-      $charge_acct = DB_Company::get_pref('bank_charge_act');
-      if (GL_Account::get($charge_acct) == FALSE) {
-        Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-        JS::setfocus('[name="charge"]');
-        return FALSE;
-      }
-    }
-    if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-      Event::error(_("The exchange rate must be numeric and greater than zero."));
-      JS::setfocus('[name="ex_rate"]');
-      return FALSE;
-    }
-    if ($_POST['discount'] == "") {
-      $_POST['discount'] = 0;
-    }
-    //if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
-    if (Validation::input_num('amount') >= 0) {
-      Event::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
-      JS::setfocus('[name="amount"]');
-      return FALSE;
-    }
-    $_SESSION['alloc']->amount = -1 * Validation::input_num('amount');
-    if (isset($_POST["TotalNumberOfAllocs"])) {
-      return Gl_Allocation::check();
-    }
-    return TRUE;
-  }
+    Page::end(!Input::request('frame'));

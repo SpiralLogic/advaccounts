@@ -1,34 +1,95 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 4:07 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   abstract class Contact_Company extends DB_abstract {
 
+    /**
+     * @var string
+     */
     public $discount = '0';
+    /**
+     * @var string
+     */
     public $name = '';
+    /**
+     * @var
+     */
     public $address;
+    /**
+     * @var
+     */
     public $city;
+    /**
+     * @var
+     */
     public $state;
+    /**
+     * @var
+     */
     public $postcode;
+    /**
+     * @var string
+     */
     public $post_address = '';
+    /**
+     * @var
+     */
     public $tax_id;
+    /**
+     * @var
+     */
     public $contact_name;
+    /**
+     * @var int
+     */
     public $credit_limit = 0;
+    /**
+     * @var int
+     */
     public $dimension_id = 0;
+    /**
+     * @var int
+     */
     public $dimension2_id = 0;
+    /**
+     * @var int
+     */
     public $payment_terms = 1;
+    /**
+     * @var string
+     */
     public $curr_code = '';
+    /**
+     * @var array
+     */
     public $emailAddresses = array();
-
+    /**
+     * @abstract
+     * @return mixed
+     */
     abstract protected function _countTransactions();
-
+    /**
+     * @param $name
+     * @param $emails
+     * @param $trans
+     * @param $type
+     * @return void
+     */
     protected function addEmailGroup($name, $emails, $trans, $type) {
     }
-
+    /**
+     * @static
+     *
+     * @param      $selector
+     * @param bool $id
+     * @return void
+     */
     static public function addInfoDialog($selector, $id = FALSE) {
       if ($id) {
         $company = new static($id);
@@ -60,7 +121,13 @@ JS;
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();
     }
-
+    /**
+     * @static
+     *
+     * @param $emailid
+     *
+     * @return bool|string
+     */
     static public function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();

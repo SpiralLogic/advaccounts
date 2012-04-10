@@ -1,8 +1,9 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -12,7 +13,6 @@
 
    */
   class Autoload_Exception extends \Exception {
-
   }
 
   /**
@@ -21,14 +21,6 @@
   class Autoloader {
 
     /**
-     * @var array
-     */
-    static protected $loaded = array();
-    /**
-     * @var array
-     */
-    static protected $loadperf = array();
-    /**
      * @var int
      */
     static protected $time = 0;
@@ -36,7 +28,14 @@
      * @var array
      */
     static protected $classes = array();
-    static protected $classes2 = array();
+    /**
+     * @var array
+     */
+    static protected $global_classes = array();
+    /**
+     * @var array
+     */
+    static  $loaded = array();
     /**
      * @static
 
@@ -44,30 +43,18 @@
     static public function i() {
       class_alias(__CLASS__, 'Autoloader');
       spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
-      static::$classes2 = Cache::get('autoload.classes2');
-      static::$classes = Cache::get('autoload.classes');
-      static::$loaded = Cache::get('autoload.paths');
-      static::$loaded = array();
-      static::$classes = array();
-      static::$classes2 = array();
-      if (!static::$classes2) {
+      static::$global_classes = \ADV\Core\Cache::get('autoload.global_classes', array());
+      static::$classes = \ADV\Core\Cache::get('autoload.classes', array());
+      static::$loaded = \ADV\Core\Cache::get('autoload.paths', array());
+      if (!static::$global_classes) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
-        $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::import_namespaces((array) $core);
+      }
+      if (!static::$classes) {
+        $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::add_classes((array) $vendor, VENDORPATH);
       }
-
-      //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE, TRUE);
-    }
-    /**
-     * @static
-     *
-     * @param array $path
-     */
-    static public function add_path($path = array()) {
-      $path = (array) $path;
-      $path[] .= get_include_path();
-      set_include_path(implode(PATH_SEPARATOR, $path));
+      spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE, TRUE);
     }
     /**
      * @static
@@ -90,7 +77,7 @@
      * @param $classes
      */
     static protected function import_namespace($namespace, $classes) {
-      static::$classes2 = array_merge(static::$classes2, array_fill_keys($classes, $namespace));
+      static::$global_classes = array_merge(static::$global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @static
@@ -106,18 +93,19 @@
      * @static
      *
      * @param $paths
-     * @param $namespace
-     * @param $classname
+     * @param $required_class
+     *
+     * @internal param $classname
      *
      * @internal param $path
      * @return string
      */
-    static protected function tryPath($paths, $namespace, $classname) {
+    static protected function tryPath($paths, $required_class) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
-        if ($filepath) {
-          return static::includeFile($filepath, $namespace, $classname);
+        if (is_readable($filepath)) {
+          return static::includeFile($filepath, $required_class);
         }
       }
       return FALSE;
@@ -126,124 +114,109 @@
      * @static
      *
      * @param $filepath
-     * @param $class
+     * @param $required_class
+     *
+     * @throws ADV\Core\Autoload_Exception
+     * @internal param $class
      *
      * @return bool
-     * @throws Autoload_Exception
      */
-    static protected function includeFile($filepath, $namespace, $class) {
+    static protected function includeFile($filepath, $required_class) {
       if (empty($filepath)) {
-        throw new Autoload_Exception('File for class ' . $class . ' cannot be found!');
+        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
       if (!is_readable($filepath)) {
-        throw new Autoload_Exception('File for class ' . $class . ' cannot be	read at: ' . $filepath);
+        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	read at: ' . $filepath);
       }
-      /** @noinspection PhpIncludeInspection */
+
       if (!include_once($filepath)) {
-        throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
+        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
       }
-      static::$loaded[$namespace][$class] = $filepath;
-      //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
+      if (!isset(static::$loaded[$required_class])) {
+        static::$loaded[$required_class] = $filepath;
+        if (is_callable('Event::register_shutdown')) {
+          Event::register_shutdown(__CLASS__);
+        }
+      }
       return TRUE;
-    }
-    /**
-     * @static
-     *
-     * @param $classname
-     *
-     * @return bool|string
-     */
-    static public function loadFromCache($required_class) {
-      $alias = FALSE;
-      $classpath = ltrim($required_class, '\\');
-      if ($lastNsPos = strripos($classpath, '\\')) {
-        $namespace = substr($classpath, 0, $lastNsPos);
-        $class = substr($classpath, $lastNsPos + 1);
-      }
-      $result = FALSE;
-      if (isset(static::$loaded[$namespace][$class])) {
-        $result = static::tryPath(static::$loaded[$namespace][$class], $namespace, $class);
-      }
-      elseif (isset(static::$classes[$required_class])) {
-        $result = static::tryPath(static::$classes[$class], '/', $class);
-      }
-      if (!$result) {
-        \ADV\Core\Event::register_shutdown(__CLASS__);
-      }
-      return $result;
     }
     /**
      * @static
      *
      * @param $required_class
      *
-     * @internal param $classname
      * @return bool|string
      */
-    static public function load($required_class) {
-      if (isset(static::$classes2[$required_class])) {
-        $required_class = static::$classes2[$required_class] . $required_class;
-      }
-      $alias = FALSE;
-      $classpath = ltrim($required_class, '\\');
-      $filename = str_replace('_', DS, $classpath);
-      if ($lastNsPos = strripos($classpath, '\\')) {
-        $namespace = substr($classpath, 0, $lastNsPos);
-        $filename = substr($filename, $lastNsPos + 1);
-        $class = substr($classpath, $lastNsPos + 1);
-        if (isset(static::$classes2[$class]) && static::$classes2[$class] == $namespace . '\\') {
-          $alias = TRUE;
+    static public function loadFromCache($required_class) {
+      $result = FALSE;
+      if (isset(static::$loaded[$required_class])) {
+        try {
+          $result = static::includeFile(static::$loaded[$required_class], $required_class);
         }
-        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace);
-        $dir = DOCROOT . strtolower($namespacepath);
-      }
-      elseif (isset(static::$classes[$required_class])) {
-        $dir = rtrim(static::$classes[$required_class], '/') . DS . $filename;
-      }
-      else {
-        $dir = APPPATH . strtolower($filename);
-      }
-
-      $filename = strtolower($filename);
-      $paths[] = $dir . '.php';
-      $paths[] = $dir . DS . $filename . '.php';
-      $paths[] = $dir . DS . $filename . DS . $filename . '.php';
-      $paths[] = $dir . DS . 'classes' . DS . $filename . '.php';
-      $result = static::trypath($paths, $namespace, $required_class);
-      if ($alias && $class) {
-        class_alias(static::$classes2[$class] . $class, $class);
+        catch (Autoload_Exception $e) {
+          Event::register_shutdown(__CLASS__);
+        }
+        if ($result && isset(static::$global_classes[$required_class])) {
+          class_alias(static::$global_classes[$required_class] .'\\'. $required_class,'\\'. $required_class);
+        }
       }
       return $result;
     }
     /**
      * @static
-     * @return array
+     *
+     * @param $requested_class
+     *
+     * @internal param $required_class
+     *
+     * @internal param $required_class
+     * @return bool|string
      */
-    static public function getPerf() {
-      array_walk(static::$loadperf, function(&$v) {
-        $v[1] = Files::convert_size($v[1]);
-        $v[2] = Dates::getReadableTime($v[2]);
-        $v[3] = Dates::getReadableTime($v[3]);
-      });
-      return static::$loadperf;
-    }
-    /**
-     * @static
-     * @return array
-     */
-    static public function getLoaded() {
-      return static::$loaded;
+    static public function load($requested_class) {
+      $classname = ltrim($requested_class, '\\');
+      $namespace = '';
+      if ($lastNsPos = strripos($classname, '\\')) {
+        $namespace = substr($classname, 0, $lastNsPos);
+        $classname = substr($classname, $lastNsPos + 1);
+      }
+      $alias = FALSE;
+      $class_file = str_replace('_', DS, $classname);
+      if (isset(static::$global_classes[$classname]) && (!$namespace || static::$global_classes[$classname] == $namespace)) {
+        $namespace = static::$global_classes[$classname];
+        $alias = TRUE;
+      }
+      if ($namespace) {
+        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace. DS . $class_file ) ;
+        $dir = DOCROOT . strtolower($namespacepath);
+      }
+      elseif (isset(static::$classes[$classname])) {
+        $dir = static::$classes[$classname] . DS . $class_file;
+      }
+      else {
+        $dir = APPPATH . strtolower($class_file);
+      }
+      $class_file = strtolower($class_file);
+      $paths[] = $dir . '.php';
+      $paths[] = $dir . DS . $class_file . '.php';
+      $paths[] = $dir . DS . $class_file . DS . $class_file . '.php';
+      $paths[] = $dir . DS . 'classes' . DS . $class_file . '.php';
+      $result = static::trypath($paths, $requested_class);
+      if ($result && $alias) {
+        $fullclass = static::$global_classes[$classname] . '\\' . $classname;
+        static::$loaded[$fullclass] = static::$loaded[$requested_class];
+        static::$loaded[$classname] = static::$loaded[$requested_class];
+        class_alias($fullclass, $classname);
+      }
+      return $result;
     }
     /**
      * @static
 
      */
     static public function _shutdown() {
-      if (static::$classes) {
-        Cache::set('autoload.classes', static::$classes);
-      }
+      Cache::set('autoload.classes', static::$classes);
+      Cache::set('autoload.global_classes', static::$global_classes);
       Cache::set('autoload.paths', static::$loaded);
-      Cache::set('autoload.classes2', static::$classes2);
     }
   }
 

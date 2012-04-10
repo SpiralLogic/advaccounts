@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Currencies"), SA_CURRENCY);
   list($Mode, $selected_id) = Page::simple_mode(FALSE);
@@ -29,6 +27,9 @@
   display_currency_edit($Mode, $selected_id);
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_data() {
     if (strlen($_POST['Abbreviation']) == 0) {
       Event::error(_("The currency abbreviation must be entered."));
@@ -53,6 +54,12 @@
     return TRUE;
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$Mode, $selected_id) {
     if (!check_data()) {
       return FALSE;
@@ -68,6 +75,11 @@
     $Mode = MODE_RESET;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function check_can_delete($selected_id) {
     if ($selected_id == "") {
       return FALSE;
@@ -106,6 +118,10 @@
     return TRUE;
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function handle_delete(&$Mode, $selected_id) {
     if (check_can_delete($selected_id)) {
       //only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -153,6 +169,10 @@
     Event::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $Mode
+   * @param $selected_id
+   */
   function display_currency_edit($Mode, $selected_id) {
     start_table('tablestyle2');
     if ($selected_id != '') {

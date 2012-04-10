@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
@@ -148,48 +146,97 @@
   Creditor::addInfoDialog('.pagerclick');
   end_form();
   Page::end();
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function due_date($row) {
     return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function gl_view($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function credit_link($row) {
     return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
       DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_debit($row) {
     $value = $row["TotalAmount"];
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_credit($row) {
     $value = -$row["TotalAmount"];
     return $value > 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
       return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), TRUE, ST_SUPPAYMENT, ICON_PRINT);
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
   }
 
+  /**
+   * @param $supplier_record
+   */
   function display_supplier_summary($supplier_record) {
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;

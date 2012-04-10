@@ -1,33 +1,60 @@
 <?php
-  /*
-         Name: eMail
-         Description: Simple sending eMail in text and HTML with CC, BCC and attachment
-         Version: 1.0
-         last modified: 2004-05-14
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
-         Autor: Daniel K�fer
-         Homepage: http://www.danielkaefer.de
-
-         Leave this header in this file!
-     */
   class Reports_Email {
 
+    /**
+     * @var array
+     */
     public $to = array();
+    /**
+     * @var array
+     */
     public $cc = array();
+    /**
+     * @var array
+     */
     public $bcc = array();
+    /**
+     * @var array
+     */
     public $attachment = array();
+    /**
+     * @var string
+     */
     public $boundary = "";
+    /**
+     * @var string
+     */
     public $header = "";
+    /**
+     * @var string
+     */
     public $subject = "";
+    /**
+     * @var string
+     */
     public $body = "";
     /**
      * @var \PHPMailer
      */
     public $mail;
+    /**
+     * @var string
+     */
     public $toerror = "No vaild email address";
-
+    /**
+     * @param bool $defaults
+     */
     public function __construct($defaults = TRUE) {
-      $this->mail = new PHPMailer(true);
+      $this->mail = new PHPMailer(TRUE);
       $this->mail->IsSMTP(); // telling the class to use SMTP
       $this->mail->Host = Config::get('email.server'); // SMTP server
       $this->mail->Username = Config::get('email.username');
@@ -44,47 +71,65 @@
         }
       }
     }
-
+    /**
+     * @param $email
+     */
     private function _checkEmail($email) {
       if (preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $email)) {
         $this->toerror = FALSE;
       }
     }
-
+    /**
+     * @param $mail
+     */
     public function to($mail) {
       $this->_checkEmail($mail);
       $this->mail->AddAddress($mail);
     }
-
+    /**
+     * @param $mail
+     */
     public function from($mail) {
       $this->_checkEmail($mail);
       $this->mail->From = $mail;
     }
-
+    /**
+     * @param $mail
+     */
     public function cc($mail) {
       $this->_checkEmail($mail);
       $this->mail->AddCC($mail);
     }
-
+    /**
+     * @param $mail
+     */
     public function bcc($mail) {
       $this->_checkEmail($mail);
       $this->mail->AddBCC($mail);
     }
-
+    /**
+     * @param $file
+     */
     public function attachment($file) {
       $this->mail->AddAttachment($file);
     }
-
+    /**
+     * @param $subject
+     */
     public function subject($subject) {
       $this->mail->Subject = $subject;
     }
-
+    /**
+     * @param $text
+     */
     public function text($text) {
       //$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
       //$this->mail->Encoding = "8bit";
       $this->mail->Body = $text . "\n";
     }
-
+    /**
+     * @param $html
+     */
     public function html($html) {
       //$this->mail->ContentType = "text/html; charset=ISO-8859-1";
       //$this->mail->Encoding = "quoted-printable";
@@ -92,7 +137,11 @@
       $this->mail->AltBody = $html . "\n";
       $this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
     }
-
+    /**
+     * @param $filename
+     *
+     * @return string
+     */
     public function mime_type($filename) {
       $file = basename($filename, '.zip');
       if ($filename == $file . '.zip') {
@@ -124,7 +173,9 @@
       }
       return 'application/unknown';
     }
-
+    /**
+     * @return bool
+     */
     public function send() {
       if ($this->toerror) {
         return FALSE;

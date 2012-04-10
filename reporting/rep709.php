@@ -14,7 +14,12 @@
 Page::set_security(SA_TAXREP);
 
 	print_tax_report();
-	function getTaxTransactions($from, $to)
+  /**
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function getTaxTransactions($from, $to)
 	{
 		$fromdate = Dates::date2sql($from);
 		$todate = Dates::date2sql($to);
@@ -40,13 +45,20 @@ Page::set_security(SA_TAXREP);
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function getTaxTypes()
+  /**
+   * @return null|PDOStatement
+   */
+  function getTaxTypes()
 	{
 		$sql = "SELECT * FROM tax_types ORDER BY id";
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function getTaxInfo($id)
+  /**
+   * @param $id
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */function getTaxInfo($id)
 	{
 		$sql = "SELECT * FROM tax_types WHERE id=$id";
 		$result = DB::query($sql, "No transactions were returned");
@@ -113,7 +125,7 @@ Page::set_security(SA_TAXREP);
 					$trans['memo'] = Ref::get($trans['trans_type'], $trans['trans_no']);
 				}
 				$rep->TextCol(1, 2, $trans['memo']);
-				$rep->DateCol(2, 3, $trans['tran_date'], true);
+				$rep->DateCol(2, 3, $trans['tran_date'], TRUE);
 				$rep->TextCol(3, 4, $trans['name']);
 				$rep->TextCol(4, 5, $trans['br_name']);
 				$rep->AmountCol(5, 6, $trans['net_amount'], $dec);
@@ -177,4 +189,4 @@ Page::set_security(SA_TAXREP);
 		$rep->End();
 	}
 
-?>
+

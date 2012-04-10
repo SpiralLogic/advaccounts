@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "System Diagnostics"), SA_SETUPCOMPANY);
   // Type of requirement for positive test result
@@ -54,6 +52,9 @@
   }
   end_table();
   Page::end();
+  /**
+   * @return array
+   */
   function tst_mysql() {
     $test['descr'] = _('MySQL version') . ' >5.0';
     $test['type'] = 3;
@@ -63,6 +64,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_php() {
     $test['descr'] = _('PHP version') . ' >5.4';
     $test['type'] = 3;
@@ -72,6 +76,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_system() {
     $test['descr'] = _('Server system');
     $test['type'] = 0;
@@ -80,6 +87,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_sessionpath() {
     $test['descr'] = _('Session save path');
     $test['type'] = 0;
@@ -88,6 +98,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_sessionhandler() {
     $test['descr'] = _('Session handler');
     $test['type'] = 2;
@@ -97,6 +110,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_browser() {
     $test['descr'] = _('Browser type');
     $test['type'] = 0;
@@ -106,6 +122,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_server() {
     $test['descr'] = _('Http server type');
     $test['test'] = $_SERVER['SERVER_SOFTWARE'];
@@ -115,6 +134,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_gettext() {
     $test['descr'] = _('Native gettext');
     $test['test'] = function_exists('gettext') ? _('Yes') : _('No');
@@ -124,6 +146,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_debug() {
     $test['descr'] = _('Debugging mode');
     $test['type'] = 0;
@@ -133,6 +158,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_logging() {
     $test['descr'] = _('Error logging');
     $test['type'] = 2;
@@ -156,6 +184,9 @@
   //
   //	Installed ADV database structure version
   //
+  /**
+   * @return array
+   */
   function tst_subdirs() {
     $comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
     $test['descr'] = _('Company subdirectories consistency');
@@ -201,6 +232,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_tmpdir() {
     $test['descr'] = _('Temporary directory');
     $test['type'] = 3;
@@ -210,6 +244,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_langs() {
     $test['descr'] = _('Language configuration consistency');
     $test['type'] = 3;
@@ -239,6 +276,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_config() {
     $test['descr'] = _('Main config file');
     $test['type'] = 2;
@@ -248,6 +288,9 @@
     return $test;
   }
 
+  /**
+   * @return array
+   */
   function tst_extconfig() {
     $test['descr'] = _('Extensions configuration files');
     $test['type'] = 3;
@@ -271,4 +314,4 @@
     return $test;
   }
 
-?>
+

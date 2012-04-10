@@ -14,7 +14,12 @@
 	Page::set_security(SA_CUSTBULKREP);
 
 	print_customer_details_listing();
-	function get_customer_details_for_report($area = 0, $salesid = 0)
+  /**
+   * @param int $area
+   * @param int $salesid
+   *
+   * @return null|PDOStatement
+   */function get_customer_details_for_report($area = 0, $salesid = 0)
 	{
 		$sql
 		 = "SELECT debtors.debtor_no,
@@ -63,7 +68,13 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function get_transactions($debtorno, $branchcode, $date)
+  /**
+   * @param $debtorno
+   * @param $branchcode
+   * @param $date
+   *
+   * @return mixed
+   */function get_transactions($debtorno, $branchcode, $date)
 	{
 		$date = Dates::date2sql($date);
 		$sql
@@ -152,14 +163,14 @@
 		$sman = '';
 		while ($myrow = DB::fetch($result))
 		{
-			$printcustomer = true;
+			$printcustomer = TRUE;
 			if ($more != '' || $less != '') {
 				$turnover = get_transactions($myrow['debtor_no'], $myrow['branch_id'], $from);
 				if ($more != 0.0 && $turnover <= (double)$more) {
-					$printcustomer = false;
+					$printcustomer = FALSE;
 				}
 				if ($less != 0.0 && $turnover >= (double)$less) {
-					$printcustomer = false;
+					$printcustomer = FALSE;
 				}
 			}
 			if ($printcustomer) {
@@ -218,4 +229,4 @@
 		$rep->End();
 	}
 
-?>
+

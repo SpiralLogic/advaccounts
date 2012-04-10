@@ -14,7 +14,12 @@
 Page::set_security(SA_DIMENSIONREP);
 
 	print_dimension_summary();
-	function get_transactions($from, $to)
+  /**
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($from, $to)
 	{
 		$sql
 		 = "SELECT *
@@ -27,7 +32,11 @@ Page::set_security(SA_DIMENSIONREP);
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	function getYTD($dim)
+  /**
+   * @param $dim
+   *
+   * @return float
+   */function getYTD($dim)
 	{
 		$date = Dates::today();
 		$date = Dates::begin_fiscalyear($date);
@@ -81,8 +90,8 @@ Page::set_security(SA_DIMENSIONREP);
 			$rep->TextCol(0, 1, $trans['reference']);
 			$rep->TextCol(1, 2, $trans['name']);
 			$rep->TextCol(2, 3, $trans['type_']);
-			$rep->DateCol(3, 4, $trans['date_'], true);
-			$rep->DateCol(4, 5, $trans['due_date'], true);
+			$rep->DateCol(3, 4, $trans['date_'], TRUE);
+			$rep->DateCol(4, 5, $trans['due_date'], TRUE);
 			if ($trans['closed']) {
 				$str = _('Yes');
 			}
@@ -101,4 +110,4 @@ Page::set_security(SA_DIMENSIONREP);
 		$rep->End();
 	}
 
-?>
+

@@ -1,13 +1,14 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 9/12/11
-   * Time: 12:20 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   return array(
-    'ADV\\Core\\' => array(
+    'ADV\\Core' => array(
       'Adv_Exception', //
       'Ajax', //
       'Arr', //
@@ -34,7 +35,7 @@
       'UploadHandler', //
       'XMLParser', //
     ),
-    'ADV\\Core\\DB\\' => array(
+    'ADV\\Core\\DB' => array(
       'DB', //
       'DB_Query', //
       'DB_Query_Delete', //

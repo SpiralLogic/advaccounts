@@ -1,16 +1,20 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Ref {
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $id
+     * @param $reference
+     */
     static public function add($type, $id, $reference) {
       $sql = "INSERT INTO refs (type, id, reference)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", " . DB::escape(trim($reference)) . ")";
@@ -19,18 +23,36 @@
         static::save_last($type);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $reference
+     *
+     * @return bool
+     */
     static public function find($type, $reference) {
       $sql = "SELECT id FROM refs WHERE type=" . DB::escape($type) . " AND reference=" . DB::escape($reference);
       $result = DB::query($sql, "could not query reference table");
       return (DB::num_rows($result) > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $reference
+     */
     static public function save($type, $reference) {
       $sql = "UPDATE sys_types SET next_reference= REPLACE(" . DB::escape(trim($reference)) . ",prefix,'') WHERE type_id = " . DB::escape($type);
       DB::query($sql, "The next transaction ref for $type could not be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     *
+     * @return string
+     */
     static public function get_next($type) {
       $sql = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::escape($type);
       $result = DB::query($sql, "The last transaction ref for $type could not be retreived");
@@ -59,19 +81,39 @@
       }
       return $ref;
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $id
+     *
+     * @return mixed
+     */
     static public function get($type, $id) {
       $sql = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
       $result = DB::query($sql, "could not query reference table");
       $row = DB::fetch($result);
       return $row['reference'];
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $id
+     *
+     * @return null|PDOStatement
+     */
     static public function delete($type, $id) {
       $sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
       return DB::query($sql, "could not delete from reference table");
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $id
+     * @param $reference
+     */
     static public function update($type, $id, $reference) {
       $sql = "UPDATE refs SET reference=" . DB::escape($reference) . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
       DB::query($sql, "could not update reference entry");
@@ -79,20 +121,43 @@
         static::save_last($type);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $reference
+     *
+     * @return bool
+     */
     static public function exists($type, $reference) {
       return (static::find($type, $reference) != NULL);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     */
     static public function save_last($type) {
       $next = static::increment(static::get_next($type));
       static::save($type, $next);
     }
-
+    /**
+     * @static
+     *
+     * @param $reference
+     *
+     * @return bool
+     */
     static public function is_valid($reference) {
       return strlen(trim($reference)) > 0;
     }
-
+    /**
+     * @static
+     *
+     * @param $reference
+     *
+     * @return string
+     */
     static public function increment($reference) {
       // New method done by Pete. So f.i. WA036 will increment to WA037 and so on.
       // If $reference contains at least one group of digits,
@@ -111,7 +176,14 @@
         return $reference;
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $ref
+     * @param $type
+     *
+     * @return bool
+     */
     static public function is_new($ref, $type) {
       $db_info = SysTypes::get_db_info($type);
       $db_name = $db_info[0];
@@ -130,4 +202,4 @@
     }
   }
 
-?>
+

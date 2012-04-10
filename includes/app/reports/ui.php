@@ -1,13 +1,22 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 3/12/11
-   * Time: 2:03 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Reports_UI {
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $spec_opt
+     * @param bool $submit_on_change
+     */
     static public function print_profiles_row($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = TRUE) {
       $sql = "SELECT profile FROM print_profiles GROUP BY profile";
       $result = DB::query($sql, 'cannot get all profile names');
@@ -25,7 +34,16 @@
       ));
       echo "</td></tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $spec_opt
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
     static public function printers($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       static $printers; // query only once for page display
       if (!$printers) {
@@ -40,7 +58,13 @@
         'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $value
+     */
     static public function pagesizes_row($label, $name, $value = NULL) {
       $items = array();
       foreach (Config::get('print_paper_sizes') as $pz) {

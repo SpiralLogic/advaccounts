@@ -2,7 +2,7 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -10,34 +10,121 @@
 
   class Item extends DB_abstract {
 
+    /**
+     * @var int
+     */
     public $id = 0;
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var int
+     */
     public $tax_type_id = 1;
+    /**
+     * @var string
+     */
     public $mb_flag = STOCK_MANUFACTURE;
+    /**
+     * @var null
+     */
     public $sales_account = NULL;
+    /**
+     * @var null
+     */
     public $inventory_account = NULL;
+    /**
+     * @var null
+     */
     public $cogs_account = NULL;
+    /**
+     * @var null
+     */
     public $adjustment_account = NULL;
+    /**
+     * @var null
+     */
     public $assembly_account = NULL;
+    /**
+     * @var int
+     */
     public $dimension_id = 0;
+    /**
+     * @var int
+     */
     public $dimension2_id = 0;
+    /**
+     * @var int
+     */
     public $actual_cost = 0;
+    /**
+     * @var int
+     */
     public $last_cost = 0;
+    /**
+     * @var int
+     */
     public $material_cost = 0;
+    /**
+     * @var int
+     */
     public $labour_cost = 0;
+    /**
+     * @var int
+     */
     public $overhead_cost = 0;
+    /**
+     * @var bool
+     */
     public $inactive = FALSE;
+    /**
+     * @var bool
+     */
     public $no_sale = FALSE;
+    /**
+     * @var int
+     */
     public $editable = 0;
+    /**
+     * @var string
+     */
     public $tax_type_name = 'GST';
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var int
+     */
     public $category_id = 6;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $long_description;
+    /**
+     * @var string
+     */
     public $units = 'ea';
+    /**
+     * @var array
+     */
     public $salePrices = array();
+    /**
+     * @var array
+     */
     public $purchPrices = array();
+    /**
+     * @var array
+     */
     protected $stockLevels = array();
+    /**
+     * @var
+     */
     static public $qoh_stock;
     /***
      * @param int $id
@@ -68,13 +155,13 @@
       return TRUE;
     }
     /**
-
+     * @return void
      */
     protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
     }
     /**
-
+     * @return void
      */
     protected function _defaults() {
       $this->id = 0;
@@ -151,7 +238,7 @@
       return $this->_status(TRUE, 'Processing', "Item has been updated.");
     }
     /**
-
+     * @return void
      */
     public function  getSalePrices() {
       $sql = "SELECT * FROM prices WHERE stockid = " . $this->id;
@@ -456,6 +543,7 @@
      * @static
      *
      * @param string $location
+     * @return void
      */
     static protected function load_stock_levels($location = '') {
       $date = Dates::date2sql(Dates::today());
@@ -490,6 +578,7 @@
      * @static
      *
      * @param $terms
+     * @return void
      */
     static public function searchSale($terms) {
       $terms = explode(' ', trim($terms));
@@ -600,6 +689,7 @@ s.category_id, editable, 0 as kit,
      * @static
      *
      * @param array $options
+     * @return void
      */
     static public function addEditDialog($options = array()) {
       $default = array('page' => 0);
@@ -677,6 +767,7 @@ JS;
      * @param        $dimension_id
      * @param        $dimension2_id
      * @param        $no_sale
+     * @return void
      */
     static public function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql = "UPDATE stock_master SET long_description=" . DB::escape($long_description) . ",
@@ -719,6 +810,7 @@ JS;
      * @param $dimension_id
      * @param $dimension2_id
      * @param $no_sale
+     * @return void
      */
     static public function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql
@@ -739,6 +831,7 @@ JS;
      * @static
      *
      * @param $stock_id
+     * @return void
      */
     static public function del($stock_id) {
       $sql = "DELETE FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
@@ -868,6 +961,7 @@ JS;
      * @param bool $all
      * @param bool $editkey
      * @param bool $legacy
+     * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE, $legacy = FALSE) {
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(

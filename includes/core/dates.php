@@ -2,7 +2,7 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -12,7 +12,7 @@
   if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
     @date_default_timezone_set(@date_default_timezone_get());
   }
-  /*
+  /**
        date validation and parsing functions
 
        These functions refer to the global variable defining the date format
@@ -21,7 +21,9 @@
        "m/d/Y" for US/Canada format dates depending on setting in preferences.
 
        */
-
+  /**
+   *
+   */
   class Dates {
 
     /**
@@ -503,14 +505,14 @@
      *
      * @param $date_
      *
+     * @throws \Adv_Exception
      * @return array
-     * @throws Adv_Exception
      */
     static function explode_date_to_dmy($date_) {
       $date = Dates::date2sql($date_);
       if ($date == "") {
         $disp = \User::date_display();
-        throw new Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
+        throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
       return array($day, $month, $year);
@@ -622,7 +624,8 @@
      * @static
      *
      * @param      $name
-     * @param null $month
+     * @param int $month
+     * @return string
      */
     public static function months($name, $month = 0) {
       $months = array();
@@ -724,4 +727,4 @@
     }
   }
 
-  ?>
+

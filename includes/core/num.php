@@ -2,21 +2,42 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
 
   namespace ADV\Core;
+  /**
+   *
+   */
   class Num {
 
+    /**
+     * @var int
+     */
     public static $price_dec = 2;
+    /**
+     * @var string
+     */
     public static $tho_sep = ',';
+    /**
+     * @var string
+     */
     public static $dec_sep = '.';
+    /**
+     * @var string
+     */
     public static $exrate_dec = '.';
+    /**
+     * @var
+     */
     public static $percent_dec;
 
+    /**
+     * @var
+     */
     protected static $i;
     static public function i() {
       if (static::$i === NULL) {
@@ -24,6 +45,9 @@
       }
       return static::$i;
     }
+    /**
+     *
+     */
     protected function __construct() {
       static::$price_dec = \User::prefs()->price_dec();
       static::$tho_sep = \User::tho_sep();

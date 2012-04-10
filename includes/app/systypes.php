@@ -1,19 +1,23 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   //	Returns next transaction number.
   //	Used only for transactions stored in tables without autoincremented key.
   //
   class SysTypes {
-
+    /**
+     * @static
+     *
+     * @param $trans_type
+     *
+     * @return int
+     */
     static public function get_next_trans_no($trans_type) {
       $st = SysTypes::get_db_info($trans_type);
       if (!($st && $st[0] && $st[2])) {
@@ -37,7 +41,13 @@
       }
       return $ref;
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     *
+     * @return array|null
+     */
     static public function get_db_info($type) {
       switch ($type) {
         case   ST_JOURNAL    :
@@ -93,24 +103,49 @@
       }
       Errors::db_error("invalid type ($type) sent to get_systype_db_info", "", TRUE);
     }
-
+    /**
+     * @static
+     * @return null|PDOStatement
+     */
     static public function get() {
       $sql = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::query($sql, "could not query systypes table");
       return $result;
     }
-
+    /**
+     * @static
+     *
+     * @param $ctype
+     *
+     * @return int
+     */
     static public function get_class_type_convert($ctype) {
         return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
       }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $value
+     * @param bool $spec_opt
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
     static public function select($name, $value = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       global $systypes_array;
       return array_selector($name, $value, $systypes_array, array(
         'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => FALSE,
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $value
+     * @param bool $submit_on_change
+     */
     static public function cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -119,7 +154,14 @@
       echo SysTypes::select($name, $value, FALSE, $submit_on_change);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $value
+     * @param bool $submit_on_change
+     */
     static public function row($label, $name, $value = NULL, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       SysTypes::cells(NULL, $name, $value, $submit_on_change);

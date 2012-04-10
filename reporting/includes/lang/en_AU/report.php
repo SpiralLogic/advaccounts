@@ -1,7 +1,10 @@
 <?php
 	namespace Reports;
 
-	class Report {
+  /**
+
+   */
+  class Report {
 		const CUST_NO = "Cust no";
 		const DATE = "Date";
 		const STATEMENT_NOTE = "IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP";
@@ -40,8 +43,14 @@
 		const AS_OF = "as of";
 		const DAYS = "Days";
 		const OVER = "Over";
-		public $headers = array('Trans Type', 'Invoice#', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
-		public $doctypes = array(
+    /**
+     * @var array
+     */
+    public $headers = array('Trans Type', 'Invoice#', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
+    /**
+     * @var array
+     */
+    public $doctypes = array(
 			ST_CUSTDELIVERY => "Delivery Note No.",
 			ST_CUSTPAYMENT => "Receipt No.",
 			ST_CUSTREFUND => "Refund No.",

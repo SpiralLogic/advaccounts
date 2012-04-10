@@ -1,51 +1,149 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 28/03/12
-   * Time: 8:36 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class SelectBox {
 
+    /**
+     * @var array
+     */
     protected $where = array(); // additional constraints
+    /**
+     * @var
+     */
     protected $order; // list sort order
     // special option parameters
+    /**
+     * @var bool
+     */
     protected $spec_option = FALSE; // option text or false
+    /**
+     * @var int
+     */
     protected $spec_id = 0; // option id
+    /**
+     * @var bool
+     */
     protected $cache = FALSE; // option id
     // submit on select parameters
+    /**
+     * @var string
+     */
     protected $default = ''; // default value when $_POST is not set
+    /**
+     * @var bool
+     */
     protected $multi = FALSE; // multiple select
+    /**
+     * @var bool
+     */
     protected $select_submit = FALSE; //submit on select: true/false
+    /**
+     * @var bool
+     */
     protected $async = TRUE; // select update via ajax (true) vs _page_body reload
     // search box parameters
+    /**
+     * @var null
+     */
     protected $sel_hint = NULL;
+    /**
+     * @var bool
+     */
     protected $search_box = FALSE; // name or true/false
+    /**
+     * @var int
+     */
     protected $type = 0; // type of extended selector:
     // 0 - with (optional) visible search box, search by id
     // 1 - with hidden search box, search by option text
     // 2 - TODO reverse: box with hidden selector available via enter; this
     // would be convenient for optional ad hoc adding of new item
+    /**
+     * @var bool
+     */
     protected $search_submit = TRUE; //search submit button: true/false
+    /**
+     * @var int
+     */
     protected $size = 8; // size and max of box tag
+    /**
+     * @var int
+     */
     protected $max = 50;
+    /**
+     * @var bool
+     */
     protected $height = FALSE; // number of lines in select box
+    /**
+     * @var bool
+     */
     protected $cells = FALSE; // combo displayed as 2 <td></td> cells
+    /**
+     * @var array
+     */
     protected $search = array(); // sql field names to search
+    /**
+     * @var null
+     */
     protected $format = NULL; // format functions for regular options
+    /**
+     * @var bool
+     */
     protected $disabled = FALSE;
+    /**
+     * @var null
+     */
     protected $box_hint = NULL; // box/selectors hints; null = std see below
+    /**
+     * @var bool
+     */
     protected $category = FALSE; // category column name or false
+    /**
+     * @var bool
+     */
     protected $show_inactive = FALSE; // show inactive records.
+    /**
+     * @var bool
+     */
     protected $editable = FALSE; // false, or length of editable entry field
+    /**
+     * @var string
+     */
     protected $rel = ''; // false, or length of editable entry field
+    /**
+     * @var
+     */
     protected $name;
+    /**
+     * @var null
+     */
     protected $selected_id;
+    /**
+     * @var
+     */
     protected $sql;
+    /**
+     * @var
+     */
     protected $valfield;
+    /**
+     * @var
+     */
     protected $namefield;
-
+    /**
+     * @param       $name
+     * @param null  $selected_id
+     * @param       $sql
+     * @param       $valfield
+     * @param       $namefield
+     * @param array $options
+     */
     function __construct($name, $selected_id = NULL, $sql, $valfield, $namefield, $options = array()) {
       $this->name = $name;
       $this->order = $namefield;
@@ -65,6 +163,9 @@
         $this->where = array($this->where);
       }
     }
+    /**
+     * @return string
+     */
     function create() {
 
       // ------ merge options with defaults ----------
@@ -233,6 +334,11 @@
       }
       return $str;
     }
+    /**
+     * @param $search_box
+     * @param $search_button
+     * @param $txt
+     */
     function generateSQL($search_box, $search_button, $txt) {
       $limit = '';
       if ($search_box) {
@@ -294,10 +400,18 @@
       }
       $this->sql .= $limit;
     }
+    /**
+     * @return null|PDOStatement
+     */
     private function executeSQL() {
 
       return DB::query($this->sql);
     }
+    /**
+     * @param $result
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     private function getNext($result) {
         return DB::fetch($result);
     }

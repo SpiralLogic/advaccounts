@@ -2,7 +2,7 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -78,8 +78,8 @@
      * @param $feild
      * @param $value
      *
-     * @return Query_Insert
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
+     * @return \ADV\Core\DB\Query_Insert
      */
     public function value($feild, $value) {
       if (is_array($feild) && is_array($value)) {

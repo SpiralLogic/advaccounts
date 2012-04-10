@@ -14,7 +14,12 @@
 Page::set_security(SA_BOMREP);
 
 	print_bill_of_material();
-	function get_transactions($from, $to)
+  /**
+   * @param $from
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_transactions($from, $to)
 	{
 		$sql = "SELECT bom.parent,
 			bom.component,
@@ -86,4 +91,4 @@ Page::set_security(SA_BOMREP);
 		$rep->End();
 	}
 
-?>
+

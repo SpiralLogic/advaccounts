@@ -1,6 +1,9 @@
 <?php
 	namespace Reports;
 
-	class Statement {
+  /**
+
+   */
+  class Statement {
 
 	}

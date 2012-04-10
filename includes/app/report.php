@@ -1,15 +1,29 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 31/10/11
-   * Time: 8:06 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Report {
+
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var
+     */
     public $ar_params;
+    /**
+     * @var
+     */
     public $controls;
     const DATEBEGIN = 'DATEBEGIN';
     const DATEENDM = 'DATEENDM';

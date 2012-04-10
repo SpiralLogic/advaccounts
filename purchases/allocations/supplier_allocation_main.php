@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   JS::open_window(900, 500);
@@ -35,27 +33,58 @@
   if (isset($_POST['supplier_id'])) {
     $supplier_id = $_POST['supplier_id'];
   }
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function alloc_link($row) {
     return DB_Pager::link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function amount_left($row) {
     return Num::price_format(-$row["Total"] - $row["alloc"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function amount_total($row) {
     return Num::price_format(-$row["Total"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_settled($row) {
     return $row['settled'] == 1;
   }
@@ -82,4 +111,4 @@
   DB_Pager::display($table);
   end_form();
   Page::end();
-?>
+

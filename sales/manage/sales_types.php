@@ -1,37 +1,23 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Sales Types"), SA_SALESTYPES);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
-  function can_process() {
-    if (strlen($_POST['sales_type']) == 0) {
-      Event::error(_("The sales type description cannot be empty."));
-      JS::set_focus('sales_type');
-      return FALSE;
-    }
-    if (!Validation::is_num('factor', 0)) {
-      Event::error(_("Calculation factor must be valid positive number."));
-      JS::set_focus('factor');
-      return FALSE;
-    }
-    return TRUE;
-  }
 
-  if ($Mode == ADD_ITEM && can_process()) {
+
+  if ($Mode == ADD_ITEM && Sales_Type::can_process()) {
     Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
     Event::success(_('New sales type has been added'));
     $Mode = MODE_RESET;
   }
-  if ($Mode == UPDATE_ITEM && can_process()) {
+  if ($Mode == UPDATE_ITEM && Sales_Type::can_process()) {
     Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 :
       0, Validation::input_num('factor'));
     Event::success(_('Selected sales type has been updated'));
@@ -122,4 +108,4 @@
   end_form();
   Page::end();
 
-?>
+

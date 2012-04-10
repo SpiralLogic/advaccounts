@@ -1,14 +1,13 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
@@ -34,7 +33,9 @@
   // so fileds are cleared only on user demand.
   //
   if (isset($_POST['ClearFields'])) {
-    clear_fields();
+    unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
+    Ajax::i()->activate('gl_items');
+    JS::set_focus('gl_code');
   }
   if (isset($_POST['AddGLCodeToTrans'])) {
     Ajax::i()->activate('gl_items');
@@ -67,7 +68,19 @@
     }
   }
   if (isset($_POST['PostCreditNote'])) {
-    handle_commit_credit_note();
+    Purch_Invoice::copy_to_trans(Creditor_Trans::i());
+    if (!check_data()) {
+      return;
+    }
+    if (isset($_POST['invoice_no'])) {
+      $invoice_no = Purch_Invoice::add(Creditor_Trans::i(), $_POST['invoice_no']);
+    }
+    else {
+      $invoice_no = Purch_Invoice::add(Creditor_Trans::i());
+    }
+    Creditor_Trans::i()->clear_items();
+    Creditor_Trans::killInstance();
+    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
   }
   $id = find_submit('grn_item_id');
   if ($id != -1) {
@@ -91,7 +104,8 @@
   $id4 = find_submit('Delete2');
   if ($id4 != -1) {
     Creditor_Trans::i()->remove_gl_codes_from_trans($id4);
-    clear_fields();
+    unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
+    JS::set_focus('gl_code');
     Ajax::i()->activate('gl_items');
     Ajax::i()->activate('inv_tot');
   }
@@ -173,34 +187,6 @@
   }
 
   /**
-   * @return mixed
-   */
-  function handle_commit_credit_note() {
-    Purch_Invoice::copy_to_trans(Creditor_Trans::i());
-    if (!check_data()) {
-      return;
-    }
-    if (isset($_POST['invoice_no'])) {
-      $invoice_no = Purch_Invoice::add(Creditor_Trans::i(), $_POST['invoice_no']);
-    }
-    else {
-      $invoice_no = Purch_Invoice::add(Creditor_Trans::i());
-    }
-    Creditor_Trans::i()->clear_items();
-    Creditor_Trans::killInstance();
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
-  }
-
-  /**
-
-   */
-  function clear_fields() {
-    unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-    Ajax::i()->activate('gl_items');
-    JS::set_focus('gl_code');
-  }
-
-  /**
    * @param $n
    *
    * @return bool
@@ -227,8 +213,8 @@
       $complete = FALSE;
       Creditor_Trans::i()
         ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
-        $complete, $_POST['std_cost_unit' . $n], "");
+                           $complete, $_POST['std_cost_unit' . $n], "");
     }
   }
 
-?>
+

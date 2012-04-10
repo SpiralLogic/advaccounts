@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 15/11/10
-   * Time: 4:07 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Debtor extends \Contact_Company {
 
     /**
@@ -85,7 +86,7 @@
      */
     protected $_id_column = 'debtor_no';
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function __construct($id = NULL) {
       $this->id = &$this->debtor_no;
@@ -112,6 +113,7 @@
     }
     /**
      * @param null $details
+     * @return void
      */
     public function addBranch($details = NULL) {
       $branch = new Debtor_Branch($details);
@@ -188,9 +190,9 @@
       return $results;
     }
     /**
-     * @param null $changes
+     * @param array|null $changes
      *
-     * @return bool|void
+     * @return array|bool|int|null|void
      */
     public function save($changes = NULL) {
       $data['debtor_ref'] = substr($this->name, 0, 29);
@@ -218,6 +220,7 @@
     }
     /**
      * @param null $changes
+     * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
       parent::setFromArray($changes);
@@ -290,14 +293,14 @@
       return DB::num_rows();
     }
     /**
-     * @return int
+     * @return int|mixed
      */
     protected function _countTransactions() {
       DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
-      return DB::num_rows();
+      return (int) DB::num_rows();
     }
     /**
-
+     * @return void
      */
     protected function _defaults() {
       $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
@@ -308,7 +311,7 @@
       $this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
     }
     /**
-
+     * @return void
      */
     protected function _getAccounts() {
       DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
@@ -320,7 +323,7 @@
       }
     }
     /**
-
+     * @return void
      */
     protected function _getBranches() {
       DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
@@ -332,7 +335,7 @@
       $this->defaultBranch = reset($this->branches)->id;
     }
     /**
-
+     * @return void
      */
     protected function _getContacts() {
       DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=', CT_CUSTOMER);
@@ -358,9 +361,9 @@
       return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
     }
     /**
-     * @param bool $id
+     * @param bool|int|null $id
      *
-     * @return array
+     * @return array|bool
      */
     protected function _read($id = FALSE) {
       if (!parent::_read($id)) {
@@ -374,7 +377,7 @@
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
     /**
-
+     * @return void
      */
     protected function _setDefaults() {
       $this->defaultBranch = reset($this->branches)->branch_id;
@@ -383,7 +386,7 @@
     }
     /**
      * @static
-
+     * @return void
      */
     static public function addEditDialog() {
       $customerBox = new Dialog('Customer Edit', 'customerBox', '');
@@ -406,6 +409,7 @@ JS;
      *
      * @param       $id
      * @param array $options
+     * @return void
      */
     static public function addSearchBox($id, $options = array()) {
       echo UI::searchLine($id, '/contacts/search.php', $options);
@@ -469,7 +473,9 @@ JS;
      * @param      $customer_id
      * @param null $to
      *
-     * @return Array|DB_Query_Result
+     * @param bool $istimestamp
+     *
+     * @return Array|\DB_Query_Result
      */
     static public function get_details($customer_id, $to = NULL, $istimestamp = FALSE) {
       if ($to == NULL) {
@@ -634,6 +640,7 @@ JS;
      * @static
      *
      * @param null $value
+     * @return void
      */
     static public function newselect($value = NULL) {
       echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
@@ -708,6 +715,7 @@ JS;
      * @param bool $show_inactive
      * @param bool $editkey
      * @param bool $async
+     * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
       echo "<td class='nowrap'>";
@@ -727,6 +735,7 @@ JS;
      * @param bool $submit_on_change
      * @param bool $show_inactive
      * @param bool $editkey
+     * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE) {
       echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td class='nowrap'>";

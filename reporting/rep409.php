@@ -111,4 +111,4 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : 
 			}
 		}
 
-?>
+

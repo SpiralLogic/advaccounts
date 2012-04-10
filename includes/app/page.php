@@ -1,30 +1,67 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 31/10/11
-   * Time: 6:57 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Page {
 
     /** @var \Renderer */
     public $renderer = NULL;
+    /**
+     * @var bool
+     */
     protected $frame = FALSE;
+    /**
+     * @var bool
+     */
     protected $menu = TRUE;
+    /**
+     * @var bool
+     */
     protected $is_index = FALSE;
+    /**
+     * @var array
+     */
     protected $css = array();
+    /**
+     * @var bool
+     */
     protected $header = TRUE;
+    /**
+     * @var string
+     */
     protected $theme = 'default';
     /** @var ADVAccounting */
     protected $app;
+    /**
+     * @var
+     */
     protected $sel_app;
+    /**
+     * @var string
+     */
     protected $title = '';
     /** @var Page */
     static protected $i = NULL;
+    /**
+     * @var null
+     */
     static protected $security = NULL;
+    /**
+     * @var
+     */
     public $encoding;
+    /**
+     * @var
+     */
     public $ajaxpage;
+    /**
+     * @var string
+     */
     public $lang_dir = '';
 
     /**

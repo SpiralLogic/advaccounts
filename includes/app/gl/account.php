@@ -1,16 +1,23 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class GL_Account {
-
+    /**
+     * @static
+     *
+     * @param $account_code
+     * @param $account_name
+     * @param $account_type
+     * @param $account_code2
+     *
+     * @return null|PDOStatement
+     */
     static public function add($account_code, $account_name, $account_type, $account_code2) {
       $sql
         = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
@@ -18,16 +25,40 @@
         . DB::escape($account_name) . ", " . DB::escape($account_type) . ")";
       return DB::query($sql);
     }
+    /**
+     * @static
+     *
+     * @param $account_code
+     * @param $account_name
+     * @param $account_type
+     * @param $account_code2
+     *
+     * @return null|PDOStatement
+     */
     static public function update($account_code, $account_name, $account_type, $account_code2) {
       $sql = "UPDATE chart_master SET account_name=" . DB::escape($account_name)
         . ",account_type=" . DB::escape($account_type) . ", account_code2=" . DB::escape($account_code2)
         . " WHERE account_code = " . DB::escape($account_code);
       return DB::query($sql);
     }
+    /**
+     * @static
+     *
+     * @param $code
+     */
     static public function delete($code) {
       $sql = "DELETE FROM chart_master WHERE account_code=" . DB::escape($code);
       DB::query($sql, "could not delete gl account");
     }
+    /**
+     * @static
+     *
+     * @param null $from
+     * @param null $to
+     * @param null $type
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($from = NULL, $to = NULL, $type = NULL) {
       $sql
         = "SELECT chart_master.*,chart_types.name AS AccountTypeName
@@ -45,11 +76,27 @@
       $sql .= " ORDER BY account_code";
       return DB::query($sql, "could not get gl accounts");
     }
+    /**
+     * @static
+     *
+     * @param $code
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($code) {
       $sql = "SELECT * FROM chart_master WHERE account_code=" . DB::escape($code);
       $result = DB::query($sql, "could not get gl account");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param $reconcile_id
+     * @param $reconcile_value
+     * @param $reconcile_date
+     * @param $end_balance
+     * @param $bank_account
+     */
     static public function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
       $sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
         . " WHERE id=" . DB::escape($reconcile_id);
@@ -61,6 +108,14 @@
 			WHERE id=" . DB::escape($bank_account);
       DB::query($sql2, "Error updating reconciliation information");
     }
+    /**
+     * @static
+     *
+     * @param $date
+     * @param $bank_account
+     *
+     * @return null|PDOStatement
+     */
     static public function get_max_reconciled($date, $bank_account) {
       $date = Dates::date2sql($date);
       // temporary fix to enable fix of invalid entries made in 2.2RC
@@ -77,6 +132,14 @@
       //	." AND trans.reconciled IS NOT NULL";
       return DB::query($sql, "Cannot retrieve reconciliation data");
     }
+    /**
+     * @static
+     *
+     * @param $bank_account
+     * @param $bank_date
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_ending_reconciled($bank_account, $bank_date) {
       $sql
         = "SELECT ending_reconcile_balance
@@ -85,6 +148,14 @@
       $result = DB::query($sql, "Cannot retrieve last reconciliation");
       return DB::fetch($result);
     }
+    /**
+     * @static
+     *
+     * @param $bank_account
+     * @param $date
+     *
+     * @return string
+     */
     static public function get_sql_for_reconcile($bank_account, $date) {
       /*$sql = "SELECT	type, trans_no, ref, trans_date, amount,	person_id, person_type_id, reconciled, id
                 FROM bank_trans WHERE bank_trans.bank_act = " .
@@ -104,6 +175,12 @@
       // or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
       return $sql;
     }
+    /**
+     * @static
+     *
+     * @param $bank_account
+     * @param $date
+     */
     static public function reset_sql_for_reconcile($bank_account, $date) {
       $sql
         = "UPDATE	reconciled
@@ -113,6 +190,13 @@
       // or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
       $result = DB::query($sql);
     }
+    /**
+     * @static
+     *
+     * @param $code
+     *
+     * @return bool
+     */
     static public function is_balancesheet($code) {
       $sql = "SELECT chart_class.ctype FROM chart_class, "
         . "chart_types, chart_master
@@ -123,6 +207,13 @@
       $row = DB::fetch_row($result);
       return $row[0] > 0 && $row[0] < CL_INCOME;
     }
+    /**
+     * @static
+     *
+     * @param $code
+     *
+     * @return mixed
+     */
     static public function get_name($code) {
       $sql = "SELECT account_name from chart_master WHERE account_code=" . DB::escape($code);
       $result = DB::query($sql, "could not retreive the account name for $code");

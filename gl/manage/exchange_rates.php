@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   $js = "";
   Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
@@ -59,6 +57,9 @@
   }
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_data() {
     if (!Dates::is_date($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
@@ -78,6 +79,11 @@
     return TRUE;
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return bool
+   */
   function handle_submit(&$selected_id) {
     if (!check_data()) {
       return FALSE;
@@ -92,6 +98,11 @@
     clear_data();
   }
 
+  /**
+   * @param $selected_id
+   *
+   * @return mixed
+   */
   function handle_delete(&$selected_id) {
     if ($selected_id == "") {
       return;
@@ -101,17 +112,33 @@
     clear_data();
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return button(MODE_EDIT . $row["id"], _("Edit"), TRUE, ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function del_link($row) {
     return button(MODE_DELETE . $row["id"], _("Delete"), TRUE, ICON_DELETE);
   }
 
+  /**
+   * @param $curr_code
+   */
   function display_rates($curr_code) {
   }
 
+  /**
+   * @param $selected_id
+   */
   function display_rate_edit(&$selected_id) {
     start_table('tablestyle2');
     if ($selected_id != "") {

@@ -1,17 +1,20 @@
-<!--suppress ALL -->
   <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class GL_ExchangeRate {
-
+    /**
+     * @static
+     *
+     * @param $rate_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($rate_id) {
       $sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       $result = DB::query($sql, "could not get exchange rate for $rate_id");
@@ -19,6 +22,14 @@
     }
 
     // Retrieves buy exchange rate for given currency/date, zero if no result
+    /**
+     * @static
+     *
+     * @param $curr_code
+     * @param $date_
+     *
+     * @return int
+     */
     static public function get_date($curr_code, $date_) {
       $date = Dates::date2sql($date_);
       $sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
@@ -30,7 +41,14 @@
       $row = DB::fetch($result);
       return $row[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $curr_code
+     * @param $date_
+     * @param $buy_rate
+     * @param $sell_rate
+     */
     static public function update($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
@@ -40,7 +58,14 @@
         . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
       DB::query($sql, "could not add exchange rate for $curr_code");
     }
-
+    /**
+     * @static
+     *
+     * @param $curr_code
+     * @param $date_
+     * @param $buy_rate
+     * @param $sell_rate
+     */
     static public function add($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
@@ -51,7 +76,11 @@
         . ", " . DB::escape($sell_rate) . ")";
       DB::query($sql, "could not add exchange rate for $curr_code");
     }
-
+    /**
+     * @static
+     *
+     * @param $rate_id
+     */
     static public function delete($rate_id) {
       $sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       DB::query($sql, "could not delete exchange rate $rate_id");
@@ -59,6 +88,14 @@
 
     //	Retrieve exchange rate as of date $date from external source (usually inet)
     //
+    /**
+     * @static
+     *
+     * @param $curr_b
+     * @param $date
+     *
+     * @return float|int|mixed|string
+     */
     static public function retrieve($curr_b, $date) {
       global $Hooks;
       if (method_exists($Hooks, 'retrieve_exrate')) {
@@ -68,7 +105,15 @@
         return static::get_external($curr_b, 'ECB', $date);
       }
     }
-
+    /**
+     * @static
+     *
+     * @param        $curr_b
+     * @param string $provider
+     * @param        $date
+     *
+     * @return float|int|mixed|string
+     */
     static public function get_external($curr_b, $provider = 'ECB', $date) {
       $curr_a = DB_Company::get_pref('curr_default');
       if ($provider == 'ECB') {
@@ -163,6 +208,14 @@
     // When there is no exrate for today,
     // gets it form ECB and stores in local database.
     //
+    /**
+     * @static
+     *
+     * @param      $from_currency
+     * @param      $to_currency
+     * @param      $date_
+     * @param bool $edit_rate
+     */
     public static function display($from_currency, $to_currency, $date_, $edit_rate = FALSE) {
 
       if ($from_currency != $to_currency) {

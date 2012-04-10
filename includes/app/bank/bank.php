@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   //	Check if given account is used by any bank_account.
   //	Returns id of first bank_account using account_code, null otherwise.
   //
@@ -17,7 +15,15 @@
   //	there is more than one using given gl account.
   //
   class Bank {
-
+    /**
+     * @static
+     *
+     * @param $from_curr_code
+     * @param $to_curr_code
+     * @param $date_
+     *
+     * @return float
+     */
     static public function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
       //	echo "converting from $from_curr_code to $to_curr_code <BR>";
       if ($from_curr_code == $to_curr_code) {
@@ -33,11 +39,35 @@
       // neither from or to are the home currency
       return static::get_exchange_rate_to_home_currency($from_curr_code, $date_) / static::get_exchange_rate_to_home_currency($to_curr_code, $date_);
     }
+    /**
+     * @static
+     *
+     * @param $amount
+     * @param $from_curr_code
+     * @param $to_curr_code
+     * @param $date_
+     *
+     * @return float
+     */
     static public function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
       $ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
       return $amount / $ex_rate;
     }
     // Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+    /**
+     * @static
+     *
+     * @param      $pyt_type
+     * @param      $pyt_no
+     * @param      $type
+     * @param      $trans_no
+     * @param      $pyt_date
+     * @param      $amount
+     * @param      $person_type
+     * @param bool $neg
+     *
+     * @return mixed
+     */
     static public function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = FALSE) {
       global $systypes_array;
       if ($person_type == PT_CUSTOMER) {
@@ -83,6 +113,13 @@
         }
       }
     }
+    /**
+     * @static
+     *
+     * @param $type
+     *
+     * @return bool|int|null
+     */
     static public function payment_person_has_items($type) {
       switch ($type) {
         case PT_MISC :
@@ -100,6 +137,16 @@
           return FALSE;
       }
     }
+    /**
+     * @static
+     *
+     * @param      $type
+     * @param      $person_id
+     * @param bool $full
+     * @param null $trans_no
+     *
+     * @return string
+     */
     static public function payment_person_name($type, $person_id, $full = TRUE, $trans_no = NULL) {
       global $payment_person_types;
       switch ($type) {
@@ -127,4 +174,4 @@
     }
   }
 
-?>
+

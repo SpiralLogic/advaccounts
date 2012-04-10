@@ -348,7 +348,11 @@
             label_cell($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], FALSE) . hidden('item_code' . $n, $myrow["item_code"], FALSE) . hidden('description' . $n, $myrow["description"], FALSE) . hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], FALSE) . hidden('order_price' . $n,
               $myrow['unit_price'], FALSE) . hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], FALSE) . hidden('po_detail_item' . $n, $myrow['po_detail_item'], FALSE));
             label_cell(GL_UI::trans_view(ST_PURCHORDER, $myrow["purch_order_no"]));
-            label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
+            $sql1 = "SELECT supplier_description FROM purch_data WHERE supplier_id=" . DB::quote($creditor_trans->supplier_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
+            $result1 = DB::query($sql1, 'Could not get suppliers item code');
+            $result1 = DB::fetch($result1);
+            $stock_code = ($myrow["item_code"] != $result1[0]) ? $myrow["item_code"] . '<br>' . $result1[0] : $myrow["item_code"];
+            label_cell($stock_code, "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
             label_cell($myrow["description"]);
             label_cell(Dates::sql2date($myrow["delivery_date"]));
             $dec = Item::qty_dec($myrow["item_code"]);

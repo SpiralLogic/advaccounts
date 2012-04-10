@@ -1,21 +1,51 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:07 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_GLCode {
 
+    /**
+     * @var
+     */
     public $counter;
+    /**
+     * @var
+     */
     public $gl_code;
+    /**
+     * @var
+     */
     public $gl_act_name;
+    /**
+     * @var
+     */
     public $gl_dim;
+    /**
+     * @var
+     */
     public $gl_dim2;
+    /**
+     * @var
+     */
     public $amount;
+    /**
+     * @var
+     */
     public $memo_;
-
+    /**
+     * @param $counter
+     * @param $gl_code
+     * @param $gl_act_name
+     * @param $gl_dim
+     * @param $gl_dim2
+     * @param $amount
+     * @param $memo_
+     */
     public function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_) {
       /* Constructor function to add a new gl_codes object with passed params */
       $this->counter = $counter;

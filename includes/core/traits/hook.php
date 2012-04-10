@@ -2,7 +2,7 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core.traits
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -31,6 +31,11 @@
 
       static::$hooks->add($hook, $callback, $arguments);
     }
+    /**
+     * @static
+     *
+     * @param $hook
+     */
     public static function fireHooks($hook) {
       if (static::$hooks)
         static::$hooks->fire($hook);

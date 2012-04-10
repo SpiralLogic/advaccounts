@@ -1,27 +1,82 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:04 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_Line {
 
+    /**
+     * @var
+     */
     public $line_no;
+    /**
+     * @var
+     */
     public $po_detail_rec;
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $quantity;
+    /**
+     * @var
+     */
     public $price;
+    /**
+     * @var
+     */
     public $units;
+    /**
+     * @var
+     */
     public $req_del_date;
+    /**
+     * @var
+     */
     public $qty_inv;
+    /**
+     * @var
+     */
     public $qty_received;
+    /**
+     * @var
+     */
     public $discount;
+    /**
+     * @var int
+     */
     public $standard_cost;
+    /**
+     * @var int
+     */
     public $receive_qty;
+    /**
+     * @var bool
+     */
     public $Deleted;
+    /**
+     * @param $line_no
+     * @param $stock_item
+     * @param $item_descr
+     * @param $qty
+     * @param $prc
+     * @param $uom
+     * @param $req_del_date
+     * @param $qty_inv
+     * @param $qty_recd
+     * @param $discount
+     */
     public function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
       /* Constructor function to add a new LineDetail object with passed params */
       $this->line_no = $line_no;
@@ -38,6 +93,26 @@
       $this->standard_cost = 0;
       $this->Deleted = FALSE;
     }
+    /**
+     * @static
+     *
+     * @param        $creditor_trans_type
+     * @param        $creditor_trans_no
+     * @param        $stock_id
+     * @param        $description
+     * @param        $gl_code
+     * @param        $unit_price
+     * @param        $unit_tax
+     * @param        $quantity
+     * @param        $grn_item_id
+     * @param        $po_detail_item_id
+     * @param        $memo_
+     * @param string $err_msg
+     * @param int    $discount
+     * @param        $exp_price
+     *
+     * @return string
+     */
     static public function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description,
                                     $gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_,
                                     $err_msg = "", $discount = 0, $exp_price = -1) {
@@ -56,12 +131,32 @@
       DB::query($sql, $err_msg);
       return DB::insert_id();
     }
+    /**
+     * @static
+     *
+     * @param        $creditor_trans_type
+     * @param        $creditor_trans_no
+     * @param        $gl_code
+     * @param        $amount
+     * @param        $memo_
+     * @param string $err_msg
+     *
+     * @return string
+     */
     static public function add_gl_item($creditor_trans_type, $creditor_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
       return Purch_Line::add_item($creditor_trans_type, $creditor_trans_no, "", "", $gl_code, $amount,
         0, 0, /*$grn_item_id*/
         0, /*$po_detail_item_id*/
         0, $memo_, $err_msg);
     }
+    /**
+     * @static
+     *
+     * @param $creditor_trans_type
+     * @param $creditor_trans_no
+     *
+     * @return null|PDOStatement
+     */
     static public function get_for_invoice($creditor_trans_type, $creditor_trans_no) {
       $sql
         = "SELECT *, unit_price AS FullUnitPrice FROM creditor_trans_details
@@ -69,6 +164,12 @@
 			AND creditor_trans_no = " . DB::escape($creditor_trans_no) . " ORDER BY id";
       return DB::query($sql, "Cannot retreive supplier transaction detail records");
     }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void_for_invoice($type, $type_no) {
       $sql
         = "UPDATE creditor_trans_details SET quantity=0, unit_price=0

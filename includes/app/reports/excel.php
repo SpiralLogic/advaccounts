@@ -1,56 +1,173 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
-  // xls version
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   if (!class_exists('OLEwriter')) {
     Event::error('Could not find excel writer module');
   }
+  /**
+   *
+   */
   class ADVReport extends Spreadsheet_Excel_Writer_Workbook {
 
+    /**
+     * @var string
+     */
     public $size;
+    /**
+     * @var
+     */
     public $company;
+    /**
+     * @var
+     */
     public $user;
+    /**
+     * @var
+     */
     public $host;
+    /**
+     * @var
+     */
     public $fiscal_year;
+    /**
+     * @var
+     */
     public $title;
+    /**
+     * @var string
+     */
     public $filename;
+    /**
+     * @var string
+     */
     public $unique_name;
+    /**
+     * @var string
+     */
     public $path;
+    /**
+     * @var string
+     */
     public $code;
+    /**
+     * @var int
+     */
     public $bottomMargin = 0;
+    /**
+     * @var int
+     */
     public $lineHeight;
+    /**
+     * @var int
+     */
     public $leftMargin = 0;
+    /**
+     * @var
+     */
     public $cols;
+    /**
+     * @var
+     */
     public $params;
+    /**
+     * @var
+     */
     public $headers;
+    /**
+     * @var
+     */
     public $aligns;
+    /**
+     * @var
+     */
     public $headers2;
+    /**
+     * @var
+     */
     public $aligns2;
+    /**
+     * @var
+     */
     public $cols2;
+    /**
+     * @var int
+     */
     public $fontSize;
+    /**
+     * @var int
+     */
     public $oldFontSize;
+    /**
+     * @var string
+     */
     public $currency;
+    /**
+     * @var int
+     */
     public $row = 9999999;
+    /**
+     * @var int
+     */
     public $y;
+    /**
+     * @var
+     */
     public $numcols;
+    /**
+     * @var float
+     */
     public $excelColWidthFactor;
+    /**
+     * @var int
+     */
     public $endLine;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatTitle;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatDateTime;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatDate;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatHeaderLeft;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatHeaderRight;
+    /**
+     * @var Spreadsheet_Excel_Writer_Format
+     */
     public $formatFooter;
+    /**
+     * @var array
+     */
     public $formatAmount = array();
+    /**
+     * @var mixed
+     */
     public $sheet;
+    /**
+     * @param        $title
+     * @param        $filename
+     * @param string $size
+     * @param int    $fontsize
+     * @param string $orientation
+     * @param null   $margins
+     * @param float  $excelColWidthFactor
+     */
     public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
       if (!User::i()->can_access_page(Page::get_security())) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
@@ -161,6 +278,11 @@
     }
     // Check a given name to see if it's a valid Excel worksheet name,
     // and fix if necessary
+    /**
+     * @param $name
+     *
+     * @return mixed|string
+     */
     public function worksheetNameGenerator($name) {
       // First, strip out characters which aren't allowed
       $illegal_chars = array(':', '\\', '/', '?', '*', '[', ']');
@@ -173,6 +295,11 @@
       }
       return $name;
     }
+    /**
+     * @param $dec
+     *
+     * @return mixed
+     */
     public function NumFormat($dec) {
       if (!isset($this->formatAmount[$dec])) {
         $dec = (int) $dec;
@@ -188,8 +315,23 @@
       }
       return $this->formatAmount[$dec];
     }
+    /**
+     * @param string $fontname
+     * @param string $style
+     * @return void
+     */
     public function Font($fontname = '', $style = 'normal') {
     }
+    /**
+     * @param      $params
+     * @param      $cols
+     * @param      $headers
+     * @param      $aligns
+     * @param null $cols2
+     * @param null $headers2
+     * @param null $aligns2
+     * @return void
+     */
     public function Info($params, $cols, $headers, $aligns, $cols2 = NULL, $headers2 = NULL, $aligns2 = NULL) {
       $this->company = DB_Company::get_prefs();
       $year = DB_Company::get_current_fiscalyear();
@@ -296,6 +438,15 @@
       }
       $this->NewLine();
     }
+    /**
+     * @param $myrow
+     * @param $branch
+     * @param $sales_order
+     * @param $bankaccount
+     * @param $doctype
+     *
+     * @return mixed
+     */
     public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
       return;
     }
@@ -433,6 +584,7 @@
      * @param int    $input_format  Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
      * @param int    $output_format Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
      *
+     * @return int|string
      * @access public
      */
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
@@ -455,30 +607,107 @@
         return $date;
       }
     }
+    /**
+     * @param $logo
+     * @param $x
+     * @param $y
+     * @param $w
+     * @param $h
+     *
+     * @return mixed
+     */
     public function AddImage($logo, $x, $y, $w, $h) {
       return;
     }
+    /**
+     * @param $r
+     * @param $g
+     * @param $b
+     *
+     * @return mixed
+     */
     public function SetDrawColor($r, $g, $b) {
       return;
     }
+    /**
+     * @param $r
+     * @param $g
+     * @param $b
+     *
+     * @return mixed
+     */
     public function SetTextColor($r, $g, $b) {
       return;
     }
+    /**
+     * @param $r
+     * @param $g
+     * @param $b
+     *
+     * @return mixed
+     */
     public function SetFillColor($r, $g, $b) {
       return;
     }
+    /**
+     * @return int
+     */
     public function GetCellPadding() {
       return 0;
     }
+    /**
+     * @param $pad
+     *
+     * @return mixed
+     */
     public function SetCellPadding($pad) {
       return;
     }
+    /**
+     * @param        $c
+     * @param        $txt
+     * @param int    $n
+     * @param int    $corr
+     * @param int    $r
+     * @param string $align
+     * @param int    $border
+     * @param int    $fill
+     * @param null   $link
+     * @param int    $stretch
+     *
+     * @return mixed
+     */
     public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       return;
     }
+    /**
+     * @param        $xpos
+     * @param        $ypos
+     * @param        $len
+     * @param        $str
+     * @param string $align
+     * @param int    $border
+     * @param int    $fill
+     * @param null   $link
+     * @param int    $stretch
+     *
+     * @return mixed
+     */
     public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       return;
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     * @return void
+     */
     public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       $txt = html_entity_decode($txt);
       if ($this->aligns[$c] == 'right') {
@@ -491,18 +720,61 @@
         $this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
       }
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param int  $dec
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     * @param bool $color_red
+     * @return void
+     */
     public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
       $this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec));
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param int  $dec
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     * @param bool $color_red
+     * @param null $amount_locale
+     * @param null $amount_format
+     * @return void
+     */
     public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE, $amount_locale = NULL, $amount_format = NULL) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
       $this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec));
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param bool $conv
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     * @return void
+     */
     public function DateCol($c, $n, $txt, $conv = FALSE, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       if (!$conv) {
         $txt = Dates::date2sql($txt);
@@ -511,6 +783,18 @@
       $date = $this->ymd2date((int) $year, (int) $mo, (int) $day);
       $this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     * @return void
+     */
     public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       $txt = html_entity_decode($txt);
       $this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
@@ -518,14 +802,45 @@
         $this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
       }
     }
+    /**
+     * @param      $c
+     * @param      $n
+     * @param      $txt
+     * @param int  $corr
+     * @param int  $r
+     * @param int  $border
+     * @param int  $fill
+     * @param null $link
+     * @param int  $stretch
+     *
+     * @return mixed
+     */
     public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       return;
     }
+    /**
+     * @param        $c
+     * @param        $width
+     * @param        $txt
+     * @param string $align
+     * @param int    $border
+     * @param int    $fill
+     * @param null   $link
+     * @param int    $stretch
+     *
+     * @return mixed
+     */
     public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
       return;
     }
     /**
      * Crude text wrap calculator based on PDF version.
+     *
+     * @param      $txt
+     * @param      $width
+     * @param bool $spacebreak
+     *
+     * @return array
      */
     public function TextWrapCalc($txt, $width, $spacebreak = FALSE) {
       // Assume an average character width
@@ -549,24 +864,70 @@
       }
       return array($txt2, $ret);
     }
+    /**
+     * @param $style
+     *
+     * @return mixed
+     */
     public function SetLineStyle($style) {
       return;
     }
+    /**
+     * @param $width
+     *
+     * @return mixed
+     */
     public function SetLineWidth($width) {
       return;
     }
+    /**
+     * @param $from
+     * @param $row
+     * @param $to
+     * @param $row2
+     *
+     * @return mixed
+     */
     public function LineTo($from, $row, $to, $row2) {
       return;
     }
+    /**
+     * @param     $row
+     * @param int $height
+     *
+     * @return mixed
+     */
     public function Line($row, $height = 0) {
       return;
     }
+    /**
+     * @param       $c
+     * @param int   $r
+     * @param int   $type
+     * @param int   $linewidth
+     * @param array $style
+     *
+     * @return mixed
+     */
     public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
       return;
     }
+    /**
+     * @param int  $l
+     * @param int  $np
+     * @param null $h
+     * @return void
+     */
     public function NewLine($l = 1, $np = 0, $h = NULL) {
       $this->y += $l;
     }
+    /**
+     * @param $year
+     * @param $mon
+     * @param $day
+     *
+     * @return int
+     */
     public function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
     { // if we need the time part too, we have to add this value after a decimalpoint.
       $mo = array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -605,12 +966,24 @@
       }
       return $jul;
     }
+    /**
+     * @param $px
+     *
+     * @return float
+     */
     public function px2units($px) // XLS app conversion. Not bulletproof.
     {
       $excel_column_width_factor = 256;
       $unit_offset_length = $this->excelColWidthFactor;
       return ($px / $unit_offset_length);
     }
+    /**
+     * @param int  $email
+     * @param null $subject
+     * @param null $myrow
+     * @param int  $doctype
+     * @return void
+     */
     public function End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
       for ($i = 0; $i < $this->numcols; $i++) {
         $this->sheet->writeBlank($this->y, $i, $this->formatFooter);

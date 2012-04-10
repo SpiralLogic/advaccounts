@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(800, 500);
@@ -25,10 +23,20 @@
   handle_search();
   end_form(2);
   Page::end();
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function view_link($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
     ) // customer payment or bank deposit printout not defined yet.
@@ -37,6 +45,11 @@
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function gl_view($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
@@ -59,6 +72,9 @@
     end_table(1);
   }
 
+  /**
+   * @return bool
+   */
   function check_valid_entries() {
     if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
       Event::error(_("The starting transaction number is expected to be numeric and greater than zero."));
@@ -115,4 +131,4 @@
     }
   }
 
-?>
+

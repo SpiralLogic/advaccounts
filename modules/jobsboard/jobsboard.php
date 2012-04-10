@@ -13,8 +13,18 @@
    * Jobsboard
    */
   class Jobsboard {
+
+    /**
+     * @var
+     */
     protected $currentJob;
+    /**
+     * @var
+     */
     protected $lines;
+    /**
+     * @var
+     */
     public $order_no;
     /**
      * @param $trans_no

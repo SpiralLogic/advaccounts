@@ -1,19 +1,38 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Maidenii
-   * Date: 5/12/11
-   * Time: 7:42 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_UI {
 
     // SUPPLIERS
+    /**
+     * @static
+     *
+     * @param        $supplier
+     * @param        $credit
+     * @param string $parms
+     */
     static public function credit_row($supplier, $credit, $parms = '') {
       label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
         '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>", $parms);
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param string $label
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     *
+     * @return null|string
+     */
     static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $viewer = "purchases/view/";
       switch ($type) {

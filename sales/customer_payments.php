@@ -1,16 +1,13 @@
 <?php
 
-  /* * ********************************************************************
-         Copyright (C) Advanced Group PTY LTD
-         Released under the terms of the GNU General Public License, GPL,
-         as published by the Free Software Foundation, either version 3
-         of the License, or (at your option) any later version.
-         This program is distributed in the hope that it will be useful,
-         but WITHOUT ANY WARRANTY; without even the implied warranty of
-         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-         See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-        * ********************************************************************* */
-  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   JS::footerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
@@ -52,7 +49,7 @@
   if (Input::post('customer_id') || list_updated('bank_account')) {
     Ajax::i()->activate('_page_body');
   }
-  if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process()) {
+  if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process(ST_CUSTPAYMENT)) {
     $cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
     $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
     $comp_currency = Bank_Currency::for_company();
@@ -82,7 +79,7 @@
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
   }
   Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
-  Debtor_Payment::read_customer_data();
+  Debtor_Payment::read_customer_data($_POST['customer_id']);
   Session::i()->global_customer = $_POST['customer_id'];
   if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
     end_outer_table();
@@ -136,5 +133,4 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
   JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', TRUE);
-  (Input::request('frame')) ? Page::end() : Page::end(TRUE);
-
+  Page::end(!Input::request('frame')) ;

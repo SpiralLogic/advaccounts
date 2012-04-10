@@ -3,7 +3,7 @@
    * PHP version 5.4
    *
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -11,9 +11,22 @@
   namespace ADV\Core;
   use \JsHttpRequest;
 
+  /**
+   *
+   */
   class Ajax extends \JsHttpRequest {
+
+    /**
+     * @var array
+     */
     public $aCommands = array();
+    /**
+     * @var array
+     */
     public $triggers = array();
+    /**
+     * @var null
+     */
     static protected $i = NULL;
     /***
      * @static
@@ -57,6 +70,7 @@
      * Popup window (target=_blank)
      *
      * @param $url
+     * @return void
      */
     function popup($url) {
       $this->_addCommand(TRUE, array('n' => 'pu'), $this->absolute_url($url));
@@ -152,6 +166,7 @@
      * @param $trigger
      * @param $aAttributes
      * @param $mData
+     * @return void
      */
     function _addCommand($trigger, $aAttributes, $mData) {
       if ($this->isActive() && ($trigger !== FALSE)) {

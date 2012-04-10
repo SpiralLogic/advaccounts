@@ -1,18 +1,19 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   /* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
    */
   class Creditor_Trans {
 
+    /**
+     * @var null
+     */
     static protected $_instance = NULL;
     /***
      * @static
@@ -35,51 +36,142 @@
       unset($_SESSION["Creditor_Trans"]);
     }
 
+    /**
+     * @var array
+     */
     public $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
+    /**
+     * @var array
+     */
     public $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
+    /**
+     * @var
+     */
     public $supplier_id;
+    /**
+     * @var
+     */
     public $supplier_name;
+    /**
+     * @var
+     */
     public $terms_description;
+    /**
+     * @var
+     */
     public $terms;
+    /**
+     * @var
+     */
     public $tax_description;
+    /**
+     * @var
+     */
     public $tax_group_id;
+    /**
+     * @var
+     */
     public $is_invoice;
+    /**
+     * @var
+     */
     public $Comments;
+    /**
+     * @var
+     */
     public $tran_date;
+    /**
+     * @var
+     */
     public $due_date;
+    /**
+     * @var
+     */
     public $supp_reference;
+    /**
+     * @var
+     */
     public $reference;
+    /**
+     * @var
+     */
     public $ov_amount;
+    /**
+     * @var
+     */
     public $ov_discount;
+    /**
+     * @var int
+     */
     public $tax_correction = 0;
+    /**
+     * @var int
+     */
     public $total_correction = 0;
+    /**
+     * @var int
+     */
     public $gl_codes_counter = 0;
-
+    /**
+     *
+     */
     public function __construct() {
       /*Constructor function initialises a new Supplier Transaction object */
       $this->grn_items = array();
       $this->gl_codes = array();
     }
-
+    /**
+     * @param      $grn_item_id
+     * @param      $po_detail_item
+     * @param      $item_code
+     * @param      $description
+     * @param      $qty_recd
+     * @param      $prev_quantity_inv
+     * @param      $this_quantity_inv
+     * @param      $order_price
+     * @param      $chg_price
+     * @param      $Complete
+     * @param      $std_cost_unit
+     * @param      $gl_code
+     * @param int  $discount
+     * @param null $exp_price
+     *
+     * @return int
+     */
     public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
       $this->grn_items[$grn_item_id] = new Purch_GLItem($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
       return 1;
     }
-
+    /**
+     * @param $gl_code
+     * @param $gl_act_name
+     * @param $gl_dim
+     * @param $gl_dim2
+     * @param $amount
+     * @param $memo_
+     *
+     * @return int
+     */
     public function add_gl_codes_to_trans($gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_) {
       $this->gl_codes[$this->gl_codes_counter] = new Purch_GLCode($this->gl_codes_counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_);
       $this->gl_codes_counter++;
       return 1;
     }
-
+    /**
+     * @param $grn_item_id
+     */
     public function remove_grn_from_trans($grn_item_id) {
       unset($this->grn_items[$grn_item_id]);
     }
-
+    /**
+     * @param $gl_code_counter
+     */
     public function remove_gl_codes_from_trans(&$gl_code_counter) {
       unset($this->gl_codes[$gl_code_counter]);
     }
-
+    /**
+     * @return bool
+     */
     public function is_valid_trans_to_post() {
       return (count($this->grn_items) > 0 || count($this->gl_codes) > 0 || ($this->ov_amount != 0) || ($this->ov_discount > 0));
     }
@@ -90,7 +182,13 @@
       $this->grn_items = array();
       $this->gl_codes = array();
     }
-
+    /**
+     * @param null $tax_group_id
+     * @param int  $shipping_cost
+     * @param bool $gl_codes
+     *
+     * @return array|null
+     */
     public function get_taxes($tax_group_id = NULL, $shipping_cost = 0, $gl_codes = TRUE) {
       $items = array();
       $prices = array();
@@ -118,7 +216,11 @@
       ////////////////
       return $taxes;
     }
-
+    /**
+     * @param null $tax_group_id
+     *
+     * @return int
+     */
     public function get_total_charged($tax_group_id = NULL) {
       $total = 0;
       // preload the taxgroup !
@@ -138,7 +240,23 @@
       }
       return $total;
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $supplier_id
+     * @param        $date_
+     * @param        $due_date
+     * @param        $reference
+     * @param        $supp_reference
+     * @param        $amount
+     * @param        $amount_tax
+     * @param        $discount
+     * @param string $err_msg
+     * @param int    $rate
+     *
+     * @return int
+     */
     static public function add($type, $supplier_id, $date_, $due_date, $reference, $supp_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
       $date = Dates::date2sql($date_);
       if ($due_date == "") {
@@ -164,7 +282,14 @@
       DB_AuditTrail::add($type, $trans_no, $date_);
       return $trans_no;
     }
-
+    /**
+     * @static
+     *
+     * @param $trans_no
+     * @param $trans_type
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($trans_no, $trans_type = -1) {
 
       $sql
@@ -206,7 +331,14 @@
       }
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     *
+     * @return bool
+     */
     static public function exists($type, $type_no) {
       if ($type == ST_SUPPRECEIVE) {
         return Purch_GRN::exists($type_no);
@@ -216,14 +348,26 @@
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       return (DB::num_rows($result) > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       $sql
         = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     *
+     * @return bool
+     */
     static public function post_void($type, $type_no) {
       if ($type == ST_SUPPAYMENT) {
         Creditor_Payment::void($type, $type_no);
@@ -242,13 +386,37 @@
     // add a supplier-related gl transaction
     // $date_ is display date (non-sql)
     // $amount is in SUPPLIERS'S currency
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $type_no
+     * @param        $date_
+     * @param        $account
+     * @param        $dimension
+     * @param        $dimension2
+     * @param        $amount
+     * @param        $supplier_id
+     * @param string $err_msg
+     * @param int    $rate
+     * @param string $memo
+     *
+     * @return float
+     */
     static public function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
       if ($err_msg == "") {
         $err_msg = "The supplier GL transaction could not be inserted";
       }
       return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo, $amount, Bank_Currency::for_creditor($supplier_id), PT_SUPPLIER, $supplier_id, $err_msg, $rate);
     }
-
+    /**
+     * @static
+     *
+     * @param $supplier_id
+     * @param $stock_id
+     *
+     * @return int
+     */
     static public function get_conversion_factor($supplier_id, $stock_id) {
       $sql
         = "SELECT conversion_factor FROM purch_data
@@ -263,7 +431,13 @@
         return 1;
       }
     }
-
+    /**
+     * @static
+     *
+     * @param     $tax_items
+     * @param     $columns
+     * @param int $tax_recorded
+     */
     static public function trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
       $tax_total = 0;
       while ($tax_item = DB::fetch($tax_items)) {
@@ -281,7 +455,11 @@
         label_row("Tax Correction ", $tax_correction, "colspan=$columns class='right'", "class='right'");
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     */
     static public function get_duedate_from_terms($creditor_trans) {
       if (!Dates::is_date($creditor_trans->tran_date)) {
         $creditor_trans->tran_date = Dates::today();
@@ -294,4 +472,4 @@
       }
     }
   } /* end of class defintion */
-?>
+

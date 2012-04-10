@@ -1,28 +1,41 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Inv_Movement {
-
+    /**
+     * @static
+     *
+     * @param $name
+     */
     static public function add_type($name) {
       $sql = "INSERT INTO movement_types (name)
 		VALUES (" . DB::escape($name) . ")";
       DB::query($sql, "could not add item movement type");
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     * @param $name
+     */
     static public function update_type($type_id, $name) {
       $sql = "UPDATE movement_types SET name=" . DB::escape($name) . "
 			WHERE id=" . DB::escape($type_id);
       DB::query($sql, "could not update item movement type");
     }
-
+    /**
+     * @static
+     *
+     * @param bool $all
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all_types($all = FALSE) {
       $sql = "SELECT * FROM movement_types";
       if (!$all) {
@@ -30,18 +43,36 @@
       }
       return DB::query($sql, "could not get all item movement type");
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_type($type_id) {
       $sql = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get item movement type");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     */
     static public function delete($type_id) {
       $sql = "DELETE FROM movement_types WHERE id=" . DB::escape($type_id);
       DB::query($sql, "could not delete item movement type");
     }
-
+    /**
+     * @static
+     *
+     * @param      $type
+     * @param      $type_no
+     * @param bool $visible
+     *
+     * @return null|PDOStatement
+     */
     static public function get($type, $type_no, $visible = FALSE) {
       $sql = "SELECT stock_moves.*, stock_master.description, " . "stock_master.units,locations.location_name," . "stock_master.material_cost + " . "stock_master.labour_cost + " . "stock_master.overhead_cost AS FixedStandardCost
 				FROM stock_moves,locations,stock_master
@@ -53,13 +84,36 @@
       }
       return DB::query($sql, "Could not get stock moves");
     }
-
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       $sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
 				standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       DB::query($sql, "Could not void stock moves");
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $stock_id
+     * @param        $trans_no
+     * @param        $location
+     * @param        $date_
+     * @param        $reference
+     * @param        $quantity
+     * @param        $std_cost
+     * @param int    $person_id
+     * @param int    $show_or_hide
+     * @param int    $price
+     * @param int    $discount_percent
+     * @param string $error_msg
+     *
+     * @return null|string
+     */
     static public function add($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1, $price = 0,
                                $discount_percent = 0, $error_msg = "") {
       // do not add a stock move if it's a non-inventory item
@@ -99,18 +153,37 @@
       return Inv_Movement::add($type, $stock_id, $trans_id, $location, $date_, $reference, $quantity, $std_cost, 0,
         $show_or_hide, $price, $discount_percent, "The customer stock movement record cannot be inserted");
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Inv_Movement::types_cells(NULL, $name, $selected_id);
       echo "</tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     *
+     * @return string
+     */
     static public function types($name, $selected_id = NULL) {
       $sql = "SELECT id, name FROM movement_types";
       return select_box($name, $selected_id, $sql, 'id', 'name', array());
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     */
     static public function types_cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";

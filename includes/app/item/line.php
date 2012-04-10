@@ -1,21 +1,48 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:19 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Item_Line {
 
+    /**
+     * @var
+     */
     public $stock_id;
+    /**
+     * @var null
+     */
     public $description;
+    /**
+     * @var
+     */
     public $units;
+    /**
+     * @var
+     */
     public $mb_flag;
+    /**
+     * @var
+     */
     public $quantity;
+    /**
+     * @var int
+     */
     public $price;
+    /**
+     * @var null
+     */
     public $standard_cost;
-
+    /**
+     * @param      $stock_id
+     * @param      $qty
+     * @param null $standard_cost
+     * @param null $description
+     */
     function __construct($stock_id, $qty, $standard_cost = NULL, $description = NULL) {
       $item_row = Item::get($stock_id);
       if ($item_row == NULL) {
@@ -40,7 +67,13 @@
       //$this->price = $price;
       $this->price = 0;
     }
-
+    /**
+     * @param $location
+     * @param $date_
+     * @param $reverse
+     *
+     * @return Item_Line|null
+     */
     function check_qoh($location, $date_, $reverse) {
       if (!DB_Company::get_pref('allow_negative_stock')) {
         if (WO::has_stock_holding($this->mb_flag)) {
@@ -58,6 +91,13 @@
         }
       }
       return NULL;
+    }
+    /**
+     * @param $field
+     */
+    static function start_focus($field) {
+      Ajax::i()->activate('items_table');
+       JS::set_focus($field);
     }
   }
 

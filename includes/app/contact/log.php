@@ -1,15 +1,28 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 23/12/10
-   * Time: 2:39 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Contact_Log {
 
+    /**
+     * @var string
+     */
     static private $dbTable = 'contact_log';
-
+    /**
+     * @static
+     *
+     * @param $contact_id
+     * @param $contact_name
+     * @param $type
+     * @param $message
+     *
+     * @return bool|string
+     */
     static public function add($contact_id, $contact_name, $type, $message) {
       if (!isset($contact_id)) {
         return FALSE;
@@ -29,7 +42,14 @@
       DB::query($sql, "Couldn't insert contact log");
       return DB::insert_id();
     }
-
+    /**
+     * @static
+     *
+     * @param $contact_id
+     * @param $type
+     *
+     * @return array|bool
+     */
     static public function read($contact_id, $type) {
       if (!isset($contact_id) || $contact_id == 0) {
         return FALSE;

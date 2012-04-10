@@ -1,11 +1,12 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 8/01/11
-   * Time: 2:43 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   abstract class Orders extends DB_abstract {
 
     const NEW_ORDER = 'NewOrder';
@@ -68,6 +69,7 @@
      * @static
      *
      * @param $type
+     * @return void
      */
     static protected function setup($type) {
       if (!isset($_SESSION['orders'])) {
@@ -77,14 +79,15 @@
         $_SESSION['orders'][$type] = array();
       }
     }
-
     /**
      * @static
      *
-     * @param string $post_id
+     * @param null $id
+     *
+     * @internal param string $post_id
      *
      * @internal param $id
-     * @return Sales_Order|Purch_Order
+     * @return \Purch_Order|\Sales_Order
      */
     static public function session_get($id = NULL) {
       if (is_null($id)) {
@@ -120,6 +123,7 @@
      * @static
      *
      * @param $order
+     * @return void
      */
     static public function session_start($order) {
     }
@@ -141,6 +145,7 @@
      * @static
      *
      * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
+     * @return void
      */
     static public function session_delete($id) {
       if (is_object($id)) {

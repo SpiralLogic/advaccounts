@@ -1,23 +1,21 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 6/11/11
-   * Time: 2:42 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Item_Unit {
-
-    /**********************************************************************
-    Copyright (C) Advanced Group PTY LTD
-    Released under the terms of the GNU General Public License, GPL,
-    as published by the Free Software Foundation, either version 3
-    of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-     ***********************************************************************/
+    /**
+     * @static
+     *
+     * @param $selected
+     * @param $abbr
+     * @param $description
+     * @param $decimals
+     */
     static public function write($selected, $abbr, $description, $decimals) {
       if ($selected != '') {
         $sql
@@ -35,32 +33,60 @@
       }
       DB::query($sql, "an item unit could not be updated");
     }
-
+    /**
+     * @static
+     *
+     * @param $unit
+     */
     static public function delete($unit) {
       $sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
       DB::query($sql, "an unit of measure could not be deleted");
     }
-
+    /**
+     * @static
+     *
+     * @param $unit
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($unit) {
       $sql = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "an unit of measure could not be retrieved");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $unit
+     *
+     * @return mixed
+     */
     static public function desc($unit) {
       $sql = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "could not unit description");
       $row = DB::fetch_row($result);
       return $row[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $unit
+     *
+     * @return bool
+     */
     static public function used($unit) {
       $sql = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
       $result = DB::query($sql, "could not query stock master");
       $myrow = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
-
+    /**
+     * @static
+     *
+     * @param bool $all
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($all = FALSE) {
       $sql = "SELECT * FROM item_units";
       if (!$all) {
@@ -69,7 +95,13 @@
       $sql .= " ORDER BY name";
       return DB::query($sql, "could not get stock categories");
     }
-
+    /**
+     * @static
+     *
+     * @param $stock_id
+     *
+     * @return mixed
+     */
     static public function get_decimal($stock_id) {
       $sql
         = "SELECT decimals FROM item_units,	stock_master
@@ -78,7 +110,14 @@
       $row = DB::fetch_row($result);
       return $row[0];
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $value
+     * @param bool $enabled
+     */
     static public function row($label, $name, $value = NULL, $enabled = TRUE) {
       $result = Item_Unit::get_all();
       echo "<tr>";
@@ -92,7 +131,15 @@
       echo array_selector($name, $value, $units, array('disabled' => !$enabled));
       echo "</td></tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $value
+     * @param bool $enabled
+     *
+     * @return string
+     */
     static public function select($name, $value = NULL, $enabled = TRUE) {
       $result = Item_Unit::get_all();
       $units = array();

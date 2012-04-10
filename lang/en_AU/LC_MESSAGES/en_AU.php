@@ -2659,4 +2659,4 @@ return array(
  'Customer Reference:' => '',
  'Customer reference number for this order (if any)' => '',
 );
-?>
+

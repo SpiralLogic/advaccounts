@@ -1,19 +1,33 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   /*
          Write/update customer refund.
        */
   class Debtor_Refund {
-
+    /**
+     * @static
+     *
+     * @param     $trans_no
+     * @param     $customer_id
+     * @param     $branch_id
+     * @param     $bank_account
+     * @param     $date_
+     * @param     $ref
+     * @param     $amount
+     * @param     $discount
+     * @param     $memo_
+     * @param int $rate
+     * @param int $charge
+     *
+     * @return int
+     */
     static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
       $amount = $amount * -1;
       DB::begin();
@@ -56,6 +70,12 @@
       DB::commit();
       return $refund_no;
     }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $type_no
+     */
     static public function void($type, $type_no) {
       DB::begin();
       Bank_Trans::void($type, $type_no, TRUE);

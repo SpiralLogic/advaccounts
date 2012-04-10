@@ -14,8 +14,16 @@
 	Page::set_security(SA_GLANALYTIC);
 
 	print_annual_expense_breakdown();
-
-	function getPeriods($yr, $mo, $account, $dimension, $dimension2)
+  /**
+   * @param $yr
+   * @param $mo
+   * @param $account
+   * @param $dimension
+   * @param $dimension2
+   *
+   * @return ADV\Core\DB\Query_Result|Array
+   */
+  function getPeriods($yr, $mo, $account, $dimension, $dimension2)
 	{
 		$date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
 		$date12 = date('Y-m-d', mktime(0, 0, 0, $mo, 1, $yr));
@@ -54,15 +62,27 @@
 		return DB::fetch($result);
 	}
 
-
-	function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
+  /**
+   * @param $type
+   * @param $typename
+   * @param $yr
+   * @param $mo
+   * @param $convert
+   * @param $dec
+   * @param $rep
+   * @param $dimension
+   * @param $dimension2
+   *
+   * @return array
+   */
+  function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
 	{
 		$ctotal = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		$total = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = GL_Account::get_all(null, null, $type);
+		$result = GL_Account::get_all(NULL, NULL, $type);
 		while ($account = DB::fetch($result)) {
 			$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
 			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12']
@@ -89,7 +109,7 @@
 			$rep->NewLine();
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_Type::get_all(false, false, $type);
+		$result = GL_Type::get_all(FALSE, FALSE, $type);
 		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -207,7 +227,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$classresult = GL_Class::get_all(false, 0);
+		$classresult = GL_Class::get_all(FALSE, 0);
 		while ($class = DB::fetch($classresult)) {
 			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
@@ -217,7 +237,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult)) {
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
 				for ($i = 1; $i <= 12; $i++) {
@@ -249,4 +269,4 @@
 		$rep->End();
 	}
 
-?>
+

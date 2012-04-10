@@ -1,17 +1,21 @@
 <?php
 
-  /* * ********************************************************************
-             Copyright (C) Advanced Group PTY LTD
-             Released under the terms of the GNU General Public License, GPL,
-             as published by the Free Software Foundation, either version 3
-             of the License, or (at your option) any later version.
-             This program is distributed in the hope that it will be useful,
-             but WITHOUT ANY WARRANTY; without even the implied warranty of
-             MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-             See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-            * ********************************************************************* */
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Sales_Branch {
-
+    /**
+     * @static
+     *
+     * @param $branch_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($branch_id) {
       $sql
         = "SELECT branches.*,salesman.salesman_name
@@ -21,7 +25,13 @@
       $result = DB::query($sql, "Cannot retreive a customer branch");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $branch_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get_accounts($branch_id) {
       $sql
         = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
@@ -29,7 +39,13 @@
       $result = DB::query($sql, "Cannot retreive a customer branch");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $branch_id
+     *
+     * @return mixed
+     */
     static public function get_name($branch_id) {
       $sql
         = "SELECT br_name FROM branches
@@ -38,14 +54,26 @@
       $myrow = DB::fetch_row($result);
       return $myrow[0];
     }
-
+    /**
+     * @static
+     *
+     * @param $group_no
+     *
+     * @return null|PDOStatement
+     */
     static public function get_from_group($group_no) {
       $sql
         = "SELECT branch_id, debtor_no FROM branches
 		WHERE group_no = " . DB::escape($group_no);
       return DB::query($sql, "could not retreive branches for group " . $group_no);
     }
-
+    /**
+     * @static
+     *
+     * @param $customer_no
+     *
+     * @return mixed
+     */
     static public function get_main($customer_no) {
       $sql
         = "SELECT *

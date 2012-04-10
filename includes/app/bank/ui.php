@@ -1,16 +1,18 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Bank_UI {
-
+    /**
+     * @static
+     *
+     * @param $order
+     */
     static public function header($order) {
 
       $payment = $order->trans_type == ST_BANKPAYMENT;
@@ -93,7 +95,12 @@
       end_outer_table(1); // outer table
       Display::div_end();
     }
-
+    /**
+     * @static
+     *
+     * @param $title
+     * @param $order
+     */
     static public function items($title, &$order) {
       $dim = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
@@ -160,7 +167,13 @@
       end_table();
       Display::div_end();
     }
-
+    /**
+     * @static
+     *
+     * @param      $order
+     * @param      $dim
+     * @param null $Index
+     */
     static public function item_controls($order, $dim, $Index = NULL) {
 
       $payment = $order->trans_type == ST_BANKPAYMENT;
@@ -236,7 +249,17 @@
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
       echo "</table>";
     }
-
+    /**
+     * @static
+     *
+     * @param      $account
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     * @param bool $special_option
+     *
+     * @return string
+     */
     static public function  reconcile($account, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       $sql = "SELECT reconciled, reconciled FROM bank_trans
 							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL AND amount>0
@@ -245,7 +268,16 @@
         'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $account
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     * @param bool $special_option
+     */
     static public function  reconcile_cells($label, $account, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -254,14 +286,26 @@
       echo Bank_UI::reconcile($account, $name, $selected_id, $submit_on_change, $special_option);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param        $bank_acc
+     * @param string $parms
+     */
     static public function  balance_row($bank_acc, $parms = '') {
       $to = Dates::add_days(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
         '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     */
     static public function  cash_accounts_row($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
       $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
 						FROM bank_accounts
@@ -275,7 +319,18 @@
       ));
       echo "</td></tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param string $label
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     *
+     * @return null|string
+     */
     static public function  trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       if ($label == "") {
         $label = $trans_no;
@@ -297,4 +352,4 @@
     }
   }
 
-?>
+

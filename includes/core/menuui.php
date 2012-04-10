@@ -2,12 +2,15 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+  /**
+   *
+   */
   class MenuUI extends Menu {
 
     /**
@@ -97,14 +100,14 @@
       return $this;
     }
     /**
-
+     * @return void
      */
     public function render() {
       $menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
-			ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>";
+			ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>\n";
       foreach ($this->items as $key => $item) {
         $num = $key;
-        $menu .= "<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";
+        $menu .= "\n<li class='ui-state-default ui-corner-top'><a title='{$item->label}'";
         if ($item->link != "#") {
           $menu .= ' href="' . $item->link . '" ';
           $menu .= ($item->param_element) ? ' data-paramel="' . $item->param_element . '" ' : '';
@@ -117,7 +120,7 @@
       }
       $menu .= "</ul>";
       $content = ob_get_clean();
-      echo $menu . $content . '</div>';
+      echo $menu . $content;
       JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
       MenuUI::$menuCount++;
     }
@@ -132,12 +135,20 @@
      * @var string
      */
     public $tooltip = '';
+    /**
+     * @var null|string
+     */
     public $param_element = '';
+    /**
+     * @var null|string
+     */
     public $target = '';
     /**
      * @param        $label
      * @param string $tooltip
      * @param string $link
+     * @param null   $param_element
+     * @param null   $target
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = NULL, $target = NULL) {
       $this->label = $label;

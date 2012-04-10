@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class User {
 
   use \ADV\Core\Traits\Hook;
@@ -18,26 +16,77 @@
      * @return User
      */
     public $user;
+    /**
+     * @var string
+     */
     public $loginname;
+    /**
+     * @var
+     */
     public $username;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var string
+     */
     public $company;
+    /**
+     * @var
+     */
     public $pos;
+    /**
+     * @var bool
+     */
     public $salesmanid = FALSE;
+    /**
+     * @var
+     */
     public $access;
+    /**
+     * @var
+     */
     public $timeout;
+    /**
+     * @var
+     */
     public $last_act;
+    /**
+     * @var array
+     */
     public $role_set = array();
+    /**
+     * @var
+     */
     public $old_db;
+    /**
+     * @var bool
+     */
     public $logged = FALSE;
+    /**
+     * @var int
+     */
     public $ui_mode = 0;
     /***
      * @var \userPrefs
      */
     public $prefs;
+    /**
+     * @var bool
+     */
     public $change_password = FALSE;
+    /**
+     * @var
+     */
     protected $access_sections;
+    /**
+     * @var null
+     */
     static protected $_instance = NULL;
+    /**
+     * @var
+     */
     public $last_record;
 
     /**
@@ -86,7 +135,8 @@
     /**
      * @param $company
      * @param $loginname
-     * @param $password
+     *
+     * @internal param $password
      *
      * @return bool
      */
@@ -451,9 +501,12 @@
     static public function  startup_tab() {
       return static::prefs()->start_up_tab();
     }
+    /**
+     * @return mixed
+     */
     private function get_salesmanid() {
       return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
   }
 
-?>
+

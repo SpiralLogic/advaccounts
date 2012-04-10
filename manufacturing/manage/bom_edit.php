@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
@@ -44,6 +42,12 @@
        $selected_component = get_post("selected_component", -1);
      }
      */
+  /**
+   * @param $ultimate_parent
+   * @param $component_to_check
+   *
+   * @return int
+   */
   function check_for_recursive_bom($ultimate_parent, $component_to_check) {
     /* returns true ie 1 if the bom contains the parent part as a component
                 ie the bom is recursive otherwise false ie 0 */
@@ -61,6 +65,9 @@
     } //end if $result is true
     return 0;
   } //end of function check_for_recursive_bom
+  /**
+   * @param $selected_parent
+   */
   function display_bom_items($selected_parent) {
     $result = WO::get_bom($selected_parent);
     Display::div_start('bom');
@@ -86,6 +93,12 @@
     Display::div_end();
   }
 
+  /**
+   * @param $selected_parent
+   * @param $selected_component
+   *
+   * @return mixed
+   */
   function on_submit($selected_parent, $selected_component = -1) {
     if (!Validation::is_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
@@ -201,4 +214,4 @@
   // ----------------------------------------------------------------------------------
   Page::end();
 
-?>
+

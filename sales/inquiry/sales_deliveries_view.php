@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   JS::open_window(900, 600);
@@ -159,10 +157,21 @@
   DB_Pager::display($table);
   end_form();
   Page::end();
+  /**
+   * @param $trans
+   * @param $trans_no
+   *
+   * @return null|string
+   */
   function trans_view($trans, $trans_no) {
     return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function batch_checkbox($row) {
     $name = "Sel_" . $row['trans_no'];
     return $row['Done'] ? '' :
@@ -170,23 +179,43 @@
         . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return $row["Outstanding"] == 0 ? '' :
       DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function invoice_link($row) {
     return $row["Outstanding"] == 0 ? '' :
       DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
   }
 
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
   }
 
-?>
+
 

@@ -1,31 +1,92 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 1/11/11
-   * Time: 7:05 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Purch_GLItem {
 
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
               all the info to do the necessary entries without looking up ie additional queries of the database again */
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $po_detail_item;
+    /**
+     * @var
+     */
     public $item_code;
+    /**
+     * @var
+     */
     public $description;
+    /**
+     * @var
+     */
     public $qty_recd;
+    /**
+     * @var
+     */
     public $prev_quantity_inv;
+    /**
+     * @var
+     */
     public $this_quantity_inv;
+    /**
+     * @var
+     */
     public $order_price;
+    /**
+     * @var
+     */
     public $chg_price;
+    /**
+     * @var null
+     */
     public $exp_price;
+    /**
+     * @var int
+     */
     public $discount;
+    /**
+     * @var
+     */
     public $Complete;
+    /**
+     * @var
+     */
     public $std_cost_unit;
+    /**
+     * @var
+     */
     public $gl_code;
+    /**
+     * @var
+     */
     public $freight;
-
+    /**
+     * @param      $id
+     * @param      $po_detail_item
+     * @param      $item_code
+     * @param      $description
+     * @param      $qty_recd
+     * @param      $prev_quantity_inv
+     * @param      $this_quantity_inv
+     * @param      $order_price
+     * @param      $chg_price
+     * @param      $Complete
+     * @param      $std_cost_unit
+     * @param      $gl_code
+     * @param int  $discount
+     * @param null $exp_price
+     */
     public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
                                 $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
       $this->id = $id;
@@ -43,23 +104,40 @@
       $this->std_cost_unit = $std_cost_unit;
       $this->gl_code = $gl_code;
     }
-
+    /**
+     * @param $freight
+     */
     public function setFreight($freight) {
       $this->freight = $freight;
     }
-
+    /**
+     * @param      $tax_group_id
+     * @param null $tax_group
+     *
+     * @return int
+     */
     public function full_charge_price($tax_group_id, $tax_group = NULL) {
       return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
         $tax_group);
     }
-
+    /**
+     * @param      $tax_group_id
+     * @param null $tax_group
+     *
+     * @return float|int
+     */
     public function taxfree_charge_price($tax_group_id, $tax_group = NULL) {
       //		if ($tax_group_id==null)
       //			return $this->chg_price;
       return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
         0, $tax_group);
     }
-
+    /**
+     * @static
+     *
+     * @param $creditor_trans
+     * @param $k
+     */
     public static function display_controls($creditor_trans, $k) {
       $accs = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
@@ -85,6 +163,14 @@
     //		 = 1 display on invoice/credit page
     //		 = 2 display on view invoice
     //		 = 3 display on view credit
+    /**
+     * @static
+     *
+     * @param     $creditor_trans
+     * @param int $mode
+     *
+     * @return int
+     */
     public static function display_items($creditor_trans, $mode = 0) {
 
       // if displaying in form, and no items, exit

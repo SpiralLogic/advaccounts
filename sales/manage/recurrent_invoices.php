@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 600);
   Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
@@ -79,7 +77,7 @@
     label_cell(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
     if ($myrow["debtor_no"] == 0) {
       label_cell("");
-      label_cell(get_sales_group_name($myrow["group_no"]));
+      label_cell(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
       label_cell(Debtor::get_name($myrow["debtor_no"]));
@@ -133,11 +131,3 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-  function get_sales_group_name($group_no) {
-    $sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-    $result = DB::query($sql, "could not get group");
-    $row = DB::fetch($result);
-    return $row[0];
-  }
-
-?>

@@ -1,13 +1,21 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: Complex
-   * Date: 13/11/11
-   * Time: 10:03 AM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class GL_QuickEntry {
-
+    /**
+     * @static
+     *
+     * @param $description
+     * @param $type
+     * @param $base_amount
+     * @param $base_desc
+     */
     static public function add($description, $type, $base_amount, $base_desc) {
       $sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
 		VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", "
@@ -15,7 +23,15 @@
 
       DB::query($sql, "could not insert quick entry for $description");
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     * @param $description
+     * @param $type
+     * @param $base_amount
+     * @param $base_desc
+     */
     static public function update($selected_id, $description, $type, $base_amount, $base_desc) {
       $sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
 			type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount)
@@ -24,13 +40,26 @@
 
       DB::query($sql, "could not update quick entry for $selected_id");
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     */
     static public function delete($selected_id) {
       $sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
       DB::query($sql, "could not delete quick entry $selected_id");
     }
-
+    /**
+     * @static
+     *
+     * @param $qid
+     * @param $action
+     * @param $dest_id
+     * @param $amount
+     * @param $dim
+     * @param $dim2
+     */
     static public function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
       $sql = "INSERT INTO quick_entry_lines
 			(qid, action, dest_id, amount, dimension_id, dimension2_id)
@@ -40,7 +69,17 @@
 
       DB::query($sql, "could not insert quick entry line for $qid");
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     * @param $qid
+     * @param $action
+     * @param $dest_id
+     * @param $amount
+     * @param $dim
+     * @param $dim2
+     */
     static public function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
       $sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid)
         . ", action=" . DB::escape($action) . ",
@@ -50,13 +89,23 @@
 
       DB::query($sql, "could not update quick entry line for $selected_id");
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     */
     static public function delete_line($selected_id) {
       $sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
       DB::query($sql, "could not delete quick entry line $selected_id");
     }
-
+    /**
+     * @static
+     *
+     * @param null $type
+     *
+     * @return bool
+     */
     static public function has($type = NULL) {
       $sql = "SELECT id FROM quick_entries";
       if ($type != NULL) {
@@ -66,7 +115,13 @@
       $result = DB::query($sql, "could not retreive quick entries");
       return DB::num_rows($result) > 0;
     }
-
+    /**
+     * @static
+     *
+     * @param null $type
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($type = NULL) {
       $sql = "SELECT * FROM quick_entries";
       if ($type != NULL) {
@@ -76,7 +131,13 @@
 
       return DB::query($sql, "could not retreive quick entries");
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($selected_id) {
       $sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
@@ -84,7 +145,13 @@
 
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $qid
+     *
+     * @return null|PDOStatement
+     */
     static public function get_lines($qid) {
       $sql = "SELECT quick_entry_lines.*, chart_master.account_name,
 				tax_types.name as tax_name
@@ -98,14 +165,26 @@
 
       return DB::query($sql, "could not retreive quick entries");
     }
-
+    /**
+     * @static
+     *
+     * @param $qid
+     *
+     * @return bool
+     */
     static public function has_lines($qid) {
       $sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
 
       $result = DB::query($sql, "could not retreive quick entries");
       return DB::num_rows($result) > 0;
     }
-
+    /**
+     * @static
+     *
+     * @param $selected_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function has_line($selected_id) {
       $sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
@@ -118,6 +197,17 @@
     //	Expands selected quick entry $id into GL posings and adds to order.
     //		returns calculated amount posted to bank GL account.
     //
+    /**
+     * @static
+     *
+     * @param        $order
+     * @param        $id
+     * @param        $base
+     * @param        $type
+     * @param string $descr
+     *
+     * @return int
+     */
     static public function show_menu(&$order, $id, $base, $type, $descr = '') {
       $bank_amount = 0;
       if (!isset($id) || $id == NULL || $id == "") {
@@ -246,11 +336,14 @@
       return $bank_amount;
     }
     /**
-     * Created by JetBrains PhpStorm.
-     * User: Complex
-     * Date: 3/12/11
-     * Time: 2:00 PM
-     * To change this template use File | Settings | File Templates.
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param null $type
+     * @param bool $submit_on_change
+     *
+     * @return string
      */
     static public function select($name, $selected_id = NULL, $type = NULL, $submit_on_change = FALSE) {
       $where = FALSE;
@@ -262,7 +355,15 @@
         'spec_id' => '', 'order' => 'description', 'select_submit' => $submit_on_change, 'async' => FALSE
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param      $type
+     * @param bool $submit_on_change
+     */
     static public function cells($label, $name, $selected_id = NULL, $type, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -271,20 +372,42 @@
       echo GL_QuickEntry::select($name, $selected_id, $type, $submit_on_change);
       echo "</td>";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param      $type
+     * @param bool $submit_on_change
+     */
     static public function row($label, $name, $selected_id = NULL, $type, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       GL_QuickEntry::cells(NULL, $name, $selected_id, $type, $submit_on_change);
       echo "</tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     */
     static public function actions($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
       global $quick_actions;
       echo "<tr><td class='label'>$label</td><td>";
       echo array_selector($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     */
     static public function types($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
       global $quick_entry_types;
       echo "<tr><td class='label'>$label</td><td>";

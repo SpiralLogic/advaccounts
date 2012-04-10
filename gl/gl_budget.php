@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::headerFile('budget.js');
   Page::start(_($help_context = "Budget Entry"), SA_BUDGETENTRY);
@@ -121,6 +119,14 @@
   }
   end_form();
   Page::end();
+  /**
+   * @param $date_
+   * @param $account
+   * @param $dimension
+   * @param $dimension2
+   *
+   * @return bool
+   */
   function exists_gl_budget($date_, $account, $dimension, $dimension2) {
     $sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account) . " AND tran_date='$date_' AND
 		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
@@ -128,6 +134,13 @@
     return (DB::num_rows($result) > 0);
   }
 
+  /**
+   * @param $date_
+   * @param $account
+   * @param $dimension
+   * @param $dimension2
+   * @param $amount
+   */
   function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
     $date = Dates::date2sql($date_);
     if (exists_gl_budget($date, $account, $dimension, $dimension2)) {
@@ -141,12 +154,27 @@
     DB::query($sql, "The GL budget transaction could not be saved");
   }
 
+  /**
+   * @param $date_
+   * @param $account
+   * @param $dimension
+   * @param $dimension2
+   */
   function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
     $date = Dates::date2sql($date_);
     $sql = "DELETE FROM budget_trans WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
     DB::query($sql, "The GL budget transaction could not be deleted");
   }
 
+  /**
+   * @param     $from_date
+   * @param     $to_date
+   * @param     $account
+   * @param int $dimension
+   * @param int $dimension2
+   *
+   * @return mixed
+   */
   function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
     $from = Dates::date2sql($from_date);
     $to = Dates::date2sql($to_date);

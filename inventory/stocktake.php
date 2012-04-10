@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   JS::open_window(800, 500);
@@ -49,7 +47,7 @@
     handle_update_item();
   }
   if (isset($_POST['CancelItemChanges'])) {
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
     handle_new_order();
@@ -64,6 +62,9 @@
   submit_center_last('Process', _("Process Adjustment"), '', 'default');
   end_form();
   Page::end();
+  /**
+   * @return bool
+   */
   function check_item_data() {
     if (!Validation::is_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
@@ -83,12 +84,15 @@
       $id = $_POST['LineNo'];
       $_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
+  /**
+   * @param $id
+   */
   function handle_delete_item($id) {
     $_SESSION['adj_items']->remove_from_order($id);
-    line_start_focus();
+    Item_Line::start_focus('_stock_id_edit');
   }
 
   function handle_new_item() {
@@ -96,12 +100,7 @@
       return;
     }
     Item_Order::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
-    line_start_focus();
-  }
-
-  function line_start_focus() {
-    Ajax::i()->activate('items_table');
-    JS::set_focus('_stock_id_edit');
+    Item_Line::start_focus('_stock_id_edit');
   }
 
   function handle_new_order() {
@@ -117,6 +116,9 @@
     $_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
   }
 
+  /**
+   * @return bool
+   */
   function can_process() {
     $adj = &$_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
@@ -145,4 +147,4 @@
     return TRUE;
   }
 
-?>
+

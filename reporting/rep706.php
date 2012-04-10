@@ -11,7 +11,21 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_GLANALYTIC);
-	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
+  /**
+   * @param $type
+   * @param $typename
+   * @param $from
+   * @param $to
+   * @param $convert
+   * @param $dec
+   * @param $rep
+   * @param $dimension
+   * @param $dimension2
+   * @param $pg
+   * @param $graphics
+   *
+   * @return array
+   */function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
 		$code_open_balance = 0;
 		$code_period_balance = 0;
 		$open_balance_total = 0;
@@ -20,7 +34,7 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = GL_Account::get_all(null, null, $type);
+		$result = GL_Account::get_all(NULL, NULL, $type);
 		while ($account = DB::fetch($result)) {
 			$prev_balance = GL_Trans::get_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 			$curr_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -46,7 +60,7 @@
 			$code_period_balance += $curr_balance;
 		}
 		//Get Account groups/types under this group/type
-		$result = GL_Type::get_all(false, false, $type);
+		$result = GL_Type::get_all(FALSE, FALSE, $type);
 		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -165,7 +179,7 @@
 		$equity_open = $equity_period = 0.0;
 		$liability_open = $liability_period = 0.0;
 		$econvert = $lconvert = 0;
-		$classresult = GL_Class::get_all(false, 1);
+		$classresult = GL_Class::get_all(FALSE, 1);
 		while ($class = DB::fetch($classresult)) {
 			$class_open_total = 0;
 			$class_period_total = 0;
@@ -176,7 +190,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = GL_Type::get_all(false, $class['cid'], -1);
+			$typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult)) {
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, $rep, $dimension, $dimension2, $pg, $graphics);
 				$class_open_total += $classtotal[0];
@@ -238,11 +252,11 @@
 			$pg->graphic_2 = $headers[3];
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
-			$pg->built_in = false;
+			$pg->built_in = FALSE;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "pdf_files/test.png";
-			$pg->display($filename, true);
+			$pg->display($filename, TRUE);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;
 			$x = ($rep->pageWidth - $w) / 2;
@@ -255,4 +269,4 @@
 		$rep->End();
 	}
 
-?>
+

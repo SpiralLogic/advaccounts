@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
@@ -36,6 +34,9 @@
   Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
   display_language_edit($selected_id);
   Page::end();
+  /**
+   * @return bool
+   */
   function check_data() {
     if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
       Event::error(_("Language name, code nor encoding cannot be empty"));
@@ -44,6 +45,9 @@
     return TRUE;
   }
 
+  /**
+   * @return bool
+   */
   function handle_submit() {
     $installed_languages = Config::get('languages.installed');
     if (!check_data()) {
@@ -155,6 +159,9 @@
     Event::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
+  /**
+   * @param $selected_id
+   */
   function display_language_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;

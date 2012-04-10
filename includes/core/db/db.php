@@ -2,7 +2,7 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
@@ -35,16 +35,37 @@
     static protected $nested = FALSE;
     /** @var Query */
     static protected $query = FALSE;
+    /**
+     * @var bool
+     */
     static protected $results = FALSE;
+    /**
+     * @var bool
+     */
     static protected $errorSql = FALSE;
+    /**
+     * @var bool
+     */
     static protected $errorInfo = FALSE;
+    /**
+     * @var bool
+     */
     protected $useCache = FALSE;
+    /**
+     * @var bool
+     */
     protected $useConfig = FALSE;
+    /**
+     * @var bool
+     */
     protected $intransaction = FALSE;
     /*** @var \PDO */
     protected $conn = FALSE;
     /** @var DB */
     static protected $i = NULL;
+    /**
+     * @var
+     */
     protected $default_connection;
     /***
      * @static
@@ -63,7 +84,7 @@
     /**
      * @param $config
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      */
     protected function __construct($config) {
       $this->useConfig = class_exists('Config');
@@ -79,7 +100,7 @@
     /**
      * @param  $config
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return bool
      */
     protected function _connect($config) {
@@ -102,7 +123,7 @@
      *
      * @param mixed $name
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return void
      */
     static public function change_connection($name = FALSE) {
@@ -206,7 +227,7 @@
      * @param            $sql
      * @param bool       $debug
      *
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBException
      * @return bool|\PDOStatement
      */
     protected function _prepare($sql, $debug = FALSE) {
@@ -448,7 +469,7 @@
       }
       $rows = (static::i()->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : FALSE;
       if ($rows !== FALSE) {
-        return $rows;
+        return (int)$rows;
       }
       $rows = static::query($sql)->rowCount();
       if (static::$i->useCache) {
@@ -512,8 +533,6 @@
       }
       static::$data = array();
     }
-    //
-    //
     /**
      * @static
      *
@@ -541,7 +560,7 @@
      * @param $table
      * @param $key
      *
-     * @throws DBUpdateException
+     * @throws \ADV\Core\DB\DBUpdateException
      * @return Query_Result
      */
     static public function insert_record_status($id, $status, $table, $key) {
@@ -555,12 +574,12 @@
     /***
      * @param            $sql
      * @param            $type
-     * @param null       $data
+     * @param array|null $data
      *
-     * @throws DBDeleteException
-     * @throws DBUpdateException
-     * @throws DBInsertException
-     * @throws DBSelectException
+     * @throws \ADV\Core\DB\DBDeleteException
+     * @throws \ADV\Core\DB\DBUpdateException
+     * @throws \ADV\Core\DB\DBInsertException
+     * @throws \ADV\Core\DB\DBSelectException
      * @return Query_Result|int
      */
     public function exec($sql, $type, $data = array()) {
@@ -641,8 +660,8 @@
      * @param \Exception|\PDOException             $e
      * @param bool                                 $msg
      *
-     * @throws DBDuplicateException
-     * @throws DBException
+     * @throws \ADV\Core\DB\DBDuplicateException
+     * @throws \ADV\Core\DB\DBException
      * @internal param bool|string $exit
      * @return bool
      */

@@ -12,7 +12,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 	Page::set_security(SA_CUSTPAYMREP);
 	print_aged_customer_analysis();
-	function get_invoices($customer_id, $to) {
+  /**
+   * @param $customer_id
+   * @param $to
+   *
+   * @return null|PDOStatement
+   */function get_invoices($customer_id, $to) {
 		$todate = Dates::date2sql($to);
 		$past_due1 = DB_Company::get_pref('past_due_days');
 		$past_due2 = 2 * $past_due1;
@@ -76,11 +81,11 @@
 			$summary = _('Detailed Report');
 		}
 		if ($currency == ALL_TEXT) {
-			$convert = true;
+			$convert = TRUE;
 			$currency = _('Balances in Home Currency');
 		}
 		else {
-			$convert = false;
+			$convert = FALSE;
 		}
 		if ($no_zeros) {
 			$nozeros = _('Yes');
@@ -194,7 +199,7 @@
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 					$rep->TextCol(1, 2, $trans['reference'], -2);
-					$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
+					$rep->DateCol(2, 3, $trans['tran_date'], TRUE, -2);
 					if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT
 					 || $trans['type'] == ST_CUSTREFUND
 					 || $trans['type'] == ST_BANKDEPOSIT
@@ -250,11 +255,11 @@
 			$pg->graphic_1 = $to;
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
-			$pg->built_in = false;
+			$pg->built_in = FALSE;
 			$pg->fontfile = DOCROOT . "reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "images/test.png";
-			$pg->display($filename, true);
+			$pg->display($filename, TRUE);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;
 			$x = ($rep->pageWidth - $w) / 2;
@@ -268,4 +273,4 @@
 		$rep->End();
 	}
 
-?>
+

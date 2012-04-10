@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
 
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
@@ -100,6 +98,9 @@
   submit_center('submit', _("Update"), TRUE, '', 'default');
   end_form(2);
   Page::end();
+  /**
+   * @return bool
+   */
   function can_process() {
     if (!Validation::is_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));
@@ -119,4 +120,4 @@
     return TRUE;
   }
 
-?>
+

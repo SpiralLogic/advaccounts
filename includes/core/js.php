@@ -2,13 +2,16 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
   include(DOCROOT . 'modules/smartoptimizer/minifiers/js.php');
+  /**
+   *
+   */
   class JS {
 
     /**
@@ -39,6 +42,9 @@
      * @var bool
      */
     static private $_focus = FALSE;
+    /**
+     * @var bool
+     */
     static public $outputted = FALSE;
     /**
      * @var bool
@@ -284,11 +290,13 @@ JSS;
     static public function setFocus($selector, $cached = FALSE) {
       $_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : FALSE;
     }
-
     /**
      * @static
      *
      * @param array $options
+     *
+     * @param array $funcs
+     * @param int   $level
      *
      * @return string
      */

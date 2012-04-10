@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   //
   //	Entry/Modify Credit Note for selected Sales Invoice
   //
@@ -107,6 +105,9 @@
   submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
   submit_center_last('ProcessCredit', _("Process Credit Note"), TRUE, '', 'default');
   Page::end();
+  /**
+   * @return int
+   */
   function check_quantities() {
     $ok = 1;
     foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $itm) {
@@ -131,6 +132,9 @@
     return $ok;
   }
 
+  /**
+   * @return bool
+   */
   function can_process() {
     if (!Dates::is_date($_POST['CreditDate'])) {
       Event::error(_("The entered date is invalid."));
@@ -176,6 +180,9 @@
     }
   }
 
+  /**
+   * @param $order
+   */
   function copy_from_order($order) {
     $order = Sales_Order::check_edit_conflicts($order);
     $_POST['ShipperID'] = $order->ship_via;
@@ -294,4 +301,4 @@
     Display::div_end();
   }
 
-?>
+

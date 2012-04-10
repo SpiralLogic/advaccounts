@@ -2,12 +2,18 @@
   /**
    * PHP version 5.4
    * @category  PHP
-   * @package   ADVAccounts
+   * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+  /**
+   *
+   */
+  /**
+   *
+   */
   class Errors {
 
     /**
@@ -58,6 +64,9 @@
     static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
     /** @var array Errors to ignore comeletely */
     static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+    /**
+     * @var
+     */
     static protected $useConfigClass;
     /** @static Initialiser */
     static function init() {
@@ -302,10 +311,7 @@
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
 
-      if (isset(static::$session['current_user']) &&static::$session['current_user']->username=='admin'){
-        $content .= '<pre class="left">'.var_export(Errors::$errors,true).'</pre>';
-
-      }
+        $content .= '<pre class="left">'.var_export(Errors::$errors,TRUE).'</pre>';
       if (class_exists('Page')) {
         \Page::error_exit($content, FALSE);
       }

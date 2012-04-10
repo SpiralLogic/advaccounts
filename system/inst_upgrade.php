@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
   //
@@ -90,6 +88,14 @@ You have to clean database manually to enable them, or try to perform forced upg
   submit_center('Upgrade', _('Upgrade system'), TRUE, _('Save database and perform upgrade'), 'process');
   end_form();
   Page::end();
+  /**
+   * @param      $pref
+   * @param      $table
+   * @param null $field
+   * @param null $properties
+   *
+   * @return int
+   */
   function check_table($pref, $table, $field = NULL, $properties = NULL) {
     $tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
     if (!DB::num_rows($tables)) {
@@ -118,6 +124,9 @@ You have to clean database manually to enable them, or try to perform forced upg
   //
   //	Creates table of installer objects sorted by version.
   //
+  /**
+   * @return array
+   */
   function get_installers() {
     $patchdir = DOCROOT . "sql/";
     $upgrades = array();
@@ -143,6 +152,12 @@ You have to clean database manually to enable them, or try to perform forced upg
   //
   //	Apply one differential data set.
   //
+  /**
+   * @param $index
+   * @param $conn
+   *
+   * @return bool
+   */
   function upgrade_step($index, $conn) {
     global $installers;
     $inst = $installers[$index];
@@ -170,6 +185,11 @@ You have to clean database manually to enable them, or try to perform forced upg
     return $ret;
   }
 
+  /**
+   * @param $conn
+   *
+   * @return bool|resource
+   */
   function db_open($conn) {
     $db = mysql_connect($conn["host"], $conn["dbuser"], $conn["dbpassword"]);
     if (!$db) {
@@ -181,4 +201,4 @@ You have to clean database manually to enable them, or try to perform forced upg
     return $db;
   }
 
-?>
+

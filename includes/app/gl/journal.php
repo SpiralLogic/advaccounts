@@ -1,17 +1,19 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
   class GL_Journal {
-
+    /**
+     * @static
+     *
+     * @param $order
+     */
     static public function header($order) {
 
       $qes = GL_QuickEntry::has(QE_JOURNAL);
@@ -122,7 +124,13 @@
       end_table();
       Display::div_end();
     }
-
+    /**
+     * @static
+     *
+     * @param      $order
+     * @param      $dim
+     * @param null $Index
+     */
     static public function item_controls($order, $dim, $Index = NULL) {
 
       start_row();
@@ -200,7 +208,18 @@
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
       echo "</table>";
     }
-
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param string $label
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     *
+     * @return null|string
+     */
     static public function  view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
         $viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
@@ -213,7 +232,14 @@
       }
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $value
+     * @param bool $submit_on_change
+     */
     static public function  cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
       global $systypes_array;
       echo "<td>";
@@ -233,6 +259,15 @@
 
     // Write/update journal entries.
     //
+    /**
+     * @static
+     *
+     * @param      $order
+     * @param      $reverse
+     * @param bool $use_transaction
+     *
+     * @return string
+     */
     static public function write($order, $reverse, $use_transaction = TRUE) {
       $date_ = $order->tran_date;
       $ref = $order->reference;
@@ -291,7 +326,13 @@
       }
       return $trans_id;
     }
-
+    /**
+     * @static
+     *
+     * @param      $type
+     * @param      $type_no
+     * @param bool $use_transaction
+     */
     static public function void($type, $type_no, $use_transaction = TRUE) {
       if ($use_transaction) {
         DB::begin();
@@ -305,4 +346,4 @@
     }
   }
 
-?>
+

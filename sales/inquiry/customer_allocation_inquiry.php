@@ -1,14 +1,12 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   JS::open_window(900, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
@@ -138,31 +136,67 @@ JS;
   JS::addLiveEvent('#emailInvoices', 'dblclick', $action, 'wrapper', TRUE);
   JS::addLiveEvent('#emailInvoices', 'click', 'return false;', 'wrapper', TRUE);
   Page::end();
+  /**
+   * @param $row
+   *
+   * @return bool
+   */
   function check_overdue($row) {
     return ($row['OverDue'] == 1 && Num::price_format(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);
   }
 
+  /**
+   * @param $row
+   *
+   * @return null|string
+   */
   function order_link($row) {
     return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
   }
 
+  /**
+   * @param $dummy
+   * @param $type
+   *
+   * @return mixed
+   */
   function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
 
+  /**
+   * @param $trans
+   *
+   * @return null|string
+   */
   function view_link($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function due_date($row) {
     return $row["type"] == 10 ? $row["due_date"] : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return mixed
+   */
   function fmt_balance($row) {
     return $row["TotalAmount"] - $row["Allocated"];
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function alloc_link($row) {
     $link = DB_Pager::link(_("Allocation"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
     if ($row["type"] == ST_CUSTCREDIT && Num::price_format($row['TotalAmount'] - $row['Allocated']) > 0) {
@@ -180,20 +214,35 @@ JS;
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_debit($row) {
     $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
       -$row["TotalAmount"] : $row["TotalAmount"];
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return int|string
+   */
   function fmt_credit($row) {
     $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ?
       -$row["TotalAmount"] : $row["TotalAmount"];
     return $value > 0 ? Num::price_format($value) : '';
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function email_chk($row) {
     return ($row['type'] == ST_SALESINVOICE) ? checkbox(NULL, 'emailChk') : '';
   }
 
-?>
+

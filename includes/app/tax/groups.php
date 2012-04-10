@@ -1,21 +1,26 @@
 <?php
-  /**********************************************************************
-  Copyright (C) Advanced Group PTY LTD
-  Released under the terms of the GNU General Public License, GPL,
-  as published by the Free Software Foundation, either version 3
-  of the License, or (at your option) any later version.
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-   ***********************************************************************/
+  /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Tax_Groups {
 
     static public function clear_shipping_tax_group() {
       $sql = "UPDATE tax_groups SET tax_shipping=0 WHERE 1";
       DB::query($sql, "could not update tax_shipping fields");
     }
-
+    /**
+     * @static
+     *
+     * @param $name
+     * @param $tax_shipping
+     * @param $taxes
+     * @param $rates
+     */
     static public function add($name, $tax_shipping, $taxes, $rates) {
       DB::begin();
       if ($tax_shipping) // only one tax group for shipping
@@ -28,7 +33,15 @@
       static::add_items($id, $taxes, $rates);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     * @param $name
+     * @param $tax_shipping
+     * @param $taxes
+     * @param $rates
+     */
     static public function update($id, $name, $tax_shipping, $taxes, $rates) {
       DB::begin();
       if ($tax_shipping) // only one tax group for shipping
@@ -41,7 +54,13 @@
       static::add_items($id, $taxes, $rates);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param bool $all
+     *
+     * @return null|PDOStatement
+     */
     static public function get_all($all = FALSE) {
       $sql = "SELECT * FROM tax_groups";
       if (!$all) {
@@ -49,13 +68,23 @@
       }
       return DB::query($sql, "could not get all tax group");
     }
-
+    /**
+     * @static
+     *
+     * @param $type_id
+     *
+     * @return ADV\Core\DB\Query_Result|Array
+     */
     static public function get($type_id) {
       $sql = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax group");
       return DB::fetch($result);
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     */
     static public function delete($id) {
       DB::begin();
       $sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
@@ -63,7 +92,13 @@
       static::delete_items($id);
       DB::commit();
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     * @param $items
+     * @param $rates
+     */
     static public function add_items($id, $items, $rates) {
       for ($i = 0; $i < count($items); $i++) {
         $sql
@@ -72,12 +107,22 @@
         DB::query($sql, "could not add item tax group item");
       }
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     */
     static public function delete_items($id) {
       $sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DB::escape($id);
       DB::query($sql, "could not delete item tax group items");
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return null|PDOStatement
+     */
     static public function get_for_item($id) {
       $sql
         = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
@@ -85,7 +130,13 @@
 		FROM tax_group_items, tax_types	WHERE tax_group_id=" . DB::escape($id) . "	AND tax_types.id=tax_type_id";
       return DB::query($sql, "could not get item tax type group items");
     }
-
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return array
+     */
     static public function get_items_as_array($id) {
       $ret_tax_array = array();
       $tax_group_items = static::get_for_item($id);
@@ -100,7 +151,10 @@
       }
       return $ret_tax_array;
     }
-
+    /**
+     * @static
+     * @return null|PDOStatement
+     */
     static public function get_shipping_items() {
       $sql
         = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
@@ -111,7 +165,10 @@
 		AND tax_types.id=tax_type_id";
       return DB::query($sql, "could not get shipping tax group items");
     }
-
+    /**
+     * @static
+     * @return array
+     */
     static public function for_shipping_as_array() {
       $ret_tax_array = array();
       $tax_group_items = static::get_shipping_items();
@@ -128,6 +185,16 @@
     }
 
     // TAX GROUPS
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
     static public function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT id, name FROM tax_groups";
       return select_box($name, $selected_id, $sql, 'id', 'name', array(
@@ -136,7 +203,15 @@
         'select_submit' => $submit_on_change, 'async' => FALSE,
       ));
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     */
     static public function cells($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
@@ -145,7 +220,15 @@
       echo Tax_Groups::select($name, $selected_id, $none_option, $submit_on_change);
       echo "</td>\n";
     }
-
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $none_option
+     * @param bool $submit_on_change
+     */
     static public function row($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Tax_Groups::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
@@ -153,4 +236,4 @@
     }
   }
 
-?>
+

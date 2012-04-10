@@ -1,31 +1,53 @@
 <?php
   /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 31/10/11
-   * Time: 8:07 PM
-   * To change this template use File | Settings | File Templates.
-   */
+     * PHP version 5.4
+     * @category  PHP
+     * @package   adv.accounts.app
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
   class Reports_Box extends Report {
 
+    /**
+     * @var
+     */
     public $ar_classes;
+    /**
+     * @var array
+     */
     public $ctrl_handlers = array();
-
+    /**
+     *
+     */
     public function __construct() {
     }
     public function reportClasses() {
       $this->ar_classes = array();
     }
-
+    /**
+     * @param $class_name
+     * @return void
+     */
     public function addReportClass($class_name) {
       $this->ar_classes[$class_name] = array();
     }
-
+    /**
+     * @param      $class_name
+     * @param      $id
+     * @param      $rep_name
+     * @param null $params
+     * @return void
+     */
     public function addReport($class_name, $id, $rep_name, $params = NULL) {
       unset($this->ar_classes[$class_name][$id]); // unset std report if any
       $this->ar_classes[$class_name][$id] = new Report($id, $rep_name, $params);
     }
-
+    /**
+     * @param null $class
+     *
+     * @return string
+     */
     public function getDisplay($class = NULL) {
       $Ajax = Ajax::i();
       $temp = array_values($this->ar_classes);
@@ -85,7 +107,12 @@
       $st .= "</tr></table><br>";
       return $st;
     }
-
+    /**
+     * @param $controls
+     *
+     * @return string
+     * @throws Adv_Exception
+     */
     public function getOptions($controls) {
       $st = '';
       if ($controls == NULL) {
@@ -120,6 +147,10 @@
     //
     //	Register additional control handler
     // $handle - name of global function f($name, $type) returning html code for control
+    /**
+     * @param $handler
+     * @return void
+     */
     public function register_controls($handler) {
       $this->ctrl_handlers[] = $handler;
     }
@@ -127,6 +158,12 @@
     //
     //	Returns html code for input control $name of type $type
     //
+    /**
+     * @param $name
+     * @param $type
+     *
+     * @return string
+     */
     public function get_ctrl($name, $type) {
       $st = '';
       switch ($type) {
@@ -362,7 +399,13 @@
       }
       return '';
     }
-
+    /**
+     * @param      $name
+     * @param null $value
+     * @param bool $spec_opt
+     *
+     * @return string
+     */
     protected function gl_systypes_list($name, $value = NULL, $spec_opt = FALSE) {
       global $systypes_array;
       $types = $systypes_array;

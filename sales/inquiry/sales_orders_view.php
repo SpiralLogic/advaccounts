@@ -104,7 +104,7 @@
   start_form();
   start_table('tablestyle_noborder');
   start_row();
-  Debtor::cells(_("Customer: "), 'customer_id', $selected_customer, TRUE);
+  Debtor::cells(_(""), 'customer_id', $selected_customer, TRUE);
   ref_cells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
     ref_cells(_("Ref"), 'OrderReference', '', NULL, '', TRUE);
@@ -303,11 +303,15 @@
   DB_Pager::display($table);
   submit_center('Update', _("Update"), TRUE, '', NULL);
   end_form();
-  UI::emailDialogue(CT_CUSTOMER);
 
   Page::end();
   //	Query format functions
   //
+  /**
+   * @param $row
+   *
+   * @return bool|int
+   */
   function check_overdue($row) {
     global $trans_type;
     if ($trans_type == ST_SALESQUOTE) {
@@ -318,22 +322,48 @@
     }
   }
 
+  /**
+   * @param $row
+   * @param $order_no
+   *
+   * @return null|string
+   */
   function view_link($row, $order_no) {
     return Debtor::trans_view($row['trans_type'], $order_no);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link($row) {
     return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, $row['trans_type'], ICON_PRINT, 'button printlink');
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function prt_link2($row) {
     return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function edit_link($row) {
     return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
   }
 
+  /**
+   * @param $row
+   *
+   * @return ADV\Core\HTML|string
+   */
   function email_link($row) {
     HTML::setReturn(TRUE);
     UI::button(FALSE, 'Email', array(
@@ -343,6 +373,11 @@
     return HTML::setReturn(FALSE);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function dispatch_link($row) {
     if ($row['trans_type'] == ST_SALESORDER) {
       return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
@@ -352,6 +387,11 @@
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function invoice_link($row) {
     if ($row['trans_type'] == ST_SALESORDER) {
       return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
@@ -361,14 +401,29 @@
     }
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function delivery_link($row) {
     return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function order_link($row) {
     return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
   }
 
+  /**
+   * @param $row
+   *
+   * @return string
+   */
   function tmpl_checkbox($row) {
     global $trans_type;
     if ($trans_type == ST_SALESQUOTE) {
@@ -383,10 +438,13 @@
 
   // Update db record if respective checkbox value has changed.
   //
+  /**
+   * @param $id
+   */
   function change_tpl_flag($id) {
     $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
     DB::query($sql, "Can't change sales order type");
     Ajax::i()->activate('orders_tbl');
   }
 
-?>
+

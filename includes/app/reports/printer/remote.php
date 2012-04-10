@@ -1,15 +1,36 @@
 <?php
 
+  /**
+   *
+   */
   class Reports_Printer_Remote {
 
+    /**
+     * @var string
+     */
     var $host;
+    /**
+     * @var int
+     */
     var $port;
+    /**
+     * @var int
+     */
     var $timeout;
+    /**
+     * @var
+     */
     var $queue;
 
     //
     //	Setting connection parameters
     //
+    /**
+     * @param        $queue
+     * @param string $host
+     * @param int    $port
+     * @param int    $timeout
+     */
     function __construct($queue, $host = '', $port = 515, $timeout = 20) {
       if ($host == '') {
         $host = $_SERVER['REMOTE_ADDR'];
@@ -23,6 +44,11 @@
     //
     //	Send file to remote network printer.
     //
+    /**
+     * @param $fname
+     *
+     * @return mixed|string
+     */
     function print_file($fname) {
       $queue = $this->queue;
       //Private static function prints waiting jobs on the queue.
@@ -85,6 +111,11 @@
     //
     //	Print all waiting jobs on remote printer queue.
     //
+    /**
+     * @param $queue
+     *
+     * @return bool|mixed|string
+     */
     function flush_queue($queue) {
       $stream = fsockopen("tcp://" . $this->host, $this->port, $errNo, $errStr, $this->timeout);
       if (!$stream) {
