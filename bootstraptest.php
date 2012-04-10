@@ -18,8 +18,7 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== FALSE));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
-    '.');
+  define('PATH_TO_ROOT', substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? : '.');
   set_error_handler(function ($severity, $message, $filepath, $line) {
     class_exists('Adv\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
@@ -53,8 +52,7 @@
       return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-  define('COMPANY_PATH' ,DOCROOT. 'company' . DS);
-
+  define('COMPANY_PATH', DOCROOT . 'company' . DS);
   Cache::define_constants('defines', function() {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   });

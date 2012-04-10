@@ -44,29 +44,14 @@
      * @return void
      */
     public function testRemove() {
-      $people = array("Jack", "Jill");
-      $expected = array("Jack");
-      Arr::remove($people, 1);
-      $this->assertEquals($expected, $people);
-      $people = array("Humpty", "Jack", "Jill");
-      Arr::remove($people, 1, 2);
-      $expected = array("Humpty");
-      $this->assertEquals($expected, $people);
+
     }
     /**
      * @covers Arr::get
      * @return void
      */
     public function testGet() {
-      $people = array("test1" => "Jack", "test2" => "Jill");
-      $expected = "Jill";
-      $ouput = Arr::get($people, 'test2');
-      $this->assertEquals($expected, $ouput);
-      $ouput = Arr::get($people, 'test2');
-      $this->assertEquals($expected, $ouput);
-      $ouput = Arr::get($people, 'test3', "Humpty");
-      $expected = "Humpty";
-      $this->assertEquals($expected, $ouput);
+
     }
     /**
      * @covers Arr::substitute

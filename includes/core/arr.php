@@ -24,9 +24,7 @@ class Arr {
      * @return bool
      */
     static function insert(&$array, $index, $elements) {
-      if (!is_array($elements)) {
-        $elements = array($elements);
-      }
+        $elements = (array)($elements);
       $head = array_splice($array, 0, $index);
       $array = array_merge($head, $elements, $array);
       return TRUE;

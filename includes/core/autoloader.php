@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -45,16 +44,20 @@
     static public function i() {
       class_alias(__CLASS__, 'Autoloader');
       spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
-      //static::$classes = Cache::get('autoload.classes');
-      //static::$loaded = Cache::get('autoload.paths');
-      if (!static::$classes) {
+      static::$classes2 = Cache::get('autoload.classes2');
+      static::$classes = Cache::get('autoload.classes');
+      static::$loaded = Cache::get('autoload.paths');
+      static::$loaded = array();
+      static::$classes = array();
+      static::$classes2 = array();
+      if (!static::$classes2) {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::import_namespaces((array) $core);
         static::add_classes((array) $vendor, VENDORPATH);
       }
 
-      //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE);
+      //spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE, TRUE);
     }
     /**
      * @static
@@ -103,17 +106,18 @@
      * @static
      *
      * @param $paths
+     * @param $namespace
      * @param $classname
      *
      * @internal param $path
      * @return string
      */
-    static protected function tryPath($paths, $classname) {
+    static protected function tryPath($paths, $namespace, $classname) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
         if ($filepath) {
-          return static::includeFile($filepath, $classname);
+          return static::includeFile($filepath, $namespace, $classname);
         }
       }
       return FALSE;
@@ -127,7 +131,7 @@
      * @return bool
      * @throws Autoload_Exception
      */
-    static protected function includeFile($filepath, $class) {
+    static protected function includeFile($filepath, $namespace, $class) {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be found!');
       }
@@ -138,6 +142,7 @@
       if (!include_once($filepath)) {
         throw new Autoload_Exception('File for class ' . $class . ' cannot be	loaded from : ' . $filepath);
       }
+      static::$loaded[$namespace][$class] = $filepath;
       //	static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
       return TRUE;
     }
@@ -148,16 +153,22 @@
      *
      * @return bool|string
      */
-    static public function loadFromCache($classname) {
-      $result = FALSE;
-      if (isset(static::$loaded[$classname])) {
-        $result = static::tryPath(static::$loaded[$classname], $classname);
+    static public function loadFromCache($required_class) {
+      $alias = FALSE;
+      $classpath = ltrim($required_class, '\\');
+      if ($lastNsPos = strripos($classpath, '\\')) {
+        $namespace = substr($classpath, 0, $lastNsPos);
+        $class = substr($classpath, $lastNsPos + 1);
       }
-      elseif (isset(static::$classes[$classname])) {
-        $result = static::tryPath(static::$classes[$classname], $classname);
+      $result = FALSE;
+      if (isset(static::$loaded[$namespace][$class])) {
+        $result = static::tryPath(static::$loaded[$namespace][$class], $namespace, $class);
+      }
+      elseif (isset(static::$classes[$required_class])) {
+        $result = static::tryPath(static::$classes[$class], '/', $class);
       }
       if (!$result) {
-        Event::register_shutdown(__CLASS__);
+        \ADV\Core\Event::register_shutdown(__CLASS__);
       }
       return $result;
     }
@@ -198,7 +209,7 @@
       $paths[] = $dir . DS . $filename . '.php';
       $paths[] = $dir . DS . $filename . DS . $filename . '.php';
       $paths[] = $dir . DS . 'classes' . DS . $filename . '.php';
-      $result = static::trypath($paths, $required_class);
+      $result = static::trypath($paths, $namespace, $required_class);
       if ($alias && $class) {
         class_alias(static::$classes2[$class] . $class, $class);
       }
@@ -232,6 +243,7 @@
         Cache::set('autoload.classes', static::$classes);
       }
       Cache::set('autoload.paths', static::$loaded);
+      Cache::set('autoload.classes2', static::$classes2);
     }
   }
 
