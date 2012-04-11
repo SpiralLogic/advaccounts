@@ -368,7 +368,7 @@
         $this->trans_type = $type;
         $this->src_docs = $this->trans_no;
         $this->trans_no = 0;
-        $this->order_no = $this->trans_type == ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
+        $this->order_no = ($this->trans_type == ST_CUSTDELIVERY) ? key($src->trans_no) : $src->order_no;
       }
       $this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
       $this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);

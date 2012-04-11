@@ -186,10 +186,7 @@
       }
       $begin = Dates::sql2date($myrow['begin']);
       $end = Dates::sql2date($myrow['end']);
-      if (Dates::date1_greater_date2($begin, $date2) || Dates::date1_greater_date2($date2, $end)) {
-        return 0;
-      }
-      return 1;
+      return (Dates::date1_greater_date2($begin, $date2) || Dates::date1_greater_date2($date2, $end));
     }
     /**
      * @static
@@ -447,6 +444,7 @@
       /* returns 1 true if date1 is greater than date_ 2 */
       $date1 = Dates::date2sql($date1);
       $date2 = Dates::date2sql($date2);
+
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       if ($year1 > $year2) {

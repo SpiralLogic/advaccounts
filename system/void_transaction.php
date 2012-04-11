@@ -168,6 +168,8 @@
       JS::set_focus('date_');
       return FALSE;
     }
+    $_POST['date_']='11/04/2012';
+    var_dump(Dates::is_date_in_fiscalyear($_POST['date_']));
     if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');

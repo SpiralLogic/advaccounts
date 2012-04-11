@@ -11,6 +11,5 @@
    * @param $constants
    **/
   include 'bootstrap.php';
-  $customers = new \Modules\Volusion\Customers();
-  $customers->process();
-  var_dump($customers->status);
+  echo 'test';
+  var_dump(\DB_Company::get_current_fiscalyear());
