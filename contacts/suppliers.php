@@ -187,9 +187,10 @@
     HTML::div('shortcuts', array('class' => 'width50 center'));
     $shortcuts = new MenuUI(array('noajax' => TRUE));
     $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?supplier_id=', 'id');
+    $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&supplier_id=', 'id');
     $shortcuts->render();
     /** @noinspection PhpUndefinedMethodInspection */
     HTML::_div();
-    UI::emailDialogue(CT_CUSTOMER);
+    UI::emailDialogue(CT_SUPPLIER);
   }
   Page::end(FALSE, TRUE);

@@ -107,6 +107,21 @@
       }
       return $result;
     }
+    /**
+     * @static
+     *
+     * @param      $var
+     * @param      $type
+     * @param null $default
+     *
+     * @return bool|int|null|string
+     */public static function post_global($var, $type, $default = NULL) {
+      $result = static::_isset($_POST, $var, $type, FALSE);
+      if ($result === FALSE) {
+        $result = static::_get_global($var, $type, $default);
+      }
+      return $result;
+    }
 
     /***
      * @static

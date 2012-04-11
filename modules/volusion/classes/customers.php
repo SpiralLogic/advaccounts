@@ -1,17 +1,19 @@
 <?php
   namespace Modules\Volusion;
-  use \ADV\Core\DB\DBDuplicateException;
-  use \ADV\Core\DB\DB;
-  use \Event;
-  use \ADV\Core\XMLParser;
+  use \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DB, \Event, \ADV\Core\XMLParser;
+
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
   class Customers {
-
+    /**
+     * @var \ADV\Core\Status
+     */
     public $status;
+    /**
+     * @var array
+     */
     public $customers = array();
-
     /**
 
      */
@@ -19,34 +21,38 @@
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
     }
-
     /**
      * Gets XML from website containing customer information and stores in in $this->customers
      * @return bool returns false if nothing was retrieved or true otherwise.
      */
     function get() {
       $customersXML = $this->getXML();
-
       if (!$customersXML) {
-        return $this->status->set(FALSE, 'get', "Nothing retrieved from website");
+        return $this->status->set(FALSE, 'getXML', "Nothing retrieved from website");
       }
       $this->customers = XMLParser::XMLtoArray($customersXML);
       if (!$this->customers) {
-        return $this->status->set(FALSE, 'get', "Nothing retrieved from website");
+        return $this->status->set(FALSE, 'XMLtoArray', "No new custoemrs!");
       }
-
       return $this->status->set(TRUE, 'get', "Customers retrieved");
     }
-    function insertCustomers($customers) {
+    /**
+     * @param $customers
+     * @return array
+     */
+    function insertCustomersToDB($customers) {
       if (!$customers) {
-        return $this->status->set(FALSE, 'paresexml', 'Nothing found from website.');
+        return $this->status->set(FALSE, 'insertToDB', 'No Customers to add.');
       }
       foreach ($customers as $customer) {
-        $this->insertCustomer($customer);
+        $this->insertCustomerToDB($customer);
       }
-      return $this->status->set(TRUE, 'added to DB', "Finished adding Customers to DB!");
+      return $this->status->set(TRUE, 'addedToDB', "Finished adding Customers to DB!");
     }
-    function insertCustomer($customer) {
+    /**
+     * @param $customer
+     */
+    function insertCustomerToDB($customer) {
       if (!empty($customer['CompanyName'])) {
         $name = $customer['CompanyName'];
       }
@@ -79,11 +85,13 @@
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web customers');
       }
-      ;
       return $result;
     }
 
-    function insert() {
+    /**
+     * @return array
+     */
+    function createSales() {
       $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
         return $this->status->set(FALSE, 'insert', "No new customers in database");
@@ -91,7 +99,6 @@
       $added = $updated = 0;
       foreach ($result as $row) {
         if (!empty($row['CompanyName'])) {
-
           $name = $row['CompanyName'];
         }
         elseif (!empty($row['FirstName']) || !empty($row['LastName'])) {
@@ -101,7 +108,6 @@
           $name = $row['CompanyName'] = $row['EmailAddress'];
         }
         $debtor_no = \DB::select('debtor_no')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
-
         if ($debtor_no > 0) {
           $c = new \Debtor($debtor_no);
         }
@@ -109,7 +115,6 @@
           $c = new \Debtor();
         }
         $c->name = $c->debtor_ref = $name;
-
         $c->branches[$c->defaultBranch]->post_address = $row["BillingAddress2"];
         $c->branches[$c->defaultBranch]->br_address = $row["BillingAddress1"];
         $c->branches[$c->defaultBranch]->city = $row["City"];

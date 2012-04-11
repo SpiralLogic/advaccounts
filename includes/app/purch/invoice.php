@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Purch_Invoice {
+
     /**
      * @static
      *
@@ -388,6 +389,7 @@
      * @param $trans_no
      * @param $trans_type
      * @param $creditor_trans
+     *
      * @return void
      */
     static public function get($trans_no, $trans_type, $creditor_trans) {
@@ -655,9 +657,7 @@
         label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
       }
       else {
-        if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
-          $_POST['supplier_id'] = Session::i()->supplier_id;
-        }
+        $_POST['supplier_id'] = Input::post_global('supplier_id', Input::NUMERIC, '');
         Creditor::cells(_("Supplier:"), 'supplier_id', NULL, FALSE, TRUE);
         JS::set_focus('supplier_id');
       }
@@ -675,7 +675,7 @@
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
       $company_currency = Bank_Currency::for_company();
       GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
-      Session::i()->supplier_id = $_POST['supplier_id'];
+      Session::setGlobal('supplier_id', $_POST['supplier_id']);
       start_row();
       if ($creditor_trans->is_invoice) {
         ref_cells("PO#: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE));

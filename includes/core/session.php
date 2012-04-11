@@ -139,4 +139,35 @@
     public function __set($var, $value) {
       $this->_session[$var] = $value;
     }
+    /**
+     * @param $var
+     * @param $valie
+     *
+     * @return float|string
+     */
+    public function setGlobal($var, $value) {
+      $_SESSION['globals'][$var] = $value;
+      $_SESSION[$var]=$value;
+      return $value;
+    }
+    /**
+     * @param $var
+     * @param $default
+     *
+     * @return mixed
+     */
+    public function getGlobal($var, $default) {
+      return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
+    }
+    /**
+     * @param $globals
+     */
+    public function removeGlobal($globals) {
+      $globals = func_get_args();
+      foreach ($globals as $var) {
+        if (is_string($var) || is_int($var)) {
+          unset ($_SESSION['globals'][$var]);
+        }
+      }
+    }
   }

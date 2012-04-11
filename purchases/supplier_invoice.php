@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -29,9 +28,8 @@
   if (isset($_GET['New'])) {
     Creditor_Trans::i(TRUE);
     Creditor_Trans::i()->is_invoice = TRUE;
-    if (isset($_GET['SuppID'])) {
-      $_SESSION['supplier_id'] = $_GET['SuppID'];
-    }
+    $supplier_id=Input::get('supplier_id', Input::NUMERIC);
+    $supplier_id=Session::setGlobal('supplier_id',$supplier_id );
   }
   //	GL postings are often entered in the same form to two accounts
   // so fileds are cleared only on user demand.
@@ -106,7 +104,7 @@
     }
     $invoice_no = Purch_Invoice::add(Creditor_Trans::i());
     $_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
-    $_SESSION['supplier_id'] = $_POST['supplier_id'];
+    Session::setGlobal('supplier_id', $_POST['supplier_id'], '');
     Creditor_Trans::i()->clear_items();
     Creditor_Trans::killInstance();
     Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
@@ -182,13 +180,11 @@
   }
   start_form();
   Purch_Invoice::header(Creditor_Trans::i());
-  if ($_SESSION['supplier_id']) {
-    $_POST['supplier_id'] = $_SESSION['supplier_id'];
-    if (Creditor_Trans::i()) {
-      unset($_SESSION['supplier_id'], $_SESSION['delivery_po']);
-    }
+  $_POST['supplier_id'] = Session::getGlobal('supplier_id', '');
+  if (Creditor_Trans::i()) {
+    Session::removeGlobal('supplier_id', 'delivery_po');
   }
-  if ($_POST['supplier_id'] == '') {
+  if ($_POST['supplier_id'] == ALL_TEXT) {
     Event::warning(_("There is no supplier selected."));
   }
   else {
@@ -362,7 +358,7 @@ JS;
       $_SESSION['err_over_charge'] = FALSE;
       Creditor_Trans::i()
         ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
-                           $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
+        $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
     }
   }
 

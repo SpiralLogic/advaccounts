@@ -159,7 +159,7 @@
           return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
         }
         elseif ($row['Invoiced'] > 0) {
-          return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+          return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&supplier_id=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
         }
         return '';
       }
