@@ -1,71 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class DB_Company extends DB_abstract {
-    /**
-     * @param int $id
-     */
-    public function __construct($id = 0) {
-      parent::__construct($id);
-      $this->id = &$this->coy_code;
-    }
-    /**
-     * @param array|null $changes
-     *
-     * @return array|bool|int|null|Status
-     */
-    public function save($changes = NULL) {
-      if (is_array($changes)) {
-        $this->setFromArray($changes);
-      }
-      if (!$this->_canProcess()) {
-        return FALSE;
-      }
-      if ($this->id == 0) {
-        $this->_saveNew();
-      }
-      DB::begin();
-      $result = DB::update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
-      DB::commit();
-      $_SESSION['config']['company'] = $this;
-      return $this->_status(TRUE, 'Processing', "Company has been updated.");
-    }
-    public function delete() {
-      // TODO: Implement delete() method.
-    }
-    /**
-     * @return bool
-     */
-    protected function _canProcess() {
-      return TRUE;
-      // TODO: Implement _canProcess() method.
-    }
-    protected function _defaults() {
-      // TODO: Implement _defaults() method.
-    }
-    protected function _new() {
-      // TODO: Implement _new() method.
-    }
-    /**
-     * @param int|null $id
-     *
-     * @return bool|void
-     */
-    protected function _read($id = 0) {
-      $result = DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
-    }
-    /**
-     * @return bool|int|void
-     */
-    protected function _saveNew() {
-      // TODO: Implement _saveNew() method.
-    }
+
     /**
      * @var int
      */
@@ -286,6 +229,64 @@
      * @var
      */
     public $login_tout;
+    /**
+     * @param int $id
+     */
+    public function __construct($id = 0) {
+      parent::__construct($id);
+      $this->id = &$this->coy_code;
+    }
+    /**
+     * @param array|null $changes
+     *
+     * @return array|bool|int|null|Status
+     */
+    public function save($changes = NULL) {
+      if (is_array($changes)) {
+        $this->setFromArray($changes);
+      }
+      if (!$this->_canProcess()) {
+        return FALSE;
+      }
+      if ($this->id == 0) {
+        $this->_saveNew();
+      }
+      DB::begin();
+      $result = DB::update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
+      DB::commit();
+      $_SESSION['config']['company'] = $this;
+      return $this->_status(TRUE, 'Processing', "Company has been updated.");
+    }
+    public function delete() {
+      // TODO: Implement delete() method.
+    }
+    /**
+     * @return bool
+     */
+    protected function _canProcess() {
+      return TRUE;
+      // TODO: Implement _canProcess() method.
+    }
+    protected function _defaults() {
+      // TODO: Implement _defaults() method.
+    }
+    protected function _new() {
+      // TODO: Implement _new() method.
+    }
+    /**
+     * @param int|null $id
+     *
+     * @return bool|void
+     */
+    protected function _read($id = 0) {
+      $result = DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
+    }
+    /**
+     * @return bool|int|void
+     */
+    protected function _saveNew() {
+      // TODO: Implement _saveNew() method.
+    }
     /***
      * @var DB_Company
      */
@@ -317,6 +318,7 @@
      * @param $from_date
      * @param $to_date
      * @param $closed
+     *
      * @return void
      */
     static public function add_fiscalyear($from_date, $to_date, $closed) {
@@ -332,6 +334,7 @@
      * @param $daysOrFoll
      * @param $terms
      * @param $dayNumber
+     *
      * @return void
      */
     static public function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
@@ -352,6 +355,7 @@
      * @static
      *
      * @param $id
+     *
      * @return void
      */
     static public function delete_fiscalyear($id) {
@@ -364,6 +368,7 @@
      * @static
      *
      * @param $selected_id
+     *
      * @return void
      */
     static public function delete_payment_terms($selected_id) {
@@ -455,6 +460,7 @@
      * @param $daysOrFoll
      * @param $terms
      * @param $dayNumber
+     *
      * @return void
      */
     static public function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
@@ -541,6 +547,7 @@
      *
      * @param $id
      * @param $closed
+     *
      * @return void
      */
     static public function update_fiscalyear($id, $closed) {
@@ -552,6 +559,7 @@
      * @static
      *
      * @param array|null $data
+     *
      * @return void
      */
     static public function update_gl_setup(array $data = NULL) {
@@ -561,6 +569,7 @@
      * @static
      *
      * @param array|null $data
+     *
      * @return void
      */
     static public function update_setup(array $data = NULL) {

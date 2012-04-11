@@ -284,7 +284,7 @@
         Event::error(_("There are no item quantities on this invoice."));
         return FALSE;
       }
-      if (!check_quantities($order)) {
+      if (!Sales_Delivery::check_quantities($order)) {
         Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
         return FALSE;
       }

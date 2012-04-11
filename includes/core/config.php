@@ -66,7 +66,7 @@
         $group_name = $group;
       }
       if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
-        return;
+        return true;
       }
       if (!file_exists($file)) {
         throw new Config_Exception("There is no file for config: " . $file);
@@ -140,7 +140,7 @@
      */
     static public function get_all($group = 'config',$default=array()) {
       static::i();
-      if (!isset(static::$_vars[$group]) &&  static::load($group)==FALSE){
+      if (!isset(static::$_vars[$group]) &&  static::load($group)===FALSE){
         return $default;
       };
       return static::$_vars[$group];

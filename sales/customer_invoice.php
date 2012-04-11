@@ -121,7 +121,7 @@
     Page::end();
     exit;
   }
-  elseif ($order && !Sales_Invoice::check_qty($order)) {
+  elseif ($order && !Sales_Invoice::check_quantities($order)) {
     Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
   }
   if (isset($_POST['Update'])) {

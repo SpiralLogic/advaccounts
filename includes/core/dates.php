@@ -186,7 +186,7 @@
       }
       $begin = Dates::sql2date($myrow['begin']);
       $end = Dates::sql2date($myrow['end']);
-      return (Dates::date1_greater_date2($begin, $date2) || Dates::date1_greater_date2($date2, $end));
+      return (Dates::date1_greater_date2($date2,$begin) || Dates::date1_greater_date2($end,$date2));
     }
     /**
      * @static

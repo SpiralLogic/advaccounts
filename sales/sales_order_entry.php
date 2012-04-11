@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,27 +10,27 @@
   require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-                                                            ST_SALESORDER => SA_SALESORDER,
-                                                            ST_SALESQUOTE => SA_SALESQUOTE,
-                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
-                                                            ST_SALESINVOICE => SA_SALESINVOICE
-                                                       ), array(
-                                                               Orders::NEW_ORDER => SA_SALESORDER,
-                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
-                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
-                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
-                                                          ));
+    ST_SALESORDER => SA_SALESORDER,
+    ST_SALESQUOTE => SA_SALESQUOTE,
+    ST_CUSTDELIVERY => SA_SALESDELIVERY,
+    ST_SALESINVOICE => SA_SALESINVOICE
+  ), array(
+    Orders::NEW_ORDER => SA_SALESORDER,
+    Orders::MODIFY_ORDER => SA_SALESORDER,
+    Orders::NEW_QUOTE => SA_SALESQUOTE,
+    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+    Orders::NEW_INVOICE => SA_SALESINVOICE
+  ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
     Ajax::i()->activate('customer_id');
   }
   $page_title = _($help_context = "New Sales Order Entry");
-  if (Input::get(Orders::ADD, Input::NUMERIC, 0) >-1) {
+  if (Input::get(Orders::ADD, Input::NUMERIC, -1) > -1) {
     switch (Input::get('type')) {
-      case ST_SALESQUOTE: 
+      case ST_SALESQUOTE:
         $page_title = _($help_context = "New Sales Quotation Entry");
         break;
       case ST_SALESINVOICE:
@@ -124,43 +123,43 @@
   }
   if (isset($_POST[Orders::DELETE_ORDER])) {
     if (!User::i()->can_access(SS_SETUP)) {
-          Event::error('You don\'t have access to delete orders');
-          return;
-        }
-        if ($order->trans_type == ST_CUSTDELIVERY) {
-          Event::notice(_("Direct delivery has been cancelled as requested."), 1);
-          Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
-        }
-        elseif ($order->trans_type == ST_SALESINVOICE) {
-          Event::notice(_("Direct invoice has been cancelled as requested."), 1);
-          Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
+      Event::error('You don\'t have access to delete orders');
+      return;
+    }
+    if ($order->trans_type == ST_CUSTDELIVERY) {
+      Event::notice(_("Direct delivery has been cancelled as requested."), 1);
+      Display::submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
+    }
+    elseif ($order->trans_type == ST_SALESINVOICE) {
+      Event::notice(_("Direct invoice has been cancelled as requested."), 1);
+      Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
+    }
+    else {
+      if ($order->trans_no != 0) {
+        if ($order->trans_type == ST_SALESORDER && $order->has_deliveries()) {
+          Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
         }
         else {
-          if ($order->trans_no != 0) {
-            if ($order->trans_type == ST_SALESORDER && $order->has_deliveries()) {
-              Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-            }
-            else {
-              $trans_no = key($order->trans_no);
-              $trans_type = $order->trans_type;
-              if (!isset($_GET[REMOVED_ID])) {
-                $order->delete($trans_no, $trans_type);
-                $jb = new \Modules\Jobsboard();
-                $jb->removejob($trans_no);
-                Event::notice(_("Sales order has been cancelled as requested."), 1);
-              }
-            }
-          }
-          else {
-            Display::meta_forward('/index.php', 'application=sales');
+          $trans_no = key($order->trans_no);
+          $trans_type = $order->trans_type;
+          if (!isset($_GET[REMOVED_ID])) {
+            $order->delete($trans_no, $trans_type);
+            $jb = new \Modules\Jobsboard();
+            $jb->removejob($trans_no);
+            Event::notice(_("Sales order has been cancelled as requested."), 1);
           }
         }
-        Ajax::i()->activate('_page_body');
-        $order->finish();
-        Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
-        Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
-        Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
-        Page::footer_exit();
+      }
+      else {
+        Display::meta_forward('/index.php', 'application=sales');
+      }
+    }
+    Ajax::i()->activate('_page_body');
+    $order->finish();
+    Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+    Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
+    Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+    Page::footer_exit();
   }
   $id = find_submit(MODE_DELETE);
   if ($id != -1) {
@@ -190,7 +189,7 @@
     }
     Ajax::i()->activate('_page_body');
   }
-  if (isset($_POST[Orders::ADD_ITEM])&&check_item_data($order)) {
+  if (isset($_POST[Orders::ADD_ITEM]) && check_item_data($order)) {
     $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
     $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
     Item_Line::start_focus('_stock_id_edit');
@@ -550,7 +549,6 @@
     }
     return TRUE;
   }
-
 
   /**
    * @param $type

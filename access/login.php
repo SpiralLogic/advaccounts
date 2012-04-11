@@ -1,13 +1,13 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   // Display demo user name and password within login form if "Config::get('demo_mode') " is true
   if (Config::get('demo_mode') == TRUE) {
     $demo_text = _("Login as user: demouser and password: password");
@@ -15,19 +15,12 @@
   else {
     $demo_text = _("Please login here");
   }
-  if (!Config::get('default.company') === FALSE) {
-    Config::set('default.company', 1);
-  }
   $def_theme = "default";
   $login_timeout = User::i()->last_act;
   $title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
   $encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
   $rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
-  $js = "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
-  if (!$login_timeout) {
-    $js .= "(function defaultCompany(){document.forms[0].login_company.options[" . User::i()->company . "].selected = true;})()";
-  }
-  JS::beforeload($js);
+
   echo "<!DOCTYPE HTML>\n";
   echo "<html dir='$rtl' >\n";
   echo "<head><title>$title</title>\n";
@@ -64,10 +57,10 @@
     hidden('login_company', User::i()->company);
   }
   else {
-    $coy = User::i()->company;
+    $coy = User::i()->company; $companies = Config::get_all('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company'>\n";
-    $companies = Config::get_all('db');
+
     foreach ($companies as $name => $company) {
       if (!$company['company']) {
         continue;
@@ -101,8 +94,13 @@
   ("Theme:") . "
 	 " . $def_theme . "</a>\n";
   echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></div>";
-  echo "<script>
-	 document.forms[0].user_name.select();
+  echo "<script>";
+
+  echo   "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
+  if (!$login_timeout) {
+    echo "(function defaultCompany(){document.forms[0].login_company.options[" . User::i()->company . "].selected = true;})()";
+  }
+  echo   "document.forms[0].user_name.select();
 	 document.forms[0].user_name.focus();
 	 </script>";
   echo "</body></html>\n";

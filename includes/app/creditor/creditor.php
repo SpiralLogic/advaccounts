@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Creditor extends Contact_Company {
+
     /**
      * @static
      *
@@ -193,8 +194,6 @@
      * @return array|bool|int|null|void
      */
     public function save($changes = NULL) {
-      $this->supp_ref = substr($this->supp_name, 0, 29);
-      $this->discount= User::numeric($this->discount) / 100;
       if (!parent::save($changes)) {
         $this->_setDefaults();
         return FALSE;
@@ -212,6 +211,7 @@
     }
     /**
      * @param null $changes
+     *
      * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
@@ -221,6 +221,8 @@
           $this->contacts[$id] = new Contact(CT_SUPPLIER, $contact);
         }
       }
+      $this->discount = User::numeric($this->discount) / 100;
+      $this->supp_ref = substr($this->supp_name, 0, 29);
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
@@ -470,6 +472,7 @@
      * @param bool $submit_on_change
      * @param bool $all
      * @param bool $editkey
+     *
      * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
@@ -490,6 +493,7 @@
      * @param bool $submit_on_change
      * @param bool $all
      * @param bool $editkey
+     *
      * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {

@@ -25,6 +25,7 @@
 
     public function process() {
       $this->get();
+      var_dump($this->customers);exit();
       $this->insertCustomersToDB();
       $this->createCustomer();
     }

@@ -175,7 +175,7 @@
         Event::error(_("There are no item quantities on this delivery note."));
         return FALSE;
       }
-      if (!check_quantities($order)) {
+      if (!static::check_quantities($order)) {
         return FALSE;
       }
       return TRUE;
