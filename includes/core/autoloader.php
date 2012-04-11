@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,6 +12,7 @@
 
    */
   class Autoload_Exception extends \Exception {
+
   }
 
   /**
@@ -35,7 +35,7 @@
     /**
      * @var array
      */
-    static  $loaded = array();
+    static $loaded = array();
     /**
      * @static
 
@@ -96,7 +96,6 @@
      * @param $required_class
      *
      * @internal param $classname
-     *
      * @internal param $path
      * @return string
      */
@@ -118,7 +117,6 @@
      *
      * @throws ADV\Core\Autoload_Exception
      * @internal param $class
-     *
      * @return bool
      */
     static protected function includeFile($filepath, $required_class) {
@@ -149,6 +147,7 @@
      */
     static public function loadFromCache($required_class) {
       $result = FALSE;
+      return $result;
       if (isset(static::$loaded[$required_class])) {
         try {
           $result = static::includeFile(static::$loaded[$required_class], $required_class);
@@ -157,7 +156,7 @@
           Event::register_shutdown(__CLASS__);
         }
         if ($result && isset(static::$global_classes[$required_class])) {
-          class_alias(static::$global_classes[$required_class] .'\\'. $required_class,'\\'. $required_class);
+          class_alias(static::$global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
       }
       return $result;
@@ -168,7 +167,6 @@
      * @param $requested_class
      *
      * @internal param $required_class
-     *
      * @internal param $required_class
      * @return bool|string
      */
@@ -186,7 +184,7 @@
         $alias = TRUE;
       }
       if ($namespace) {
-        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace. DS . $class_file ) ;
+        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'includes'], $namespace );
         $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$classname])) {

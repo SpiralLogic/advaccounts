@@ -6,6 +6,7 @@
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
   class Customers {
+
     /**
      * @var \ADV\Core\Status
      */
@@ -21,6 +22,13 @@
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
     }
+
+    public function process() {
+      $this->get();
+      $this->insertCustomersToDB();
+      $this->createCustomer();
+    }
+
     /**
      * Gets XML from website containing customer information and stores in in $this->customers
      * @return bool returns false if nothing was retrieved or true otherwise.
@@ -38,9 +46,11 @@
     }
     /**
      * @param $customers
+     *
      * @return array
      */
-    function insertCustomersToDB($customers) {
+    function insertCustomersToDB() {
+      $customers = $this->customers;
       if (!$customers) {
         return $this->status->set(FALSE, 'insertToDB', 'No Customers to add.');
       }
@@ -91,7 +101,7 @@
     /**
      * @return array
      */
-    function createSales() {
+    protected function createCustomer() {
       $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
         return $this->status->set(FALSE, 'insert', "No new customers in database");
@@ -129,7 +139,7 @@
         $c->post_address = $row ["BillingAddress2"];
         $c->tax_id = $row["TaxID"];
         $c->webid = $row["CustomerID"];
-        $c->contact_name = $row["FirstName"];
+        $c->contact_name = $row["FirstName"] . ' ' . $row["LastName"];
         $c->save();
         if (\Arr::get($c->getStatus(FALSE), 'status') == E_USER_ERROR) {
           $id = \DB::select('debtor_no')->from('debtors')->where('name=', $c->name)->fetch()->assoc()->one();
@@ -140,7 +150,6 @@
           $updated++;
         }
         else {
-
           $added++;
           $this->status->set(TRUE, 'add', "Customer  {$c->name} has been added.  {$c->id} ");
         }

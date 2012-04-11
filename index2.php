@@ -11,4 +11,6 @@
    * @param $constants
    **/
   include 'bootstrap.php';
-unset($_SESSION['globals']['supplier_id']);
+  $customers = new \Modules\Volusion\Customers();
+  $customers->process();
+  var_dump($customers->status);
