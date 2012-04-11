@@ -48,7 +48,7 @@
   if ($id != -1 && $order) {
     if ($order->some_already_received($id) == 0) {
       $order->remove_from_order($id);
-      unset_form_variables();
+      unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
     }
     else {
       Event::error(_("This item cannot be deleted because some of it has already been received."));
