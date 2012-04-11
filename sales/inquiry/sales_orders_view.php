@@ -331,7 +331,7 @@
         ),
         array(
           'insert' => TRUE, 'fun' => function ($row) {
-          return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
+          return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMAQ, ICON_PRINT, 'button printlink');
         }
         ),
         array(
