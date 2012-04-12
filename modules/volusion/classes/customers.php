@@ -25,7 +25,6 @@
 
     public function process() {
       $this->get();
-      var_dump($this->customers);exit();
       $this->insertCustomersToDB();
       $this->createCustomer();
     }
@@ -118,9 +117,9 @@
         else {
           $name = $row['CompanyName'] = $row['EmailAddress'];
         }
-        $debtor_no = \DB::select('debtor_no')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
-        if ($debtor_no > 0) {
-          $c = new \Debtor($debtor_no);
+        $result = \DB::select('debtor_no')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
+        if ($result['debtor_no'] > 0) {
+          $c = new \Debtor($result['debtor_no']);
         }
         else {
           $c = new \Debtor();
@@ -141,12 +140,14 @@
         $c->tax_id = $row["TaxID"];
         $c->webid = $row["CustomerID"];
         $c->contact_name = $row["FirstName"] . ' ' . $row["LastName"];
-        $c->save();
-        if (\Arr::get($c->getStatus(FALSE), 'status') == E_USER_ERROR) {
-          $id = \DB::select('debtor_no')->from('debtors')->where('name=', $c->name)->fetch()->assoc()->one();
-          $this->status->set(TRUE, 'update', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $id . ":" . $row["EmailAddress"]);
+        try {
+          $c->save();
         }
-        elseif ($c->debtor_no > 0) {
+        catch (\ADV\Core\DB\DBDuplicateException $e){
+            $this->status->set(TRUE, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
+          continue;
+        }
+        if ($c->debtor_no > 0) {
           $this->status->set(TRUE, 'update', "Customer {$c->name} has been updated. {$c->id} ");
           $updated++;
         }

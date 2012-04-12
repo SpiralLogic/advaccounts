@@ -316,9 +316,8 @@
       Arr::append($cols, array(
         array(
           'insert' => TRUE, 'fun' => function ($row) {
-          Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
-        }
-        ),
+          return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . ST_SALESQUOTE, ICON_EDIT);
+        }   ),
         array(
           'insert' => TRUE, 'fun' => function ($row) {
           return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
@@ -326,7 +325,7 @@
         ),
         array(
           'insert' => TRUE, 'fun' => function ($row) {
-          Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
+          return       Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
         }
         ),
         array(
