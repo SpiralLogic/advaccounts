@@ -28,7 +28,7 @@
     Ajax::i()->activate('customer_id');
   }
   $page_title = _($help_context = "New Sales Order Entry");
-  if (Input::get(Orders::ADD, Input::NUMERIC, 0) > 0) {
+  if (Input::get(Orders::ADD, Input::NUMERIC) > -1) {
     switch (Input::get('type')) {
       case ST_SALESQUOTE:
         $page_title = _($help_context = "New Sales Quotation Entry");

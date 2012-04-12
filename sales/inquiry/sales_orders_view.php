@@ -314,7 +314,7 @@
     elseif ($trans_type == ST_SALESQUOTE || $trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
           array(
-            'type' => 'skip', 'insert' => TRUE, 'fun' => function ($row) {
+           'insert' => TRUE, 'fun' => function ($row) {
             global $trans_type;
             if ($row['trans_type']== ST_SALESQUOTE) {
               return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
