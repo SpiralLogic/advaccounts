@@ -311,42 +311,13 @@
         )
       ));
     }
-    elseif ($trans_type == ST_SALESQUOTE) {
-
+    elseif ($trans_type == ST_SALESQUOTE || $trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
-        array(
-          'insert' => TRUE, 'fun' => function ($row) {
-          return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . ST_SALESQUOTE, ICON_EDIT);
-        }   ),
-        array(
-          'insert' => TRUE, 'fun' => function ($row) {
-          return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
-        }
-        ),
-        array(
-          'insert' => TRUE, 'fun' => function ($row) {
-          return       Reporting::emailDialogue($row['debtor_no'], ST_SALESQUOTE, $row['order_no']);
-        }
-        ),
-        array(
-          'insert' => TRUE, 'fun' => function ($row) {
-          return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMAQ, ICON_PRINT, 'button printlink');
-        }
-        ),
-        array(
-          'insert' => TRUE, 'fun' => function ($row) {
-          return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_SALESQUOTE, ICON_PRINT, 'button printlink');
-        }
-        )
-      ));
-    }
-    elseif ($trans_type == ST_SALESORDER) {
-      Arr::append($cols, array(
-        _("Tmpl") => array(
-          'type' => 'skip', 'insert' => TRUE, 'fun' => function ($row) {
+          array(
+            'type' => 'skip', 'insert' => TRUE, 'fun' => function ($row) {
             global $trans_type;
-            if ($trans_type == ST_SALESQUOTE) {
-              return '';
+            if ($row['trans_type']== ST_SALESQUOTE) {
+              return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
             }
             $name = "chgtpl" . $row['order_no'];
             $value = $row['type'] ? 1 : 0;
@@ -354,29 +325,29 @@
             return checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row
             ['order_no'] . ']', $value, FALSE);
           }
-
-        ), array(
-          'insert' => TRUE, 'fun' => function ($row) {
-            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . ST_SALESORDER, ICON_EDIT);
+          ),
+          array(
+            'insert' => TRUE, 'fun' => function ($row) {
+            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
           }
-
-        ), array(
-          'insert' => TRUE, 'fun' => function ($row) {
-            Reporting::emailDialogue($row['debtor_no'], ST_SALESORDER, $row['order_no']);
+          ),
+          array(
+            'insert' => TRUE, 'fun' => function ($row) {
+            return Reporting::emailDialogue($row['debtor_no'], $row['trans_type'], $row['order_no']);
           }
-
-        ), array(
-          'insert' => TRUE, 'fun' => function ($row) {
-            return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ST_PROFORMA, ICON_PRINT, 'button printlink');
+          ),
+          array(
+            'insert' => TRUE, 'fun' => function ($row) {
+            return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ($row['trans_type']== ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
           }
-
-        ), array(
-          'insert' => TRUE, 'fun' => function ($row) {
-            return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_SALESORDER, ICON_PRINT, 'button printlink');
+          ),
+          array(
+            'insert' => TRUE, 'fun' => function ($row) {
+            return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, $row['trans_type'], ICON_PRINT, 'button printlink');
           }
-
+          )
         )
-      ));
+      );
     }
   }
   $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, 4);
