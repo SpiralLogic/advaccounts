@@ -9,4 +9,9 @@
    **/
   file_exists('config/config.php') ? : header("Location: /install/index.php");
   require_once "bootstrap.php";
-  Session::i()->App->display();
+  if ($_SERVER['QUERY_STRING'] && file_exists(DOCROOT . 'app' . DS . $_SERVER['QUERY_STRING'])) {
+    include(DOCROOT . 'app' . DS . $_SERVER['QUERY_STRING']);
+}
+  else {
+    Session::i()->App->display();
+  }

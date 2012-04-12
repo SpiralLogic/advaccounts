@@ -13,7 +13,7 @@
      *
      */
     function __construct() {
-      $this->direct = 'items/items.php';
+      $this->direct = '/items/items.php';
       parent::__construct("Items", _($this->help_context = "Items"));
     }
   }
