@@ -268,12 +268,12 @@
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {
         case self::NUMERIC:
-          if (!$value || !is_numeric($value)) {
+          if ($value===NULL || !is_numeric($value)) {
             return ($default === NULL) ? self::$default_number : $default;
           }
           return ($value === self::$default_number) ? TRUE : $value + 0;
         case self::STRING:
-          if (!$value || !is_string($value)) {
+          if ($value===NULL || !is_string($value)) {
             return ($default === NULL) ? self::$default_string : $default;
           }
       }

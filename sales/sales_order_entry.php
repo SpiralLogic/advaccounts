@@ -28,7 +28,8 @@
     Ajax::i()->activate('customer_id');
   }
   $page_title = _($help_context = "New Sales Order Entry");
-  if (Input::get(Orders::ADD, Input::NUMERIC) > -1) {
+  if (Input::get(Orders::ADD, Input::NUMERIC,FALSE) !==FALSE) {
+
     switch (Input::get('type')) {
       case ST_SALESQUOTE:
         $page_title = _($help_context = "New Sales Quotation Entry");
@@ -46,7 +47,7 @@
     }
     $order = create_order(Input::get('type'), 0);
   }
-  elseif (Input::get(Orders::UPDATE, Input::NUMERIC, 0) > 0) {
+  elseif (Input::get(Orders::UPDATE, Input::NUMERIC,-1) > 0) {
     switch (Input::get('type')) {
       case ST_SALESORDER:
         $help_context = 'Modifying Sales Order';
