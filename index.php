@@ -10,6 +10,7 @@
   file_exists('config/config.php') ? : header("Location: /install/index.php");
   require_once "bootstrap.php";
   if ($_SERVER['QUERY_STRING'] && file_exists(DOCROOT . 'app' . DS . $_SERVER['QUERY_STRING'])) {
+ var_dump($_SERVER);
     include(DOCROOT . 'app' . DS . $_SERVER['QUERY_STRING']);
 }
   else {

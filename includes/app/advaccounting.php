@@ -151,9 +151,12 @@
       if (Input::post("user_name")) {
         $company = isset($_POST["login_company"]) ? $_POST["login_company"] : 'default';
         if ($company) {
+          try {
           if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
             // Incorrect password
             static::loginFail();
+          }}catch (\ADV\Core\DB\DBException $e) {
+            Page::error_exit('Could not connect to database');
           }
           $currentUser->ui_mode = $_POST['ui_mode'];
           Session::regenerate();
