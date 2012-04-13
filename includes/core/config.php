@@ -39,41 +39,10 @@
         static::$_vars = Cache::get('config');
       }
       if (static::$_vars === FALSE || isset($_GET['reload_config'])) {
-        static::$_vars = array();
         static::load();
-        Event::register_shutdown(__CLASS__);
       }
       static::$i = TRUE;
       static::js();
-    }
-    /**
-     * @static
-     *
-     * @param string $group
-     *
-     * @throws \ADV\Core\Config_Exception
-     * @return mixed
-     */
-    static protected function load($group = 'config') {
-      if (is_array($group)) {
-        $group_name = implode('.', $group);
-        $group_file = array_pop($group) . '.php';
-        $group_path = implode(DS, $group);
-        $file = DOCROOT . "config" . $group_path . DS . $group_file;
-      }
-      else {
-        $file = DOCROOT . "config" . DS . $group . '.php';
-        $group_name = $group;
-      }
-      if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
-        return true;
-      }
-      if (!file_exists($file)) {
-        throw new Config_Exception("There is no file for config: " . $file);
-      }
-      /** @noinspection PhpIncludeInspection */
-      static::$_vars[$group_name] = include($file);
-      Event::register_shutdown(__CLASS__);
     }
     /**
      * @static
@@ -124,13 +93,6 @@
     }
     /**
      * @static
-
-     */
-    static public function _shutdown() {
-      Cache::set('config', static::$_vars);
-    }
-    /**
-     * @static
      *
      * @param string $group
      *
@@ -138,12 +100,50 @@
      *
      * @return mixed
      */
-    static public function get_all($group = 'config',$default=array()) {
+    static public function get_all($group = 'config', $default = array()) {
       static::i();
-      if (!isset(static::$_vars[$group]) &&  static::load($group)===FALSE){
+      if (!isset(static::$_vars[$group]) && static::load($group) === FALSE) {
         return $default;
-      };
+      }
+      ;
       return static::$_vars[$group];
+    }
+    static public function removeAll() {
+      static::$_vars = array();
+      Event::register_shutdown(__CLASS__);
+    }
+    static public function reset() {
+      static::removeAll();
+      static::load();
+    }
+    /**
+     * @static
+     *
+     * @param string $group
+     *
+     * @throws \ADV\Core\Config_Exception
+     * @return mixed
+     */
+    static protected function load($group = 'config') {
+      if (is_array($group)) {
+        $group_name = implode('.', $group);
+        $group_file = array_pop($group) . '.php';
+        $group_path = implode(DS, $group);
+        $file = DOCROOT . "config" . $group_path . DS . $group_file;
+      }
+      else {
+        $file = DOCROOT . "config" . DS . $group . '.php';
+        $group_name = $group;
+      }
+      if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
+        return TRUE;
+      }
+      if (!file_exists($file)) {
+        throw new Config_Exception("There is no file for config: " . $file);
+      }
+      /** @noinspection PhpIncludeInspection */
+      static::$_vars[$group_name] = include($file);
+      Event::register_shutdown(__CLASS__);
     }
     /**
      * @static
@@ -152,5 +152,12 @@
     static protected function js() {
       \JS::headerFile(static::get('assets.header'));
       \JS::footerFile(static::get('assets.footer'));
+    }
+    /**
+     * @static
+
+     */
+    static public function _shutdown() {
+      Cache::set('config', static::$_vars);
     }
   }

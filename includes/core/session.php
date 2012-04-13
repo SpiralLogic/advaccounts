@@ -36,6 +36,7 @@
      * @return void
      */
     static public function kill() {
+      Config::removeAll();
       session_unset();
       session_destroy();
     }

@@ -79,3 +79,9 @@
 
   class UploadHandler extends ADV\Core\UploadHandler {
   }
+class DBException extends ADV\Core\DB\DBException{}
+class DBSelectException extends ADV\Core\DB\DBException{}
+class DBUpdateException extends ADV\Core\DB\DBException{}
+class DBDeleteException extends ADV\Core\DB\DBException{}
+class DBInsertException extends ADV\Core\DB\DBException{}
+

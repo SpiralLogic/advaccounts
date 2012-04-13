@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
   return array(
-    'Jobsboard'=>array('enabled'=>true,'init'=>true),
+    'Jobsboard'=>array('enabled'=>false,'init'=>true),
     'webstore' => array(
       'enabled'=>true,
       'init'=>false,

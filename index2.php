@@ -13,5 +13,4 @@
   include 'bootstrap.php';
   $customers = new \Modules\Volusion\Customers();
   $customers->process();
-echo "<pre >";
   var_dump($customers->status);

@@ -1,18 +1,18 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /**
 
    */
   class ADVAccounting {
-
     /**
      * @var
      */
@@ -129,7 +129,8 @@
       });
       require APPPATH . "main.php";
       $modules = Config::get_all('modules', array());
-      foreach ($modules as $module=>$config) {
+      foreach ($modules as $module => $config) {
+        if (Arr::get($module,'enabled',false)!==true)continue;
         if (isset($config['init']) && $config['init'] && is_callable('\\Modules\\' . $module . '::init')) {
           call_user_func('\\Modules\\' . $module . '::init');
         }
@@ -152,11 +153,13 @@
         $company = isset($_POST["login_company"]) ? $_POST["login_company"] : 'default';
         if ($company) {
           try {
-          if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
-            // Incorrect password
-            static::loginFail();
-          }}catch (\ADV\Core\DB\DBException $e) {
-            Page::error_exit('Could not connect to database');
+            if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
+              // Incorrect password
+              static::loginFail();
+            }
+          }
+          catch (\ADV\Core\DB\DBException $e) {
+            Page::error_exit('Could not connect to database!');
           }
           $currentUser->ui_mode = $_POST['ui_mode'];
           Session::regenerate();

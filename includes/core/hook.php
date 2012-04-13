@@ -25,7 +25,7 @@
     protected $hooks = array();
     /**
      * @param                              $name
-     * @param callable                     $callback
+     * @param                      $callback
      * @param array                        $arguments
      * @return bool
      */

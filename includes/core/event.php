@@ -51,33 +51,37 @@
      * @static
      *
      * @param string $message Error message
+     * @return bool
      */
     static public function error($message) {
-      static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
+    return  static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
     }
     /**
      * @static
      *
      * @param string $message
+     * @return bool
      */
     static public function notice($message) {
-      static::handle($message, @reset(debug_backtrace()), E_USER_NOTICE);
+      return static::handle($message, @reset(debug_backtrace()), E_USER_NOTICE);
     }
     /**
      * @static
      *
      * @param string $message
+     * @return bool
      */
     static public function success($message) {
-      static::handle($message, reset(debug_backtrace()), E_SUCCESS);
+      return static::handle($message, reset(debug_backtrace()), E_SUCCESS);
     }
     /**
      * @static
      *
      * @param $message
+     * @return bool
      */
     static public function warning($message) {
-      static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
+      return static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
     }
     /**
      * @static
@@ -85,6 +89,7 @@
      * @param $message
      * @param $source
      * @param $type
+     * @return bool
      */
     static protected function handle($message, $source, $type) {
       if (static::$request_finsihed) {
@@ -94,6 +99,7 @@
         $message = $message . '||' . $source['file'] . '||' . $source['line'];
         ($type == E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
+      return ($type===E_SUCCESS||$type===E_USER_NOTICE);
     }
     /**
      * @static
@@ -136,8 +142,11 @@
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
       if (extension_loaded('xhprof')) {
         $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+        /** @noinspection PhpUndefinedFunctionInspection */
         $xhprof_data = xhprof_disable();
+        /** @noinspection PhpUndefinedClassInspection */
         $xhprof_runs = new \XHProfRuns_Default();
+        /** @noinspection PhpUndefinedMethodInspection */
         $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
       }
     }
