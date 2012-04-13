@@ -18,7 +18,7 @@
         $selectedapp = $application->get_selected();
         echo "<li " . ($selectedapp->id == $app->id ? "class='active' " : "") . ">";
         if ($app->direct) {
-          echo "<a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
+          echo "<a href='/".ltrim($app->direct)."'$acc[1]>" . $acc[0] . "</a></li>\n";
         }
         else {
           echo "<a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";

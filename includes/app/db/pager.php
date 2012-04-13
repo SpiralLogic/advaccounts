@@ -91,7 +91,7 @@
       if (User::graphic_links() && $icon) {
         $link_text = set_icon($icon, $link_text);
       }
-      $href = PATH_TO_ROOT . $url;
+      $href = '/'.ltrim($url,'/');
       $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
