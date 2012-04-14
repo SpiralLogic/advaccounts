@@ -65,7 +65,7 @@
     $payment_no = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
     $_SESSION['alloc']->trans_no = $payment_no;
     $_SESSION['alloc']->write();
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_no");
   }
   start_form();
   start_outer_table('tablestyle2 width90 pad2');

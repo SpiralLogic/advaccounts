@@ -43,7 +43,7 @@
     Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), TRUE, ST_CUSTCREDIT), 0, 1);
     Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), TRUE, ST_CUSTCREDIT, FALSE, "printlink", "", 1), 0, 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
     Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
     Page::footer_exit();
   }
@@ -83,7 +83,7 @@
     $credit = copy_to_cn($order);
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
     Dates::new_doc_date($credit->document_date);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
   } /*end of process credit note */
   start_form();
   hidden('order_id', $_POST['order_id']);

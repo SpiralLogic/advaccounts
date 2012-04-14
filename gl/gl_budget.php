@@ -29,7 +29,7 @@
     else {
       Event::notice(_("The Budget has been deleted."));
     }
-    //Display::meta_forward($_SERVER['PHP_SELF']);
+    //Display::meta_forward($_SERVER['DOCUMENT_URI']);
     Ajax::i()->activate('budget_tbl');
   }
   if (isset($_POST['submit']) || isset($_POST['update'])) {

@@ -80,10 +80,10 @@
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
     Orders::session_delete($credit);
     if ($new_credit) {
-      Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
     }
     else {
-      Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$credit_no");
     }
   }
   if (isset($_POST['location'])) {

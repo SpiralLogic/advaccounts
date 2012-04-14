@@ -137,7 +137,7 @@
       }
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
-      if (strstr($_SERVER['PHP_SELF'], 'logout.php') == FALSE) {
+      if (strstr($_SERVER['DOCUMENT_URI'], 'logout.php') == FALSE) {
         static::checkLogin();
       }
       Event::init();
@@ -169,7 +169,7 @@
       elseif (!$currentUser->logged_in()) {
         static::showLogin();
       }
-      if ($currentUser->change_password && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == FALSE) {
+      if ($currentUser->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
       }
     }
@@ -183,7 +183,7 @@
       );
       require(DOCROOT . "access/login.php");
       if (Ajax::in_ajax()) {
-        Ajax::i()->redirect($_SERVER['PHP_SELF']);
+        Ajax::i()->redirect($_SERVER['DOCUMENT_URI']);
       }
       elseif (AJAX_REFERRER) {
         JS::redirect('/');

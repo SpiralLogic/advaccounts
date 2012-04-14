@@ -68,7 +68,7 @@
     unset($order->line_items);
     $order->finish($_POST['order_id']);
     unset($order);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$grn");
   }
   start_form();
   hidden('order_id');

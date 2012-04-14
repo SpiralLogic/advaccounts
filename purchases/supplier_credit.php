@@ -19,7 +19,7 @@
     Event::success(_("Supplier credit note has been processed."));
     Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Credit Note")));
     Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Credit Note"), "New=1");
     Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
     Page::footer_exit();
   }
@@ -80,7 +80,7 @@
     }
     Creditor_Trans::i()->clear_items();
     Creditor_Trans::killInstance();
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
   }
   $id = find_submit('grn_item_id');
   if ($id != -1) {

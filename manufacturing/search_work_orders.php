@@ -40,7 +40,7 @@
   if (isset($_GET["stock_id"])) {
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
   }
-  start_form(FALSE, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
+  start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
   start_table('tablestyle_noborder');
   start_row();
   ref_cells(_("Reference:"), 'OrderNumber', '', NULL, '', TRUE);

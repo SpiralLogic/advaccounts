@@ -33,11 +33,11 @@
     Event::success(_("Payment has been sucessfully entered"));
     Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
     Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, NULL, 1);
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1", TRUE, 'class="button"');
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1", TRUE, 'class="button"');
     HTML::br();
     Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment"), FALSE, 'button'));
     // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id'], TRUE, 'class="button"');
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id'], TRUE, 'class="button"');
     Page::footer_exit();
   }
   if (isset($_POST['ProcessSuppPayment']) && Creditor_Payment::can_process()) {
@@ -56,7 +56,7 @@
     $_SESSION['alloc']->write();
     //unset($_POST['supplier_id']);
     unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
     Page::end();
     exit;
   }

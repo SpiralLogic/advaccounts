@@ -9,8 +9,8 @@
    **/
   //file_exists('config/config.php') ? : header("Location: /install/index.php");
   require_once "../bootstrap.php";
-  if (isset($_GET['q']) && file_exists(DOCROOT . ltrim($_GET['q'], '/'))) {
-    include(DOCROOT . ltrim($_GET['q'], '/'));
+  if (isset($_SERVER['DOCUMENT_URI']) && file_exists(DOCROOT . ltrim($_SERVER['DOCUMENT_URI'], '/'))) {
+    include(DOCROOT . ltrim($_SERVER['DOCUMENT_URI'], '/'));
   }
   else {
     Session::i()->App->display();

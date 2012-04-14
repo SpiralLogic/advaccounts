@@ -19,7 +19,7 @@
     $row = get_attachment($view_id);
     if ($row['filename'] != "") {
       if (Ajax::in_ajax()) {
-        Ajax::i()->popup($_SERVER['PHP_SELF'] . '?vw=' . $view_id);
+        Ajax::i()->popup($_SERVER['DOCUMENT_URI'] . '?vw=' . $view_id);
       }
       else {
         $type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';
@@ -46,7 +46,7 @@
     $row = get_attachment($download_id);
     if ($row['filename'] != "") {
       if (Ajax::in_ajax()) {
-        Ajax::i()->redirect($_SERVER['PHP_SELF'] . '?dl=' . $download_id);
+        Ajax::i()->redirect($_SERVER['DOCUMENT_URI'] . '?dl=' . $download_id);
       }
       else {
         $type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';

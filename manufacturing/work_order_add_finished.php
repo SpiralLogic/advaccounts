@@ -109,7 +109,7 @@
       $_POST['quantity'] = -$_POST['quantity'];
     }
     $id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], Validation::input_num('quantity'), $_POST['date_'], $_POST['memo_'], $close_wo);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
   }
   WO_Cost::display($_POST['selected_id']);
   start_form();

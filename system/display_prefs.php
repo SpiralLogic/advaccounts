@@ -30,7 +30,7 @@
         User::prefs()->theme = $_POST['theme'];
       }
       if ($chg_theme || $chg_lang) {
-        Display::meta_forward($_SERVER['PHP_SELF']);
+        Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
       if (Config::get('demo_mode')) {
         Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));

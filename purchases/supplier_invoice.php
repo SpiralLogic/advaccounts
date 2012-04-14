@@ -18,7 +18,7 @@
     Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
     Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Invoice")));
     Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");
     Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
     Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
     Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
@@ -107,7 +107,7 @@
     Session::setGlobal('supplier_id', $_POST['supplier_id'], '');
     Creditor_Trans::i()->clear_items();
     Creditor_Trans::killInstance();
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
   }
   $id = find_submit('grn_item_id');
   if ($id != -1) {

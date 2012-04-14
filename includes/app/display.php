@@ -279,7 +279,7 @@
       $id = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
-        $target = $_SERVER['PHP_SELF'];
+        $target = $_SERVER['DOCUMENT_URI'];
       }
       if ($center) {
         echo "<br><div class='center'>";
@@ -318,7 +318,7 @@
       $id = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
-        $target = $_SERVER['PHP_SELF'];
+        $target = $_SERVER['DOCUMENT_URI'];
       }
       if ($center) {
         echo "<br><div class='center'>";
@@ -342,7 +342,7 @@
       $id = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
-        $target = $_SERVER['PHP_SELF'];
+        $target = $_SERVER['DOCUMENT_URI'];
       }
       if ($center) {
         echo "<br><div class='center'>";

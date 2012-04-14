@@ -23,7 +23,7 @@
     Event::success(_("Journal entry has been entered") . " #$trans_no");
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
     JS::reset_focus();
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter &New Journal Entry"), "NewJournal=Yes");
     Page::footer_exit();
   }
   elseif (isset($_GET[UPDATED_ID])) {
@@ -95,10 +95,10 @@
     Dates::new_doc_date($_POST['date_']);
     unset($_SESSION['journal_items']);
     if ($new) {
-      Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
     }
     else {
-      Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$trans_no");
     }
   }
   $id = find_submit(MODE_DELETE);

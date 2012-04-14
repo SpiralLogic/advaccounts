@@ -28,7 +28,7 @@
     }
   }
   display_companies();
-  Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
+  Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Create a new company"));
   display_company_edit($selected_id);
   Page::end();
   /**
@@ -209,7 +209,7 @@
         $edit = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
-      label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
+      label_cell("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       label_cell($i == $coyno ? '' : "<a href=''>$delete</a>");
       end_row();
     }

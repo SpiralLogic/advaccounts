@@ -126,7 +126,7 @@
         $_POST['NewStockID'] = $_POST['stock_id'] = '';
         clear_data();
         $new_item = TRUE;
-        Display::meta_forward($_SERVER['PHP_SELF']);
+        Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
       else {
         Session::i()->global_stock_id = $_POST['NewStockID'];

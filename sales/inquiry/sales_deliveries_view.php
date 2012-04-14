@@ -62,7 +62,7 @@
     }
     Ajax::i()->activate('deliveries_tbl');
   }
-  start_form(FALSE, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+  start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   start_table('tablestyle_noborder');
   start_row();
   Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);

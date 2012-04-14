@@ -106,10 +106,10 @@
     $delivery_no = $dn->write($bo_policy);
     $dn->finish();
     if ($newdelivery) {
-      Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$delivery_no");
     }
     else {
-      Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$delivery_no");
     }
   }
   if (isset($_POST['Update']) || isset($_POST['_location_update'])) {

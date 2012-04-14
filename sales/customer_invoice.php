@@ -140,10 +140,10 @@
     $invoice_no = $order->write();
     $order->finish();
     if ($newinvoice) {
-      Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
     }
     else {
-      //	Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
+      //	Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$invoice_no");
     }
   }
   // find delivery spans for batch invoice display
@@ -287,7 +287,7 @@
         $dn_line_cnt = $dspans[0];
         $dspans = array_slice($dspans, 1);
         label_cell($line->src_no, "rowspan=$dn_line_cnt class=oddrow");
-        label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?RemoveDN=" . $line->src_no . "'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class=oddrow");
+        label_cell("<a href='" . $_SERVER['DOCUMENT_URI'] . "?RemoveDN=" . $line->src_no . "'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class=oddrow");
       }
       $dn_line_cnt--;
     }

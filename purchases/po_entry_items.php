@@ -34,7 +34,7 @@
     Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
     Reporting::email_link($order_no, _("Email This Order"), TRUE, $trans_type, 'EmailLink', NULL, $supplier->getEmailAddresses(), 1);
     Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
-    Display::link_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
+    Display::link_button($_SERVER['DOCUMENT_URI'], _("&New Purchase Order"), "NewOrder=yes");
     Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), TRUE, TRUE);
     Page::footer_exit();
   }
@@ -64,14 +64,14 @@
         $_SESSION['history'][ST_PURCHORDER] = $order->reference;
         Dates::new_doc_date($order->orig_order_date);
         Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
+        Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no");
       }
       else {
         /*its an existing order need to update the old order info */
         $order_no = $order->update();
         $_SESSION['history'][ST_PURCHORDER] = $order->reference;
         Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
+        Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no&Updated=1");
       }
     }
   }

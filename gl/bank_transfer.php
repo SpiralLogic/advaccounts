@@ -16,7 +16,7 @@
     $trans_type = ST_BANKTRANSFER;
     Event::success(_("Transfer has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
-    Display::link_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
+    Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter & Another Transfer"));
     Page::footer_exit();
   }
   if (isset($_POST['_DatePaid_changed'])) {
@@ -109,5 +109,5 @@
       $_POST['ref'], //
       $_POST['memo_'], //
       Validation::input_num('charge'));
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID = $trans_no");
   }

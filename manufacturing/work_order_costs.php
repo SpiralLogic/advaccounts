@@ -67,7 +67,7 @@
     }
     GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
     DB::commit();
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id']);
   }
   WO_Cost::display($_POST['selected_id']);
   start_form();

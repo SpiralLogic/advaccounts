@@ -178,12 +178,12 @@
     }
     $id = WO::add($_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'], Validation::input_num('Labour'), $_POST['cr_lab_acc']);
     Dates::new_doc_date($_POST['date_']);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
   }
   if (isset($_POST[UPDATE_ITEM]) && can_process($selected_id)) {
     WO::update($selected_id, $_POST['StockLocation'], Validation::input_num('quantity'), Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
     Dates::new_doc_date($_POST['date_']);
-    Display::meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$selected_id");
   }
   if (isset($_POST['delete'])) {
     //the link to delete a selected record was clicked instead of the submit button
@@ -197,13 +197,13 @@
     if ($cancel_delete == FALSE) { //ie not cancelled the delete as a result of above tests
       // delete the actual work order
       WO::delete($selected_id);
-      Display::meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "DeletedID=$selected_id");
     }
   }
   if (isset($_POST['close'])) {
     // update the closed flag in the work order
     WO::close($selected_id);
-    Display::meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "ClosedID=$selected_id");
   }
   if (get_post('_type_update')) {
     Ajax::i()->activate('_page_body');

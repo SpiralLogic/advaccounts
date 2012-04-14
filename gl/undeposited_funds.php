@@ -83,7 +83,7 @@
       DB::query($sql, "Can't change undeposited status");
     }
     unset($_POST, $_SESSION['undeposited']);
-    Display::meta_forward($_SERVER['PHP_SELF']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI']);
   }
   $_POST['to_deposit'] = 0;
   if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) {

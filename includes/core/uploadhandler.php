@@ -38,7 +38,7 @@
       ini_set('post_max_size', '3M');
       ini_set('upload_max_filesize', '3M');
       $this->options = array(
-        'script_url' => $_SERVER['PHP_SELF'],
+        'script_url' => $_SERVER['DOCUMENT_URI'],
         'upload_dir' => DOCROOT . '/upload/upload/',
         'upload_url' => BASE_URL . '/upload/upload/',
         'param_name' => 'files',
@@ -56,7 +56,7 @@
           /*
                                          'large' => array(
                                              'upload_dir' => dirname(__FILE__).'/files/',
-                                             'upload_url' => dirname($_SERVER['PHP_SELF']).'/files/',
+                                             'upload_url' => dirname($_SERVER['DOCUMENT_URI']).'/files/',
                                              'max_width' => 1920,
                                              'max_height' => 1200
                                          ),

@@ -225,7 +225,7 @@
      * @return string
      */
     public function absolute_url($url) {
-      return strpos($url, '..') === 0 ? dirname($_SERVER['PHP_SELF']) . '/' . $url : str_replace(WEBROOT,'/',$url);
+      return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT,'/',$url);
     }
   }
 

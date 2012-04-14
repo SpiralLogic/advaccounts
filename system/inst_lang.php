@@ -26,12 +26,12 @@
     }
     if ($_GET['c'] == 'u') {
       if (handle_submit()) {
-        //Display::meta_forward($_SERVER['PHP_SELF']);
+        //Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
     }
   }
   display_languages();
-  Display::link_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
+  Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Create a new language"));
   display_language_edit($selected_id);
   Page::end();
   /**
@@ -108,7 +108,7 @@
     $filename = PATH_TO_ROOT . "/lang/$lang";
     Files::flush_dir($filename);
     rmdir($filename);
-    Display::meta_forward($_SERVER['PHP_SELF']);
+    Display::meta_forward($_SERVER['DOCUMENT_URI']);
   }
 
   function display_languages() {
@@ -151,7 +151,7 @@
         $edit = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
-      label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
+      label_cell("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       label_cell($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
       end_row();
     }

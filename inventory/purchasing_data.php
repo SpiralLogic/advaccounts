@@ -78,7 +78,7 @@
     if (!Input::post('stock_id') && isset($_GET['stock_id'])) {
       $_POST['stock_id'] = $_GET['stock_id'];
     }
-    start_form(FALSE, $_SERVER['PHP_SELF'] . '?frame=1');
+    start_form(FALSE, $_SERVER['DOCUMENT_URI'] . '?frame=1');
   }
   else {
     start_form();

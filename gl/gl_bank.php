@@ -32,8 +32,8 @@
     $trans_type = ST_BANKPAYMENT;
     Event::success(_("Payment $trans_no has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Payment"), "NewPayment=yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Deposit"), "NewDeposit=yes");
     Page::footer_exit();
   }
   if (isset($_GET['AddedDep'])) {
@@ -41,8 +41,8 @@
     $trans_type = ST_BANKDEPOSIT;
     Event::success(_("Deposit $trans_no has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
-    Display::link_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Deposit"), "NewDeposit=yes");
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A Payment"), "NewPayment=yes");
     Page::footer_exit();
   }
   if (isset($_POST['_date__changed'])) {
@@ -89,7 +89,7 @@
     Dates::new_doc_date($_POST['date_']);
     $_SESSION['pay_items']->clear_items();
     unset($_SESSION['pay_items']);
-    Display::meta_forward($_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
   } /*end of process credit note */
   $id = find_submit(MODE_DELETE);
   if ($id != -1) {

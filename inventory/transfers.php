@@ -18,7 +18,7 @@
     $trans_type = ST_LOCTRANSFER;
     Event::success(_("Inventory transfer has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));
-    Display::link_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
+    Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Inventory Transfer"));
     Page::footer_exit();
   }
 
@@ -72,7 +72,7 @@
     Dates::new_doc_date($_POST['AdjDate']);
     $_SESSION['transfer_items']->clear_items();
     unset($_SESSION['transfer_items']);
-    Display::meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
 
   $id = find_submit(MODE_DELETE);
