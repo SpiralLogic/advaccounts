@@ -18,7 +18,7 @@
       $name = "name='$name' id='$name'";
     }
     if ($action == "") {
-      $action = $_SERVER['PHP_SELF'];
+      $action = $_SERVER['REQUEST_URI'];
     }
     if ($multi) {
       echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";

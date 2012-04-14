@@ -81,7 +81,7 @@
       }
     }
     // standard reports
-    $rep_file = PATH_TO_ROOT . "/reporting/rep$rep.php";
+    $rep_file =  "../reporting/rep$rep.php";
     if (file_exists($rep_file)) {
       return $rep_file;
     }

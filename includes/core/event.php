@@ -135,8 +135,8 @@
       }
       session_write_close();
       /** @noinspection PhpUndefinedFunctionInspection */
-    //  fastcgi_finish_request();
-  //    static::$request_finsihed = TRUE;
+      fastcgi_finish_request();
+      static::$request_finsihed = TRUE;
 
       try {
         static::fireHooks('shutdown');
@@ -152,7 +152,7 @@
         /** @noinspection PhpUndefinedClassInspection */
         $xhprof_runs = new \XHProfRuns_Default();
         /** @noinspection PhpUndefinedMethodInspection */
-        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);      var_dump($xhprof_runs);
+        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
 
       }
     }

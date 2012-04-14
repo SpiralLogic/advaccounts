@@ -474,12 +474,12 @@
         //} else
       }
       if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
-        include("includes/doctext2.php");
+        include(DOCROOT."reporting/includes/doctext2.php");
       }
       else {
-        include("includes/doctext.php");
+        include(DOCROOT."reporting/includes/doctext.php");
       }
-      include("includes/header.php");
+      include(DOCROOT."reporting/includes/header.php");
       // }
       $this->row = $temp;
     }
@@ -1138,10 +1138,10 @@
         if ($email == 1) {
           $emailtype = TRUE;
           if ($this->currency != $myrow['curr_code']) {
-            include("includes/doctext2.php");
+            include(DOCROOT. "reporting/includes/doctext2.php");
           }
           else {
-            include("includes/doctext.php");
+            include(DOCROOT."reporting/includes/doctext.php");
           }
           $mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {

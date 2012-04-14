@@ -10748,158 +10748,158 @@ msgstr ""
 msgid "Cust no"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:18
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:18
 msgid "Order To"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:24
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:24
 msgid "With thanks from"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:36
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:36
 msgid "Your Ref"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:52
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:52
 msgid "Your TAX no."
 msgstr "Your ABN no."
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:54
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:54
 msgid "Customers Reference"
 msgstr "Account Number"
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:57
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:57
 msgid "Our TAX No."
 msgstr "ABN No."
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:58
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:58
 msgid "Suburb"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:63
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:63
 msgid "* Subject to Realisation of the Cheque."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:65
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:65
 msgid "All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:69
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:69
 msgid "Please quote Invoice no. when paying. All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:70
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:70
 msgid "Please quote Credit no. when paying. All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:73
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:73
 msgid "Phone/Fax/Email"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:75
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:122
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:75
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:122
 msgid "You can pay through"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:113
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:113
 msgid "DueDate"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:119
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:119
 msgid "Dear"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:120
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:120
 msgid "Attached you will find "
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:121
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:121
 msgid "Kindest regards"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:126
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:131
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:126
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:131
 msgid "Delivery Note No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:127
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:127
 msgid "Receipt No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:128
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:128
 msgid "Remittance No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:129
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:132
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:129
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:132
 msgid "Order no."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:130
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:130
 msgid "Invoice No."
 msgstr "Tax Invoice No."
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:130
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:130
 msgid "Word Order No"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:130
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:130
 msgid "Credit No."
 msgstr "Number."
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:144
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:144
 msgid "TOTAL ORDER EX TAX"
 msgstr "TOTAL ORDER EXCLUDING GST"
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:145
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:145
 msgid "TOTAL ORDER TAX INCL."
 msgstr "TOTAL ORDER INCLUDING GST"
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:146
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:146
 msgid "TOTAL PO EX TAX"
 msgstr "TOTAL PO EXCLUDING GST"
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:147
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:147
 msgid "TOTAL DELIVERY INCL. TAX"
 msgstr "TOTAL DELIVERY INCLUDING GST"
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:151
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:151
 msgid "As advance / full / part / payment towards:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:152
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:152
 msgid "By Cash / Cheque* / Draft No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:153
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:153
 msgid "Dated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:154
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:154
 msgid "Drawn on Bank"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:156
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:156
 msgid "Received / Sign"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:160
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:160
 msgid "TOTAL RECEIPT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:162
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:162
 msgid "TOTAL REMITTANCE"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:166
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:166
 msgid "Outstanding Transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:169
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:169
 msgid "Statement"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/doctext.inc:170
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/doctext.inc:170
 msgid "as of"
 msgstr ""
 
@@ -10932,7 +10932,7 @@ msgstr ""
 msgid "Generated By"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/reporting/includes/header2.inc:150
+#: c:\Apache2\htdocs\account226/reporting/reporting/includes/header2.inc:150
 #: c:\Apache2\htdocs\account226/reporting/includes/pdf_report.inc:336
 #: c:\Apache2\htdocs\account226/reporting/includes/pdf_report.inc:448
 #: c:\Apache2\htdocs\account226/reporting/includes/pdf_report.inc:576

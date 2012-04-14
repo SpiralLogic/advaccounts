@@ -84,7 +84,7 @@
      */
     static public function autocomplete($id, $callback, $url = FALSE, $options = array()) {
       if (!$url) {
-        $url = $_SERVER['PHP_SELF'];
+        $url = $_SERVER['REQUEST_URI'];
       }
       $js = "Adv.Forms.autocomplete('$id','$url',$callback);";
       $clean = "Adv.o.autocomplete['$id'].autocomplete('destroy');";

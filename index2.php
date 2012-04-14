@@ -9,8 +9,5 @@
    *
    * @param $name
    * @param $constants
-   **/
-  include 'bootstrap.php';
-  $customers = new \Modules\Volusion\Customers();
-  $customers->process();
-  var_dump($customers->status);
+   **/echo "<pre >";
+var_dump($_SERVER);

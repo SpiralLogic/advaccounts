@@ -15,5 +15,5 @@
     'query_log' => FALSE,
     'select_log' => FALSE, //
     'throttling' => 10, // Log file for error/warning messages. Should be set to any location
-    'log_file' => DOCROOT . 'tmp/errors.log',
+    'log_file' => DOCROOT . 'web/tmp/errors.log',
   );
