@@ -130,7 +130,7 @@
       require APPPATH . "main.php";
       $modules = Config::get_all('modules', array());
       foreach ($modules as $module => $config) {
-        if (Arr::get($module,'enabled',false)!==true)continue;
+        if (Arr::get($config,'enabled',false)!==true)continue;
         if (isset($config['init']) && $config['init'] && is_callable('\\Modules\\' . $module . '::init')) {
           call_user_func('\\Modules\\' . $module . '::init');
         }

@@ -7,7 +7,7 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+  //require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   //$upload_dir = DOCROOT.'sales/upload/';
   $order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : FALSE;
   if ($order) {

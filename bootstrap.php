@@ -2,7 +2,6 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
-   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -17,6 +16,7 @@
     /** @noinspection PhpUndefinedFunctionInspection */
     xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
   }
+
   error_reporting(-1);
   ini_set('display_errors', 1);
   ini_set("ignore_repeated_errors", "On");
@@ -51,8 +51,19 @@
     function e($string) { return Security::htmlentities($string); }
   }
   register_shutdown_function(function () {
-    class_exists('ADV\\Core\\Event', FALSE) or  include(COREPATH . 'event.php');
     ADV\Core\Event::shutdown();
+  });
+  register_shutdown_function(function() {
+    if (extension_loaded('xhprof')) {
+      $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+      /** @noinspection PhpUndefinedFunctionInspection */
+      $xhprof_data = xhprof_disable();
+      /** @noinspection PhpUndefinedClassInspection */
+      $xhprof_runs = new \XHProfRuns_Default();
+      /** @noinspection PhpUndefinedMethodInspection */
+      $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+      var_dump($xhprof_runs);
+    }
   });
   if (!function_exists('adv_ob_flush_handler')) {
     /**
@@ -74,5 +85,5 @@
   Session::i();
   Config::i();
   Ajax::i();
-  ob_start('adv_ob_flush_handler', 0);
+  //ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

@@ -10,7 +10,7 @@
   /*
      User authentication page popped up after login timeout during ajax call.
    */
-  require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+  ////require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
   require(DOCROOT . '/access/login.php');
   if (get_post('SubmitUser') && User::i()->logged_in()) {
     // After successfull login repeat last ajax call.

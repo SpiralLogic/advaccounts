@@ -131,23 +131,25 @@
       }
       session_write_close();
       /** @noinspection PhpUndefinedFunctionInspection */
-      fastcgi_finish_request();
-      static::$request_finsihed = TRUE;
-      try {
-        Event::fireHooks('shutdown');
+     fastcgi_finish_request();
+    static::$request_finsihed = TRUE;
+
+     try {
+       //static::fireHooks('shutdown');
       }
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
       if (extension_loaded('xhprof')) {
-        $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-        /** @noinspection PhpUndefinedFunctionInspection */
-        $xhprof_data = xhprof_disable();
-        /** @noinspection PhpUndefinedClassInspection */
-        $xhprof_runs = new \XHProfRuns_Default();
-        /** @noinspection PhpUndefinedMethodInspection */
-        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-      }
+          $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+          /** @noinspection PhpUndefinedFunctionInspection */
+          $xhprof_data = xhprof_disable();
+          /** @noinspection PhpUndefinedClassInspection */
+          $xhprof_runs = new \XHProfRuns_Default();
+          /** @noinspection PhpUndefinedMethodInspection */
+          $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+          var_dump($xhprof_runs);
+        }
     }
   }

@@ -155,6 +155,8 @@
         catch (Autoload_Exception $e) {
           Event::register_shutdown(__CLASS__);
         }
+
+        
         if ($result && isset(static::$global_classes[$required_class])) {
           class_alias(static::$global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
