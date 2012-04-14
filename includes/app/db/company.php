@@ -299,15 +299,15 @@
      * @return DB_Company
      */
     static public function i($id = NULL) {
-      if (isset($_POST['login_comapny'])) {
-        $company = Config::get('db.' . $_POST['login_company']);
-      }
-      if (!isset($company)) {
-        $id = $id ? : User::i()->company;
-        $company = Config::get('db.' . $id);
-      }
-      $id = $company['id'];
       if (static::$i === NULL) {
+        if (isset($_POST['login_comapny'])) {
+          $company = Config::get('db.' . $_POST['login_company']);
+        }
+        if (!isset($company)) {
+          $id = $id ? : User::i()->company;
+          $company = Config::get('db.' . $id);
+        }
+        $id = $company['id'];
         static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
       }
       return static::$i;
@@ -437,7 +437,9 @@
      * @return mixed
      */
     static public function get_pref($pref_name) {
-      $prefs = DB_Company::get_prefs();
+      if (static::$i === NULL) {
+        $prefs = DB_Company::get_prefs();
+      }
       return $prefs[$pref_name];
     }
     /**
@@ -445,10 +447,9 @@
      * @return array
      */
     static public function get_prefs() {
-      if (!isset($_SESSION['config']['company'])) {
-        $_SESSION['config']['company'] = static::i();
-        if (!static::$i) {
-          Event::error("FATAL : Could not find company prefs");
+      if (static::$i === NULL) {
+        if (!isset($_SESSION['config']['company'])) {
+          $_SESSION['config']['company'] = static::i();
         }
       }
       return (array) $_SESSION['config']['company'];

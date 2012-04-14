@@ -37,7 +37,7 @@
      * @param $hook
      */
     public static function fireHooks($hook) {
-      if (static::$hooks)
-        static::$hooks->fire($hook);
+      if (static::$hooks)  {
+      static::$hooks->fire($hook);}
     }
   }

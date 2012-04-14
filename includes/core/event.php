@@ -5,7 +5,6 @@
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
-
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
@@ -51,15 +50,17 @@
      * @static
      *
      * @param string $message Error message
+     *
      * @return bool
      */
     static public function error($message) {
-    return  static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
+      return static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
     }
     /**
      * @static
      *
      * @param string $message
+     *
      * @return bool
      */
     static public function notice($message) {
@@ -69,6 +70,7 @@
      * @static
      *
      * @param string $message
+     *
      * @return bool
      */
     static public function success($message) {
@@ -78,6 +80,7 @@
      * @static
      *
      * @param $message
+     *
      * @return bool
      */
     static public function warning($message) {
@@ -89,6 +92,7 @@
      * @param $message
      * @param $source
      * @param $type
+     *
      * @return bool
      */
     static protected function handle($message, $source, $type) {
@@ -99,7 +103,7 @@
         $message = $message . '||' . $source['file'] . '||' . $source['line'];
         ($type == E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
-      return ($type===E_SUCCESS||$type===E_USER_NOTICE);
+      return ($type === E_SUCCESS || $type === E_USER_NOTICE);
     }
     /**
      * @static
@@ -131,25 +135,25 @@
       }
       session_write_close();
       /** @noinspection PhpUndefinedFunctionInspection */
-     fastcgi_finish_request();
-    static::$request_finsihed = TRUE;
+    //  fastcgi_finish_request();
+  //    static::$request_finsihed = TRUE;
 
-     try {
-       //static::fireHooks('shutdown');
+      try {
+        static::fireHooks('shutdown');
       }
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
       if (extension_loaded('xhprof')) {
-          $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-          /** @noinspection PhpUndefinedFunctionInspection */
-          $xhprof_data = xhprof_disable();
-          /** @noinspection PhpUndefinedClassInspection */
-          $xhprof_runs = new \XHProfRuns_Default();
-          /** @noinspection PhpUndefinedMethodInspection */
-          $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-          var_dump($xhprof_runs);
-        }
+        $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+        /** @noinspection PhpUndefinedFunctionInspection */
+        $xhprof_data = xhprof_disable();
+        /** @noinspection PhpUndefinedClassInspection */
+        $xhprof_runs = new \XHProfRuns_Default();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);      var_dump($xhprof_runs);
+
+      }
     }
   }

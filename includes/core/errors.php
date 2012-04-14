@@ -8,11 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+    /**
+
+     */
   /**
-   *
-   */
-  /**
-   *
+
    */
   class Errors {
 
@@ -123,7 +123,7 @@
       $error = array(
         'type' => -1,
         'code' => $e->getCode(),
-        'message' =>  end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
+        'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine()
       );
@@ -174,16 +174,16 @@
 
      */
     static public function send_debug_email() {
-      if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))
-      ) {
-        $withbacktrace = $text = '';
+      if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))) {
+        $text = '';
+        $with_back_trace = array();
         if (count(static::$debugLog)) {
           $text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, TRUE) . "\n\n";
         }
+
         if (count(static::$errors)) {
-          $withbacktrace = array();
           foreach (static::$errors as $id => $error) {
-            $withbacktrace[] = $error;
+            $with_back_trace[] = $error;
             unset(static::$errors[$id]['backtrace']);
           }
           $text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, TRUE) . "\n\n";
@@ -194,6 +194,7 @@
         if (count(static::$messages)) {
           $text .= "<h3>Messages: </h3>" . var_export(static::$messages, TRUE) . "\n\n";
         }
+
         $id = md5($text);
         $text .= "<h3>SERVER: </h3>" . var_export($_SERVER, TRUE) . "\n\n";
         if (isset($_POST) && count($_POST)) {
@@ -205,8 +206,9 @@
         if (isset($_REQUEST) && count($_REQUEST)) {
           $text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, TRUE) . "\n\n";
         }
-        if ($withbacktrace) {
-          $text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($withbacktrace, TRUE) . "\n\n";
+        if ($with_back_trace) {
+
+          $text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, TRUE) . "\n\n";
         }
         $subject = 'Error log: ';
         if (isset(static::$session['current_user'])) {
@@ -311,7 +313,7 @@
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
 
-        $content .= '<pre class="left">'.var_export(Errors::$errors,TRUE).'</pre>';
+      $content .= '<pre class="left">' . var_export(Errors::$errors, TRUE) . '</pre>';
       if (class_exists('Page')) {
         \Page::error_exit($content, FALSE);
       }

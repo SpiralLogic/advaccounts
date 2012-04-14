@@ -53,18 +53,7 @@
   register_shutdown_function(function () {
     ADV\Core\Event::shutdown();
   });
-  register_shutdown_function(function() {
-    if (extension_loaded('xhprof')) {
-      $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-      /** @noinspection PhpUndefinedFunctionInspection */
-      $xhprof_data = xhprof_disable();
-      /** @noinspection PhpUndefinedClassInspection */
-      $xhprof_runs = new \XHProfRuns_Default();
-      /** @noinspection PhpUndefinedMethodInspection */
-      $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-      var_dump($xhprof_runs);
-    }
-  });
+
   if (!function_exists('adv_ob_flush_handler')) {
     /**
      * @param $text
@@ -85,5 +74,5 @@
   Session::i();
   Config::i();
   Ajax::i();
-  //ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
   ADVAccounting::i();

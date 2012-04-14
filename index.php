@@ -7,4 +7,3 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-    Session::i()->App->display();

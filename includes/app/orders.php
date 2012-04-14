@@ -145,7 +145,6 @@
      * @static
      *
      * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
-     * @return void
      */
     static public function session_delete($id) {
       if (is_object($id)) {
