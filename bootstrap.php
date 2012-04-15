@@ -77,4 +77,4 @@
   Config::i();
   Ajax::i();
   ob_start('adv_ob_flush_handler', 0);
-  ADVAccounting::i();
+  if ($_SERVER['DOCUMENT_URI']!=='/assets.php') ADVAccounting::i();

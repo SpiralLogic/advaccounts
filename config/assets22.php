@@ -48,5 +48,5 @@
     //to set client-side cache On or Off
     'clientCache' => TRUE,
     //Setting this to false will force the browser to use cached files without checking for changes.
-    'clientCacheCheck' => FALSE,
+    'clientCacheCheck' => TRUE,
   );

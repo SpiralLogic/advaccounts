@@ -29,7 +29,7 @@
     protected $cacheDir = 'cache';
     protected $cachePrefix = 'so_';
     protected $clientCache = TRUE;
-    protected $clientCacheCheck = FALSE;
+    protected $clientCacheCheck = TRUE;
     protected $file = array();
     protected $minifyTypes = array(
       'js' => array(
@@ -61,7 +61,9 @@
       "swf" => "application/x-shockwave-flash",
       "ico" => "image/x-icon",
     );
-    protected function headerExit($status) {
+    protected function headerExit($status) {      header("Pragma: Public");
+      header("Expires: " . $this->gmdatestr(time() + 315360000));
+      header("Cache-Control: max-age=315360000");
       header("HTTP/1.0 $status");
       exit();
     }

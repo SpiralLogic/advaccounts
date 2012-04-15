@@ -137,7 +137,7 @@
       }
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
-      if (strstr($_SERVER['DOCUMENT_URI'], 'logout.php') == FALSE) {
+      if (strstr($_SERVER['DOCUMENT_URI'], 'logout.php') == FALSE ) {
         static::checkLogin();
       }
       Event::init();
