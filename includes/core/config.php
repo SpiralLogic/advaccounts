@@ -38,9 +38,13 @@
       if (static::$_vars === NULL) {
         static::$_vars = Cache::get('config');
       }
-      if (static::$_vars === FALSE || isset($_GET['reload_config'])) {
+      if (isset($_GET['reload_config'])) {
+        static::removeAll();
+      }
+      if (static::$_vars === FALSE ) {
         static::load();
       }
+
       static::$i = TRUE;
       static::js();
     }

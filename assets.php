@@ -9,5 +9,5 @@
    *
    * @param $name
    * @param $constants
-   **/echo "<pre >";
-var_dump($_SERVER,$_GET);
+   **/
+new Assets22();

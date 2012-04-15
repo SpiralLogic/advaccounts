@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   abstract class DB_abstract {
-
+    use \ADV\Core\Traits\SetFromArray;
     /**
      * @var int
      */
@@ -136,28 +136,7 @@
       }
       return $this->_status(TRUE, 'write', 'Added to databse: ' . get_class($this));
     }
-    /**
-     * @param null $changes
-     *
-     * @return array|null
-     */
-    protected function setFromArray($changes = NULL) {
-      if (!$changes || !is_array($changes)) {
-        return;
-      }
-      foreach ($changes as $key => $value) {
 
-        if (!is_array($value) && !is_object($value)) {
-          $value = (trim($value) == NULL) ? '' : trim($value);
-        }
-        if (property_exists($this, $key)) {
-          if ($this->$key == NULL && ($value === '' || $value === 'null')) {
-            $value = NULL;
-          }
-          $this->$key = $value;
-        }
-      }
-    }
     /***
      * @param null   $status
      * @param null   $process
