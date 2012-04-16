@@ -34,11 +34,12 @@
     protected $minifyTypes = array(
       'js' => array(
         'minify' => TRUE, //
-        'minifier' => 'JSMin' //
+        'minifier' => 'JSMin', //
+  'settings' => array() //
       ), //
       'css' => array( //
         'minify' => TRUE, //
-        'minifier' => 'JSMin', //
+        'minifier' => 'CSSMin', //
         'settings' => array( //
           'embed' => TRUE, //
           'embedMaxSize' => 5120, //
@@ -113,7 +114,7 @@
       if ($filesmtime) {
         return $filesmtime;
       }
-      $filesmtime = max(@filemtime(__FILE__));
+      $filesmtime = @filemtime(__FILE__);
       foreach ($this->files as $file) {
         if (!file_exists($file)) {
           $this->debugExit("File not found ($file).");
@@ -167,7 +168,7 @@
       if ($this->gzip) {
         header("Content-Encoding: gzip");
       }
-      $this->minify = $this->minify && class_exists($this->minifyTypes[$this->fileType]);
+      $this->minify = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
             $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
       if ($this->serverCache) {
         $cachedFile = $this->cacheDir .DIRECTORY_SEPARATOR. $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
@@ -210,6 +211,7 @@
                 $this->debugExit("Minifier not set for type " . $this->fileType);
               }
               $minifier_class = $minify_type_settings['minifier'];
+              $minify_type_settings['settings'] =$minify_type_settings['settings']?:array();
               $minifier = new $minifier_class($fileDir, $minify_type_settings['settings'], $this->mimeTypes);
               $content = $minifier->minify($content);
             }

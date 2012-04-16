@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,7 +15,6 @@
 
    */
   class SessionException extends \Exception {
-
   }
 
   ;
@@ -22,7 +22,6 @@
 
    */
   class Session extends \Input {
-
     /**
      * @static
      * @return Session|mixed
@@ -36,6 +35,7 @@
      * @return void
      */
     static public function kill() {
+      static::i();
       Config::removeAll();
       session_unset();
       session_destroy();
@@ -74,7 +74,6 @@
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path = ini_set('session.save_path', '127.0.0.1:11211');
-
         (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
@@ -148,7 +147,7 @@
      */
     public function setGlobal($var, $value) {
       $_SESSION['globals'][$var] = $value;
-      $_SESSION[$var]=$value;
+      $_SESSION[$var] = $value;
       return $value;
     }
     /**

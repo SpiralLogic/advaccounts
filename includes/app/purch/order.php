@@ -101,8 +101,8 @@
       $this->set_salesman();
       $this->location = Config::get('default.location');
       $this->order_no = $order_no;
-      $this->orig_order_date = Dates::new_doc_date();
-      if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+      $this->orig_order_date = Input::post('OrderDate',null,Dates::new_doc_date());
+      if (!Dates::is_date_in_fiscalyear($this->orig_order_date)) {
         $this->orig_order_date = Dates::end_fiscalyear();
       }
       $this->read($order_no, $view);

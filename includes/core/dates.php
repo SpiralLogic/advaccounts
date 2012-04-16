@@ -442,6 +442,7 @@
      */
     static function date1_greater_date2($date1, $date2) {
       /* returns 1 true if date1 is greater than date_ 2 */
+
       $date1 = Dates::date2sql($date1);
       $date2 = Dates::date2sql($date2);
 

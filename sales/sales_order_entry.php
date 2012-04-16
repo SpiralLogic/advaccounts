@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,26 +10,25 @@
    **/
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-    ST_SALESORDER => SA_SALESORDER,
-    ST_SALESQUOTE => SA_SALESQUOTE,
-    ST_CUSTDELIVERY => SA_SALESDELIVERY,
-    ST_SALESINVOICE => SA_SALESINVOICE
-  ), array(
-    Orders::NEW_ORDER => SA_SALESORDER,
-    Orders::MODIFY_ORDER => SA_SALESORDER,
-    Orders::NEW_QUOTE => SA_SALESQUOTE,
-    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-    Orders::NEW_INVOICE => SA_SALESINVOICE
-  ));
+                                                            ST_SALESORDER => SA_SALESORDER,
+                                                            ST_SALESQUOTE => SA_SALESQUOTE,
+                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
+                                                            ST_SALESINVOICE => SA_SALESINVOICE
+                                                       ), array(
+                                                               Orders::NEW_ORDER => SA_SALESORDER,
+                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
+                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
+                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
+                                                          ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
     Ajax::i()->activate('customer_id');
   }
   $page_title = _($help_context = "New Sales Order Entry");
-  if (Input::get(Orders::ADD, Input::NUMERIC,FALSE) !==FALSE) {
-
+  if (Input::get(Orders::ADD, Input::NUMERIC, FALSE) !== FALSE) {
     switch (Input::get('type')) {
       case ST_SALESQUOTE:
         $page_title = _($help_context = "New Sales Quotation Entry");
@@ -46,7 +46,7 @@
     }
     $order = create_order(Input::get('type'), 0);
   }
-  elseif (Input::get(Orders::UPDATE, Input::NUMERIC,-1) > 0) {
+  elseif (Input::get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
     switch (Input::get('type')) {
       case ST_SALESORDER:
         $help_context = 'Modifying Sales Order';
@@ -232,8 +232,13 @@
     $corder = _("Commit Order Changes");
   }
   start_form();
-  $customer_error = $order->header($idate);
-  hidden('order_id', $_POST['order_id']);
+  if (is_object($order)) {
+    $customer_error = $order->header($idate);
+    hidden('order_id', $_POST['order_id']);
+  }
+  else {
+    $customer_error = 'No current order to edit.';
+  }
   if ($customer_error == "") {
     start_table('tablesstyle center width90 pad10');
     echo "<tr><td>";
