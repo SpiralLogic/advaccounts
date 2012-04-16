@@ -14,7 +14,7 @@
       'init'=>false,
       'type' => 'Volusion',
       'apiuser' => 'admin@advancedroadsigns.com.au',
-      'apikey' => '3910A0B32F885747E0C733D0713638822A329C68B58A410B421901500117DD32',
+      'apikey' => 'EB9100FB7E17AB8D0731073FB818BA3803447431B2C10E672BE241FA15ED3C17',
       'apiurl' => 'http://www.advancedroadsigns.com.au/net/WebService.aspx?',
       'product_url' => 'http://www.advancedroadsigns.com.au/-p/',
       'url_extension' => '.htm',
