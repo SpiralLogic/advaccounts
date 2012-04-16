@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-  include(DOCROOT . 'modules/smartoptimizer/minifiers/js.php');
+  
   /**
    *
    */
