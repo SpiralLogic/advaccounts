@@ -34,7 +34,8 @@
      * @return string
      */
     protected function convertUrl($url, $count) {
-      $url = WEBROOT.trim($url);
+      $baseUrl=WEBROOT;
+      $url = trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
       }
