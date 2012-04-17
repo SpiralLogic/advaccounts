@@ -54,7 +54,7 @@
         !file_exists($this->filedir . $url) ||
         ($this->settings['embedMaxSize'] > 0 && filesize($this->filedir . $url) > $this->settings['embedMaxSize']) ||
         !$fileType ||
-        in_array($fileType, $this->settings['embedExceptions']) ||
+        in_array($fileType, (array)$this->settings['embedExceptions']) ||
         !$mimeType ||
         $count > 1
       ) {
