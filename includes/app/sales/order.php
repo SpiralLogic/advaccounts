@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /* Definition of the order class
   this class can hold all the information for:
 
@@ -421,7 +421,7 @@
       $this->payment = $payment;
       $this->payment_terms = DB_Company::get_payment_terms($payment);
       if ($this->payment_terms['cash_sale']) {
-        $pos= Sales_Point::get($this->pos);
+        $pos = Sales_Point::get($this->pos);
         $this->location = $pos['pos_location'];
         $this->location_name = $pos['location_name'];
       }
@@ -1566,7 +1566,7 @@
       if ($num == 1) {
         return DB::fetch($result);
       }
-      return Event::error("Order does not exist!", E_USER_ERROR);
+      return Event::error("Order has been deleted or does not exist!", E_USER_ERROR);
     }
     /**
      * @static
@@ -1743,5 +1743,5 @@
     }
   }
 
-  /* end of class defintion */
+/* end of class defintion */
 
