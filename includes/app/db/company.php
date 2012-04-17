@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class DB_Company extends DB_abstract {
-
     /**
      * @var int
      */
@@ -324,7 +324,8 @@
     static public function add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::date2sql($from_date);
       $to = Dates::date2sql($to_date);
-      $sql = "INSERT INTO fiscal_year (begin, end, closed)
+      $sql
+        = "INSERT INTO fiscal_year (begin, end, closed)
 		VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
       DB::query($sql, "could not add fiscal year");
     }
@@ -339,12 +340,14 @@
      */
     static public function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::escape($terms) . ", " . DB::escape($dayNumber) . ", 0)";
       }
       else {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::escape($terms) . ",
 					0, " . DB::escape($dayNumber) . ")";
@@ -413,7 +416,7 @@
      */
     static public function get_current_fiscalyear() {
       $year = DB_Company::get_pref('f_year');
-      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
+      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape(  $year);
       $result = DB::query($sql, "could not get current fiscal year");
       return DB::fetch($result);
     }
@@ -437,9 +440,7 @@
      * @return mixed
      */
     static public function get_pref($pref_name) {
-      if (static::$i === NULL) {
-        $prefs = DB_Company::get_prefs();
-      }
+      $prefs = (static::$i === NULL) ? DB_Company::get_prefs() : (array) $_SESSION['config']['company'];
       return $prefs[$pref_name];
     }
     /**
@@ -487,7 +488,8 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get_payment_terms($selected_id) {
-      $sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+      $sql
+        = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
 	 FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not get payment term");
       return DB::fetch($result);
