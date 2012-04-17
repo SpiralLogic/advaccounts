@@ -10,7 +10,7 @@
       'embedMaxSize' => 5120,
       'embedExceptions' => array('htc')
     );
-    protected $mimeTypes;
+    protected $mimeTypes=array();
     protected $filedir;
     /**
      * @param       $filedir
@@ -34,8 +34,7 @@
      * @return string
      */
     protected function convertUrl($url, $count) {
-      static $baseUrl = '';
-      $url = trim($url);
+      $url = WEBROOT.trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
       }
