@@ -14,7 +14,7 @@
     protected $filedir;
     /**
      * @param       $filedir
-     * @param array $minify_type_settings
+     * @param string[] $minify_type_settings
      * @param array $mimeTypes
      *
      * @internal param $url
@@ -44,7 +44,7 @@
         $mimeType = $this->mimeTypes[$fileType];
       }
       elseif (function_exists('mime_content_type')) {
-        $mimeType = mime_content_type($url);
+        $mimeType = mime_content_type(WEBROOT.ltrim($url,'/'));
       }
       else {
         $mimeType = NULL;

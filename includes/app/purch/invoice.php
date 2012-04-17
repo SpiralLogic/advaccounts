@@ -697,7 +697,7 @@
     /**
      * @static
      *
-     * @param $creditor_trans
+     * @param Creditor_Trans $creditor_trans
      */
     static public function totals($creditor_trans) {
       Purch_Invoice::copy_to_trans($creditor_trans);

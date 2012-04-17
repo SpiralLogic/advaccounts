@@ -1,31 +1,30 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core;
   if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
     @date_default_timezone_set(@date_default_timezone_get());
   }
   /**
-       date validation and parsing functions
+  date validation and parsing functions
 
-       These functions refer to the global variable defining the date format
-       The date format is defined in config.php called dateformats
-       this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-       "m/d/Y" for US/Canada format dates depending on setting in preferences.
+  These functions refer to the global variable defining the date format
+  The date format is defined in config.php called dateformats
+  this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
+  "m/d/Y" for US/Canada format dates depending on setting in preferences.
 
-       */
+   */
   /**
    *
    */
   class Dates {
-
     /**
      * @static
      *
@@ -186,7 +185,7 @@
       }
       $begin = Dates::sql2date($myrow['begin']);
       $end = Dates::sql2date($myrow['end']);
-      return (Dates::date1_greater_date2($date2,$begin) || Dates::date1_greater_date2($end,$date2));
+      return (Dates::date1_greater_date2($date2, $begin) || Dates::date1_greater_date2($end, $date2));
     }
     /**
      * @static
@@ -238,7 +237,18 @@
         /** @noinspection PhpUnusedLocalVariableInspection */
         list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
         $days_in_month = array(
-          31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, ((((((($year - (($year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)
+          31,
+          31,
+          31,
+          31,
+          31,
+          31,
+          30,
+          30,
+          30,
+          30,
+          30,
+          ((((((($year - (($year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)
         );
       }
       else {
@@ -371,12 +381,12 @@
     static function date2sql($date_, $pad = TRUE) {
       /* takes a date in a the format specified in $DefaultDateFormat
                                                   and converts to a yyyy/mm/dd format */
+      if (!$date_) {
+        return '';
+      }
       $how = \User::date_format();
       $sep = Config::get('date.separators');
       $sep = $sep[\User::date_sep()];
-      if ($date_ == NULL || strlen($date_) == 0) {
-        return "";
-      }
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
@@ -398,24 +408,25 @@
         return FALSE;
       }
       //to modify assumption in 2030
-      if (Config::get('accounts.datesystem') == 0 || Config::get('accounts.datesystem') == 3) {
-        if ((int) $year < 60) {
-          $year = "20" . $year;
-        }
-        elseif ((int) $year > 59 && (int) $year < 100) {
-          $year = "19" . $year;
-        }
+      switch (Config::get('accounts.datesystem')) {
+        case 0:
+        case 3:
+          if ((int) $year < 60) {
+            $year = "20" . $year;
+          }
+          elseif ((int) $year > 59 && (int) $year < 100) {
+            $year = "19" . $year;
+          }
+          break;
+        case 1:
+          list($year, $month, $day) = Dates::jalali_to_gregorian($year, $month, $day);
+          break;
+        case 2:
+          list($year, $month, $day) = Dates::islamic_to_gregorian($year, $month, $day);
+          break;
       }
       if ((int) $year > 9999) {
         return 0;
-      }
-      if (Config::get('accounts.datesystem') == 1) {
-        list($year, $month, $day) = Dates::jalali_to_gregorian($year, $month, $day);
-      }
-      else {
-        if (Config::get('accounts.datesystem') == 2) {
-          list($year, $month, $day) = Dates::islamic_to_gregorian($year, $month, $day);
-        }
       }
       // Pad with 0s if needed
       if (strlen($month) == 1) {
@@ -442,10 +453,8 @@
      */
     static function date1_greater_date2($date1, $date2) {
       /* returns 1 true if date1 is greater than date_ 2 */
-
       $date1 = Dates::date2sql($date1);
       $date2 = Dates::date2sql($date2);
-
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       if ($year1 > $year2) {
@@ -474,8 +483,8 @@
      */
     static function date_diff2($date1, $date2, $period) {
       /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
-                                                  months are assumed to be 30 days and years 365.25 days This only works
-                                                  provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
+                                                            months are assumed to be 30 days and years 365.25 days This only works
+                                                            provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
       $date1 = Dates::date2sql($date1);
       $date2 = Dates::date2sql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
@@ -530,6 +539,7 @@
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
+     *
      * @static
      *
      * @param $g_y
@@ -623,7 +633,8 @@
      * @static
      *
      * @param      $name
-     * @param int $month
+     * @param int  $month
+     *
      * @return string
      */
     public static function months($name, $month = 0) {

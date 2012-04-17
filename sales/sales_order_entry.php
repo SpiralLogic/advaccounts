@@ -384,39 +384,7 @@
     }
   }
 
-  /**
-   * @param $order
-   *
-   * @return \Purch_Order|\Sales_Order
-   */
-  function copy_from_order($order) {
-    if (!Input::get(Orders::QUOTE_TO_ORDER)) {
-      $order = Sales_Order::check_edit_conflicts($order);
-    }
-    $_POST['ref'] = $order->reference;
-    $_POST['Comments'] = $order->Comments;
-    $_POST['OrderDate'] = $order->document_date;
-    $_POST['delivery_date'] = $order->due_date;
-    $_POST['cust_ref'] = $order->cust_ref;
-    $_POST['freight_cost'] = Num::price_format($order->freight_cost);
-    $_POST['deliver_to'] = $order->deliver_to;
-    $_POST['delivery_address'] = $order->delivery_address;
-    $_POST['name'] = $order->name;
-    $_POST['customer'] = $order->customer_name;
-    $_POST['phone'] = $order->phone;
-    $_POST['location'] = $order->location;
-    $_POST['ship_via'] = $order->ship_via;
-    $_POST['customer_id'] = $order->customer_id;
-    $_POST['branch_id'] = $order->Branch;
-    $_POST['sales_type'] = $order->sales_type;
-    $_POST['salesman'] = $order->salesman;
-    if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
-      $_POST['dimension_id'] = $order->dimension_id;
-      $_POST['dimension2_id'] = $order->dimension2_id;
-    }
-    $_POST['order_id'] = $order->order_id;
-    return Orders::session_set($order);
-  }
+
 
   /**
    * @param Sales_Order $order
@@ -601,6 +569,6 @@
     else {
       $doc = new Sales_Order($type, array($trans_no));
     }
-    return copy_from_order($doc);
+    return Sales_Order::copyToPost($doc);
   }
 

@@ -297,9 +297,7 @@
      */
     static public function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = FALSE) {
       $total = 0;
-      foreach (
-        $taxes as $taxitem
-      ) {
+      foreach ($taxes as $taxitem) {
         if ($tax_included) {
           label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
             Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);

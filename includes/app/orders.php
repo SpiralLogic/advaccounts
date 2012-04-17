@@ -31,7 +31,7 @@
     const UPDATE_ITEM = 'UpdateItem';
     const ADD = 'add';
     const UPDATE = 'update';
-    const TYPE = 'update';
+    const TYPE = 'type';
 
     /**
      * @var

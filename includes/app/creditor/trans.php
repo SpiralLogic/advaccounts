@@ -196,6 +196,7 @@
         $tax_group_id = $this->tax_group_id;
       }
       $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
+      /** @var Purch_GLItem $line  */
       foreach ($this->grn_items as $line) {
         $items[] = $line->item_code;
         $prices[] = round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);

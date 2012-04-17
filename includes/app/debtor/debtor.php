@@ -46,11 +46,11 @@
      */
     public $defaultContact = 0;
     /**
-     * @var array
+     * @var Debtor_Branch[]
      */
     public $branches = array();
     /**
-     * @var array
+     * @var Contact[]
      */
     public $contacts = array();
     /**
@@ -316,9 +316,6 @@
       $this->discount = $this->pymt_discount = Num::percent_format(0);
       $this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
     }
-    /**
-     * @return void
-     */
     protected function _getAccounts() {
       DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
       $this->accounts = DB::fetch()->asClassLate('Debtor_Account')->one();
@@ -328,9 +325,6 @@
         $this->accounts->save();
       }
     }
-    /**
-     * @return void
-     */
     protected function _getBranches() {
       DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
 
@@ -383,6 +377,7 @@
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
     /**
+     *
      * @return void
      */
     protected function _setDefaults() {
