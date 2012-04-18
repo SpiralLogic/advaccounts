@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,40 +12,45 @@
 
    */
   class Config_Exception extends \Exception {
+
   }
 
   /***
 
    */
   class Config {
+
     /***
      * @var array|null
      */
-    static $_vars = NULL;
+    protected $_vars = NULL;
     /**
-     * @var bool
+     * @var Config
      */
-    static protected $i = FALSE;
+    static protected $i = NULL;
     /**
      * @static
-     * @return mixed
+     * @return Config
      */
     static public function i() {
-      if (static::$i === TRUE) {
-        return;
+      if (static::$i === NULL) {
+        static::$i = new static;
       }
-      if (static::$_vars === NULL) {
-        static::$_vars = Cache::get('config');
+      return static::$i;
+    }
+    /**
+
+     */
+    protected function __construct() {
+      if ($this->_vars === NULL) {
+        $this->_vars = Cache::get('config');
       }
       if (isset($_GET['reload_config'])) {
-        static::removeAll();
+        $this->removeAll();
       }
-      if (static::$_vars === FALSE ) {
-        static::load();
+      if ($this->_vars === FALSE) {
+        $this->load();
       }
-
-      static::$i = TRUE;
-      static::js();
     }
     /**
      * @static
@@ -58,7 +62,7 @@
      * @return mixed
      */
     static public function set($var, $value, $group = 'config') {
-      static::$_vars[$group][$var] = $value;
+      static::i()->_vars[$group][$var] = $value;
       return $value;
     }
     /***
@@ -71,18 +75,18 @@
      * @return Array|mixed
      */
     static public function get($var, $default = FALSE) {
-      static::i();
+      $i = static::i();
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
       $group_array = explode('.', $var);
       $var = array_pop($group_array);
       $group = implode('.', $group_array);
-      (isset(static::$_vars[$group], static::$_vars[$group][$var])) or static::load($group_array);
-      if (!isset(static::$_vars[$group][$var])) {
+      (isset($i->_vars[$group], $i->_vars[$group][$var])) or $i->load($group_array);
+      if (!isset($i->_vars[$group][$var])) {
         return $default;
       }
-      return static::$_vars[$group][$var];
+      return $i->_vars[$group][$var];
     }
     /**
      * @static
@@ -91,34 +95,34 @@
      * @param string $group
      */
     static public function remove($var, $group = 'config') {
-      if (array_key_exists($var, static::$_vars[$group])) {
-        unset(static::$_vars[$group][$var]);
+      $i=static::i();
+      if (array_key_exists($var, $i->_vars[$group])) {
+        unset($i->_vars[$group][$var]);
       }
     }
     /**
      * @static
      *
      * @param string $group
-     *
      * @param array  $default
      *
      * @return mixed
      */
     static public function get_all($group = 'config', $default = array()) {
-      static::i();
-      if (!isset(static::$_vars[$group]) && static::load($group) === FALSE) {
+      $i=static::i();
+      if (!isset($i->_vars[$group]) && $i->load($group) === FALSE) {
         return $default;
       }
       ;
-      return static::$_vars[$group];
+      return $i->_vars[$group];
     }
     static public function removeAll() {
-      static::$_vars = array();
+      static::i()->_vars = array();
       Event::register_shutdown(__CLASS__);
     }
     static public function reset() {
       static::removeAll();
-      static::load();
+      static::i()->load();
     }
     /**
      * @static
@@ -128,7 +132,7 @@
      * @throws \ADV\Core\Config_Exception
      * @return mixed
      */
-    static protected function load($group = 'config') {
+    protected function load($group = 'config') {
       if (is_array($group)) {
         $group_name = implode('.', $group);
         $group_file = array_pop($group) . '.php';
@@ -139,29 +143,28 @@
         $file = DOCROOT . "config" . DS . $group . '.php';
         $group_name = $group;
       }
-      if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
+      if ($this->_vars && array_key_exists($group_name, $this->_vars)) {
         return TRUE;
       }
       if (!file_exists($file)) {
         throw new Config_Exception("There is no file for config: " . $file);
       }
       /** @noinspection PhpIncludeInspection */
-      static::$_vars[$group_name] = include($file);
+      $this->_vars[$group_name] = include($file);
       Event::register_shutdown(__CLASS__);
     }
     /**
      * @static
 
      */
-    static protected function js() {
-      \JS::headerFile(static::get('assets.header'));
-      \JS::footerFile(static::get('assets.footer'));
+    protected function js() {
+      \JS::footerFile(static::get('assets.footer'), TRUE);
     }
     /**
      * @static
 
      */
     static public function _shutdown() {
-      Cache::set('config', static::$_vars);
+      Cache::set('config', static::i()->_vars);
     }
   }

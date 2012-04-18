@@ -71,7 +71,7 @@
       $extensions = $installed_extensions;
       foreach ($extensions as $ext) {
         if (($ext['active'] && $ext['type'] == 'module')) {
-          $path = PATH_TO_ROOT . '/' . $ext['path'] . "/reporting";
+          $path = BASE_URL . $ext['path'] . "/reporting";
           $rep_file = $path . "/rep$rep.php";
           if (file_exists($rep_file)) {
             set_include_path($path . PATH_SEPARATOR . get_include_path());

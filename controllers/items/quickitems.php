@@ -102,13 +102,13 @@ HTML;
   $menu->endTab();
 
   $menu->startTab("Selling", "Sales Prices");
-  echo "<iframe id='sellFrame' data-src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
+  echo "<iframe id='sellFrame' data-src='" . BASE_URL . "inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
   $menu->endTab();
   $menu->startTab("Purchasing", "Purchasing Prices");
-  echo "<iframe id='buyFrame' data-src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+  echo "<iframe id='buyFrame' data-src='" . BASE_URL . "inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
   $menu->endTab();
   $menu->startTab("Locations", "Stock Locations");
-  echo "<iframe id='locationFrame' data-src='" . PATH_TO_ROOT . "/inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
+  echo "<iframe id='locationFrame' data-src='" . BASE_URL . "inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
   $menu->endTab();
   $menu->startTab("Website", "Website page for product");
   echo "<iframe id='webFrame' data-srcpre='" . Config::get('modules.webstore')['product_url'] . "' data-srcpost='" . Config::get('modules.webstore')['url_extension'] . "'

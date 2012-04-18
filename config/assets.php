@@ -14,7 +14,6 @@
       'jquery.calc.css', //
       //	'jquery.fileupload-ui.css'
     ), //
-    'header' => array(), //
     'footer' => array(
       '/js/libs/JsHttpRequest.js',
       '/js/libs/jquery.min.js',

@@ -171,7 +171,7 @@ You have to clean database manually to enable them, or try to perform forced upg
         }
         $sql = $inst->sql;
         if ($sql != '') {
-          $ret &= DB_Utils::import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
+          $ret &= DB_Utils::import(DOCROOT . 'upgrade'.DS.'sql'.DS . $sql, $conn, $force);
         }
         $ret &= $inst->install($force);
       }

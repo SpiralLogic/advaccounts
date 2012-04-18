@@ -686,9 +686,7 @@ JS;
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
       $sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors ";
       $mode = DB_Company::get_pref('no_customer_list');
-      if ($editkey) {
-        Display::set_editor('customer', $name, $editkey);
-      }
+
       return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
         'format' => '_format_add_curr',
         'order' => array('debtor_ref'),

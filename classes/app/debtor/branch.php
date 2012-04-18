@@ -256,9 +256,7 @@
       $sql
         = "SELECT branch_id, branch_ref FROM branches
 			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_no='" . $customer_id . "' ";
-      if ($editkey) {
-        Display::set_editor('branch', $name, $editkey);
-      }
+
       $where = $enabled ? array("disable_trans = 0") : array();
       return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(
         'where' => $where,

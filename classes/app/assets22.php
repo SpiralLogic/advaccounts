@@ -13,7 +13,7 @@
   //Default settings
   class Assets22 {
 
-  use \ADV\Core\Traits\SetFromArray;
+  //use \ADV\Core\Traits\SetFromArray;
 
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
@@ -35,7 +35,7 @@
       'js' => array(
         'minify' => TRUE, //
         'minifier' => 'JSMin', //
-  'settings' => array() //
+        'settings' => array() //
       ), //
       'css' => array( //
         'minify' => TRUE, //
@@ -62,7 +62,8 @@
       "swf" => "application/x-shockwave-flash",
       "ico" => "image/x-icon",
     );
-    protected function headerExit($status) {      header("Pragma: Public");
+    protected function headerExit($status) {
+      header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
       header("HTTP/1.0 $status");
@@ -124,7 +125,7 @@
       return $filesmtime;
     }
     public function __construct() {
-      $this->setFromArray(Config::get_all('assets22'));
+    //  $this->setFromArray(Config::get_all('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];
@@ -169,9 +170,9 @@
         header("Content-Encoding: gzip");
       }
       $this->minify = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
-            $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
+      $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
       if ($this->serverCache) {
-        $cachedFile = $this->cacheDir .DIRECTORY_SEPARATOR. $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
+        $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       }
       $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime()))) ||
         ($this->serverCache && (!file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
@@ -211,7 +212,7 @@
                 $this->debugExit("Minifier not set for type " . $this->fileType);
               }
               $minifier_class = $minify_type_settings['minifier'];
-              $minify_type_settings['settings'] =$minify_type_settings['settings']?:array();
+              $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
               $minifier = new $minifier_class($fileDir, $minify_type_settings['settings'], $this->mimeTypes);
               $content = $minifier->minify($content);
             }

@@ -364,7 +364,7 @@
         $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
         if ($id != $line_no) {
           alt_table_row_color($k);
-          label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+          label_cell("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
           label_cell($line->description, ' class="nowrap"');
           qty_cell($line->qty_dispatched, FALSE, Item::qty_dec($line->stock_id));
           label_cell($line->units);

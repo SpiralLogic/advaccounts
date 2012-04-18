@@ -63,11 +63,11 @@
     $installed_languages[$id]['rtl'] = (bool) $_POST['rtl'];
     $lang = Config::get('languages.installed');
     $lang = $lang[$id]['code'];
-    $filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
+    $filename = LANG_PATH . '$lang'.DS.'LC_MESSAGES';
     if (!Files::save_to_file($filename, '')) {
       return FALSE;
     }
-    $directory = DOCROOT . "lang/" . $_POST['code'];
+    $directory =LANG_PATH . $_POST['code'];
     if (!file_exists($directory)) {
       mkdir($directory);
       mkdir($directory . "/LC_MESSAGES");
@@ -96,7 +96,7 @@
     $id = $_GET['id'];
     $lang = Config::get('languages.installed');
     $lang = $lang[$id]['code'];
-    $filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
+    $filename = LANG_PATH . $lang.DS.'LC_MESSAGES';
     if ($lang == Config::get('default.lang')) {
       // on delete set default to current.
       Config::set('default.lang', $_SESSION['Language']->code);
@@ -105,7 +105,7 @@
     if (!Files::save_to_file($filename, '')) {
       return;
     }
-    $filename = PATH_TO_ROOT . "/lang/$lang";
+    $filename = LANG_PATH . $lang;
     Files::flush_dir($filename);
     rmdir($filename);
     Display::meta_forward($_SERVER['DOCUMENT_URI']);

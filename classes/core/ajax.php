@@ -41,7 +41,8 @@
 
      */
     function __construct() {
-      parent::__construct($_SESSION['Language']->encoding);
+      $enc = (session_status()==PHP_SESSION_ACTIVE)?$_SESSION['Language']->encoding:'UTF-8';
+      parent::__construct($enc);
     }
     /**
      *   This function is used in ctrl routines to activate

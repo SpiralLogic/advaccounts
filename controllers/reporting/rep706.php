@@ -253,7 +253,7 @@
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = FALSE;
-			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
+			$pg->fontfile = BASE_URL . "reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (User::dec_sep() != ".");
 			$filename = COMPANY_PATH . "pdf_files/test.png";
 			$pg->display($filename, TRUE);

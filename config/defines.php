@@ -34,8 +34,8 @@
     'APP_TITLE' => "Advanced Accounting",
     'POWERED_BY' => 'Advanced Accounting',
     'POWERED_URL' => 'http://www.advancedgroup.com.au',
-    'THEME_PATH' => PATH_TO_ROOT . DS . 'themes' . DS,
-    'BACKUP_PATH' => PATH_TO_ROOT . DS . 'company' . DS . 'backup' . DS,
+    'THEME_PATH' => BASE_URL . 'themes/',
+    'BACKUP_PATH' => BASE_URL  . 'company/' . 'backup/' ,
     'REPORTS_PATH' => DOCROOT . 'controllers' . DS . 'reporting' . DS,
     // ACCESS LEVELS
     'SS_SADMIN' => 1 << 8, // site admin

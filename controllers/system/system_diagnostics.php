@@ -238,7 +238,7 @@
   function tst_tmpdir() {
     $test['descr'] = _('Temporary directory');
     $test['type'] = 3;
-    $test['test'] = PATH_TO_ROOT . '/tmp';
+    $test['test'] = DOCROOT . 'tmp';
     $test['result'] = is_dir($test['test']) && is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' is not writeable"), $test['test']);
     return $test;
@@ -259,7 +259,7 @@
       if ($lang['code'] == 'en_AU') {
         continue;
       } // native ADV language
-      $file = PATH_TO_ROOT . '/lang/' . $lang['code'] . '/LC_MESSAGES/' . $lang['code'];
+      $file = LANG_PATH . $lang['code'] . DS.'LC_MESSAGES' .DS. $lang['code'];
       $file .= function_exists('gettext') ? '.mo' : '.po';
       if (!is_file($file)) {
         $test['result'] = FALSE;
@@ -282,7 +282,7 @@
   function tst_config() {
     $test['descr'] = _('Main config file');
     $test['type'] = 2;
-    $test['test'] = PATH_TO_ROOT . '/config/config.php';
+    $test['test'] = DOCROOT . 'config'.DS.'config.php';
     $test['result'] = is_file($test['test']) && !is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' file should be read-only"), $test['test']);
     return $test;
@@ -294,9 +294,8 @@
   function tst_extconfig() {
     $test['descr'] = _('Extensions configuration files');
     $test['type'] = 3;
-    $test['test'] = PATH_TO_ROOT . '/config/extensions.php';
+    $test['test'] = DOCROOT . 'config'.DS.'extensions.php';
     $test['result'] = is_file($test['test']) && is_writable($test['test']);
-    $test['test'] . ',' . COMPANY_PATH . '*/extensions.php';
     $test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
     foreach (Config::get_all('db') as $n => $comp) {
       $path = COMPANY_PATH . "$n";

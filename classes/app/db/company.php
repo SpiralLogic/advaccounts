@@ -403,7 +403,7 @@
      * @return array
      */
     static public function get_company_extensions($id = -1) {
-      $file = PATH_TO_ROOT . ($id == -1 ? '' : '/company/' . $id) . '/installed_extensions.php';
+      $file = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = array();
       if (is_file($file)) {
         include($file);

@@ -51,7 +51,7 @@
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
         }
-        Session::$get_text->add_domain(Language::i()->code, PATH_TO_ROOT . "/lang");
+        Session::$get_text->add_domain(Language::i()->code, LANG_PATH);
       }
       $this->add_application(new Apps_System());
       $this->get_selected();
@@ -259,7 +259,7 @@
         $msg .= "\t\t),\n";
       }
       $msg .= "\t);\n?>";
-      $filename = PATH_TO_ROOT . ($company == -1 ? '' : '/company/' . $company) . '/installed_extensions.php';
+      $filename = DOCROOT . ($company == -1 ? '' : 'company'.DS . $company) . DS .'installed_extensions.php';
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));

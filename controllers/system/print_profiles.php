@@ -108,7 +108,7 @@
     if (Config::get('debug.enabled') || !isset($_SESSION['reports'])) {
       // to save time, store in session.
       $paths = array(
-        PATH_TO_ROOT . '/reporting/', COMPANY_PATH . 'reporting/'
+        DOCROOT.'controllers'.DS . 'reporting'.DS, COMPANY_PATH . 'reporting/'
       );
       $reports = array('' => _('Default printing destination'));
       foreach ($paths as $dirno => $path) {

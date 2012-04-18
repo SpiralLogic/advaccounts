@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,6 +13,7 @@
 
    */
   class Purch_Order {
+
     /**
      * @var
      */
@@ -101,7 +101,7 @@
       $this->set_salesman();
       $this->location = Config::get('default.location');
       $this->order_no = $order_no;
-      $this->orig_order_date = Input::post('OrderDate',null,Dates::new_doc_date());
+      $this->orig_order_date = Input::post('OrderDate', NULL, Dates::new_doc_date());
       if (!Dates::is_date_in_fiscalyear($this->orig_order_date)) {
         $this->orig_order_date = Dates::end_fiscalyear();
       }
@@ -828,7 +828,7 @@
     /**
      * @param $order
      */
-    static public   function copyFromPost($order) {
+    static public function copyFromPost($order) {
       $order->supplier_id = Input::post('supplier_id', Input::NUMERIC, NULL);
       $order->orig_order_date = $_POST['OrderDate'];
       $order->reference = $_POST['ref'];
@@ -838,28 +838,28 @@
       $order->delivery_address = $_POST['delivery_address'];
       $order->freight = $_POST['freight'];
       $order->salesman = $_POST['salesman'];
-    }  /**
-       * @param $order
-       *
-       * @return \Purch_Order|\Sales_Order
-       */
-    static public      function copyToPost($order) {
-        if (!Input::get('UseOrder')) {
-          $order = Purch_Order::check_edit_conflicts($order);
-        }
-        $_POST['supplier_id'] = $order->supplier_id;
-        $_POST['OrderDate'] = $order->orig_order_date;
-        $_POST['Requisition'] = $order->requisition_no;
-        $_POST['ref'] = $order->reference;
-        $_POST['Comments'] = $order->Comments;
-        $_POST['location'] = $order->location;
-        $_POST['delivery_address'] = $order->delivery_address;
-        $_POST['freight'] = $order->freight;
-        $_POST['salesman'] = $order->salesman;
-        $_POST['order_id'] = $order->order_id;
-        return Orders::session_set($order);
+    }
+    /**
+     * @param $order
+     *
+     * @return \Purch_Order|\Sales_Order
+     */
+    static public function copyToPost($order) {
+      if (!Input::get('UseOrder')) {
+        $order = Purch_Order::check_edit_conflicts($order);
       }
-
+      $_POST['supplier_id'] = $order->supplier_id;
+      $_POST['OrderDate'] = $order->orig_order_date;
+      $_POST['Requisition'] = $order->requisition_no;
+      $_POST['ref'] = $order->reference;
+      $_POST['Comments'] = $order->Comments;
+      $_POST['location'] = $order->location;
+      $_POST['delivery_address'] = $order->delivery_address;
+      $_POST['freight'] = $order->freight;
+      $_POST['salesman'] = $order->salesman;
+      $_POST['order_id'] = $order->order_id;
+      return Orders::session_set($order);
+    }
   } /* end of class defintion */
 
 

@@ -127,7 +127,6 @@
     }
     /*** @static Shutdown handler */
     static public function shutdown() {
-      Ajax::i();
       Errors::process();
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {
@@ -145,15 +144,6 @@
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
-      if (extension_loaded('xhprof')) {
-        $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-        /** @noinspection PhpUndefinedFunctionInspection */
-        $xhprof_data = xhprof_disable();
-        /** @noinspection PhpUndefinedClassInspection */
-        $xhprof_runs = new \XHProfRuns_Default();
-        /** @noinspection PhpUndefinedMethodInspection */
-        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
 
-      }
     }
   }

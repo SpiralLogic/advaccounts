@@ -51,7 +51,7 @@
 	$this->LineTo($right, $iline2, $right, $iline4);
 	$this->LineTo($this->leftMargin, $iline5, $this->leftMargin, $iline7);
 	$adjustment = (end($this->aligns) == 'right') ? 5 : -5;
-	$bar = ($cols > count($this->aligns)) ? $cols - 1 : $cols - 2;
+	$bar = ($cols > count($this->aligns)+1) ? $cols - 1 : $cols - 2;
 	$this->LineTo($this->cols[$bar] + $adjustment, $iline5, $this->cols[$bar] + $adjustment, $iline7);
 	$this->LineTo($right, $iline5, $right, $iline7);
 	$this->NewLine();

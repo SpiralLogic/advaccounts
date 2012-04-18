@@ -71,7 +71,7 @@
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to
+        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to
           . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         start_row("class='stockmankobg'");
         label_cell($url);
@@ -108,7 +108,7 @@
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
       {
-        $url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
+        $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
           "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
         alt_table_row_color($k);
         label_cell($url);
@@ -215,7 +215,7 @@
           $class_per_total += $TypeTotal[0];
           $class_acc_total += $TypeTotal[1];
           if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0) {
-            $url = "<a href='" . PATH_TO_ROOT . "/gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
+            $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
               "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
             alt_table_row_color($k);
             label_cell($url);

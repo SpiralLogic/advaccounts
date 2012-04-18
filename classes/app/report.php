@@ -87,7 +87,7 @@
         $extensions = $installed_extensions;
         foreach ($extensions as $ext) {
           if (($ext['active'] && $ext['type'] == 'module')) {
-            $file = PATH_TO_ROOT . '/' . $ext['path'] . "/reporting/reports_custom.php";
+            $file = BASE_URL . '/' . $ext['path'] . "/reporting/reports_custom.php";
             if (file_exists($file)) {
               /** @noinspection PhpIncludeInspection */
               include_once($file);

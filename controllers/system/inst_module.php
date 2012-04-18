@@ -179,7 +179,7 @@
     }
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {
-      $exttext = file_get_contents(PATH_TO_ROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
+      $exttext = file_get_contents(DOCROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
       $area = SA_OPEN;
       if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
         $area = trim($match[1]);
@@ -203,7 +203,7 @@
   function handle_delete($selected_id) {
     $extensions = DB_Company::get_company_extensions();
     $id = $selected_id;
-    $filename = PATH_TO_ROOT . ($extensions[$id]['type'] == 'plugin' ? "/modules/" : '/') . $extensions[$id]['path'];
+    $filename = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules".DS : DS) . $extensions[$id]['path'];
     Files::flush_dir($filename);
     rmdir($filename);
     unset($extensions[$id]);

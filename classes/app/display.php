@@ -404,42 +404,7 @@
       echo "</td>\n";
     }
 
-    /**
-     * Bind editors for various selectors.
-     *
-     * @param      $type  - type of editor
-     * @param      $input - name of related input field
-     * @param bool $caller- optional function key code (available values F1-F12: 112-123, true: default)
-     *
-     * @return array
-     */
-    static public function set_editor($type, $input, $caller = TRUE) {
-      static $Editors = array();
-      /* Table editor interfaces. Key is editor type
-                     0 => url of editor page
-                     1 => hotkey code
-                     2 => context help
-                   */
-      if ($type === FALSE && $input === FALSE) {
-        return $Editors;
-      }
-      $popup_editors = array(
-        'customer' => array(
-          '/sales/manage/customers.php?debtor_no=', 113, _("Customers")
-        ), 'branch' => array(
-          '/sales/manage/customer_branches.php?SelectedBranch=', 114, _("Branches")
-        ), 'supplier' => array(
-          '/purchases/manage/suppliers.php?supplier_id=', 113, _("Suppliers")
-        ), 'item' => array(
-          '/inventory/manage/items.php?stock_id=', 115, _("Items")
-        )
-      );
-      $key = $caller === TRUE ? $popup_editors[$type][1] : $caller;
-      $Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
-      /*	$help = 'F' . ($key - 111) . ' - ';
-                        $help .= $popup_editors[$type][2];
-                        $Pagehelp[] = $help;*/
-    }
+
 
     /**
      * @static
@@ -449,7 +414,7 @@
      * @param null $id
      */
     static public function submenu_option($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 1,0);
+      Display::note(Display::menu_button(BASE_URL . $url, $title, $id), 1,0);
     }
 
     /**
@@ -459,7 +424,7 @@
      * @param      $url
      * @param null $id*/
     static public function submenu_button($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+      Display::note(Display::menu_button(BASE_URL . ltrim($url,'/'), $title, $id), 0, 1);
     }
 
     /**

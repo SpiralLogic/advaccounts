@@ -43,14 +43,15 @@
     static public function i() {
       class_alias(__CLASS__, 'Autoloader');
       spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
-      static::$global_classes = \ADV\Core\Cache::get('autoload.global_classes', array());
-      static::$classes = \ADV\Core\Cache::get('autoload.classes', array());
-      static::$loaded = \ADV\Core\Cache::get('autoload.paths', array());
-      if (!static::$global_classes) {
+      $cachedClasses = \ADV\Core\Cache::get('autoload', array());
+      if ($cachedClasses) {
+        static::$global_classes = $cachedClasses['global_classes'];
+        static::$classes = $cachedClasses['classes'];
+        static::$loaded = $cachedClasses['paths'];
+      }
+      else {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         static::import_namespaces((array) $core);
-      }
-      if (!static::$classes) {
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::add_classes((array) $vendor, VENDORPATH);
       }
@@ -115,7 +116,7 @@
      * @param $filepath
      * @param $required_class
      *
-     * @throws ADV\Core\Autoload_Exception
+     * @throws Autoload_Exception
      * @internal param $class
      * @return bool
      */
@@ -123,10 +124,6 @@
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
-      if (!is_readable($filepath)) {
-        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	read at: ' . $filepath);
-      }
-
       if (!include_once($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
       }
@@ -154,7 +151,6 @@
         catch (Autoload_Exception $e) {
           Event::register_shutdown(__CLASS__);
         }
-
 
         if ($result && isset(static::$global_classes[$required_class])) {
           class_alias(static::$global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
@@ -185,7 +181,7 @@
         $alias = TRUE;
       }
       if ($namespace) {
-        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'classes'], $namespace );
+        $namespacepath = str_replace(['\\', 'ADV'], [DS, 'classes'], $namespace);
         $dir = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$classname])) {
@@ -213,9 +209,10 @@
 
      */
     static public function _shutdown() {
-      Cache::set('autoload.classes', static::$classes);
-      Cache::set('autoload.global_classes', static::$global_classes);
-      Cache::set('autoload.paths', static::$loaded);
+      Cache::set('autoload', array(
+        'classes' => static::$classes, 'global_classes' => static::$global_classes,
+        'paths' => static::$loaded
+      ));
     }
   }
 

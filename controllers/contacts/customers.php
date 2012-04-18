@@ -203,7 +203,7 @@
   hidden('frame', Input::request('frame'));
   end_form();
   $menu->endTab()->startTab('Invoices', 'Invoices');
-  echo "<div id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
+  echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
   $menu->endTab()->render();
 
   HTML::div('contactLog', array(

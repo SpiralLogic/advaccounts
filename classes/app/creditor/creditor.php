@@ -445,9 +445,7 @@
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-      if ($editkey) {
-        Display::set_editor('supplier', $name, $editkey);
-      }
+
       return select_box($name, $selected_id, $sql, 'supplier_id', 'supp_name', array(
         'format' => '_format_add_curr',
         'order' => array('supp_ref'),

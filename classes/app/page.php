@@ -293,9 +293,7 @@
       $Validate = array();
 
       $this->menu_footer();
-      $edits = "editors = " . Ajax::i()->php2js(Display::set_editor(FALSE, FALSE)) . ";";
-      Ajax::i()->addScript('editors', $edits);
-      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";var $edits");
+      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";");
       User::add_js_data();
       if ($this->header && $this->menu) {
         Sidemenu::render();

@@ -162,7 +162,7 @@
   hidden('frame', Input::request('frame'));
   end_form();
   $menu->endTab()->startTab('Invoices', 'Invoices');
-  echo "<div id='invoiceFrame' data-src='" . PATH_TO_ROOT . "/purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
+  echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
   $menu->endTab()->render();
 
   HTML::div('contactLog', array(

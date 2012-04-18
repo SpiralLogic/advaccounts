@@ -266,7 +266,7 @@
      */
     public static function process() {
       $last_error = error_get_last();
-      static::$session = $_SESSION;
+       static::$session = (session_status()==PHP_SESSION_ACTIVE)?$_SESSION:array();
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
         if (class_exists('Ajax', FALSE)) {
@@ -312,8 +312,9 @@
       if (!$content) {
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
-
-      $content .= '<pre class="left">' . var_export(Errors::$errors, TRUE) . '</pre>';
+      if ($_SESSION['current_user']->username == 'admin') {
+        $content .= '<pre class="left">' . var_export(Errors::$errors, TRUE) . '</pre>';
+      }
       if (class_exists('Page')) {
         \Page::error_exit($content, FALSE);
       }
