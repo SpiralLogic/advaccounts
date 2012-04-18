@@ -210,7 +210,7 @@
     /**
      * @param $order
      */
-    static public   function copy_to_order($order) {
+    static public   function copyFromPost($order) {
       $order->ship_via = $_POST['ship_via'];
       $order->freight_cost = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['InvoiceDate'];
@@ -225,7 +225,7 @@
      * @param $order
      * @return \Purch_Order|\Sales_Order
      */
-    static public  function copy_from_order($order) {
+    static public  function copyToPost($order) {
       $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
 
       $order = Sales_Order::check_edit_conflicts($order);

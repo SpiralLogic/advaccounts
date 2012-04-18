@@ -63,11 +63,11 @@
     $order->trans_no = 0;
     $order->reference = Ref::get_next(ST_CUSTDELIVERY);
     $order->document_date = Dates::new_doc_date();
-    Sales_Delivery::copy_from_order($order);
+    Sales_Delivery::copyToPost($order);
   }
   elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
     $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
-    Sales_Delivery::copy_from_order($order);
+    Sales_Delivery::copyToPost($order);
     if ($order->count_items() == 0) {
       Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
       echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
@@ -99,7 +99,7 @@
       $bo_policy = 1;
     }
     $newdelivery = ($dn->trans_no == 0);
-    Sales_Delivery::copy_to_order($order);
+    Sales_Delivery::copyFromPost($order);
     if ($newdelivery) {
       Dates::new_doc_date($dn->document_date);
     }

@@ -185,7 +185,7 @@
      *
      * @param $order
      */
-    static public function copy_to_order($order) {
+    static public function copyFromPost($order) {
       $order->ship_via = $_POST['ship_via'];
       $order->freight_cost = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['DispatchDate'];
@@ -201,7 +201,7 @@
      *
      * @param $order
      */
-    static public function copy_from_order($order) {
+    static public function copyToPost($order) {
       $order = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via'] = $order->ship_via;
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);

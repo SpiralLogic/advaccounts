@@ -56,7 +56,7 @@
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[COMMIT])) {
-    copy_to_order($order);
+    Purch_Order::copyFromPost($order);
     if (can_commit($order)) {
       if ($order->order_no == 0) {
         /*its a new order to be inserted */
@@ -178,42 +178,8 @@
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
   }
   Page::end(TRUE);
-  /**
-   * @param $order
-   *
-   * @return \Purch_Order|\Sales_Order
-   */
-  function copy_from_order($order) {
-    if (!Input::get('UseOrder')) {
-      $order = Purch_Order::check_edit_conflicts($order);
-    }
-    $_POST['supplier_id'] = $order->supplier_id;
-    $_POST['OrderDate'] = $order->orig_order_date;
-    $_POST['Requisition'] = $order->requisition_no;
-    $_POST['ref'] = $order->reference;
-    $_POST['Comments'] = $order->Comments;
-    $_POST['location'] = $order->location;
-    $_POST['delivery_address'] = $order->delivery_address;
-    $_POST['freight'] = $order->freight;
-    $_POST['salesman'] = $order->salesman;
-    $_POST['order_id'] = $order->order_id;
-    return Orders::session_set($order);
-  }
 
-  /**
-   * @param $order
-   */
-  function copy_to_order($order) {
-    $order->supplier_id = Input::post('supplier_id', Input::NUMERIC, NULL);
-    $order->orig_order_date = $_POST['OrderDate'];
-    $order->reference = $_POST['ref'];
-    $order->requisition_no = $_POST['Requisition'];
-    $order->Comments = $_POST['Comments'];
-    $order->location = $_POST['location'];
-    $order->delivery_address = $_POST['delivery_address'];
-    $order->freight = $_POST['freight'];
-    $order->salesman = $_POST['salesman'];
-  }
+
 
   /**
    * @param int $order_no
@@ -257,7 +223,7 @@
     else {
       $order = new Purch_Order($order_no);
     }
-    $order = copy_from_order($order);
+    $order = Purch_Order::copyToPost($order);
     return $order;
   }
 

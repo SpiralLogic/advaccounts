@@ -1773,7 +1773,41 @@
       }
       $_POST['order_id'] = $order->order_id;
       return Orders::session_set($order);
-    }
+    }/**
+       * @param $order
+       */
+    static public      function copyFromPost($order) {
+        $order->reference = $_POST['ref'];
+        $order->Comments = $_POST['Comments'];
+        $order->document_date = $_POST['OrderDate'];
+        $order->due_date = $_POST['delivery_date'];
+        $order->cust_ref = $_POST['cust_ref'];
+        $order->freight_cost = Validation::input_num('freight_cost');
+        $order->deliver_to = $_POST['deliver_to'];
+        $order->delivery_address = $_POST['delivery_address'];
+        $order->name = $_POST['name'];
+        $order->customer_name = Input::post('customer', Input::STRING);
+        $order->phone = $_POST['phone'];
+        $order->location = $_POST['location'];
+        $order->ship_via = $_POST['ship_via'];
+        if (isset($_POST['email'])) {
+          $order->email = $_POST['email'];
+        }
+        else {
+          $order->email = '';
+        }
+        if (isset($_POST['salesman'])) {
+          $order->salesman = $_POST['salesman'];
+        }
+        $order->customer_id = $_POST['customer_id'];
+        $order->Branch = $_POST['branch_id'];
+        $order->sales_type = $_POST['sales_type'];
+        // POS
+        if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
+          $order->dimension_id = $_POST['dimension_id'];
+          $order->dimension2_id = $_POST['dimension2_id'];
+        }
+      }
   }
 
 /* end of class defintion */

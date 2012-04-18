@@ -824,6 +824,42 @@
       DB::query($sql, "The supplier purchasing details could not be updated");
       return TRUE;
     }
+
+    /**
+     * @param $order
+     */
+    static public   function copyFromPost($order) {
+      $order->supplier_id = Input::post('supplier_id', Input::NUMERIC, NULL);
+      $order->orig_order_date = $_POST['OrderDate'];
+      $order->reference = $_POST['ref'];
+      $order->requisition_no = $_POST['Requisition'];
+      $order->Comments = $_POST['Comments'];
+      $order->location = $_POST['location'];
+      $order->delivery_address = $_POST['delivery_address'];
+      $order->freight = $_POST['freight'];
+      $order->salesman = $_POST['salesman'];
+    }  /**
+       * @param $order
+       *
+       * @return \Purch_Order|\Sales_Order
+       */
+    static public      function copyToPost($order) {
+        if (!Input::get('UseOrder')) {
+          $order = Purch_Order::check_edit_conflicts($order);
+        }
+        $_POST['supplier_id'] = $order->supplier_id;
+        $_POST['OrderDate'] = $order->orig_order_date;
+        $_POST['Requisition'] = $order->requisition_no;
+        $_POST['ref'] = $order->reference;
+        $_POST['Comments'] = $order->Comments;
+        $_POST['location'] = $order->location;
+        $_POST['delivery_address'] = $order->delivery_address;
+        $_POST['freight'] = $order->freight;
+        $_POST['salesman'] = $order->salesman;
+        $_POST['order_id'] = $order->order_id;
+        return Orders::session_set($order);
+      }
+
   } /* end of class defintion */
 
 

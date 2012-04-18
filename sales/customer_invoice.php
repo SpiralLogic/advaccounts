@@ -92,7 +92,7 @@
     $order->trans_no = 0;
     $order->reference = Ref::get_next(ST_SALESINVOICE);
     $order->due_date = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
-    Sales_Invoice::copy_from_order($order);
+    Sales_Invoice::copyToPost($order);
   }
   elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
     if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
@@ -103,7 +103,7 @@
     }
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]);
     $order->start();
-    Sales_Invoice::copy_from_order($order);
+    Sales_Invoice::copyToPost($order);
     if ($order->count_items() == 0) {
       echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice have been credited. There is
 			nothing to modify on this invoice") . "</span></div>";
@@ -112,7 +112,7 @@
   elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::VIEW_INVOICE]);
     $order->start();
-    Sales_Invoice::copy_from_order($order);
+    Sales_Invoice::copyToPost($order);
   }
   elseif (!$order && !isset($_GET['order_id'])) {
     /* This page can only be called with a delivery for invoicing or invoice no for edit */
@@ -133,7 +133,7 @@
   }
   if (isset($_POST['process_invoice']) && Sales_Invoice::check_data($order)) {
     $newinvoice = $order->trans_no == 0;
-    Sales_Invoice::copy_to_order($order);
+    Sales_Invoice::copyFromPost($order);
     if ($newinvoice) {
       Dates::new_doc_date($order->document_date);
     }
