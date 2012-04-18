@@ -92,7 +92,7 @@
   }
   //--------------- --------------------------------------------------------------
   if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($order)) {
-    copy_to_order($order);
+    Sales_Order::copyFromPost($order);
     $modified = ($order->trans_no != 0);
     $so_type = $order->so_type;
     $trans_type = $order->trans_type;
