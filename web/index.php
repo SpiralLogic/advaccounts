@@ -14,5 +14,10 @@
     include(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'));
   }
   else {
+    if ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME']) {
+      header('HTTP/1.0 404 Not Found');
+
+      Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+    }
     Session::i()->App->display();
   }

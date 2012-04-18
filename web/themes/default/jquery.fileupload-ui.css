@@ -74,7 +74,7 @@
 }
 
 .file_upload_progress .ui-progressbar-value {
-	background: url(images/pbar-ani.gif);
+	background: url(themes/default/images/pbar-ani.gif);
 }
 
 .file_upload_progress div {

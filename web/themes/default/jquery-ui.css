@@ -137,7 +137,7 @@
 }
 
 .ui-widget-header {
-	background: url(images/bg_fallback.png) 0 0 repeat-x;
+	background: url(themes/default/images/bg_fallback.png) 0 0 repeat-x;
 	background: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(237, 237, 237)), color-stop(0, rgb(196, 196, 196)));
 	background: -moz-linear-gradient(center top, rgb(237, 237, 237), rgb(196, 196, 196));
 }
@@ -155,7 +155,7 @@
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-	background:         url(images/bg_fallback.png) 0 0 repeat-x;
+	background:         url(themes/default/images/bg_fallback.png) 0 0 repeat-x;
 	background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(237, 237, 237)), color-stop(0, rgb(196, 196, 196)));
 	background:         -moz-linear-gradient(center top, rgb(237, 237, 237), rgb(196, 196, 196));
 	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
@@ -183,7 +183,7 @@
 	outline:            none;
 	color:              #1c4257;
 	border:             1px solid #7096ab;
-	background:         url(images/bg_fallback.png) 0 -50px repeat-x;
+	background:         url(themes/default/images/bg_fallback.png) 0 -50px repeat-x;
 	background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
 	background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
 	-webkit-box-shadow: none;
@@ -252,35 +252,35 @@
 .ui-icon {
 	width:            16px;
 	height:           16px;
-	background-image: url(images/ui-icons_222222_256x240.png);
+	background-image: url(themes/default/images/ui-icons_222222_256x240.png);
 }
 
 .ui-widget-content .ui-icon {
-	background-image: url(images/ui-icons_222222_256x240.png);
+	background-image: url(themes/default/images/ui-icons_222222_256x240.png);
 }
 
 .ui-widget-header .ui-icon {
-	background-image: url(images/ui-icons_222222_256x240.png);
+	background-image: url(themes/default/images/ui-icons_222222_256x240.png);
 }
 
 .ui-state-default .ui-icon {
-	background-image: url(images/ui-icons_454545_256x240.png);
+	background-image: url(themes/default/images/ui-icons_454545_256x240.png);
 }
 
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
-	background-image: url(images/ui-icons_454545_256x240.png);
+	background-image: url(themes/default/images/ui-icons_454545_256x240.png);
 }
 
 .ui-state-active .ui-icon {
-	background-image: url(images/ui-icons_454545_256x240.png);
+	background-image: url(themes/default/images/ui-icons_454545_256x240.png);
 }
 
 .ui-state-highlight .ui-icon {
-	background-image: url(images/ui-icons_454545_256x240.png);
+	background-image: url(themes/default/images/ui-icons_454545_256x240.png);
 }
 
 .ui-state-error .ui-icon, .ui-state-error-text .ui-icon {
-	background: url(images/icon_sprite.png) -16px 0 no-repeat !important;
+	background: url(themes/default/images/icon_sprite.png) -16px 0 no-repeat !important;
 }
 
 .ui-state-highlight .ui-icon, .ui-state-error .ui-icon {
@@ -773,7 +773,7 @@
 }
 
 .ui-icon-info {
-	background: url(images/icon_sprite.png) 0 0 no-repeat !important;
+	background: url(themes/default/images/icon_sprite.png) 0 0 no-repeat !important;
 }
 
 .ui-icon-notice {
@@ -1397,7 +1397,7 @@ button.ui-button-icons-only {
 	outline:            none;
 	color:              #1c4257;
 	border-color:       #7096ab;
-	background:         url(images/bg_fallback.png) 0 -50px repeat-x;
+	background:         url(themes/default/images/bg_fallback.png) 0 -50px repeat-x;
 	background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
 	background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
 	-moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
@@ -1563,7 +1563,7 @@ button.ui-button::-moz-focus-inner {
 .ui-dialog .ui-dialog-titlebar-close span {
 	display:    block;
 	margin:     1px;
-	background: url(images/icon_sprite.png) 0 -16px no-repeat;
+	background: url(themes/default/images/icon_sprite.png) 0 -16px no-repeat;
 }
 
 .ui-dialog .ui-dialog-titlebar-close:hover span {
@@ -1635,7 +1635,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 .ui-slider .ui-slider-handle {
-	background:         url(images/slider_handles.png) 0px -23px no-repeat;
+	background:         url(themes/default/images/slider_handles.png) 0px -23px no-repeat;
 	position:           absolute;
 	z-index:            2;
 	width:              23px;
@@ -1875,7 +1875,7 @@ button.ui-button::-moz-focus-inner {
 	margin-left: -8px;
 	top:         50%;
 	margin-top:  -8px;
-	background:  url(images/icon_sprite.png) no-repeat;
+	background:  url(themes/default/images/icon_sprite.png) no-repeat;
 }
 
 .ui-datepicker .ui-datepicker-title {
@@ -2079,13 +2079,13 @@ button.ui-button::-moz-focus-inner {
 .ui-progressbar {
 	height:     12px;
 	text-align: left;
-	background: #FFF url(images/progress_bar.gif) 0 -14px repeat-x;
+	background: #FFF url(themes/default/images/progress_bar.gif) 0 -14px repeat-x;
 }
 
 .ui-progressbar .ui-progressbar-value {
 	margin:     -1px;
 	height:     100%;
-	background: url(images/progress_bar.gif) 0 0 repeat-x;
+	background: url(themes/default/images/progress_bar.gif) 0 0 repeat-x;
 }
 
 /* Extra Input Field Styling */
