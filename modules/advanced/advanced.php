@@ -1,5 +1,5 @@
 <?php
-  //require_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "bootstrap.php");
+
   Extensions::add_access();
   // Turn these next two lines on for debugging
   //error_reporting(E_ALL);

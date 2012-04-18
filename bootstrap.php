@@ -25,9 +25,9 @@
   define('DS', DIRECTORY_SEPARATOR);
   define('DOCROOT', __DIR__ . DS);
   define('WEBROOT', DOCROOT . 'web' . DS);
-  define('APPPATH', DOCROOT . 'includes' . DS . 'app' . DS);
-  define('COREPATH', DOCROOT . 'includes' . DS . 'core' . DS);
-  define('VENDORPATH', DOCROOT . 'includes' . DS . 'vendor' . DS);
+  define('APPPATH', DOCROOT . 'classes' . DS . 'app' . DS);
+  define('COREPATH', DOCROOT . 'classes' . DS . 'core' . DS);
+  define('VENDORPATH', DOCROOT . 'classes' . DS . 'vendor' . DS);
   define('COMPANY_PATH', DOCROOT . 'web' . DS . 'company' . DS);
 
   define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
@@ -37,11 +37,11 @@
   define('PATH_TO_ROOT', '..' . DS . substr(str_repeat('..' . DS, substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1) ? :
     '..');
   set_error_handler(function ($severity, $message, $filepath, $line) {
-    class_exists('Adv\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
+    class_exists('ADV\\Core\\Errors', FALSE) or include_once COREPATH . 'errors.php';
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
-    class_exists('ADV\\Core\\Errors', FALSE) or include COREPATH . 'errors.php';
+    class_exists('ADV\\Core\\Errors', FALSE) or include_once COREPATH . 'errors.php';
     ADV\Core\Errors::exception_handler($e);
   });
   require COREPATH . 'autoloader.php';
@@ -76,5 +76,6 @@
   Session::i();
   Config::i();
   Ajax::i();
+
   ob_start('adv_ob_flush_handler', 0);
   if ($_SERVER['DOCUMENT_URI']!=='/assets.php') ADVAccounting::i();

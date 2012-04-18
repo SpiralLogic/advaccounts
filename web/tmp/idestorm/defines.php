@@ -288,6 +288,7 @@
 	define('STOCK_INFO', 'I');
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
+	define('REPORTS_PATH', '../reporting');
 	// Special Locations
 	define('LOC_NOT_FAXED_YET', 'NFY');
 	define('LOC_DROP_SHIP', 'DRP');
