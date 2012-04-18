@@ -106,9 +106,9 @@
 					$linetype = TRUE;
 					$doctype = ST_CUSTPAYMENT;
 					if ($rep->currency != $myrow['curr_code']) {
-						include(DOCROOT . "reporting/includes/doctext2.php");
+						include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
 					} else {
-						include(DOCROOT . "reporting/includes/doctext.php");
+						include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 					}
 					$total_allocated = 0;
 					$rep->TextCol(0, 4, $doc_Towards, -2);

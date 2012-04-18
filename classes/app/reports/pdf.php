@@ -1150,10 +1150,10 @@
         if ($email == 1) {
           $emailtype = TRUE;
           if ($this->currency != $myrow['curr_code']) {
-            include(DOCROOT . "reporting/includes/doctext2.php");
+            include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
           }
           else {
-            include(DOCROOT . "reporting/includes/doctext.php");
+            include(REPORTS_PATH . 'includes'.DS.'doctext.php');
           }
           $mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {

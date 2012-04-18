@@ -129,10 +129,10 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 				$linetype = true;
 				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(DOCROOT . "/reporting/includes/doctext2.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
 				}
 				else {
-					include(DOCROOT . "/reporting/includes/doctext.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 				}
 				$rep->TextCol(3, 7, $doc_Sub_total, -2);
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);

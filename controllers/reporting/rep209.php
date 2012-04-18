@@ -143,9 +143,9 @@
 			$linetype = TRUE;
 			$doctype = ST_PURCHORDER;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(DOCROOT . "reporting/includes/doctext2.php");
+				include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
 			} else {
-				include(DOCROOT . "reporting/includes/doctext.php");
+				include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 			}
 			$rep->TextCol(3, 6, Report::SUBTOTAL, -2);
 			$rep->TextCol(6, 7, $DisplaySubTot, -2);

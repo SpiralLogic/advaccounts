@@ -158,9 +158,9 @@
 				$linetype = true;
 				$doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(DOCROOT . "reporting/includes/doctext2.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
 				} else {
-					include(DOCROOT . "reporting/includes/doctext.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 				}
 				$rep->TextCol(4, 7, $doc_Shipping . ' (ex.GST)', -2);
 				$rep->TextCol(7, 8, $DisplayFreight, -2);

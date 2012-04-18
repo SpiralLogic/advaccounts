@@ -125,10 +125,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       $rep->Header2($myrow, Sales_Branch::get($transactions[0]['branch_id']), NULL, $baccount, ST_STATEMENT);
       $rep->NewLine();
       if ($rep->currency != $myrow['curr_code']) {
-        include(DOCROOT . "reporting/includes/doctext2.php");
+        include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
       }
       else {
-        include(DOCROOT . "reporting/includes/doctext.php");
+        include(REPORTS_PATH . 'includes'.DS.'doctext.php');
       }
       $openingbalance = $outstanding = $balance = 0;
       $rep->currency = $cur;

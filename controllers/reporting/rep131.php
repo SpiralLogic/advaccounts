@@ -111,9 +111,9 @@
 				$linetype = true;
 				$doctype = ST_SALESQUOTE;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(DOCROOT . "reporting/includes/doctext2.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
 				} else {
-					include(DOCROOT . "reporting/includes/doctext.php");
+					include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 				}
 				$rep->TextCol(4, 7, $doc_Sub_total, -2);
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);
