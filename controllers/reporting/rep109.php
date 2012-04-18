@@ -33,7 +33,7 @@
 				$to = 0;
 			}
 			$dec = User::price_dec();
-			$cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515);
+			$cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515,475);
 			// $headers in doctext.inc
 			$aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
 			$params = array('comments' => $comments);
