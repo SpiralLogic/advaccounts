@@ -9,7 +9,7 @@
    **/
   //file_exists('config/config.php') ? : header("Location: /install/index.php");
   require_once "../bootstrap.php";
-  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && $_SESSION['current_user']->username != 'admin' ) {
+  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && $_SESSION['current_user']->username != 'admin'&& strpos($_SERVER['SERVER_NAME'],'dev') ) {
     throw new ErrorException("Dev no working.");
   }
   if (isset($_SERVER['DOCUMENT_URI']) && file_exists(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'))) {

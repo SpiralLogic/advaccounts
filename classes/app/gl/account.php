@@ -98,14 +98,10 @@
      * @param $bank_account
      */
     static public function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
-      $sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
-        . " WHERE id=" . DB::escape($reconcile_id);
+      $sql = "UPDATE bank_trans SET reconciled=$reconcile_value WHERE id=" . DB::quote($reconcile_id);
       DB::query($sql, "Can't change reconciliation status");
       // save last reconcilation status (date, end balance)
-      $sql2 = "UPDATE bank_accounts SET last_reconciled_date='"
-        . Dates::date2sql($reconcile_date) . "',
- 	 ending_reconcile_balance=$end_balance
-			WHERE id=" . DB::escape($bank_account);
+      $sql2 = "UPDATE bank_accounts SET last_reconciled_date='" . Dates::date2sql($reconcile_date) . "', ending_reconcile_balance=$end_balance WHERE id=" . DB::quote($bank_account);
       DB::query($sql2, "Error updating reconciliation information");
     }
     /**
@@ -118,17 +114,16 @@
      */
     static public function get_max_reconciled($date, $bank_account) {
       $date = Dates::date2sql($date);
-      // temporary fix to enable fix of invalid entries made in 2.2RC
       if ($date == 0) {
         $date = '0000-00-00';
       }
       $sql
         = "SELECT MAX(reconciled) as last_date,
-			 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
-			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
-			 SUM(amount) as total
-		FROM bank_trans trans
-		WHERE undeposited=0 AND bank_act=" . DB::escape($bank_account);
+        SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
+        SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
+        SUM(amount) as total
+        FROM bank_trans trans
+        WHERE undeposited=0 AND bank_act=" . DB::escape($bank_account);
       //	." AND trans.reconciled IS NOT NULL";
       return DB::query($sql, "Cannot retrieve reconciliation data");
     }
@@ -157,22 +152,13 @@
      * @return string
      */
     static public function get_sql_for_reconcile($bank_account, $date) {
-      /*$sql = "SELECT	type, trans_no, ref, trans_date, amount,	person_id, person_type_id, reconciled, id
-                FROM bank_trans WHERE bank_trans.bank_act = " .
-             DB::quote($bank_account) . " AND undeposited = 0 AND amount!=0 AND  trans_date <= '" .
-             Dates::date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" .
-             Dates::date2sql($date) . "') ORDER BY trans_date,bank_trans.id";*/
-
-      $sql = "SELECT bt.type, bt.trans_no, bt.ref, bt.trans_date, IF( bt.trans_no IS NULL , SUM( g.amount ) ,
-			bt.amount ) AS amount, bt.person_id, bt.person_type_id, bt.reconciled, bt.id
+      $sql = "
+      SELECT bt.type, bt.trans_no, bt.ref, bt.trans_date, IF( bt.trans_no IS NULL,
+      SUM( g.amount ), bt.amount ) AS amount, bt.person_id, bt.person_type_id, bt.reconciled, bt.id
 			FROM bank_trans bt
 			LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
-			   WHERE   bt.bank_act = " . DB::quote($bank_account)
-        . " AND bt.trans_date <= '" . Dates::date2sql($date) . "' AND bt.undeposited=0 AND (bt.reconciled IS NULL OR bt
-			 .reconciled='" .
-        Dates::date2sql($date) . "') AND bt.amount!=0 GROUP BY bt.id ORDER BY bt.trans_date ASC";
-
-      // or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
+			WHERE   bt.bank_act = " . DB::quote($bank_account) . " AND bt.trans_date <= '" . Dates::date2sql($date) . "' AND bt.undeposited=0
+			AND (bt.reconciled IS NULL OR bt.reconciled='" . Dates::date2sql($date) . "') AND bt.amount!=0 GROUP BY bt.id ORDER BY bt.trans_date ASC";
       return $sql;
     }
     /**
@@ -180,15 +166,11 @@
      *
      * @param $bank_account
      * @param $date
+     * @return null|\PDOStatement
      */
     static public function reset_sql_for_reconcile($bank_account, $date) {
-      $sql
-        = "UPDATE	reconciled
-		FROM bank_trans
-		WHERE bank_trans.bank_act = " . DB::escape($bank_account) . "
-			AND undeposited = 0 AND reconciled = '" . Dates::date2sql($date) . "'";
-      // or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
-      $result = DB::query($sql);
+      $sql = "UPDATE	reconciled FROM bank_trans WHERE bank_trans.bank_act = " . DB::escape($bank_account) . " AND undeposited = 0 AND reconciled = '" . Dates::date2sql($date) . "'";
+      return DB::query($sql);
     }
     /**
      * @static

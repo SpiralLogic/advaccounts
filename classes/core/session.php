@@ -130,8 +130,9 @@ use Traits\Singleton;
     }
     /**
      * @param $var
-     * @param $valie
+     * @param $value
      *
+     * @internal param $valie
      * @return float|string
      */
     public function setGlobal($var, $value) {
@@ -145,7 +146,7 @@ use Traits\Singleton;
      *
      * @return mixed
      */
-    public function getGlobal($var, $default) {
+    public function getGlobal($var, $default=NULL) {
       return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**
