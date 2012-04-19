@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Page {
 
     /** @var \Renderer */
@@ -299,11 +299,13 @@
         Sidemenu::render();
       }
       Messages::show();
-      JS::render();
       if (AJAX_REFERRER) {
+        JS::render();
         return;
       }
-      echo "</div></body>"; //End content div
+      echo "</div></body>";
+      JS::render();
+      //End content div
       echo   "</html>\n";
     }
 
@@ -356,7 +358,7 @@
      * @param bool $exit
      */
     public static function error_exit($text, $exit = TRUE) {
-     ob_get_clean();
+      ob_get_clean();
       $page = new static('Fatal Error.', FALSE);
       $page->header();
       echo "<div id='msgbox'>$text</div></div></body></html>";
