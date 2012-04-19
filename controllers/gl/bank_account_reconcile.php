@@ -181,6 +181,8 @@ JS;
     $hidden = 'last[' . $row['id'] . ']';
     $value = $row['reconciled'] != '';
     // save also in hidden field for testing during 'Reconcile'
+    JS::set_focus($name);
+
     return checkbox(NULL, $name, $value, TRUE, _('Reconcile this transaction')) . hidden($hidden, $value, FALSE);
   }
 
