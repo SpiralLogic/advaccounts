@@ -414,7 +414,7 @@
      * @param null $id
      */
     static public function submenu_option($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(BASE_URL . $url, $title, $id), 1,0);
+      Display::note(Display::menu_button(BASE_URL . ltrim($url,'/'), $title, $id), 1,0);
     }
 
     /**

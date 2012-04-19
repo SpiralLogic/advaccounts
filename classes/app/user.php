@@ -299,7 +299,7 @@
      */
     static public function add_js_data() {
       $js
-        = "var user = {heme: '/themes/" . static::theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datesys: " . Config::get('accounts.datesystem') . ",datefmt: " . static::date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
+        = "var user = {theme: '/themes/" . static::theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datesys: " . Config::get('accounts.datesystem') . ",datefmt: " . static::date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
         ts: '" . static::tho_sep() . "',ds: '" . static::dec_sep() . "',pdec: " . static::price_dec() . "};";
       JS::beforeload($js);
     }
