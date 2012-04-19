@@ -13,7 +13,7 @@
    *
    */
   class Num {
-
+use Traits\Singleton;
     /**
      * @var int
      */
@@ -35,16 +35,6 @@
      */
     public static $percent_dec;
 
-    /**
-     * @var
-     */
-    protected static $i;
-    static public function i() {
-      if (static::$i === NULL) {
-        static::$i = new static();
-      }
-      return static::$i;
-    }
     /**
      *
      */

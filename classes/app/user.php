@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class User {
 
   use \ADV\Core\Traits\Hook;
@@ -137,7 +137,6 @@
      * @param $loginname
      *
      * @internal param $password
-     *
      * @return bool
      */
     public function login($company, $loginname) {
@@ -300,16 +299,8 @@
      */
     static public function add_js_data() {
       $js
-        = "\nvar user = {
-						 \n theme: '/themes/" . static::theme() . "/',
-						 \nloadtxt: '" . _('Requesting data...') . "',
-						 \ndate: '" . Dates::today() . "',
-						 \ndatesys: " . Config::get('accounts.datesystem') . ",
-						 \ndatefmt: " . static::date_format() . ",
-						 \ndatesep: '" . Config::get('date.ui_format') . "',
-						 \nts: '" . static::tho_sep() . "',
-						 \nds: '" . static::dec_sep() . "',
-						 \npdec: " . static::price_dec() . "}\n";
+        = "var user = {heme: '/themes/" . static::theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datesys: " . Config::get('accounts.datesystem') . ",datefmt: " . static::date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
+        ts: '" . static::tho_sep() . "',ds: '" . static::dec_sep() . "',pdec: " . static::price_dec() . "};";
       JS::beforeload($js);
     }
     /**

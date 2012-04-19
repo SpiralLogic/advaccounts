@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Session::i()->App->set_selected('Debtors');
   if (AJAX_REFERRER) {
@@ -94,13 +94,13 @@
   text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 35, 30);
   email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
   textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-  Contact_Postcode::render(array(
-    'br_city', $currentBranch->city
-  ), array(
-    'br_state', $currentBranch->state
-  ), array(
-    'br_postcode', $currentBranch->postcode
-  ));
+  $branch_postcode = new Contact_Postcode(array(
+      'city' => array('br_city', $currentBranch->city),
+      'state' => array('br_state', $currentBranch->state),
+      'postcode' => array('br_postcode', $currentBranch->postcode)
+    )
+  );
+  $branch_postcode->render();
   table_section(2);
   table_section_title(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
@@ -115,13 +115,13 @@
   text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 35, 30);
   email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 55);
   textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-  Contact_Postcode::render(array(
-    'acc_city', $customer->accounts->city
-  ), array(
-    'acc_state', $customer->accounts->state
-  ), array(
-    'acc_postcode', $customer->accounts->postcode
-  ));
+  $accounts_postcode = new Contact_Postcode(array(
+      'city' => array('acc_city', $customer->accounts->city),
+      'state' => array('acc_state', $customer->accounts->state),
+      'postcode' => array('acc_postcode', $customer->accounts->postcode)
+    )
+  );
+  $accounts_postcode->render();
   end_outer_table(1);
   $menu->endTab()->startTab('Accounts', 'Accounts');
   hidden('accounts_id', $customer->accounts->accounts_id);
@@ -187,7 +187,7 @@
     'content' => _("Website ID: "), "class" => "label"
   ), FALSE)->td(TRUE);
   HTML::input('webid', array(
-    'value' => $customer->webid,'disabled'=>true, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
+    'value' => $customer->webid, 'disabled' => TRUE, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
   ));
   HTML::td()->tr;
   table_section(2);

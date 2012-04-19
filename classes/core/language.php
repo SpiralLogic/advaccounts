@@ -20,7 +20,7 @@
    *
    */
   class Language {
-
+use Traits\Singleton;
     /**
      * @var
      */
@@ -44,10 +44,7 @@
      * @var
      */
     protected $installed_languages;
-    /**
-     * @var Language
-     */
-    static protected $i = NULL;
+
     /**
      * @var
      */
@@ -64,13 +61,7 @@
       $this->encoding = $encoding;
       $this->dir = $dir;
     }
-    /**
-     * @static
-     * @return Language|null
-     */
-    static public function i() {
-      return static::$i;
-    }
+
     /**
      * @param $code
      */

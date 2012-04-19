@@ -22,14 +22,7 @@
 
    */
   class Session extends \Input {
-    /**
-     * @static
-     * @return Session|mixed
-     */
-    static public function i() {
-      (static::$i === NULL) and static::$i = new static;
-      return static::$i;
-    }
+use Traits\Singleton;
     /**
      * @static
      * @return void
@@ -47,10 +40,6 @@
     static public function regenerate() {
       session_regenerate_id();
     }
-    /**
-     * @var Session
-     */
-    static private $i = NULL;
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */

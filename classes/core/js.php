@@ -10,7 +10,7 @@
   namespace ADV\Core;
 
   /**
-   *
+
    */
   class JS {
 
@@ -240,7 +240,7 @@ JSS;
       if (self::$_onlive) {
         $onReady .= 'Adv.Events.onload(function(){' . implode("", self::$_onlive) . '}';
         if (count(self::$_toclean)) {
-          $onReady .= ',function(){' . implode(";", self::$_toclean) . '}';
+          $onReady .= ',function(){' . implode("", self::$_toclean) . '}';
         }
         $onReady .= ');';
       }
@@ -294,7 +294,6 @@ JSS;
      * @static
      *
      * @param array $options
-     *
      * @param array $funcs
      * @param int   $level
      *
@@ -436,9 +435,7 @@ JSS;
         }
       }
       else {
-        if (substr(trim($js), -1) !== ';') {
-          $js .= ';';
-        }
+        $js = rtrim($js, ';') . ';';
         array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
       }
     }
@@ -498,3 +495,5 @@ JSS;
       $_POST['_focus'] = $name;
     }
   }
+
+  JS::footerFile(Config::get('assets.footer'), TRUE);

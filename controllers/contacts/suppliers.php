@@ -81,13 +81,13 @@
   email_row(_("Email:"), 'email', $supplier->email, 35, 55);
 
   textarea_row(_("Street:"), 'address', $supplier->address, 35, 2);
-  Contact_Postcode::render(array(
-    'city', $supplier->city
-  ), array(
-    'state', $supplier->state
-  ), array(
-    'postcode', $supplier->postcode
-  ));
+ $branch_postcode = new Contact_Postcode(array(
+        'city' => array('city', $supplier->city),
+        'state' => array('state', $supplier->state),
+        'postcode' => array('postcode', $supplier->postcode)
+      )
+    );
+    $branch_postcode->render();
   table_section(2);
   table_section_title(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
@@ -98,14 +98,14 @@
   HTML::tr(FALSE)->_td();
   text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
   textarea_row(_("Address:"), 'supp_address', $supplier->supp_address, 35, 2);
-  Contact_Postcode::render(array(
-    'supp_city', $supplier->supp_city
-  ), array(
-    'supp_state', $supplier->supp_state
-  ), array(
-    'supp_postcode', $supplier->supp_postcode
-  ));
 
+  $supp_postcode = new Contact_Postcode(array(
+         'city' => array('supp_city', $supplier->supp_city),
+         'state' => array('supp_state', $supplier->supp_state),
+         'postcode' => array('supp_postcode', $supplier->supp_postcode)
+       )
+     );
+  $supp_postcode->render();
   end_outer_table(1);
   $menu->endTab()->startTab('Accounts', 'Accounts');
   start_outer_table('tablestyle2');

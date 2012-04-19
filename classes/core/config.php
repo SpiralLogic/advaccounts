@@ -19,25 +19,12 @@
 
    */
   class Config {
-
+use Traits\Singleton;
     /***
      * @var array|null
      */
     protected $_vars = NULL;
-    /**
-     * @var Config
-     */
-    static protected $i = NULL;
-    /**
-     * @static
-     * @return Config
-     */
-    static public function i() {
-      if (static::$i === NULL) {
-        static::$i = new static;
-      }
-      return static::$i;
-    }
+
     /**
 
      */
@@ -157,8 +144,8 @@
      * @static
 
      */
-    protected function js() {
-      \JS::footerFile(static::get('assets.footer'), TRUE);
+    static function js() {
+
     }
     /**
      * @static

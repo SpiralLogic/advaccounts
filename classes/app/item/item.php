@@ -543,6 +543,7 @@
      * @static
      *
      * @param string $location
+     *
      * @return void
      */
     static protected function load_stock_levels($location = '') {
@@ -578,6 +579,7 @@
      * @static
      *
      * @param $terms
+     *
      * @return void
      */
     static public function searchSale($terms) {
@@ -631,7 +633,22 @@ s.category_id, editable, 0 as kit,
      * @return array|bool
      */
     static public function searchOrder($term, $UniqueID) {
-      $o = $_SESSION['search'][$UniqueID];
+      if (!isset($_SESSION['search'])) {
+        $o = array(
+          'url' => FALSE, //
+          'nodiv' => FALSE, //
+          'label' => FALSE, //
+          'size' => 30, //
+          'name' => FALSE, //
+          'set' => FALSE, //
+          'value' => FALSE, //
+          'focus' => FALSE, //
+          'callback' => FALSE //
+        );
+      }
+      else {
+        $o = $_SESSION['search'][$UniqueID];
+      }
       $term = explode(' ', trim($term));
       $item_code = trim(array_shift($term));
       $terms = array($item_code, '%' . $item_code . '%');
@@ -689,6 +706,7 @@ s.category_id, editable, 0 as kit,
      * @static
      *
      * @param array $options
+     *
      * @return void
      */
     static public function addEditDialog($options = array()) {
@@ -767,6 +785,7 @@ JS;
      * @param        $dimension_id
      * @param        $dimension2_id
      * @param        $no_sale
+     *
      * @return void
      */
     static public function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
@@ -810,6 +829,7 @@ JS;
      * @param $dimension_id
      * @param $dimension2_id
      * @param $no_sale
+     *
      * @return void
      */
     static public function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
@@ -831,6 +851,7 @@ JS;
      * @static
      *
      * @param $stock_id
+     *
      * @return void
      */
     static public function del($stock_id) {
@@ -959,6 +980,7 @@ JS;
      * @param bool $all
      * @param bool $editkey
      * @param bool $legacy
+     *
      * @return void
      */
     static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE, $legacy = FALSE) {

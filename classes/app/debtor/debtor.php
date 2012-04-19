@@ -356,7 +356,8 @@
       $this->accounts = new Debtor_Account();
       $this->branches[0] = new Debtor_Branch();
       $this->contacts[0] = new Contact(CT_CUSTOMER);
-      $this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
+      $this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->id = 0;
+      $this->contacts[0]->parent_id = 0;
       $this->_setDefaults();
       return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
     }

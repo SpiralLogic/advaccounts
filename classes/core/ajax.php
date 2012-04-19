@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,9 +11,11 @@
   use \JsHttpRequest;
 
   /**
-   *
+
    */
   class Ajax extends \JsHttpRequest {
+
+  use Traits\Singleton;
 
     /**
      * @var array
@@ -24,24 +25,12 @@
      * @var array
      */
     public $triggers = array();
-    /**
-     * @var null
-     */
-    static protected $i = NULL;
-    /***
-     * @static
-     * @return Ajax
-     * Returns Ajax Instance
-     */
-    static public function i() {
-      (static::$i === NULL) and  static::$i = new static;
-      return static::$i;
-    }
+
     /**
 
      */
     function __construct() {
-      $enc = (session_status()==PHP_SESSION_ACTIVE)?$_SESSION['Language']->encoding:'UTF-8';
+      $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['Language']->encoding : 'UTF-8';
       parent::__construct($enc);
     }
     /**
@@ -49,6 +38,7 @@
      *   update of ajaxified html element selected by given name/id.
      *
      * @param $trigname
+     *
      * @return void
      */
     function activate($trigname) {
@@ -59,6 +49,7 @@
      *   This is the last command added to reponse (if any).
      *
      * @param $url
+     *
      * @return void
      */
     function redirect($url) {
@@ -71,6 +62,7 @@
      * Popup window (target=_blank)
      *
      * @param $url
+     *
      * @return void
      */
     function popup($url) {
@@ -100,8 +92,8 @@
      */
     function addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
-                                   ), $sData);
+        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+      ), $sData);
       return $this;
     }
     /**
@@ -115,8 +107,8 @@
      */
     function addUpdate($trigger, $sTarget, $sData) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'up', 't' => $sTarget
-                                   ), $sData);
+        'n' => 'up', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
@@ -130,8 +122,8 @@
      */
     function addDisable($trigger, $sTarget, $sData = TRUE) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), $sData);
+        'n' => 'di', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
@@ -145,8 +137,8 @@
      */
     function addEnable($trigger, $sTarget, $sData = TRUE) {
       $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), !$sData);
+        'n' => 'di', 't' => $sTarget
+      ), !$sData);
       return $this;
     }
     /**
@@ -167,6 +159,7 @@
      * @param $trigger
      * @param $aAttributes
      * @param $mData
+     *
      * @return void
      */
     function _addCommand($trigger, $aAttributes, $mData) {
@@ -226,7 +219,7 @@
      * @return string
      */
     public function absolute_url($url) {
-      return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT,'/',$url);
+      return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
     }
   }
 

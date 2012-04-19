@@ -378,9 +378,7 @@
      *
      * @return int|string
      */
-    static function date2sql($date_, $pad = TRUE) {
-      /* takes a date in a the format specified in $DefaultDateFormat
-                                                  and converts to a yyyy/mm/dd format */
+    static function date2sql($date_) {
       if (!$date_) {
         return '';
       }
@@ -393,55 +391,17 @@
       // Split up the date by the separator based on "how" to split it
       if ($how == 0) // MMDDYYYY
       {
-        list($month, $day, $year) = explode($sep, $date_);
+        $date_=str_replace($sep,'/',$date_);
+      }else {
+        $date_=str_replace($sep,'-',$date_);
       }
-      elseif ($how == 1) // DDMMYYYY
-      {
-        list($day, $month, $year) = explode($sep, $date_);
-      }
-      else // $how == 2, YYYYMMDD
-      {
-        list($year, $month, $day) = explode($sep, $date_);
-      }
+      $date_=date('Y-m-d',strtotime($date_));
+      list($year,$month,$day)=explode('-',$date_);
       if (!checkdate($month, $day, $year)) {
         Event::error('Incorrect date entered!');
         return FALSE;
       }
-      //to modify assumption in 2030
-      switch (Config::get('accounts.datesystem')) {
-        case 0:
-        case 3:
-          if ((int) $year < 60) {
-            $year = "20" . $year;
-          }
-          elseif ((int) $year > 59 && (int) $year < 100) {
-            $year = "19" . $year;
-          }
-          break;
-        case 1:
-          list($year, $month, $day) = Dates::jalali_to_gregorian($year, $month, $day);
-          break;
-        case 2:
-          list($year, $month, $day) = Dates::islamic_to_gregorian($year, $month, $day);
-          break;
-      }
-      if ((int) $year > 9999) {
-        return 0;
-      }
-      // Pad with 0s if needed
-      if (strlen($month) == 1) {
-        $month = "0$month";
-      }
-      if (strlen($day) == 1) {
-        $day = "0$day";
-      }
-      if ($pad) {
-        return $year . "-" . $month . "-" . $day;
-      }
-      $return = (($year != 20) ? $year . '-' : '');
-      $return .= (($month > 0) ? $month . '-' : '');
-      $return .= ($day > 0) ? $day : '';
-      return $return;
+      return $date_;
     }
     /**
      * @static

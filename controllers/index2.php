@@ -2,4 +2,4 @@
 
 
 
-var_dump(Dates::is_date_in_fiscalyear('11/04/2012'));
+var_dump(Dates::date2sql('19/04/2012'));

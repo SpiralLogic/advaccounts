@@ -8,7 +8,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   abstract class DB_abstract {
-    use \ADV\Core\Traits\SetFromArray;
+
+  use \ADV\Core\Traits\SetFromArray;
+  use \ADV\Core\Traits\Status;
+
     /**
      * @var int
      */
@@ -21,23 +24,11 @@
      * @var
      */
     protected $_id_column;
-    /** @var Status */
-    protected $_status = NULL;
     abstract public function delete();
     abstract protected function _canProcess();
     abstract protected function _defaults();
     abstract protected function _new();
-    /**
-     * @param bool $string return status as string if true and as array if false
-     *
-     * @return string|array
-     */
-    public function getStatus($string = FALSE) {
-      if ($string) {
-        return $this->_status;
-      }
-      return $this->_status->get();
-    }
+
     /**
      * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
      *
@@ -135,25 +126,6 @@
         return $this->_status(FALSE, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
       return $this->_status(TRUE, 'write', 'Added to databse: ' . get_class($this));
-    }
-
-    /***
-     * @param null   $status
-     * @param null   $process
-     * @param string $message
-     * @param null   $var
-     *
-     * @return Status|bool
-     */
-    protected function _status($status = NULL, $process = NULL, $message = '', $var = NULL) {
-      if ($var === NULL) {
-        $var = $this->id;
-      }
-      if (!$this->_status) {
-        $this->_status = new Status($status, $process, $message, $var);
-        return $status;
-      }
-      return $this->_status->set($status, $process, $message, $var);
     }
   }
 

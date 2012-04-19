@@ -844,7 +844,7 @@
     if ($check && (get_post($name) != Dates::today())) {
       $aspect .= ' style="color:#FF0000"';
     }
-    echo "<input id='$name' type='date' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" .
+    echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" .
       $_POST[$name] . "\"" . ($title ?
       " title='$title'" : '') . " > $post_label";
     echo "</td>\n";
