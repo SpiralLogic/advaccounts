@@ -183,9 +183,9 @@
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
   Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
   yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
-  HTML::td()->td(array(
+  HTML::tr(true)->td(array(
     'content' => _("Website ID: "), "class" => "label"
-  ), FALSE)->td(TRUE);
+  ), FALSE)->td(true);
   HTML::input('webid', array(
     'value' => $customer->webid, 'disabled' => TRUE, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
   ));
@@ -200,11 +200,12 @@
   textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
   end_outer_table(1);
 
-  hidden('frame', Input::request('frame'));
-  end_form();
-  $menu->endTab()->startTab('Invoices', 'Invoices');
+  $menu->endTab();
+  $menu->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
-  $menu->endTab()->render();
+  $menu->endTab()->render();  hidden('frame', Input::request('frame'));
+HTML::div();
+  end_form();
 
   HTML::div('contactLog', array(
     'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
@@ -240,5 +241,6 @@ JS
     HTML::_div();
     UI::emailDialogue(CT_CUSTOMER);
   }
+  HTML::_div();
 
-  Page::end(FALSE, TRUE);
+  Page::end(TRUE);

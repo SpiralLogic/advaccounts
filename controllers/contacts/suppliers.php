@@ -1,13 +1,13 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Session::i()->App->set_selected('Creditors');
   if (AJAX_REFERRER) {
@@ -81,13 +81,13 @@
   email_row(_("Email:"), 'email', $supplier->email, 35, 55);
 
   textarea_row(_("Street:"), 'address', $supplier->address, 35, 2);
- $branch_postcode = new Contact_Postcode(array(
-        'city' => array('city', $supplier->city),
-        'state' => array('state', $supplier->state),
-        'postcode' => array('postcode', $supplier->postcode)
-      )
-    );
-    $branch_postcode->render();
+  $branch_postcode = new Contact_Postcode(array(
+      'city' => array('city', $supplier->city),
+      'state' => array('state', $supplier->state),
+      'postcode' => array('postcode', $supplier->postcode)
+    )
+  );
+  $branch_postcode->render();
   table_section(2);
   table_section_title(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
@@ -95,16 +95,16 @@
     'class' => "center", 'colspan' => 2
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
-  HTML::tr(FALSE)->_td();
+  HTML::_td()->tr;
   text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
   textarea_row(_("Address:"), 'supp_address', $supplier->supp_address, 35, 2);
 
   $supp_postcode = new Contact_Postcode(array(
-         'city' => array('supp_city', $supplier->supp_city),
-         'state' => array('supp_state', $supplier->supp_state),
-         'postcode' => array('supp_postcode', $supplier->supp_postcode)
-       )
-     );
+      'city' => array('supp_city', $supplier->supp_city),
+      'state' => array('supp_state', $supplier->supp_state),
+      'postcode' => array('supp_postcode', $supplier->supp_postcode)
+    )
+  );
   $supp_postcode->render();
   end_outer_table(1);
   $menu->endTab()->startTab('Accounts', 'Accounts');
@@ -160,6 +160,8 @@
   HTML::td()->tr->table->script->div->div;
 
   hidden('frame', Input::request('frame'));
+  HTML::_div();
+
   end_form();
   $menu->endTab()->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
@@ -193,4 +195,6 @@
     HTML::_div();
     UI::emailDialogue(CT_SUPPLIER);
   }
-  Page::end(FALSE, TRUE);
+  HTML::_div();
+
+  Page::end(TRUE);

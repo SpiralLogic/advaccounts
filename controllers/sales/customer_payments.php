@@ -1,13 +1,13 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   JS::open_window(900, 500);
   JS::footerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
@@ -133,4 +133,4 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
   JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', TRUE);
-  Page::end(!Input::request('frame')) ;
+  Page::end(!Input::request('frame'));

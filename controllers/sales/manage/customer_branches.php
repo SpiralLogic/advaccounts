@@ -11,7 +11,6 @@
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
 
-
   Page::start(_($help_context = "Customer Branches"), SA_CUSTOMER, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
   Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
@@ -156,21 +155,21 @@
         _("Inactive") => 'inactive',
         //		array('fun'=>'inactive'),
         ' ' => array(
-          'insert' => TRUE, 'fun' =>   function ($row) {
-              return button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
-            }
+          'insert' => TRUE, 'fun' => function ($row) {
+            return button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
+          }
 
         ),
         array(
-          'insert' => TRUE, 'fun' =>   function ($row) {
-              return button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
-            }
+          'insert' => TRUE, 'fun' => function ($row) {
+          return button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
+        }
 
         ),
         array(
-          'insert' => TRUE, 'fun' =>   function ($row) {
-              return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
-            }
+          'insert' => TRUE, 'fun' => function ($row) {
+          return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
+        }
 
         )
       );

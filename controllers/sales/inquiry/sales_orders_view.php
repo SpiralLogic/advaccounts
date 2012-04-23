@@ -11,7 +11,6 @@
           See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
 
-
   Security::set_page(Input::post('order_view_mode'), array(
     'OutstandingOnly' => SA_SALESDELIVERY, 'InvoiceTemplates' => SA_SALESINVOICE
   ), array(
@@ -314,9 +313,9 @@
     elseif ($trans_type == ST_SALESQUOTE || $trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
           array(
-           'insert' => TRUE, 'fun' => function ($row) {
+            'insert' => TRUE, 'fun' => function ($row) {
             global $trans_type;
-            if ($row['trans_type']== ST_SALESQUOTE) {
+            if ($row['trans_type'] == ST_SALESQUOTE) {
               return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
             }
             $name = "chgtpl" . $row['order_no'];
@@ -338,7 +337,7 @@
           ),
           array(
             'insert' => TRUE, 'fun' => function ($row) {
-            return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ($row['trans_type']== ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
+            return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
           }
           ),
           array(

@@ -171,6 +171,7 @@ img {
 	text-indent:    20px;
 	background:     white;
 	height:         60px;
+
 }
 
 #hints {
@@ -183,9 +184,8 @@ img {
 }
 
 img#ajaxmark {
-	margin:     15px;
+	margin:     15px auto;
 	visibility: hidden;
-	position:   absolute;
 	top:        0;
 }
 
@@ -274,6 +274,7 @@ img#ajaxmark {
 	color:      #808080;
 	text-align: right;
 	margin:     5px 15px 5px 5px;
+  top:5px;
 }
 
 #top p {

@@ -1,13 +1,13 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   JS::open_window(900, 500);
   JS::headerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
@@ -77,7 +77,7 @@
   else {
     hidden('branch_id', ANY_NUMERIC);
   }
-  Debtor_Payment::read_customer_data($customer->id,true);
+  Debtor_Payment::read_customer_data($customer->id, TRUE);
   Session::i()->global_customer = $customer->id;
   $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
   table_section(2);
@@ -109,4 +109,4 @@
   submit_center('AddRefundItem', _("Add Refund"), TRUE, '', 'default');
   Display::br();
   end_form();
-    Page::end(!Input::request('frame'));
+  Page::end(!Input::request('frame'));

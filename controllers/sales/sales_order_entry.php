@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,18 +9,18 @@
    **/
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-                                                            ST_SALESORDER => SA_SALESORDER,
-                                                            ST_SALESQUOTE => SA_SALESQUOTE,
-                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
-                                                            ST_SALESINVOICE => SA_SALESINVOICE
-                                                       ), array(
-                                                               Orders::NEW_ORDER => SA_SALESORDER,
-                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
-                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
-                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
-                                                          ));
+    ST_SALESORDER => SA_SALESORDER,
+    ST_SALESQUOTE => SA_SALESQUOTE,
+    ST_CUSTDELIVERY => SA_SALESDELIVERY,
+    ST_SALESINVOICE => SA_SALESINVOICE
+  ), array(
+    Orders::NEW_ORDER => SA_SALESORDER,
+    Orders::MODIFY_ORDER => SA_SALESORDER,
+    Orders::NEW_QUOTE => SA_SALESQUOTE,
+    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+    Orders::NEW_INVOICE => SA_SALESINVOICE
+  ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
@@ -347,10 +346,6 @@
     //	UploadHandler::insert($order_no);
     Page::footer_exit();
   }
-
-
-
-
 
   /**
    * @param Sales_Order $order

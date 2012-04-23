@@ -49,7 +49,7 @@
       HTML::td()->tr;
       HTML::tr(TRUE)->td(array('class' => 'label'))->label(array('content' => 'State: ', 'for' => $this->state[0]), FALSE)->td->td(TRUE);
       HTML::input($this->state[0], array('maxlength' => 35, 'data-set' => static::$count, 'size' => 35, 'value' => $this->state[1], 'name' => $this->state[0]));
-      HTML::tr(TRUE)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $this->postcode[0]), FALSE)->td->td(TRUE);
+      HTML::td()->tr()->tr(TRUE)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $this->postcode[0]), FALSE)->td->td(TRUE);
       UI::search($this->postcode[0], array(
         'url' => $this->url . '?postcode=1',
         'nodiv' => TRUE,

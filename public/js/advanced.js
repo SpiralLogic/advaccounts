@@ -39,7 +39,6 @@ jQuery.extend(jQuery.easing, {
 (function (window, $, undefined) {
 	//noinspection LocalVariableNamingConventionJS
 	var Adv = {
-
 		loader:document.getElementById('ajaxmark'),
 		fieldsChanged:0,
 		debug:{ ajax:true},
@@ -73,7 +72,7 @@ jQuery.extend(jQuery.easing, {
 				}
 			},
 			on:function (tout) {
-				var img = tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif';
+				var img = tout > 50000 ? 'progressbar.gif' : 'ajax-loader.gif';
 				Adv.loader.off(img);
 			}
 		})
@@ -87,7 +86,7 @@ Adv.extend({
 			 return;
 		 }
 		 var status = {
-			 status:false,
+			 status:256,
 			 message:"Request failed: " + settings.url + "<br>"
 		 };
 		 Adv.showStatus(status);
@@ -161,8 +160,7 @@ Adv.extend({
 		height = height || 600;
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
-		return window.open(url, title,
-		 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
+		return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 	},
 	hoverWindow:{
 		_init:false, init:function (width, height) {
@@ -172,8 +170,7 @@ Adv.extend({
 				return;
 			}
 			Adv.hoverWindow._init = true;
-			Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open',
-			 'div .openWindow,td .openWindow', function (e) {
+			Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
 				 if (e.type == 'click') {
 					 Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
 					 return false;
@@ -224,8 +221,7 @@ Adv.extend({Forms:(function () {
 	var i = document.createElement("input");
 	i.setAttribute("type", "date");
 	if (i.type == "text") {
-		Adv.o.wrapper.on('focus', ".datepicker",
-		 function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+		Adv.o.wrapper.on('focus', ".datepicker", function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 	}
 	var _setFormValue = function (el, value, disabled) {
 		if (!el) {
