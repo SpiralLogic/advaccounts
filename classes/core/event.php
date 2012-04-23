@@ -136,7 +136,6 @@
       /** @noinspection PhpUndefinedFunctionInspection */
       fastcgi_finish_request();
       static::$request_finsihed = TRUE;
-
       try {
         static::fireHooks('shutdown');
       }
@@ -144,6 +143,5 @@
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);
-
     }
   }

@@ -12,17 +12,18 @@
   use \Memcached;
 
   /**
-
+   *
    */
   class SessionException extends \Exception {
   }
 
-  ;
   /**
-
+   *
+   * @property \ADVAccounting App
    */
   class Session extends \Input {
-use Traits\Singleton;
+  use Traits\Singleton;
+
     /**
      * @static
      * @return void
@@ -60,18 +61,24 @@ use Traits\Singleton;
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = NULL;
+      /** @noinspection PhpUndefinedFunctionInspection */
+      /** @noinspection PhpUndefinedConstantInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path = ini_set('session.save_path', '127.0.0.1:11211');
         (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
+      /** @noinspection PhpUndefinedConstantInspection */
+      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE) {
         ini_set('session.save_handler', $old_handler);
         ini_set('session.save_path', $old_path);
         $old_serializer and  ini_set('session.serialize_handler', $old_serializer);
         session_start();
       }
+      /** @noinspection PhpUndefinedFunctionInspection */
+      /** @noinspection PhpUndefinedConstantInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
@@ -146,7 +153,7 @@ use Traits\Singleton;
      *
      * @return mixed
      */
-    public function getGlobal($var, $default=NULL) {
+    public function getGlobal($var, $default = NULL) {
       return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**

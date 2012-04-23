@@ -14,9 +14,8 @@
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     /** @noinspection PhpUndefinedConstantInspection */
     /** @noinspection PhpUndefinedFunctionInspection */
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_NO_BUILTINS + XHPROF_FLAGS_MEMORY);
+    xhprof_enable(XHPROF_FLAGS_CPU  + XHPROF_FLAGS_MEMORY);
   }
-
   error_reporting(-1);
   ini_set('display_errors', 1);
   ini_set("ignore_repeated_errors", "On");
@@ -43,8 +42,6 @@
     ADV\Core\Errors::exception_handler($e);
   });
   require COREPATH . 'autoloader.php';
-
-
   if ($_SERVER['DOCUMENT_URI'] !== '/assets.php') {
     if (!function_exists('e')) {
       /**

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,19 +13,16 @@
 
    */
   class Config_Exception extends \Exception {
-
   }
-
-  /***
-
+  /**
+   *
    */
   class Config {
-use Traits\Singleton;
+  use Traits\Singleton;
     /***
      * @var array|null
      */
     protected $_vars = NULL;
-
     /**
 
      */
@@ -80,9 +78,10 @@ use Traits\Singleton;
      *
      * @param        $var
      * @param string $group
+     * @param string $group
      */
     static public function remove($var, $group = 'config') {
-      $i=static::i();
+      $i = static::i();
       if (array_key_exists($var, $i->_vars[$group])) {
         unset($i->_vars[$group][$var]);
       }
@@ -94,19 +93,28 @@ use Traits\Singleton;
      * @param array  $default
      *
      * @return mixed
+     * @return array
      */
     static public function get_all($group = 'config', $default = array()) {
-      $i=static::i();
+      $i = static::i();
       if (!isset($i->_vars[$group]) && $i->load($group) === FALSE) {
         return $default;
       }
       ;
       return $i->_vars[$group];
     }
+    /**
+     * @static
+     *
+     */
     static public function removeAll() {
       static::i()->_vars = array();
       Event::register_shutdown(__CLASS__);
     }
+    /**
+     * @static
+     *
+     */
     static public function reset() {
       static::removeAll();
       static::i()->load();
@@ -145,7 +153,6 @@ use Traits\Singleton;
 
      */
     static function js() {
-
     }
     /**
      * @static

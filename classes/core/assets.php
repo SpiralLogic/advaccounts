@@ -10,10 +10,11 @@
      * Author: Ali Farhadi (a.farhadi@gmail.com)
      * Website: http://farhadi.ir/
      */
-  //Default settings
-  class Assets22 {
-
-  //use \ADV\Core\Traits\SetFromArray;
+  namespace ADV\Core;
+  /**
+   *
+   */
+  class Assets {
 
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
@@ -47,7 +48,6 @@
         )
       )
     );
-    //mime types
     protected $mimeTypes = array(
       "js" => "text/javascript",
       "css" => "text/css",
@@ -61,7 +61,10 @@
       "gif" => "image/gif",
       "swf" => "application/x-shockwave-flash",
       "ico" => "image/x-icon",
-    );
+    );    //mime types
+    /**
+     * @param $status
+     */
     protected function headerExit($status) {
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
@@ -89,7 +92,9 @@
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
     }
-
+    /**
+     * @param $msg
+     */
     protected function debugExit($msg) {
       if (!$this->debug) {
         $this->headerExit('404 Not Found');
@@ -102,14 +107,20 @@
       echo "</script>\n";
       exit();
     }
-
+    /**
+     * @param null $time
+     *
+     * @return string
+     */
     protected function gmdatestr($time = NULL) {
       if (is_null($time)) {
         $time = time();
       }
       return gmdate("D, d M Y H:i:s", $time) . " GMT";
     }
-
+    /**
+     * @return int|mixed
+     */
     protected function filesmtime() {
       static $filesmtime;
       if ($filesmtime) {
@@ -124,6 +135,9 @@
       }
       return $filesmtime;
     }
+    /**
+     *
+     */
     public function __construct() {
     //  $this->setFromArray(Config::get_all('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
@@ -134,7 +148,6 @@
       else {
         $this->debugExit("Invalid file name ($query)");
       }
-      //if (strpos(realpath($fileDir), realpath($this->baseDir)) !== 0) $this->debugExit("File is out of base directory.");
       if ($this->concatenate) {
         $this->files = explode('&', $fileNames);
         $this->files = explode($this->separator, $this->files[0]);
@@ -202,7 +215,7 @@
         if ($generateContent) {
           $content = array();
           foreach ($this->files as $file) {
-            (($content[] = @file_get_contents($file)) !== FALSE) || $this->debugExit("File not found ($file).");
+            (($content[] = file_get_contents($file)) !== FALSE) || $this->debugExit("File not found ($file).");
           }
           $content = implode("\n", $content);
           if (isset($this->minifyTypes[$this->fileType])) {
@@ -222,7 +235,7 @@
           }
           if ($this->serverCache) {
             {
-              $handle = @fopen($cachedFile, 'w');
+              $handle = fopen($cachedFile, 'w');
               fwrite($handle, $content);
               fclose($handle);
             }

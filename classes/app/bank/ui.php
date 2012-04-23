@@ -262,7 +262,7 @@
      */
     static public function  reconcile($account, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       $sql = "SELECT reconciled FROM bank_trans
-							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL AND amount>0
+							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL AND amount!=0
 							GROUP BY reconciled";
       return select_box($name, $selected_id, $sql, 'id', 'reconciled', array(
         'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'

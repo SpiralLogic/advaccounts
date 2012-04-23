@@ -12,6 +12,7 @@
       'Adv_Exception', //
       'Ajax', //
       'Arr', //
+      'Assets', //
       'Auth', //
       'Autoloader', //
       'Cache', //
@@ -22,8 +23,8 @@
       'Errors', //
       'Event', //
       'Files', //
-      'HTML', //
       'Hook', //
+      'HTML', //
       'Input', //
       'JS', //
       'Language', //

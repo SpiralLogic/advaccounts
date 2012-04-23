@@ -15,7 +15,7 @@
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   $update_pager = FALSE;
   if (Input::post('reset')) {
-    GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+   // GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
     update_data();
   }
   $groupid = find_submit("_ungroup_");
@@ -49,7 +49,7 @@
     update_data();
   }
   if (get_post('_reconcile_date_changed')) {
-    $_POST['bank_date'] = check_date() ? Dates::date2sql(get_post('reconcile_date')) : '';
+    $_POST['bank_date'] = Dates::date2sql($_POST['reconcile_date']);
     Ajax::i()->activate('bank_date');
     update_data();
   }
@@ -292,6 +292,7 @@
     if (get_post('bank_date') == '') // new reconciliation
     {
       Ajax::i()->activate('bank_date');
+
     }
     $_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
     $reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';

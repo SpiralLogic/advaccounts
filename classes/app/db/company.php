@@ -416,7 +416,7 @@
      */
     static public function get_current_fiscalyear() {
       $year = DB_Company::get_pref('f_year');
-      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape(  $year);
+      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
       $result = DB::query($sql, "could not get current fiscal year");
       return DB::fetch($result);
     }

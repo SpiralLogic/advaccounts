@@ -174,6 +174,7 @@
         return 1;
       }
       $myrow = \DB_Company::get_current_fiscalyear();
+
       if ($myrow['closed'] == 1) {
         return 0;
       }
@@ -183,8 +184,10 @@
       else {
         $date2 = $date;
       }
+
       $begin = Dates::sql2date($myrow['begin']);
       $end = Dates::sql2date($myrow['end']);
+
       return (Dates::date1_greater_date2($date2, $begin) || Dates::date1_greater_date2($end, $date2));
     }
     /**

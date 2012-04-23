@@ -161,16 +161,14 @@
     if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
       Event::error(_("The selected transaction was closed for edition and cannot be voided."));
       JS::set_focus('trans_no');
-      return;
+      return FALSE;
     }
     if (!Dates::is_date($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::set_focus('date_');
       return FALSE;
     }
-    $_POST['date_']='11/04/2012';
-    var_dump(Dates::is_date_in_fiscalyear($_POST['date_']));
-    if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+       if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
       return FALSE;
