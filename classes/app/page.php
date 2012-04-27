@@ -12,6 +12,18 @@
     /** @var \Renderer */
     public $renderer = NULL;
     /**
+     * @var
+     */
+    public $encoding;
+    /**
+     * @var
+     */
+    public $ajaxpage;
+    public $lang_dir = '';
+    /** @var ADVAccounting */
+    protected $app;
+    protected $sel_app;
+    /**
      * @var bool
      */
     protected $frame = FALSE;
@@ -35,12 +47,6 @@
      * @var string
      */
     protected $theme = 'default';
-    /** @var ADVAccounting */
-    protected $app;
-    /**
-     * @var
-     */
-    protected $sel_app;
     /**
      * @var string
      */
@@ -51,18 +57,6 @@
      * @var null
      */
     static protected $security = NULL;
-    /**
-     * @var
-     */
-    public $encoding;
-    /**
-     * @var
-     */
-    public $ajaxpage;
-    /**
-     * @var string
-     */
-    public $lang_dir = '';
 
     /**
      * @param      $title
@@ -104,92 +98,6 @@
       }
       Security::check_page(static::$security);
       Display::div_start('_page_body');
-    }
-
-    /**
-     * @static
-     *
-     * @param        $title
-     * @param string $security
-     * @param bool   $no_menu
-     * @param bool   $is_index
-     *
-     * @return null|Page
-     */
-    static public function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
-      static::set_security($security);
-      if (static::$i === NULL) {
-        static::$i = new static($title, $is_index);
-      }
-      static::$i->init(!$no_menu);
-      return static::$i;
-    }
-
-    /**
-     * @static
-     *
-     * @param bool $numeric_id
-     *
-     * @return array
-     */
-    static public function simple_mode($numeric_id = TRUE) {
-      $default = $numeric_id ? -1 : '';
-      $selected_id = get_post('selected_id', $default);
-      foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
-        if (isset($_POST[$m])) {
-          Ajax::i()->activate('_page_body');
-          if ($m == MODE_RESET || $m == MODE_CLONE) {
-            $selected_id = $default;
-          }
-          unset($_POST['_focus']);
-          return array($m, $selected_id);
-        }
-      }
-      foreach (array(MODE_EDIT, MODE_DELETE) as $m) {
-        foreach ($_POST as $p => $pvar) {
-          if (strpos($p, $m) === 0) {
-            unset($_POST['_focus']); // focus on first form entry
-            $selected_id = quoted_printable_decode(substr($p, strlen($m)));
-            Ajax::i()->activate('_page_body');
-            return array($m, $selected_id);
-          }
-        }
-      }
-      return array('', $selected_id);
-    }
-
-    /**
-     * @static
-     *
-     * @param bool $file
-     */
-    static public function add_css($file = FALSE) {
-      static::$i->css[] = $file;
-    }
-
-    /**
-     * @static
-     *
-     * @param $security
-     */
-    static public function set_security($security) {
-      static::$security = $security;
-    }
-
-    /**
-     * @static
-     * @return null
-     */
-    public static function get_security() { return static::$security; }
-
-    /**
-     * @static
-
-     */
-    static public function footer_exit() {
-      Display::br(2);
-      static::$i->end_page(TRUE);
-      exit;
     }
 
     /**
@@ -258,17 +166,6 @@
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
         ' ' => '', '/' => '', '&' => 'And'
       ))) . '&ctxhelp=1&lang=' . $country;
-    }
-
-    /**
-     * @static
-     *
-     * @param bool $hide_back_link
-     */
-    static public function end($hide_back_link = FALSE) {
-      if (static::$i) {
-        static::$i->end_page($hide_back_link);
-      }
     }
 
     /**
@@ -354,6 +251,17 @@
     /**
      * @static
      *
+     * @param bool $hide_back_link
+     */
+    static public function end($hide_back_link = FALSE) {
+      if (static::$i) {
+        static::$i->end_page($hide_back_link);
+      }
+    }
+
+    /**
+     * @static
+     *
      * @param      $text
      * @param bool $exit
      */
@@ -363,6 +271,91 @@
       $page->header();
       echo "<div id='msgbox'>$text</div></div></body></html>";
       ($exit)  and exit();
+    }
+    /**
+     * @static
+     *
+     * @param        $title
+     * @param string $security
+     * @param bool   $no_menu
+     * @param bool   $is_index
+     *
+     * @return null|Page
+     */
+    static public function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
+      static::set_security($security);
+      if (static::$i === NULL) {
+        static::$i = new static($title, $is_index);
+      }
+      static::$i->init(!$no_menu);
+      return static::$i;
+    }
+
+    /**
+     * @static
+     *
+     * @param bool $numeric_id
+     *
+     * @return array
+     */
+    static public function simple_mode($numeric_id = TRUE) {
+      $default = $numeric_id ? -1 : '';
+      $selected_id = get_post('selected_id', $default);
+      foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
+        if (isset($_POST[$m])) {
+          Ajax::i()->activate('_page_body');
+          if ($m == MODE_RESET || $m == MODE_CLONE) {
+            $selected_id = $default;
+          }
+          unset($_POST['_focus']);
+          return array($m, $selected_id);
+        }
+      }
+      foreach (array(MODE_EDIT, MODE_DELETE) as $m) {
+        foreach ($_POST as $p => $pvar) {
+          if (strpos($p, $m) === 0) {
+            unset($_POST['_focus']); // focus on first form entry
+            $selected_id = quoted_printable_decode(substr($p, strlen($m)));
+            Ajax::i()->activate('_page_body');
+            return array($m, $selected_id);
+          }
+        }
+      }
+      return array('', $selected_id);
+    }
+
+    /**
+     * @static
+     *
+     * @param bool $file
+     */
+    static public function add_css($file = FALSE) {
+      static::$i->css[] = $file;
+    }
+
+    /**
+     * @static
+     *
+     * @param $security
+     */
+    static public function set_security($security) {
+      static::$security = $security;
+    }
+
+    /**
+     * @static
+     * @return null
+     */
+    static public function get_security() { return static::$security; }
+
+    /**
+     * @static
+
+     */
+    static public function footer_exit() {
+      Display::br(2);
+      static::$i->end_page(TRUE);
+      exit;
     }
   }
 

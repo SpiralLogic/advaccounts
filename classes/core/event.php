@@ -39,9 +39,9 @@
      */
     static public function init() {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
-      $shutdown_events = Cache::get(static::$shutdown_events_id);
-      if ($shutdown_events) {
-        while ($msg = array_pop($shutdown_events)) {
+      static::$shutdown_events = Cache::get(static::$shutdown_events_id);
+      if (static::$shutdown_events) {
+        while ($msg = array_pop(static::$shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2]);
         }
       }

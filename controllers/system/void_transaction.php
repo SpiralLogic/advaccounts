@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
@@ -168,7 +168,7 @@
       JS::set_focus('date_');
       return FALSE;
     }
-       if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
       return FALSE;
@@ -188,19 +188,25 @@
     if (check_valid_entries() == TRUE) {
       unset($_SESSION['voiding']);
       $void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
-      if ($void_entry != NULL) {
-        Event::error(_("The selected transaction has already been voided."), TRUE);
-        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
-        JS::set_focus('trans_no');
-        return;
+      $error = FALSE;
+      if ($_POST['filterType']==ST_SALESINVOICE && !User::i()->can_access(SA_VOIDINVOICE)) {
+        $error = _("You don't not have permissions required to delete this transaction.");
       }
-      $ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
-      if ($ret) {
-        Event::success(_("Selected transaction has been voided."));
-        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
+      elseif ($void_entry != NULL) {
+        $error = _("The selected transaction has already been voided.");
       }
       else {
-        Event::error(_("The entered transaction does not exist or cannot be voided."));
+        $ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
+        if (!$ret) {
+          $error = _("The entered transaction does not exist or cannot be voided.");
+        }
+      }
+      if (!$error) {
+        Event::success(_("Selected transaction has been voided."));
+      }
+      else {
+        Event::error($error);
+        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
         JS::set_focus('trans_no');
       }
     }

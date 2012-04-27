@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,6 +12,7 @@
 
    */
   class JS {
+
     /**
      * @var array
      */
@@ -215,7 +215,7 @@ JSS;
       if (!AJAX_REFERRER) {
         foreach (self::$_footerFiles as $dir => $file) {
           $files .= HTML::setReturn(TRUE)->script(array('src' => $dir . '/' . implode(',', $file)),
-                                                  FALSE)->setReturn(FALSE);
+            FALSE)->setReturn(FALSE);
         }
         echo $files;
       }

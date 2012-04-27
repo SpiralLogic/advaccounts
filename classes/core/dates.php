@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,9 +21,10 @@
 
    */
   /**
-   *
+
    */
   class Dates {
+
     /**
      * @static
      *
@@ -394,12 +394,13 @@
       // Split up the date by the separator based on "how" to split it
       if ($how == 0) // MMDDYYYY
       {
-        $date_=str_replace($sep,'/',$date_);
-      }else {
-        $date_=str_replace($sep,'-',$date_);
+        $date_ = str_replace($sep, '/', $date_);
       }
-      $date_=date('Y-m-d',strtotime($date_));
-      list($year,$month,$day)=explode('-',$date_);
+      else {
+        $date_ = str_replace($sep, '-', $date_);
+      }
+      $date_ = date('Y-m-d', strtotime($date_));
+      list($year, $month, $day) = explode('-', $date_);
       if (!checkdate($month, $day, $year)) {
         Event::error('Incorrect date entered!');
         return FALSE;
@@ -502,7 +503,6 @@
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
-     *
      * @static
      *
      * @param $g_y

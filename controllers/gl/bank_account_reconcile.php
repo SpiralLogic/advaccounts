@@ -15,7 +15,7 @@
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   $update_pager = FALSE;
   if (Input::post('reset')) {
-   // GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+    // GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
     update_data();
   }
   $groupid = find_submit("_ungroup_");
@@ -34,7 +34,6 @@
     }
     if (Session::i()->getGlobal('bank_account')) {
       $_POST['bank_account'] = Session::i()->getGlobal('bank_account');
-      update_data();
     }
     update_data();
   }
@@ -122,6 +121,7 @@
   amount_cell($difference, FALSE, '', "difference");
   end_row();
   end_table();
+
   Display::div_end();
   echo "<hr>";
   $_POST['bank_account'] = Input::post('bank_account', Input::NUMERIC, '');
@@ -146,8 +146,9 @@
   Display::br(1);
   submit_center('Reconcile', _("Reconcile"), TRUE, 'Reconcile', NULL);
   end_form();
-  $js ='$(function() { $("th:nth-child(9)").click(function() { jQuery("#_trans_tbl_span").find("input").value("");})})';
+  $js = '$(function() { $("th:nth-child(9)").click(function() { jQuery("#_trans_tbl_span").find("input").value("");})})';
   JS::onload($js);
+
   Page::end();
   /**
    * @return bool
@@ -170,8 +171,6 @@
     $name = "rec_" . $row['id'];
     $hidden = 'last[' . $row['id'] . ']';
     $value = $row['reconciled'] != '';
-    // save also in hidden field for testing during 'Reconcile'
-    JS::set_focus($name);
 
     return checkbox(NULL, $name, $value, TRUE, _('Reconcile this transaction')) . hidden($hidden, $value, FALSE);
   }
@@ -292,13 +291,14 @@
     if (get_post('bank_date') == '') // new reconciliation
     {
       Ajax::i()->activate('bank_date');
-
     }
     $_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
     $reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
     GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], Validation::input_num('end_balance'), $_POST['bank_account']);
     Ajax::i()->activate('reconciled');
     Ajax::i()->activate('difference');
-    JS::reset_focus();
+    Ajax::i()->activate('summary');
+    JS::set_focus($reconcile_id);
+
     return TRUE;
   }

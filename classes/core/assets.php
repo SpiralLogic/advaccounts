@@ -12,7 +12,7 @@
      */
   namespace ADV\Core;
   /**
-   *
+
    */
   class Assets {
 
@@ -61,7 +61,7 @@
       "gif" => "image/gif",
       "swf" => "application/x-shockwave-flash",
       "ico" => "image/x-icon",
-    );    //mime types
+    ); //mime types
     /**
      * @param $status
      */
@@ -136,10 +136,10 @@
       return $filesmtime;
     }
     /**
-     *
+
      */
     public function __construct() {
-    //  $this->setFromArray(Config::get_all('assets22'));
+      //  $this->setFromArray(Config::get_all('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];

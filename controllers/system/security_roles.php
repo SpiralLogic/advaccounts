@@ -187,11 +187,11 @@
       $m = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      label_row($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='tablerowhead'", "class='tablehead'");
+      label_row($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (check_value('Section' . $m)) {
       alt_table_row_color($k);
-      check_cells($parms[1], 'Area' . $parms[0], NULL, FALSE, '', "class='center'");
+      check_row($parms[1], 'Area' . $parms[0], NULL, FALSE, '', "class='center'");
       end_row();
     }
     else {

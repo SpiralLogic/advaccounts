@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /*
      Security sections groups various areas on both functionality and privilege levels.
      Often analytic inquires are available only for management, and configuration
@@ -22,7 +22,6 @@
      for sections/areas defined in this file, and extid+1 for those defined
      by extensions
    */
-  global $security_sections, $security_areas;
   $security_sections = array(
     SS_SADMIN => "System administration",
     SS_SETUP => "Company setup",
@@ -46,32 +45,21 @@
     SS_GL_A => "Banking & GL analytics",
     SS_ADV => "Advanced"
   );
-  /*
-       This table stores security areas available in ADV.
-       Key is area identifier used to check user rights, values are
-       codes stored for each role in security_roles table and description used
-       in roles editor.
-
-       Set of allowed access areas codes is retrieved during user login from
-       security_roles table, and cached in user profile.
-
-       Special value SA_OPEN is used for publicly available pages like login/logout.
-     */
   $security_areas = array(
-//
-//	Advanced
-//
+    //
+    //	Advanced
+    //
     SA_ADVANCED => array(SS_ADV | 1, "Advanced"),
-//
-//	Site administration
-//
+    //
+    //	Site administration
+    //
     SA_CREATECOMPANY => array(SS_SADMIN | 1, "Install/update companies"),
     SA_CREATELANGUAGE => array(SS_SADMIN | 2, "Install/update languages"),
     SA_CREATEMODULES => array(SS_SADMIN | 3, "Install/upgrade modules"),
     SA_SOFTWAREUPGRADE => array(SS_SADMIN | 4, "Software upgrades"),
-//
-//	Company setup
-//
+    //
+    //	Company setup
+    //
     SA_SETUPCOMPANY => array(SS_SETUP | 1, "Company parameters"),
     SA_SECROLES => array(SS_SETUP | 2, "Access levels edition"),
     SA_USERS => array(SS_SETUP | 3, "Users setup"),
@@ -85,18 +73,18 @@
     SA_INVENTORYMOVETYPE => array(SS_SETUP | 11, "Inventory movement types"),
     SA_WORKCENTRES => array(SS_SETUP | 12, "Manufacture work centres"),
     SA_FORMSETUP => array(SS_SETUP | 13, "Forms setup"),
-//
-// Special and common functions
-//
+    //
+    // Special and common functions
+    //
     SA_VOIDTRANSACTION => array(SS_SPEC | 1, "Voiding transactions"),
     SA_BACKUP => array(SS_SPEC | 2, "Database backup/restore"),
     SA_VIEWPRINTTRANSACTION => array(SS_SPEC | 3, "Common view/print transactions interface"),
     SA_ATTACHDOCUMENT => array(SS_SPEC | 4, "Attaching documents"),
     SA_SETUPDISPLAY => array(SS_SPEC | 5, "Display preferences"), //???
     SA_CHGPASSWD => array(SS_SPEC | 6, "Password changes"), //???
-//
-// Sales related functionality
-//
+    //
+    // Sales related functionality
+    //
     SA_SALESTYPES => array(SS_SALES_C | 1, "Sales types"),
     SA_SALESPRICE => array(SS_SALES_C | 2, "Sales prices edition"),
     SA_SALESMAN => array(SS_SALES_C | 3, "Sales staff maintenance"),
@@ -106,16 +94,17 @@
     SA_SRECURRENT => array(SS_SALES_C | 7, "Recurrent invoices definitions"),
     SA_SALESTRANSVIEW => array(SS_SALES | 1, "Sales transactions view"),
     SA_CUSTOMER => array(SS_SALES | 2, "Sales customer and branches changes"),
-    SA_CUSTOMER_CREDIT => array(SS_SALES | 12, "Sales customer credit changes"),
-    SA_SALESQUOTE => array(SS_SALES | 10, "Sales quotations"),
     SA_SALESORDER => array(SS_SALES | 3, "Sales orders edition"),
     SA_SALESDELIVERY => array(SS_SALES | 4, "Sales deliveries edition"),
     SA_SALESINVOICE => array(SS_SALES | 5, "Sales invoices edition"),
     SA_SALESCREDITINV => array(SS_SALES | 6, "Sales credit notes against invoice"),
     SA_SALESCREDIT => array(SS_SALES | 7, "Sales freehand credit notes"),
     SA_SALESPAYMNT => array(SS_SALES | 8, "Customer payments entry"),
-    SA_SALESREFUND => array(SS_SALES | 11, "Customer refund entry"),
     SA_SALESALLOC => array(SS_SALES | 9, "Customer payments allocation"),
+    SA_SALESQUOTE => array(SS_SALES | 10, "Sales quotations"),
+    SA_SALESREFUND => array(SS_SALES | 11, "Customer refund entry"),
+    SA_CUSTOMER_CREDIT => array(SS_SALES | 12, "Sales customer credit changes"),
+    SA_VOIDINVOICE => array(SS_SALES | 14, "Void Invoices"),
     SA_SALESANALYTIC => array(SS_SALES_A | 1, "Sales analytical reports"),
     SA_SALESBULKREP => array(SS_SALES_A | 2, "Sales document bulk reports"),
     SA_PRICEREP => array(SS_SALES_A | 3, "Sales prices listing"),
@@ -124,9 +113,9 @@
     SA_CUSTSTATREP => array(SS_SALES_A | 6, "Customer status report"),
     SA_CUSTPAYMREP => array(SS_SALES_A | 7, "Customer payments report"),
     SA_CUSTREFUNDREP => array(SS_SALES_A | 8, "Customer refund report"),
-//
-// Purchase related functions
-//
+    //
+    // Purchase related functions
+    //
     SA_PURCHASEPRICING => array(SS_PURCH_C | 1, "Purchase price changes"),
     SA_SUPPTRANSVIEW => array(SS_PURCH | 1, "Supplier transactions view"),
     SA_SUPPLIER => array(SS_PURCH | 2, "Suppliers changes"),
@@ -140,9 +129,9 @@
     SA_SUPPLIERANALYTIC => array(SS_PURCH_A | 1, "Supplier analytical reports"),
     SA_SUPPBULKREP => array(SS_PURCH_A | 2, "Supplier document bulk reports"),
     SA_SUPPPAYMREP => array(SS_PURCH_A | 3, "Supplier payments report"),
-//
-// Inventory 
-//
+    //
+    // Inventory
+    //
     SA_ITEM => array(SS_ITEMS_C | 1, "Stock items add/edit"),
     SA_SALESKIT => array(SS_ITEMS_C | 2, "Sales kits"),
     SA_ITEMCATEGORY => array(SS_ITEMS_C | 3, "Item categories"),
@@ -155,9 +144,9 @@
     SA_REORDER => array(SS_ITEMS_A | 1, "Reorder levels"),
     SA_ITEMSANALYTIC => array(SS_ITEMS_A | 2, "Items analytical reports and inquiries"),
     SA_ITEMSVALREP => array(SS_ITEMS_A | 3, "Inventory valuation report"),
-//
-// Manufacturing module 
-//
+    //
+    // Manufacturing module
+    //
     SA_BOM => array(SS_MANUF_C | 1, "Bill of Materials"),
     SA_MANUFTRANSVIEW => array(SS_MANUF | 1, "Manufacturing operations view"),
     SA_WORKORDERENTRY => array(SS_MANUF | 2, "Work order entry"),
@@ -168,16 +157,16 @@
     SA_WORKORDERCOST => array(SS_MANUF_A | 2, "Manufacturing cost inquiry"),
     SA_MANUFBULKREP => array(SS_MANUF_A | 3, "Work order bulk reports"),
     SA_BOMREP => array(SS_MANUF_A | 4, "Bill of materials reports"),
-//
-// Dimensions
-//
+    //
+    // Dimensions
+    //
     SA_DIMTAGS => array(SS_DIM_C | 1, "Dimension tags"),
     SA_DIMTRANSVIEW => array(SS_DIM | 1, "Dimension view"),
     SA_DIMENSION => array(SS_DIM | 2, "Dimension entry"),
     SA_DIMENSIONREP => array(SS_DIM | 3, "Dimension reports"),
-//
-// Banking and General Ledger
-//
+    //
+    // Banking and General Ledger
+    //
     SA_ITEMTAXTYPE => array(SS_GL_C | 1, "Item tax type definitions"),
     SA_GLACCOUNT => array(SS_GL_C | 2, "GL accounts edition"),
     SA_GLACCOUNTGROUP => array(SS_GL_C | 3, "GL account groups"),
