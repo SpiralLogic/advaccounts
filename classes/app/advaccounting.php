@@ -169,9 +169,9 @@
       elseif (!$currentUser->logged_in()) {
         static::showLogin();
       }
-      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
+/*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
           throw new ErrorException("Dev no working.");
-        }
+        }*/
       if ($currentUser->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
       }
