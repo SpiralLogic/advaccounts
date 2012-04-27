@@ -155,6 +155,7 @@ img {
 	box-shadow: 0 20px 50px 0 #111111;
 	margin:     5px auto;
 	width:      80%;
+	min-width:      798px;
 	background: white;
 }
 
