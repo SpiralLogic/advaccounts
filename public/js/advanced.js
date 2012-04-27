@@ -257,6 +257,7 @@ Adv.extend({Forms:(function () {
 			})
 		},
 		autocomplete:function (id, url, callback) {
+			var $this;
 			Adv.o.autocomplete[id] = $this = $('#' + id).autocomplete({
 				minLength:1,
 				delay:200,

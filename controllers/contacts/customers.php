@@ -22,7 +22,6 @@
   elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
-    $data['transactions'] = '<pre>' . print_r($customer->getTransactions(), TRUE) . '</pre>';
     $_SESSION['global_customer'] = $customer->id;
   }
   else {

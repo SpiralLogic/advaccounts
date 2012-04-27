@@ -126,7 +126,6 @@
       if ($filesmtime) {
         return $filesmtime;
       }
-      $filesmtime = @filemtime(__FILE__);
       foreach ($this->files as $file) {
         if (!file_exists($file)) {
           $this->debugExit("File not found ($file).");
@@ -187,8 +186,11 @@
       if ($this->serverCache) {
         $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       }
-      $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime()))) ||
-        ($this->serverCache && (!file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
+      $generateContent = ((!$this->serverCache
+        && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
+          || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime())))
+        || ($this->serverCache &&  (!file_exists($cachedFile) ||
+          ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
       if ($this->clientCache && $this->clientCacheCheck) {
         if ($this->serverCache && !$generateContent) {
           $mtime = filemtime($cachedFile);
