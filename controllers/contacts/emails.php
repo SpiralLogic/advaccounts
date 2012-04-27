@@ -9,7 +9,7 @@
      **/
 
   if (!AJAX_REFERRER) {
-    header("Locations: /");
+    header("Location: /");
     exit();
   }
   $content = FALSE;

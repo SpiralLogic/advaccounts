@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,7 +15,6 @@
 
    */
   class Event {
-
   use \ADV\Core\Traits\Hook;
 
     /**
@@ -142,6 +142,8 @@
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      Cache::set(static::$shutdown_events_id, static::$shutdown_events);
+      if (count(static::$shutdown_events)) {
+        Cache::set(static::$shutdown_events_id, static::$shutdown_events);
+      }
     }
   }

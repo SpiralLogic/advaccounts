@@ -1,9 +1,12 @@
 <?php
-  echo '<pre>';
+  if (!User::i()->can_access(SA_DEBUGGING)) {
+    throw new Adv_Exception("Administrator access only");
+  }
+  /*  echo '<pre>';
   $sql
     = "SELECT reconciled,bank_act FROM bank_trans
- 							WHERE bank_act=13 AND reconciled IS NOT NULL AND amount!=0
- 							GROUP BY reconciled";
+               WHERE bank_act=13 AND reconciled IS NOT NULL AND amount!=0
+               GROUP BY reconciled";
   $results = DB::query($sql)->fetchAll();
   foreach ($results as $row) {
     $recon = GL_Account::get_max_reconciled(Dates::sql2date($row['reconciled']), $row['bank_act'])->fetch();
@@ -19,4 +22,5 @@
     catch (ADV\Core\DB\DBDuplicateException $e) {
       continue;
     }
-  }
+  }*/
+  phpinfo();

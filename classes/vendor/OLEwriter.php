@@ -2667,18 +2667,22 @@ FIXME: change prefixes
 			$formula_length = strlen($this->_formula);
 			// eat up white spaces
 			if ($i < $formula_length) {
-				while ($this->_formula{$i} == " ") {
+        $_formula = '_formula'.$i;
+				while ($this->$_formula == " ") {
 					$i++;
 				}
 				if ($i < ($formula_length - 1)) {
-					$this->_lookahead = $this->_formula{$i + 1};
+          $_formula='_formula'.($i+1);
+					$this->_lookahead = $this->$_formula;
 				}
 				$token = '';
 			}
 			while ($i < $formula_length) {
-				$token .= $this->_formula{$i};
+        $_formula = '_formula'.$i;
+				$token .= $this->$_formula ;
 				if ($i < ($formula_length - 1)) {
-					$this->_lookahead = $this->_formula{$i + 1};
+          $_formula='_formula'.($i+1);
+					$this->_lookahead = $this->$_formula;
 				} else {
 					$this->_lookahead = '';
 				}
@@ -2691,7 +2695,9 @@ FIXME: change prefixes
 					return 1;
 				}
 				if ($i < ($formula_length - 2)) {
-					$this->_lookahead = $this->_formula{$i + 2};
+          $_formula='_formula'.($i+2);
+
+					$this->_lookahead = $this->$_formula;
 				} else { // if we run out of characters _lookahead becomes empty
 					$this->_lookahead = '';
 				}
@@ -4994,7 +5000,8 @@ FIXME: change prefixes
 			$unknown4 = pack("v", 0x03);
 			// Pack the main data stream
 			$data = pack("vvvv", $row1, $row2, $col1,
-				$col2) . $unknown1 . $link_type . $unknown2 . $up_count . $dir_short_len . $dir_short . $unknown3 . $stream_len . $dir_long_len . $unknown4 . $dir_long . $sheet_len . $sheet;
+				$col2) . $unknown1 . $link_type . $unknown2 . $up_count . $dir_short_len . $dir_short . $unknown3 . $stream_len .
+        $dir_long_len . $unknown4 . $dir_long  ;
 			// Pack the header data
 			$length = strlen($data);
 			$header = pack("vv", $record, $length);
@@ -6503,7 +6510,7 @@ FIXME: change prefixes
 				}
 			}
 			$worksheet = new Spreadsheet_Excel_Writer_Worksheet($this->_BIFF_version, $name, $index, $this->_activesheet, $this->_firstsheet, $this->_str_total, $this->_str_unique, $this->_str_table, $this->_url_format, $this->_parser);
-			$this->_worksheets[$index] = &$worksheet; // Store ref for iterator
+			$this->_worksheets[$index] = $worksheet; // Store ref for iterator
 			$this->_sheetnames[$index] = $name; // Store EXTERNSHEET names
 			$this->_parser->setExtSheet($name, $index); // Register worksheet name with parser
 			return $worksheet;
@@ -6521,7 +6528,7 @@ FIXME: change prefixes
 		{
 			$format = new Spreadsheet_Excel_Writer_Format($this->_BIFF_version, $this->_xf_index, $properties);
 			$this->_xf_index += 1;
-			$this->_formats[] = &$format;
+			$this->_formats[] = $format;
 			return $format;
 		}
 

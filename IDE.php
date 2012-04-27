@@ -68,6 +68,7 @@
   define('SA_CREATELANGUAGE', 'SA_CREATELANGUAGE');
   define('SA_CREATEMODULES', 'SA_CREATEMODULES');
   define('SA_SOFTWAREUPGRADE', 'SA_SOFTWAREUPGRADE');
+  define('SA_DEBUGGING', 'SA_DEBUGGING');
   //
   //	Company setup
   //

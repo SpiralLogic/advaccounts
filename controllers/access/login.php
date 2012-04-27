@@ -95,12 +95,8 @@
 	 " . $def_theme . "</a>\n";
   echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></div>";
   echo "<script>";
-
-  echo   "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
-  if (!$login_timeout) {
-    echo "(function defaultCompany(){document.forms[0].login_company.options[" . User::i()->company . "].selected = true;})()";
+  if ($login_timeout) {
+    echo "(function(){document.forms[0].login_company.value = '" . User::i()->company . "';})();";
   }
-  echo   "document.forms[0].user_name.select();
-	 document.forms[0].user_name.focus();
-	 </script>";
+  echo   "document.forms[0].user_name.select();document.forms[0].user_name.focus();</script>";
   echo "</body></html>\n";

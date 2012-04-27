@@ -57,6 +57,7 @@
     SA_CREATELANGUAGE => array(SS_SADMIN | 2, "Install/update languages"),
     SA_CREATEMODULES => array(SS_SADMIN | 3, "Install/upgrade modules"),
     SA_SOFTWAREUPGRADE => array(SS_SADMIN | 4, "Software upgrades"),
+    SA_DEBUGGING => array(SS_SADMIN | 5, "Debugging"),
     //
     //	Company setup
     //
