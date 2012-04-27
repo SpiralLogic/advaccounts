@@ -188,19 +188,25 @@
     if (check_valid_entries() == TRUE) {
       unset($_SESSION['voiding']);
       $void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
-      if ($void_entry != NULL) {
-        Event::error(_("The selected transaction has already been voided."), TRUE);
-        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
-        JS::set_focus('trans_no');
-        return;
+      $error = FALSE;
+      if ($_POST['filterType']==ST_SALESINVOICE && !User::i()->can_access(SA_VOIDINVOICE)) {
+        $error = _("You don't not have permissions required to delete this transaction.");
       }
-      $ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
-      if ($ret) {
-        Event::success(_("Selected transaction has been voided."));
-        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
+      elseif ($void_entry != NULL) {
+        $error = _("The selected transaction has already been voided.");
       }
       else {
-        Event::error(_("The entered transaction does not exist or cannot be voided."));
+        $ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
+        if (!$ret) {
+          $error = _("The entered transaction does not exist or cannot be voided.");
+        }
+      }
+      if (!$error) {
+        Event::success(_("Selected transaction has been voided."));
+      }
+      else {
+        Event::error($error);
+        unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
         JS::set_focus('trans_no');
       }
     }

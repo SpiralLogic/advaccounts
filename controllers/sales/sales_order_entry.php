@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,18 +9,18 @@
    **/
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-                                                            ST_SALESORDER => SA_SALESORDER,
-                                                            ST_SALESQUOTE => SA_SALESQUOTE,
-                                                            ST_CUSTDELIVERY => SA_SALESDELIVERY,
-                                                            ST_SALESINVOICE => SA_SALESINVOICE
-                                                       ), array(
-                                                               Orders::NEW_ORDER => SA_SALESORDER,
-                                                               Orders::MODIFY_ORDER => SA_SALESORDER,
-                                                               Orders::NEW_QUOTE => SA_SALESQUOTE,
-                                                               Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-                                                               Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-                                                               Orders::NEW_INVOICE => SA_SALESINVOICE
-                                                          ));
+    ST_SALESORDER => SA_SALESORDER,
+    ST_SALESQUOTE => SA_SALESQUOTE,
+    ST_CUSTDELIVERY => SA_SALESDELIVERY,
+    ST_SALESINVOICE => SA_SALESINVOICE
+  ), array(
+    Orders::NEW_ORDER => SA_SALESORDER,
+    Orders::MODIFY_ORDER => SA_SALESORDER,
+    Orders::NEW_QUOTE => SA_SALESQUOTE,
+    Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+    Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+    Orders::NEW_INVOICE => SA_SALESINVOICE
+  ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
     $_POST['customer_id'] = $_GET['customer_id'];
@@ -110,7 +109,7 @@
       $jb = new      \Modules\Jobsboard();
       $jb->addjob($jobsboard_order);
     }
-    page_complete($trans_no, $trans_type, ($trans_type == ST_SALESORDER ? "Order" : "Quote"), TRUE, $modified);
+    page_complete($trans_no, $trans_type, TRUE, $modified);
   }
   if (isset($_POST['update'])) {
     Ajax::i()->activate('items_table');
@@ -288,7 +287,22 @@
    * @param bool   $edit
    * @param bool   $update
    */
-  function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = FALSE, $update = FALSE) {
+  function page_complete($order_no, $trans_type, $edit = FALSE, $update = FALSE) {
+    switch ($trans_type) {
+      case ST_SALESINVOICE:
+        $trans_name = "Invoice";
+        break;
+      case ST_SALESQUOTE:
+        $trans_name = "Quote";
+        break;
+      case ST_CUSTDELIVERY:
+        $trans_name = "Delivery";
+        break;
+      case ST_SALESORDER:
+      default:
+        $trans_name = "Order";
+    }
+
     $customer = new Debtor($_SESSION['global_customer']);
     $emails = $customer->getEmailAddresses();
     Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
@@ -347,10 +361,6 @@
     //	UploadHandler::insert($order_no);
     Page::footer_exit();
   }
-
-
-
-
 
   /**
    * @param Sales_Order $order
