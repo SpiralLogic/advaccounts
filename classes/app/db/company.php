@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class DB_Company extends DB_abstract {
+
     /**
      * @var int
      */

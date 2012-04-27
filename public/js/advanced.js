@@ -64,7 +64,7 @@ jQuery.extend(jQuery.easing, {
 		 });
 		this.extend = function (object) {extender(Adv, object)};
 		extender(Adv.loader, {
-			off:function (img) {
+			off:function (img)  {
 				if (img) {
 					Adv.loader.src = user.theme + 'images/' + img;
 					Adv.loader.style.visibility = 'visible';

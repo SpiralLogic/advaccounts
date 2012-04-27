@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -314,15 +313,19 @@
   define('REMOVED', 'Removed');
   define('CANCEL', 'CancelUpdate');
   class Arr extends ADV\Core\Arr {
+
   }
 
   class Adv_Exception extends ADV\Core\Adv_Exception {
+
   }
+
   /**
    * @property Ajax i
    */
 
   class Ajax extends ADV\Core\Ajax {
+
     /**
      * @static
      * @return Ajax
@@ -333,62 +336,83 @@
   }
 
   class Auth extends ADV\Core\Auth {
+
   }
- class Assets extends ADV\Core\Assets {
+
+  class Assets extends ADV\Core\Assets {
+
   }
 
   class Cache extends ADV\Core\Cache {
+
   }
 
   class Config extends ADV\Core\Config {
+
   }
 
   class Dates extends ADV\Core\Dates {
+
   }
 
   class DB extends ADV\Core\DB\DB {
+
   }
 
   class Query_Result extends ADV\Core\DB\Query_Result {
+
   }
 
   class Dialog extends ADV\Core\Dialog {
+
   }
 
   class Event extends ADV\Core\Event {
+
   }
 
   class Errors extends ADV\Core\Errors {
+
   }
 
   class Files extends ADV\Core\Files {
+
   }
 
   class HTML extends ADV\Core\HTML {
+
   }
 
   class Hook extends ADV\Core\Hook {
+
   }
 
   class Input extends ADV\Core\Input {
+
   }
 
   class JS extends ADV\Core\JS {
+
   }
 
   class Language extends ADV\Core\Language {
+
   }
 
   class Menu extends ADV\Core\Menu {
+
   }
 
   class MenuUI extends ADV\Core\MenuUI {
+
   }
 
   class Num extends ADV\Core\Num {
+
   }
 
   class Session extends ADV\Core\Session {
+
     public $app;
     /**
      * @static
@@ -400,23 +424,30 @@
   }
 
   class Status extends ADV\Core\Status {
+
   }
 
   class UploadHandler extends ADV\Core\UploadHandler {
+
   }
 
   class DBException extends ADV\Core\DB\DBException {
+
   }
 
   class DBSelectException extends ADV\Core\DB\DBException {
+
   }
 
   class DBUpdateException extends ADV\Core\DB\DBException {
+
   }
 
   class DBDeleteException extends ADV\Core\DB\DBException {
+
   }
 
   class DBInsertException extends ADV\Core\DB\DBException {
+
   }
 

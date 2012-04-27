@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,16 +11,17 @@
   use \Memcached;
 
   /**
-   *
+
    */
   class SessionException extends \Exception {
+
   }
 
   /**
-   *
    * @property \ADVAccounting App
    */
   class Session extends \Input {
+
   use Traits\Singleton;
 
     /**

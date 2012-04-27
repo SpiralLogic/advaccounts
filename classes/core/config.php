@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,12 +12,16 @@
 
    */
   class Config_Exception extends \Exception {
+
   }
+
   /**
-   *
+
    */
   class Config {
+
   use Traits\Singleton;
+
     /***
      * @var array|null
      */
@@ -105,7 +108,7 @@
     }
     /**
      * @static
-     *
+
      */
     static public function removeAll() {
       static::i()->_vars = array();
@@ -113,7 +116,7 @@
     }
     /**
      * @static
-     *
+
      */
     static public function reset() {
       static::removeAll();

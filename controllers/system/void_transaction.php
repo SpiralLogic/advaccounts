@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
@@ -168,7 +168,7 @@
       JS::set_focus('date_');
       return FALSE;
     }
-       if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
       return FALSE;
