@@ -16,5 +16,12 @@ sor4.xml
 tmp/chromelogs
 tmp/test.csv
 .idea
-!*.gitignore
 tmp/chromelogs/last_run.json
+xhprof
+version
+public/xhprof
+public/phpmemcached
+public/phpmyadmin
+public/fuel
+public/cache/*
+!*.gitignore

@@ -171,9 +171,7 @@
       elseif (!$currentUser->logged_in()) {
         static::showLogin();
       }
-      /*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
-                throw new ErrorException("Dev no working.");
-              }*/
+
       if ($currentUser->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
       }
@@ -264,7 +262,7 @@
         $msg .= "\t\t),\n";
       }
       $msg .= "\t);\n?>";
-      $filename = DOCROOT . ($company == -1 ? '' : 'company' . DS . $company) . DS . 'installed_extensions.php';
+      $filename = DOCROOT . ($company == -1 ? '' : 'company'.DS . $company) . DS .'installed_extensions.php';
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));

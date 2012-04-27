@@ -15,7 +15,7 @@
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     /** @noinspection PhpUndefinedConstantInspection */
     /** @noinspection PhpUndefinedFunctionInspection */
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+    xhprof_enable(XHPROF_FLAGS_CPU  + XHPROF_FLAGS_MEMORY);
   }
   error_reporting(-1);
   ini_set('display_errors', 1);
@@ -51,10 +51,9 @@
        * @return array|string
        */
       function e($string) { return Security::htmlentities($string); }
-    }
-    register_shutdown_function(function () {
-      ADV\Core\Event::shutdown();
-    });
+    }   register_shutdown_function(function () {
+       ADV\Core\Event::shutdown();
+     });
     if (!function_exists('adv_ob_flush_handler')) {
       /**
        * @param $text
@@ -77,16 +76,16 @@
     ADVAccounting::i();
   }
   register_shutdown_function(function() {
-    if (extension_loaded('xhprof')) {
-      $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-      /** @noinspection PhpUndefinedFunctionInspection */
-      $xhprof_data = xhprof_disable();
-      /** @noinspection PhpUndefinedClassInspection */
-      $xhprof_runs = new \XHProfRuns_Default();
-      /** @noinspection PhpUndefinedMethodInspection */
-      $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-    }
-  });
+       if (extension_loaded('xhprof')) {
+             $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+             /** @noinspection PhpUndefinedFunctionInspection */
+             $xhprof_data = xhprof_disable();
+             /** @noinspection PhpUndefinedClassInspection */
+             $xhprof_runs = new \XHProfRuns_Default();
+             /** @noinspection PhpUndefinedMethodInspection */
+             $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+           }
+     });
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new Assets();
   }
