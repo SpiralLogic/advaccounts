@@ -110,11 +110,10 @@
   Debtor::cells(_(""), 'customer_id', $selected_customer, TRUE);
   ref_cells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-    ref_cells(_("Ref"), 'OrderReference', '', NULL, '', TRUE);
     date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
     date_cells(_("To:"), 'OrdersToDate', '', NULL, 1);
   }
-  Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
+  Inv_Location::cells(_(""), 'StockLocation', NULL, TRUE);
   Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
   if ($trans_type == ST_SALESQUOTE) {
     check_cells(_("Show All:"), 'show_all');
@@ -168,11 +167,8 @@
     // search orders with number like
     $number_like = "%" . $_POST['OrderNumber'];
     $sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
-  }
-  elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
-    // search orders with reference like
-    $number_like = "%" . $_POST['OrderReference'] . "%";
-    $sql .= " AND sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
+    $number_like = "%" . $_POST['OrderNumber'] . "%";
+    $sql .= " OR sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
   }
   elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     foreach ($searchArray as $ajaxsearch) {
@@ -239,11 +235,11 @@
       _("Ref") => array('ord' => ''),
       _("PO#") => array('ord' => ''),
       _("Date") => array('type' => 'date', 'ord' => 'asc'),
-      _("Required By") => array('type' => 'date', 'ord' => ''),
+      _("Required") => array('type' => 'date', 'ord' => ''),
       _("Customer") => array('ord' => 'asc'),
       array('type' => 'skip'),
       _("Branch") => array('ord' => ''),
-      _("Delivery To"),
+      _("Address"),
       _("Total") => array('type' => 'amount', 'ord' => ''),
     );
   }

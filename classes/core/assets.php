@@ -26,7 +26,7 @@
     protected $concatenate = TRUE;
     protected $separator = ',';
     protected $serverCache = TRUE;
-    protected $serverCacheCheck = FALSE;
+    protected $serverCacheCheck = TRUE;
     protected $cacheDir = 'cache';
     protected $cachePrefix = 'so_';
     protected $clientCache = TRUE;
@@ -186,11 +186,12 @@
       if ($this->serverCache) {
         $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       }
-      $generateContent = ((!$this->serverCache
-        && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
+      $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck
+        || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
           || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime())))
         || ($this->serverCache &&  (!file_exists($cachedFile) ||
           ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
+
       if ($this->clientCache && $this->clientCacheCheck) {
         if ($this->serverCache && !$generateContent) {
           $mtime = filemtime($cachedFile);
@@ -228,8 +229,8 @@
               }
               $minifier_class = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
-              $minifier = new $minifier_class($fileDir, $minify_type_settings['settings'], $this->mimeTypes);
-              $content = $minifier->minify($content);
+              $minifier = new $minifier_class($content,array('fileDir'=>$fileDir, 'minify_type_settings'=>$minify_type_settings['settings'], 'mimeTypes'=>$this->mimeTypes));
+              $content = $minifier->minify();
             }
           }
           if ($this->gzip) {

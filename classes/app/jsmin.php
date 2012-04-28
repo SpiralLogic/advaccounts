@@ -10,9 +10,12 @@
   class JSMin {
 
     protected $minified = '';
-    public function __construct() {
+    protected $source;
+    public function __construct($source) {
+      $this->source = $source;
     }
-    public function minify($str) {
+    public function minify() {
+      $str = $this->source;
       $res = '';
       $maybe_regex = TRUE;
       $i = 0;
