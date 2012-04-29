@@ -69,7 +69,7 @@
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
-      header("HTTP/1.0 $status");
+     header("HTTP/1.0 $status");
       exit();
     }
 

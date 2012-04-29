@@ -168,11 +168,11 @@
       JS::set_focus('date_');
       return FALSE;
     }
-    if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    /*if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
       return FALSE;
-    }
+    }*/
     if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
       Event::error(_("The transaction number is expected to be numeric and greater than zero."));
       JS::set_focus('trans_no');
