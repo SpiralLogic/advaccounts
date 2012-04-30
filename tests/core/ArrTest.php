@@ -19,7 +19,7 @@
     public function testInsert() {
       $part_numbers = array('84256', '84257', '84258');
       $expected_result = array('84256', '84257', '86732', '84258');
-      \ADV\Core\Arr::insert($part_numbers, 2, '86732');
+      Arr::insert($part_numbers, 2, '86732');
       $this->assertEquals($expected_result, $part_numbers);
     }
 
@@ -71,9 +71,25 @@
      */
     public function testAppend() {
       // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $initial = ['one', 'two', 'three'];
+      $to_append = ['four'];
+      Arr::append($initial, $to_append);
+      $this->assertInternalType('array', $initial);
+      $initial = ['one', 'two', 'three'];
+      $to_append = ['four', 'five'];
+      Arr::append($initial, $to_append);
+      $expected = ['one', 'two', 'three', 'four', 'five'];
+      $this->assertEquals($expected, $initial);
+      $initial = ['one', 'two', 'three'];
+      $to_append = 'four';
+      Arr::append($initial, $to_append);
+      $expected = ['one', 'two', 'three', 'four'];
+      $this->assertEquals($expected, $initial);
+      $initial = ['one' => 1, 'two' => 2, 'three' => 3];
+      $to_append = ['four' => 4, 'five' => 5];
+      $expected = ['one' => 1, 'two' => 2, 'three' => 3, 'four' => 4, 'five' => 5];
+      Arr::append($initial, $to_append);
+      $this->assertEquals($expected, $initial);
     }
 
     /**
