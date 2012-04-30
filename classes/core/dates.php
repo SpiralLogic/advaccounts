@@ -40,6 +40,7 @@
       $sep = Config::get('date.ui_separator');
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how = str_replace('/', $sep, $how);
+
       return date($how, $date);
     }
     /**
@@ -198,7 +199,7 @@
      */
     static function add_days($date, $days) {
       list($day, $month, $year) = Dates::explode_date_to_dmy($date);
-      $timet = Mktime(0, 0, 0, $month, $day + $days, $year);
+      $timet = mktime(0, 0, 0, $month, $day + $days, $year);
       return date(\User::date_display(), $timet);
     }
     /**

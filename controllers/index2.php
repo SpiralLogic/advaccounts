@@ -1,7 +1,7 @@
 <?php
-  if (!User::i()->can_access(SA_DEBUGGING)) {
+/*  if (!User::i()->can_access(SA_DEBUGGING)) {
     throw new Adv_Exception("Administrator access only");
-  }
+  }*/
   /*  echo '<pre>';
   $sql
     = "SELECT reconciled,bank_act FROM bank_trans

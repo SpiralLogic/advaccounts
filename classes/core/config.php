@@ -30,13 +30,14 @@
 
      */
     protected function __construct() {
-      if ($this->_vars === NULL) {
+      if (isset($_GET['reload_config'])) {
+        Cache::delete('config');
+        header('Location: /');
+      }
+      elseif ($this->_vars === NULL) {
         $this->_vars = Cache::get('config');
       }
-      if (isset($_GET['reload_config'])) {
-        $this->removeAll();
-      }
-      if ($this->_vars === FALSE) {
+      if (!$this->_vars) {
         $this->load();
       }
     }
@@ -111,8 +112,7 @@
 
      */
     static public function removeAll() {
-      static::i()->_vars = array();
-      Event::register_shutdown(__CLASS__);
+      Cache::delete('config');
     }
     /**
      * @static

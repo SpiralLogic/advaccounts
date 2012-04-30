@@ -137,8 +137,8 @@ JS;
 						 }())
 						})
 JS;
-        $jsmin = new JSMin();
-        $js = $jsmin->minify($js);
+        $jsmin = new JSMin($js);
+        $js = $jsmin->minify();
         Cache::set('js.postcode', $js);
       }
       JS::beforeload($js);
