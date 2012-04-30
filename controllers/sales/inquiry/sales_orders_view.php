@@ -312,7 +312,7 @@
             'insert' => TRUE, 'fun' => function ($row) {
             global $trans_type;
             if ($row['trans_type'] == ST_SALESQUOTE) {
-              return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry.php?QuoteToOrder=" . $row['order_no'], ICON_DOC);
+              return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no'], ICON_DOC);
             }
             $name = "chgtpl" . $row['order_no'];
             $value = $row['type'] ? 1 : 0;
@@ -323,7 +323,7 @@
           ),
           array(
             'insert' => TRUE, 'fun' => function ($row) {
-            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry.php?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
+            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
           }
           ),
           array(

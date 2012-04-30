@@ -91,13 +91,23 @@
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new Assets();
   }
-  elseif (isset($_SERVER['DOCUMENT_URI']) && file_exists(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'))) {
-    include(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'));
-  }
-  elseif ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME']) {
-    header('HTTP/1.0 404 Not Found');
-    Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-  }
   else {
-    Session::i()->App->display();
+    $controller = NULL;
+    $show404 = FALSE;
+    if (isset($_SERVER['DOCUMENT_URI']) && ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME'])) {
+      $controller = ltrim($_SERVER['DOCUMENT_URI'], '/');
+      $controller = (substr($controller, -4) == '.php') ? $controller : $controller . '.php';
+      $controller = DOCROOT . 'controllers' . DS . $controller;
+      $show404 = $show404 || !file_exists($controller);
+      $show404 = $show404 || !include($controller);
+    }
+    if ($show404) {
+      header('HTTP/1.0 404 Not Found');
+      Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+    }
+    if (!$controller || $show404) {
+      Session::i()->App->display();
+    }
   }
+
+
