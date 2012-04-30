@@ -69,11 +69,11 @@ class Arr {
     }
     /**
      * @static
-     *
-     * @param $array
-     * @param $elements
+     * @param &$array
+     * @param array|mixed $elements elements to append,
      */
-    static function append(&$array, $elements) {
+    static function append(&$array, $elements=array()) {
+      $elements = (array)$elements;
       foreach ($elements as $key => $el) {
         if (is_int($key)) {
           $array[] = $el;
