@@ -14,14 +14,14 @@
   start_form();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->supplier_id;
+    $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
   echo Creditor::select('supplier_id', $_POST['supplier_id'], TRUE, TRUE);
   echo "<br>";
   check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
   echo "</div><br><br>";
-  Session::i()->supplier_id = $_POST['supplier_id'];
+  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
     unset($_POST['supplier_id']);
   }

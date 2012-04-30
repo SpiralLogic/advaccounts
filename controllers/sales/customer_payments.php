@@ -20,8 +20,7 @@
     Ajax::i()->activate('customer_id');
   }
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->global_customer;
-  }
+    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
   if (!isset($_POST['DateBanked'])) {
     $_POST['DateBanked'] = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
@@ -80,7 +79,7 @@
   }
   Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
   Debtor_Payment::read_customer_data($_POST['customer_id']);
-  Session::i()->global_customer = $_POST['customer_id'];
+  Session::i()->setGlobal('debtor',$_POST['customer_id']);
   if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
     end_outer_table();
     Event::error(_("This customer account is on hold."));

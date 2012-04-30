@@ -303,8 +303,8 @@
         $this->trans_no = 0;
         $this->customer_currency = Bank_Currency::for_company();
         // set new sales document defaults here
-        if (Session::i()->global_customer != ALL_TEXT) {
-          $this->customer_id = Session::i()->global_customer;
+        if (Session::i()->getGlobal('debtor')) {
+          $this->customer_id = Session::i()->getGlobal('debtor');
         }
         else {
           $this->customer_id = '';
@@ -1295,7 +1295,7 @@
             }
             unset($old_order);
           }
-          Session::i()->global_customer = $_POST['customer_id'];
+          Session::i()->setGlobal('debtor',$_POST['customer_id']);
         } // changed branch
         else {
           $row = Sales_Order::get_customer($_POST['customer_id']);

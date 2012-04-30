@@ -22,7 +22,7 @@
   elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
-    $_SESSION['global_customer'] = $customer->id;
+    Session::i()->setGlobal('debtor',$customer->id);
   }
   else {
     $data['company'] = $customer = new Debtor();

@@ -23,10 +23,10 @@
       $this->add_rapp_function(0, _("&Reconcile Bank Account"), "/gl/bank_account_reconcile.php?", SA_RECONCILE);
       $this->add_rapp_function(0, _("Undepostied Funds"), "/gl/undeposited_funds.php?", SA_RECONCILE);
       $this->add_module(_("Inquiries and Reports"));
-      $this->add_lapp_function(1, _("&Journal Inquiry"), "/gl/inquiry/journal_inquiry.php?", SA_GLANALYTIC);
-      $this->add_lapp_function(1, _("GL &Inquiry"), "/gl/inquiry/gl_account_inquiry.php?", SA_GLTRANSVIEW);
-      $this->add_lapp_function(1, _("Bank Account &Inquiry"), "/gl/inquiry/bank_inquiry.php?", SA_BANKTRANSVIEW);
-      $this->add_lapp_function(1, _("Ta&x Inquiry"), "/gl/inquiry/tax_inquiry.php?", SA_TAXREP);
+      $this->add_lapp_function(1, _("&Journal Inquiry"), "/gl/inquiry/journal.php?", SA_GLANALYTIC);
+      $this->add_lapp_function(1, _("GL &Inquiry"), "/gl/inquiry/gl_account.php?", SA_GLTRANSVIEW);
+      $this->add_lapp_function(1, _("Bank Account &Inquiry"), "/gl/inquiry/bank.php?", SA_BANKTRANSVIEW);
+      $this->add_lapp_function(1, _("Ta&x Inquiry"), "/gl/inquiry/tax.php?", SA_TAXREP);
       $this->add_rapp_function(1, _("Trial &Balance"), "/gl/inquiry/gl_trial_balance.php?", SA_GLANALYTIC);
       $this->add_rapp_function(1, _("Balance &Sheet Drilldown"), "/gl/inquiry/balance_sheet.php?", SA_GLANALYTIC);
       $this->add_rapp_function(1, _("&Profit and Loss Drilldown"), "/gl/inquiry/profit_loss.php?", SA_GLANALYTIC);

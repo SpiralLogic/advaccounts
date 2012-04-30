@@ -22,7 +22,7 @@
   if (isset($_GET[ADDED_ID])) {
     $order_no = $_GET[ADDED_ID];
     $trans_type = ST_PURCHORDER;
-    $supplier = new Creditor(Session::i()->supplier_id);
+    $supplier = new Creditor(Session::i()->getGlobal('creditor'));
     if (!isset($_GET['Updated'])) {
       Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
     }

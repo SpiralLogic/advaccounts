@@ -297,7 +297,7 @@
       $to = Dates::add_days(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
-        '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
+        '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
     }
     /**
      * @static
@@ -338,13 +338,13 @@
       }
       switch ($type) {
         case ST_BANKTRANSFER:
-          $viewer = "bank_transfer_view.php";
+          $viewer = "bank_transfer.php";
           break;
         case ST_BANKPAYMENT:
-          $viewer = "gl_payment_view.php";
+          $viewer = "gl_payment.php";
           break;
         case ST_BANKDEPOSIT:
-          $viewer = "gl_deposit_view.php";
+          $viewer = "gl_deposit.php";
           break;
         default:
           return NULL;

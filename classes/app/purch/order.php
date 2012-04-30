@@ -553,8 +553,8 @@
       start_outer_table('tablestyle2 width90');
       table_section(1);
       if ($editable) {
-        if (!isset($_POST['supplier_id']) && Session::i()->supplier_id) {
-          $_POST['supplier_id'] = Session::i()->supplier_id;
+        if (!isset($_POST['supplier_id']) && Session::i()->getGlobal('creditor')) {
+          $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
         }
         Creditor::row(_("Supplier:"), 'supplier_id', NULL, FALSE, TRUE, FALSE, TRUE);
       }
@@ -575,7 +575,7 @@
         }
         Ajax::i()->activate('items_table');
       }
-      Session::i()->supplier_id = $_POST['supplier_id'];
+      Session::i()->setGlobal('creditor',$_POST['supplier_id']);
       if (!Bank_Currency::is_company($this->curr_code)) {
         label_row(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);

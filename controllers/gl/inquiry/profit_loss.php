@@ -71,7 +71,7 @@
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $from . "&TransToDate=" . $to
+        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to
           . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         start_row("class='stockmankobg'");
         label_cell($url);

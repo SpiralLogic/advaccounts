@@ -230,8 +230,8 @@
       table_section(1);
       $customer_error = "";
       $change_prices = 0;
-      if (!isset($_POST['customer_id']) && (Session::i()->global_customer != ALL_TEXT)) {
-        $_POST['customer_id'] = Session::i()->global_customer;
+      if (!isset($_POST['customer_id']) && Session::i()->getGlobal('debtor')) {
+        $_POST['customer_id'] = Session::i()->getGlobal('debtor');
       }
       Debtor::newselect();
       if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
@@ -276,7 +276,7 @@
         }
         unset($old_order);
       }
-      Session::i()->global_customer = $_POST['customer_id'];
+      Session::i()->setGlobal('debtor',$_POST['customer_id']);
       if (!isset($_POST['ref'])) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }

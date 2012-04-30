@@ -142,7 +142,11 @@
      * @internal param $valie
      * @return float|string
      */
-    public function setGlobal($var, $value) {
+    public function setGlobal($var, $value=NULL) {
+      if ($value===NULL) {
+       unset($_SESSION['globals'][$var]);
+        return NULL;
+      }
       $_SESSION['globals'][$var] = $value;
       $_SESSION[$var] = $value;
       return $value;

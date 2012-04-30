@@ -68,7 +68,7 @@
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
   }
-  Session::i()->supplier_id = $_POST['supplier_id'];
+  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   Bank_Account::row(_("From Bank Account:"), 'bank_account', NULL, TRUE);
   table_section(2);
   ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));

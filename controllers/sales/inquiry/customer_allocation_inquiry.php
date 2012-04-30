@@ -14,8 +14,7 @@
     $_POST['customer_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['customer_id'];
   }
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->global_customer;
-  }
+    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
       $_POST[$k] = $v;
@@ -30,18 +29,17 @@
   if (!Input::get('frame')) {
     Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
   }
-  Session::i()->global_customer = $_POST['customer_id'];
-  if (!isset($_POST['TransAfterDate']) && isset($_SESSION['global_TransAfterDate'])) {
-    $_POST['TransAfterDate'] = $_SESSION['global_TransAfterDate'];
+  Session::i()->setGlobal('debtor',$_POST['customer_id']);  if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
+    $_POST['TransAfterDate'] = Session::i()->getGlobal('TransAfterDate');
   }
   elseif (isset($_POST['TransAfterDate'])) {
-    $_SESSION['global_TransAfterDate'] = $_POST['TransAfterDate'];
+    Session::i()->setGlobal('TransAfterDate',$_POST['TransAfterDate']);
   }
-  if (!isset($_POST['TransToDate']) && isset($_SESSION['global_TransToDate'])) {
-    $_POST['TransToDate'] = $_SESSION['global_TransToDate'];
+  if (!isset($_POST['TransToDate']) && Session::i()->getGlobal('TransToDate')) {
+    $_POST['TransToDate'] = Session::i()->getGlobal('TransToDate');
   }
   elseif (isset($_POST['TransToDate'])) {
-    $_SESSION['global_TransToDate'] = $_POST['TransToDate'];
+    Session::i()->setGlobal('TransToDate',$_POST['TransToDate']);
   }
   date_cells(_("from:"), 'TransAfterDate', '', NULL, -31, -12);
   date_cells(_("to:"), 'TransToDate', '', NULL, 1);

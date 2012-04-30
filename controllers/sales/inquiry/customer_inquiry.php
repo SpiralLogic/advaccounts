@@ -18,7 +18,7 @@
   }
   start_form();
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->global_customer;
+    $_POST['customer_id'] = Session::i()->getGlobal('debtor');
   }
   start_table('tablestyle_noborder');
   start_row();
@@ -33,8 +33,7 @@
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   end_row();
   end_table();
-  Session::i()->global_customer = $_POST['customer_id'];
-  Display::div_start('totals_tbl');
+  Session::i()->setGlobal('debtor',$_POST['customer_id']);  Display::div_start('totals_tbl');
   if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
     $customer_record = Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
     Debtor::display_summary($customer_record);

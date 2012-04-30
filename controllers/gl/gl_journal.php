@@ -31,7 +31,7 @@
     $trans_type = ST_JOURNAL;
     Event::success(_("Journal entry has been updated") . " #$trans_no");
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
-    Display::link_no_params(DOCROOT . "gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+    Display::link_no_params(DOCROOT . "gl/inquiry/journal.php", _("Return to Journal &Inquiry"));
     Page::footer_exit();
   }
   if (isset($_GET['NewJournal'])) {
