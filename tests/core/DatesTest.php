@@ -90,10 +90,11 @@
      * @todo   Implement testNow().
      */
     public function testNow() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+    $date = Dates::now();
+      $this->assertEquals(date("h:i a"),$date);
+    $this->logicalOr();
+      $this->assertEquals(date("H:i"),$date);
+
     }
 
     /**
