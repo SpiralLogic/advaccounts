@@ -13,15 +13,13 @@
   start_form();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->global_customer;
-  }
+    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('customer_id', $_POST['customer_id'], TRUE, TRUE);
   echo "<br>";
   check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
   echo "</div><br><br>";
-  Session::i()->global_customer = $_POST['customer_id'];
-  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
+  Session::i()->setGlobal('debtor',$_POST['customer_id']);  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
     unset($_POST['customer_id']);
   }
   /*if (isset($_POST['customer_id'])) {

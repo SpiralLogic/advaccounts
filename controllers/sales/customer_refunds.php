@@ -13,8 +13,8 @@
   Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (!isset($_POST['customer_id']) && $_SESSION['global_customer']) {
-    $customer = new Debtor(Session::i()->global_customer);
+  if (!isset($_POST['customer_id']) && Session::i()->getGlobal('debtor')) {
+    $customer = new Debtor(Session::i()->getGlobal('debtor'));
   }
   if (!isset($_POST['DateBanked'])) {
     $_POST['DateBanked'] = Dates::new_doc_date();
@@ -78,7 +78,7 @@
     hidden('branch_id', ANY_NUMERIC);
   }
   Debtor_Payment::read_customer_data($customer->id, TRUE);
-  Session::i()->global_customer = $customer->id;
+  Session::i()->setGlobal('debtor',$customer->id);
   $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
   table_section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', NULL, TRUE);

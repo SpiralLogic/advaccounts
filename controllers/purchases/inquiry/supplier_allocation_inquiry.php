@@ -29,19 +29,19 @@
   }
   start_form(FALSE, '', 'invoiceForm');
   if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->supplier_id;
+    $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
-  if (!isset($_POST['TransAfterDate']) && isset($_SESSION['global_TransAfterDate'])) {
-    $_POST['TransAfterDate'] = $_SESSION['global_TransAfterDate'];
+  if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
+    $_POST['TransAfterDate'] = Session::i()->getGlobal('TransAfterDate');
   }
   elseif (isset($_POST['TransAfterDate'])) {
-    $_SESSION['global_TransAfterDate'] = $_POST['TransAfterDate'];
+    Session::i()->setGlobal('TransAfterDate',$_POST['TransAfterDate']);
   }
-  if (!isset($_POST['TransToDate']) && isset($_SESSION['global_TransToDate'])) {
-    $_POST['TransToDate'] = $_SESSION['global_TransToDate'];
+  if (!isset($_POST['TransToDate']) && Session::i()->getGlobal('TransToDate')) {
+    $_POST['TransToDate'] = Session::i()->getGlobal('TransToDate');
   }
   elseif (isset($_POST['TransToDate'])) {
-    $_SESSION['global_TransToDate'] = $_POST['TransToDate'];
+    Session::i()->setGlobal('TransToDate',$_POST['TransToDate']);
   }
   start_table('tablestyle_noborder');
   start_row();
@@ -54,7 +54,7 @@
   Purch_Allocation::row("filterType", NULL);
   check_cells(_("Show settled:"), 'showSettled', NULL);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  Session::i()->supplier_id = $_POST['supplier_id'];
+  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   end_row();
   end_table();
   /**

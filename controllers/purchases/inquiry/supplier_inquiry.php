@@ -21,7 +21,7 @@
   }
   start_form();
   if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->supplier_id;
+    $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   start_table('tablestyle_noborder');
   start_row();
@@ -32,7 +32,7 @@
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   end_row();
   end_table();
-  Session::i()->supplier_id = $_POST['supplier_id'];
+  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   Display::div_start('totals_tbl');
   if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
     $supplier_record = Creditor::get_to_trans($_POST['supplier_id']);

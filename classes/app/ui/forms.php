@@ -911,7 +911,7 @@
    * @param bool $submit_on_change
    */
   function ref_cells($label, $name, $title = NULL, $init = NULL, $params = NULL, $submit_on_change = FALSE) {
-    text_cells_ex($label, $name, 13, 18, $init, $title, $params, NULL, $submit_on_change);
+    text_cells_ex($label, $name, 9, 18, $init, $title, $params, NULL, $submit_on_change);
   }
 
   /**

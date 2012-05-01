@@ -12,7 +12,7 @@
      *
      */
     function __construct() {
-      $this->direct = '/contacts/customers.php';
+      $this->direct = '/contacts/customers';
       parent::__construct("Debtors", _($this->help_context = "&Customers"));
     }
   }

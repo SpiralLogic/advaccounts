@@ -10,22 +10,30 @@
       'embedMaxSize' => 5120,
       'embedExceptions' => array('htc')
     );
-    protected $mimeTypes=array();
-    protected $filedir;
+    protected $mimeTypes = array();
+    protected $filedir = '.';
+    protected $source;
     /**
-     * @param       $filedir
+     * @param          $filedir
      * @param string[] $minify_type_settings
-     * @param array $mimeTypes
+     * @param array    $mimeTypes
      *
      * @internal param $url
      * @internal param $count
      * @return \CSSMin
      */
-    public function __construct($filedir, array $minify_type_settings= array(), array $mimeTypes = array()) {
-      $this->filedir = $filedir;
-      $this->settings = array_merge($this->settings,(array)$minify_type_settings);
-      $this->embed = $this->settings['embed']  && (!preg_match('/msie/i',$_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
-      $this->mimeTypes = array_merge($this->mimeTypes,(array) $mimeTypes);
+    public function __construct($source, $options = array()) {
+      if (isset($options['filedir'])) {
+        $this->filedir = $options['filedir'];
+      }
+      if (isset($options['minify_type_settings'])) {
+        $this->settings = array_merge($this->settings, (array) $options['minify_type_settings']);
+      }
+      $this->embed = $this->settings['embed'] && (!preg_match('/msie/i', $_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
+      if (isset($options['mimeTypes'])) {
+        $this->mimeTypes = array_merge($this->mimeTypes, (array) $options['mimeTypes']);
+      }
+      $this->source = $source;
     }
     /**
      * @param $url
@@ -34,7 +42,7 @@
      * @return string
      */
     protected function convertUrl($url, $count) {
-      $baseUrl='/';
+      $baseUrl = '/';
       $url = trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
@@ -44,7 +52,7 @@
         $mimeType = $this->mimeTypes[$fileType];
       }
       elseif (function_exists('mime_content_type')) {
-        $mimeType = mime_content_type(WEBROOT.ltrim($url,'/'));
+        $mimeType = mime_content_type(WEBROOT . ltrim($url, '/'));
       }
       else {
         $mimeType = NULL;
@@ -54,7 +62,7 @@
         !file_exists($this->filedir . $url) ||
         ($this->settings['embedMaxSize'] > 0 && filesize($this->filedir . $url) > $this->settings['embedMaxSize']) ||
         !$fileType ||
-        in_array($fileType, (array)$this->settings['embedExceptions']) ||
+        in_array($fileType, (array) $this->settings['embedExceptions']) ||
         !$mimeType ||
         $count > 1
       ) {
@@ -89,7 +97,8 @@
      *
      * @return string
      */
-    public function minify($str) {
+    public function minify() {
+      $str = $this->source;
       $res = '';
       $i = 0;
       $inside_block = FALSE;

@@ -20,7 +20,7 @@
   }
   start_form(FALSE, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
-    $_POST['stock_id'] = Session::i()->global_stock_id;
+    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   if (!Input::request('frame')) {
     echo "<div class='center'>" . _("Item:") . "&nbsp;";
@@ -30,7 +30,7 @@
     Display::item_heading($_POST['stock_id']);
     Display::br();
     Display::div_end();
-    Session::i()->global_stock_id = $_POST['stock_id'];
+    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   Display::div_start('reorders');
   start_table('tablestyle width30');

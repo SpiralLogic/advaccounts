@@ -19,18 +19,19 @@
   }
   start_form();
   if (!isset($_POST['curr_abrev'])) {
-    $_POST['curr_abrev'] = Session::i()->global_curr_code;
+
+    $_POST['curr_abrev'] = Session::i()->getGlobal('curr_abrev');
   }
   echo "<div class='center'>";
   echo _("Select a currency :") . " ";
   echo GL_Currency::select('curr_abrev', NULL, TRUE);
   echo "</div>";
   // if currency sel has changed, clear the form
-  if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
+  if ($_POST['curr_abrev'] != Session::i()->getGlobal('curr_abrev')) {
     clear_data();
     $selected_id = "";
   }
-  Session::i()->global_curr_code = $_POST['curr_abrev'];
+  Session::i()->setGlobal('curr_abrev',$_POST['curr_abrev']);
   $sql = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
   $cols = array(

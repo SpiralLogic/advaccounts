@@ -652,9 +652,9 @@ JS;
         $value = $_POST['customer'];
         JS::set_focus('stock_id');
       }
-      elseif (!$value && Session::i()->global_customer) {
-        $_POST['customer_id'] = Session::i()->global_customer;
-        $value = Debtor::get_name(Session::i()->global_customer);
+      elseif (!$value && Session::i()->getGlobal('debtor')) {
+        $_POST['customer_id'] = Session::i()->getGlobal('debtor');
+        $value = Debtor::get_name(Session::i()->getGlobal('debtor'));
       }
       elseif (!$value) {
         JS::set_focus('customer');

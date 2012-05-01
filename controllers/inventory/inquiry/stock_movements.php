@@ -20,7 +20,7 @@
   }
   start_form();
   if (!Input::post('stock_id')) {
-    $_POST['stock_id'] = Session::i()->global_stock_id;
+    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   start_table('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE);
@@ -30,7 +30,7 @@
   submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   end_table();
   end_form();
-  Session::i()->global_stock_id = $_POST['stock_id'];
+  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   $before_date = Dates::date2sql($_POST['BeforeDate']);
   $after_date = Dates::date2sql($_POST['AfterDate']);
   $sql = "SELECT type, trans_no, tran_date, person_id, qty, reference

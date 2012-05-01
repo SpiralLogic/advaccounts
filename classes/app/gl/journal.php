@@ -222,7 +222,7 @@
      */
     static public function  view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
-        $viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
+        $viewer = "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
       }
       else {
         return NULL;

@@ -96,7 +96,7 @@
         $label = _("GL");
         $icon = ICON_GL;
       }
-      return Display::viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
+      return Display::viewer_link($label, "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
     }
     /**
      * @static

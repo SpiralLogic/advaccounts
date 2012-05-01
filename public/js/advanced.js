@@ -218,11 +218,11 @@ Adv.extend({
 	}
 });
 Adv.extend({Forms:(function () {
-	var i = document.createElement("input");
-	i.setAttribute("type", "date");
-	if (i.type == "text") {
+//	var i = document.createElement("input");
+	//i.setAttribute("type", "date");
+	//if (i.type == "text") {
 		Adv.o.wrapper.on('focus', ".datepicker", function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
-	}
+//	}
 	var _setFormValue = function (el, value, disabled) {
 		if (!el) {
 			return;

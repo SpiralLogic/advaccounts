@@ -96,7 +96,7 @@
     $so_type = $order->so_type;
     $trans_type = $order->trans_type;
     Dates::new_doc_date($order->document_date);
-    $_SESSION['global_customer'] = $order->customer_id;
+    Session::i()->setGlobal('debtor',$order->customer_id);
     $order->write(1);
     $jobsboard_order = clone ($order);
     $trans_no = $jobsboard_order->trans_no = key($order->trans_no);
@@ -271,7 +271,7 @@
   }
   else {
     Event::warning($customer_error);
-    Session::i()->global_customer = NULL;
+    Session::i()->setGlobal('debtor',NULL);
     Page::footer_exit();
   }
   Display::div_end();
@@ -303,7 +303,7 @@
         $trans_name = "Order";
     }
 
-    $customer = new Debtor($_SESSION['global_customer']);
+    $customer = new Debtor(Session::i()->getGlobal('debtor',0));
     $emails = $customer->getEmailAddresses();
     Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
     Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
@@ -353,7 +353,7 @@
         Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
       }
       Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-      if (isset($_GET[ADDED_DI]) && isset($_SESSION['global_customer']) && $row == FALSE) {
+      if (isset($_GET[ADDED_DI]) && Session::i()->getGlobal('debtor') && $row == FALSE) {
         echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
       }
     }

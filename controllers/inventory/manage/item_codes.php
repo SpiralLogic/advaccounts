@@ -63,12 +63,12 @@
   }
   start_form();
   if (!Input::post('stock_id')) {
-    $_POST['stock_id'] = Session::i()->global_stock_id;
+    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
   echo Item_Purchase::select('stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
   echo "<hr></div>";
-  Session::i()->global_stock_id = $_POST['stock_id'];
+  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   $result = Item_Code::get_defaults($_POST['stock_id']);
   $dec = $result['decimals'];
   $units = $result['units'];

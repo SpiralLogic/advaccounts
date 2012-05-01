@@ -42,12 +42,12 @@
   }
   start_form();
   if (!Input::post('stock_id')) {
-    $_POST['stock_id'] = Session::i()->global_stock_id;
+    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
   echo Item_UI::costable('stock_id', $_POST['stock_id'], FALSE, TRUE);
   echo "</div><hr>";
-  Session::i()->global_stock_id = $_POST['stock_id'];
+  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   $sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master

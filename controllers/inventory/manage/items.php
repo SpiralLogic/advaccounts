@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
   $user_comp = '';
@@ -129,7 +128,7 @@
         Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
       else {
-        Session::i()->global_stock_id = $_POST['NewStockID'];
+        Session::i()->setGlobal('stock_id', $_POST['NewStockID']);
         $_POST['stock_id'] = $_POST['NewStockID'];
       }
       Ajax::i()->activate('_page_body');
@@ -346,11 +345,11 @@
     submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
   if (get_post('stock_id')) {
-    Session::i()->global_stock_id = get_post('stock_id');
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   if (get_post('stock_id')) {
-    Session::i()->global_stock_id = get_post('stock_id');
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   Display::div_end();

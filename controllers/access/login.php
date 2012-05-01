@@ -73,9 +73,7 @@
   echo "<td colspan='2' class='center pad20'><button name='SubmitUser'>" . _("Login -->") . "</button></td>\n";
   end_row();
   end_table(1);
-  foreach (
-    $_SESSION['timeout']['post'] as $p => $val
-  ) {
+  foreach ($_POST as $p => $val) {
     // add all request variables to be resend together with login data
     if (!in_array($p, array('ui_mode', 'user_name', 'password', 'SubmitUser', 'login_company'))) {
       echo "<input type='hidden' name='" . serialize($p) . "' value='$val'>";

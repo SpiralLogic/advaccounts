@@ -23,7 +23,7 @@
   elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company'] = $supplier = new Creditor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($supplier->id, CT_SUPPLIER);
-    $_SESSION['global_supplier_id'] = $supplier->id;
+    Session::i()->setGlobal('creditor', $supplier->id);
   }
   else {
     $data['company'] = $supplier = new Creditor();

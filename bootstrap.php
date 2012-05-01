@@ -2,7 +2,6 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
-   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -15,7 +14,7 @@
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     /** @noinspection PhpUndefinedConstantInspection */
     /** @noinspection PhpUndefinedFunctionInspection */
-    xhprof_enable(XHPROF_FLAGS_CPU  + XHPROF_FLAGS_MEMORY);
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
   }
   error_reporting(-1);
   ini_set('display_errors', 1);
@@ -51,9 +50,10 @@
        * @return array|string
        */
       function e($string) { return Security::htmlentities($string); }
-    }   register_shutdown_function(function () {
-       ADV\Core\Event::shutdown();
-     });
+    }
+    register_shutdown_function(function () {
+      ADV\Core\Event::shutdown();
+    });
     if (!function_exists('adv_ob_flush_handler')) {
       /**
        * @param $text
@@ -71,31 +71,43 @@
     include(DOCROOT . 'config' . DS . 'types.php');
     include(DOCROOT . 'config' . DS . 'access_levels.php');
     Session::i();
+    Config::i();
     Ajax::i();
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i();
   }
-  register_shutdown_function(function() {
-       if (extension_loaded('xhprof')) {
-             $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-             /** @noinspection PhpUndefinedFunctionInspection */
-             $xhprof_data = xhprof_disable();
-             /** @noinspection PhpUndefinedClassInspection */
-             $xhprof_runs = new \XHProfRuns_Default();
-             /** @noinspection PhpUndefinedMethodInspection */
-             $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-           }
-     });
+  if (extension_loaded('xhprof') && !strpos($_SERVER['QUERY_STRING'], 'xhprof')) {
+    register_shutdown_function(function() {
+
+      $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+      /** @noinspection PhpUndefinedFunctionInspection */
+      $xhprof_data = xhprof_disable();
+      /** @noinspection PhpUndefinedClassInspection */
+      $xhprof_runs = new \XHProfRuns_Default();
+      /** @noinspection PhpUndefinedMethodInspection */
+      $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+    });
+  }
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new Assets();
   }
-  elseif (isset($_SERVER['DOCUMENT_URI']) && file_exists(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'))) {
-    include(DOCROOT . 'controllers' . DS . ltrim($_SERVER['DOCUMENT_URI'], '/'));
-  }
-  elseif ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME']) {
-    header('HTTP/1.0 404 Not Found');
-    Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-  }
   else {
-    Session::i()->App->display();
+    $controller = NULL;
+    $show404 = FALSE;
+    if (isset($_SERVER['DOCUMENT_URI']) && ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME'])) {
+      $controller = ltrim($_SERVER['DOCUMENT_URI'], '/');
+      $controller = (substr($controller, -4) == '.php') ? $controller : $controller . '.php';
+      $controller = DOCROOT . 'controllers' . DS . $controller;
+      $show404 = $show404 || !file_exists($controller);
+      $show404 = $show404 || !include($controller);
+    }
+    if ($show404) {
+      header('HTTP/1.0 404 Not Found');
+      Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+    }
+    if (!$controller || $show404) {
+      Session::i()->App->display();
+    }
   }
+
+
