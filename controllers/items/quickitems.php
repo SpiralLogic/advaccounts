@@ -9,7 +9,7 @@
      **/
 
 
-  $_SESSION['App']->selected_application = 'Items';
+  Session::i()->App->set_selected('items');
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Item::search($_GET['term']);

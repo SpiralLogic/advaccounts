@@ -23,4 +23,5 @@
       continue;
     }
   }*/
-  phpinfo();
+var_dump(PDO::CASE_UPPER ===1);
+var_dump(PDO::CASE_UPPER ==1);

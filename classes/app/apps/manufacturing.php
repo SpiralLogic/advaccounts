@@ -21,9 +21,9 @@
         "/manufacturing/search_work_orders?outstanding_only=1", SA_MANUFTRANSVIEW);
       $this->add_module(_("Inquiries and Reports"));
       $this->add_lapp_function(1, _("Costed Bill Of Material Inquiry"),
-        "/manufacturing/inquiry/bom_cost_inquiry?", SA_WORKORDERCOST);
+        "/manufacturing/inquiry/bom_cost?", SA_WORKORDERCOST);
       $this->add_lapp_function(1, _("Inventory Item Where Used &Inquiry"),
-        "/manufacturing/inquiry/where_used_inquiry?", SA_WORKORDERANALYTIC);
+        "/manufacturing/inquiry/where_used?", SA_WORKORDERANALYTIC);
       $this->add_lapp_function(1, _("Work Order &Inquiry"),
         "/manufacturing/search_work_orders?", SA_MANUFTRANSVIEW);
       $this->add_rapp_function(1, _("Manufacturing &Reports"),

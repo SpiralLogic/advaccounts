@@ -35,8 +35,8 @@
   $payment_person_types = array(
     PT_MISC => "Miscellaneous", //
     "Work Order", //
-    "Customer", //
-    "Supplier", //
+    "Debtor", //
+    "Creditor", //
     "Quick Entry"
   );
   $wo_types_array = array(
@@ -84,30 +84,35 @@
     STOCK_INFO => "Information"
   );
   $systypes_array = array(
+    ST_SALESQUOTE => "Sales Quotation",
+    ST_SALESORDER => "Sales Order",
+    ST_PROFORMA => "Proforma Invoice",
+    ST_CUSTDELIVERY => "Sales Delivery",
+    ST_SALESINVOICE => "Sales Invoice",
+    ST_CUSTCREDIT => "Sales Credit Note",
+    ST_CUSTPAYMENT => "Debtor Payment",
+    ST_CUSTREFUND => "Debtor Refund",
+
+    ST_PURCHORDER => "Purchase Order",
+    ST_SUPPRECEIVE => "Purchase Delivery",
+    ST_SUPPINVOICE => "Purchase Invoice",
+    ST_SUPPCREDIT => "Purchase Credit Note",
+    ST_SUPPAYMENT => "Creditor Payment",
+
     ST_JOURNAL => "Journal Entry",
     ST_BANKPAYMENT => "Bank Payment",
     ST_BANKDEPOSIT => "Bank Deposit",
     ST_BANKTRANSFER => "Funds Transfer",
-    ST_SALESINVOICE => "Invoice",
-    ST_CUSTCREDIT => "Credit Note",
     ST_GROUPDEPOSIT => "Group Deposit",
-    ST_CUSTPAYMENT => "Payment",
-    ST_CUSTREFUND => "Refund",
-    ST_CUSTDELIVERY => "Delivery&nbsp;Note",
-    ST_LOCTRANSFER => "Location Transfer",
-    ST_INVADJUST => "Inventory Adjustment",
-    ST_PURCHORDER => "Purchase Order",
-    ST_SUPPINVOICE => "Supplier Invoice",
-    ST_SUPPCREDIT => "Supplier Credit Note",
-    ST_SUPPAYMENT => "Supplier&nbsp;Payment",
-    ST_SUPPRECEIVE => "Purchase Order Delivery",
-    ST_WORKORDER => "Work Order",
+
     ST_MANUISSUE => "Work Order Issue",
+    ST_WORKORDER => "Work Order",
     ST_MANURECEIVE => "Work Order Production",
-    ST_SALESORDER => "Order",
-    ST_SALESQUOTE => "Quotation",
-    ST_PROFORMA => "Proforma Invoice",
+
+    ST_INVADJUST => "Inventory Adjustment",
+    ST_LOCTRANSFER => "Location Transfer",
     ST_COSTUPDATE => "Cost Update",
+
     ST_DIMENSION => "Dimension"
   );
   $tag_types = array(

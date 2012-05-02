@@ -27,21 +27,6 @@
      */
     protected $_vars = NULL;
     /**
-
-     */
-    protected function __construct() {
-      if (isset($_GET['reload_config'])) {
-        Cache::delete('config');
-        header('Location: /');
-      }
-      elseif ($this->_vars === NULL) {
-        $this->_vars = Cache::get('config');
-      }
-      if (!$this->_vars) {
-        $this->load();
-      }
-    }
-    /**
      * @static
      *
      * @param        $var
@@ -69,8 +54,8 @@
         $var = 'config.' . $var;
       }
       $group_array = explode('.', $var);
-      $var = array_pop($group_array);
-      $group = implode('.', $group_array);
+      $var         = array_pop($group_array);
+      $group       = implode('.', $group_array);
       (isset($i->_vars[$group], $i->_vars[$group][$var])) or $i->load($group_array);
       if (!isset($i->_vars[$group][$var])) {
         return $default;
@@ -82,12 +67,11 @@
      *
      * @param        $var
      * @param string $group
-     * @param string $group
      */
     static public function remove($var, $group = 'config') {
-      $i = static::i();
-      if (array_key_exists($var, $i->_vars[$group])) {
-        unset($i->_vars[$group][$var]);
+
+      if (array_key_exists($var, static::i()->_vars[$group])) {
+        unset(static::i()->_vars[$group][$var]);
       }
     }
     /**
@@ -100,12 +84,11 @@
      * @return array
      */
     static public function get_all($group = 'config', $default = array()) {
-      $i = static::i();
-      if (!isset($i->_vars[$group]) && $i->load($group) === FALSE) {
+
+      if (!isset(static::i()->_vars[$group]) && static::i()->load($group) === FALSE) {
         return $default;
       }
-      ;
-      return $i->_vars[$group];
+      return static::i()->_vars[$group];
     }
     /**
      * @static
@@ -122,6 +105,25 @@
       static::removeAll();
       static::i()->load();
     }
+
+    static public function _shutdown() {
+      Cache::set('config', static::i()->_vars);
+    }
+    /**
+
+     */
+    protected function __construct() {
+      if (isset($_GET['reload_config'])) {
+        Cache::delete('config');
+        header('Location: /');
+      }
+      elseif ($this->_vars === NULL) {
+        $this->_vars = Cache::get('config');
+      }
+      if (!$this->_vars) {
+        $this->load();
+      }
+    }
     /**
      * @static
      *
@@ -135,10 +137,10 @@
         $group_name = implode('.', $group);
         $group_file = array_pop($group) . '.php';
         $group_path = implode(DS, $group);
-        $file = DOCROOT . "config" . $group_path . DS . $group_file;
+        $file       = DOCROOT . "config" . $group_path . DS . $group_file;
       }
       else {
-        $file = DOCROOT . "config" . DS . $group . '.php';
+        $file       = DOCROOT . "config" . DS . $group . '.php';
         $group_name = $group;
       }
       if ($this->_vars && array_key_exists($group_name, $this->_vars)) {
@@ -150,18 +152,5 @@
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
       Event::register_shutdown(__CLASS__);
-    }
-    /**
-     * @static
-
-     */
-    static function js() {
-    }
-    /**
-     * @static
-
-     */
-    static public function _shutdown() {
-      Cache::set('config', static::i()->_vars);
     }
   }

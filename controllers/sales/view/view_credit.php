@@ -16,7 +16,7 @@
   elseif (isset($_POST["trans_no"])) {
     $trans_id = $_POST["trans_no"];
   }
-  $myrow = Debtor_Trans::get($trans_id, ST_CUSTCREDIT);
+  $myrow  = Debtor_Trans::get($trans_id, ST_CUSTCREDIT);
   $branch = Sales_Branch::get($myrow["branch_id"]);
   Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
   echo "<br>";
@@ -51,14 +51,14 @@
   echo "</td></tr>";
   end_table(1); // outer table
   $sub_total = 0;
-  $result = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
+  $result    = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
   start_table('tablestyle width95');
   if (DB::num_rows($result) > 0) {
     $th = array(
       _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
     );
     table_header($th);
-    $k = 0; //row colour counter
+    $k         = 0; //row colour counter
     $sub_total = 0;
     while ($myrow2 = DB::fetch($result)) {
       if ($myrow2["quantity"] == 0) {
@@ -88,8 +88,8 @@
   }
   $display_sub_tot = Num::price_format($sub_total);
   $display_freight = Num::price_format($myrow["ov_freight"]);
-  $credit_total = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
-  $display_total = Num::price_format($credit_total);
+  $credit_total    = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
+  $display_total   = Num::price_format($credit_total);
   /*Print out the invoice text entered */
   if ($sub_total != 0) {
     label_row(_("Sub Total"), $display_sub_tot, "colspan=6 class='right'", " class='nowrap right width15'");

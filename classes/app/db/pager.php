@@ -154,7 +154,7 @@
         }
       }
       /* show a table of records returned by the sql */
-      start_table('tablestyle width' . $pager->width);
+      start_table('tablestyle grid width' . $pager->width);
       table_header($headers);
       if ($pager->header_fun) { // if set header handler
         start_row("class='{$pager->header_class}'");
@@ -178,7 +178,7 @@
           start_row("class='$pager->marker_class'");
         }
         else {
-          alt_table_row_color($cc);
+          echo "<tr>\n";
         }
         foreach ($pager->columns as $k => $col) {
           $coltype = isset($col['type']) ? $col['type'] : '';

@@ -65,7 +65,7 @@
       /** @noinspection PhpUndefinedConstantInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
-        $old_path = ini_set('session.save_path', '127.0.0.1:11211');
+        $old_path    = ini_set('session.save_path', '127.0.0.1:11211');
         (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
@@ -142,13 +142,13 @@
      * @internal param $valie
      * @return float|string
      */
-    public function setGlobal($var, $value=NULL) {
-      if ($value===NULL) {
-       unset($_SESSION['globals'][$var]);
+    public function setGlobal($var, $value = NULL) {
+      if ($value === NULL) {
+        unset($_SESSION['globals'][$var]);
         return NULL;
       }
       $_SESSION['globals'][$var] = $value;
-      $_SESSION[$var] = $value;
+      $_SESSION[$var]            = $value;
       return $value;
     }
     /**

@@ -317,10 +317,10 @@
     static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $viewer = "manufacturing/view/";
       if ($type == ST_MANUISSUE) {
-        $viewer .= "wo_issue_view.php";
+        $viewer .= "wo_issue.php";
       }
       elseif ($type == ST_MANURECEIVE) {
-        $viewer .= "wo_production_view.php";
+        $viewer .= "wo_production.php";
       }
       elseif ($type == ST_WORKORDER) {
         $viewer .= "work_order_view.php";

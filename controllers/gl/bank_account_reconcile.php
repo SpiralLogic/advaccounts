@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  /* Author Rob Mallon */
 
   JS::open_window(800, 500);
   JS::footerFile('/js/reconcile.js');
@@ -28,8 +27,8 @@
     update_data();
   }
   if (!count($_POST)) {
-    if (Session::i()->getGlobal('reconcile_date')) {
-      $_POST['bank_date'] = Session::i()->getGlobal('reconcile_date');
+    if (Session::i()->getGlobal('bank_date')) {
+      $_POST['bank_date'] = Session::i()->getGlobal('bank_date');
       $_POST['_bank_date_update'] = $_POST['bank_date'];
     }
     if (Session::i()->getGlobal('bank_account')) {
@@ -45,6 +44,7 @@
   }
   if (list_updated('bank_date')) {
     $_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::today() : Dates::sql2date($_POST['bank_date']);
+    Session::i()->setGlobal('bank_date', $_POST['bank_date']);
     update_data();
   }
   if (get_post('_reconcile_date_changed')) {

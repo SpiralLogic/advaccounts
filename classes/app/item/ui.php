@@ -167,10 +167,10 @@
       $viewer = "inventory/view/";
       switch ($type) {
         case ST_INVADJUST:
-          $viewer .= "view_adjustment.php";
+          $viewer .= "adjustment.php";
           break;
         case ST_LOCTRANSFER:
-          $viewer .= "view_transfer.php";
+          $viewer .= "transfer.php";
           break;
         default:
           return NULL;

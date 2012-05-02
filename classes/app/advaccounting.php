@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,10 +12,7 @@
 
    */
   class ADVAccounting {
-    /**
-     * @var
-     */
-    public $user;
+
     /**
      * @var
      */
@@ -33,6 +29,7 @@
      * @var \Menu
      */
     public $menu;
+    static $user;
     /**
 
      */
@@ -81,11 +78,11 @@
       if ($this->selected !== NULL && is_object($this->selected)) {
         return $this->selected;
       }
-      $path = explode('/', $_SERVER['SCRIPT_NAME']);
-      $app_id = $path[0];
+      $path           = explode('/', $_SERVER['SCRIPT_NAME']);
+      $app_id         = $path[0];
       $this->selected = $this->get_application($app_id);
       if (!$this->selected) {
-        $app_id = User::i()->startup_tab();
+        $app_id         = User::i()->startup_tab();
         $this->selected = $this->get_application($app_id);
       }
       if (!$this->selected || !is_object($this->selected)) {
@@ -150,32 +147,36 @@
       if (!Session::checkUserAgent()) {
         static::showLogin();
       }
-      $currentUser = User::i();
+
+      static::$user = User::i();
       if (Input::post("user_name")) {
-        $company = isset($_POST["login_company"]) ? $_POST["login_company"] : 'default';
-        if ($company) {
-          try {
-            if (!$currentUser->login($company, $_POST["user_name"], $_POST["password"])) {
-              // Incorrect password
-              static::loginFail();
-            }
-          }
-          catch (\ADV\Core\DB\DBException $e) {
-            Page::error_exit('Could not connect to database!');
-          }
-          $currentUser->ui_mode = $_POST['ui_mode'];
-          Session::regenerate();
-          Language::i()->set_language($_SESSION['Language']->code);
-        }
+        self::login();
       }
-      elseif (!$currentUser->logged_in()) {
+      elseif (!static::$user->logged_in()) {
         static::showLogin();
       }
       /*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
                 throw new ErrorException("Dev no working.");
               }*/
-      if ($currentUser->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
-        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
+      if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
+        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
+      }
+    }
+    protected static function login() {
+      $company = Input::post('login_company',null,'default');
+      if ($company) {
+        try {
+          if (!static::$user->login($company, $_POST["user_name"], $_POST["password"])) {
+            // Incorrect password
+            static::loginFail();
+          }
+        }
+        catch (\ADV\Core\DB\DBException $e) {
+          Page::error_exit('Could not connect to database!');
+        }
+        static::$user->ui_mode = $_POST['ui_mode'];
+        Session::regenerate();
+        Language::i()->set_language($_SESSION['Language']->code);
       }
     }
     /**
@@ -264,7 +265,7 @@
         $msg .= "\t\t),\n";
       }
       $msg .= "\t);\n?>";
-      $filename = DOCROOT . ($company == -1 ? '' : 'company'.DS . $company) . DS .'installed_extensions.php';
+      $filename = DOCROOT . ($company == -1 ? '' : 'company' . DS . $company) . DS . 'installed_extensions.php';
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));

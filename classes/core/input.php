@@ -265,6 +265,7 @@
      * @return bool|int|null|string
      */
     static protected function _isset(array $array, $var, $type = NULL, $default = NULL) {
+      if ($type!==NULL&&$default===NULL) $default=$type;
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {
         case self::NUMERIC:

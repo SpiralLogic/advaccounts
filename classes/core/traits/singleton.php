@@ -19,8 +19,7 @@
     static protected $i = NULL;
     /***
      * @static
-     * @return Ajax
-     * Returns Ajax Instance
+     * @return
      */
     static public function i() {
       (static::$i === NULL) and  static::$i = new static;
