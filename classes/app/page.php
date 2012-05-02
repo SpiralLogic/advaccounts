@@ -188,14 +188,7 @@
      */
     protected function footer() {
       $Validate = array();
-      $js = <<<JS
- $('<script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>').appendTo('body');
- window.setTimeout(function() {
- for(var i=0;i<100;i++){cornify_add();}
- },6000);
 
-JS;
-      JS::onload($js);
       $this->menu_footer();
       JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";");
       User::add_js_data();
