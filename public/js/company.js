@@ -35,7 +35,7 @@ Adv.extend({
 });
 var Contacts = function () {
 	var blank, count = 0, adding = false, $Contacts = $("#Contacts");
-	$('#contact').template('contact');
+	$('#contact_tmpl').template('contact');
 	return {
 		list:   function () {
 			return list;

@@ -22,7 +22,7 @@
   elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
-    Session::i()->setGlobal('debtor',$customer->id);
+    Session::i()->setGlobal('debtor', $customer->id);
   }
   else {
     $data['company'] = $customer = new Debtor();
@@ -157,7 +157,7 @@
   end_outer_table(1);
   $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
-  HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
+  HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '', 'style' => 'display:inline-block'
   ))->tr(TRUE)->td(array(
     'content' => '${name}',
@@ -182,9 +182,9 @@
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
   Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
   yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
-  HTML::tr(true)->td(array(
+  HTML::tr(TRUE)->td(array(
     'content' => _("Website ID: "), "class" => "label"
-  ), FALSE)->td(true);
+  ), FALSE)->td(TRUE);
   HTML::input('webid', array(
     'value' => $customer->webid, 'disabled' => TRUE, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
   ));
@@ -198,12 +198,12 @@
   table_section_title(_("Notes"));
   textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
   end_outer_table(1);
-
   $menu->endTab();
   $menu->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
-  $menu->endTab()->render();  hidden('frame', Input::request('frame'));
-HTML::div();
+  $menu->endTab()->render();
+  hidden('frame', Input::request('frame'));
+  HTML::div();
   end_form();
 
   HTML::div('contactLog', array(

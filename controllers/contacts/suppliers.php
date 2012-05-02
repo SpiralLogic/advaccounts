@@ -111,7 +111,6 @@
   start_outer_table('tablestyle2');
   table_section(1);
   table_section_title(_("Accounts Details:"), 2);
-  percent_row(_("Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" : " disabled");
   percent_row(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" :
     " disabled");
   amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, NULL, NULL, 0, (User::i()->can_access(SA_SUPPLIERCREDIT)) ? "" :
@@ -127,7 +126,6 @@
   }
   GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $supplier->payment_terms);
   table_section_title(_("GL Accounts"));
-  GL_UI::all_row(_("Sales Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
   GL_UI::all_row(_("Accounts Receivable Account:"), 'payable_account', $supplier->payable_account);
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account', $supplier->payment_discount_account);
   table_section_title(_("Notes"));
@@ -145,7 +143,7 @@
   end_outer_table(1);
   $menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts');
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
-  HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
+  HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '', 'style' => 'display:inline-block'
   ))->tr(TRUE)->td(array(
     'content' => '${name}',
@@ -159,13 +157,13 @@
   text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
 
-  hidden('frame', Input::request('frame'));
-
-  end_form();
   $menu->endTab()->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
   $menu->endTab()->render();
+  hidden('frame', Input::request('frame'));
+  HTML::div();
 
+  end_form();
   HTML::div('contactLog', array(
     'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
   ));

@@ -200,10 +200,10 @@
         JS::render();
         return;
       }
-      echo "</div></body>";
+      echo "</div>";
       JS::render();
       //End content div
-      echo   "</html>\n";
+      echo   "</body></html>\n";
     }
 
     /**

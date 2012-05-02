@@ -152,8 +152,8 @@
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = NULL, $target = NULL) {
       $this->label = $label;
-      $this->link = $link;
-      $this->tooltip = $tooltip;
+      $this->link = e($link);
+      $this->tooltip = e($tooltip);
       $this->param_element = $param_element;
       $this->target = $target;
     }

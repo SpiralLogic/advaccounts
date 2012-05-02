@@ -938,7 +938,6 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === NULL) ? '' : $init;
       }
-      $inputparams .= ' max=100 min=0 step=1';
       small_amount_row($label, $name, $_POST[$name], NULL, "%", User::percent_dec(), 0, $inputparams);
     }
 
@@ -952,7 +951,6 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === NULL) ? '' : $init;
       }
-      $inputparams .= ' max=100 min=0 step=1';
       small_amount_cells($label, $name, NULL, NULL, "%", User::percent_dec(), $inputparams);
     }
 
