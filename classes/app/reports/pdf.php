@@ -1117,7 +1117,7 @@
      *
      * @return void
      */
-    public function End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
+    public function  End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
       if (Config::get('debug.pdf')== 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -1183,7 +1183,7 @@
             $emailAddress = $_GET['Email'];
           }
 
-          $mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
+          $mail->to('admin@advancedgroup.com.au', str_replace(",", "", $myrow['DebtorName']));
           $mail->subject($subject);
           $mail->text($msg . $sender);
           $mail->attachment($fname);
