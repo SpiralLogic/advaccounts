@@ -20,7 +20,7 @@
   /**
    * @property \ADVAccounting App
    */
-  class Session extends \Input {
+  class Session {
 
   use Traits\Singleton;
 

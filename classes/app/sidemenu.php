@@ -37,6 +37,19 @@ HTML;
     /**
      * @var string
      */
+    /**
+     * @var string
+     */
+    protected $supplier
+      = <<<HTML
+	 <h3><a href="#">Supplier Search</a></h3>
+		<div>
+		<input size="14" id="quickSupplier"/>
+		</div>
+HTML;
+    /**
+     * @var string
+     */
     protected $search
       = <<<HTML
 <div id="search">
@@ -84,6 +97,6 @@ HTML;
       if (User::i()->can_access(SS_GL)) {
         $this->display .= $this->bank;
       }
-      $this->display .= $this->customer . $this->end;
+      $this->display .= $this->customer . $this->supplier .$this->end;
     }
   }

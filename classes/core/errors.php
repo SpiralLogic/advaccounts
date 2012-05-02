@@ -129,8 +129,8 @@
       );
       static::$current_severity = -1;
       static::$messages[] = $error;
-      if (is_writable(DOCROOT . '../error_log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+      if (is_writable(DOCROOT . 'tmp/errors.log')) {
+        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . 'tmp/errors.log');
       }
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
       static::$errors[] = $error;

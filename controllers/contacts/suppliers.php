@@ -160,7 +160,6 @@
   HTML::td()->tr->table->script->div->div;
 
   hidden('frame', Input::request('frame'));
-  HTML::_div();
 
   end_form();
   $menu->endTab()->startTab('Invoices', 'Invoices');

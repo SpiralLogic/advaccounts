@@ -76,7 +76,7 @@
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i();
   }
-  if (extension_loaded('xhprof') && !strpos($_SERVER['QUERY_STRING'], 'xhprof')) {
+  if (extension_loaded('xhprof') ) {
     register_shutdown_function(function() {
 
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
