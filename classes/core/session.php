@@ -24,23 +24,6 @@
 
   use Traits\Singleton;
 
-    /**
-     * @static
-     * @return void
-     */
-    static public function kill() {
-      static::i();
-      Config::removeAll();
-      session_unset();
-      session_destroy();
-    }
-    /**
-     * @static
-     * @return void
-     */
-    static public function regenerate() {
-      session_regenerate_id();
-    }
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */
@@ -170,5 +153,22 @@
           unset ($_SESSION['globals'][$var]);
         }
       }
+    }
+    /**
+     * @static
+     * @return void
+     */
+    static public function kill() {
+      static::i();
+      Config::removeAll();
+      session_unset();
+      session_destroy();
+    }
+    /**
+     * @static
+     * @return void
+     */
+    static public function regenerate() {
+      session_regenerate_id();
     }
   }

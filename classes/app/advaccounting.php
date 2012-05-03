@@ -29,6 +29,7 @@
      * @var \Menu
      */
     public $menu;
+
     static $user;
     /**
 
@@ -90,9 +91,7 @@
       }
       return $this->selected;
     }
-    /**
 
-     */
     public function display() {
       Extensions::add_access();
       Input::get('application')  and $this->set_selected($_GET['application']);
@@ -111,6 +110,9 @@
 
      */
     static public function i() {
+      Session::i();
+      Config::i();
+
       $buildversion = Cache::get('build.version', FALSE);
       if (!$buildversion) {
         is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', NULL, NULL, NULL, 6));
@@ -136,65 +138,12 @@
       }
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
-      if (strstr($_SERVER['DOCUMENT_URI'], 'logout.php') == FALSE) {
+      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         static::checkLogin();
       }
       Event::init();
       isset($_SESSION["App"]) or $_SESSION["App"] = new static();
       return $_SESSION["App"];
-    }
-    static protected function checkLogin() {
-      if (!Session::checkUserAgent()) {
-        static::showLogin();
-      }
-
-      static::$user = User::i();
-      if (Input::post("user_name")) {
-        self::login();
-      }
-      elseif (!static::$user->logged_in()) {
-        static::showLogin();
-      }
-      /*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
-                throw new ErrorException("Dev no working.");
-              }*/
-      if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
-        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
-      }
-    }
-    protected static function login() {
-      $company = Input::post('login_company',null,'default');
-      if ($company) {
-        try {
-          if (!static::$user->login($company, $_POST["user_name"], $_POST["password"])) {
-            // Incorrect password
-            static::loginFail();
-          }
-        }
-        catch (\ADV\Core\DB\DBException $e) {
-          Page::error_exit('Could not connect to database!');
-        }
-        static::$user->ui_mode = $_POST['ui_mode'];
-        Session::regenerate();
-        Language::i()->set_language($_SESSION['Language']->code);
-      }
-    }
-    /**
-
-     */
-    static protected function showLogin() {
-      // strip ajax marker from uri, to force synchronous page reload
-      $_SESSION['timeout'] = array(
-        'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
-      );
-      require(DOCROOT . "controllers/access/login.php");
-      if (Ajax::in_ajax()) {
-        Ajax::i()->redirect($_SERVER['DOCUMENT_URI']);
-      }
-      elseif (AJAX_REFERRER) {
-        JS::redirect('/');
-      }
-      exit();
     }
     /**
 
@@ -281,6 +230,61 @@
         fclose($zp);
       }
       return TRUE;
+    }
+
+    static protected function checkLogin() {
+      if (!Session::checkUserAgent()) {
+        static::showLogin();
+      }
+
+      static::$user = User::i();
+      if (Input::post("user_name")) {
+        self::login();
+      }
+      elseif (!static::$user->logged_in()) {
+        static::showLogin();
+      }
+      /*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
+                throw new ErrorException("Dev no working.");
+              }*/
+      if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
+        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
+      }
+    }
+
+    static protected function login() {
+      $company = Input::post('login_company', NULL, 'default');
+      if ($company) {
+        try {
+          if (!static::$user->login($company, $_POST["user_name"], $_POST["password"])) {
+            // Incorrect password
+            static::loginFail();
+          }
+        }
+        catch (\ADV\Core\DB\DBException $e) {
+          Page::error_exit('Could not connect to database!');
+        }
+        static::$user->ui_mode = $_POST['ui_mode'];
+        Session::regenerate();
+        Language::i()->set_language($_SESSION['Language']->code);
+      }
+    }
+    /**
+
+     */
+    static protected function showLogin() {
+      // strip ajax marker from uri, to force synchronous page reload
+      $_SESSION['timeout'] = array(
+        'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
+      );
+      require(DOCROOT . "controllers/access/login.php");
+      if (Ajax::in_ajax()) {
+        Ajax::i()->redirect($_SERVER['DOCUMENT_URI']);
+      }
+      elseif (AJAX_REFERRER) {
+        JS::redirect('/');
+      }
+      exit();
     }
   }
 
