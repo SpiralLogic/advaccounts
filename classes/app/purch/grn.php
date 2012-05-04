@@ -362,7 +362,7 @@
               qty_cells(NULL, 'this_quantity_inv' . $n, Num::format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), NULL, NULL, $dec);
             }
             else {
-              qty_cells(NULL, 'This_QuantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), NULL, NULL, $dec);
+              qty_cells(NULL, 'this_quantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), NULL, NULL, $dec);
             }
             $dec2 = 0;
             amount_cells(NULL, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ChgPriceCalc' . $n);

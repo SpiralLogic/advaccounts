@@ -221,16 +221,16 @@ JS;
     return TRUE;
   }
 
-  /**
+  /**S
    * @param $n
    *
    * @return bool
    */
   function check_item_data($n) {
-    if (!Validation::post_num('This_QuantityCredited' . $n, 0)) {
+    if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
       Event::error(_("The quantity to credit must be numeric and greater than zero."));
-      JS::set_focus('This_QuantityCredited' . $n);
-      return FALSE;
+      JS::set_focus('this_quantityCredited' . $n);
+      return FALSE;this_quantity
     }
     if (!Validation::post_num('ChgPrice' . $n, 0)) {
       Event::error(_("The price is either not numeric or negative."));
@@ -247,7 +247,7 @@ JS;
     if (check_item_data($n)) {
       $complete = FALSE;
       Creditor_Trans::i()
-        ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
+        ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
         $complete, $_POST['std_cost_unit' . $n], "");
     }
   }
