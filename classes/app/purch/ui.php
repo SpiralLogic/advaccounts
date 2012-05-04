@@ -34,7 +34,7 @@
      * @return null|string
      */
     static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
-      $viewer = "purchases/view/";
+      $viewer = "/purchases/view/";
       switch ($type) {
         case ST_PURCHORDER:
           $viewer .= "view_po.php";

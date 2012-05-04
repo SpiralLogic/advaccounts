@@ -1095,7 +1095,7 @@
     if (!isset($dec)) {
       $dec = User::qty_dec();
     }
-    amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, NULL, NULL, TRUE);
+    amount_cells_ex($label, $name, 6, 15, $init, $params, $post_label, $dec, NULL, NULL, TRUE);
   }
 
   /**
@@ -1144,7 +1144,7 @@
    */
   function small_amount_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL,
                               $inputparams = '', $negatives = FALSE) {
-    amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, NULL, $inputparams, $negatives);
+    amount_cells_ex($label, $name, 4, 12, $init, $params, $post_label, $dec, NULL, $inputparams, $negatives);
   }
 
   /**

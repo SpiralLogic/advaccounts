@@ -110,8 +110,7 @@
 
      */
     static public function i() {
-      Session::i();
-      Config::i();
+
 
       $buildversion = Cache::get('build.version', FALSE);
       if (!$buildversion) {
@@ -244,9 +243,9 @@
       elseif (!static::$user->logged_in()) {
         static::showLogin();
       }
-      /*      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')) {
-                throw new ErrorException("Dev no working.");
-              }*/
+      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')!==false) {
+        throw new ErrorException("Dev no working.");
+      }
       if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
       }

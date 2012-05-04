@@ -368,7 +368,7 @@
             amount_cells(NULL, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ChgPriceCalc' . $n);
             amount_cells(NULL, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ExpPriceCalc' . $n);
             small_amount_cells(NULL, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), NULL, NULL, User::percent_dec());
-            amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE, $dec2, 'Ea' . $n);
+            amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE,' data-dec="$dec2"', 'Ea' . $n);
             if ($creditor_trans->is_invoice) {
               amount_cells(NULL, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), NULL, NULL, $dec2, 'ChgTotalCalc' . $n);
             }
@@ -455,12 +455,12 @@
           _("Item"),
           _("Description"),
           _("Date"),
-          _("Received"),
-          _("Invoiced"),
+          _("Rec"),
+          _("Inv"),
           _("Qty"),
           _("Price"),
           _("ExpPrice"),
-          _('Discount %'),
+          _('Disc %'),
           _('Ea Price'),
           _("Total"),
           "",
@@ -471,12 +471,12 @@
         // $th[] = "";
         if (!$creditor_trans->is_invoice) {
           unset($th[14]);
-          $th[8] = _("Qty Yet To Credit");
+          $th[8] = _("Credit QTY");
         }
       }
       else {
         $th = array(
-          _("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Each Price"), _("Line Value")
+          _("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Disc %"), _("Each Price"), _("Line Value")
         );
       }
       table_header($th);

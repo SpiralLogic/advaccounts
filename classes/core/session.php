@@ -49,7 +49,7 @@
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path    = ini_set('session.save_path', '127.0.0.1:11211');
-        (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+       // (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
       /** @noinspection PhpUndefinedConstantInspection */
@@ -57,7 +57,7 @@
       if (session_status() === PHP_SESSION_NONE) {
         ini_set('session.save_handler', $old_handler);
         ini_set('session.save_path', $old_path);
-        $old_serializer and  ini_set('session.serialize_handler', $old_serializer);
+         ini_set('session.serialize_handler', $old_serializer);
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */

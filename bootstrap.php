@@ -2,7 +2,6 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
-   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -71,6 +70,9 @@
     });
     include(DOCROOT . 'config' . DS . 'types.php');
     include(DOCROOT . 'config' . DS . 'access_levels.php');
+    Session::i();
+    Ajax::i();
+    Config::i();
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i();
   }
@@ -90,22 +92,24 @@
   }
   else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : FALSE;
-    $show404 = $controller != $_SERVER['SCRIPT_NAME'];
-    var_dump($controller, $show404);
-    if ($controller && $show404) {
+    $index      = $controller == $_SERVER['SCRIPT_NAME'];
+    $show404    = FALSE;
+    if (!$index && $controller) {
       $controller = ltrim($controller, '/');
       // substr_compare returns 0 if true
       $controller = (substr_compare($controller, '.php', -4, 4, TRUE) === 0) ? $controller : $controller . '.php';
       $controller = DOCROOT . 'controllers' . DS . $controller;
-      $show404 = !(file_exists($controller) and include($controller));
+      if (file_exists($controller)) {
+        include($controller);
+      } else {
+        $show404 = TRUE;
+      }
     }
-    var_dump($controller, $show404);
     if ($show404) {
       // header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
-    var_dump($controller, $show404);
-    if (!$controller || $show404) {
+    if ($index || $show404) {
       Session::i()->App->display();
     }
   }
