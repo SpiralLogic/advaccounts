@@ -52,7 +52,6 @@ input, textarea {
 
 input[type="search"] {
 	-webkit-appearance: none;
-	padding:            1px 0 1px 0;
 }
 
 textarea {

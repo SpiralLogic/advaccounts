@@ -25,6 +25,7 @@
       'Files', //
       'Hook', //
       'HTML', //
+      'HttpNotFoundException', //
       'Input', //
       'JS', //
       'Language', //

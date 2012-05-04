@@ -427,8 +427,8 @@ JS;
     static public function search($terms) {
       $data = array();
       $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
-        ->from('debtors')->where('name LIKE ', "$terms%")
-        ->or_where('name LIKE', str_replace(' ', '%', '%' . trim($terms)) . "%");
+        ->from('debtors')->where('name LIKE ', trim($terms)."%")->or_where('name LIKE ', trim($terms))
+        ->or_where('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
         $sql->or_where('debtor_no LIKE', "$terms%");
       }
@@ -758,26 +758,26 @@ JS;
      * @return null|string
      */
     static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
-      $viewer = "sales/view/";
+      $viewer = "/sales/view/";
       switch ($type) {
         case ST_SALESINVOICE:
-          $viewer .= "view_invoice.php";
+          $viewer .= "view_invoice";
           break;
         case ST_CUSTCREDIT:
-          $viewer .= "view_credit.php";
+          $viewer .= "view_credit";
           break;
         case ST_CUSTPAYMENT:
-          $viewer .= "view_receipt.php";
+          $viewer .= "view_receipt";
           break;
         case ST_CUSTREFUND:
-          $viewer .= "view_receipt.php";
+          $viewer .= "view_receipt";
           break;
         case ST_CUSTDELIVERY:
-          $viewer .= "view_dispatch.php";
+          $viewer .= "view_dispatch";
           break;
         case ST_SALESORDER:
         case ST_SALESQUOTE:
-          $viewer .= "view_sales_order.php";
+          $viewer .= "view_sales_order";
           break;
         default:
           return NULL;

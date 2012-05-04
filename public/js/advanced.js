@@ -205,6 +205,7 @@ Adv.extend({
 		if (Adv.o.popupWindow) {
 			Adv.o.popupWindow.parent().remove();
 		}
+		console.log(Adv.o.popupEl.href);
 		Adv.o.popupWindow = $("<iframe>", {
 			src:Adv.o.popupEl.href + '&frame=1',
 			width:Adv.hoverWindow.width,

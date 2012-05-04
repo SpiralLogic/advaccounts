@@ -79,7 +79,6 @@
   text_row(_("Phone Number:"), 'phone', $supplier->phone, 35, 30);
   text_row(_("Fax Number:"), 'fax', $supplier->fax, 35, 30);
   email_row(_("Email:"), 'email', $supplier->email, 35, 55);
-
   textarea_row(_("Street:"), 'address', $supplier->address, 35, 2);
   $branch_postcode = new Contact_Postcode(array(
       'city' => array('city', $supplier->city),
@@ -145,9 +144,7 @@
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '', 'style' => 'display:inline-block'
-  ))->tr(TRUE)->td(array(
-    'content' => '${name}',
-    'class' => 'tablehead',
+  ))->tr(TRUE)->td(array('content' => '${name}','class' => 'tablehead',
     'colspan' => 2
   ))->td->tr;
   text_row("Name:", 'con_name-${id}', '${name}', 35, 40);

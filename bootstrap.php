@@ -95,15 +95,15 @@
       $controller = ltrim($_SERVER['DOCUMENT_URI'], '/');
       $controller = (substr($controller, -4) == '.php') ? $controller : $controller . '.php';
       $controller = DOCROOT . 'controllers' . DS . $controller;
-      $show404 = $show404 || !file_exists($controller);
-      $show404 = $show404 || !include($controller);
+      $show404 = !file_exists($controller) || !include($controller);
     }
     if ($show404) {
-      header('HTTP/1.0 404 Not Found');
+      var_dump($controller);exit;
+     // header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
     if (!$controller || $show404) {
-      Session::i()->App->display();
+  //    Session::i()->App->display();
     }
   }
 
