@@ -373,7 +373,7 @@
               amount_cells(NULL, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), NULL, NULL, $dec2, 'ChgTotalCalc' . $n);
             }
             else {
-              amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), User::price_dec()));
+              amount_cells(NULL, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), NULL, NULL, $dec2, 'ChgTotalCalc' . $n);
             }
             submit_cells('grn_item_id' . $n, _("Add"), '', ($creditor_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), TRUE);
             if ($creditor_trans->is_invoice && User::i()->can_access(SA_GRNDELETE)

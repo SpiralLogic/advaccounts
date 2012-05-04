@@ -230,7 +230,7 @@ JS;
     if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
       Event::error(_("The quantity to credit must be numeric and greater than zero."));
       JS::set_focus('this_quantityCredited' . $n);
-      return FALSE;this_quantity
+      return FALSE;
     }
     if (!Validation::post_num('ChgPrice' . $n, 0)) {
       Event::error(_("The price is either not numeric or negative."));
