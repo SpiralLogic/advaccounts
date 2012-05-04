@@ -2,6 +2,7 @@
   /**
    * PHP version 5.4
   \   * @category  PHP
+   *
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -70,12 +71,11 @@
     });
     include(DOCROOT . 'config' . DS . 'types.php');
     include(DOCROOT . 'config' . DS . 'access_levels.php');
-        ob_start('adv_ob_flush_handler', 0);
+    ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i();
   }
-  if (extension_loaded('xhprof') ) {
+  if (extension_loaded('xhprof')) {
     register_shutdown_function(function() {
-
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
       /** @noinspection PhpUndefinedFunctionInspection */
       $xhprof_data = xhprof_disable();
@@ -89,21 +89,24 @@
     new Assets();
   }
   else {
-    $controller = NULL;
-    $show404 = FALSE;
-    if (isset($_SERVER['DOCUMENT_URI']) && ($_SERVER['DOCUMENT_URI'] != $_SERVER['SCRIPT_NAME'])) {
-      $controller = ltrim($_SERVER['DOCUMENT_URI'], '/');
-      $controller = (substr($controller, -4) == '.php') ? $controller : $controller . '.php';
+    $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : FALSE;
+    $show404 = $controller != $_SERVER['SCRIPT_NAME'];
+    var_dump($controller, $show404);
+    if ($controller && $show404) {
+      $controller = ltrim($controller, '/');
+      // substr_compare returns 0 if true
+      $controller = (substr_compare($controller, '.php', -4, 4, TRUE) === 0) ? $controller : $controller . '.php';
       $controller = DOCROOT . 'controllers' . DS . $controller;
-      $show404 = !file_exists($controller) || !include($controller);
+      $show404 = !(file_exists($controller) and include($controller));
     }
+    var_dump($controller, $show404);
     if ($show404) {
-      var_dump($controller);exit;
-     // header('HTTP/1.0 404 Not Found');
+      // header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
+    var_dump($controller, $show404);
     if (!$controller || $show404) {
-  //    Session::i()->App->display();
+      Session::i()->App->display();
     }
   }
 
