@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -40,15 +39,15 @@
   if (isset($_POST['AddGLCodeToTrans'])) {
     Ajax::i()->activate('gl_items');
     $input_error = FALSE;
-    $sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
-    $result = DB::query($sql, "get account information");
+    $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
+    $result      = DB::query($sql, "get account information");
     if (DB::num_rows($result) == 0) {
       Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
       JS::set_focus('gl_code');
       $input_error = TRUE;
     }
     else {
-      $myrow = DB::fetch_row($result);
+      $myrow       = DB::fetch_row($result);
       $gl_act_name = $myrow[1];
       if (!Validation::post_num('amount')) {
         Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -124,7 +123,7 @@
   Purch_Invoice::header(Creditor_Trans::i());
   if ($_POST['supplier_id'] != '') {
     $total_grn_value = Purch_GRN::display_items(Creditor_Trans::i(), 1);
-    $total_gl_value = Purch_GLItem::display_items(Creditor_Trans::i(), 1);
+    $total_gl_value  = Purch_GLItem::display_items(Creditor_Trans::i(), 1);
     Display::div_start('inv_tot');
     Purch_Invoice::totals(Creditor_Trans::i());
     Display::div_end();
@@ -140,6 +139,42 @@
   submit_center('PostCreditNote', _("Enter Credit Note"), TRUE, '', 'default');
   Display::br();
   end_form();
+  $js = <<<JS
+  		 $("#wrapper").delegate('.amount','change',function() {
+  	 var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
+  	 qty: $('[name^="this_quantity"]',fields),
+  	 price: $('[name^="ChgPrice"]',fields),
+  	 discount: $('[name^="ChgDiscount"]',fields),
+  	 total: $('[id^="ChgTotal"]',fields),
+  						eachprice: $('[id^="Ea"]',fields)
+  	 };
+  	 if (fields.hasClass('grid')) {
+  	 $.each(nodes,function(k,v) {
+  	 if (v && v.val()) fv[k] = Number(v.val().replace(',',''));
+  	 });
+  	 if (feild.attr('id') == nodes.total.attr('id')) {
+  	 if (fv.price == 0 && fv.discount==0) {
+  	 fv.price = fv.total / fv.qty;
+  	 } else {
+  	 fv.discount = 100*(1-(fv.total)/(fv.price*fv.qty));
+  	 		fv.discount = Math.round(fv.discount*1)/1;
+  	 }
+  	 nodes.price.val(fv.price);
+  	 nodes.discount.val(fv.discount);
+  	 } else if (fv.qty > 0 && fv.price > 0) {
+  	 fv.total = fv.qty*fv.price*((100-fv.discount)/100);
+  	 nodes.total.val(Math.round(fv.total*100)/100 );
+  	 };
+  	 Adv.Forms.priceFormat(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
+  	 } else {
+  		if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
+  		var total = Number(invTotal.data('total'));
+  		var ChgTax = Number(ChgTax.val().replace(',',''));
+  		var ChgTotal = Number(ChgTotal.val().replace(',',''));
+  		Adv.Forms.priceFormat(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
+  	}});
+JS;
+  JS::onload($js);
   Page::end();
   /**
    * @return bool
@@ -213,7 +248,7 @@
       $complete = FALSE;
       Creditor_Trans::i()
         ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
-                           $complete, $_POST['std_cost_unit' . $n], "");
+        $complete, $_POST['std_cost_unit' . $n], "");
     }
   }
 
