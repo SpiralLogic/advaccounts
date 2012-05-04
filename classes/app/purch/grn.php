@@ -368,7 +368,7 @@
             amount_cells(NULL, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ChgPriceCalc' . $n);
             amount_cells(NULL, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ExpPriceCalc' . $n);
             small_amount_cells(NULL, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), NULL, NULL, User::percent_dec());
-            amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE,' data-dec="$dec2"', 'Ea' . $n);
+            amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE,' data-dec="'.$dec2.'"', 'Ea' . $n);
             if ($creditor_trans->is_invoice) {
               amount_cells(NULL, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), NULL, NULL, $dec2, 'ChgTotalCalc' . $n);
             }
