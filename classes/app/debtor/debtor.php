@@ -309,9 +309,10 @@
      * @return void
      */
     protected function _defaults() {
-      $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
+      $this->payment_terms =$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
       $this->sales_type = $this->credit_status = 1;
-      $this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
+      $this->name = $this->address = $this->email = $this->tax_id = $this->notes = $this->debtor_ref = '';
+
       $this->curr_code = Bank_Currency::for_company();
       $this->discount = $this->pymt_discount = Num::percent_format(0);
       $this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
