@@ -171,22 +171,22 @@ Adv.extend({
 			}
 			Adv.hoverWindow._init = true;
 			Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
-				 if (e.type == 'click') {
-					 Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
-					 return false;
-				 }
-				 if (e.type == 'mouseenter') {
-					 if (Adv.o.popupCurrent) {
-						 window.clearTimeout(Adv.o.popupCurrent);
-					 }
-					 Adv.o.popupEl = this;
-					 Adv.o.popupParent = $(this).parent();
-					 Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
-				 }
-				 if (e.type == 'mouseleave') {
-					 window.clearTimeout(Adv.o.popupCurrent);
-				 }
-			 })
+				if (e.type == 'click') {
+					Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
+					return false;
+				}
+				if (e.type == 'mouseenter') {
+					if (Adv.o.popupCurrent) {
+						window.clearTimeout(Adv.o.popupCurrent);
+					}
+					Adv.o.popupEl = this;
+					Adv.o.popupParent = $(this).parent();
+					Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
+				}
+				if (e.type == 'mouseleave') {
+					window.clearTimeout(Adv.o.popupCurrent);
+				}
+			})
 		},
 		loaded:function () {
 			Adv.o.popupWindow.show();
@@ -222,9 +222,9 @@ Adv.extend({Forms:(function () {
 //	var i = document.createElement("input");
 	//i.setAttribute("type", "date");
 	//if (i.type == "text") {
-		Adv.o.wrapper.on('focus', ".datepicker", function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+	Adv.o.wrapper.on('focus', ".datepicker", function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
 //	}
-	var _setFormValue = function (el, value, disabled) {
+	var _setFormValue = function (el, value, disabled, isdefault) {
 		if (!el) {
 			return;
 		}
@@ -233,29 +233,52 @@ Adv.extend({Forms:(function () {
 		}
 		if (el.tagName === 'select') {
 			if (el.value === null || String(value).length === 0) {
-				$(el).find('option:first').prop('selected', true).data('init', value);
-				return;
+				$(el).find('option:first').prop('selected', true);
+				if (isdefault) {
+					el.options[el.selectedIndex].defaultSelected = true
+				}
+				return el;
 			}
 		}
 		if (el.type === 'checkbox') {
 			value = el.checked = !!value;
+			if (isdefault) {
+				el.defaultChecked = value;
+			}
 		}
 		if (String(value).length === 0) {
 			value = '';
 		}
 		el.value = value;
-		$(el).data('init', value);
+		if (isdefault) {
+			if (el.tagName === 'INPUT'||el.tagName === 'TEXTAREA') {
+				$(el).attr('value', value);
+				el.defaultValue = value;
+			}
+			if (el.tagName === 'SELECT') {
+				try {
+					el.options[el.selectedIndex].defaultSelected = true
+				}catch(e) {
+					console.log(el.options);
+				}
+			}
+		}
+		return el;
 	};
 	return {
 		setFormValue:function (id, value, disabled) {
-			var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
+			var isdefault, els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
 			if (!els.length) {
-				els = document.getElementById(id);
-				return _setFormValue(els, value, disabled);
+				els = [document.getElementById(id)];
 			}
+			isdefault = !!arguments[3];
 			$.each(els, function (k, el) {
-				_setFormValue(el, value, disabled);
+				_setFormValue(el, value, disabled, isdefault);
 			})
+			return els;
+		},
+		setFormDefaults:function (id, value, disabled) {
+			this.setFormValue(id, value, disabled, true);
 		},
 		autocomplete:function (id, url, callback) {
 			var $this;
@@ -406,7 +429,7 @@ Adv.extend({Forms:(function () {
 				setTimeout(tmp, 0);
 			}
 		},
-//returns the absolute position of some element within document
+		//returns the absolute position of some element within document
 		elementPos:function (e) {
 			var res = new Object();
 			res.x = 0;
@@ -443,7 +466,8 @@ Adv.extend({Forms:(function () {
 				return null;
 			}
 			return res;
-		}, resetHighlights:function () {
+		},
+		resetHighlights:function () {
 			$(".ui-state-highlight").removeClass("ui-state-highlight");
 			Adv.fieldsChanged = 0;
 			Adv.Events.onLeave();
