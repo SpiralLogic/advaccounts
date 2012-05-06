@@ -226,7 +226,7 @@
       $is_mod = $mod['type'] == 'module';
       alt_table_row_color($k);
       label_cell($mod['name']);
-      label_cell($is_mod ? $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, TRUE));
+      label_cell($is_mod ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
       $ttl = Display::access_string($mod['title']);
       label_cell($ttl[0]);
       label_cell($mod['path']);
@@ -269,7 +269,7 @@
     foreach ($mods as $i => $mod) {
       alt_table_row_color($k);
       label_cell($mod['name']);
-      label_cell($mod['type'] == 'module' ? $mod['title'] : Display::access_string(Session::i()->App->applications[$mod['tab']]->name, TRUE));
+      label_cell($mod['type'] == 'module' ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
       $ttl = Display::access_string($mod['title']);
       label_cell($ttl[0]);
       check_cells(NULL, 'Active' . $i, @$mod['active'] ? 1 : 0, FALSE, FALSE, "class='center'");

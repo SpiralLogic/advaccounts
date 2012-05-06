@@ -25,6 +25,10 @@
    */
   class Dates {
 
+    static $sep=NULL;
+    static $formats=NULL;
+    static $seps=NULL;
+
     /**
      * @static
      *
@@ -35,11 +39,11 @@
      * @return string
      */
     static function __date($year, $month, $day, $format = NULL) {
-      $formats = Config::get('date.formats');
-      $how = $formats [($format !== NULL) ? $format : \User::date_format()];
-      $sep = Config::get('date.ui_separator');
+      static::$formats = static::$formats?:Config::get('date.formats');
+      $how = static::$formats [($format !== NULL) ? $format : \User::date_format()];
+      static::$sep = static::$sep?:Config::get('date.ui_separator');
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
-      $how = str_replace('/', $sep, $how);
+      $how = str_replace('/', static::$sep, $how);
 
       return date($how, $date);
     }
@@ -265,8 +269,8 @@
         return '';
       }
       $how = \User::date_format();
-      $sep = Config::get('date.separators');
-      $sep = $sep[\User::date_sep()];
+      static::$seps = static::$seps?:Config::get('date.separators');
+      $sep = static::$seps[\User::date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;

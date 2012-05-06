@@ -84,7 +84,7 @@ use Traits\Singleton;
       // version set globally in php.ini
       ini_set('default_charset', $this->encoding);
       if (isset($_SESSION["App"]) && $changed) {
-        Session::i()->App->init();
+        \ADVAccounting::refresh();
       } // refresh menu
     }
     /**

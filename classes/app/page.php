@@ -72,7 +72,7 @@
      * @param $menu
      */
     protected function init($menu) {
-      $this->app = $_SESSION['App'];
+      $this->app = ADVAccounting::i();
       $this->sel_app = $this->app->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
       $this->menu = ($this->frame) ? FALSE : $menu;
@@ -160,7 +160,7 @@
       }
       else // main menu
       {
-        $help_page_url = Session::i()->App->applications[Session::i()->App->selected->id]->help_context;
+        $help_page_url = ADVAccounting::i()->applications[ADVAccounting::i()->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(

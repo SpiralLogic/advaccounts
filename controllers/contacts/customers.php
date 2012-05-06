@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  Session::i()->App->set_selected('Debtors');
+  ADVAccounting::i()->set_selected('Debtors');
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Debtor::search($_GET['term']);

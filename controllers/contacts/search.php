@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
 
-  Session::i()->App->selected_application = 'contacts';
+  ADVAccounting::i()->selected_application = 'contacts';
   if (AJAX_REFERRER) {
     if (isset($_POST['branch_id'])) {
       if ($_POST['branch_id'] > 0) {

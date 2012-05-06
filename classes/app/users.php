@@ -279,7 +279,7 @@
     static public function tabs_row($label, $name, $selected_id = NULL, $all = FALSE) {
       global $installed_extensions;
       $tabs = array();
-      foreach (Session::i()->App->applications as $app) {
+      foreach (ADVAccounting::i()->applications as $app) {
         $tabs[$app->id] = Display::access_string($app->name, TRUE);
       }
       if ($all) { // add also not active ext. modules

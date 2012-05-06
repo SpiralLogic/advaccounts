@@ -11,7 +11,7 @@
 
     public function menu() {
       /** @var ADVAccounting $application */
-      $application = Session::i()->App;
+      $application = ADVAccounting::i();
       echo '<ul class="menu" id="topmenu">';
       foreach ($application->applications as $app) {
         $acc = Display::access_string($app->name);

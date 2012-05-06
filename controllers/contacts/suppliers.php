@@ -9,7 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  Session::i()->App->set_selected('Creditors');
+  ADVAccounting::i()->set_selected('Creditors');
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Creditor::search($_GET['term']);

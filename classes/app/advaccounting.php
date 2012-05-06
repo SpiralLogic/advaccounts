@@ -31,10 +31,16 @@
     public $menu;
 
     static $user;
+    /***
+     * @var ADVAccounting
+     */
+    static $i = FALSE;
+    public $buildversion;
     /**
 
      */
     public function __construct() {
+
       $extensions = Config::get('extensions.installed');
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
@@ -105,23 +111,18 @@
      * @return bool
      */
     public function set_selected($app_id) { return $this->selected = $this->get_application($app_id); }
+
     /**
      * @static
-
+     * @return ADVAccounting
      */
-    static public function i() {
-
-
-      $buildversion = Cache::get('build.version', FALSE);
-      if (!$buildversion) {
-        is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', NULL, NULL, NULL, 6));
-        defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
-        Cache::set('build.version', BUILD_VERSION);
+    public static function i() {
+      if (static::$i === FALSE) {
+        static::init();
       }
-      else {
-        define('BUILD_VERSION', $buildversion);
-      }
-      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
+      return static::$i;
+    }
+    static public function init() {
       array_walk($_POST, function(&$v) {
         $v = is_string($v) ? trim($v) : $v;
       });
@@ -141,8 +142,21 @@
         static::checkLogin();
       }
       Event::init();
-      isset($_SESSION["App"]) or $_SESSION["App"] = new static();
-      return $_SESSION["App"];
+      static::$i = Cache::get('App');
+      if (static::$i === FALSE) {
+        static::refresh();
+      }
+      if (!static::$i->buildversion) {
+        is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', NULL, NULL, NULL, 6));
+        defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
+        static::$i->buildversion = BUILD_VERSION;
+      }
+      else {
+        define('BUILD_VERSION', static::$i->buildversion);
+      }
+      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
+
+      return static::$i;
     }
     /**
 
@@ -243,7 +257,7 @@
       elseif (!static::$user->logged_in()) {
         static::showLogin();
       }
-      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev')!==false) {
+      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== FALSE) {
         throw new ErrorException("Dev no working.");
       }
       if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
@@ -284,6 +298,9 @@
         JS::redirect('/');
       }
       exit();
+    }
+    public static function refresh() {
+      static::$i = Cache::set('App', new static());
     }
   }
 

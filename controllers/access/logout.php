@@ -23,4 +23,3 @@
   Session::kill();
   Page::end(TRUE);
 
-

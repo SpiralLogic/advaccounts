@@ -110,7 +110,7 @@
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
     if ($index || $show404) {
-      Session::i()->App->display();
+      ADVAccounting::i()->display();
     }
   }
 

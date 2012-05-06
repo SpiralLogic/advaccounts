@@ -9,7 +9,7 @@
      **/
 
 
-  Session::i()->App->set_selected('items');
+  ADVAccounting::i()->set_selected('items');
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Item::search($_GET['term']);
