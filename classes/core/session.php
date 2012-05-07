@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,11 +15,12 @@
 
    */
   class SessionException extends \Exception {
-
   }
 
+  /**
+   * @property \ADVAccounting App
+   */
   class Session {
-
   use Traits\Singleton;
 
     /***
@@ -54,7 +56,7 @@
       if (session_status() === PHP_SESSION_NONE) {
         ini_set('session.save_handler', $old_handler);
         ini_set('session.save_path', $old_path);
-         ini_set('session.serialize_handler', $old_serializer);
+        ini_set('session.serialize_handler', $old_serializer);
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */
@@ -128,7 +130,7 @@
         return NULL;
       }
       $_SESSION['globals'][$var] = $value;
-      $_SESSION[$var]            = $value;
+      $_SESSION[$var] = $value;
       return $value;
     }
     /**

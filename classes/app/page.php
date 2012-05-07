@@ -195,10 +195,11 @@
       if ($this->header && $this->menu) {
         Sidemenu::render();
       }
-      Messages::show();
       if (AJAX_REFERRER) {
         JS::render();
         return;
+      }else {
+        Messages::show();
       }
       echo "</div>";
       JS::render();

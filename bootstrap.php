@@ -106,7 +106,7 @@
       }
     }
     if ($show404) {
-      // header('HTTP/1.0 404 Not Found');
+     header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
     if ($index || $show404) {
