@@ -1,9 +1,8 @@
 Adv.extend({
-	revertState:function () {
-		$('.ui-state-highlight').each(function () {
-			$(this).val($(this).data('init'));
-		});
-		Adv.o.companysearch.prop('disabled', false);
+	revertState:function (formid) {
+		var form = document.getElementsByTagName('form')[0];
+		 form.reset();
+		 Adv.o.companysearch.prop('disabled', false);
 		Adv.btnConfirm.hide();
 		Adv.btnCancel.text('New');
 		Branches.btnBranchAdd();
