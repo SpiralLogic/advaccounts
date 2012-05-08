@@ -36,6 +36,7 @@
      * @var array
      */
     static $loaded = array();
+    static $log=array();
     /**
      * @static
 

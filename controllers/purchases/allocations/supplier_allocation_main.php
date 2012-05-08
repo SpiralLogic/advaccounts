@@ -91,15 +91,15 @@
 
   $sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
   $cols = array(
-    _("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"), _("Date") => array(
-      'name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'
-    ), _("Supplier") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Total") => array(
-      'align' => 'right', 'fun' => 'amount_total'
-    ), _("Left to Allocate") => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left'
-    ), array(
-      'insert' => TRUE, 'fun' => 'alloc_link'
-    )
+    _("Transaction Type") => array('fun' => 'systype_name'),
+    _("#") => array('fun' => 'trans_view'),
+    _("Reference"),
+    _("Date") => array( 'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc' ),
+    _("Supplier") => array('ord' => ''),
+    _("Currency") => array('align' => 'center'),
+    _("Total") => array( 'align' => 'right', 'fun' => 'amount_total'),
+    _("Left to Allocate") => array( 'align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left' ),
+    array( 'insert' => TRUE, 'fun' => 'alloc_link' )
   );
   if (isset($_POST['customer_id'])) {
     $cols[_("Supplier")] = 'skip';

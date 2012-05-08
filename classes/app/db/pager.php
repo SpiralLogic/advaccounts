@@ -28,23 +28,41 @@
      * @return DB_Pager
      */
     static function &new_db_pager($name, $sql, $coldef, $table = NULL, $key = NULL, $page_len = 0, $sort = NULL) {
+      if (!isset($_SESSION['pager'])) {
+        $_SESSION['pager'] = array();
+      }
+      if (isset($_SESSION['pager'][$name])
+        && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION['pager'][$name]->sql != $sql)
+      ) {
+        unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+      }
+      if (!isset($_SESSION['pager'][$name])) {
         $pager = new static($sql, $name, $table, $page_len);
         $pager->main_tbl = $table;
         $pager->key = $key;
         $pager->set_sql($sql);
         $pager->set_columns($coldef);
         $pager->sort_table($sort);
-      return $pager;
+        $_SESSION['pager'][$name] = $pager;
+      }
+      foreach ($_SESSION['pager'][$name]->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
+      return $_SESSION['pager'][$name];
     }
     /**
      * @return array
      */
     public function __sleep() {
+
       foreach ($this->columns as &$column) {
         if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
           unset($column['fun']);
         }
       }
+      unset($this->marker);
       return array_keys((array)$this);
     }
     /**
