@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class User {
-
   use \ADV\Core\Traits\Hook;
 
     /***
@@ -88,7 +88,6 @@
      * @var
      */
     public $last_record;
-
     /**
 
      */
@@ -202,8 +201,8 @@
     }
     public static function addLog() {
       DB::insert('user_login_log')->values(array(
-        'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
-      ))->exec();
+                                                'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
+                                           ))->exec();
     }
     /**
      * @param $page_level
@@ -285,7 +284,6 @@
       }
       return static::$_instance;
     }
-
     /**
      * @static
      * @return userPrefs
@@ -497,6 +495,10 @@
      */
     private function get_salesmanid() {
       return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
+    }
+    public static function logout() {
+      Session::kill();
+      static::i()->logged = FALSE;
     }
   }
 

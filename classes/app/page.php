@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Page {
-
     /** @var \Renderer */
     public $renderer = NULL;
     /**
@@ -57,7 +57,6 @@
      * @var null
      */
     static protected $security = NULL;
-
     /**
      * @param      $title
      * @param bool $index
@@ -67,7 +66,6 @@
       $this->title = $title;
       $this->frame = isset($_GET['frame']);
     }
-
     /**
      * @param $menu
      */
@@ -83,7 +81,6 @@
       if (!$this->ajaxpage) {
         $this->header();
         JS::open_window(900, 500);
-
         if ($this->menu) {
           $this->menu_header();
         }
@@ -99,7 +96,6 @@
       Security::check_page(static::$security);
       Display::div_start('_page_body');
     }
-
     /**
 
      */
@@ -122,13 +118,11 @@
       echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
       echo "<div id='content'>\n";
     }
-
     /**
 
      */
     protected function menu_header() {
       echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
-
       echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " .
         User::i()
           ->name . "</p>\n";
@@ -143,7 +137,6 @@
       $this->renderer->menu();
       echo "</div>";
     }
-
     /**
      * @param null $context
      *
@@ -164,10 +157,9 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-        ' ' => '', '/' => '', '&' => 'And'
-      ))) . '&ctxhelp=1&lang=' . $country;
+                                                                                         ' ' => '', '/' => '', '&' => 'And'
+                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
     }
-
     /**
      * @param $hide_back_link
      */
@@ -182,15 +174,13 @@
       Display::div_end(); // end of _page_body section
       $this->footer();
     }
-
     /**
      * @return mixed
      */
     protected function footer() {
-      $Validate = array();
-
+      $validate = array();
       $this->menu_footer();
-      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($Validate) . ";");
+      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
       if ($this->header && $this->menu) {
         Sidemenu::render();
@@ -198,7 +188,8 @@
       if (AJAX_REFERRER) {
         JS::render();
         return;
-      }else {
+      }
+      else {
         Messages::show();
       }
       echo "</div>";
@@ -206,7 +197,6 @@
       //End content div
       echo   "</body></html>\n";
     }
-
     /**
 
      */
@@ -225,7 +215,6 @@
       }
       echo "</div>\n"; //end footer div
     }
-
     /**
 
      */
@@ -238,7 +227,6 @@
       }
       echo $row . "</table>";
     }
-
     /**
 
      */
@@ -248,7 +236,6 @@
       $css = implode(',', $this->css);
       echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
     }
-
     /**
      * @static
      *
@@ -259,7 +246,6 @@
         static::$i->end_page($hide_back_link);
       }
     }
-
     /**
      * @static
      *
@@ -291,7 +277,6 @@
       static::$i->init(!$no_menu);
       return static::$i;
     }
-
     /**
      * @static
      *
@@ -324,7 +309,6 @@
       }
       return array('', $selected_id);
     }
-
     /**
      * @static
      *
@@ -333,7 +317,6 @@
     static public function add_css($file = FALSE) {
       static::$i->css[] = $file;
     }
-
     /**
      * @static
      *
@@ -342,13 +325,11 @@
     static public function set_security($security) {
       static::$security = $security;
     }
-
     /**
      * @static
      * @return null
      */
     static public function get_security() { return static::$security; }
-
     /**
      * @static
 

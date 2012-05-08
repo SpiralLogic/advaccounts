@@ -122,6 +122,10 @@
       }
       return static::$i;
     }
+    /**
+     * @static
+     * @return \ADVAccounting|bool
+     */
     static public function init() {
       array_walk($_POST, function(&$v) {
         $v = is_string($v) ? trim($v) : $v;
@@ -136,12 +140,7 @@
           call_user_func('\\Modules\\' . $module . '::init');
         }
       }
-      // logout.php is the only page we should have always
-      // accessable regardless of access level and current login status.
-      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
-        static::checkLogin();
-      }
-      Event::init();
+
       static::$i = Cache::get('App');
       if (static::$i === FALSE) {
         static::refresh();
@@ -155,7 +154,12 @@
         define('BUILD_VERSION', static::$i->buildversion);
       }
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
-
+    // logout.php is the only page we should have always
+      // accessable regardless of access level and current login status.
+      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
+        static::checkLogin();
+      }
+      Event::init();
       return static::$i;
     }
     /**

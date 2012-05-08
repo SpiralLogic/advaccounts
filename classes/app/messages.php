@@ -1,14 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Messages {
-
     /**
      * @var string
      */
@@ -72,13 +72,14 @@
     /**
      * @static
      *
-     * @param bool $user
+     * @param User $user
      */
-    static public function show($user = FALSE) {
-      if (!$user && User::i()) {
-        $user = User::i()->user;
+    static public function show($user = NULL) {
+      $user = $user ? : User::i();
+      if (!$user || !$user->logged) {
+        return;
       }
-      static::get($user);
+      static::get($user->user);
       if (static::$count > 0) {
         static::makeDialog();
       }
@@ -87,11 +88,11 @@
       $dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
       $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
       $dialog->setOptions(array(
-        'autoOpen' => TRUE,
-        'modal' => TRUE,
-        'width' => '500',
-        'resizeable' => FALSE
-      ));
+                               'autoOpen' => TRUE,
+                               'modal' => TRUE,
+                               'width' => '500',
+                               'resizeable' => FALSE
+                          ));
       $dialog->show();
     }
   }
