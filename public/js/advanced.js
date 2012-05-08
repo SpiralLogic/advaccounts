@@ -282,54 +282,54 @@ Adv.extend({Forms:(function () {
 		},
 		autocomplete:function (id, url, callback) {
 			var $this;
-			Adv.o.autocomplete[id] = $this = $('#' + id).autocomplete({
-				minLength:1,
-				delay:200,
-				autoFocus:true,
-				source:function (request, response) {
-					var $this = Adv.o.autocomplete[id];
-					$this.off('change.autocomplete');
-					$this.data('default', null);
-					if ($this.data().autocomplete.previous == $this.val()) {
-						return false;
-					}
-					Adv.loader.off();
-					Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-						Adv.loader.on();
-						if (!$this.data('active')) {
-							if (data.length === 0) {
-								data = [
-									{id:0, value:''}
-								]
-							}
-							callback(data[0]);
+			Adv.o.autocomplete[id] = $this = $('#' + id)
+				 .autocomplete({
+					minLength:1,
+					delay:200,
+					autoFocus:true,
+					source:function (request, response) {
+						var $this = Adv.o.autocomplete[id];
+						$this.off('change.autocomplete');
+						$this.data('default', null);
+						if ($this.data().autocomplete.previous == $this.val()) {
 							return false;
 						}
-						$this.data('default', data[0]);
-						response(data);
-					});
-				},
-				select:function (event, ui) {
-					$this.data('default', null);
-					if (callback(ui.item, event, this) === false) {
-						return false;
-					}
-				},
-				focus:function () {return false;}}).blur(
-			 function () {$(this).data('active', false); }).bind('autocompleteclose',
-			 function () {
+						Adv.loader.off();
+						Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+							Adv.loader.on();
+							if (!$this.data('active')) {
+								if (data.length === 0) {
+									data = [
+										{id:0, value:''}
+									]
+								}
+								callback(data[0]);
+								return false;
+							}
+							$this.data('default', data[0]);
+							response(data);
+						});
+					},
+					select:function (event, ui) {
+						$this.data('default', null);
+						if (callback(ui.item, event, this) === false) {
+							return false;
+						}
+					},
+					focus:function () {return false;}})
+			 .blur(function () {$(this).data('active', false); })
+			 .bind('autocompleteclose',function () {
 				 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
 					 if (callback($this.data()['default'], event, this) !== false) {
 						 $this.val($this.data()['default'].label);
 					 }
 				 }
 				 $this.data('default', null)
-			 }).focus(
-			 function () {
-				 $(this).data('active', true).on('change.autocomplete', function () {
-					 $(this).autocomplete('search', $this.val());
-				 })
-			 }).css({'z-index':'2'});
+			 })
+
+			 .focus(function () {$(this).data('active', true).on('change.autocomplete', function () {$(this).autocomplete('search', $this.val());
+				 })}).on('paste',function() {var $this=$(this);window.setTimeout(function(){$this.autocomplete('search', $this.val())},1)})
+			 .css({'z-index':'2'});
 			if (document.activeElement === $this[0]) {
 				$this.data('active', true);
 			}

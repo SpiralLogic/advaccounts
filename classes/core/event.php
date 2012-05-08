@@ -127,6 +127,8 @@
     }
     /*** @static Shutdown handler */
     static public function shutdown() {
+      Errors::log(Autoloader::$log);
+      
       Errors::process();
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {

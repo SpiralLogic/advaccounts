@@ -47,14 +47,18 @@
 			searchInput.data({'id':$current.data('href'), url:$current.data('href')}).insertBefore($current).focus();
 			return false;
 		});
-		$search.delegate('input', "change blur keyup", function (event) {
+		$search.delegate('input', "change blur keyup paste", function (event) {
 			if (Adv.lastXhr && event.type == 'keyup') {
 				if (event.keyCode == 13) {
 					window.clearTimeout(Searchboxtimeout);
-					$this.doSearch();
+					Searchboxtimeout = window.setTimeout($this.doSearch, 1);
 					return false;
 				}
 				Adv.lastXhr.abort();
+			}
+			if (event.type == 'paste') {
+				Searchboxtimeout = window.setTimeout($this.doSearch, 1);
+				return ;
 			}
 			if (event.type != "blur" && searchInput.val().length > 1 && event.which < 123) {
 				window.clearTimeout(Searchboxtimeout);
@@ -64,42 +68,42 @@
 				searchInput.val('').detach();
 				$current.show();
 				$this.sidemenuOn();
-				$this.sidemenuHide()
+				if (event.type != "blur"){
+				$this.sidemenuHide()}
 			}
 		});
 		$quickCustomer.focus(
-				 function () { $this.sidemenuOff()}).blur(
-				 function () {
-					 searchInput.trigger('blur');
-				 }).autocomplete({
-					 source:   function (request, response) {
-						 Adv.lastXhr = $.getJSON('/contacts/customers.php', request, function (data, status, xhr) {
-							 if (xhr === Adv.lastXhr) {
-								 response(data);
-							 }
-						 })
-					 },
-					 minLength:2,
-					 select:   function (event, ui) {
-						 window.location.href = '/contacts/customers.php?id=' + ui.item.id;
+		 function () { $this.sidemenuOff()}).blur(
+		 function () {
+			 searchInput.trigger('blur');
+		 }).autocomplete({
+			 source:function (request, response) {
+				 Adv.lastXhr = $.getJSON('/contacts/customers.php', request, function (data, status, xhr) {
+					 if (xhr === Adv.lastXhr) {
+						 response(data);
 					 }
-				 });$quickSupplier.focus(
-				 				 		 function () { $this.sidemenuOff()}).blur(
-				 				 		 function () {
-				 				 			 searchInput.trigger('blur');
-				 				 		 }).autocomplete({
-				 				 			 source:   function (request, response) {
-				 				 				 Adv.lastXhr = $.getJSON('/contacts/suppliers.php', request, function (data, status, xhr) {
-				 				 					 if (xhr === Adv.lastXhr) {
-				 				 						 response(data);
-				 				 					 }
-				 				 				 })
-				 				 			 },
-				 				 			 minLength:2,
-				 				 			 select:   function (event, ui) {
-				 				 				 window.location.href = '/contacts/suppliers.php?id=' + ui.item.id;
-				 				 			 }
-				 				 		 });
+				 })
+			 },
+			 minLength:2,
+			 select:function (event, ui) {
+				 window.location.href = '/contacts/customers.php?id=' + ui.item.id;
+			 }
+		 });
+		$quickSupplier.focus(function () { $this.sidemenuOff()})
+		 .blur(function () {searchInput.trigger('blur')})
+		 .autocomplete({
+			 source:function (request, response) {
+				 Adv.lastXhr = $.getJSON('/contacts/suppliers.php', request, function (data, status, xhr) {
+					 if (xhr === Adv.lastXhr) {
+						 response(data);
+					 }
+				 })
+			 },
+			 minLength:2,
+			 select:function (event, ui) {
+				 window.location.href = '/contacts/suppliers.php?id=' + ui.item.id;
+			 }
+		 });
 	}).apply(sidemenu);
 	Adv.sidemenu = sidemenu;
 })(window, jQuery);

@@ -256,7 +256,7 @@ JS;
 						focus: function(){return false;},
 						open: function() { $('.ui-autocomplete').unbind('mouseover');}
 						}
-				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});
+				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)}).on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
 JS;
       $clean = "\$$id.catcomplete('destroy');";
       JS::addLive($js, $clean);

@@ -145,6 +145,7 @@
      */
     static public function loadFromCache($required_class) {
       $result = FALSE;
+   static::$log[] = debug_backtrace()[1];
       if (isset(static::$loaded[$required_class])) {
         try {
           $result = static::includeFile(static::$loaded[$required_class], $required_class);

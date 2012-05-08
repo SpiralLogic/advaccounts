@@ -218,7 +218,7 @@
      *
      * @param $doc_type
      * @param $trans_no - array of trans nums; special case trans_no==0 - new doc
-     * @param $order
+     * @param Sales_Order $order
      *
      * @return bool
      */
