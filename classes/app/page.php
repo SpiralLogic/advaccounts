@@ -182,6 +182,7 @@
       $this->menu_footer();
       JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
+      echo "</div>";
       if ($this->header && $this->menu) {
         Sidemenu::render();
       }
@@ -192,7 +193,6 @@
       else {
         Messages::show();
       }
-      echo "</div>";
       JS::render();
       //End content div
       echo   "</body></html>\n";

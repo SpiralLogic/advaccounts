@@ -188,7 +188,7 @@
     _("Customer") => array('ord' => 'asc'),
     array('type' => 'skip'),
     _("Branch") => array('ord' => ''),
-    _("Currency") => array('align' => 'center'),
+    _("Currency") => array('align' => 'center','type' => 'skip'),
     _("Debit") => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
@@ -211,11 +211,16 @@
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
-      return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-        DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
-    }
-    ),
+          'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
+          return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+            DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
+        }
+        ),array(
+              'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
+              return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+                DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_no'], ICON_MONEY) : '';
+            }
+            ),
     array(
       'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
       $str = '';
