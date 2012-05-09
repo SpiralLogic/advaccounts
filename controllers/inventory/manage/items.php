@@ -201,8 +201,8 @@
   }
   start_form(TRUE);
   if (Validation::check(Validation::STOCK_ITEMS)) {
-    start_table('tablestyle_noborder');
-    start_row();
+    Table::start('tablestyle_noborder');
+    Row::start();
     if ($new_item) {
       Item::cells(_("Select an item:"), 'stock_id', NULL, _('New item'), TRUE, check_value('show_inactive'), FALSE);
       check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
@@ -211,17 +211,17 @@
       hidden('stock_id', $_POST['stock_id']);
     }
     $new_item = get_post('stock_id') == '';
-    end_row();
-    end_table();
+    Row::end();
+    Table::end();
     if (get_post('_show_inactive_update')) {
       $_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
       Ajax::i()->activate('stock_id');
     }
   }
   Display::div_start('details');
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Item"));
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Item"));
   if ($new_item) {
     text_row(_("Item Code:"), 'NewStockID', NULL, 21, 20);
     $_POST['inactive'] = 0;
@@ -248,7 +248,7 @@
       $_POST['inactive'] = $myrow["inactive"];
       $_POST['editable'] = $myrow["editable"];
     }
-    label_row(_("Item Code:"), $_POST['NewStockID']);
+    Row::label(_("Item Code:"), $_POST['NewStockID']);
     hidden('NewStockID', $_POST['NewStockID']);
     JS::set_focus('description');
   }
@@ -276,10 +276,10 @@
   Item_Unit::row(_('Units of Measure:'), 'units', NULL, $fresh_item);
   check_row(_("Editable description:"), 'editable');
   check_row(_("Exclude from sales:"), 'no_sale');
-  table_section(2);
+  Table::section(2);
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
-    table_section_title(_("Dimensions"));
+    Table::sectionTitle(_("Dimensions"));
     Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', NULL, TRUE, " ", FALSE, 1);
     if ($dim > 1) {
       Dimensions::select_row(_("Dimension") . " 2", 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
@@ -291,8 +291,8 @@
   if ($dim < 2) {
     hidden('dimension2_id', 0);
   }
-  table_section(2);
-  table_section_title(_("GL Accounts"));
+  Table::section(2);
+  Table::sectionTitle(_("GL Accounts"));
   GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
   if (!$_POST['mb_flag'] == STOCK_SERVICE) {
     GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
@@ -310,7 +310,7 @@
   else {
     hidden('assembly_account', $_POST['assembly_account']);
   }
-  table_section_title(_("Other"));
+  Table::sectionTitle(_("Other"));
   // Add image for New Item - by Joe
   file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
   // Add Image upload for New Item - by Joe
@@ -324,13 +324,13 @@
   else {
     $stock_img_link .= _("No image");
   }
-  label_row("&nbsp;", $stock_img_link);
+  Row::label("&nbsp;", $stock_img_link);
   if ($check_remove_image) {
     check_row(_("Delete Image:"), 'del_image');
   }
   check_row(_("Exclude from sales:"), 'no_sale');
   check_row(_("Item status:"), 'inactive');
-  end_outer_table(1);
+  Table::endOuter(1);
   Display::div_end();
   Display::div_start('controls');
   if (!isset($_POST['NewStockID']) || $new_item) {

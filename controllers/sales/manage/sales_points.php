@@ -41,32 +41,32 @@
   }
   $result = Sales_Point::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(
     _('POS Name'), _('Credit sale'), _('Cash sale'), _('location'), _('Default account'), '', ''
   );
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["pos_name"], ' class="nowrap"');
-    label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
-    label_cell($myrow['cash_sale'] ? _('Yes') : _('No'));
-    label_cell($myrow["location_name"], "");
-    label_cell($myrow["bank_account_name"], "");
+
+    Cell::label($myrow["pos_name"], ' class="nowrap"');
+    Cell::label($myrow['credit_sale'] ? _('Yes') : _('No'));
+    Cell::label($myrow['cash_sale'] ? _('Yes') : _('No'));
+    Cell::label($myrow["location_name"], "");
+    Cell::label($myrow["bank_account_name"], "");
     inactive_control_cell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
+  Table::end(1);
   $cash = Validation::check(Validation::CASH_ACCOUNTS);
   if (!$cash) {
     Event::warning(_("To have cash POS first define at least one cash bank account."));
   }
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $myrow = Sales_Point::get($selected_id);
@@ -93,7 +93,7 @@
     hidden('account', 0);
   }
   Inv_Location::row(_("POS location") . ':', 'location');
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

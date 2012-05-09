@@ -119,7 +119,7 @@
   if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
     $_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
   }
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   Display::br();
   ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
   if (!isset($_POST['ProductionType'])) {
@@ -129,7 +129,7 @@
   small_qty_row(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
   date_row(_("Date:"), 'date_');
   textarea_row(_("Memo:"), 'memo_', NULL, 40, 3);
-  end_table(1);
+  Table::end(1);
   submit_center_first('Process', _("Process"), '', 'default');
   submit_center_last('ProcessAndClose', _("Process And Close Order"), '', TRUE);
   end_form();

@@ -73,7 +73,7 @@
   start_form();
   hidden('selected_id', $_POST['selected_id']);
   //hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   Display::br();
   yesno_list_row(_("Type:"), 'PaymentType', NULL, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
   date_row(_("Date:"), 'date_');
@@ -86,7 +86,7 @@
   amount_row(_("Additional Costs:"), 'costs');
   GL_UI::all_row(_("Debit Account"), 'db_acc', NULL);
   GL_UI::all_row(_("Credit Account"), 'cr_acc', NULL);
-  end_table(1);
+  Table::end(1);
   hidden('dim1', $item_accounts["dimension_id"]);
   hidden('dim2', $item_accounts["dimension2_id"]);
   submit_center('process', _("Process Additional Cost"), TRUE, '', TRUE);

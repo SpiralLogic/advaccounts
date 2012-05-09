@@ -76,25 +76,25 @@
   $prices_list = Item_Price::get_all($_POST['stock_id']);
   Display::div_start('price_table');
   if (Input::request('frame')) {
-    start_table('tablestyle width90');
+    Table::start('tablestyle grid width90');
   }
   else {
-    start_table('tablestyle width30');
+    Table::start('tablestyle grid width30');
   }
   $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   $calculated = FALSE;
   while ($myrow = DB::fetch($prices_list)) {
-    alt_table_row_color($k);
-    label_cell($myrow["curr_abrev"]);
-    label_cell($myrow["sales_type"]);
-    amount_cell($myrow["price"]);
+
+    Cell::label($myrow["curr_abrev"]);
+    Cell::label($myrow["sales_type"]);
+    Cell::amount($myrow["price"]);
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
   }
-  end_table();
+  Table::end();
   if (DB::num_rows($prices_list) == 0) {
     if (DB_Company::get_pref('add_pct') != -1) {
       $calculated = TRUE;
@@ -111,7 +111,7 @@
   }
   hidden('selected_id', $selected_id);
   Display::div_start('price_details');
-  start_table('tableinfo');
+  Table::start('tableinfo');
   GL_Currency::row(_("Currency:"), 'curr_abrev', NULL, TRUE);
   Sales_Type::row(_("Sales Type:"), 'sales_type_id', NULL, TRUE);
   if (!isset($_POST['price'])) {
@@ -119,7 +119,7 @@
   }
   $kit = Item_Code::get_defaults($_POST['stock_id']);
   small_amount_row(_("Price:"), 'price', NULL, '', _('per') . ' ' . $kit["units"]);
-  end_table(1);
+  Table::end(1);
   if ($calculated) {
     Event::warning(_("The price is calculated."), 0, 1);
   }

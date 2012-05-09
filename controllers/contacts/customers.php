@@ -72,9 +72,9 @@
     'value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'
   ));
   HTML::td()->tr->table->div;
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Shipping Details"), 2);
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Shipping Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::tr(TRUE)->td('branchSelect', array(
     'colspan' => 2, 'class' => "center"
@@ -100,8 +100,8 @@
     )
   );
   $branch_postcode->render();
-  table_section(2);
-  table_section_title(_("Accounts Details"), 2);
+  Table::section(2);
+  Table::sectionTitle(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::tr(TRUE)->td(array(
     'class' => "center", 'colspan' => 2
@@ -121,12 +121,12 @@
     )
   );
   $accounts_postcode->render();
-  end_outer_table(1);
+  Table::endOuter(1);
   $menu->endTab()->startTab('Accounts', 'Accounts');
   hidden('accounts_id', $customer->accounts->accounts_id);
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Accounts Details:"), 2);
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Accounts Details:"), 2);
   percent_row(_("Discount Percent:"), 'discount', $customer->discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
   percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");
@@ -139,14 +139,14 @@
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
   }
   else {
-    label_row(_("Customer's Currency:"), $customer->curr_code);
+    Row::label(_("Customer's Currency:"), $customer->curr_code);
     hidden('curr_code', $customer->curr_code);
   }
   GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $customer->payment_terms);
   Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $customer->credit_status);
-  table_section(2);
-  table_section_title(_("Contact log:"), 1);
-  start_row();
+  Table::section(2);
+  Table::sectionTitle(_("Contact log:"), 1);
+  Row::start();
   HTML::td(array(
     'class' => 'ui-widget-content center'
   ));
@@ -154,7 +154,7 @@
   Contact_Log::read($customer->id, 'C');
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::textarea()->td->tr;
-  end_outer_table(1);
+  Table::endOuter(1);
   $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
@@ -171,10 +171,10 @@
   text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
   $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-  start_outer_table('tablestyle2');
+  Table::startOuter('tablestyle2');
   hidden('branch_id', $currentBranch->branch_id);
-  table_section(1);
-  table_section_title(_("Sales"));
+  Table::section(1);
+  Table::sectionTitle(_("Sales"));
   Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
   Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
   Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
@@ -189,15 +189,15 @@
     'value' => $customer->webid, 'disabled' => TRUE, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
   ));
   HTML::td()->tr;
-  table_section(2);
-  table_section_title(_("GL Accounts"));
+  Table::section(2);
+  Table::sectionTitle(_("GL Accounts"));
   GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, FALSE, FALSE, TRUE);
   GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
   GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
-  table_section_title(_("Notes"));
+  Table::sectionTitle(_("Notes"));
   textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
-  end_outer_table(1);
+  Table::endOuter(1);
   $menu->endTab();
   $menu->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $customer->id . "' ></div> ";
@@ -210,11 +210,11 @@
     'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
   ));
   hidden('type', CT_CUSTOMER);
-  start_table();
-  label_row('Date:', date('Y-m-d H:i:s'));
+  Table::start();
+  Row::label('Date:', date('Y-m-d H:i:s'));
   text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 35, 40);
   textarea_row('Entry:', 'message', '', 100, 10);
-  end_table();
+  Table::end();
   HTML::_div()->div(array('class' => 'center width50'));
   UI::button('btnConfirm', ($customer->id) ? 'Update Customer' : 'New Customer', array(
     'name' => 'submit', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'

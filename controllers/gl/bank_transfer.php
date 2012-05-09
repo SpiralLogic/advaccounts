@@ -32,8 +32,8 @@
   function gl_payment_controls() {
     $home_currency = Bank_Currency::for_company();
     start_form();
-    start_outer_table('tablestyle2');
-    table_section(1);
+    Table::startOuter('tablestyle2');
+    Table::section(1);
     Bank_Account::row(_("From Account:"), 'FromBankAccount', NULL, TRUE);
     Bank_Account::row(_("To Account:"), 'ToBankAccount', NULL, TRUE);
     date_row(_("Transfer Date:"), 'DatePaid', '', NULL, 0, 0, 0, NULL, TRUE);
@@ -48,10 +48,10 @@
       amount_row(_("Amount:"), 'amount');
       amount_row(_("Bank Charge:"), 'charge');
     }
-    table_section(2);
+    Table::section(2);
     ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKTRANSFER));
     textarea_row(_("Memo:"), 'memo_', NULL, 40, 4);
-    end_outer_table(1); // outer table
+    Table::endOuter(1); // outer table
     submit_center('AddPayment', _("Enter Transfer"), TRUE, '', 'default');
     end_form();
   }

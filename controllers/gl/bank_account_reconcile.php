@@ -66,13 +66,13 @@
     Ajax::i()->activate('_page_body');
   }
   start_form();
-  start_table();
-  start_row();
+  Table::start();
+  Row::start();
   Bank_Account::cells(_("Account:"), 'bank_account', NULL, TRUE);
   Bank_UI::reconcile_cells(_("Bank Statement:"), get_post('bank_account'), 'bank_date', NULL, TRUE, _("New"));
   button_cell("reset", "reset", "reset");
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
 
   $result = GL_Account::get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
   if ($row = DB::fetch($result)) {
@@ -93,34 +93,34 @@
   }
   echo "<hr>";
   Display::div_start('summary');
-  start_table();
-  table_header(_("Reconcile Date"));
-  start_row();
+  Table::start();
+  Table::header(_("Reconcile Date"));
+  Row::start();
   date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), get_post('bank_date') == '', 0, 0, 0, NULL, TRUE);
-  end_row();
-  table_header(_("Beginning Balance"));
-  start_row();
+  Row::end();
+  Table::header(_("Beginning Balance"));
+  Row::start();
   amount_cells_ex("", "beg_balance", 15);
-  end_row();
-  table_header(_("Ending Balance"));
-  start_row();
+  Row::end();
+  Table::header(_("Ending Balance"));
+  Row::start();
   amount_cells_ex("", "end_balance", 15);
   $reconciled = Validation::input_num('reconciled');
   $difference = Validation::input_num("end_balance") - Validation::input_num("beg_balance") - $reconciled;
-  end_row();
-  table_header(_("Account Total"));
-  start_row();
-  amount_cell($total);
-  end_row();
-  table_header(_("Reconciled Amount"));
-  start_row();
-  amount_cell($reconciled, FALSE, '', "reconciled");
-  end_row();
-  table_header(_("Difference"));
-  start_row();
-  amount_cell($difference, FALSE, '', "difference");
-  end_row();
-  end_table();
+  Row::end();
+  Table::header(_("Account Total"));
+  Row::start();
+  Cell::amount($total);
+  Row::end();
+  Table::header(_("Reconciled Amount"));
+  Row::start();
+  Cell::amount($reconciled, FALSE, '', "reconciled");
+  Row::end();
+  Table::header(_("Difference"));
+  Row::start();
+  Cell::amount($difference, FALSE, '', "difference");
+  Row::end();
+  Table::end();
 
   Display::div_end();
   echo "<hr>";

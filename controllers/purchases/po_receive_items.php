@@ -75,7 +75,7 @@
   Purch_GRN::display($order, TRUE);
   Display::heading(_("Items to Receive"));
   Display::div_start('grn_items');
-  start_table('tablestyle width90');
+  Table::start('tablestyle grid width90');
   $th = array(
     _("Item Code"),
     _("Description"),
@@ -88,48 +88,48 @@
     _('Discount %'),
     _("Total")
   );
-  table_header($th);
+  Table::header($th);
   /*show the line items on the order with the quantity being received for modification */
   $total = 0;
   $k = 0; //row colour counter
   if (count($order->line_items) > 0) {
     foreach ($order->line_items as $line) {
-      alt_table_row_color($k);
+
       $qty_outstanding = $line->quantity - $line->qty_received;
       if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $line->receive_qty == 0) { //If no quantites yet input default the balance to be received
         $line->receive_qty = $qty_outstanding;
       }
       $line_total = ($line->receive_qty * $line->price * (1 - $line->discount));
       $total += $line_total;
-      label_cell($line->stock_id);
+      Cell::label($line->stock_id);
       if ($qty_outstanding > 0) {
         text_cells(NULL, $line->stock_id . "Desc", $line->description, 30, 50);
       }
       else {
-        label_cell($line->description);
+        Cell::label($line->description);
       }
       $dec = Item::qty_dec($line->stock_id);
-      qty_cell($line->quantity, FALSE, $dec);
-      label_cell($line->units);
-      qty_cell($line->qty_received, FALSE, $dec);
-      qty_cell($qty_outstanding, FALSE, $dec);
+      Cell::qty($line->quantity, FALSE, $dec);
+      Cell::label($line->units);
+      Cell::qty($line->qty_received, FALSE, $dec);
+      Cell::qty($qty_outstanding, FALSE, $dec);
       if ($qty_outstanding > 0) {
         qty_cells(NULL, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", NULL, $dec);
       }
       else {
-        label_cell(Num::format($line->receive_qty, $dec), "class='right'");
+        Cell::label(Num::format($line->receive_qty, $dec), "class='right'");
       }
-      amount_decimal_cell($line->price);
-      percent_cell($line->discount * 100);
-      amount_cell($line_total);
-      end_row();
+      Cell::amountDecimal($line->price);
+      Cell::percent($line->discount * 100);
+      Cell::amount($line_total);
+      Row::end();
     }
   }
-  label_cell(_("Freight"), "colspan=9 class='right'");
+  Cell::label(_("Freight"), "colspan=9 class='right'");
   small_amount_cells(NULL, 'freight', Num::price_format($order->freight));
   $display_total = Num::format($total + $_POST['freight'], User::price_dec());
-  label_row(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
-  end_table();
+  Row::label(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
+  Table::end();
   Display::div_end();
   Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
   echo '<br>';

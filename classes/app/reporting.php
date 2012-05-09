@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   // Link to printing single document with bulk report template file.
-  // Ex. label_cell(static::print_doc_link($myrow['order_no'], _("Print")), $type);
+  // Ex. Cell::label(static::print_doc_link($myrow['order_no'], _("Print")), $type);
   // or Event::warning(static::print_doc_link($order_no, _("Print this order")));
   // You only need full parameter list for invoices/credit notes
   class Reporting {

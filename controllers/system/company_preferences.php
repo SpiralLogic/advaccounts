@@ -113,8 +113,8 @@
   }
   $_POST['round_to'] = $myrow['round_to'];
   $_POST['del_coy_logo'] = 0;
-  start_outer_table('tablestyle2');
-  table_section(1);
+  Table::startOuter('tablestyle2');
+  Table::section(1);
   text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
   textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 6);
   text_row_ex(_("Suburb:"), 'suburb', 25, 55);
@@ -125,10 +125,10 @@
   text_row_ex(_("GSTNo:"), 'gst_no', 25);
   GL_Currency::row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
   GL_UI::fiscalyears_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
-  table_section(2);
+  Table::section(2);
   text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', NULL, NULL, _('Months.'));
   text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', NULL, NULL, _('Months back.'));
-  label_row(_("Company Logo:"), $_POST['coy_logo']);
+  Row::label(_("Company Logo:"), $_POST['coy_logo']);
   file_row(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
   check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
   number_list_row(_("Use Dimensions:"), 'use_dimension', NULL, 0, 2);
@@ -139,11 +139,11 @@
   check_row(_("Search Item List"), 'no_item_list', NULL);
   check_row(_("Search Customer List"), 'no_customer_list', NULL);
   check_row(_("Search Supplier List"), 'no_supplier_list', NULL);
-  label_row("", "&nbsp;");
+  Row::label("", "&nbsp;");
   check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
   text_row_ex(_("Login Timeout:"), 'login_tout', 10, 10, '', NULL, NULL, _('seconds'));
-  label_row(_("Version Id"), $_POST['version_id']);
-  end_outer_table(1);
+  Row::label(_("Version Id"), $_POST['version_id']);
+  Table::endOuter(1);
   hidden('coy_logo', $_POST['coy_logo']);
   submit_center('update', _("Update"), TRUE, '', 'default');
   end_form(2);

@@ -80,8 +80,7 @@ jQuery.extend(jQuery.easing, {
 	window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-	msgbox:$('#msgbox').ajaxError(
-	 function (event, request, settings) {
+	msgbox:$('#msgbox').ajaxError(function (event, request, settings) {
 		 if (request.statusText == "abort") {
 			 return;
 		 }
@@ -284,8 +283,8 @@ Adv.extend({Forms:(function () {
 			var $this;
 			Adv.o.autocomplete[id] = $this = $('#' + id)
 				 .autocomplete({
-					minLength:1,
-					delay:200,
+					minLength:2,
+					delay:400,
 					autoFocus:true,
 					source:function (request, response) {
 						var $this = Adv.o.autocomplete[id];
@@ -328,7 +327,10 @@ Adv.extend({Forms:(function () {
 			 })
 
 			 .focus(function () {$(this).data('active', true).on('change.autocomplete', function () {$(this).autocomplete('search', $this.val());
-				 })}).on('paste',function() {var $this=$(this);window.setTimeout(function(){$this.autocomplete('search', $this.val())},1)})
+				 })}).on('paste', function () {
+				 var $this = $(this);
+				 window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+			 })
 			 .css({'z-index':'2'});
 			if (document.activeElement === $this[0]) {
 				$this.data('active', true);
@@ -503,8 +505,7 @@ Adv.extend({Forms:(function () {
 		}
 	}
 })()});
-Adv.extend({
-	Events:(function () {
+Adv.extend({Events:(function () {
 		var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
 			$(s).bind(t, a);
 		};

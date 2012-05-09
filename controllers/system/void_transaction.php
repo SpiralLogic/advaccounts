@@ -120,12 +120,12 @@
    */
   function voiding_controls() {
     start_form();
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     SysTypes::row(_("Transaction Type:"), "filterType", NULL, TRUE);
     text_row(_("Transaction #:"), 'trans_no', NULL, 12, 12);
     date_row(_("Voiding Date:"), 'date_');
     textarea_row(_("Memo:"), 'memo_', NULL, 30, 4);
-    end_table(1);
+    Table::end(1);
     if (!isset($_POST['ProcessVoiding'])) {
       submit_center('ProcessVoiding', _("Void Transaction"), TRUE, '', 'default');
     }

@@ -188,8 +188,8 @@
   else {
     Event::warning(_("No Customer selected."));
   }
-  start_outer_table('tablestyle2');
-  table_section(1);
+  Table::startOuter('tablestyle2');
+  Table::section(1);
   $_POST['email'] = "";
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -250,7 +250,7 @@
   hidden('selected_id', $selected_id);
   hidden('branch_id');
   hidden('frame', Input::request('frame'));
-  table_section_title(_("Name and Contact"));
+  Table::sectionTitle(_("Name and Contact"));
   text_row(_("Branch Name:"), 'br_name', NULL, 35, 40);
   text_row(_("Branch Short Name:"), 'br_ref', NULL, 30, 30);
   text_row(_("Contact Person:"), 'contact_name', NULL, 35, 40);
@@ -258,7 +258,7 @@
   text_row(_("Secondary Phone Number:"), 'phone2', NULL, 32, 30);
   text_row(_("Fax Number:"), 'fax', NULL, 32, 30);
   email_row(_("E-mail:"), 'email', NULL, 35, 55);
-  table_section_title(_("Sales"));
+  Table::sectionTitle(_("Sales"));
   Sales_UI::persons_row(_("Sales Person:"), 'salesman', NULL);
   Sales_UI::areas_row(_("Sales Area:"), 'area', NULL);
   Sales_UI::groups_row(_("Sales Group:"), 'group_no', NULL, TRUE);
@@ -266,18 +266,18 @@
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', NULL);
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', NULL);
   yesno_list_row(_("Disable this Branch:"), 'disable_trans', NULL);
-  table_section(2);
-  table_section_title(_("GL Accounts"));
+  Table::section(2);
+  Table::sectionTitle(_("GL Accounts"));
   // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
   GL_UI::all_row(_("Sales Account:"), 'sales_account', NULL, FALSE, FALSE, TRUE);
   GL_UI::all_row(_("Sales Discount Account:"), 'sales_discount_account');
   GL_UI::all_row(_("Accounts Receivable Account:"), 'receivables_account');
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
-  table_section_title(_("Addresses"));
+  Table::sectionTitle(_("Addresses"));
   textarea_row(_("Mailing Address:"), 'br_post_address', NULL, 35, 4);
   textarea_row(_("Billing Address:"), 'br_address', NULL, 35, 4);
   textarea_row(_("General Notes:"), 'notes', NULL, 35, 4);
-  end_outer_table(1);
+  Table::endOuter(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

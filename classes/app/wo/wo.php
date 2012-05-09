@@ -260,36 +260,36 @@
         Display::note(_("The bill of material for this item is empty."), 0, 1);
       }
       else {
-        start_table('tablestyle');
+        Table::start('tablestyle grid');
         $th = array(
           _("Component"), _("Description"), _("Work Centre"), _("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost")
         );
-        table_header($th);
+        Table::header($th);
         $j = 1;
         $k = 0; //row colour counter
         $total_cost = 0;
         while ($myrow = DB::fetch($result)) {
-          alt_table_row_color($k);
-          label_cell($myrow["component"]);
-          label_cell($myrow["description"]);
-          label_cell($myrow["WorkCentreDescription"]);
-          label_cell($myrow["location_name"]);
-          qty_cell($myrow["quantity"], FALSE, Item::qty_dec($myrow["component"]));
-          amount_cell($myrow["standard_cost"]);
-          amount_cell($myrow["ComponentCost"]);
-          end_row();
+
+          Cell::label($myrow["component"]);
+          Cell::label($myrow["description"]);
+          Cell::label($myrow["WorkCentreDescription"]);
+          Cell::label($myrow["location_name"]);
+          Cell::qty($myrow["quantity"], FALSE, Item::qty_dec($myrow["component"]));
+          Cell::amount($myrow["standard_cost"]);
+          Cell::amount($myrow["ComponentCost"]);
+          Row::end();
           $total_cost += $myrow["ComponentCost"];
           $j++;
           If ($j == 12) {
             $j = 1;
-            table_header($th);
+            Table::header($th);
           }
           //end of page full new headings if
         }
         //end of while
-        label_row("<span class='bold'>" . _("Total Cost") . "</span>", "<span class='bold'>" . Num::format($total_cost, User::price_dec()) . "</span>",
+        Row::label("<span class='bold'>" . _("Total Cost") . "</span>", "<span class='bold'>" . Num::format($total_cost, User::price_dec()) . "</span>",
           "colspan=6 class='right'", ' class="right nowrap"');
-        end_table();
+        Table::end();
       }
     }
     /**
@@ -647,20 +647,20 @@
         Display::note(_("There are no additional costs for this Order."), 0, 1);
       }
       else {
-        start_table('tablestyle');
+        Table::start('tablestyle grid');
         $th = array(_("#"), _("Type"), _("Date"), _("Amount"));
-        table_header($th);
+        Table::header($th);
         $k = 0; //row colour counter
         while ($myrow = DB::fetch($result)) {
-          alt_table_row_color($k);
-          label_cell(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
-          label_cell($wo_cost_types[$myrow['person_id']]);
+
+          Cell::label(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
+          Cell::label($wo_cost_types[$myrow['person_id']]);
           $date = Dates::sql2date($myrow["tran_date"]);
-          label_cell($date);
-          amount_cell(-($myrow['amount']));
-          end_row();
+          Cell::label($date);
+          Cell::amount(-($myrow['amount']));
+          Row::end();
         }
-        end_table();
+        Table::end();
       }
     }
     /**
@@ -676,7 +676,7 @@
         Display::note(_("The work order number sent is not valid."));
         exit;
       }
-      start_table('tablestyle width90');
+      Table::start('tablestyle width90');
       if ($myrow["released"] == TRUE) {
         $th = array(
           _("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Required By"), _("Quantity Required"), _("Released Date"), _("Manufactured")
@@ -687,29 +687,29 @@
           _("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Required By"), _("Quantity Required")
         );
       }
-      table_header($th);
-      start_row();
+      Table::header($th);
+      Row::start();
       if ($suppress_view_link) {
-        label_cell($myrow["id"]);
+        Cell::label($myrow["id"]);
       }
       else {
-        label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
+        Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
       }
-      label_cell($myrow["wo_ref"]);
-      label_cell($wo_types_array[$myrow["type"]]);
+      Cell::label($myrow["wo_ref"]);
+      Cell::label($wo_types_array[$myrow["type"]]);
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
-      label_cell($myrow["location_name"]);
-      label_cell(Dates::sql2date($myrow["date_"]));
-      label_cell(Dates::sql2date($myrow["required_by"]));
+      Cell::label($myrow["location_name"]);
+      Cell::label(Dates::sql2date($myrow["date_"]));
+      Cell::label(Dates::sql2date($myrow["required_by"]));
       $dec = Item::qty_dec($myrow["stock_id"]);
-      qty_cell($myrow["units_reqd"], FALSE, $dec);
+      Cell::qty($myrow["units_reqd"], FALSE, $dec);
       if ($myrow["released"] == TRUE) {
-        label_cell(Dates::sql2date($myrow["released_date"]));
-        qty_cell($myrow["units_issued"], FALSE, $dec);
+        Cell::label(Dates::sql2date($myrow["released_date"]));
+        Cell::qty($myrow["units_issued"], FALSE, $dec);
       }
-      end_row();
+      Row::end();
       DB_Comments::display_row(ST_WORKORDER, $woid);
-      end_table();
+      Table::end();
       if ($myrow["closed"] == TRUE) {
         Display::note(_("This work order is closed."));
       }

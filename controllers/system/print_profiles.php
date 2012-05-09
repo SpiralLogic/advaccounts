@@ -49,32 +49,32 @@
     Ajax::i()->activate('_page_body');
   }
   start_form();
-  start_table();
+  Table::start();
   Reports_UI::print_profiles_row(_('Select printing profile') . ':', 'profile_id', NULL, _('New printing profile'), TRUE);
-  end_table();
+  Table::end();
   echo '<hr>';
-  start_table();
+  Table::start();
   if (get_post('profile_id') == '') {
     text_row(_("Printing Profile Name") . ':', 'name', NULL, 30, 30);
   }
   else {
-    label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
+    Cell::labels(_("Printing Profile Name") . ':', get_post('profile_id'));
   }
-  end_table(1);
+  Table::end(1);
   $result = Printer::get_profile(get_post('profile_id'));
   $prints = array();
   while ($myrow = DB::fetch($result)) {
     $prints[$myrow['report']] = $myrow['printer'];
   }
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Report Id"), _("Description"), _("Printer"));
-  table_header($th);
+  Table::header($th);
   $k = 0;
   $unkn = 0;
   foreach (get_reports() as $rep => $descr) {
-    alt_table_row_color($k);
-    label_cell($rep == '' ? '-' : $rep, 'class=center');
-    label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
+
+    Cell::label($rep == '' ? '-' : $rep, 'class=center');
+    Cell::label($descr == '' ? '???<sup>1)</sup>' : _($descr));
     $_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
     echo '<td>';
     echo Reports_UI::printers('Prn' . $rep, NULL, $rep == '' ? _('Browser support') : _('Default'));
@@ -82,9 +82,9 @@
     if ($descr == '') {
       $unkn = 1;
     }
-    end_row();
+    Row::end();
   }
-  end_table();
+  Table::end();
   if ($unkn) {
     Event::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
   }

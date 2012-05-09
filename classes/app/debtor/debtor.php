@@ -427,9 +427,15 @@ JS;
      */
     static public function search($terms) {
       $data = array();
-      $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
-        ->from('debtors')->where('name LIKE ', trim($terms)."%")->or_where('name LIKE ', trim($terms))
-        ->or_where('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
+      $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "levenshtein(name,".DB::quote($terms) . ") as weight");
+      $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
+        $sql->from('debtors')->where('name LIKE ', trim($terms)."%");
+      $other_terms = explode(' ',$terms);
+      foreach ($other_terms as $term){
+        if (strlen($term)>3)
+        $sql->or_where('name LIKE', '%'. trim($term) . "%");
+      }
+
       if (is_numeric($terms)) {
         $sql->or_where('debtor_no LIKE', "$terms%");
       }
@@ -812,29 +818,29 @@ JS;
       $txt_now_due = "1-" . $past_due1 . " " . _('Days');
       $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
       $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
-      start_table('tablestyle width90');
+      Table::start('tablestyle width90');
       $th = array(_("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"));
-      table_header($th);
-      start_row();
+      Table::header($th);
+      Row::start();
       if (isset($customer_record["curr_code"])) {
-        label_cell($customer_record["curr_code"]);
+        Cell::label($customer_record["curr_code"]);
       }
       else {
         unset($th[0]);
       }
       if (isset($customer_record["curr_code"])) {
-        label_cell($customer_record["terms"]);
+        Cell::label($customer_record["terms"]);
       }
       else {
         unset($th[0]);
       }
-      amount_cell($customer_record["Balance"] - $customer_record["Due"]);
-      amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
-      amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
-      amount_cell($customer_record["Overdue2"]);
-      amount_cell($customer_record["Balance"]);
-      end_row();
-      end_table();
+      Cell::amount($customer_record["Balance"] - $customer_record["Due"]);
+      Cell::amount($customer_record["Due"] - $customer_record["Overdue1"]);
+      Cell::amount($customer_record["Overdue1"] - $customer_record["Overdue2"]);
+      Cell::amount($customer_record["Overdue2"]);
+      Cell::amount($customer_record["Balance"]);
+      Row::end();
+      Table::end();
     }
   }
 

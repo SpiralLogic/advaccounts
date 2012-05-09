@@ -61,42 +61,42 @@
   $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
   $result = DB::query($sql, "could not get recurrent invoices");
   start_form();
-  start_table('tablestyle width70');
+  Table::start('tablestyle grid width70');
   $th = array(
     _("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"),
     _("End"), _("Last Created"), "", ""
   );
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     $begin = Dates::sql2date($myrow["begin"]);
     $end = Dates::sql2date($myrow["end"]);
     $last_sent = Dates::sql2date($myrow["last_sent"]);
-    alt_table_row_color($k);
-    label_cell($myrow["description"]);
-    label_cell(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
+
+    Cell::label($myrow["description"]);
+    Cell::label(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
     if ($myrow["debtor_no"] == 0) {
-      label_cell("");
-      label_cell(Sales_Group::get_name($myrow["group_no"]));
+      Cell::label("");
+      Cell::label(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
-      label_cell(Debtor::get_name($myrow["debtor_no"]));
-      label_cell(Sales_Branch::get_name($myrow['group_no']));
+      Cell::label(Debtor::get_name($myrow["debtor_no"]));
+      Cell::label(Sales_Branch::get_name($myrow['group_no']));
     }
-    label_cell($myrow["days"]);
-    label_cell($myrow['monthly']);
-    label_cell($begin);
-    label_cell($end);
-    label_cell($last_sent);
+    Cell::label($myrow["days"]);
+    Cell::label($myrow['monthly']);
+    Cell::label($begin);
+    Cell::label($end);
+    Cell::label($last_sent);
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
-  end_table();
+  Table::end();
   end_form();
   echo '<br>';
   start_form();
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
@@ -127,7 +127,7 @@
   small_amount_row(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
   date_row(_("Begin:"), 'begin');
   date_row(_("End:"), 'end', NULL, NULL, 0, 0, 5);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

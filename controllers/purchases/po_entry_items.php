@@ -152,9 +152,9 @@
   hidden('order_id');
   $order->header();
   $order->display_items();
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   textarea_row(_("Memo:"), 'Comments', NULL, 70, 4);
-  end_table(1);
+  Table::end(1);
   Display::div_start('controls', 'items_table');
   if ($order->order_has_items()) {
     submit_center_first(Orders::CANCEL, _("Delete This Order"));

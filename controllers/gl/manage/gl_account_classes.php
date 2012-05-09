@@ -38,24 +38,24 @@
   }
   $result = GL_Class::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["cid"]);
-    label_cell($myrow['class_name']);
-      label_cell($class_types[$myrow["ctype"]]);
+
+    Cell::label($myrow["cid"]);
+    Cell::label($myrow['class_name']);
+      Cell::label($class_types[$myrow["ctype"]]);
     inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
     edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
     delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
@@ -66,14 +66,14 @@
       hidden('selected_id', $selected_id);
     }
     hidden('id');
-    label_row(_("Class ID:"), $_POST['id']);
+    Row::label(_("Class ID:"), $_POST['id']);
   }
   else {
     text_row_ex(_("Class ID:"), 'id', 3);
   }
   text_row_ex(_("Class Name:"), 'name', 50, 60);
     GL_Class::types_row(_("Class Type:"), 'ctype', NULL);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

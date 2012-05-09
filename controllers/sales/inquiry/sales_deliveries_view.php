@@ -62,8 +62,8 @@
     Ajax::i()->activate('deliveries_tbl');
   }
   start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
   ref_cells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
   date_cells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
@@ -72,8 +72,8 @@
   Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE, FALSE, FALSE, FALSE, FALSE);
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   hidden('OutstandingOnly', $_POST['OutstandingOnly']);
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];

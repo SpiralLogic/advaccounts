@@ -61,8 +61,8 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$refund_id");
   }
   start_form();
-  start_outer_table('tablestyle2 width60 pad5');
-  table_section(1);
+  Table::startOuter('tablestyle2 width60 pad5');
+  Table::section(1);
   Debtor::newselect();
   if (!isset($_POST['bank_account'])) // first page call
   {
@@ -80,10 +80,10 @@
   Debtor_Payment::read_customer_data($customer->id, TRUE);
   Session::i()->setGlobal('debtor',$customer->id);
   $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
-  table_section(2);
+  Table::section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', NULL, TRUE);
   text_row(_("Reference:"), 'ref', NULL, 20, 40);
-  table_section(3);
+  Table::section(3);
   date_row(_("Date of Deposit:"), 'DateBanked', '', TRUE, 0, 0, 0, NULL, TRUE);
   $comp_currency = Bank_Currency::for_company();
   $cust_currency = Bank_Currency::for_debtor($customer->id);
@@ -92,16 +92,16 @@
     GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
   }
   amount_row(_("Bank Charge:"), 'charge');
-  end_outer_table(1);
+  Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
     Display::div_start('alloc_tbl');
     Gl_Allocation::show_allocatable(TRUE);
     Display::div_end();
   }
-  start_table('tablestyle width60');
+  Table::start('tablestyle width60');
   amount_row(_("Amount:"), 'amount');
   textarea_row(_("Memo:"), 'memo_', NULL, 22, 4);
-  end_table(1);
+  Table::end(1);
   if ($cust_currency != $bank_currency) {
     Event::warning(_("Amount and discount are in customer's currency."));
   }

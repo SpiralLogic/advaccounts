@@ -20,8 +20,8 @@
   if (!isset($_POST['customer_id'])) {
     $_POST['customer_id'] = Session::i()->getGlobal('debtor');
   }
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   ref_cells(_("Ref"), 'reference', '', NULL, '', TRUE);
   Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
   date_cells(_("From:"), 'TransAfterDate', '', NULL, -30);
@@ -31,8 +31,8 @@
   }
   Debtor_Payment::allocations_select(NULL, 'filterType', $_POST['filterType'], TRUE);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   Session::i()->setGlobal('debtor',$_POST['customer_id']);  Display::div_start('totals_tbl');
   if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
     $customer_record = Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);

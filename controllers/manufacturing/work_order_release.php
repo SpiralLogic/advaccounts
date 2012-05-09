@@ -55,12 +55,12 @@
   $_POST['released'] = $myrow["released"];
   $_POST['memo_'] = "";
   if (can_process($myrow)) {
-    start_table('tablestyle2');
-    label_row(_("Work Order #:"), $selected_id);
-    label_row(_("Work Order Reference:"), $myrow["wo_ref"]);
+    Table::start('tablestyle2');
+    Row::label(_("Work Order #:"), $selected_id);
+    Row::label(_("Work Order Reference:"), $myrow["wo_ref"]);
     date_row(_("Released Date") . ":", 'released_date');
     textarea_row(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
-    end_table(1);
+    Table::end(1);
     submit_center('release', _("Release Work Order"), TRUE, '', 'default');
     hidden('selected_id', $selected_id);
     hidden('stock_id', $myrow['stock_id']);

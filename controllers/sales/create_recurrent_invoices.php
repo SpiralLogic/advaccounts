@@ -55,11 +55,11 @@
   }
   $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
   $result = DB::query($sql, "could not get recurrent invoices");
-  start_table('tablestyle width70');
+  Table::start('tablestyle grid width70');
   $th = array(
     _("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
   );
-  table_header($th);
+  Table::header($th);
   $k = 0;
   $today = Dates::add_days(Dates::today(), 1);
   $due = FALSE;
@@ -77,36 +77,36 @@
     $due_date = Dates::add_days($due_date, $myrow['days']);
     $overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
     if ($overdue) {
-      start_row("class='overduebg'");
+      Row::start("class='overduebg'");
       $due = TRUE;
     }
     else {
-      alt_table_row_color($k);
+
     }
-    label_cell($myrow["description"]);
-    label_cell(Debtor::trans_view(30, $myrow["order_no"]));
+    Cell::label($myrow["description"]);
+    Cell::label(Debtor::trans_view(30, $myrow["order_no"]));
     if ($myrow["debtor_no"] == 0) {
-      label_cell("");
-      label_cell(Sales_Group::get_name($myrow["group_no"]));
+      Cell::label("");
+      Cell::label(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
-      label_cell(Debtor::get_name($myrow["debtor_no"]));
-      label_cell(Sales_Branch::get_name($myrow['group_no']));
+      Cell::label(Debtor::get_name($myrow["debtor_no"]));
+      Cell::label(Sales_Branch::get_name($myrow['group_no']));
     }
-    label_cell($myrow["days"]);
-    label_cell($myrow['monthly']);
-    label_cell($begin);
-    label_cell($end);
-    label_cell($last_sent);
+    Cell::label($myrow["days"]);
+    Cell::label($myrow['monthly']);
+    Cell::label($begin);
+    Cell::label($end);
+    Cell::label($last_sent);
     if ($overdue) {
-      label_cell("<a href='/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
+      Cell::label("<a href='/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
     }
     else {
-      label_cell("");
+      Cell::label("");
     }
-    end_row();
+    Row::end();
   }
-  end_table();
+  Table::end();
   if ($due) {
     Event::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
   }

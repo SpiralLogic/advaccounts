@@ -38,7 +38,7 @@
   start_form();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     $dim = DB_Company::get_pref('use_dimension');
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', NULL);
     GL_UI::all_row(_("Account Code:"), 'account', NULL);
     if (!isset($_POST['dim1'])) {
@@ -62,9 +62,9 @@
       }
     }
     submit_row('submit', _("Get"), TRUE, '', '', TRUE);
-    end_table(1);
+    Table::end(1);
     Display::div_start('budget_tbl');
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     $showdims = (($dim == 1 && $_POST['dim1'] == 0) || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
     if ($showdims) {
       $th = array(_("Period"), _("Amount"), _("Dim. incl."), _("Last Year"));
@@ -72,7 +72,7 @@
     else {
       $th = array(_("Period"), _("Amount"), _("Last Year"));
     }
-    table_header($th);
+    Table::header($th);
     $year = $_POST['fyear'];
     if (get_post('update') == '') {
       $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
@@ -85,33 +85,33 @@
     hidden('end');
     $total = $btotal = $ltotal = 0;
     for ($i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++) {
-      start_row();
+      Row::start();
       if (get_post('update') == '') {
         $_POST['amount' . $i] = Num::format(get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
       }
-      label_cell($date_);
+      Cell::label($date_);
       amount_cells(NULL, 'amount' . $i, NULL, 15, NULL, 0);
       if ($showdims) {
         $d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-        label_cell(Num::format($d, 0), ' class="right nowrap"');
+        Cell::label(Num::format($d, 0), ' class="right nowrap"');
         $btotal += $d;
       }
       $lamount = GL_Trans::get_from_to(Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
       $total += Validation::input_num('amount' . $i);
       $ltotal += $lamount;
-      label_cell(Num::format($lamount, 0), ' class="right nowrap"');
+      Cell::label(Num::format($lamount, 0), ' class="right nowrap"');
       $date_ = Dates::add_months($date_, 1);
-      end_row();
+      Row::end();
     }
-    start_row();
-    label_cell("<span class='bold'>" . _("Total") . "</span>");
-    label_cell(Num::format($total, 0), 'class="right bold" ', 'Total');
+    Row::start();
+    Cell::label("<span class='bold'>" . _("Total") . "</span>");
+    Cell::label(Num::format($total, 0), 'class="right bold" ', 'Total');
     if ($showdims) {
-      label_cell("<span class='bold'>" . Num::format($btotal, 0) . "</span>", ' class="right nowrap"');
+      Cell::label("<span class='bold'>" . Num::format($btotal, 0) . "</span>", ' class="right nowrap"');
     }
-    label_cell("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", ' class="right nowrap"');
-    end_row();
-    end_table(1);
+    Cell::label("<span class='bold'>" . Num::format($ltotal, 0) . "</span>", ' class="right nowrap"');
+    Row::end();
+    Table::end(1);
     Display::div_end();
     submit_center_first('update', _("Update"), '', NULL);
     submit('add', _("Save"), TRUE, '', 'default');

@@ -88,30 +88,30 @@
   }
   $result = DB::query($sql, "could not get sales persons");
   start_form();
-  start_table('tablestyle nowrap width80');
+  Table::start('tablestyle grid nowrap width80');
   $th = array(
     _("Name"), _("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", ""
   );
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["salesman_name"]);
-    label_cell($myrow["user_id"]);
-    label_cell($myrow["salesman_phone"]);
-    label_cell($myrow["salesman_fax"]);
-    email_cell($myrow["salesman_email"]);
-    label_cell(Num::percent_format($myrow["provision"]) . " %", ' class="right nowrap"');
-    amount_cell($myrow["break_pt"]);
-    label_cell(Num::percent_format($myrow["provision2"]) . " %", ' class="right nowrap"');
+
+    Cell::label($myrow["salesman_name"]);
+    Cell::label($myrow["user_id"]);
+    Cell::label($myrow["salesman_phone"]);
+    Cell::label($myrow["salesman_fax"]);
+    Cell::email($myrow["salesman_email"]);
+    Cell::label(Num::percent_format($myrow["provision"]) . " %", ' class="right nowrap"');
+    Cell::amount($myrow["break_pt"]);
+    Cell::label(Num::percent_format($myrow["provision2"]) . " %", ' class="right nowrap"');
     inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
     edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
     delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
-    end_row();
+    Row::end();
   } //END WHILE LIST LOOP
   inactive_control_row($th);
-  end_table();
+  Table::end();
   echo '<br>';
   $_POST['salesman_email'] = "";
   if ($selected_id != -1) {
@@ -136,7 +136,7 @@
     $_POST['break_pt'] = Num::price_format(0);
     $_POST['provision2'] = Num::percent_format(0);
   }
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   Users::row(_('User:'), 'user_id');
   text_row_ex(_("Sales person name:"), 'salesman_name', 30);
   text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
@@ -145,7 +145,7 @@
   percent_row(_("Provision") . ':', 'provision');
   amount_row(_("Break Pt.:"), 'break_pt');
   percent_row(_("Provision") . " 2:", 'provision2');
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

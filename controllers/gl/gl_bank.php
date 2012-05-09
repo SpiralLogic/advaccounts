@@ -113,14 +113,14 @@
   }
   start_form();
   Bank_UI::header($_SESSION['pay_items']);
-  start_table('tablesstyle2 width90 pad10');
-  start_row();
+  Table::start('tablesstyle2 width90 pad10');
+  Row::start();
   echo "<td>";
   Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']);
   Bank_UI::option_controls();
   echo "</td>";
-  end_row();
-  end_table(1);
+  Row::end();
+  Table::end(1);
   submit_center_first('Update', _("Update"), '', NULL);
   submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
   end_form();

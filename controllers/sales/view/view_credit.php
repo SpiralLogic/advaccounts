@@ -20,51 +20,51 @@
   $branch = Sales_Branch::get($myrow["branch_id"]);
   Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
   echo "<br>";
-  start_table('tablestyle2 width95');
+  Table::start('tablestyle2 width95');
   echo "<tr class='top'><td>"; // outer table
   /*Now the customer charged to details in a sub table*/
-  start_table('tablestyle width100');
+  Table::start('tablestyle width100');
   $th = array(_("Customer"));
-  table_header($th);
-  label_row(NULL, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), ' class="nowrap"');
-  end_table();
+  Table::header($th);
+  Row::label(NULL, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), ' class="nowrap"');
+  Table::end();
   /*end of the small table showing charge to account details */
   echo "</td><td>"; // outer table
-  start_table('tablestyle width100');
+  Table::start('tablestyle width100');
   $th = array(_("Branch"));
-  table_header($th);
-  label_row(NULL, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), ' class="nowrap"');
-  end_table();
+  Table::header($th);
+  Row::label(NULL, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), ' class="nowrap"');
+  Table::end();
   echo "</td><td>"; // outer table
-  start_table('tablestyle width100');
-  start_row();
-  label_cells(_("Ref"), $myrow["reference"], "class='tablerowhead'");
-  label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tablerowhead'");
-  label_cells(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
-  end_row();
-  start_row();
-  label_cells(_("Sales Type"), $myrow["sales_type"], "class='tablerowhead'");
-  label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tablerowhead'");
-  end_row();
+  Table::start('tablestyle width100');
+  Row::start();
+  Cell::labels(_("Ref"), $myrow["reference"], "class='tablerowhead'");
+  Cell::labels(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tablerowhead'");
+  Cell::labels(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
+  Row::end();
+  Row::start();
+  Cell::labels(_("Sales Type"), $myrow["sales_type"], "class='tablerowhead'");
+  Cell::labels(_("Shipping Company"), $myrow["shipper_name"], "class='tablerowhead'");
+  Row::end();
   DB_Comments::display_row(ST_CUSTCREDIT, $trans_id);
-  end_table();
+  Table::end();
   echo "</td></tr>";
-  end_table(1); // outer table
+  Table::end(1); // outer table
   $sub_total = 0;
   $result    = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
-  start_table('tablestyle width95');
+  Table::start('tablestyle grid width95');
   if (DB::num_rows($result) > 0) {
     $th = array(
       _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
     );
-    table_header($th);
+    Table::header($th);
     $k         = 0; //row colour counter
     $sub_total = 0;
     while ($myrow2 = DB::fetch($result)) {
       if ($myrow2["quantity"] == 0) {
         continue;
       }
-      alt_table_row_color($k);
+
       $value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
       $sub_total += $value;
       if ($myrow2["discount_percent"] == 0) {
@@ -73,14 +73,14 @@
       else {
         $display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
       }
-      label_cell($myrow2["stock_id"]);
-      label_cell($myrow2["StockDescription"]);
-      qty_cell($myrow2["quantity"], FALSE, Item::qty_dec($myrow2["stock_id"]));
-      label_cell($myrow2["units"], "class='right'");
-      amount_cell($myrow2["unit_price"]);
-      label_cell($display_discount, "class='right'");
-      amount_cell($value);
-      end_row();
+      Cell::label($myrow2["stock_id"]);
+      Cell::label($myrow2["StockDescription"]);
+      Cell::qty($myrow2["quantity"], FALSE, Item::qty_dec($myrow2["stock_id"]));
+      Cell::label($myrow2["units"], "class='right'");
+      Cell::amount($myrow2["unit_price"]);
+      Cell::label($display_discount, "class='right'");
+      Cell::amount($value);
+      Row::end();
     } //end while there are line items to print out
   }
   else {
@@ -92,13 +92,13 @@
   $display_total   = Num::price_format($credit_total);
   /*Print out the invoice text entered */
   if ($sub_total != 0) {
-    label_row(_("Sub Total"), $display_sub_tot, "colspan=6 class='right'", " class='nowrap right width15'");
+    Row::label(_("Sub Total"), $display_sub_tot, "colspan=6 class='right'", " class='nowrap right width15'");
   }
-  label_row(_("Shipping"), $display_freight, "colspan=6 class='right'", ' class="right nowrap"');
+  Row::label(_("Shipping"), $display_freight, "colspan=6 class='right'", ' class="right nowrap"');
   $tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
   Debtor_Trans::display_tax_details($tax_items, 6);
-  label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class='right'", ' class="right nowrap"');
-  end_table(1);
+  Row::label("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class='right'", ' class="right nowrap"');
+  Table::end(1);
   $voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
   if (!$voided) {
     GL_Allocation::from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);

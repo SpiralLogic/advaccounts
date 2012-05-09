@@ -93,14 +93,14 @@
   }
   start_form();
   Inv_Transfer::header($_SESSION['transfer_items']);
-  start_table('tablesstyle width70 pad10');
-  start_row();
+  Table::start('tablesstyle width70 pad10');
+  Row::start();
   echo "<td>";
   Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
   Inv_Transfer::option_controls();
   echo "</td>";
-  end_row();
-  end_table(1);
+  Row::end();
+  Table::end(1);
   submit_center_first('Update', _("Update"), '', NULL);
   submit_center_last('Process', _("Process Transfer"), '', 'default');
   end_form();

@@ -24,8 +24,8 @@
     Ajax::i()->activate('customer_id');
   }
   start_form(FALSE, '', 'invoiceForm');
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   if (!Input::get('frame')) {
     Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
   }
@@ -46,8 +46,8 @@
   Debtor_Payment::allocations_select(_("Type:"), 'filterType', NULL);
   check_cells(" " . _("show settled:"), 'showSettled', NULL);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   $data_after = Dates::date2sql($_POST['TransAfterDate']);
   $date_to = Dates::date2sql($_POST['TransToDate']);
   $sql = "SELECT ";

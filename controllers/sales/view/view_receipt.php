@@ -19,7 +19,7 @@
   }
   $receipt = Debtor_Trans::get($trans_id, $trans_type);
   echo "<br>";
-  start_table('tablestyle2 width90');
+  Table::start('tablestyle2 width90');
   echo "<tr class='tablerowhead top'><th colspan=6>";
   if ($trans_type == ST_CUSTPAYMENT) {
     Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
@@ -28,23 +28,23 @@
     Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
   }
   echo "</td></tr>";
-  start_row();
-  label_cells(_("From Customer"), $receipt['DebtorName']);
-  label_cells(_("Into Bank Account"), $receipt['bank_account_name']);
-  label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']));
-  end_row();
-  start_row();
-  label_cells(_("Payment Currency"), $receipt['curr_code']);
-  label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']));
-  label_cells(_("Discount"), Num::price_format($receipt['ov_discount']));
-  end_row();
-  start_row();
-  label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
-  label_cells(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
+  Row::start();
+  Cell::labels(_("From Customer"), $receipt['DebtorName']);
+  Cell::labels(_("Into Bank Account"), $receipt['bank_account_name']);
+  Cell::labels(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']));
+  Row::end();
+  Row::start();
+  Cell::labels(_("Payment Currency"), $receipt['curr_code']);
+  Cell::labels(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']));
+  Cell::labels(_("Discount"), Num::price_format($receipt['ov_discount']));
+  Row::end();
+  Row::start();
+  Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
+  Cell::labels(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
   end_form();
-  end_row();
+  Row::end();
   DB_Comments::display_row($trans_type, $trans_id);
-  end_table(1);
+  Table::end(1);
   $voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
   if (!$voided && ($trans_type != ST_CUSTREFUND)) {
     GL_Allocation::from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);

@@ -43,8 +43,8 @@
   elseif (isset($_POST['TransToDate'])) {
     Session::i()->setGlobal('TransToDate',$_POST['TransToDate']);
   }
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   if (!Input::get('frame')) {
 
     Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
@@ -55,8 +55,8 @@
   check_cells(_("Show settled:"), 'showSettled', NULL);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Session::i()->setGlobal('creditor',$_POST['supplier_id']);
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   /**
    * @param $row
    *

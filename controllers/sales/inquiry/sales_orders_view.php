@@ -105,8 +105,8 @@
     Ajax::i()->activate('orders_tbl');
   }
   start_form();
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   Debtor::cells(_(""), 'customer_id', $selected_customer, TRUE);
   ref_cells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
@@ -119,8 +119,8 @@
     check_cells(_("Show All:"), 'show_all');
   }
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  end_row();
-  end_table(1);
+  Row::end();
+  Table::end(1);
 
   hidden('order_view_mode', $_POST['order_view_mode']);
   hidden('type', $trans_type);

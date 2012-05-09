@@ -18,7 +18,7 @@
      * @param string $parms
      */
     static public function credit_row($supplier, $credit, $parms = '') {
-      label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
+      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
         '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>", $parms);
     }
     /**

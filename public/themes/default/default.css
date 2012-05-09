@@ -841,7 +841,7 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label, .tablestyle2 label {
+ .label, .tablestyle2 label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	font-size:        12px;
@@ -863,7 +863,7 @@ td.tableheader3 {
 	font-size:     1em;
 }
 
-td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
+td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid tbody td:first-child, .tablestyle tbody td:first-child {
 	text-indent:   5px;
 	border:        1px solid #fff;
 	color:         black;
@@ -874,15 +874,17 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 	max-width: 300px;
 }
 
-.oddrow, .grid tr:nth-child(odd), tr.grid:nth-child(odd) {
+ .grid tbody tr:nth-child(odd), tr.grid:nth-child(odd) {
 	background-color: #f3f9fe;
 }
 
-.evenrow, .grid tr:nth-child(even), tr.grid:nth-child(even) {
+ .grid tbody tr:nth-child(even), tr.grid:nth-child(even) {
 	background: none repeat scroll 0 0 #D2DBF4;
 	border:     1px solid #D2DBF4;
 }
-
+.grid tfoot td {
+  border: 1px solid #E1E1E1;
+}
 /*--------------------------------- END TABLES -----------------------------------------------------------------*/
 
 /*--------------------------------- BUTTONS -----------------------------------------------------------------*/

@@ -33,9 +33,9 @@
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   Display::div_start('reorders');
-  start_table('tablestyle width30');
+  Table::start('tablestyle grid width30');
   $th = array(_("Location"), _("Quantity On Hand"), _("Primary Shelf"), _("Secondary Shelf"), _("Re-Order Level"));
-  table_header($th);
+  Table::header($th);
   $j = 1;
   $k = 0; //row colour counter
   $result = Inv_Location::get_details($_POST['stock_id']);
@@ -47,25 +47,25 @@
       Inv_Location::set_shelves($_POST['stock_id'], $myrow["loc_code"], $_POST['shelf_primary' . $myrow["loc_code"]], $_POST["shelf_secondary" . $myrow["loc_code"]]);
       $updated = TRUE;
     }
-    alt_table_row_color($k);
+
     $qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
-    label_cell($myrow["location_name"]);
+    Cell::label($myrow["location_name"]);
     $_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
-    qty_cell($qoh, FALSE, $dec);
+    Cell::qty($qoh, FALSE, $dec);
     text_cells(NULL, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
     text_cells(NULL, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
     qty_cells(NULL, $myrow["loc_code"], NULL, NULL, NULL, $dec);
-    end_row();
+    Row::end();
     $j++;
     If ($j == 12) {
       $j = 1;
-      table_header($th);
+      Table::header($th);
     }
   }
   if ($updated) {
     Event::success(_("Reorder levels have been updated."));
   }
-  end_table(1);
+  Table::end(1);
   Display::div_end();
   submit_center('UpdateData', _("Update"), TRUE, FALSE, 'default');
   end_form();

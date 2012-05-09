@@ -80,7 +80,7 @@
   }
   /*$result = DB::query($sql, "could not get stock categories");
     start_form();
-    start_table('tablestyle width90');*/
+    Table::start('tablestyle width90');*/
   $th = array(
     array('type' => 'skip'),
     _("Name"),
@@ -101,24 +101,24 @@
     )
   );
   /*	inactive_control_column($th);
- table_header($th);
+ Table::header($th);
  $k = 0; //row colour counter
  while ($myrow = DB::fetch($result))
  {
-   alt_table_row_color($k);
-   label_cell($myrow["description"]);
-   label_cell($myrow["tax_name"]);
-   label_cell($myrow["dflt_units"], "class=center");
-   label_cell($stock_types[$myrow["dflt_mb_flag"]]);
-   label_cell($myrow["dflt_sales_act"], "class=center");
-   label_cell($myrow["dflt_inventory_act"], "class=center");
-   label_cell($myrow["dflt_cogs_act"], "class=center");
-   label_cell($myrow["dflt_adjustment_act"], "class=center");
-   label_cell($myrow["dflt_assembly_act"], "class=center");
+
+   Cell::label($myrow["description"]);
+   Cell::label($myrow["tax_name"]);
+   Cell::label($myrow["dflt_units"], "class=center");
+   Cell::label($stock_types[$myrow["dflt_mb_flag"]]);
+   Cell::label($myrow["dflt_sales_act"], "class=center");
+   Cell::label($myrow["dflt_inventory_act"], "class=center");
+   Cell::label($myrow["dflt_cogs_act"], "class=center");
+   Cell::label($myrow["dflt_adjustment_act"], "class=center");
+   Cell::label($myrow["dflt_assembly_act"], "class=center");
    inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
    edit_button_cell("Edit" . $myrow["category_id"], _("Edit"));
    delete_button_cell("Delete" . $myrow["category_id"], _("Delete"));
-   end_row();
+   Row::end();
  }
  inactive_control_row($th);*/
   $table =& db_pager::new_db_pager('cat_tbl', $sql, $th);
@@ -126,7 +126,7 @@
   DB_Pager::display($table);
   echo '<br>';
   Display::div_start('details');
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing item category
@@ -172,7 +172,7 @@
     }
   }
   text_row(_("Category Name:"), 'description', NULL, 30, 30);
-  table_section_title(_("Default values for new items"));
+  Table::sectionTitle(_("Default values for new items"));
   Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', NULL);
   Item_UI::type_row(_("Item Type:"), 'mb_flag', NULL, TRUE);
   Item_Unit::row(_("Units of Measure:"), 'units', NULL);
@@ -207,7 +207,7 @@
   if ($dim < 2) {
     hidden('dim2', 0);
   }
-  end_table(1);
+  Table::end(1);
   Display::div_end();
   submit_add_or_update_center($selected_id == -1, '', 'both', TRUE);
   end_form();

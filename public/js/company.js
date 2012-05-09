@@ -1,14 +1,14 @@
 Adv.extend({
 	revertState:function (formid) {
 		var form = document.getElementsByTagName('form')[0];
-		 form.reset();
-		 Adv.o.companysearch.prop('disabled', false);
+		form.reset();
+		Adv.o.companysearch.prop('disabled', false);
 		Adv.btnConfirm.hide();
 		Adv.btnCancel.text('New');
 		Branches.btnBranchAdd();
 		Adv.Forms.resetHighlights();
 	},
-	resetState: function () {
+	resetState:function () {
 		$("#tabs0 input, #tabs0 textarea").empty();
 		$("#company").val('');
 		Company.fetch(0);
@@ -18,7 +18,7 @@ Adv.extend({
 	getContactLog:function (id, type) {
 		var data = {
 			contact_id:id,
-			type:      type
+			type:type
 		};
 		$.post('contact_log.php', data, function (data) {
 			Adv.setContactLog(data);
@@ -36,21 +36,21 @@ var Contacts = function () {
 	var blank, count = 0, adding = false, $Contacts = $("#Contacts");
 	$('#contact_tmpl').template('contact');
 	return {
-		list:   function () {
+		list:function () {
 			return list;
 		},
-		empty:  function () {
+		empty:function () {
 			count = 0;
 			adding = false;
 			$Contacts.empty();
 			return this;
 		},
-		init:   function (data) {
+		init:function (data) {
 			Contacts.empty();
 			Contacts.addMany(data);
 			Contacts.New();
 		},
-		add:    function (data) {
+		add:function (data) {
 			Contacts.addMany(data);
 		},
 		addMany:function (data) {
@@ -61,11 +61,11 @@ var Contacts = function () {
 			});
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
-		setval: function (key, value) {
+		setval:function (key, value) {
 			key = key.split('-');
 			if (value !== undefined) {Company.get().contacts[key[1]][key[0]] = value;}
 		},
-		New:    function () {
+		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
 		}
 	};
@@ -73,8 +73,8 @@ var Contacts = function () {
 var Branches = function () {
 	var current = {}, list = $("#branchList"), btn = $("#addBranch");
 	return {
-		adding:      false,
-		init:        function () {
+		adding:false,
+		init:function () {
 			btn.hide().removeClass('invis');
 			list.change(function () {
 				if (!$(this).val().length) {return;}
@@ -82,11 +82,11 @@ var Branches = function () {
 				Branches.change(ToBranch);
 			})
 		},
-		empty:       function () {
+		empty:function () {
 			list.empty();
 			return this;
 		},
-		add:         function (data) {
+		add:function (data) {
 			if (data.branch_id === undefined) {
 				var toAdd;
 				$.each(data, function (key, value) {
@@ -98,14 +98,14 @@ var Branches = function () {
 			}
 			return this;
 		},
-		get:         function () {
+		get:function () {
 			return current
 		},
-		setval:      function (key, value) {
+		setval:function (key, value) {
 			current[key] = value;
 			Company.get().branches[current.branch_id][key] = value;
 		},
-		change:      function (data) {
+		change:function (data) {
 			if (typeof data !== 'object') {
 				data = Company.get().branches[data];
 			}
@@ -122,7 +122,7 @@ var Branches = function () {
 				Branches.btnBranchAdd();
 			}
 		},
-		New:         function () {
+		New:function () {
 			$.post('search.php', {branch_id:0, id:Company.get().id}, function (data) {
 				data = data.branch;
 				Branches.add(data).change(data);
@@ -157,35 +157,37 @@ var Accounts = function () {
 	}
 }();
 var Company = function () {
-	var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete',
-	 'off');
+	var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
 	return {
-		init:      function () {
+		init:function () {
 			Branches.init();
 			$companyID.autocomplete({
-				source:   function (request, response) {
+				source:function (request, response) {
 					var lastXhr = $.getJSON('#', request, function (data, status, xhr) {
 						if (xhr === lastXhr) {
 							response(data);
 						}
 					});
 				},
-				select:   function (event, ui) {
+				select:function (event, ui) {
 					Company.fetch(ui.item);
 					return false;
 				},
-				focus:    function () {
+				focus:function () {
 					return false;
 				},
 				autoFocus:false, delay:10, 'position':{
-					my:       "left middle",
-					at:       "right top",
-					of:       $companyID,
+					my:"left middle",
+					at:"right top",
+					of:$companyID,
 					collision:"none"
 				}
-			});
+			}).on('paste', function () {
+				 var $this = $(this);
+				 window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+			 });
 		},
-		setValues: function (content) {
+		setValues:function (content) {
 			if (!content.company) {return;}
 			company = content.company;
 			var data = company;
@@ -220,21 +222,21 @@ var Company = function () {
 		showSearch:function () {
 			$companyID.autocomplete('enable');
 		},
-		fetch:     function (item) {
+		fetch:function (item) {
 			if (typeof(item) === "number") {item = {id:item};}
 			$.post('#', {"id":item.id}, function (data) {
 				Company.setValues(data);
 			}, 'json');
 			Company.getFrames(item.id);
 		},
-		getFrames: function (id, data) {
+		getFrames:function (id, data) {
 			if (id === undefined && company.id) { id = company.id}
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g, $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
 			if (!id) {return;}
 			data = data || '';
 			$invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
 		},
-		Save:      function () {
+		Save:function () {
 			Branches.btnBranchAdd();
 			Adv.btnConfirm.prop('disabled', true);
 			$.post('#', Company.get(), function (data) {
@@ -248,7 +250,7 @@ var Company = function () {
 				Company.setValues(data);
 			}, 'json');
 		},
-		set:       function (key, value) {
+		set:function (key, value) {
 			if (key.substr(0, 4) == ('acc_')) {
 				company.accounts[key.substr(4)] = value;
 			} else {
@@ -263,30 +265,31 @@ var Company = function () {
 				}
 			}
 		},
-		get:       function () {
+		get:function () {
 			return company
 		}
 	}
 }();
 $(function () {
 	Adv.extend({
-		tabs:      $("#tabs0"),
-		accFields: $("[name^='acc_']"),
+		tabs:$("#tabs0"),
+		accFields:$("[name^='acc_']"),
 		changed:false,
-		btnConfirm:$("#btnConfirm").click(function () {
-			Company.Save();
-			return false;
-		}).hide(),
-		btnCancel: $("#btnCancel").click(function () {
+		btnConfirm:$("#btnConfirm").click(
+		 function () {
+			 Company.Save();
+			 return false;
+		 }).hide(),
+		btnCancel:$("#btnCancel").click(function () {
 			(!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 			return false;
 		}),
 		ContactLog:$("#contactLog").hide(),
-		tabs1:     $("#tabs1").tabs({ select:function (event, ui) {
+		tabs1:$("#tabs1").tabs({ select:function (event, ui) {
 			var url = $.data(ui.tab, 'load.tabs');
 			if (url) {location.href = url + Company.get().id;}
 			return false;
-		}, selected:                         -1 })
+		}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
 		if (Adv.accFields.length === 0) {
@@ -310,20 +313,20 @@ $(function () {
 		return false;
 	});
 	Adv.ContactLog.dialog({
-		autoOpen: false,
-		show:     "slide",
+		autoOpen:false,
+		show:"slide",
 		resizable:false,
-		hide:     "explode",
-		modal:    true,
-		width:    700,
-		maxWidth: 700,
-		buttons:  {
-			"Ok":  function () {
+		hide:"explode",
+		modal:true,
+		width:700,
+		maxWidth:700,
+		buttons:{
+			"Ok":function () {
 				var data = {
 					contact_name:Adv.ContactLog.find("[name='contact_name']").val(),
-					contact_id:  Company.get().id,
-					message:     Adv.ContactLog.find("[name='message']").val(),
-					type:        "C"
+					contact_id:Company.get().id,
+					message:Adv.ContactLog.find("[name='message']").val(),
+					type:"C"
 				};
 				Adv.ContactLog.dialog('disable');
 				$.post('contact_log.php', data, function (data) {
@@ -353,7 +356,6 @@ $(function () {
 		}
 		Adv.Forms.stateModified($this);
 
-
 		if (!Adv.changed && Adv.fieldsChanged > 0) {
 			buttontext = (Company.get().id) ? "Save Changes" : "Save New";
 			Adv.btnConfirm.text(buttontext).show();
@@ -370,7 +372,6 @@ $(function () {
 		Company.set($thisname, $this.val());
 	});
 	$("#id").prop('disabled', true);
-
 	Company.init();
 	Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {
 		Company.getFrames(undefined, $('#invoiceForm').serialize());

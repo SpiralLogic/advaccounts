@@ -59,7 +59,7 @@
   hidden("OldMaterialCost", $myrow["material_cost"]);
   hidden("OldLabourCost", $myrow["labour_cost"]);
   hidden("OldOverheadCost", $myrow["overhead_cost"]);
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   $dec1 = $dec2 = $dec3 = 0;
   $_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
   $_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);
@@ -73,7 +73,7 @@
     hidden("labour_cost", 0);
     hidden("overhead_cost", 0);
   }
-  end_table(1);
+  Table::end(1);
   Display::div_end();
   submit_center('UpdateData', _("Update"), TRUE, FALSE, 'default');
   end_form();

@@ -23,31 +23,31 @@
   $supplier_curr_code = Bank_Currency::for_creditor($creditor_trans->supplier_id);
   Display::heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
   echo "<br>";
-  start_table('tablestyle width95');
-  start_row();
-  label_cells(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
-  label_cells(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
-  label_cells(_("Supplier's Reference"), $creditor_trans->supp_reference, "class='tablerowhead'");
-  end_row();
-  start_row();
-  label_cells(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
-  label_cells(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
+  Table::start('tablestyle width95');
+  Row::start();
+  Cell::labels(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
+  Cell::labels(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
+  Cell::labels(_("Supplier's Reference"), $creditor_trans->supp_reference, "class='tablerowhead'");
+  Row::end();
+  Row::start();
+  Cell::labels(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
+  Cell::labels(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
   if (!Bank_Currency::is_company($supplier_curr_code)) {
-    label_cells(_("Currency"), $supplier_curr_code, "class='tablerowhead'");
+    Cell::labels(_("Currency"), $supplier_curr_code, "class='tablerowhead'");
   }
-  end_row();
+  Row::end();
   DB_Comments::display_row(ST_SUPPINVOICE, $trans_no);
-  end_table(1);
+  Table::end(1);
   $total_gl = Purch_GLItem::display_items($creditor_trans, 2);
   $total_grn = Purch_GRN::display_items($creditor_trans, 2);
   $display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
-  start_table('tablestyle width95');
-  label_row(_("Sub Total"), $display_sub_tot, "class='right'", "class='right nowrap width15'");
+  Table::start('tablestyle width95');
+  Row::label(_("Sub Total"), $display_sub_tot, "class='right'", "class='right nowrap width15'");
   $tax_items = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
   $tax_total = Creditor_Trans::trans_tax_details($tax_items, 1, $creditor_trans->ov_gst);
   $display_total = Num::format($creditor_trans->ov_amount + $creditor_trans->ov_gst, User::price_dec());
-  label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 class='right'", ' class="right nowrap"');
-  end_table(1);
+  Row::label(_("TOTAL INVOICE"), $display_total, "colspan=1 class='right'", ' class="right nowrap"');
+  Table::end(1);
   Display::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
   if (Input::get('frame')) {
     return;

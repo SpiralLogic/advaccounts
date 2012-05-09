@@ -197,29 +197,28 @@
       else {
         Display::heading(_("Balance for this Dimension"));
         Display::br();
-        start_table('tablestyle');
+        Table::start('tablestyle grid');
         $th = array(_("Account"), _("Debit"), _("Credit"));
-        table_header($th);
+        Table::header($th);
         $total = $k = 0;
         while ($myrow = DB::fetch($result)) {
-          alt_table_row_color($k);
-          label_cell($myrow["account"] . " " . $myrow['account_name']);
-          debit_or_credit_cells($myrow["amt"]);
+          Cell::label($myrow["account"] . " " . $myrow['account_name']);
+          Cell::debitOrCredit($myrow["amt"]);
           $total += $myrow["amt"];
-          end_row();
+          Row::end();
         }
-        start_row();
-        label_cell("<span class='bold'>" . _("Balance") . "</span>");
+        Row::start();
+        Cell::label("<span class='bold'>" . _("Balance") . "</span>");
         if ($total >= 0) {
-          amount_cell($total, TRUE);
-          label_cell("");
+          Cell::amount($total, TRUE);
+          Cell::label("");
         }
         else {
-          label_cell("");
-          amount_cell(abs($total), TRUE);
+          Cell::label("");
+          Cell::amount(abs($total), TRUE);
         }
-        end_row();
-        end_table();
+        Row::end();
+        Table::end();
       }
     }
     // DIMENSIONS

@@ -632,7 +632,7 @@
    */
   function text_cells($label, $name, $value = NULL, $size = "", $max = "", $title = FALSE, $labparams = "", $post_label = "", $inparams = "") {
     if ($label != NULL) {
-      label_cell($label, $labparams);
+      Cell::label($label, $labparams);
     }
     echo "<td>";
     if ($value === NULL) {
@@ -875,7 +875,7 @@
    */
   function password_row($label, $name, $value) {
     echo "<tr><td class='label'><label for='$name'>$label</label></td>";
-    label_cell("<input type='password' name='$name' id='$name' value='$value' />");
+    Cell::label("<input type='password' name='$name' id='$name' value='$value' />");
     echo "</tr>\n";
   }
 
@@ -888,7 +888,7 @@
     if ($id != "") {
       $id = "id='$id'";
     }
-    label_cells($label, "<input type='file' name='$name' $id />");
+    Cell::labels($label, "<input type='file' name='$name' $id />");
   }
 
   /**
@@ -984,7 +984,7 @@
       if ($params == NULL) {
         $params = " class='label'";
       }
-      label_cell($label, $params);
+      Cell::label($label, $params);
     }
     if (!isset($max)) {
       $max = $size;
@@ -1330,7 +1330,7 @@
    */
   function number_list_cells($label, $name, $selected, $from, $to, $no_option = FALSE) {
     if ($label != NULL) {
-      label_cell($label);
+      Cell::label($label);
     }
     echo "<td>\n";
     echo number_list($name, $selected, $from, $to, $no_option);

@@ -39,13 +39,13 @@
   }
   $result = GL_Type::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
+
     $bs_text = GL_Class::get_name($myrow["class_id"]);
     if ($myrow["parent"] == ANY_NUMERIC) {
       $parent_text = "";
@@ -53,18 +53,18 @@
     else {
       $parent_text = GL_Type::get_name($myrow["parent"]);
     }
-    label_cell($myrow["id"]);
-    label_cell($myrow["name"]);
-    label_cell($parent_text);
-    label_cell($bs_text);
+    Cell::label($myrow["id"]);
+    Cell::label($myrow["name"]);
+    Cell::label($parent_text);
+    Cell::label($bs_text);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
@@ -76,7 +76,7 @@
       hidden('selected_id', $selected_id);
     }
     hidden('id');
-    label_row(_("ID:"), $_POST['id']);
+    Row::label(_("ID:"), $_POST['id']);
   }
   else {
     text_row_ex(_("ID:"), 'id', 10);
@@ -84,7 +84,7 @@
   text_row_ex(_("Name:"), 'name', 50);
   GL_Type::row(_("Subgroup Of:"), 'parent', NULL, _("None"), TRUE);
   GL_Class::row(_("Class Type:"), 'class_id', NULL);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

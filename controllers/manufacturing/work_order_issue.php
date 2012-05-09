@@ -129,12 +129,12 @@
   WO_Cost::display($_SESSION['issue_items']->order_id);
   echo "<br>";
   start_form();
-  start_table('tablesstyle width90 pad10');
+  Table::start('tablesstyle width90 pad10');
   echo "<tr><td>";
   WO_Issue::display_items(_("Items to Issue"), $_SESSION['issue_items']);
   WO_Issue::option_controls();
   echo "</td></tr>";
-  end_table();
+  Table::end();
   submit_center('Process', _("Process Issue"), TRUE, '', 'default');
   end_form();
   Page::end();

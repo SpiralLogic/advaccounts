@@ -125,23 +125,23 @@
         Display::note(_("There are no Productions for this Order."), 1, 1);
       }
       else {
-        start_table('tablestyle');
+        Table::start('tablestyle grid');
         $th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
-        table_header($th);
+        Table::header($th);
         $k = 0; //row colour counter
         $total_qty = 0;
         while ($myrow = DB::fetch($result)) {
-          alt_table_row_color($k);
+
           $total_qty += $myrow['quantity'];
-          label_cell(GL_UI::trans_view(29, $myrow["id"]));
-          label_cell($myrow['reference']);
-          label_cell(Dates::sql2date($myrow["date_"]));
-          qty_cell($myrow['quantity'], FALSE, Item::qty_dec($myrow['reference']));
-          end_row();
+          Cell::label(GL_UI::trans_view(29, $myrow["id"]));
+          Cell::label($myrow['reference']);
+          Cell::label(Dates::sql2date($myrow["date_"]));
+          Cell::qty($myrow['quantity'], FALSE, Item::qty_dec($myrow['reference']));
+          Row::end();
         }
         //end of while
-        label_row(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", ' class="right nowrap"');
-        end_table();
+        Row::label(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", ' class="right nowrap"');
+        Table::end();
       }
     }
   }

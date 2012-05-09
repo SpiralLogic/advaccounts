@@ -71,25 +71,25 @@
   function display_bom_items($selected_parent) {
     $result = WO::get_bom($selected_parent);
     Display::div_start('bom');
-    start_table('tablestyle width60');
+    Table::start('tablestyle grid width60');
     $th = array(
       _("Code"), _("Description"), _("Location"), _("Work Centre"), _("Quantity"), _("Units"), '', ''
     );
-    table_header($th);
+    Table::header($th);
     $k = 0;
     while ($myrow = DB::fetch($result)) {
-      alt_table_row_color($k);
-      label_cell($myrow["component"]);
-      label_cell($myrow["description"]);
-      label_cell($myrow["location_name"]);
-      label_cell($myrow["WorkCentreDescription"]);
-      qty_cell($myrow["quantity"], FALSE, Item::qty_dec($myrow["component"]));
-      label_cell($myrow["units"]);
+
+      Cell::label($myrow["component"]);
+      Cell::label($myrow["description"]);
+      Cell::label($myrow["location_name"]);
+      Cell::label($myrow["WorkCentreDescription"]);
+      Cell::qty($myrow["quantity"], FALSE, Item::qty_dec($myrow["component"]));
+      Cell::label($myrow["units"]);
       edit_button_cell("Edit" . $myrow['id'], _("Edit"));
       delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-      end_row();
+      Row::end();
     } //END WHILE LIST LOOP
-    end_table();
+    Table::end();
     Display::div_end();
   }
 
@@ -157,12 +157,12 @@
   }
   start_form();
   start_form(FALSE);
-  start_table('tablestyle_noborder');
+  Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
   if (list_updated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
-  end_table();
+  Table::end();
   Display::br();
   end_form();
   if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
@@ -173,7 +173,7 @@
     start_form();
     display_bom_items($selected_parent);
     echo '<br>';
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != -1) {
       if ($Mode == MODE_EDIT) {
         //editing a selected component from the link to the line item
@@ -186,20 +186,20 @@
         $_POST['component'] = $myrow["component"]; // by Tom Moulton
         $_POST['workcentre_added'] = $myrow["workcentre_added"];
         $_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["component"]));
-        label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
+        Row::label(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
       }
       hidden('selected_id', $selected_id);
     }
     else {
-      start_row();
-      label_cell(_("Component:"));
+      Row::start();
+      Cell::label(_("Component:"));
       echo "<td>";
       echo Item_UI::component('component', $selected_parent, NULL, FALSE, TRUE);
       if (get_post('_component_update')) {
         Ajax::i()->activate('quantity');
       }
       echo "</td>";
-      end_row();
+      Row::end();
     }
     hidden('stock_id', $selected_parent);
     Inv_Location::row(_("Location to Draw From:"), 'loc_code', NULL);
@@ -207,7 +207,7 @@
     $dec = Item::qty_dec(get_post('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
     qty_row(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
-    end_table(1);
+    Table::end(1);
     submit_add_or_update_center($selected_id == -1, '', 'both');
     end_form();
   }

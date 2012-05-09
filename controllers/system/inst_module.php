@@ -214,42 +214,42 @@
   }
 
   function display_extensions() {
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(
       _("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"), _("Access extensions"), "", ""
     );
-    table_header($th);
+    Table::header($th);
     $k = 0;
     $mods = DB_Company::get_company_extensions();
     $mods = Arr::natsort($mods, NULL, 'name');
     foreach ($mods as $i => $mod) {
       $is_mod = $mod['type'] == 'module';
-      alt_table_row_color($k);
-      label_cell($mod['name']);
-      label_cell($is_mod ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
+
+      Cell::label($mod['name']);
+      Cell::label($is_mod ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
       $ttl = Display::access_string($mod['title']);
-      label_cell($ttl[0]);
-      label_cell($mod['path']);
-      label_cell($mod['filename']);
-      label_cell(@$mod['acc_file']);
+      Cell::label($ttl[0]);
+      Cell::label($mod['path']);
+      Cell::label($mod['filename']);
+      Cell::label(@$mod['acc_file']);
       if ($is_mod) {
-        label_cell(''); // not implemented (yet)
+        Cell::label(''); // not implemented (yet)
       }
       else {
         edit_button_cell("Edit" . $i, _("Edit"));
       }
       delete_button_cell("Delete" . $i, _("Delete"));
       submit_js_confirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
-      end_row();
+      Row::end();
     }
-    end_table(1);
+    Table::end(1);
   }
 
   /**
    * @param $id
    */
   function company_extensions($id) {
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
     // get all available extensions and display
     // with current status stored in company directory.
@@ -264,18 +264,18 @@
       }
     }
     $mods = Arr::natsort($mods, NULL, 'name');
-    table_header($th);
+    Table::header($th);
     $k = 0;
     foreach ($mods as $i => $mod) {
-      alt_table_row_color($k);
-      label_cell($mod['name']);
-      label_cell($mod['type'] == 'module' ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
+
+      Cell::label($mod['name']);
+      Cell::label($mod['type'] == 'module' ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, TRUE));
       $ttl = Display::access_string($mod['title']);
-      label_cell($ttl[0]);
+      Cell::label($ttl[0]);
       check_cells(NULL, 'Active' . $i, @$mod['active'] ? 1 : 0, FALSE, FALSE, "class='center'");
-      end_row();
+      Row::end();
     }
-    end_table(1);
+    Table::end(1);
     submit_center('Update', _('Update'), TRUE, FALSE, 'default');
   }
 
@@ -285,7 +285,7 @@
    */
   function display_ext_edit($Mode, $selected_id) {
     $extensions = DB_Company::get_company_extensions();
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
       if ($Mode == MODE_EDIT) {
         $mod = $extensions[$selected_id];
@@ -308,7 +308,7 @@
     file_row(_("Module File"), 'uploadfile');
     file_row(_("Access Levels Extensions"), 'uploadfile3');
     file_row(_("SQL File"), 'uploadfile2');
-    end_table(0);
+    Table::end(0);
     Event::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
     submit_add_or_update_center($selected_id == -1, '', 'both');
   }

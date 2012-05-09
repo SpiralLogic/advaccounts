@@ -59,24 +59,24 @@
   }
   $result = Item_Unit::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle width40');
+  Table::start('tablestyle grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["abbr"]);
-    label_cell($myrow["name"]);
-    label_cell(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
+
+    Cell::label($myrow["abbr"]);
+    Cell::label($myrow["name"]);
+    Cell::label(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
     inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
     edit_button_cell("Edit" . $myrow["abbr"], _("Edit"));
     delete_button_cell("Delete" . $myrow["abbr"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
       //editing an existing item category
@@ -88,7 +88,7 @@
     hidden('selected_id', $selected_id);
   }
   if ($selected_id != '' && Item_Unit::used($selected_id)) {
-    label_row(_("Unit Abbreviation:"), $_POST['abbr']);
+    Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
     hidden('abbr', $_POST['abbr']);
   }
   else {
@@ -96,7 +96,7 @@
   }
   text_row(_("Descriptive Name:"), 'description', NULL, 40, 40);
   number_list_row(_("Decimal Places:"), 'decimals', NULL, 0, 6, _("User Quantity Decimals"));
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == '', '', 'both');
   end_form();
   Page::end();

@@ -52,26 +52,26 @@
     }
     if (!$heading_shown) {
       display_gl_heading($myrow);
-      start_table('tablestyle width95');
-      table_header($th);
+      Table::start('tablestyle grid width95');
+      Table::header($th);
       $heading_shown = TRUE;
     }
-    alt_table_row_color($k);
-    label_cell($myrow['account']);
-    label_cell($myrow['account_name']);
+
+    Cell::label($myrow['account']);
+    Cell::label($myrow['account_name']);
     if ($dim >= 1) {
-      label_cell(Dimensions::get_string($myrow['dimension_id'], TRUE));
+      Cell::label(Dimensions::get_string($myrow['dimension_id'], TRUE));
     }
     if ($dim > 1) {
-      label_cell(Dimensions::get_string($myrow['dimension2_id'], TRUE));
+      Cell::label(Dimensions::get_string($myrow['dimension2_id'], TRUE));
     }
-    debit_or_credit_cells($myrow['amount']);
-    label_cell($myrow['memo_']);
-    end_row();
+    Cell::debitOrCredit($myrow['amount']);
+    Cell::label($myrow['memo_']);
+    Row::end();
   }
   //end of while loop
   if ($heading_shown) {
-    end_table(1);
+    Table::end(1);
   }
   Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
   Page::end(TRUE);
@@ -81,17 +81,17 @@
   function display_gl_heading($myrow) {
     global $systypes_array;
     $trans_name = $systypes_array[$_GET['type_id']];
-    start_table('tablestyle width95');
+    Table::start('tablestyle width95');
     $th = array(
       _("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item")
     );
-    table_header($th);
-    start_row();
-    label_cell("$trans_name #" . $_GET['trans_no']);
-    label_cell($myrow["reference"]);
-    label_cell(Dates::sql2date($myrow["tran_date"]));
-    label_cell(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-    end_row();
+    Table::header($th);
+    Row::start();
+    Cell::label("$trans_name #" . $_GET['trans_no']);
+    Cell::label($myrow["reference"]);
+    Cell::label(Dates::sql2date($myrow["tran_date"]));
+    Cell::label(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+    Row::end();
     DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
-    end_table(1);
+    Table::end(1);
   }

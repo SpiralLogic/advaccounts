@@ -250,7 +250,7 @@
           text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, NULL, "class='label'", " $from_currency = 1 $to_currency");
         }
         else {
-          label_cells(_("Exchange Rate:"),
+          Cell::labels(_("Exchange Rate:"),
             "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency",
             '');
         }

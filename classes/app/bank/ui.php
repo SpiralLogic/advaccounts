@@ -18,11 +18,11 @@
 
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Display::div_start('pmt_header');
-      start_outer_table('tablestyle2 width90'); // outer table
-      table_section(1);
+      Table::startOuter('tablestyle2 width90'); // outer table
+      Table::section(1);
       Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', NULL, TRUE);
       date_row(_("Date:"), 'date_', '', TRUE, 0, 0, 0, NULL, TRUE);
-      table_section(2, "33%");
+      Table::section(2, "33%");
       if (!isset($_POST['PayType'])) {
         if (isset($_GET['PayType'])) {
           $_POST['PayType'] = $_GET['PayType'];
@@ -86,14 +86,14 @@
       $person_currency = Bank_Currency::for_payment_person($_POST['PayType'], $_POST['person_id']);
       $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
-      table_section(3, "33%");
+      Table::section(3, "33%");
       if (isset($_GET['NewPayment'])) {
         ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
       }
       else {
         ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
       }
-      end_outer_table(1); // outer table
+      Table::endOuter(1); // outer table
       Display::div_end();
     }
     /**
@@ -107,7 +107,7 @@
       $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
       Display::heading($title);
       Display::div_start('items_table');
-      start_table('tables_style width95');
+      Table::start('tables_style grid width95');
       if ($dim == 2) {
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"), ""
@@ -128,31 +128,31 @@
       if (count($order->gl_items)) {
         $th[] = '';
       }
-      table_header($th);
+      Table::header($th);
       $k = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
-          alt_table_row_color($k);
-          label_cell($item->code_id);
-          label_cell($item->description);
+
+          Cell::label($item->code_id);
+          Cell::label($item->description);
           if ($dim >= 1) {
-            label_cell(Dimensions::get_string($item->dimension_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension_id, TRUE));
           }
           if ($dim > 1) {
-            label_cell(Dimensions::get_string($item->dimension2_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension2_id, TRUE));
           }
-          //amount_cell(abs($item->amount));
+          //Cell::amount(abs($item->amount));
           if ($order->trans_type == ST_BANKDEPOSIT) {
-            amount_cell(-$item->amount);
+            Cell::amount(-$item->amount);
           }
           else {
-            amount_cell($item->amount);
+            Cell::amount($item->amount);
           }
-          label_cell($item->reference);
+          Cell::label($item->reference);
           edit_button_cell("Edit$line", _("Edit"), _('Edit document line'));
           delete_button_cell("Delete$line", _("Delete"), _('Remove line from document'));
-          end_row();
+          Row::end();
         }
         else {
           Bank_UI::item_controls($order, $dim, $line);
@@ -162,10 +162,10 @@
         Bank_UI::item_controls($order, $dim);
       }
       if ($order->count_gl_items()) {
-        label_row(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()),
+        Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()),
           "colspan=" . $colspan . " class='right'", "class='right'", 3);
       }
-      end_table();
+      Table::end();
       Display::div_end();
     }
     /**
@@ -178,7 +178,7 @@
     static public function item_controls($order, $dim, $Index = NULL) {
 
       $payment = $order->trans_type == ST_BANKPAYMENT;
-      start_row();
+      Row::start();
       $id = find_submit(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         $item = $order->gl_items[$Index];
@@ -242,7 +242,7 @@
       else {
         submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
-      end_row();
+      Row::end();
     }
 
     static public function option_controls() {
@@ -296,7 +296,7 @@
     static public function  balance_row($bank_acc, $parms = '') {
       $to = Dates::add_days(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
-      label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
+      Row::label(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
         '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
     }
     /**

@@ -36,8 +36,8 @@
     Ajax::i()->activate('orders_tbl');
   }
   start_form();
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   Creditor::cells(_("Supplier: "), 'supplier_id', Input::post('supplier_id'), TRUE);
   ref_cells(_("#:"), 'order_number', '', NULL, '', TRUE);
   date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
@@ -45,8 +45,8 @@
   Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
   //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
 
   //figure out the sql required from the inputs available
   $sql = "SELECT
