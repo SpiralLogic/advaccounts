@@ -166,27 +166,27 @@
         Display::note(_("The work order number sent is not valid."));
         exit;
       }
-      start_table('tablestyle width90');
+      Table::start('tablestyle width90');
       $th = array(
         _("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Quantity")
       );
-      table_header($th);
-      start_row();
+      Table::header($th);
+      Row::start();
       if ($suppress_view_link) {
-        label_cell($myrow["id"]);
+        Cell::label($myrow["id"]);
       }
       else {
-        label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
+        Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
       }
-      label_cell($myrow["wo_ref"]);
-      label_cell($wo_types_array[$myrow["type"]]);
+      Cell::label($myrow["wo_ref"]);
+      Cell::label($wo_types_array[$myrow["type"]]);
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
-      label_cell($myrow["location_name"]);
-      label_cell(Dates::sql2date($myrow["date_"]));
-      qty_cell($myrow["units_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
-      end_row();
+      Cell::label($myrow["location_name"]);
+      Cell::label(Dates::sql2date($myrow["date_"]));
+      Cell::qty($myrow["units_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
+      Row::end();
       DB_Comments::display_row(ST_WORKORDER, $woid);
-      end_table();
+      Table::end();
       if ($myrow["closed"] == TRUE) {
         Display::note(_("This work order is closed."));
       }

@@ -75,19 +75,19 @@
   }
   $result = Tax_Groups::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Description"), _("Shipping Tax"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["name"]);
+
+    Cell::label($myrow["name"]);
     if ($myrow["tax_shipping"]) {
-      label_cell(_("Yes"));
+      Cell::label(_("Yes"));
     }
     else {
-      label_cell(_("No"));
+      Cell::label(_("No"));
     }
     /*for ($i=0; $i< 5; $i++)
                   if ($myrow["type" . $i] != ALL_NUMERIC)
@@ -95,12 +95,12 @@
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
     ;
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     //editing an existing status code
     if ($Mode == MODE_EDIT) {
@@ -122,31 +122,31 @@
   }
   text_row_ex(_("Description:"), 'name', 40);
   yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
-  end_table();
+  Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   //$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
   //Editable rate has been removed 090920 Joe Hunt
   $th = array(_("Tax"), _("Rate (%)"));
-  table_header($th);
+  Table::header($th);
   for ($i = 0; $i < 5; $i++) {
-    start_row();
+    Row::start();
     if (!isset($_POST['tax_type_id' . $i])) {
       $_POST['tax_type_id' . $i] = 0;
     }
     Tax_Types::cells(NULL, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), TRUE);
     if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
       $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-      label_cell(Num::percent_format($default_rate), ' class="right nowrap"');
+      Cell::label(Num::percent_format($default_rate), ' class="right nowrap"');
       //Editable rate has been removed 090920 Joe Hunt
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
       //	$_POST['rate' . $i] = Num::percent_format($default_rate);
       //small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
       // User::percent_dec());
     }
-    end_row();
+    Row::end();
   }
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

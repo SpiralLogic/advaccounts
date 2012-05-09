@@ -105,13 +105,13 @@
   }
   start_form();
   if (Validation::check(Validation::SUPPLIERS)) {
-    start_table('tablestyle_noborder pad3');
-    //	start_table('tablestyle_noborder');
-    start_row();
+    Table::start('tablestyle_noborder pad3');
+    //	Table::start('tablestyle_noborder');
+    Row::start();
     Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, _('New supplier'), TRUE, check_value('show_inactive'));
     check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
-    end_row();
-    end_table();
+    Row::end();
+    Table::end();
     if (get_post('_show_inactive_update')) {
       Ajax::i()->activate('supplier_id');
       JS::set_focus('supplier_id');
@@ -120,8 +120,8 @@
   else {
     hidden('supplier_id', get_post('supplier_id'));
   }
-  start_outer_table('tablestyle2');
-  table_section(1);
+  Table::startOuter('tablestyle2');
+  Table::section(1);
   if (!$new_supplier) {
     //SupplierID exists - either passed when calling the form or from the form itself
     $myrow = Creditor::get($_POST['supplier_id']);
@@ -165,7 +165,7 @@
     $_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
     $_POST['inactive'] = 0;
   }
-  table_section_title(_("Name and Contact"));
+  Table::sectionTitle(_("Name and Contact"));
   text_row(_("Supplier Name:"), 'supp_name', NULL, 42, 40);
   text_row(_("Supplier Short Name:"), 'supp_ref', NULL, 30, 30);
   text_row(_("Contact Person:"), 'contact', NULL, 42, 40);
@@ -175,16 +175,16 @@
   email_row(_("E-mail:"), 'email', NULL, 35, 55);
   link_row(_("Website:"), 'website', NULL, 35, 55);
   text_row(_("Our Customer No:"), 'supp_account_no', NULL, 42, 40);
-  table_section_title(_("Addresses"));
+  Table::sectionTitle(_("Addresses"));
   textarea_row(_("Mailing Address:"), 'address', NULL, 35, 5);
   textarea_row(_("Physical Address:"), 'supp_address', NULL, 35, 5);
-  table_section(2);
-  table_section_title(_("Purchasing"));
+  Table::section(2);
+  Table::sectionTitle(_("Purchasing"));
   text_row(_("GSTNo:"), 'gst_no', NULL, 42, 40);
   text_row(_("Bank Name/Account:"), 'bank_account', NULL, 42, 40);
   amount_row(_("Credit Limit:"), 'credit_limit', NULL);
   if (!$new_supplier) {
-    label_row(_("Supplier's Currency:"), $_POST['curr_code']);
+    Row::label(_("Supplier's Currency:"), $_POST['curr_code']);
     hidden('curr_code', $_POST['curr_code']);
   }
   else {
@@ -192,13 +192,13 @@
   }
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', NULL);
   GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', NULL);
-  table_section_title(_("Accounts"));
+  Table::sectionTitle(_("Accounts"));
   GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
   GL_UI::all_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
   GL_UI::all_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
-    table_section_title(_("Dimension"));
+    Table::sectionTitle(_("Dimension"));
     Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', NULL, TRUE, " ", FALSE, 1);
     if ($dim > 1) {
       Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
@@ -210,10 +210,10 @@
   if ($dim < 2) {
     hidden('dimension2_id', 0);
   }
-  table_section_title(_("General"));
+  Table::sectionTitle(_("General"));
   textarea_row(_("General Notes:"), 'notes', NULL, 35, 5);
   record_status_list_row(_("Supplier status:"), 'inactive');
-  end_outer_table(1);
+  Table::endOuter(1);
   Display::div_start('controls');
   if (!$new_supplier) {
     submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? TRUE : 'default');

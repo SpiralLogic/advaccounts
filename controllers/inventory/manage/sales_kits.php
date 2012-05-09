@@ -63,22 +63,22 @@
   $selected_kit = $_POST['item_code'];
   if (get_post('item_code') == '') {
     // New sales kit entry
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     text_row(_("Alias/kit code:"), 'kit_code', NULL, 20, 21);
   }
   else {
     // Kit selected so display bom or edit component
     $_POST['description'] = $props['description'];
     $_POST['category'] = $props['category_id'];
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     text_row(_("Description:"), 'description', NULL, 50, 200);
     Item_Category::row(_("Category:"), 'category', NULL);
     submit_row('update_name', _("Update"), FALSE, 'class=center colspan=2', _('Update kit/alias name'), TRUE);
-    end_row();
-    end_table(1);
+    Row::end();
+    Table::end(1);
     display_kit_items($selected_kit);
     echo '<br>';
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
   }
   if ($Mode == MODE_EDIT) {
     $myrow = Item_Code::get($selected_id);
@@ -106,7 +106,7 @@
     Ajax::i()->activate('category');
   }
   qty_row(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
@@ -116,23 +116,23 @@
   function display_kit_items($selected_kit) {
     $result = Item_Code::get_kit($selected_kit);
     Display::div_start('bom');
-    start_table('tablestyle width60');
+    Table::start('tablestyle grid width60');
     $th = array(
       _("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', ''
     );
-    table_header($th);
+    Table::header($th);
     $k = 0;
     while ($myrow = DB::fetch($result)) {
-      alt_table_row_color($k);
-      label_cell($myrow["stock_id"]);
-      label_cell($myrow["comp_name"]);
-      qty_cell($myrow["quantity"], FALSE, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));
-      label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
+
+      Cell::label($myrow["stock_id"]);
+      Cell::label($myrow["comp_name"]);
+      Cell::qty($myrow["quantity"], FALSE, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));
+      Cell::label($myrow["units"] == '' ? _('kit') : $myrow["units"]);
       edit_button_cell("Edit" . $myrow['id'], _("Edit"));
       delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-      end_row();
+      Row::end();
     } //END WHILE LIST LOOP
-    end_table();
+    Table::end();
     Display::div_end();
   }
 

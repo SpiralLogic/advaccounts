@@ -41,8 +41,8 @@
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
   }
   start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   ref_cells(_("Reference:"), 'OrderNumber', '', NULL, '', TRUE);
   Inv_Location::cells(_("at Location:"), 'StockLocation', NULL, TRUE);
   check_cells(_("Only Overdue:"), 'OverdueOnly', NULL);
@@ -51,8 +51,8 @@
   }
   Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', NULL, TRUE);
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   /**
    * @param $row
    *

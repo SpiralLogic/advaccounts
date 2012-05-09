@@ -87,11 +87,11 @@
         Display::note(_("There are no Requirements for this Order."), 1, 0);
       }
       else {
-        start_table('tablestyle width90');
+        Table::start('tablestyle grid width90');
         $th = array(
           _("Component"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand")
         );
-        table_header($th);
+        Table::header($th);
         $k = 0; //row colour counter
         $has_marked = FALSE;
         if ($date == NULL) {
@@ -110,33 +110,33 @@
           if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && !DB_Company::get_pref('allow_negative_stock')
           ) {
             // oops, we don't have enough of one of the component items
-            start_row("class='stockmankobg'");
+            Row::start("class='stockmankobg'");
             $has_marked = TRUE;
           }
           else {
-            alt_table_row_color($k);
+
           }
           if (User::show_codes()) {
-            label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
+            Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
           }
           else {
-            label_cell($myrow["description"]);
+            Cell::label($myrow["description"]);
           }
-          label_cell($myrow["location_name"]);
-          label_cell($myrow["WorkCentreDescription"]);
+          Cell::label($myrow["location_name"]);
+          Cell::label($myrow["WorkCentreDescription"]);
           $dec = Item::qty_dec($myrow["stock_id"]);
-          qty_cell($myrow["units_req"], FALSE, $dec);
-          qty_cell($myrow["units_req"] * $quantity, FALSE, $dec);
-          qty_cell($myrow["units_issued"], FALSE, $dec);
+          Cell::qty($myrow["units_req"], FALSE, $dec);
+          Cell::qty($myrow["units_req"] * $quantity, FALSE, $dec);
+          Cell::qty($myrow["units_issued"], FALSE, $dec);
           if ($show_qoh) {
-            qty_cell($qoh, FALSE, $dec);
+            Cell::qty($qoh, FALSE, $dec);
           }
           else {
-            label_cell("");
+            Cell::label("");
           }
-          end_row();
+          Row::end();
         }
-        end_table();
+        Table::end();
         if ($has_marked) {
           Display::note(_("Marked items have insufficient quantities in stock."), 0, 0, "class='red'");
         }

@@ -67,26 +67,26 @@
   $sql .= " ORDER BY shipper_id";
   $result = DB::query($sql, "could not get shippers");
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["shipper_name"]);
-    label_cell($myrow["contact"]);
-    label_cell($myrow["phone"]);
-    label_cell($myrow["phone2"]);
-    label_cell($myrow["address"]);
+
+    Cell::label($myrow["shipper_name"]);
+    Cell::label($myrow["contact"]);
+    Cell::label($myrow["phone"]);
+    Cell::label($myrow["phone2"]);
+    Cell::label($myrow["address"]);
     inactive_control_cell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
     edit_button_cell("Edit" . $myrow["shipper_id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["shipper_id"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing Shipper
@@ -106,7 +106,7 @@
   text_row_ex(_("Phone Number:"), 'phone', 32, 30);
   text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
   text_row_ex(_("Address:"), 'address', 50);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

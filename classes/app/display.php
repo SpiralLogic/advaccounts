@@ -154,14 +154,14 @@
       if ($void_entry == NULL) {
         return FALSE;
       }
-      start_table('tablestyle width50');
+      Table::start('tablestyle width50');
       echo "<tr><td class=center><span class='red'>$label</span><br>";
       echo "<span class='red'>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</span><br>";
       if (strlen($void_entry["memo_"]) > 0) {
         echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
       }
       echo "</td></tr>";
-      end_table(1);
+      Table::end(1);
       return TRUE;
     }
 

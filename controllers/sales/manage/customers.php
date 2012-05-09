@@ -123,12 +123,12 @@
   Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
   start_form();
   if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
-    start_table('tablestyle_noborder');
-    start_row();
+    Table::start('tablestyle_noborder');
+    Row::start();
     Debtor::cells(_("Select a customer: "), 'customer_id', NULL, _('New customer'), TRUE, check_value('show_inactive'));
     check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
-    end_row();
-    end_table();
+    Row::end();
+    Table::end();
     if (get_post('_show_inactive_update')) {
       Ajax::i()->activate('customer_id');
       JS::set_focus('customer_id');
@@ -171,9 +171,9 @@
     $_POST['notes'] = $myrow["notes"];
     $_POST['inactive'] = $myrow["inactive"];
   }
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Name and Address"));
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Name and Address"));
   text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
   text_row(_("Customer Short Name:"), 'cust_ref', NULL, 30, 30);
   textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
@@ -183,12 +183,12 @@
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
   }
   else {
-    label_row(_("Customer's Currency:"), $_POST['curr_code']);
+    Row::label(_("Customer's Currency:"), $_POST['curr_code']);
     hidden('curr_code', $_POST['curr_code']);
   }
   Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
-  table_section(2);
-  table_section_title(_("Sales"));
+  Table::section(2);
+  Table::sectionTitle(_("Sales"));
   percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
   percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
   amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
@@ -208,16 +208,16 @@
     hidden('dimension2_id', 0);
   }
   if (!$new_customer) {
-    start_row();
+    Row::start();
     echo '<td>' . _('Customer branches') . ':</td>';
     Display::link_params_td("/sales/manage/customer_branches.php", "<span class='bold'>" . (Input::request('frame') ?
       _("Select or &Add") : _("&Add or Edit ")) . '</span>', "debtor_no=" . $_POST['customer_id'] . (Input::request('frame') ?
       '&frame=1' : ''));
-    end_row();
+    Row::end();
   }
   textarea_row(_("General Notes:"), 'notes', NULL, 35, 5);
   record_status_list_row(_("Customer status:"), 'inactive');
-  end_outer_table(1);
+  Table::endOuter(1);
   Display::div_start('controls');
   if ($new_customer) {
     submit_center('submit', _("Add New Customer"), TRUE, '', 'default');

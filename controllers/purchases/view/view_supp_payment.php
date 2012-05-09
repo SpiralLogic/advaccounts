@@ -28,30 +28,30 @@
   echo "<div class='center'>";
   Display::heading(_("Payment to Supplier") . " #$trans_no");
   echo "<br>";
-  start_table('tablestyle2 width90');
-  start_row();
-  label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
-  label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
-  label_cells(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tablerowhead'");
-  end_row();
-  start_row();
+  Table::start('tablestyle2 width90');
+  Row::start();
+  Cell::labels(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
+  Cell::labels(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
+  Cell::labels(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tablerowhead'");
+  Row::end();
+  Row::start();
   if ($show_currencies) {
-    label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
+    Cell::labels(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
   }
-  label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
-  label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tablerowhead'");
-  end_row();
-  start_row();
+  Cell::labels(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
+  Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tablerowhead'");
+  Row::end();
+  Row::start();
   if ($show_currencies) {
-    label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tablerowhead'");
+    Cell::labels(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tablerowhead'");
   }
   if ($show_both_amounts) {
-    label_cells(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
+    Cell::labels(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
   }
-  label_cells(_("Reference"), $receipt['ref'], "class='tablerowhead'");
-  end_row();
+  Cell::labels(_("Reference"), $receipt['ref'], "class='tablerowhead'");
+  Row::end();
   DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
-  end_table(1);
+  Table::end(1);
   $voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
   // now display the allocations for this payment
   if (!$voided) {

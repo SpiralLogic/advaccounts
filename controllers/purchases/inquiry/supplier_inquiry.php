@@ -23,15 +23,15 @@
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   Creditor::cells(_("Supplier:"), 'supplier_id', NULL, TRUE);
   date_cells(_("From:"), 'TransAfterDate', '', NULL, -90);
   date_cells(_("To:"), 'TransToDate');
   Purch_Allocation::row("filterType", NULL);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   Display::div_start('totals_tbl');
   if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
@@ -243,7 +243,7 @@
     $txt_now_due = "1-" . $past_due1 . " " . _('Days');
     $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
-    start_table('tablestyle width90');
+    Table::start('tablestyle width90');
     $th = array(
       _("Currency"),
       _("Terms"),
@@ -254,16 +254,16 @@
       _("Total Balance"),
       _("Total For Search Period")
     );
-    table_header($th);
-    start_row();
-    label_cell($supplier_record["curr_code"]);
-    label_cell($supplier_record["terms"]);
-    amount_cell($supplier_record["Balance"] - $supplier_record["Due"]);
-    amount_cell($supplier_record["Due"] - $supplier_record["Overdue1"]);
-    amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
-    amount_cell($supplier_record["Overdue2"]);
-    amount_cell($supplier_record["Balance"]);
-    amount_cell(Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
-    end_row();
-    end_table(1);
+    Table::header($th);
+    Row::start();
+    Cell::label($supplier_record["curr_code"]);
+    Cell::label($supplier_record["terms"]);
+    Cell::amount($supplier_record["Balance"] - $supplier_record["Due"]);
+    Cell::amount($supplier_record["Due"] - $supplier_record["Overdue1"]);
+    Cell::amount($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
+    Cell::amount($supplier_record["Overdue2"]);
+    Cell::amount($supplier_record["Balance"]);
+    Cell::amount(Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
+    Row::end();
+    Table::end(1);
   }

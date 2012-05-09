@@ -20,22 +20,22 @@
   function display_wo_issue($issue_no) {
     $myrow = WO_Issue::get($issue_no);
     Display::br(1);
-    start_table('tablestyle');
+    Table::start('tablestyle');
     $th = array(
       _("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue")
     );
-    table_header($th);
-    start_row();
-    label_cell($myrow["issue_no"]);
-    label_cell($myrow["reference"]);
-    label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
-    label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-    label_cell($myrow["location_name"]);
-    label_cell($myrow["WorkCentreName"]);
-    label_cell(Dates::sql2date($myrow["issue_date"]));
-    end_row();
+    Table::header($th);
+    Row::start();
+    Cell::label($myrow["issue_no"]);
+    Cell::label($myrow["reference"]);
+    Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
+    Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
+    Cell::label($myrow["location_name"]);
+    Cell::label($myrow["WorkCentreName"]);
+    Cell::label(Dates::sql2date($myrow["issue_date"]));
+    Row::end();
     DB_Comments::display_row(28, $issue_no);
-    end_table(1);
+    Table::end(1);
     Display::is_voided(28, $issue_no, _("This issue has been voided."));
   }
 
@@ -48,28 +48,28 @@
       Event::warning(_("There are no items for this issue."));
     }
     else {
-      start_table('tablestyle');
+      Table::start('tablestyle grid');
       $th = array(_("Component"), _("Quantity"), _("Units"));
-      table_header($th);
+      Table::header($th);
       $j = 1;
       $k = 0; //row colour counter
       $total_cost = 0;
       while ($myrow = DB::fetch($result)) {
-        alt_table_row_color($k);
-        label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-        qty_cell($myrow["qty_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
-        label_cell($myrow["units"]);
-        end_row();
+
+        Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
+        Cell::qty($myrow["qty_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
+        Cell::label($myrow["units"]);
+        Row::end();
         ;
         $j++;
         If ($j == 12) {
           $j = 1;
-          table_header($th);
+          Table::header($th);
         }
         //end of page full new headings if
       }
       //end of while
-      end_table();
+      Table::end();
     }
   }
 

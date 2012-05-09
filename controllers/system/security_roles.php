@@ -149,13 +149,13 @@
     }
   }
   start_form();
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   Security::roles_cells(_("Role:") . "&nbsp;", 'role', NULL, TRUE, TRUE, check_value('show_inactive'));
   $new_role = get_post('role') == '';
   check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   echo "<hr>";
   if (get_post('_show_inactive_update')) {
     Ajax::i()->activate('role');
@@ -165,12 +165,12 @@
     Ajax::i()->activate('details');
   }
   Display::div_start('details');
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   text_row(_("Role name:"), 'name', NULL, 20, 22);
   text_row(_("Role description:"), 'description', NULL, 50, 52);
   record_status_list_row(_("Current status:"), 'inactive');
-  end_table(1);
-  start_table('tablestyle width40');
+  Table::end(1);
+  Table::start('tablestyle grid width40');
   $k = $j = 0; //row colour counter
   $ext = $sec = $m = -1;
   foreach (sort_areas($security_areas) as $area => $parms) {
@@ -187,18 +187,18 @@
       $m = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      label_row($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Row::label($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (check_value('Section' . $m)) {
-      alt_table_row_color($k);
+
       check_row($parms[1], 'Area' . $parms[0], NULL, FALSE, '', "class='center'");
-      end_row();
+      Row::end();
     }
     else {
       hidden('Area' . $parms[0]);
     }
   }
-  end_table(1);
+  Table::end(1);
   Display::div_end();
   Display::div_start('controls');
   if ($new_role) {

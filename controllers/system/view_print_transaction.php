@@ -56,8 +56,8 @@
 
   function viewing_controls() {
     Event::warning(_("Only documents can be printed."));
-    start_table('tablestyle_noborder');
-    start_row();
+    Table::start('tablestyle_noborder');
+    Row::start();
     SysTypes::cells(_("Type:"), 'filterType', NULL, TRUE);
     if (!isset($_POST['FromTransNo'])) {
       $_POST['FromTransNo'] = "1";
@@ -68,8 +68,8 @@
     ref_cells(_("from #:"), 'FromTransNo');
     ref_cells(_("to #:"), 'ToTransNo');
     submit_cells('ProcessSearch', _("Search"), '', '', 'default');
-    end_row();
-    end_table(1);
+    Row::end();
+    Table::end(1);
   }
 
   /**

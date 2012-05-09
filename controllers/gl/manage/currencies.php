@@ -134,38 +134,38 @@
   function display_currencies() {
     $company_currency = Bank_Currency::for_company();
     $result = GL_Currency::get_all(check_value('show_inactive'));
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(
       _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
     );
     inactive_control_column($th);
-    table_header($th);
+    Table::header($th);
     $k = 0; //row colour counter
     while ($myrow = DB::fetch($result)) {
       if ($myrow[1] == $company_currency) {
-        start_row("class='currencybg'");
+        Row::start("class='currencybg'");
       }
       else {
-        alt_table_row_color($k);
+
       }
-      label_cell($myrow["curr_abrev"]);
-      label_cell($myrow["curr_symbol"]);
-      label_cell($myrow["currency"]);
-      label_cell($myrow["hundreds_name"]);
-      label_cell($myrow["country"]);
-      label_cell($myrow[1] == $company_currency ? '-' : ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'");
+      Cell::label($myrow["curr_abrev"]);
+      Cell::label($myrow["curr_symbol"]);
+      Cell::label($myrow["currency"]);
+      Cell::label($myrow["hundreds_name"]);
+      Cell::label($myrow["country"]);
+      Cell::label($myrow[1] == $company_currency ? '-' : ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'");
       inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
       edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
       if ($myrow["curr_abrev"] != $company_currency) {
         delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
       }
       else {
-        label_cell('');
+        Cell::label('');
       }
-      end_row();
+      Row::end();
     } //END WHILE LIST LOOP
     inactive_control_row($th);
-    end_table();
+    Table::end();
     Event::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
@@ -174,7 +174,7 @@
    * @param $selected_id
    */
   function display_currency_edit($Mode, $selected_id) {
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != '') {
       if ($Mode == MODE_EDIT) {
         //editing an existing currency
@@ -188,7 +188,7 @@
       }
       hidden('Abbreviation');
       hidden('selected_id', $selected_id);
-      label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);
+      Row::label(_("Currency Abbreviation:"), $_POST['Abbreviation']);
     }
     else {
       $_POST['auto_update'] = 1;
@@ -199,6 +199,6 @@
     text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);
     text_row_ex(_("Country:"), 'country', 40);
     check_row(_("Automatic exchange rate update:"), 'auto_update', get_post('auto_update'));
-    end_table(1);
+    Table::end(1);
     submit_add_or_update_center($selected_id == '', '', 'both');
   }

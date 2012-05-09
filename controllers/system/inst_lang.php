@@ -121,41 +121,41 @@
 				document.location.replace('inst_lang.php?c=df&id='+id)
 			}
 			</script>";
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
-    table_header($th);
+    Table::header($th);
     $k = 0;
     $conn = Config::get('languages.installed');
     $n = count($conn);
     for ($i = 0; $i < $n; $i++) {
       if ($conn[$i]['code'] == $lang) {
-        start_row("class='stockmankobg'");
+        Row::start("class='stockmankobg'");
       }
       else {
-        alt_table_row_color($k);
+
       }
-      label_cell($conn[$i]['code']);
-      label_cell($conn[$i]['name']);
-      label_cell($conn[$i]['encoding']);
+      Cell::label($conn[$i]['code']);
+      Cell::label($conn[$i]['name']);
+      Cell::label($conn[$i]['encoding']);
       if (isset($conn[$i]['rtl']) && $conn[$i]['rtl']) {
         $rtl = _("Yes");
       }
       else {
         $rtl = _("No");
       }
-      label_cell($rtl);
-      label_cell(Config::get('default.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
+      Cell::label($rtl);
+      Cell::label(Config::get('default.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
       $edit = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
         $edit = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
-      label_cell("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
-      label_cell($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
-      end_row();
+      Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
+      Cell::label($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
+      Row::end();
     }
-    end_table();
+    Table::end();
     Event::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
@@ -177,7 +177,7 @@
 				document.forms[0].submit()
 			}
 			</script>";
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != -1) {
       $languages = Config::get('languages.installed');
       $conn = $languages[$selected_id];
@@ -200,7 +200,7 @@
     yesno_list_row(_("Default Language"), 'dflt', NULL, "", "", FALSE);
     file_row(_("Language File") . " (PO)", 'uploadfile');
     file_row(_("Language File") . " (MO)", 'uploadfile2');
-    end_table(0);
+    Table::end(0);
     Event::warning(_("Select your language files from your local harddisk."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
     end_form();

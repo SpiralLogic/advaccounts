@@ -37,7 +37,7 @@
   }
   $loc_details = Inv_Location::get_details($_POST['stock_id']);
 
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   if ($kitset_or_service == TRUE) {
     $th = array(_("Location"), _("Demand"));
   }
@@ -46,40 +46,40 @@
       _("Location"), _("Quantity On Hand"), _("Re-Order Level"), _("Demand"), _("Available"), _("On Order")
     );
   }
-  table_header($th);
+  Table::header($th);
   $dec = Item::qty_dec($_POST['stock_id']);
   $j = 1;
   $k = 0; //row colour counter
 
   while ($myrow = DB::fetch($loc_details)) {
-    alt_table_row_color($k);
+
     $demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
     $demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
     $qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
     if ($kitset_or_service == FALSE) {
       $qoo = WO::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
       $qoo += WO::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
-      label_cell($myrow["location_name"]);
-      qty_cell($qoh, FALSE, $dec);
-      qty_cell($myrow["reorder_level"], FALSE, $dec);
-      qty_cell($demand_qty, FALSE, $dec);
-      qty_cell($qoh - $demand_qty, FALSE, $dec);
-      qty_cell($qoo, FALSE, $dec);
-      end_row();
+      Cell::label($myrow["location_name"]);
+      Cell::qty($qoh, FALSE, $dec);
+      Cell::qty($myrow["reorder_level"], FALSE, $dec);
+      Cell::qty($demand_qty, FALSE, $dec);
+      Cell::qty($qoh - $demand_qty, FALSE, $dec);
+      Cell::qty($qoo, FALSE, $dec);
+      Row::end();
     }
     else {
       /* It must be a service or kitset part */
-      label_cell($myrow["location_name"]);
-      qty_cell($demand_qty, FALSE, $dec);
-      end_row();
+      Cell::label($myrow["location_name"]);
+      Cell::qty($demand_qty, FALSE, $dec);
+      Row::end();
     }
     $j++;
     If ($j == 12) {
       $j = 1;
-      table_header($th);
+      Table::header($th);
     }
   }
-  end_table();
+  Table::end();
   Display::div_end();
   end_form();
   Page::end();

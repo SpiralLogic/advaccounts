@@ -127,28 +127,28 @@
   $result = DB::query($sql, "could not query locations");
   ;
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["loc_code"]);
-    label_cell($myrow["location_name"]);
-    label_cell($myrow["delivery_address"]);
-    label_cell($myrow["phone"]);
-    label_cell($myrow["phone2"]);
+
+    Cell::label($myrow["loc_code"]);
+    Cell::label($myrow["location_name"]);
+    Cell::label($myrow["delivery_address"]);
+    Cell::label($myrow["phone"]);
+    Cell::label($myrow["phone2"]);
     inactive_control_cell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
     edit_button_cell("Edit" . $myrow["loc_code"], _("Edit"));
     delete_button_cell("Delete" . $myrow["loc_code"], _("Delete"));
-    end_row();
+    Row::end();
   }
   //END WHILE LIST LOOP
   inactive_control_row($th);
-  end_table();
+  Table::end();
   echo '<br>';
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   $_POST['email'] = "";
   if ($selected_id != -1) {
     //editing an existing Location
@@ -165,7 +165,7 @@
     }
     hidden("selected_id", $selected_id);
     hidden("loc_code");
-    label_row(_("Location Code:"), $_POST['loc_code']);
+    Row::label(_("Location Code:"), $_POST['loc_code']);
   }
   else { //end of if $selected_id only do the else when a new record is being entered
     text_row(_("Location Code:"), 'loc_code', NULL, 5, 5);
@@ -177,7 +177,7 @@
   text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
   text_row_ex(_("Facsimile No:"), 'fax', 32, 30);
   email_row_ex(_("E-mail:"), 'email', 30);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

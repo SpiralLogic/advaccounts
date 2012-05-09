@@ -177,11 +177,11 @@
 				document.location.replace('create_coy.php?c=df&id='+id)
 			}
 			</script>";
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(
       _("Company"), _("Database Host"), _("Database User"), _("Database Name"), _("Table Pref"), _("Default"), "", ""
     );
-    table_header($th);
+    Table::header($th);
     $k = 0;
     $conn = Config::get_all('db');
     $n = count($conn);
@@ -193,27 +193,27 @@
         $what = _("No");
       }
       if ($i == $coyno) {
-        start_row("class='stockmankobg'");
+        Row::start("class='stockmankobg'");
       }
       else {
-        alt_table_row_color($k);
+
       }
-      label_cell($conn[$i]['name']);
-      label_cell($conn[$i]['host']);
-      label_cell($conn[$i]['dbuser']);
-      label_cell($conn[$i]['dbname']);
-      label_cell($what);
+      Cell::label($conn[$i]['name']);
+      Cell::label($conn[$i]['host']);
+      Cell::label($conn[$i]['dbuser']);
+      Cell::label($conn[$i]['dbname']);
+      Cell::label($what);
       $edit = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
         $edit = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
-      label_cell("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
-      label_cell($i == $coyno ? '' : "<a href=''>$delete</a>");
-      end_row();
+      Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
+      Cell::label($i == $coyno ? '' : "<a href=''>$delete</a>");
+      Row::end();
     }
-    end_table();
+    Table::end();
     Event::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
@@ -240,7 +240,7 @@
 				document.forms[0].submit()
 			}
 			</script>";
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != -1) {
       $conn = Config::get('db.' . $selected_id);
       $_POST['name'] = $conn['name'];
@@ -268,7 +268,7 @@
     yesno_list_row(_("Default"), 'def', NULL, "", "", FALSE);
     file_row(_("Database Script"), "uploadfile");
     text_row_ex(_("New script Admin Password"), 'admpassword', 20);
-    end_table();
+    Table::end();
     Event::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
     end_form();

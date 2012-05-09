@@ -141,7 +141,7 @@
     public static function display_controls($creditor_trans, $k) {
       $accs = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
-      alt_table_row_color($k);
+
       echo GL_UI::all('gl_code', NULL, TRUE, TRUE);
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim >= 1) {
@@ -156,7 +156,7 @@
       amount_cells(NULL, 'amount');
       submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
       submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
-      end_row();
+      Row::end();
     }
 
     // $mode = 0 none at the moment
@@ -183,7 +183,7 @@
       else {
         $heading = _("GL Items for this Credit Note");
       }
-      start_outer_table('tablestyle2 width90');
+      Table::startOuter('tablestyle2 width90');
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
         if ($qes !== FALSE) {
@@ -204,9 +204,9 @@
         }
       }
       Display::heading($heading);
-      end_outer_table(0, FALSE);
+      Table::endOuter(0, FALSE);
       Display::div_start('gl_items');
-      start_table('tablestyle width80');
+      Table::start('tablestyle grid width80');
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim == 2) {
         $th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -223,30 +223,30 @@
         $th[] = "";
         $th[] = "";
       }
-      table_header($th);
+      Table::header($th);
       $total_gl_value = 0;
       $i = $k = 0;
       if (count($creditor_trans->gl_codes) > 0) {
         foreach ($creditor_trans->gl_codes as $entered_gl_code) {
-          alt_table_row_color($k);
+
           if ($mode == 3) {
             $entered_gl_code->amount = -$entered_gl_code->amount;
           }
-          label_cell($entered_gl_code->gl_code);
-          label_cell($entered_gl_code->gl_act_name);
+          Cell::label($entered_gl_code->gl_code);
+          Cell::label($entered_gl_code->gl_act_name);
           if ($dim >= 1) {
-            label_cell(Dimensions::get_string($entered_gl_code->gl_dim, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim, TRUE));
           }
           if ($dim > 1) {
-            label_cell(Dimensions::get_string($entered_gl_code->gl_dim2, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim2, TRUE));
           }
-          label_cell($entered_gl_code->memo_);
-          amount_cell($entered_gl_code->amount, TRUE);
+          Cell::label($entered_gl_code->memo_);
+          Cell::amount($entered_gl_code->amount, TRUE);
           if ($mode == 1) {
             delete_button_cell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
-            label_cell("");
+            Cell::label("");
           }
-          end_row();
+          Row::end();
           /////////// 2009-08-18 Joe Hunt
           if ($mode > 1 && !Tax::is_account($entered_gl_code->gl_code)) {
             $total_gl_value += $entered_gl_code->amount;
@@ -257,7 +257,7 @@
           $i++;
           if ($i > 15) {
             $i = 0;
-            table_header($th);
+            Table::header($th);
           }
         }
       }
@@ -265,9 +265,9 @@
         Purch_GLItem::display_controls($creditor_trans, $k);
       }
       $colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
-      label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class='right bold'", "nowrap class='right bold'",
+      Row::label(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " class='right bold'", "nowrap class='right bold'",
         ($mode == 1 ? 3 : 0));
-      end_table(1);
+      Table::end(1);
       Display::div_end();
       return $total_gl_value;
     }

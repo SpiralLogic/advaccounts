@@ -612,13 +612,13 @@
       if (!isset($_POST['tran_date'])) {
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
-      start_outer_table('tablestyle2 width60');
+      Table::startOuter('tablestyle2 width60');
       Display::div_start('summary');
-      start_table();
-      start_row();
-      table_header(_("Invoie #:"));
+      Table::start();
+      Row::start();
+      Table::header(_("Invoie #:"));
       if ($creditor_trans->is_invoice && isset($_POST['invoice_no'])) {
-        label_cells(NULL,
+        Cell::labels(NULL,
           $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], FALSE) . hidden(
             'supp_reference',
             $_POST['invoice_no'], FALSE
@@ -628,33 +628,33 @@
       else {
         text_cells(NULL, 'supp_reference', $_POST['supp_reference'], 20, 20);
       }
-      end_row();
-      start_row();
-      table_header(_("Date") . ":");
+      Row::end();
+      Row::start();
+      Table::header(_("Date") . ":");
       date_cells(NULL, 'tran_date', '', TRUE, 0, 0, 0, "", TRUE);
       if (isset($_POST['_tran_date_changed'])) {
         Ajax::i()->activate('_ex_rate');
         $creditor_trans->tran_date = $_POST['tran_date'];
-        end_row();
-        start_row();
+        Row::end();
+        Row::start();
         Creditor_Trans::get_duedate_from_terms($creditor_trans);
         $_POST['due_date'] = $creditor_trans->due_date;
         Ajax::i()->activate('due_date');
       }
-      end_row();
-      start_row();
-      table_header(_("Due Date") . ":");
+      Row::end();
+      Row::start();
+      Table::header(_("Due Date") . ":");
       date_cells(NULL, 'due_date');
-      end_row();
-      end_table();
+      Row::end();
+      Table::end();
       Display::div_end();
-      start_table();
-      start_row();
+      Table::start();
+      Row::start();
       if (isset($_POST['invoice_no'])) {
         $trans = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
         $_POST['supplier_id'] = $trans['supplier_id'];
         $supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-        label_cell('', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
+        Cell::label('', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
       }
       else {
         $_POST['supplier_id'] = Input::post_global('supplier_id', Input::NUMERIC, '');
@@ -670,13 +670,13 @@
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
       if (!empty($creditor_trans->terms_description)) {
-        label_cells(_("Terms:"), $creditor_trans->terms_description);
+        Cell::labels(_("Terms:"), $creditor_trans->terms_description);
       }
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
       $company_currency = Bank_Currency::for_company();
       GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
       Session::setGlobal('supplier_id', $_POST['supplier_id']);
-      start_row();
+      Row::start();
       if ($creditor_trans->is_invoice) {
         ref_cells("PO#: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE));
       }
@@ -684,15 +684,15 @@
         ref_cells("CREDIT#: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT));
       }
       if (!empty($creditor_trans->tax_description)) {
-        label_cells(_("Tax Group:"), $creditor_trans->tax_description);
+        Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
       }
       if ($supplier_currency != $company_currency) {
-        label_cells(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
-        end_row();
-        end_row();
+        Cell::labels(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
+        Row::end();
+        Row::end();
       }
-      end_table();
-      end_outer_table(1);
+      Table::end();
+      Table::endOuter(1);
     }
     /**
      * @static
@@ -703,29 +703,29 @@
       Purch_Invoice::copy_to_trans($creditor_trans);
       $dim = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-      start_table('tablestyle2 width90');
-      label_row(_("Sub-total:"), Num::price_format($creditor_trans->ov_amount), "colspan=$colspan class='right bold'", "class='right'");
+      Table::start('tablestyle2 width90');
+      Row::label(_("Sub-total:"), Num::price_format($creditor_trans->ov_amount), "colspan=$colspan class='right bold'", "class='right'");
       $taxes = $creditor_trans->get_taxes($creditor_trans->tax_group_id);
       $tax_total = Tax::edit_items($taxes, $colspan, 0, NULL, TRUE); // tax_included==0 (we are the company)
-      label_cell(_("Total Correction"), "colspan=$colspan class='right' style='width:90%'");
+      Cell::label(_("Total Correction"), "colspan=$colspan class='right' style='width:90%'");
       small_amount_cells(NULL, 'ChgTotal', Num::price_format(get_post('ChgTotal'), 2));
       $total = $creditor_trans->ov_amount + $tax_total + get_post('ChgTotal');
       if ($creditor_trans->is_invoice) {
-        label_row(
+        Row::label(
           _("Invoice Total:"), Num::price_format($total), "colspan=$colspan class='right bold'",
           "class=right id='invoiceTotal' data-total=" . $total . " class='bold'"
         );
       }
       else {
-        label_row(
+        Row::label(
           _("Credit Note Total"), Num::price_format($total),
           "colspan=$colspan class='bold red right'",
           " class='right nowrap' id='invoiceTotal' data-total=" . $total . " class='bold red'"
         );
       }
-      end_table(1);
-      start_table('tablestyle2');
+      Table::end(1);
+      Table::start('tablestyle2');
       textarea_row(_("Memo:"), "Comments", NULL, 50, 3);
-      end_table(1);
+      Table::end(1);
     }
   }

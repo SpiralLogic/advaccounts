@@ -401,16 +401,16 @@
     start_form();
     Event::warning(_("Warning: Deleting a fiscal year all transactions
 		are removed and converted into relevant balances. This process is irreversible!"), 0, 0, "class='currentfg'");
-    start_table('tablestyle');
+    Table::start('tablestyle grid');
     $th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
-    table_header($th);
+    Table::header($th);
     $k = 0;
     while ($myrow = DB::fetch($result)) {
       if ($myrow['id'] == $company_year) {
-        start_row("class='stockmankobg'");
+        Row::start("class='stockmankobg'");
       }
       else {
-        alt_table_row_color($k);
+
       }
       $from = Dates::sql2date($myrow["begin"]);
       $to = Dates::sql2date($myrow["end"]);
@@ -420,20 +420,20 @@
       else {
         $closed_text = _("Yes");
       }
-      label_cell($from);
-      label_cell($to);
-      label_cell($closed_text);
+      Cell::label($from);
+      Cell::label($to);
+      Cell::label($closed_text);
       edit_button_cell("Edit" . $myrow['id'], _("Edit"));
       if ($myrow["id"] != $company_year) {
         delete_button_cell("Delete" . $myrow['id'], _("Delete"));
         submit_js_confirm("Delete" . $myrow['id'], sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to));
       }
       else {
-        label_cell('');
+        Cell::label('');
       }
-      end_row();
+      Row::end();
     }
-    end_table();
+    Table::end();
     end_form();
     Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
   }
@@ -444,7 +444,7 @@
    */
   function display_fiscalyear_edit($Mode, $selected_id) {
     start_form();
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != -1) {
       if ($Mode == MODE_EDIT) {
         $myrow = DB_Company::get_fiscalyear($selected_id);
@@ -454,8 +454,8 @@
       }
       hidden('from_date');
       hidden('to_date');
-      label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
-      label_row(_("Fiscal Year End:"), $_POST['to_date']);
+      Row::label(_("Fiscal Year Begin:"), $_POST['from_date']);
+      Row::label(_("Fiscal Year End:"), $_POST['to_date']);
     }
     else {
       date_row(_("Fiscal Year Begin:"), 'from_date', '', NULL, 0, 0, 1001);
@@ -463,7 +463,7 @@
     }
     hidden('selected_id', $selected_id);
     yesno_list_row(_("Is Closed:"), 'closed', NULL, "", "", FALSE);
-    end_table(1);
+    Table::end(1);
     submit_add_or_update_center($selected_id == -1, '', 'both');
     end_form();
   }

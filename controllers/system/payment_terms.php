@@ -98,10 +98,10 @@
   }
   $result = DB::query($sql, "could not get payment terms");
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
     if ($myrow["day_in_following_month"] == 0) {
@@ -116,18 +116,18 @@
     else {
       $after_text = $myrow["days_before_due"] . " " . _("days");
     }
-    alt_table_row_color($k);
-    label_cell($myrow["terms"]);
-    label_cell($full_text);
-    label_cell($after_text);
+
+    Cell::label($myrow["terms"]);
+    Cell::label($full_text);
+    Cell::label($after_text);
     inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
     edit_button_cell("Edit" . $myrow["terms_indicator"], _("Edit"));
     delete_button_cell("Delete" . $myrow["terms_indicator"], _("Delete"));
-    end_row();
+    Row::end();
   } //END WHILE LIST LOOP
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   $day_in_following_month = $days_before_due = 0;
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -154,7 +154,7 @@
     }
   }
   text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

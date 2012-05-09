@@ -122,7 +122,7 @@
 
      */
     protected function menu_header() {
-      echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
+      echo "<div class='ajaxmark'><img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
       echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " .
         User::i()
           ->name . "</p>\n";
@@ -182,6 +182,7 @@
       $this->menu_footer();
       JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
+      echo "</div>";
       if ($this->header && $this->menu) {
         Sidemenu::render();
       }
@@ -192,7 +193,6 @@
       else {
         Messages::show();
       }
-      echo "</div>";
       JS::render();
       //End content div
       echo   "</body></html>\n";

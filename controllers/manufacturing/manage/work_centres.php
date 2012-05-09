@@ -69,23 +69,23 @@
   }
   $result = WO_WorkCentre::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle width50');
+  Table::start('tablestyle grid width50');
   $th = array(_("Name"), _("description"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["name"]);
-    label_cell($myrow["description"]);
+
+    Cell::label($myrow["name"]);
+    Cell::label($myrow["description"]);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
@@ -97,7 +97,7 @@
   }
   text_row_ex(_("Name:"), 'name', 40);
   text_row_ex(_("Description:"), 'description', 50);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

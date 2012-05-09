@@ -73,23 +73,23 @@
   }
   $result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow['name']);
-    label_cell($myrow['description']);
+
+    Cell::label($myrow['name']);
+    Cell::label($myrow['description']);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) // We've selected a tag
   {
     if ($Mode == MODE_EDIT) {
@@ -104,7 +104,7 @@
   text_row_ex(_("Tag Name:"), 'name', 15, 30);
   text_row_ex(_("Tag Description:"), 'description', 40, 60);
   hidden('type');
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

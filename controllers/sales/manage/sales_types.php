@@ -52,33 +52,33 @@
   }
   $result = Sales_Type::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle width30');
+  Table::start('tablestyle grid width30');
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   $base_sales = DB_Company::get_base_sales_type();
   while ($myrow = DB::fetch($result)) {
     if ($myrow["id"] == $base_sales) {
-      start_row("class='overduebg'");
+      Row::start("class='overduebg'");
     }
     else {
-      alt_table_row_color($k);
+
     }
-    label_cell($myrow["sales_type"]);
+    Cell::label($myrow["sales_type"]);
     $f = Num::format($myrow["factor"], 4);
     if ($myrow["id"] == $base_sales) {
       $f = "<I>" . _('Base') . "</I>";
     }
-    label_cell($f);
-    label_cell($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
+    Cell::label($f);
+    Cell::label($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table();
+  Table::end();
   Event::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
   if (!isset($_POST['tax_included'])) {
     $_POST['tax_included'] = 0;
@@ -86,7 +86,7 @@
   if (!isset($_POST['base'])) {
     $_POST['base'] = 0;
   }
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $myrow = Sales_Type::get($selected_id);
@@ -102,7 +102,7 @@
   text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
   amount_row(_("Calculation factor") . ':', 'factor', NULL, NULL, NULL, 4);
   check_row(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

@@ -299,19 +299,19 @@
       $total = 0;
       foreach ($taxes as $taxitem) {
         if ($tax_included) {
-          label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
+          Row::label(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
             Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
         }
         else {
           $total += $taxitem['Value'];
-          label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
+          Row::label($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
             Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns style='background:inherit; text-align:right;'", "class='right'", $leftspan);
         }
       }
       if ($tax_correcting) {
-        label_cell(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
+        Cell::label(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
         small_amount_cells(NULL, 'ChgTax', Num::price_format(get_post('ChgTax'), User::price_dec()));
-        end_row();
+        Row::end();
         $total += get_post('ChgTax');
       }
       return $total;

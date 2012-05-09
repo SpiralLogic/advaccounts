@@ -60,23 +60,22 @@
   }
   $result = DB::query($sql, "could not get areas");
   start_form();
-  start_table('tablestyle width30');
+  Table::start('tablestyle grid width30');
   $th = array(_("Area Name"), "", "");
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["description"]);
+    Cell::label($myrow["description"]);
     inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
     edit_button_cell("Edit" . $myrow["area_code"], _("Edit"));
     delete_button_cell("Delete" . $myrow["area_code"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table();
+  Table::end();
   echo '<br>';
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
@@ -88,7 +87,7 @@
     hidden("selected_id", $selected_id);
   }
   text_row_ex(_("Area Name:"), 'description', 30);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

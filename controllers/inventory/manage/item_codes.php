@@ -76,29 +76,29 @@
   $dflt_cat = $result['category_id'];
   $result = Item_Code::get_all($_POST['stock_id']);
   Display::div_start('code_table');
-  start_table('tablestyle width60');
+  Table::start('tablestyle grid width60');
   $th = array(
     _("EAN/UPC Code"), _("Quantity"), _("Units"), _("Description"), _("Category"), "", ""
   );
-  table_header($th);
+  Table::header($th);
   $k = $j = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["item_code"]);
-    qty_cell($myrow["quantity"], $dec);
-    label_cell($units);
-    label_cell($myrow["description"]);
-    label_cell($myrow["cat_name"]);
+
+    Cell::label($myrow["item_code"]);
+    Cell::qty($myrow["quantity"], $dec);
+    Cell::label($units);
+    Cell::label($myrow["description"]);
+    Cell::label($myrow["cat_name"]);
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     edit_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
     $j++;
     If ($j == 12) {
       $j = 1;
-      table_header($th);
+      Table::header($th);
     } //end of page full new headings
   } //end of while loop
-  end_table();
+  Table::end();
   Display::div_end();
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
@@ -116,13 +116,13 @@
     $_POST['category_id'] = $dflt_cat;
   }
   echo "<br>";
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   hidden('code_id', $selected_id);
   text_row(_("UPC/EAN code:"), 'item_code', NULL, 20, 21);
   qty_row(_("Quantity:"), 'quantity', NULL, '', $units, $dec);
   text_row(_("Description:"), 'description', NULL, 50, 200);
   Item_Category::row(_("Category:"), 'category_id', NULL);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

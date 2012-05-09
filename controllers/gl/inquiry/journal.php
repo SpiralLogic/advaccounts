@@ -19,8 +19,8 @@
     $_POST['filterType'] = -1;
   }
   start_form();
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   ref_cells(_("Reference:"), 'Ref', '', NULL, _('Enter reference fragment or leave empty'));
   GL_Journal::cells(_("Type:"), "filterType");
   date_cells(_("From:"), 'FromDate', '', NULL, 0, -1, 0);
@@ -29,8 +29,8 @@
   ref_cells(_("Memo:"), 'Memo', '', NULL, _('Enter memo fragment or leave empty'));
   submit_cells('Search', _("Search"), '', '', 'default');
 
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
 
   /*
        // Tom Hallman 11 Nov 2009

@@ -45,7 +45,6 @@ input, select, textarea {
 input, textarea {
 	min-width:          80px;
 	border:             none;
-	border-radius:      4px;
 	-moz-border-radius: 4px;
 	margin-left:        3px;
 }
@@ -187,7 +186,7 @@ img {
 	white-space:      nowrap;
 }
 
-img#ajaxmark {
+#ajaxmark {
 	margin:     15px auto;
 	visibility: hidden;
 	top:        0;
@@ -842,7 +841,7 @@ table.tablestyle_inner td {
 	background:   transparent;
 }
 
-.label, .tablestyle2 label {
+ .label, .tablestyle2 label {
 	background-color: #D4E6F6;
 	font-weight:      bold;
 	font-size:        12px;
@@ -864,7 +863,7 @@ td.tableheader3 {
 	font-size:     1em;
 }
 
-td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
+td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid tbody td:first-child, .tablestyle tbody td:first-child {
 	text-indent:   5px;
 	border:        1px solid #fff;
 	color:         black;
@@ -875,15 +874,17 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 	max-width: 300px;
 }
 
-.oddrow, .grid tr:nth-child(odd), tr.grid:nth-child(odd) {
+ .grid tbody tr:nth-child(odd), tr.grid:nth-child(odd) {
 	background-color: #f3f9fe;
 }
 
-.evenrow, .grid tr:nth-child(even), tr.grid:nth-child(even) {
+ .grid tbody tr:nth-child(even), tr.grid:nth-child(even) {
 	background: none repeat scroll 0 0 #D2DBF4;
 	border:     1px solid #D2DBF4;
 }
-
+.grid tfoot td {
+  border: 1px solid #E1E1E1;
+}
 /*--------------------------------- END TABLES -----------------------------------------------------------------*/
 
 /*--------------------------------- BUTTONS -----------------------------------------------------------------*/
@@ -1195,7 +1196,7 @@ body.lite {
 /*--------------------------------- END LITE -----------------------------------------------------------------*/
 
 .overduebg {
-	background-color: #f68691;
+	background-color: #f68691 !important;
 }
 
 .whitebg {
@@ -1436,7 +1437,7 @@ body.lite {
 ::-webkit-scrollbar {
 	height:        1.5ex;
 	border-radius: 1ex;
-	width:         6px;
+	width:         10px;
 	box-shadow:    inset 3px 3px 3px black;
 }
 
@@ -1459,8 +1460,8 @@ body.lite {
 }
 
 ::-webkit-scrollbar {
-	width:         6px;
-	height:        6px;
+	width:         8px;
+	height:        8px;
 	padding:       18px;
 	border-radius: 1ex
 }
@@ -1468,19 +1469,19 @@ body.lite {
 ::-webkit-scrollbar-thumb {
 	background-color: rgba(053, 057, 071, 0.3);
 	padding:          8px;
-	width:            6px;
-	height:           6px;
+	width:            8px;
+	height:           8px;
 	border-radius:    1ex;
 }
 
 ::-webkit-scrollbar-button::-webkit-decrement, ::-webkit-scrollbar-button:-webkit-end:-webkit-increment {
 	display: block;
-	height:  10px
+	height:  8px
 }
 
 ::-webkit-scrollbar-thumb:-webkit-vertical, ::-webkit-scrollbar-thumb:-webkit-horizontal {
-	height: 3px;
-	width:  3px;
+	height: 6px;
+	width:  6px;
 	margin: 3px;
 }
 

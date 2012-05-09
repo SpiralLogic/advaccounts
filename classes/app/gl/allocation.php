@@ -229,32 +229,32 @@
       global $systypes_array;
       $k = $counter = $total_allocated = 0;
       if (count($_SESSION['alloc']->allocs)) {
-        start_table('tablestyle width60');
+        Table::start('tablestyle grid width60');
         $th = array(
           _("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), _("Other Allocations"), _("This Allocation"),
           _("Left to Allocate"), '', ''
         );
-        table_header($th);
+        Table::header($th);
         foreach ($_SESSION['alloc']->allocs as $alloc_item) {
-          alt_table_row_color($k);
-          label_cell($systypes_array[$alloc_item->type]);
-          label_cell(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
-          label_cell($alloc_item->date_, "class='right'");
-          label_cell($alloc_item->due_date, "class='right'");
-          amount_cell($alloc_item->amount);
-          amount_cell($alloc_item->amount_allocated);
+
+          Cell::label($systypes_array[$alloc_item->type]);
+          Cell::label(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
+          Cell::label($alloc_item->date_, "class='right'");
+          Cell::label($alloc_item->due_date, "class='right'");
+          Cell::amount($alloc_item->amount);
+          Cell::amount($alloc_item->amount_allocated);
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
           amount_cells(NULL, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
-          amount_cell($un_allocated, FALSE, '');
-          label_cell("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
-          label_cell("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), FALSE));
-          end_row();
+          Cell::amount($un_allocated, FALSE, '');
+          Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
+          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), FALSE));
+          Row::end();
           $total_allocated += Validation::input_num('amount' . $counter);
           $counter++;
         }
         if ($show_totals) {
-          label_row(_("Total Allocated"), Num::price_format($total_allocated), "colspan=6 class='right'", "class=right id='total_allocated'", 3);
+          Row::label(_("Total Allocated"), Num::price_format($total_allocated), "colspan=6 class='right'", "class=right id='total_allocated'", 3);
           $amount = $_SESSION['alloc']->amount;
           if ($_SESSION['alloc']->type == ST_SUPPCREDIT || $_SESSION['alloc']->type == ST_SUPPAYMENT || $_SESSION['alloc']->type == ST_BANKPAYMENT
           ) {
@@ -268,9 +268,9 @@
             $font1 = $font2 = "";
           }
           $left_to_allocate = Num::price_format($amount - $total_allocated);
-          label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='right'", " class='right nowrap' id='left_to_allocate'", 3);
+          Row::label(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='right'", " class='right nowrap' id='left_to_allocate'", 3);
         }
-        end_table(1);
+        Table::end(1);
       }
       hidden('TotalNumberOfAllocs', $counter);
     }
@@ -330,7 +330,7 @@
       $doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
       $doc->set_branch($customer->branches[$branch_id]->id, $customer->branches[$branch_id]->tax_group_id);
       $doc->pos = User::pos();
-      $doc->ship_via = 11;
+      $doc->ship_via = Config::get('default.ship_via',1);
       $doc->sales_type = 1;
       $doc->location = Config::get('default.location');
       $doc->cust_ref = $ref;
@@ -355,34 +355,34 @@
         return;
       }
       Display::heading(_("Allocations"));
-      start_table('tablestyle width90');
+      Table::start('tablestyle grid width90');
       $th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
-      table_header($th);
+      Table::header($th);
       $k = $total_allocated = 0;
       while ($alloc_row = DB::fetch($alloc_result)) {
-        alt_table_row_color($k);
-        label_cell($systypes_array[$alloc_row['type']]);
-        label_cell(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
-        label_cell(Dates::sql2date($alloc_row['tran_date']));
+
+        Cell::label($systypes_array[$alloc_row['type']]);
+        Cell::label(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
+        Cell::label(Dates::sql2date($alloc_row['tran_date']));
         $alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
         $alloc_row['amt'] = Num::round($alloc_row['amt'], User::price_dec());
-        amount_cell($alloc_row['Total']);
-        //amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
-        amount_cell($alloc_row['Total'] - $alloc_row['amt']);
-        amount_cell($alloc_row['amt']);
-        end_row();
+        Cell::amount($alloc_row['Total']);
+        //Cell::amount($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
+        Cell::amount($alloc_row['Total'] - $alloc_row['amt']);
+        Cell::amount($alloc_row['amt']);
+        Row::end();
         $total_allocated += $alloc_row['amt'];
       }
-      start_row();
-      label_cell(_("Total Allocated:"), "class=right colspan=5");
-      amount_cell($total_allocated);
-      end_row();
-      start_row();
-      label_cell(_("Left to Allocate:"), "class=right colspan=5");
+      Row::start();
+      Cell::label(_("Total Allocated:"), "class=right colspan=5");
+      Cell::amount($total_allocated);
+      Row::end();
+      Row::start();
+      Cell::label(_("Left to Allocate:"), "class=right colspan=5");
       $total = Num::round($total, User::price_dec());
-      amount_cell($total - $total_allocated);
-      end_row();
-      end_table(1);
+      Cell::amount($total - $total_allocated);
+      Row::end();
+      Table::end(1);
     }
     /**
      * @static

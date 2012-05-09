@@ -20,21 +20,21 @@
   function display_wo_production($prod_id) {
     $myrow = WO_Produce::get($prod_id);
     Display::br(1);
-    start_table('tablestyle');
+    Table::start('tablestyle');
     $th = array(
       _("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date")
     );
-    table_header($th);
-    start_row();
-    label_cell($myrow["id"]);
-    label_cell($myrow["reference"]);
-    label_cell(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
-    label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
-    qty_cell($myrow["quantity"], FALSE, Item::qty_dec($myrow["stock_id"]));
-    label_cell(Dates::sql2date($myrow["date_"]));
-    end_row();
+    Table::header($th);
+    Row::start();
+    Cell::label($myrow["id"]);
+    Cell::label($myrow["reference"]);
+    Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
+    Cell::label($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
+    Cell::qty($myrow["quantity"], FALSE, Item::qty_dec($myrow["stock_id"]));
+    Cell::label(Dates::sql2date($myrow["date_"]));
+    Row::end();
     DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
-    end_table(1);
+    Table::end(1);
     Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
   }
 

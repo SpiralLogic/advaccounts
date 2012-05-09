@@ -54,10 +54,10 @@
   }
   start_form();
   Inv_Adjustment::header($_SESSION['adj_items']);
-  start_outer_table('tablestyle width80 pad10');
+  Table::startOuter('tablestyle width80 pad10');
   Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
   Inv_Adjustment::option_controls();
-  end_outer_table(1, FALSE);
+  Table::endOuter(1, FALSE);
   submit_center_first('Update', _("Update"), '', NULL);
   submit_center_last('Process', _("Process Adjustment"), '', 'default');
   end_form();

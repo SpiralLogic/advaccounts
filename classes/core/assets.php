@@ -69,7 +69,8 @@
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
-     header("HTTP/1.0 $status");
+     header("HTTP/1.0 $status");      header("Vary: Accept-Encoding", FALSE);
+
       exit();
     }
 
@@ -82,6 +83,7 @@
       header("Cache-Control: no-store, no-cache, must-revalidate");
       header("Cache-Control: post-check=0, pre-check=0", FALSE);
       header("Cache-Control: max-age=0", FALSE);
+      header("Vary: Accept-Encoding", FALSE);
       // HTTP/1.0
       header("Pragma: no-cache");
       //generate a unique Etag each time
@@ -90,7 +92,8 @@
 
     protected function headerNeverExpire() {
       header("Expires: " . $this->gmdatestr(time() + 315360000));
-      header("Cache-Control: max-age=315360000");
+      header("Cache-Control: max-age=315360000");      header("Vary: Accept-Encoding", FALSE);
+
     }
     /**
      * @param $msg

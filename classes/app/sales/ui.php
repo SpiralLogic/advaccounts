@@ -184,7 +184,7 @@
      */
     static public function  policy_cells($label, $name, $selected = NULL) {
       if ($label != NULL) {
-        label_cell($label);
+        Cell::label($label);
       }
       echo "<td>\n";
       echo array_selector($name, $selected, array(

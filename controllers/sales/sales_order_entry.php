@@ -239,13 +239,13 @@
     $customer_error = 'No current order to edit.';
   }
   if ($customer_error == "") {
-    start_table('tablesstyle center width90 pad10');
+    Table::start('tablesstyle center width90 pad10');
     echo "<tr><td>";
     $order->summary($orderitems, TRUE);
     echo "</td></tr><tr><td>";
     $order->display_delivery_details();
     echo "</td></tr>";
-    end_table(1);
+    Table::end(1);
     Display::div_start('controls', 'items_table');
     if ($order->trans_no > 0 && User::i()
       ->can_access(SA_VOIDTRANSACTION) && !($order->trans_type == ST_SALESORDER && $order->has_deliveries())

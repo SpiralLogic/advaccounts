@@ -88,12 +88,12 @@
   hidden('order_id', $_POST['order_id']);
   $customer_error = Sales_Credit::header($order);
   if ($customer_error == "") {
-    start_table('tables_style2 width90 pad10');
+    Table::start('tables_style2 width90 pad10');
     echo "<tr><td>";
     Sales_Credit::display_items(_("Credit Note Items"), $order);
     Sales_Credit::option_controls($order);
     echo "</td></tr>";
-    end_table();
+    Table::end();
   }
   else {
     Event::error($customer_error);

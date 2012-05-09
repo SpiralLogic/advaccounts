@@ -18,9 +18,9 @@
     Ajax::i()->activate('_page_body');
   }
   start_form(FALSE);
-  start_table('tablestyle_noborder');
+  Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
-  end_table();
+  Table::end();
   Display::br();
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());
   WO::display_bom(Input::post('stock_id'));

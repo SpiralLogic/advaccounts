@@ -18,23 +18,23 @@
 
       $qes = GL_QuickEntry::has(QE_JOURNAL);
       $new = $order->order_id == 0;
-      start_outer_table('tablestyle2 width90');
-      table_section(1);
-      start_row();
+      Table::startOuter('tablestyle2 width90');
+      Table::section(1);
+      Row::start();
       date_cells(_("Date:"), 'date_', '', $new);
-      table_section(2, $qes ? "20%" : "50%");
+      Table::section(2, $qes ? "20%" : "50%");
       ref_cells(_("Reference:"), 'ref', '');
       hidden('ref_original');
-      end_row();
+      Row::end();
       if ($new) {
-        table_section(3, "20%");
-        start_row();
+        Table::section(3, "20%");
+        Row::start();
         check_cells(_("Reverse Transaction:"), 'Reverse', NULL);
-        end_row();
+        Row::end();
       }
       if ($qes !== FALSE) {
-        table_section(3, "50%");
-        start_row();
+        Table::section(3, "50%");
+        Row::start();
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', NULL, QE_JOURNAL, TRUE);
         $qid = GL_QuickEntry::get(get_post('person_id'));
         if (list_updated('person_id')) {
@@ -43,9 +43,9 @@
         }
         amount_cells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), NULL,
           "&nbsp;&nbsp;" . submit('go', _("Go"), FALSE, FALSE, TRUE));
-        end_row();
+        Row::end();
       }
-      end_outer_table(1);
+      Table::endOuter(1);
     }
     /***
      * @static
@@ -58,7 +58,7 @@
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
       Display::div_start('items_table');
-      start_table('tablestyle width95');
+      Table::start('tablestyle grid width95');
       if ($dim == 2) {
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), ""
@@ -79,31 +79,31 @@
       if (count($order->gl_items)) {
         $th[] = '';
       }
-      table_header($th);
+      Table::header($th);
       $k = 0;
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
-          alt_table_row_color($k);
-          label_cells($item->code_id, $item->description);
+
+          Cell::labels($item->code_id, $item->description);
           if ($dim >= 1) {
-            label_cell(Dimensions::get_string($item->dimension_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension_id, TRUE));
           }
           if ($dim > 1) {
-            label_cell(Dimensions::get_string($item->dimension2_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension2_id, TRUE));
           }
           if ($item->amount > 0) {
-            amount_cell(abs($item->amount));
-            label_cell("");
+            Cell::amount(abs($item->amount));
+            Cell::label("");
           }
           else {
-            label_cell("");
-            amount_cell(abs($item->amount));
+            Cell::label("");
+            Cell::amount(abs($item->amount));
           }
-          label_cell($item->reference);
+          Cell::label($item->reference);
           edit_button_cell("Edit$line", _("Edit"), _('Edit journal line'));
           delete_button_cell("Delete$line", _("Delete"), _('Remove line from journal'));
-          end_row();
+          Row::end();
         }
         else {
           GL_Journal::item_controls($order, $dim, $line);
@@ -114,14 +114,14 @@
       }
       if ($order->count_gl_items()) {
         $colspan = ($dim == 2 ? "4" : ($dim == 1 ? "3" : "2"));
-        start_row();
-        label_cell(_("Total"), "class=right colspan=" . $colspan);
-        amount_cell($order->gl_items_total_debit());
-        amount_cell(abs($order->gl_items_total_credit()));
-        label_cell('', "colspan=3");
-        end_row();
+        Row::start();
+        Cell::label(_("Total"), "class=right colspan=" . $colspan);
+        Cell::amount($order->gl_items_total_debit());
+        Cell::amount(abs($order->gl_items_total_credit()));
+        Cell::label('', "colspan=3");
+        Row::end();
       }
-      end_table();
+      Table::end();
       Display::div_end();
     }
     /**
@@ -133,7 +133,7 @@
      */
     static public function item_controls($order, $dim, $Index = NULL) {
 
-      start_row();
+      Row::start();
       $id = find_submit(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         // Modifying an existing row
@@ -200,7 +200,7 @@
       else {
         submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), TRUE);
       }
-      end_row();
+      Row::end();
     }
 
     static public function option_controls() {

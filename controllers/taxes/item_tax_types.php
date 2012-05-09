@@ -51,29 +51,29 @@
   }
   $result2 = $result = Tax_ItemType::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle width30');
+  Table::start('tablestyle grid width30');
   $th = array(_("Name"), _("Tax exempt"), '', '');
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result2)) {
-    alt_table_row_color($k);
+
     if ($myrow["exempt"] == 0) {
       $disallow_text = _("No");
     }
     else {
       $disallow_text = _("Yes");
     }
-    label_cell($myrow["name"]);
-    label_cell($disallow_text);
+    Cell::label($myrow["name"]);
+    Cell::label($disallow_text);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
-  start_table('tablestyle2');
+  Table::end(1);
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $myrow = Tax_ItemType::get($selected_id);
@@ -92,21 +92,21 @@
   }
   text_row_ex(_("Description:"), 'name', 50);
   yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', NULL, "", "", TRUE);
-  end_table(1);
+  Table::end(1);
   if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
     Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
-    start_table('tablestyle2');
+    Table::start('tablestyle2 grid');
     $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
-    table_header($th);
+    Table::header($th);
     $tax_types = Tax_Types::get_all_simple();
     while ($myrow = DB::fetch($tax_types)) {
-      alt_table_row_color($k);
-      label_cell($myrow["name"]);
-      label_cell(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
+
+      Cell::label($myrow["name"]);
+      Cell::label(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
       check_cells("", 'ExemptTax' . $myrow["id"], NULL);
-      end_row();
+      Row::end();
     }
-    end_table(1);
+    Table::end(1);
   }
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();

@@ -28,23 +28,41 @@
      * @return DB_Pager
      */
     static function &new_db_pager($name, $sql, $coldef, $table = NULL, $key = NULL, $page_len = 0, $sort = NULL) {
+      if (!isset($_SESSION['pager'])) {
+        $_SESSION['pager'] = array();
+      }
+      if (isset($_SESSION['pager'][$name])
+        && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION['pager'][$name]->sql != $sql)
+      ) {
+        unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+      }
+      if (!isset($_SESSION['pager'][$name])) {
         $pager = new static($sql, $name, $table, $page_len);
         $pager->main_tbl = $table;
         $pager->key = $key;
         $pager->set_sql($sql);
         $pager->set_columns($coldef);
         $pager->sort_table($sort);
-      return $pager;
+        $_SESSION['pager'][$name] = $pager;
+      }
+      foreach ($_SESSION['pager'][$name]->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
+      return $_SESSION['pager'][$name];
     }
     /**
      * @return array
      */
     public function __sleep() {
+
       foreach ($this->columns as &$column) {
         if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
           unset($column['fun']);
         }
       }
+      unset($this->marker);
       return array_keys((array)$this);
     }
     /**
@@ -103,7 +121,7 @@
      * @param bool $enabled
      */
     static function navi_cell($name, $value, $enabled = TRUE) {
-      label_cell(static::navi($name, $value, $enabled));
+      Cell::label(static::navi($name, $value, $enabled));
     }
     /**
      * @static
@@ -137,10 +155,10 @@
         }
       }
       /* show a table of records returned by the sql */
-      start_table('tablestyle grid width' . $pager->width);
-      table_header($headers);
+      Table::start('tablestyle grid width' . $pager->width);
+      Table::header($headers);
       if ($pager->header_fun) { // if set header handler
-        start_row("class='{$pager->header_class}'");
+        Row::start("class='{$pager->header_class}'");
         $fun = $pager->header_fun;
         if (method_exists($pager, $fun)) {
           $h = $pager->$fun($pager);
@@ -150,15 +168,15 @@
         }
         foreach ($h as $c) { // draw header columns
           $pars = isset($c[1]) ? $c[1] : '';
-          label_cell($c[0], $pars);
+          Cell::label($c[0], $pars);
         }
-        end_row();
+        Row::end();
       }
       $cc = 0; //row colour counter
       foreach ($pager->data as $line_no => $row) {
         $marker = $pager->marker;
         if ($marker && call_user_func($marker, $row)) {
-          start_row("class='$pager->marker_class'");
+          Row::start("class='$pager->marker_class'");
         }
         else {
           echo "<tr>\n";
@@ -180,44 +198,44 @@
           }
           switch ($coltype) { // format column
             case 'time':
-              label_cell($cell, "width=40");
+              Cell::label($cell, "width=40");
               break;
             case 'date':
-              label_cell(Dates::sql2date($cell), ' class="center nowrap"');
+              Cell::label(Dates::sql2date($cell), ' class="center nowrap"');
               break;
             case 'dstamp': // time stamp displayed as date
-              label_cell(Dates::sql2date(substr($cell, 0, 10)), ' class="center nowrap"');
+              Cell::label(Dates::sql2date(substr($cell, 0, 10)), ' class="center nowrap"');
               break;
             case 'tstamp': // time stamp - FIX user format
-              label_cell(
+              Cell::label(
                 Dates::sql2date(substr($cell, 0, 10)) .
                   ' ' . substr($cell, 10), "class='center'"
               );
               break;
             case 'percent':
-              percent_cell($cell);
+              Cell::percent($cell);
               break;
             case 'amount':
               if ($cell == '') {
-                label_cell('');
+                Cell::label('');
               }
               else {
-                amount_cell($cell, FALSE);
+                Cell::amount($cell, FALSE);
               }
               break;
             case 'qty':
               if ($cell == '') {
-                label_cell('');
+                Cell::label('');
               }
               else {
-                qty_cell($cell, FALSE, isset($col['dec']) ? $col['dec'] : NULL);
+                Cell::qty($cell, FALSE, isset($col['dec']) ? $col['dec'] : NULL);
               }
               break;
             case 'email':
-              email_cell($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : NULL);
+              Cell::email($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : NULL);
               break;
             case 'rate':
-              label_cell(Num::format($cell, User::exrate_dec()), "class='center'");
+              Cell::label(Num::format($cell, User::exrate_dec()), "class='center'");
               break;
             case 'inactive':
               if (get_post('show_inactive')) {
@@ -226,28 +244,28 @@
               break;
             case 'id':
               if (isset($col['align'])) {
-                label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "' class='" . $col['align'] . "'");
+                Cell::label($cell, " class='pagerclick' data-id='" . $row['id'] . "' class='" . $col['align'] . "'");
               }
               else {
-                label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
+                Cell::label($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
               }
               break;
             default:
               //		 case 'text':
               if (isset($col['align'])) {
-                label_cell($cell, "class='" . $col['align'] . "'");
+                Cell::label($cell, "class='" . $col['align'] . "'");
               }
               else {
-                label_cell($cell);
+                Cell::label($cell);
               }
             case 'skip': // column not displayed
           }
         }
-        end_row();
+        Row::end();
       }
       //end of while loop
       if ($pager->footer_fun) { // if set footer handler
-        start_row("class='{$pager->footer_class}'");
+        Row::start("class='{$pager->footer_class}'");
         $fun = $pager->footer_fun;
         if (method_exists($pager, $fun)) {
           $h = $pager->$fun($pager);
@@ -257,11 +275,11 @@
         }
         foreach ($h as $c) { // draw footer columns
           $pars = isset($c[1]) ? $c[1] : '';
-          label_cell($c[0], $pars);
+          Cell::label($c[0], $pars);
         }
-        end_row();
+        Row::end();
       }
-      start_row("class='navibar'");
+      Row::start("class='navibar'");
       $colspan = count($pager->columns);
       $inact = $pager->inactive_ctrl == TRUE
         ? ' ' . checkbox(NULL, 'show_inactive', NULL, TRUE) . _("Show also Inactive") : '';
@@ -269,7 +287,7 @@
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
         $but_pref = $pager->name . '_page_';
-        start_row();
+        Row::start();
         if (@$pager->inactive_ctrl) {
           submit('Update', _('Update'), TRUE, '', NULL);
         } // inactive update
@@ -277,7 +295,7 @@
         static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
         static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page);
         static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page);
-        end_row();
+        Row::end();
         echo "</table>";
         $from = ($pager->curr_page - 1) * $pager->page_len + 1;
         $to = $from + $pager->page_len - 1;
@@ -290,10 +308,10 @@
         echo "</td>";
       }
       else {
-        label_cell(_('No records') . $inact, "colspan=$colspan class='navibar'");
+        Cell::label(_('No records') . $inact, "colspan=$colspan class='navibar'");
       }
-      end_row();
-      end_table();
+      Row::end();
+      Table::end();
       if (isset($pager->marker_txt)) {
         Event::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
       }

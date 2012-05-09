@@ -109,35 +109,35 @@
     }
     else {
       if (Input::request('frame')) {
-        start_table('tablestyle width90');
+        Table::start('tablestyle grid width90');
       }
       else {
-        start_table('tablestyle width65');
+        Table::start('tablestyle grid width65');
       }
       $th = array(
         _("Updated"), _("Supplier"), _("Price"), _("Currency"), _("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
       );
-      table_header($th);
+      Table::header($th);
       $k = $j = 0; //row colour counter
       while ($myrow = DB::fetch($result)) {
-        alt_table_row_color($k);
-        label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
-        label_cell($myrow["supp_name"]);
-        amount_decimal_cell($myrow["price"]);
-        label_cell($myrow["curr_code"]);
-        label_cell($myrow["suppliers_uom"]);
-        qty_cell($myrow['conversion_factor'], FALSE, User::exrate_dec());
-        label_cell($myrow["supplier_description"]);
+
+        Cell::label(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
+        Cell::label($myrow["supp_name"]);
+        Cell::amountDecimal($myrow["price"]);
+        Cell::label($myrow["curr_code"]);
+        Cell::label($myrow["suppliers_uom"]);
+        Cell::qty($myrow['conversion_factor'], FALSE, User::exrate_dec());
+        Cell::label($myrow["supplier_description"]);
         edit_button_cell("Edit" . $myrow['supplier_id'], _("Edit"));
         delete_button_cell("Delete" . $myrow['supplier_id'], _("Delete"));
-        end_row();
+        Row::end();
         $j++;
         If ($j == 12) {
           $j = 1;
-          table_header($th);
+          Table::header($th);
         } //end of page full new headings
       } //end of while loop
-      end_table();
+      Table::end();
     }
     Display::div_end();
   }
@@ -157,10 +157,10 @@
   }
   Display::br();
   hidden('selected_id', $selected_id);
-  start_table('tableinfo');
+  Table::start('tableinfo');
   if ($Mode == MODE_EDIT) {
     hidden('supplier_id');
-    label_row(_("Supplier:"), $supp_name);
+    Row::label(_("Supplier:"), $supp_name);
   }
   else {
     Creditor::row(_("Supplier:"), 'supplier_id', NULL, FALSE, TRUE);
@@ -173,7 +173,7 @@
   }
   amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', Num::exrate_format($_POST['conversion_factor']), NULL, NULL, User::exrate_dec());
   text_row(_("Supplier's Product Code:"), 'supplier_description', NULL, 50, 51);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   if (Input::request('frame')) {

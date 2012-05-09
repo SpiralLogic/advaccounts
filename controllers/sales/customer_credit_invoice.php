@@ -198,82 +198,82 @@
   function display_credit_items() {
     start_form();
     hidden('order_id');
-    start_table('tablestyle2 width90 pad5');
+    Table::start('tablestyle2 width90 pad5');
     echo "<tr><td>"; // outer table
-    start_table('tablestyle width100');
-    start_row();
-    label_cells(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
-    label_cells(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
-    label_cells(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
-    end_row();
-    start_row();
+    Table::start('tablestyle width100');
+    Row::start();
+    Cell::labels(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
+    Cell::labels(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
+    Cell::labels(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
+    Row::end();
+    Row::start();
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
       ref_cells(_("Reference"), 'ref', '', NULL, "class='tablerowhead'");
     }
     else {
-      label_cells(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
+      Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
-    label_cells(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
+    Cell::labels(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
     if (!isset($_POST['ShipperID'])) {
       $_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
     }
-    label_cell(_("Shipping Company"), "class='tablerowhead'");
+    Cell::label(_("Shipping Company"), "class='tablerowhead'");
     Sales_UI::shippers_cells(NULL, 'ShipperID', $_POST['ShipperID']);
     //	if (!isset($_POST['sales_type_id']))
     //	 $_POST['sales_type_id'] = Orders::session_get($_POST['order_id'])->sales_type;
-    //	label_cell(_("Sales Type"), "class='tablerowhead'");
+    //	Cell::label(_("Sales Type"), "class='tablerowhead'");
     //	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
-    end_row();
-    end_table();
+    Row::end();
+    Table::end();
     echo "</td><td>"; // outer table
-    start_table('tablestyle width100');
-    label_row(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
+    Table::start('tablestyle width100');
+    Row::label(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
     date_row(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tablerowhead'");
-    end_table();
+    Table::end();
     echo "</td></tr>";
-    end_table(1); // outer table
+    Table::end(1); // outer table
     Display::div_start('credit_items');
-    start_table('tablestyle width90');
+    Table::start('tablestyle grid width90');
     $th = array(
       _("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"),
       _("Discount %"), _("Total")
     );
-    table_header($th);
+    Table::header($th);
     $k = 0; //row colour counter
     foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $line) {
       if ($line->quantity == $line->qty_done) {
         continue; // this line was fully credited/removed
       }
-      alt_table_row_color($k);
+
       //	Item_UI::status_cell($line->stock_id); alternative view
-      label_cell($line->stock_id);
+      Cell::label($line->stock_id);
       text_cells(NULL, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
       $dec = Item::qty_dec($line->stock_id);
-      qty_cell($line->quantity, FALSE, $dec);
-      label_cell($line->units);
+      Cell::qty($line->quantity, FALSE, $dec);
+      Cell::label($line->units);
       amount_cells(NULL, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), NULL, NULL, $dec);
       $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
-      amount_cell($line->price);
-      percent_cell($line->discount_percent * 100);
-      amount_cell($line_total);
-      end_row();
+      Cell::amount($line->price);
+      Cell::percent($line->discount_percent * 100);
+      Cell::amount($line_total);
+      Row::end();
     }
     if (!Validation::post_num('ChargeFreightCost')) {
       $_POST['ChargeFreightCost'] = Num::price_format(Orders::session_get($_POST['order_id'])->freight_cost);
     }
     $colspan = 7;
-    start_row();
-    label_cell(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
+    Row::start();
+    Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
     small_amount_cells(NULL, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
-    end_row();
+    Row::end();
     $inv_items_total = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-    label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
+    Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
     $taxes = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
     $tax_total = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
     $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-    label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
-    end_table();
+    Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
+    Table::end();
     Display::div_end();
   }
 
@@ -283,7 +283,7 @@
       Ajax::i()->activate('options');
     }
     Display::div_start('options');
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     Sales_Credit::row(_("Credit Note Type"), 'CreditType', NULL, TRUE);
     if ($_POST['CreditType'] == "Return") {
       /*if the credit note is a return of goods then need to know which location to receive them into */

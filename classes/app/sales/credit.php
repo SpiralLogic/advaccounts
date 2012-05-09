@@ -226,8 +226,8 @@
      * @return mixed|string
      */
     static public function header($order) {
-      start_outer_table('tablestyle width90');
-      table_section(1);
+      Table::startOuter('tablestyle width90');
+      Table::section(1);
       $customer_error = "";
       $change_prices = 0;
       if (!isset($_POST['customer_id']) && Session::i()->getGlobal('debtor')) {
@@ -284,14 +284,14 @@
         ref_row(_("Reference") . ':', 'ref');
       }
       else {
-        label_row(_("Reference") . ':', $order->reference);
+        Row::label(_("Reference") . ':', $order->reference);
       }
       if (!Bank_Currency::is_company($order->customer_currency)) {
-        table_section(2);
-        label_row(_("Customer Currency:"), $order->customer_currency);
+        Table::section(2);
+        Row::label(_("Customer Currency:"), $order->customer_currency);
         GL_ExchangeRate::display($order->customer_currency, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
-      table_section(3);
+      Table::section(3);
       if (!isset($_POST['sales_type_id'])) {
         $_POST['sales_type_id'] = $order->sales_type;
       }
@@ -303,8 +303,8 @@
         $change_prices = 1;
       }
       Sales_UI::shippers_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
-      label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
-      table_section(4);
+      Row::label(_("Customer Discount:"), ($order->default_discount * 100) . "%");
+      Table::section(4);
       if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
         $_POST['OrderDate'] = $order->document_date;
       }
@@ -330,7 +330,7 @@
       else {
         hidden('dimension2_id', 0);
       }
-      end_outer_table(1); // outer table
+      Table::endOuter(1); // outer table
       if ($change_prices != 0) {
         foreach ($order->line_items as $line) {
           $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
@@ -349,31 +349,31 @@
     static public function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
-      start_table('tablestyle width90');
+      Table::start('tablestyle grid width90');
       $th = array(
         _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"), ''
       );
       if (count($order->line_items)) {
         $th[] = '';
       }
-      table_header($th);
+      Table::header($th);
       $subtotal = 0;
       $k = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $line) {
         $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
         if ($id != $line_no) {
-          alt_table_row_color($k);
-          label_cell("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
-          label_cell($line->description, ' class="nowrap"');
-          qty_cell($line->qty_dispatched, FALSE, Item::qty_dec($line->stock_id));
-          label_cell($line->units);
-          amount_cell($line->price);
-          percent_cell($line->discount_percent * 100);
-          amount_cell($line_total);
+
+          Cell::label("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+          Cell::label($line->description, ' class="nowrap"');
+          Cell::qty($line->qty_dispatched, FALSE, Item::qty_dec($line->stock_id));
+          Cell::label($line->units);
+          Cell::amount($line->price);
+          Cell::percent($line->discount_percent * 100);
+          Cell::amount($line_total);
           edit_button_cell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
           delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
-          end_row();
+          Row::end();
         }
         else {
           Sales_Credit::item_controls($order, $k, $line_no);
@@ -385,20 +385,20 @@
       }
       $colspan = 6;
       $display_sub_total = Num::price_format($subtotal);
-      label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", 2);
+      Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", 2);
       if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
         $_POST['ChargeFreightCost'] = 0;
       }
-      start_row();
-      label_cell(_("Shipping"), "colspan=$colspan class='right bold'");
+      Row::start();
+      Cell::label(_("Shipping"), "colspan=$colspan class='right bold'");
       small_amount_cells(NULL, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
-      label_cell('', 'colspan=2');
-      end_row();
+      Cell::label('', 'colspan=2');
+      Row::end();
       $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
       $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
       $display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
-      label_row(_("Credit Note Total"), $display_total, "colspan=$colspan class='right bold'", "class='amount'", 2);
-      end_table();
+      Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='right bold'", "class='amount'", 2);
+      Table::end();
       Display::div_end();
     }
     /**
@@ -409,7 +409,7 @@
      * @param $line_no
      */
     static public function item_controls($order, $rowcounter, $line_no = -1) {
-      alt_table_row_color($rowcounter);
+
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
@@ -418,8 +418,8 @@
         $_POST['Disc'] = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
         $_POST['units'] = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
-        label_cell($_POST['stock_id']);
-        label_cell($order->line_items[$id]->description, ' class="nowrap"');
+        Cell::label($_POST['stock_id']);
+        Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::i()->activate('items_table');
       }
       else {
@@ -439,10 +439,10 @@
         $_POST['Disc'] = Num::percent_format($order->default_discount * 100);
       }
       qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
-      label_cell($_POST['units']);
+      Cell::label($_POST['units']);
       amount_cells(NULL, 'price', NULL);
       small_amount_cells(NULL, 'Disc', Num::percent_format(0), NULL, NULL, User::percent_dec());
-      amount_cell(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
+      Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
         button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
@@ -452,7 +452,7 @@
       else {
         submit_cells(Orders::ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
-      end_row();
+      Row::end();
     }
     /**
      * @static
@@ -465,7 +465,7 @@
         Ajax::i()->activate('options');
       }
       Display::div_start('options');
-      start_table('tablestyle2');
+      Table::start('tablestyle2');
       Sales_Credit::row(_("Credit Note Type"), 'CreditType', NULL, TRUE);
       if ($_POST['CreditType'] == "Return") {
         /*if the credit note is a return of goods then need to know which location to receive them into */
@@ -492,7 +492,7 @@
      */
     static public function cells($label, $name, $selected = NULL, $submit_on_change = FALSE) {
       if ($label != NULL) {
-        label_cell($label);
+        Cell::label($label);
       }
       echo "<td>\n";
       echo array_selector($name, $selected, array(

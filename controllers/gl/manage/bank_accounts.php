@@ -71,38 +71,38 @@
   $sql .= " ORDER BY account_code, bank_curr_code";
   $result = DB::query($sql, "could not get bank accounts");
   start_form();
-  start_table('tablestyle width80');
+  Table::start('tablestyle grid width80');
   $th = array(
     _("Account Name"), _("Type"), _("Currency"), _("GL Account"), _("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
   );
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   global $bank_account_types;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
-    label_cell($myrow["bank_account_name"], ' class="nowrap"');
-    label_cell($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
-    label_cell($myrow["bank_curr_code"], ' class="nowrap"');
-    label_cell($myrow["account_code"] . " " . $myrow["account_name"], ' class="nowrap"');
-    label_cell($myrow["bank_name"], ' class="nowrap"');
-    label_cell($myrow["bank_account_number"], ' class="nowrap"');
-    label_cell($myrow["bank_address"]);
+
+    Cell::label($myrow["bank_account_name"], ' class="nowrap"');
+    Cell::label($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
+    Cell::label($myrow["bank_curr_code"], ' class="nowrap"');
+    Cell::label($myrow["account_code"] . " " . $myrow["account_name"], ' class="nowrap"');
+    Cell::label($myrow["bank_name"], ' class="nowrap"');
+    Cell::label($myrow["bank_account_number"], ' class="nowrap"');
+    Cell::label($myrow["bank_address"]);
     if ($myrow["dflt_curr_act"]) {
-      label_cell(_("Yes"));
+      Cell::label(_("Yes"));
     }
     else {
-      label_cell(_("No"));
+      Cell::label(_("No"));
     }
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table(1);
+  Table::end(1);
   $is_editing = $selected_id != -1;
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($is_editing) {
     if ($Mode == MODE_EDIT) {
       $myrow = Bank_Account::get($selected_id);
@@ -124,20 +124,20 @@
   text_row(_("Bank Account Name:"), 'bank_account_name', NULL, 50, 100);
   if ($is_editing) {
     global $bank_account_types;
-    label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
+    Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
   }
   else {
     Bank_Account::type_row(_("Account Type:"), 'account_type', NULL);
   }
   if ($is_editing) {
-    label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
+    Row::label(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
   }
   else {
     GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', NULL);
   }
   yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
   if ($is_editing) {
-    label_row(_("Bank Account GL Code:"), $_POST['account_code']);
+    Row::label(_("Bank Account GL Code:"), $_POST['account_code']);
   }
   else {
     GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', NULL);
@@ -145,7 +145,7 @@
   text_row(_("Bank Name:"), 'bank_name', NULL, 50, 60);
   text_row(_("Bank Account Number:"), 'bank_account_number', NULL, 30, 60);
   textarea_row(_("Bank Address:"), 'bank_address', NULL, 40, 5);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

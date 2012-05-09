@@ -47,39 +47,39 @@
     Ajax::i()->activate('_page_body');
   }
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(
     _("Version"), _("Description"), _("Sql file"), _("Install"), _("Force upgrade")
   );
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   $partial = 0;
   foreach ($installers as $i => $inst) {
-    alt_table_row_color($k);
-    start_row();
-    label_cell($inst->version);
-    label_cell($inst->description);
-    label_cell($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'class=center');
+
+    Row::start();
+    Cell::label($inst->version);
+    Cell::label($inst->description);
+    Cell::label($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'class=center');
     // this is checked only for first (site admin) company,
     // but in fact we should always upgrade all data sets after
     // source upgrade.
     $check = $inst->installed('');
     if ($check === TRUE) {
-      label_cell(_("Installed"));
+      Cell::label(_("Installed"));
     }
     else {
       if (!$check) {
         check_cells(NULL, 'install_' . $i, 0);
       }
       else {
-        label_cell("<span class=redfg>" . sprintf(_("Partially installed (%s)"), $check) . "</span>");
+        Cell::label("<span class=redfg>" . sprintf(_("Partially installed (%s)"), $check) . "</span>");
         $partial++;
       }
     }
     check_cells(NULL, 'force_' . $i, 0);
-    end_row();
+    Row::end();
   }
-  end_table(1);
+  Table::end(1);
   if ($partial != 0) {
     Event::warning(_("Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."));

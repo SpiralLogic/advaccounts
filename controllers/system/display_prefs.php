@@ -41,14 +41,14 @@
     }
   }
   start_form();
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Decimal Places"));
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Decimal Places"));
   text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
   text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', User::qty_dec());
   text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', User::exrate_dec());
   text_row_ex(_("Percentages:"), 'Percent', 5, 5, '', User::percent_dec());
-  table_section_title(_("Dateformat and Separators"));
+  Table::sectionTitle(_("Dateformat and Separators"));
   dateformats_list_row(_("Dateformat:"), "date_format", User::date_format());
   dateseps_list_row(_("Date Separator:"), "date_sep", User::date_sep());
   /* The array $dateseps is set up in config.php for modifications
@@ -60,10 +60,10 @@
   if (!isset($_POST['language'])) {
     $_POST['language'] = $_SESSION['Language']->code;
   }
-  table_section_title(_("Language"));
+  Table::sectionTitle(_("Language"));
   Languages::row(_("Language:"), 'language', $_POST['language']);
-  table_section(2);
-  table_section_title(_("Miscellaneous"));
+  Table::section(2);
+  Table::sectionTitle(_("Miscellaneous"));
   check_row(_("Show hints for new users:"), 'show_hints', User::hints());
   check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
   check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
@@ -82,7 +82,7 @@
   check_row(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), FALSE, _('Set this option to on for using icons instead of text links'));
   text_row_ex(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
   check_row(_("Remember last document date:"), 'sticky_doc_date', User::sticky_date(), FALSE, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
-  end_outer_table(1);
+  Table::endOuter(1);
   submit_center('setprefs', _("Update"), TRUE, '', 'default');
   end_form(2);
   Page::end();

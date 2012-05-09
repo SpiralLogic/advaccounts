@@ -120,16 +120,16 @@
     }
 
     static public function header() {
-      start_outer_table('tablestyle width70');
-      table_section(1);
+      Table::startOuter('tablestyle width70');
+      Table::section(1);
       Inv_Location::row(_("From Location:"), 'FromStockLocation', NULL);
       Inv_Location::row(_("To Location:"), 'ToStockLocation', NULL);
-      table_section(2, "33%");
+      Table::section(2, "33%");
       ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
       date_row(_("Date:"), 'AdjDate', '', TRUE);
-      table_section(3, "33%");
+      Table::section(3, "33%");
       Inv_Movement::row(_("Transfer Type:"), 'type', NULL);
-      end_outer_table(1); // outer table
+      Table::endOuter(1); // outer table
     }
     /**
      * @static
@@ -140,24 +140,24 @@
     static public function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
-      start_table('tablestyle width90');
+      Table::start('tablestyle grid width90');
       $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
       if (count($order->line_items)) {
         $th[] = '';
       }
-      table_header($th);
+      Table::header($th);
       $k = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         if ($id != $line_no) {
-          alt_table_row_color($k);
+
           Item_UI::status_cell($stock_item->stock_id);
-          label_cell($stock_item->description);
-          qty_cell($stock_item->quantity, FALSE, Item::qty_dec($stock_item->stock_id));
-          label_cell($stock_item->units);
+          Cell::label($stock_item->description);
+          Cell::qty($stock_item->quantity, FALSE, Item::qty_dec($stock_item->stock_id));
+          Cell::label($stock_item->units);
           edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
           delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
-          end_row();
+          Row::end();
         }
         else {
           Inv_Transfer::item_controls($order, $line_no);
@@ -166,7 +166,7 @@
       if ($id == -1) {
         Inv_Transfer::item_controls($order);
       }
-      end_table();
+      Table::end();
       Display::div_end();
     }
     /**
@@ -177,15 +177,15 @@
      */
     static public function item_controls($order, $line_no = -1) {
 
-      start_row();
+      Row::start();
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
         $_POST['units'] = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
-        label_cell($_POST['stock_id']);
-        label_cell($order->line_items[$id]->description);
+        Cell::label($_POST['stock_id']);
+        Cell::label($order->line_items[$id]->description);
         Ajax::i()->activate('items_table');
       }
       else {
@@ -200,7 +200,7 @@
         $_POST['units'] = $item_info["units"];
       }
       small_qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
-      label_cell($_POST['units'], '', 'units');
+      Cell::label($_POST['units'], '', 'units');
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
@@ -210,13 +210,13 @@
       else {
         submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
-      end_row();
+      Row::end();
     }
 
     static public function option_controls() {
       echo "<br>";
-      start_table();
+      Table::start();
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
-      end_table(1);
+      Table::end(1);
     }
   }

@@ -34,22 +34,22 @@
   Display::br(2);
   start_form(FALSE, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
-  start_table('login');
-  start_row();
+  Table::start('login');
+  Row::start();
   echo "<td class='center' colspan=2>";
   echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
   if ($login_timeout) {
     echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
   }
   echo "</td>\n";
-  end_row();
+  Row::end();
   if (!$login_timeout) {
-    table_section_title(_("Version ") . VERSION . " - " . _("Login"));
+    Table::sectionTitle(_("Version ") . VERSION . " - " . _("Login"));
   }
   $value = $login_timeout ? User::i()->loginname : (Config::get('demo_mode') ? "demouser" : "");
-  start_row();
-  label_cell($demo_text, "colspan=2 class='center'");
-  end_row();
+  Row::start();
+  Cell::label($demo_text, "colspan=2 class='center'");
+  Row::end();
   text_row(_("User name"), "user_name", $value, 20, 30);
   $password = Config::get('demo_mode') ? "password" : "";
   password_row(_("Password:"), 'password', $password);
@@ -69,10 +69,10 @@
     }
     echo "</select>\n";
   }
-  start_row();
+  Row::start();
   echo "<td colspan='2' class='center pad20'><button name='SubmitUser'>" . _("Login -->") . "</button></td>\n";
-  end_row();
-  end_table(1);
+  Row::end();
+  Table::end(1);
   foreach ($_POST as $p => $val) {
     // add all request variables to be resend together with login data
     if (!in_array($p, array('ui_mode', 'user_name', 'password', 'SubmitUser', 'login_company'))) {

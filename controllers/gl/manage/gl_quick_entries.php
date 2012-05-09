@@ -64,23 +64,23 @@
   }
   $result = GL_QuickEntry::get_all();
   start_form();
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(_("Description"), _("Type"), "", "");
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
+
     $type_text = $quick_entry_types[$myrow["type"]];
-    label_cell($myrow['description']);
-    label_cell($type_text);
+    Cell::label($myrow['description']);
+    Cell::label($type_text);
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    end_row();
+    Row::end();
   }
-  end_table(1);
+  Table::end(1);
   end_form();
   start_form();
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     //if ($Mode == MODE_EDIT)
     //{
@@ -98,14 +98,14 @@
   GL_QuickEntry::types(_("Entry Type") . ':', 'type');
   text_row_ex(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
   amount_row(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   if ($selected_id != -1) {
     Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
     $result = GL_QuickEntry::get_lines($selected_id);
     start_form();
-    start_table('tablestyle2');
+    Table::start('tablestyle2 grid');
     $dim = DB_Company::get_pref('use_dimension');
     if ($dim == 2) {
       $th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension") . " 2", "", "");
@@ -118,38 +118,38 @@
         $th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
       }
     }
-    table_header($th);
+    Table::header($th);
     $k = 0;
     while ($myrow = DB::fetch($result)) {
-      alt_table_row_color($k);
-      label_cell($quick_actions[$myrow['action']]);
+
+      Cell::label($quick_actions[$myrow['action']]);
       $act_type = strtolower(substr($myrow['action'], 0, 1));
       if ($act_type == 't') {
-        label_cells($myrow['tax_name'], '');
+        Cell::labels($myrow['tax_name'], '');
       }
       else {
-        label_cell($myrow['dest_id'] . ' ' . $myrow['account_name']);
+        Cell::label($myrow['dest_id'] . ' ' . $myrow['account_name']);
         if ($act_type == '=') {
-          label_cell('');
+          Cell::label('');
         }
         elseif ($act_type == '%') {
-          label_cell(Num::format($myrow['amount'], User::exrate_dec()), ' class="right nowrap"');
+          Cell::label(Num::format($myrow['amount'], User::exrate_dec()), ' class="right nowrap"');
         }
         else {
-          amount_cell($myrow['amount']);
+          Cell::amount($myrow['amount']);
         }
       }
       if ($dim >= 1) {
-        label_cell(Dimensions::get_string($myrow['dimension_id'], TRUE));
+        Cell::label(Dimensions::get_string($myrow['dimension_id'], TRUE));
       }
       if ($dim > 1) {
-        label_cell(Dimensions::get_string($myrow['dimension2_id'], TRUE));
+        Cell::label(Dimensions::get_string($myrow['dimension2_id'], TRUE));
       }
       edit_button_cell("BEd" . $myrow["id"], _("Edit"));
       delete_button_cell("BDel" . $myrow["id"], _("Delete"));
-      end_row();
+      Row::end();
     }
-    end_table(1);
+    Table::end(1);
     hidden('selected_id', $selected_id);
     hidden('selected_id2', $selected_id2);
     hidden('description', $_POST['description']);
@@ -157,7 +157,7 @@
     end_form();
     start_form();
     Display::div_start('edit_line');
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id2 != -1) {
       if ($Mode2 == 'BEd') {
         //editing an existing status code
@@ -196,7 +196,7 @@
     if ($dim > 1) {
       Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
     }
-    end_table(1);
+    Table::end(1);
     if ($dim < 2) {
       hidden('dimension2_id', 0);
     }

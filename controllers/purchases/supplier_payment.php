@@ -61,8 +61,8 @@
     exit;
   }
   start_form();
-  start_outer_table('tablestyle2 width60 pad5');
-  table_section(1);
+  Table::startOuter('tablestyle2 width60 pad5');
+  Table::section(1);
   Creditor::row(_("Payment To:"), 'supplier_id', NULL, FALSE, TRUE);
   if (!isset($_POST['bank_account'])) // first page call
   {
@@ -70,27 +70,27 @@
   }
   Session::i()->setGlobal('creditor',$_POST['supplier_id']);
   Bank_Account::row(_("From Bank Account:"), 'bank_account', NULL, TRUE);
-  table_section(2);
+  Table::section(2);
   ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
   date_row(_("Date Paid") . ":", 'DatePaid', '', TRUE, 0, 0, 0, NULL, TRUE);
-  table_section(3);
+  Table::section(3);
   $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
   $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
   if ($bank_currency != $supplier_currency) {
     GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], TRUE);
   }
   amount_row(_("Bank Charge:"), 'charge');
-  end_outer_table(1); // outer table
+  Table::endOuter(1); // outer table
   if ($bank_currency == $supplier_currency) {
     Display::div_start('alloc_tbl');
     Gl_Allocation::show_allocatable(FALSE);
     Display::div_end();
   }
-  start_table('tablestyle width60');
+  Table::start('tablestyle width60');
   amount_row(_("Amount of Discount:"), 'discount');
   amount_row(_("Amount of Payment:"), 'amount');
   textarea_row(_("Memo:"), 'memo_', NULL, 22, 4);
-  end_table(1);
+  Table::end(1);
   if ($bank_currency != $supplier_currency) {
     Event::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
   }

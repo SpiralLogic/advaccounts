@@ -37,30 +37,30 @@
   }
   $result = Sales_CreditStatus::get_all(check_value('show_inactive'));
   start_form();
-  start_table('tablestyle width40');
+  Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');
   inactive_control_column($th);
-  table_header($th);
+  Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
+
     if ($myrow["dissallow_invoices"] == 0) {
       $disallow_text = _("Invoice OK");
     }
     else {
       $disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
     }
-    label_cell($myrow["reason_description"]);
-    label_cell($disallow_text);
+    Cell::label($myrow["reason_description"]);
+    Cell::label($disallow_text);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
     edit_button_cell("Edit" . $myrow['id'], _("Edit"));
     delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-    end_row();
+    Row::end();
   }
   inactive_control_row($th);
-  end_table();
+  Table::end();
   echo '<br>';
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
@@ -72,7 +72,7 @@
   }
   text_row_ex(_("Description:"), 'reason_description', 50);
   yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
-  end_table(1);
+  Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();

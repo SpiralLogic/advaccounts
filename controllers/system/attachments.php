@@ -139,7 +139,7 @@
     display_rows($_POST['filterType']);
   }
   start_form(TRUE);
-  start_table('tablestyle2');
+  Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $row = get_attachment($selected_id);
@@ -147,7 +147,7 @@
       $_POST['description'] = $row["description"];
       hidden('trans_no', $row['trans_no']);
       hidden('unique_name', $row['unique_name']);
-      label_row(_("Transaction #"), $row['trans_no']);
+      Row::label(_("Transaction #"), $row['trans_no']);
     }
     hidden('selected_id', $selected_id);
   }
@@ -156,7 +156,7 @@
   }
   text_row_ex(_("Description") . ':', 'description', 40);
   file_row(_("Attached File") . ":", 'filename', 'filename');
-  end_table(1);
+  Table::end(1);
   if (isset($_POST['filterType'])) {
     hidden('filterType', $_POST['filterType']);
   }

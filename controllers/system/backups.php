@@ -73,18 +73,18 @@
     }
   }
   start_form(TRUE);
-  start_outer_table('tablestyle2');
-  table_section(1);
-  table_section_title(_("Create backup"));
+  Table::startOuter('tablestyle2');
+  Table::section(1);
+  Table::sectionTitle(_("Create backup"));
   textarea_row(_("Comments:"), 'comments', NULL, 30, 8);
   compress_list_row(_("Compression:"), 'comp');
   submit_row('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
-  table_section(2);
-  table_section_title(_("Backup scripts maintenance"));
-  start_row();
+  Table::section(2);
+  Table::sectionTitle(_("Backup scripts maintenance"));
+  Row::start();
   echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
   echo "<td class='top'>";
-  start_table();
+  Table::start();
   submit_row('view', _("View Backup"), FALSE, '', '', TRUE);
   submit_row('download', _("Download Backup"), FALSE, '', '', FALSE);
   submit_row('restore', _("Restore Backup"), FALSE, '', '', 'process');
@@ -92,14 +92,14 @@
   submit_row('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
   // don't use 'delete' name or IE js errors appear
   submit_js_confirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
-  end_table();
+  Table::end();
   echo "</td>";
-  end_row();
-  start_row();
+  Row::end();
+  Row::start();
   echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
   submit_cells('upload', _("Upload file"), '', '', TRUE);
-  end_row();
-  end_outer_table();
+  Row::end();
+  Table::endOuter();
   end_form();
   Page::end();
 

@@ -141,7 +141,7 @@
    * @param $selected_id
    */
   function display_rate_edit(&$selected_id) {
-    start_table('tablestyle2');
+    Table::start('tablestyle2');
     if ($selected_id != "") {
       //editing an existing exchange rate
       $myrow = GL_ExchangeRate::get($selected_id);
@@ -149,7 +149,7 @@
       $_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
       hidden('selected_id', $selected_id);
       hidden('date_', $_POST['date_']);
-      label_row(_("Date to Use From:"), $_POST['date_']);
+      Row::label(_("Date to Use From:"), $_POST['date_']);
     }
     else {
       $_POST['date_'] = Dates::today();
@@ -161,7 +161,7 @@
       Ajax::i()->activate('BuyRate');
     }
     small_amount_row(_("Exchange Rate:"), 'BuyRate', NULL, '', submit('get_rate', _("Get"), FALSE, _('Get current ECB rate'), TRUE), User::exrate_dec());
-    end_table(1);
+    Table::end(1);
     submit_add_or_update_center($selected_id == '', '', 'both');
     Event::warning(_("Exchange rates are entered against the company currency."), 1);
   }

@@ -30,27 +30,27 @@
     'tst_config',
     'tst_extconfig'
   );
-  start_table('tablestyle width90');
+  Table::start('tablestyle grid width90');
   $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
-  table_header($th);
+  Table::header($th);
   $k = 0; //row colour counter
   foreach ($system_tests as $test) {
-    alt_table_row_color($k);
+
     $result = call_user_func($test);
     if (!$result) {
       continue;
     }
-    label_cell($result['descr']);
-    label_cell($test_level[$result['type']]);
+    Cell::label($result['descr']);
+    Cell::label($test_level[$result['type']]);
     $res = isset($result['test']) ? implode('<br>', (array) $result['test']) : $result['test'];
-    label_cell($res);
+    Cell::label($res);
     $comm = isset($result['comments']) ? implode('<br>', (array) $result['comments']) : '';
     $color = ($result['result'] ? 'green' : ($result['type'] == 3 ? 'red' : ($result['type'] == 2 ? 'orange' : 'green')));
-    label_cell("<span style='color:$color'>" . ($result['result'] ? _('Ok') :
+    Cell::label("<span style='color:$color'>" . ($result['result'] ? _('Ok') :
       '<span class="bold">' . $comm . '</span>') . '</span>');
-    end_row();
+    Row::end();
   }
-  end_table();
+  Table::end();
   Page::end();
   /**
    * @return array

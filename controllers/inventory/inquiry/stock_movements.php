@@ -22,13 +22,13 @@
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
-  start_table('tablestyle_noborder');
+  Table::start('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE);
   Inv_Location::cells(_("From Location:"), 'StockLocation', NULL);
   date_cells(_("From:"), 'AfterDate', '', NULL, -30);
   date_cells(_("To:"), 'BeforeDate');
   submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
-  end_table();
+  Table::end();
   end_form();
   Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   $before_date = Dates::date2sql($_POST['BeforeDate']);
@@ -41,11 +41,11 @@
 	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
   $result = DB::query($sql, "could not query stock moves");
   Display::div_start('doc_tbl');
-  start_table('tablestyle');
+  Table::start('tablestyle grid');
   $th = array(
     _("Type"), _("#"), _("Reference"), _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
   );
-  table_header($th);
+  Table::header($th);
   $sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
@@ -55,18 +55,18 @@
   if (!isset($before_qty_row[0])) {
     $after_qty = $before_qty = 0;
   }
-  start_row("class='inquirybg'");
-  label_cell("<span class='bold'>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</span>", "class=center colspan=5");
-  label_cell("&nbsp;", "colspan=2");
+  Row::start("class='inquirybg'");
+  Cell::label("<span class='bold'>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</span>", "class=center colspan=5");
+  Cell::label("&nbsp;", "colspan=2");
   $dec = Item::qty_dec($_POST['stock_id']);
-  qty_cell($before_qty, FALSE, $dec);
-  end_row();
+  Cell::qty($before_qty, FALSE, $dec);
+  Row::end();
   $j = 1;
   $k = 0; //row colour counter
   $total_in = 0;
   $total_out = 0;
   while ($myrow = DB::fetch($result)) {
-    alt_table_row_color($k);
+
     $trandate = Dates::sql2date($myrow["tran_date"]);
     $type_name = $systypes_array[$myrow["type"]];
     if ($myrow["qty"] > 0) {
@@ -78,10 +78,10 @@
       $total_out += -$myrow["qty"];
     }
     $after_qty += $myrow["qty"];
-    label_cell($type_name);
-    label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
-    label_cell(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
-    label_cell($trandate);
+    Cell::label($type_name);
+    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
+    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+    Cell::label($trandate);
     $person = $myrow["person_id"];
     $gl_posting = "";
     if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
@@ -108,26 +108,26 @@
     ) {
       $person = "";
     }
-    label_cell($person);
-    label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), ' class="right nowrap"');
-    label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), ' class="right nowrap"');
-    qty_cell($after_qty, FALSE, $dec);
-    end_row();
+    Cell::label($person);
+    Cell::label((($myrow["qty"] >= 0) ? $quantity_formatted : ""), ' class="right nowrap"');
+    Cell::label((($myrow["qty"] < 0) ? $quantity_formatted : ""), ' class="right nowrap"');
+    Cell::qty($after_qty, FALSE, $dec);
+    Row::end();
     $j++;
     If ($j == 12) {
       $j = 1;
-      table_header($th);
+      Table::header($th);
     }
     //end of page full new headings if
   }
   //end of while loop
-  start_row("class='inquirybg'");
-  label_cell("<span class='bold'>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</span>", "class=center colspan=5");
-  qty_cell($total_in, FALSE, $dec);
-  qty_cell($total_out, FALSE, $dec);
-  qty_cell($after_qty, FALSE, $dec);
-  end_row();
-  end_table(1);
+  Row::start("class='inquirybg'");
+  Cell::label("<span class='bold'>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</span>", "class=center colspan=5");
+  Cell::qty($total_in, FALSE, $dec);
+  Cell::qty($total_out, FALSE, $dec);
+  Cell::qty($after_qty, FALSE, $dec);
+  Row::end();
+  Table::end(1);
   Display::div_end();
   Page::end();
 

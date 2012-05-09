@@ -550,8 +550,8 @@
      */
     public function header() {
       $editable = ($this->order_no == 0);
-      start_outer_table('tablestyle2 width90');
-      table_section(1);
+      Table::startOuter('tablestyle2 width90');
+      Table::section(1);
       if ($editable) {
         if (!isset($_POST['supplier_id']) && Session::i()->getGlobal('creditor')) {
           $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
@@ -563,7 +563,7 @@
           $this->supplier_to_order($_POST['supplier_id']);
         }
         hidden('supplier_id', $this->supplier_id);
-        label_row(_("Supplier:"), $this->supplier_name, 'class="label" name="supplier_name"');
+        Row::label(_("Supplier:"), $this->supplier_name, 'class="label" name="supplier_name"');
       }
       if ($this->supplier_id != get_post('supplier_id', -1)) {
         $old_supp = $this->supplier_id;
@@ -577,7 +577,7 @@
       }
       Session::i()->setGlobal('creditor',$_POST['supplier_id']);
       if (!Bank_Currency::is_company($this->curr_code)) {
-        label_row(_("Supplier Currency:"), $this->curr_code);
+        Row::label(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
       if ($editable) {
@@ -585,17 +585,17 @@
       }
       else {
         hidden('ref', $this->reference);
-        label_row(_("Purchase Order #:"), $this->reference);
+        Row::label(_("Purchase Order #:"), $this->reference);
       }
       Sales_UI::persons_row(_("Sales Person:"), 'salesman', $this->salesman);
-      table_section(2);
+      Table::section(2);
       date_row(_("Order Date:"), 'OrderDate', '', TRUE, 0, 0, 0, NULL, TRUE);
       if (isset($_POST['_OrderDate_changed'])) {
         Ajax::i()->activate('_ex_rate');
       }
       text_row(_("Supplier's Order #:"), 'Requisition', NULL, 16, 15);
       Inv_Location::row(_("Receive Into:"), 'location', NULL, FALSE, TRUE);
-      table_section(3);
+      Table::section(3);
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
         $sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
         $result = DB::query($sql, "could not get location info");
@@ -611,7 +611,7 @@
         }
       }
       textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
-      end_outer_table(); // outer table
+      Table::endOuter(); // outer table
     }
     /**
      * @param bool $editable
@@ -619,7 +619,7 @@
     public function display_items($editable = TRUE) {
       Display::heading(_("Order Items"));
       Display::div_start('items_table');
-      start_table('tablestyle width90');
+      Table::start('tablestyle grid width90');
       $th = array(
         _("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"),
         _('Discount %'), _("Total"), ""
@@ -627,7 +627,7 @@
       if (count($this->line_items)) {
         $th[] = '';
       }
-      table_header($th);
+      Table::header($th);
       $id = find_submit(MODE_EDIT);
       $total = 0;
       $k = 0;
@@ -639,21 +639,21 @@
           if ($po_line->Deleted == FALSE) {
             $line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
             if (!$editable || ($id != $line_no)) {
-              alt_table_row_color($k);
-              label_cell($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
-              label_cell($po_line->description);
-              qty_cell($po_line->quantity, FALSE, Item::qty_dec($po_line->stock_id));
-              qty_cell($po_line->qty_received, FALSE, Item::qty_dec($po_line->stock_id));
-              label_cell($po_line->units);
-              label_cell($po_line->req_del_date);
-              amount_decimal_cell($po_line->price);
-              percent_cell($po_line->discount * 100);
-              amount_cell($line_total);
+
+              Cell::label($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
+              Cell::label($po_line->description);
+              Cell::qty($po_line->quantity, FALSE, Item::qty_dec($po_line->stock_id));
+              Cell::qty($po_line->qty_received, FALSE, Item::qty_dec($po_line->stock_id));
+              Cell::label($po_line->units);
+              Cell::label($po_line->req_del_date);
+              Cell::amountDecimal($po_line->price);
+              Cell::percent($po_line->discount * 100);
+              Cell::amount($line_total);
               if ($editable) {
                 edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
                 delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
               }
-              end_row();
+              Row::end();
             }
             else {
               $this->item_controls($po_line->stock_id);
@@ -667,8 +667,8 @@
       }
       small_amount_row(_("Freight"), 'freight', Num::price_format(get_post('freight', 0)), "colspan=8 class='bold right'", NULL, NULL, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
-      label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
-      end_table(1);
+      Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
+      Table::end(1);
       Display::div_end();
     }
     /**
@@ -676,46 +676,46 @@
      * @param bool $editable
      */
     public function summary($is_self = FALSE, $editable = FALSE) {
-      start_table('tablestyle2 width90');
+      Table::start('tablestyle2 width90');
       echo "<tr class='tablerowhead top'><th colspan=4>";
       Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
       echo "</td></tr>";
-      start_row();
-      label_cells(_("Supplier"), $this->supplier_name, "class='label'");
-      label_cells(_("Reference"), $this->reference, "class='label'");
+      Row::start();
+      Cell::labels(_("Supplier"), $this->supplier_name, "class='label'");
+      Cell::labels(_("Reference"), $this->reference, "class='label'");
       if (!Bank_Currency::is_company($this->curr_code)) {
-        label_cells(_("Order Currency"), $this->curr_code, "class='label'");
+        Cell::labels(_("Order Currency"), $this->curr_code, "class='label'");
       }
       if (!$is_self) {
-        label_cells(_("Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $this->order_no), "class='label'");
+        Cell::labels(_("Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $this->order_no), "class='label'");
       }
-      end_row();
-      start_row();
-      label_cells(_("Date"), $this->orig_order_date, "class='label'");
+      Row::end();
+      Row::start();
+      Cell::labels(_("Date"), $this->orig_order_date, "class='label'");
       if ($editable) {
         if (!isset($_POST['location'])) {
           $_POST['location'] = $this->location;
         }
-        label_cell(_("Deliver Into Location"), "class='label'");
+        Cell::label(_("Deliver Into Location"), "class='label'");
         Inv_Location::cells(NULL, 'location', NULL);
       }
       else {
-        label_cells(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");
+        Cell::labels(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");
       }
-      end_row();
+      Row::end();
       if (!$editable) {
-        label_row(_("Delivery Address"), $this->delivery_address, "class='label'", "colspan=9");
+        Row::label(_("Delivery Address"), $this->delivery_address, "class='label'", "colspan=9");
       }
       if ($this->Comments != "") {
-        label_row(_("Order Comments"), $this->Comments, "class='label'", "colspan=9");
+        Row::label(_("Order Comments"), $this->Comments, "class='label'", "colspan=9");
       }
-      end_table(1);
+      Table::end(1);
     }
     /**
      * @param null $stock_id
      */
     public function item_controls($stock_id = NULL) {
-      start_row();
+      Row::start();
       $dec2 = 0;
       $id = find_submit(MODE_EDIT);
       if (($id != -1) && $stock_id != NULL) {
@@ -730,7 +730,7 @@
         $_POST['description'] = $this->line_items[$id]->description;
         $_POST['units'] = $this->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
-        label_cell($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
+        Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
         textarea_cells(NULL, 'description', NULL, 50, 5);
         Ajax::i()->activate('items_table');
         $qty_rcvd = $this->line_items[$id]->qty_received;
@@ -758,13 +758,13 @@
         $qty_rcvd = '';
       }
       qty_cells(NULL, 'qty', NULL, NULL, NULL, $dec);
-      qty_cell($qty_rcvd, FALSE, $dec);
-      label_cell($_POST['units'], '', 'units');
+      Cell::qty($qty_rcvd, FALSE, $dec);
+      Cell::label($_POST['units'], '', 'units');
       date_cells(NULL, 'req_del_date', '', NULL, 0, 0, 0);
       amount_cells(NULL, 'price', NULL, NULL, NULL, $dec2);
       small_amount_cells(NULL, 'discount', Num::percent_format($_POST['discount']), NULL, NULL, User::percent_dec());
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
-      amount_cell($line_total, FALSE, '', 'line_total');
+      Cell::amount($line_total, FALSE, '', 'line_total');
       if ($id != -1) {
         button_cell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
@@ -773,7 +773,7 @@
       else {
         submit_cells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
-      end_row();
+      Row::end();
     }
     /**
      * @static

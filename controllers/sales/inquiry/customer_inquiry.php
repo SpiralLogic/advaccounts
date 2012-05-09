@@ -20,8 +20,8 @@
   if (!isset($_POST['customer_id'])) {
     $_POST['customer_id'] = Session::i()->getGlobal('debtor');
   }
-  start_table('tablestyle_noborder');
-  start_row();
+  Table::start('tablestyle_noborder');
+  Row::start();
   ref_cells(_("Ref"), 'reference', '', NULL, '', TRUE);
   Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
   date_cells(_("From:"), 'TransAfterDate', '', NULL, -30);
@@ -31,8 +31,8 @@
   }
   Debtor_Payment::allocations_select(NULL, 'filterType', $_POST['filterType'], TRUE);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  end_row();
-  end_table();
+  Row::end();
+  Table::end();
   Session::i()->setGlobal('debtor',$_POST['customer_id']);  Display::div_start('totals_tbl');
   if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
     $customer_record = Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
@@ -86,11 +86,11 @@
 		trans.debtor_no AND trans.branch_id = branch.branch_id";
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $sql = "SELECT * FROM debtor_trans_view WHERE ";
-    foreach ($searchArray as $ajaxsearch) {
+    foreach ($searchArray as $key => $ajaxsearch) {
       if (empty($ajaxsearch)) {
         continue;
       }
-      $sql .= ($ajaxsearch == $searchArray[0]) ? " (" : " AND (";
+      $sql .= ($key==0) ? " (" : " AND (";
       if ($ajaxsearch[0] == "$") {
         if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
           $ajaxsearch = (substr($ajaxsearch, 0, -1));
@@ -105,12 +105,12 @@
       if (is_numeric($ajaxsearch)) {
         $sql .= " debtor_no = $ajaxsearch OR ";
       }
-      $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-      $sql .= " name LIKE $ajaxsearch ";
+      $search_value = DB::quote("%" . $ajaxsearch . "%");
+      $sql .= " name LIKE $search_value ";
       if (is_numeric($ajaxsearch)) {
-        $sql .= " OR trans_no LIKE $ajaxsearch OR order_ LIKE $ajaxsearch ";
+        $sql .= " OR trans_no LIKE $search_value OR order_ LIKE $search_value ";
       }
-      $sql .= " OR reference LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
+      $sql .= " OR reference LIKE $search_value OR br_name LIKE $search_value) ";
     }
     if (isset($filter) && $filter) {
       $sql .= $filter;
@@ -188,7 +188,7 @@
     _("Customer") => array('ord' => 'asc'),
     array('type' => 'skip'),
     _("Branch") => array('ord' => ''),
-    _("Currency") => array('align' => 'center'),
+    _("Currency") => array('align' => 'center','type' => 'skip'),
     _("Debit") => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
@@ -211,11 +211,16 @@
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
-      return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-        DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
-    }
-    ),
+          'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
+          return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+            DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
+        }
+        ),array(
+              'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
+              return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+                DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_no'], ICON_MONEY) : '';
+            }
+            ),
     array(
       'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
       $str = '';
