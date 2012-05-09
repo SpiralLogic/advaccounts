@@ -122,7 +122,7 @@
 
      */
     protected function menu_header() {
-      echo "<div class='ajaxmark'><img alt='Ajax Loading' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
+      echo "<div class='ajaxmark'><img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
       echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " .
         User::i()
           ->name . "</p>\n";

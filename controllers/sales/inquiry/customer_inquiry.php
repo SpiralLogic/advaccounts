@@ -86,11 +86,11 @@
 		trans.debtor_no AND trans.branch_id = branch.branch_id";
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $sql = "SELECT * FROM debtor_trans_view WHERE ";
-    foreach ($searchArray as $ajaxsearch) {
+    foreach ($searchArray as $key => $ajaxsearch) {
       if (empty($ajaxsearch)) {
         continue;
       }
-      $sql .= ($ajaxsearch == $searchArray[0]) ? " (" : " AND (";
+      $sql .= ($key==0) ? " (" : " AND (";
       if ($ajaxsearch[0] == "$") {
         if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
           $ajaxsearch = (substr($ajaxsearch, 0, -1));
@@ -105,12 +105,12 @@
       if (is_numeric($ajaxsearch)) {
         $sql .= " debtor_no = $ajaxsearch OR ";
       }
-      $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-      $sql .= " name LIKE $ajaxsearch ";
+      $search_value = DB::quote("%" . $ajaxsearch . "%");
+      $sql .= " name LIKE $search_value ";
       if (is_numeric($ajaxsearch)) {
-        $sql .= " OR trans_no LIKE $ajaxsearch OR order_ LIKE $ajaxsearch ";
+        $sql .= " OR trans_no LIKE $search_value OR order_ LIKE $search_value ";
       }
-      $sql .= " OR reference LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
+      $sql .= " OR reference LIKE $search_value OR br_name LIKE $search_value) ";
     }
     if (isset($filter) && $filter) {
       $sql .= $filter;

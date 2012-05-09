@@ -24,7 +24,6 @@
 			});
 		};
 		this.sidemenuOn();
-
 		this.sidemenuOff = function () {
 			$this.menu.unbind('mouseenter mouseleave').accordion("disable");
 			$this.menu.find("h3").one("click", function () {
@@ -68,8 +67,7 @@
 				searchInput.val('').detach();
 				$current.show();
 				$this.sidemenuOn();
-				if (event.type != "blur"){
-				$this.sidemenuHide()}
+
 			}
 		});
 		$quickCustomer.focus(

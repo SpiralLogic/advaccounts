@@ -1183,7 +1183,7 @@
             $emailAddress = $_GET['Email'];
           }
 
-          $mail->to('admin@advancedgroup.com.au', str_replace(",", "", $myrow['DebtorName']));
+          $mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
           $mail->subject($subject);
           $mail->text($msg . $sender);
           $mail->attachment($fname);
