@@ -65,13 +65,12 @@ Behaviour.register({
 	},
 	'.allocateAll':function (e) {
 		e.onclick = function () {
-
-			Adv.alloc.all(this.name.substr(5));
+			Adv.alloc.all(this.name.substr(5));return false;
 		};
 	},
 	'.allocateNone':function (e) {
 		e.onclick = function () {
-			Adv.alloc.none(this.name.substr(5));
+			Adv.alloc.none(this.name.substr(5));return false;
 		};
 	}
 });

@@ -76,6 +76,8 @@
      * @var bool
      */
     public $change_password = FALSE;
+
+    public $selectedApp;
     /**
      * @var
      */

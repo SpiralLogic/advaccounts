@@ -29,7 +29,7 @@
      * @var \Menu
      */
     public $menu;
-
+/** @var User $user */
     static $user;
     /***
      * @var ADVAccounting
@@ -85,8 +85,8 @@
       if ($this->selected !== NULL && is_object($this->selected)) {
         return $this->selected;
       }
-      $path           = explode('/', $_SERVER['SCRIPT_NAME']);
-      $app_id         = $path[0];
+      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
+      $app_id         = $path[1];
       $this->selected = $this->get_application($app_id);
       if (!$this->selected) {
         $app_id         = User::i()->startup_tab();
@@ -110,7 +110,11 @@
      *
      * @return bool
      */
-    public function set_selected($app_id) { return $this->selected = $this->get_application($app_id); }
+    public function set_selected($app_id) {
+      static::$user->selectedApp = $this->get_application($app_id);
+      $this->selected = static::$user->selectedApp;
+      return $this->selected;
+    }
 
     /**
      * @static
@@ -120,6 +124,7 @@
       if (static::$i === FALSE) {
         static::init();
       }
+
       return static::$i;
     }
     /**
@@ -142,6 +147,7 @@
       }
 
       static::$i = Cache::get('App');
+
       if (static::$i === FALSE) {
         static::refresh();
       }
@@ -154,7 +160,7 @@
         define('BUILD_VERSION', static::$i->buildversion);
       }
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
-    // logout.php is the only page we should have always
+      // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         static::checkLogin();
@@ -253,7 +259,6 @@
       if (!Session::checkUserAgent()) {
         static::showLogin();
       }
-
       static::$user = User::i();
       if (Input::post("user_name")) {
         self::login();
@@ -264,6 +269,7 @@
       if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== FALSE) {
         throw new ErrorException("Dev no working.");
       }
+      static::$i->selected  = static::$user->selectedApp;
       if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
       }
