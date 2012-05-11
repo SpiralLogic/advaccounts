@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   define("ICON_EDIT", "edit.gif");
   define("ICON_DELETE", "delete.gif");
   define("ICON_ADD", "ok.gif");
@@ -459,4 +458,3 @@
   class DBInsertException extends ADV\Core\DB\DBException {
 
   }
-
