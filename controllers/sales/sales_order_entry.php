@@ -509,6 +509,7 @@
     if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
       $order = new Sales_Order(ST_SALESQUOTE, array($trans_no));
       $doc = clone($order);
+      $doc->source_no = $trans_no;
       $order->finish();
       $doc->convertToOrder();
     }
