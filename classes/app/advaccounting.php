@@ -29,7 +29,7 @@
      * @var \Menu
      */
     public $menu;
-/** @var User $user */
+    /** @var User $user */
     static $user;
     /***
      * @var ADVAccounting
@@ -85,11 +85,11 @@
       if ($this->selected !== NULL && is_object($this->selected)) {
         return $this->selected;
       }
-      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      $app_id         = $path[1];
+      $path = explode('/', $_SERVER['DOCUMENT_URI']);
+      $app_id = $path[1];
       $this->selected = $this->get_application($app_id);
       if (!$this->selected) {
-        $app_id         = User::i()->startup_tab();
+        $app_id = User::i()->startup_tab();
         $this->selected = $this->get_application($app_id);
       }
       if (!$this->selected || !is_object($this->selected)) {
@@ -267,9 +267,9 @@
         static::showLogin();
       }
       if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== FALSE) {
-        throw new ErrorException("Dev no working.");
+        Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
       }
-      static::$i->selected  = static::$user->selectedApp;
+      static::$i->selected = static::$user->selectedApp;
       if (static::$user->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == FALSE) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
       }

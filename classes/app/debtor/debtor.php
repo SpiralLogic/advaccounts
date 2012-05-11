@@ -427,15 +427,11 @@ JS;
      */
     static public function search($terms) {
       $data = array();
-      $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "levenshtein(name,".DB::quote($terms) . ") as weight");
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
-        $sql->from('debtors')->where('name LIKE ', trim($terms)."%");
-      $other_terms = explode(' ',$terms);
-      foreach ($other_terms as $term){
-        if (strlen($term)>3)
-        $sql->or_where('name LIKE', '%'. trim($term) . "%");
-      }
 
+      $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
+        ->from('debtors')->where('name LIKE ', trim($terms)."%")->or_where('name LIKE ', trim($terms))
+        ->or_where('name LIKE', '%'. str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
         $sql->or_where('debtor_no LIKE', "$terms%");
       }
