@@ -183,7 +183,7 @@
       else {
         $heading = _("GL Items for this Credit Note");
       }
-      Table::startOuter('tablestyle2 width90');
+      Table::startOuter('tablestyle2 width95');
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
         if ($qes !== FALSE) {

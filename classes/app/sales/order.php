@@ -255,6 +255,7 @@
               $line = &$this->line_items[$line_no];
               $line->src_id = $line->id; // save src line ids for update
               $line->qty_dispatched = $line->quantity - $line->qty_done;
+
             }
           }
         }
@@ -339,6 +340,7 @@
       }
       if ($this->trans_type == ST_SALESORDER) {
         $this->order_no = $trans_no[0];
+
       }
       $this->credit = Debtor::get_credit($this->customer_id);
     }
@@ -729,20 +731,31 @@
       $del_date = Dates::date2sql($this->due_date);
       $order_type = 0; // this is default on new order
       $sql
-        = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, ord_date,
+        = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
 			order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 			contact_email, freight_cost, from_stk_loc, delivery_date)
-			VALUES (" . DB::escape($order_no) . "," .
-        DB::escape($order_type)
-        . "," . DB::escape($this->customer_id) . ", " .
+			VALUES (" .
+        DB::escape($order_no) . "," .
+        DB::escape($order_type). "," .
+        DB::escape($this->customer_id) . ", " .
         DB::escape($this->trans_type) . "," .
         DB::escape($this->Branch) . ", " .
         DB::escape($this->cust_ref) . "," .
         DB::escape($this->reference) . "," .
         DB::escape($this->salesman) . "," .
-        DB::escape($this->Comments) . ",'" .
+        DB::escape($this->Comments) . "," .
+        DB::escape($this->source_no) . ",'" .
         Dates::date2sql($this->document_date) . "', " .
-        DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
+        DB::escape($this->sales_type) . ", " .
+        DB::escape($this->ship_via) . "," .
+        DB::escape($this->deliver_to) . "," .
+        DB::escape($this->delivery_address) . ", " .
+        DB::escape($this->name) . ", " .
+        DB::escape($this->phone) . ", " .
+        DB::escape($this->email) . ", " .
+        DB::escape($this->freight_cost) . ", " .
+        DB::escape($this->location) . ", " .
+        DB::escape($del_date) . ")";
       DB::query($sql, "order Cannot be Added");
       $this->trans_no = array($order_no => 0);
       $st_ids = array();
@@ -811,6 +824,7 @@
       $this->reference = $myrow["reference"];
       $this->salesman = $myrow["salesman"];
       $this->Comments = $myrow["comments"];
+      $this->source_no = $myrow["source_no"];
       $this->due_date = Dates::sql2date($myrow["delivery_date"]);
       $this->document_date = Dates::sql2date($myrow["ord_date"]);
       $result = Sales_Order::get_details($order_no, $this->trans_type);
@@ -1004,7 +1018,7 @@
       $this->trans_type = ST_SALESORDER;
       $this->reference = Ref::get_next($this->trans_type);
       $this->document_date = $this->due_date = Dates::new_doc_date();
-      $this->Comments .= "\n\n" . _("Sales Quotation") . " #" . $this->order_no;
+      $this->Comments .= "\n\n" . _("Sales Quotation") . " #" . $this->source_no;
       $this->trans_no = 0;
       $this->order_no = 0;
       $this->generateID();
