@@ -96,7 +96,7 @@
     $so_type = $order->so_type;
     $trans_type = $order->trans_type;
     Dates::new_doc_date($order->document_date);
-    Session::i()->setGlobal('debtor',$order->customer_id);
+    Session::i()->setGlobal('debtor', $order->customer_id);
     $order->write(1);
     $jobsboard_order = clone ($order);
     $trans_no = $jobsboard_order->trans_no = key($order->trans_no);
@@ -271,7 +271,7 @@
   }
   else {
     Event::warning($customer_error);
-    Session::i()->setGlobal('debtor',NULL);
+    Session::i()->setGlobal('debtor', NULL);
     Page::footer_exit();
   }
   Display::div_end();
@@ -303,7 +303,7 @@
         $trans_name = "Order";
     }
 
-    $customer = new Debtor(Session::i()->getGlobal('debtor',0));
+    $customer = new Debtor(Session::i()->getGlobal('debtor', 0));
     $emails = $customer->getEmailAddresses();
     Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
     Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);

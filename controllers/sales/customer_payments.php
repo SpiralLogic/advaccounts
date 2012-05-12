@@ -13,14 +13,13 @@
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (list_updated('branch_id')) {
+  $_POST['customer_id'] = Input::post_get('customer_id', FALSE);
+  if (list_updated('branch_id') || !$_POST['customer_id']) {
     // when branch is selected via external editor also customer can change
     $br = Sales_Branch::get(get_post('branch_id'));
     $_POST['customer_id'] = $br['debtor_no'];
     Ajax::i()->activate('customer_id');
   }
-  if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
   if (!isset($_POST['DateBanked'])) {
     $_POST['DateBanked'] = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
@@ -45,7 +44,7 @@
   if (isset($_POST['_DateBanked_changed'])) {
     Ajax::i()->activate('_ex_rate');
   }
-  if (Input::post('customer_id') || list_updated('bank_account')) {
+  if (Input::has_post('customer_id') || list_updated('bank_account')) {
     Ajax::i()->activate('_page_body');
   }
   if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process(ST_CUSTPAYMENT)) {
@@ -79,7 +78,7 @@
   }
   Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
   Debtor_Payment::read_customer_data($_POST['customer_id']);
-  Session::i()->setGlobal('debtor',$_POST['customer_id']);
+  Session::i()->setGlobal('debtor', $_POST['customer_id']);
   if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
     Table::endOuter();
     Event::error(_("This customer account is on hold."));

@@ -309,7 +309,7 @@
      * @return void
      */
     protected function _defaults() {
-      $this->payment_terms =$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
+      $this->payment_terms = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
       $this->sales_type = $this->credit_status = 1;
       $this->name = $this->address = $this->email = $this->tax_id = $this->notes = $this->debtor_ref = '';
 
@@ -379,7 +379,6 @@
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
     /**
-     *
      * @return void
      */
     protected function _setDefaults() {
@@ -430,8 +429,8 @@ JS;
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
 
       $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
-        ->from('debtors')->where('name LIKE ', trim($terms)."%")->or_where('name LIKE ', trim($terms))
-        ->or_where('name LIKE', '%'. str_replace(' ', '%', trim($terms)) . "%");
+        ->from('debtors')->where('name LIKE ', trim($terms) . "%")->or_where('name LIKE ', trim($terms))
+        ->or_where('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
         $sql->or_where('debtor_no LIKE', "$terms%");
       }
@@ -655,13 +654,16 @@ JS;
         $value = $_POST['customer'];
         JS::set_focus('stock_id');
       }
-      elseif (!$value && Session::i()->getGlobal('debtor')) {
-        $_POST['customer_id'] = Session::i()->getGlobal('debtor');
-        $value = Debtor::get_name(Session::i()->getGlobal('debtor'));
-      }
       elseif (!$value) {
-        JS::set_focus('customer');
-        $focus = TRUE;
+        $value = Session::i()->getGlobal('debtor');
+        if ($value) {
+          $_POST['customer_id'] = $value;
+          $value = Debtor::get_name($value);
+        }
+        else {
+          JS::set_focus('customer');
+          $focus = TRUE;
+        }
       }
       hidden('customer_id');
       UI::search('customer', array('url' => '/contacts/customers.php', 'name' => 'customer', 'focus' => $focus, 'value' => $value));
@@ -803,6 +805,7 @@ JS;
     }
     /**
      * @param $customer_record
+     *
      * @return void
      */
     static public function display_summary($customer_record) {
