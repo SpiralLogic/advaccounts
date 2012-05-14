@@ -127,7 +127,7 @@
 				'to' => ''
 			)
 		);
-		$rep = new ADVReport(_('Price Listing'), "PriceListing", User::pagesize());
+		$rep = new ADVReport(_('Price Listing'), "PriceListing", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

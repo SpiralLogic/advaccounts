@@ -217,7 +217,7 @@
 					'text' => _("Year"), 'from' => $year, 'to' => ''), 2 => array(
 					'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''));
 		}
-		$rep = new ADVReport(_('Annual Expense Breakdown'), "AnnualBreakDown", User::pagesize());
+		$rep = new ADVReport(_('Annual Expense Breakdown'), "AnnualBreakDown", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

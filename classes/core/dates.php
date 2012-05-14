@@ -118,7 +118,7 @@
       if (isset($date) && $date != '') {
         $_SESSION['_default_date'] = $date;
       }
-      if (!isset($_SESSION['_default_date']) || !\User::sticky_date()) {
+      if (!isset($_SESSION['_default_date']) || !\User::sticky_doc_date()) {
         $_SESSION['_default_date'] = Dates::today();
       }
       return $_SESSION['_default_date'];

@@ -133,7 +133,7 @@
 		if ($convert) {
 			$headers[2] = _('currency');
 		}
-		$rep = new ADVReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::pagesize());
+		$rep = new ADVReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

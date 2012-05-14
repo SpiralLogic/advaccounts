@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,6 +12,8 @@
 
    */
   class Auth {
+
+
     /**
      * @var
      */
@@ -45,7 +46,6 @@
     }
     /**
      * @internal param $password
-     *
      * @return string
      */
     public function hash_password() {
@@ -57,7 +57,6 @@
      *
      * @internal param $user_id
      * @internal param $password
-     *
      * @return bool|mixed
      */
     public function check_user_password($username) {
@@ -152,7 +151,9 @@
      */
     public function isBruteForce() {
       $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP='
-                            . \DB::escape(\Users::get_ip()));
+        . \DB::escape(\Users::get_ip()));
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
+
+
   }

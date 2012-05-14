@@ -38,7 +38,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep = new ADVReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
+			$rep = new ADVReport(_('TAX INVOICE'), "InvoiceBulk", User::page_size());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -64,7 +64,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 					$sales_order = null;
 				}
 				if ($email == 1) {
-					$rep = new ADVReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::page_size());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($j == ST_SALESINVOICE) {

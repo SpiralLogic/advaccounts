@@ -35,7 +35,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : 
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new ADVReport(_('WORK ORDER'), "WorkOrderBulk", User::pagesize());
+				$rep = new ADVReport(_('WORK ORDER'), "WorkOrderBulk", User::page_size());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, null, $aligns);
@@ -47,7 +47,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : 
 				}
 				$date_ = Dates::sql2date($myrow["date_"]);
 				if ($email == 1) {
-					$rep = new ADVReport("", "", User::pagesize());
+					$rep = new ADVReport("", "", User::page_size());
 					$rep->currency = $cur;
 					$rep->Font();
 					$rep->title = _('WORK ORDER');

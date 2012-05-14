@@ -74,7 +74,7 @@
 				'text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''
 			)
 		);
-		$rep = new ADVReport(_('Audit Trail'), "AuditTrail", User::pagesize());
+		$rep = new ADVReport(_('Audit Trail'), "AuditTrail", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

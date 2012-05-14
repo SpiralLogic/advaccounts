@@ -37,10 +37,10 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
 			if ($packing_slip == 0) {
-				$rep = new ADVReport(_('DELIVERY'), "DeliveryNoteBulk", User::pagesize());
+				$rep = new ADVReport(_('DELIVERY'), "DeliveryNoteBulk", User::page_size());
 			}
 			else {
-				$rep = new ADVReport(_('PACKING SLIP'), "PackingSlipBulk", User::pagesize());
+				$rep = new ADVReport(_('PACKING SLIP'), "PackingSlipBulk", User::page_size());
 			}
 			$rep->currency = $cur;
 			$rep->Font();
@@ -54,7 +54,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 			$branch = Sales_Branch::get($myrow["branch_id"]);
 			$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
-				$rep = new ADVReport("", "", User::pagesize());
+				$rep = new ADVReport("", "", User::page_size());
 				$rep->currency = $cur;
 				$rep->Font();
 				if ($packing_slip == 0) {

@@ -137,7 +137,7 @@ Page::set_security(SA_SALESBULKREP);
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-		$rep = new ADVReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
+		$rep = new ADVReport(_('Order Status Listing'), "OrderStatusListing", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();

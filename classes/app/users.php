@@ -76,14 +76,14 @@
      * @param $qty_dec
      * @param $exrate_dec
      * @param $percent_dec
-     * @param $showgl
-     * @param $showcodes
+     * @param $show_gl
+     * @param $show_codes
      * @param $date_format
      * @param $date_sep
      * @param $tho_sep
      * @param $dec_sep
      * @param $theme
-     * @param $pagesize
+     * @param $page_size
      * @param $show_hints
      * @param $profile
      * @param $rep_popup
@@ -93,20 +93,20 @@
      * @param $stickydate
      * @param $startup_tab
      */
-    static public function  update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
+    static public function  update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
       $sql = "UPDATE users SET
-				prices_dec=" . DB::escape($price_dec) . ",
+				price_dec=" . DB::escape($price_dec) . ",
 				qty_dec=" . DB::escape($qty_dec) . ",
-				rates_dec=" . DB::escape($exrate_dec) . ",
+				exrate_dec=" . DB::escape($exrate_dec) . ",
 				percent_dec=" . DB::escape($percent_dec) . ",
-				show_gl=" . DB::escape($showgl) . ",
-				show_codes=" . DB::escape($showcodes) . ",
+				show_gl=" . DB::escape($show_gl) . ",
+				show_codes=" . DB::escape($show_codes) . ",
 				date_format=" . DB::escape($date_format) . ",
 				date_sep=" . DB::escape($date_sep) . ",
 				tho_sep=" . DB::escape($tho_sep) . ",
 				dec_sep=" . DB::escape($dec_sep) . ",
 				theme=" . DB::escape($theme) . ",
-				page_size=" . DB::escape($pagesize) . ",
+				page_size=" . DB::escape($page_size) . ",
 				show_hints=" . DB::escape($show_hints) . ",
 				print_profile=" . DB::escape($profile) . ",
 				rep_popup=" . DB::escape($rep_popup) . ",

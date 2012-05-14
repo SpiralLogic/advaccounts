@@ -66,7 +66,7 @@ Page::set_security(SA_GLANALYTIC);
 				$params = array(
 					0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to));
 			}
-			$rep = new ADVReport(_('Trial Balance'), "TrialBalance", User::pagesize());
+			$rep = new ADVReport(_('Trial Balance'), "TrialBalance", User::page_size());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 			$rep->Header();

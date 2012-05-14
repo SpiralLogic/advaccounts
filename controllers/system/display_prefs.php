@@ -65,12 +65,12 @@
   Table::section(2);
   Table::sectionTitle(_("Miscellaneous"));
   check_row(_("Show hints for new users:"), 'show_hints', User::hints());
-  check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
+  check_row(_("Show GL Information:"), 'show_gl', User::show_gl());
   check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
   Users::themes_row(_("Theme:"), "theme", User::theme());
   /* The array $themes is set up in config.php for modifications
       possible separators can be added by modifying the array definition by editing that file */
-  Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::pagesize());
+  Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::page_size());
   Users::tabs_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
   /* The array Config::get('print_paper_sizes') is set up in config.php for modifications
       possible separators can be added by modifying the array definition by editing that file */
@@ -81,7 +81,7 @@
   check_row(_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(), FALSE, _('Set this option to on if your browser directly supports pdf files'));
   check_row(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), FALSE, _('Set this option to on for using icons instead of text links'));
   text_row_ex(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
-  check_row(_("Remember last document date:"), 'sticky_doc_date', User::sticky_date(), FALSE, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+  check_row(_("Remember last document date:"), 'sticky_doc_date', User::sticky_doc_date(), FALSE, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
   Table::endOuter(1);
   submit_center('setprefs', _("Update"), TRUE, '', 'default');
   end_form(2);

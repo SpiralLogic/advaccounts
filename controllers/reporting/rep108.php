@@ -73,7 +73,7 @@
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     if ($email == 0) {
-      $rep = new ADVReport(_('STATEMENT'), "StatementBulk", User::pagesize());
+      $rep = new ADVReport(_('STATEMENT'), "StatementBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, NULL, $aligns);
@@ -115,7 +115,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         continue;
       }
       if ($email == 1) {
-        $rep = new ADVReport("", "", User::pagesize());
+        $rep = new ADVReport("", "", User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         $rep->title = _('STATEMENT');

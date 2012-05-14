@@ -108,7 +108,7 @@ Page::set_security(SA_ITEMSVALREP);
 				'from' => $loc,
 				'to' => '')
 		);
-		$rep = new ADVReport(_('Inventory Valuation Report'), "InventoryValReport", User::pagesize());
+		$rep = new ADVReport(_('Inventory Valuation Report'), "InventoryValReport", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

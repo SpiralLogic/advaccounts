@@ -57,7 +57,7 @@ Page::set_security(SA_BOMREP);
 		$params = array(
 			0 => $comments, 1 => array(
 				'text' => _('Component'), 'from' => $frompart, 'to' => $topart));
-		$rep = new ADVReport(_('Bill of Material Listing'), "BillOfMaterial", User::pagesize());
+		$rep = new ADVReport(_('Bill of Material Listing'), "BillOfMaterial", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

@@ -137,7 +137,7 @@ Page::set_security(SA_ITEMSANALYTIC);
 					'from' => $loc,
 					'to' => '')
 			);
-			$rep = new ADVReport(_('Inventory Planning Report'), "InventoryPlanning", User::pagesize());
+			$rep = new ADVReport(_('Inventory Planning Report'), "InventoryPlanning", User::page_size());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();

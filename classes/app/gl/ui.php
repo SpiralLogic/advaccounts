@@ -88,7 +88,7 @@
      * @return string
      */
     static public function  view($type, $trans_no, $label = "", $force = FALSE, $class = '', $id = '') {
-      if (!$force && !User::show_gl_info()) {
+      if (!$force && !User::show_gl()) {
         return "";
       }
       $icon = FALSE;

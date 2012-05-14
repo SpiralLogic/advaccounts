@@ -131,7 +131,7 @@ Page::set_security(SA_ITEMSVALREP);
 					'to' => ''
 				)
 			);
-			$rep = new ADVReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
+			$rep = new ADVReport(_('Stock Check Sheets'), "StockCheckSheet", User::page_size());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();

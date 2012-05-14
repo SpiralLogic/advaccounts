@@ -84,7 +84,7 @@
 		$headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
 		$aligns = array('left', 'left', 'left', 'right');
 		$params = array(0 => $comments);
-		$rep = new ADVReport(_('Chart of Accounts'), "ChartOfAccounts", User::pagesize());
+		$rep = new ADVReport(_('Chart of Accounts'), "ChartOfAccounts", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

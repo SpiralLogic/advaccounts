@@ -88,7 +88,7 @@ Page::set_security(SA_SALESMANREP);
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-		$rep = new ADVReport(_('Salesman Listing'), "SalesmanListing", User::pagesize());
+		$rep = new ADVReport(_('Salesman Listing'), "SalesmanListing", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();

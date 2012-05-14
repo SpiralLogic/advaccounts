@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class User {
+
   use \ADV\Core\Traits\Hook;
 
     /***
@@ -82,6 +82,8 @@
      * @var
      */
     protected $access_sections;
+
+    protected $_hash;
     /**
      * @var null
      */
@@ -203,8 +205,8 @@
     }
     public static function addLog() {
       DB::insert('user_login_log')->values(array(
-                                                'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
-                                           ))->exec();
+        'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
+      ))->exec();
     }
     /**
      * @param $page_level
@@ -243,14 +245,14 @@
      * @param $qty_dec
      * @param $exrate_dec
      * @param $percent_dec
-     * @param $showgl
-     * @param $showcodes
+     * @param $show_gl
+     * @param $show_codes
      * @param $date_format
      * @param $date_sep
      * @param $tho_sep
      * @param $dec_sep
      * @param $theme
-     * @param $pagesize
+     * @param $page_size
      * @param $show_hints
      * @param $profile
      * @param $rep_popup
@@ -260,16 +262,16 @@
      * @param $stickydate
      * @param $startup_tab
      */
-    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
+    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
       $user = array(
-        'prices_dec' => $price_dec, 'qty_dec' => $qty_dec, 'rates_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
-        'show_gl' => $showgl, 'show_codes' => $showcodes, 'date_format' => $date_format, 'date_sep' => $date_sep,
-        'tho_sep' => $tho_sep, 'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $pagesize, 'show_hints' => $show_hints,
+        'price_dec' => $price_dec, 'qty_dec' => $qty_dec, 'exrate_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
+        'show_gl' => $show_gl, 'show_codes' => $show_codes, 'date_format' => $date_format, 'date_sep' => $date_sep,
+        'tho_sep' => $tho_sep, 'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $page_size, 'show_hints' => $show_hints,
         'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size, 'graphic_links' => $graphic_links,
         'language' => $lang, 'sticky_doc_date' => $stickydate, 'startup_tab' => $startup_tab
       );
       if (!Config::get('demo_mode')) {
-        Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+        Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
       }
       $this->prefs = new userPrefs(Users::get($this->user));
     }
@@ -384,8 +386,8 @@
      * @static
      * @return mixed
      */
-    static public function  show_gl_info() {
-      return static::prefs()->show_gl_info();
+    static public function  show_gl() {
+      return static::prefs()->show_gl();
     }
     /**
      * @static
@@ -440,7 +442,7 @@
      * @static
      * @return mixed
      */
-    static public function  pagesize() {
+    static public function  page_size() {
       return static::prefs()->get_pagesize();
     }
     /**
@@ -482,8 +484,8 @@
      * @static
      * @return mixed
      */
-    static public function  sticky_date() {
-      return static::prefs()->sticky_date();
+    static public function  sticky_doc_date() {
+      return static::prefs()->sticky_doc_date();
     }
     /**
      * @static
@@ -501,6 +503,9 @@
     public static function logout() {
       Session::kill();
       static::i()->logged = FALSE;
+    }
+    public function getHash() {
+      return $this->_hash;
     }
   }
 

@@ -63,7 +63,7 @@ Page::set_security(SA_BANKREP);
 			} else {
 				include_once(APPPATH . "reports/pdf.php");
 			}
-			$rep = new ADVReport(_('Bank Statement'), "BankStatement", User::pagesize());
+			$rep = new ADVReport(_('Bank Statement'), "BankStatement", User::page_size());
 			$dec = User::price_dec();
 			$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
 			$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');

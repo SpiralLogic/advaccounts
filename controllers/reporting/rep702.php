@@ -37,7 +37,7 @@ Page::set_security(SA_GLANALYTIC);
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
 					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
-			$rep = new ADVReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
+			$rep = new ADVReport(_('List of Journal Entries'), "JournalEntries", User::page_size());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();

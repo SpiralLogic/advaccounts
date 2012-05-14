@@ -67,7 +67,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 				'from' => $from,
 				'to' => $to)
 		);
-		$rep = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
+		$rep = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

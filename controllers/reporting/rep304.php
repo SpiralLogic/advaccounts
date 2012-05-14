@@ -138,7 +138,7 @@ Page::set_security(SA_SALESANALYTIC);
 				'from' => $fromc,
 				'to' => '')
 		);
-		$rep = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
+		$rep = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::page_size());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

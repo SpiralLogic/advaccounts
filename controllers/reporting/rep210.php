@@ -81,7 +81,7 @@
 			$params = array('comments' => $comments);
 			$cur = DB_Company::get_pref('curr_default');
 			if ($email == 0) {
-				$rep = new ADVReport(_('REMITTANCE'), "RemittanceBulk", User::pagesize());
+				$rep = new ADVReport(_('REMITTANCE'), "RemittanceBulk", User::page_size());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->Info($params, $cols, NULL, $aligns);
@@ -104,7 +104,7 @@
 					$baccount = Bank_Account::get_default($myrow['curr_code']);
 					$params['bankaccount'] = $baccount['id'];
 					if ($email == 1) {
-						$rep = new ADVReport("", "", User::pagesize());
+						$rep = new ADVReport("", "", User::page_size());
 						$rep->currency = $cur;
 						$rep->Font();
 						$rep->title = _('REMITTANCE');
