@@ -23,6 +23,8 @@
         'javascript:var%20s,b=document.getElementsByTagName("body")[0];if(!window.jQuery){s=document.createElement("script");s.setAttribute("src","http://jquery.com/src/jquery-latest.js");b.appendChild(s)};s=document.createElement("script");s.setAttribute("src","https://advanced.sorijen.net.au:2223/js/js2/addfromsite.js?"+Math.floor(Math.random()*1000000));b.appendChild(s);;void(s);',
         SA_OPEN);$this->add_rapp_function(0, "ADVAccounts Issue",
         "javascript:(function () { var e = document.createElement(&#39;script&#39;); e.setAttribute(&#39;type&#39;, &#39;text/javascript&#39;); e.setAttribute(&#39;src&#39;, &#39;http://advanced.advancedgroup.com.au:8090/_resources/js/charisma-bookmarklet-min.js&#39;); document.body.appendChild(e); }());",
+        SA_OPEN);$this->add_rapp_function(0, "ADVAccounts Issue Tracker",
+        "http://dev.advanced.advancedgroup.com.au:8090/issues",
         SA_OPEN);
       $this->add_rapp_function(0, "New Message", '/messages/messages', SA_OPEN);
     }
