@@ -7,6 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  if (strpos($_SERVER['HTTP_HOST'], 'dev.advaccounts') === 0) {
+    header('Location: http://dev.advanced.advancedgroup.com.au'.$_SERVER['DOCUMENT_URI']);
+  }
+  elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== FALSE) {
+    header('Location: http://advanced.advancedgroup.com.au'.$_SERVER['DOCUMENT_URI']);
+  }
+
   if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
@@ -92,8 +99,8 @@
   }
   else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : FALSE;
-    $index      = $controller == $_SERVER['SCRIPT_NAME'];
-    $show404    = FALSE;
+    $index = $controller == $_SERVER['SCRIPT_NAME'];
+    $show404 = FALSE;
     if (!$index && $controller) {
       $controller = ltrim($controller, '/');
       // substr_compare returns 0 if true
@@ -101,12 +108,13 @@
       $controller = DOCROOT . 'controllers' . DS . $controller;
       if (file_exists($controller)) {
         include($controller);
-      } else {
+      }
+      else {
         $show404 = TRUE;
       }
     }
     if ($show404) {
-     header('HTTP/1.0 404 Not Found');
+      header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
     if ($index || $show404) {
