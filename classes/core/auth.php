@@ -13,7 +13,6 @@
    */
   class Auth {
 
-
     /**
      * @var
      */
@@ -40,6 +39,7 @@
     public function update_password($id, $password) {
       \DB::update('users')->value('password', $this->hash_password($password))
         ->value('user_id', $this->username)
+        ->value('hash', $this->makeHash($password,$id))
         ->value('change_password', 0)
         ->where('id=', $id)->exec();
       session_regenerate_id();
@@ -66,6 +66,10 @@
         $result = FALSE;
       }
       else {
+        if (!isset($result['hash']) || !$result['hash']) {
+          $this->update_password($result['id'],$this->password);
+          $result['hash'] = $this->makeHash($password, $result['id']);
+        }
         unset($result['password']);
       }
       \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))
@@ -154,6 +158,7 @@
         . \DB::escape(\Users::get_ip()));
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
-
-
+    static function makeHash($password, $user_id) {
+      return crypt($password, $user_id);
+    }
   }

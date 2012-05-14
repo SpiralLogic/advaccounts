@@ -23,25 +23,15 @@
      * @param $rep_popup
      * @param $pos
      */
-    static public function  add($user_id, $real_name, $password, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
-      $sql = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
+    static public function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
 				VALUES (" . DB::escape($user_id) . ",
-				" . DB::escape($real_name) . ", " . DB::escape($password) . "," . DB::escape($phone) . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . " )";
+				" . DB::escape($real_name) . ", " . DB::escape($phone) . "," . DB::escape($email) . ", " .
+        DB::escape($role_id) . ", " .
+        DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . "," . DB::escape($hash) . " )";
       DB::query($sql, "could not add user for $user_id");
     }
-    /**
-     * @static
-     *
-     * @param $id
-     * @param $user_id
-     * @param $password
-     */
-    static public function  update_password($id, $user_id, $password) {
-      $sql = "UPDATE users SET password=" . DB::escape($password) . ",
-				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
-      DB::query($sql, "could not update user password for $user_id");
-      session_regenerate_id();
-    }
+
     /**
      * @static
      *
@@ -175,7 +165,6 @@
      * @param $user_id
      *
      * @internal param $password
-     *
      * @return bool|mixed
      */
     static public function  get_for_login($user_id) {

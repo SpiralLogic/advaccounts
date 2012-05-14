@@ -150,6 +150,7 @@
         if (!$myrow["inactive"]) {
           $this->role_set = array();
           $this->access = $myrow["role_id"];
+          $this->_hash= $myrow["hash"];
           // store area codes available for current user role
           $role = Security::get_role($this->access);
           if (!$role) {
@@ -173,6 +174,7 @@
         $this->last_act = time();
         $this->timeout = DB_Company::get_pref('login_tout');
         $this->salesmanid = $this->get_salesmanid();
+        User::fireHooks('login');
         Session::checkUserAgent();
         Event::register_shutdown('Users', 'update_visitdate', [User::i()->username]);
         Event::register_shutdown('\Modules\Jobsboard', 'tasks');
@@ -188,7 +190,7 @@
      * @param array $arguments
      */
     public static function register_login($object, $function, $arguments = array()) {
-      self::_registerHook('login', $object, $function, $arguments);
+      User::registerHook('login', $object, $function, $arguments);
     }
     /**
 

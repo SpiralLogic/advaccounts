@@ -9,6 +9,7 @@
      **/
   return array(
     'Jobsboard'=>array('enabled'=>false,'init'=>true),
+    'Youtrack'=>array('enabled'=>true,'init'=>true),
     'webstore' => array(
       'enabled'=>true,
       'init'=>false,

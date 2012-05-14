@@ -1,27 +1,27 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Users"), SA_USERS);
   list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(TRUE);
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
     $auth = new Auth($_POST['user_id']);
     if (can_process($auth)) {
-      $password = $auth->hash_password();
       if ($Mode == UPDATE_ITEM) {
         Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
-        Users::update_password($selected_id, $_POST['user_id'], $password);
+        $auth->update_password($_POST['user_id'], $_POST['password']);
         Event::success(_("The selected user has been updated."));
       }
       else {
-        Users::add($_POST['user_id'], $_POST['real_name'], $password, $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
+        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
         // use current user display preferences as start point for new user
+        $auth->update_password($_POST['user_id'], $_POST['password']);
         Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(),
           User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(),
           $_POST['language'], User::sticky_doc_date(), User::startup_tab());
@@ -128,7 +128,6 @@
    * @param \Auth $auth
    *
    * @internal param $user
-   *
    * @return bool
    */
   function can_process(Auth $auth) {
