@@ -1193,7 +1193,8 @@
       Row::end();
       $display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
       Row::start();
-      Cell::labels(_("Total Discount"), $total_discount, "colspan=" . $colspan." class='right' " , " class='right'");
+      Cell::label(_("Total Discount"),  "colspan=$colspan class='right'");
+      small_amount_cells(NULL, null, $total_discount);
       HTML::td(TRUE)->button('discountall', 'Discount All', array('name' => 'discountall'), FALSE);
       hidden('_discountall', '0', TRUE);
       HTML::td();

@@ -11,7 +11,7 @@
 var _focus;
 var _hotkeys = {
 	'alt':false, // whether is the Alt key pressed
-	'focus':-1		// currently selected indeks of document.links
+	'focus':-1    // currently selected indeks of document.links
 };
 
 function save_focus(e) {
@@ -263,6 +263,7 @@ var inserts = {
 	},
 	'.searchbox':// emulated onchange event handling for text inputs
 	 function (e) {
+
 		 e.setAttribute('_last_val', e.value);
 		 e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
 		 e.onblur = function () {

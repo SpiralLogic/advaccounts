@@ -665,9 +665,11 @@
       if ($id == -1 && $editable) {
         $this->item_controls();
       }
+      Table::foot();
       small_amount_row(_("Freight"), 'freight', Num::price_format(get_post('freight', 0)), "colspan=8 class='bold right'", NULL, NULL, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
+      Table::footEnd();
       Table::end(1);
       Display::div_end();
     }

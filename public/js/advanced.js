@@ -80,7 +80,8 @@ jQuery.extend(jQuery.easing, {
 	window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-	msgbox:$('#msgbox').ajaxError(function (event, request, settings) {
+	msgbox:$('#msgbox').ajaxError(
+	 function (event, request, settings) {
 		 if (request.statusText == "abort") {
 			 return;
 		 }
@@ -221,7 +222,13 @@ Adv.extend({Forms:(function () {
 //	var i = document.createElement("input");
 	//i.setAttribute("type", "date");
 	//if (i.type == "text") {
-	Adv.o.wrapper.on('focus', ".datepicker", function () { $(this).datepicker({numberOfMonths:3, showButtonPanel:true, showCurrentAtPos:2, dateFormat:'dd/mm/yy'}).focus(); });
+	Adv.o.wrapper.on('focus.datepicker', ".datepicker", function () {
+		$(this).datepicker({numberOfMonths:3,
+			showButtonPanel:true,
+			showCurrentAtPos:2,
+			dateFormat:'dd/mm/yy'})
+		 .off('focus.datepicker');
+	});
 //	}
 	var _setFormValue = function (el, value, disabled, isdefault) {
 		if (!el) {
@@ -250,14 +257,15 @@ Adv.extend({Forms:(function () {
 		}
 		el.value = value;
 		if (isdefault) {
-			if (el.tagName === 'INPUT'||el.tagName === 'TEXTAREA') {
+			if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
 				$(el).attr('value', value);
 				el.defaultValue = value;
 			}
 			if (el.tagName === 'SELECT') {
 				try {
 					el.options[el.selectedIndex].defaultSelected = true
-				}catch(e) {
+				}
+				catch (e) {
 					console.log(el.options);
 				}
 			}
@@ -282,42 +290,42 @@ Adv.extend({Forms:(function () {
 		autocomplete:function (id, url, callback) {
 			var $this;
 			Adv.o.autocomplete[id] = $this = $('#' + id)
-				 .autocomplete({
-					minLength:2,
-					delay:400,
-					autoFocus:true,
-					source:function (request, response) {
-						var $this = Adv.o.autocomplete[id];
-						$this.off('change.autocomplete');
-						$this.data('default', null);
-						if ($this.data().autocomplete.previous == $this.val()) {
-							return false;
-						}
-						Adv.loader.off();
-						Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-							Adv.loader.on();
-							if (!$this.data('active')) {
-								if (data.length === 0) {
-									data = [
-										{id:0, value:''}
-									]
-								}
-								callback(data[0]);
-								return false;
-							}
-							$this.data('default', data[0]);
-							response(data);
-						});
-					},
-					select:function (event, ui) {
-						$this.data('default', null);
-						if (callback(ui.item, event, this) === false) {
-							return false;
-						}
-					},
-					focus:function () {return false;}})
+			 .autocomplete({
+				 minLength:2,
+				 delay:400,
+				 autoFocus:true,
+				 source:function (request, response) {
+					 var $this = Adv.o.autocomplete[id];
+					 $this.off('change.autocomplete');
+					 $this.data('default', null);
+					 if ($this.data().autocomplete.previous == $this.val()) {
+						 return false;
+					 }
+					 Adv.loader.off();
+					 Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+						 Adv.loader.on();
+						 if (!$this.data('active')) {
+							 if (data.length === 0) {
+								 data = [
+									 {id:0, value:''}
+								 ]
+							 }
+							 callback(data[0]);
+							 return false;
+						 }
+						 $this.data('default', data[0]);
+						 response(data);
+					 });
+				 },
+				 select:function (event, ui) {
+					 $this.data('default', null);
+					 if (callback(ui.item, event, this) === false) {
+						 return false;
+					 }
+				 },
+				 focus:function () {return false;}})
 			 .blur(function () {$(this).data('active', false); })
-			 .bind('autocompleteclose',function () {
+			 .bind('autocompleteclose', function () {
 				 if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
 					 if (callback($this.data()['default'], event, this) !== false) {
 						 $this.val($this.data()['default'].label);
@@ -326,8 +334,12 @@ Adv.extend({Forms:(function () {
 				 $this.data('default', null)
 			 })
 
-			 .focus(function () {$(this).data('active', true).on('change.autocomplete', function () {$(this).autocomplete('search', $this.val());
-				 })}).on('paste', function () {
+			 .focus(
+			 function () {
+				 $(this).data('active', true).on('change.autocomplete', function () {
+					 $(this).autocomplete('search', $this.val());
+				 })
+			 }).on('paste', function () {
 				 var $this = $(this);
 				 window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
 			 })
@@ -506,61 +518,61 @@ Adv.extend({Forms:(function () {
 	}
 })()});
 Adv.extend({Events:(function () {
-		var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
-			$(s).bind(t, a);
-		};
-		return {
-			bind:function (selector, types, action) {
-				events[events.length] = {s:selector, t:types, a:action};
-				firstBind(selector, types, action);
-			},
-			onload:function (actions, clean) {
-				var c = !!onload;
-				onload = actions;
-				if (c) {
-					return;
-				}
+	var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
+		$(s).bind(t, a);
+	};
+	return {
+		bind:function (selector, types, action) {
+			events[events.length] = {s:selector, t:types, a:action};
+			firstBind(selector, types, action);
+		},
+		onload:function (actions, clean) {
+			var c = !!onload;
+			onload = actions;
+			if (c) {
+				return;
+			}
+			onload();
+			if (clean !== undefined) {
+				toClean = clean;
+			}
+		},
+		rebind:function () {
+			if (toClean) {
+				toClean();
+			}
+			if (onload) {
 				onload();
-				if (clean !== undefined) {
-					toClean = clean;
-				}
-			},
-			rebind:function () {
-				if (toClean) {
-					toClean();
-				}
-				if (onload) {
-					onload();
-				}
-				$.each(events, function (k, v) {
-					firstBind(v.s, v.t, v.a);
-				});
-				if (Adv.msgbox.children().length) {
-					toFocus.pos = [0, Adv.msgbox.position().top];
-				}
-				if (toFocus.el) {
-					$(toFocus.el).focus();
-				}
-				if (toFocus.pos) {
-					scrollTo(toFocus.pos[0], toFocus.pos[1]);
-				}
-				toFocus = {el:false, pos:false};
-			},
-			onFocus:function (el, pos) {
-				toFocus = {el:el, pos:pos};
-			},
-			onLeave:function (msg) {
-				if (msg) {
-					window.onbeforeunload = function () {
-						return msg;
-					};
-				} else {
-					window.onbeforeunload = function () {
-						return null;
-					};
-				}
+			}
+			$.each(events, function (k, v) {
+				firstBind(v.s, v.t, v.a);
+			});
+			if (Adv.msgbox.children().length) {
+				toFocus.pos = [0, Adv.msgbox.position().top];
+			}
+			if (toFocus.el) {
+				$(toFocus.el).focus();
+			}
+			if (toFocus.pos) {
+				scrollTo(toFocus.pos[0], toFocus.pos[1]);
+			}
+			toFocus = {el:false, pos:false};
+		},
+		onFocus:function (el, pos) {
+			toFocus = {el:el, pos:pos};
+		},
+		onLeave:function (msg) {
+			if (msg) {
+				window.onbeforeunload = function () {
+					return msg;
+				};
+			} else {
+				window.onbeforeunload = function () {
+					return null;
+				};
 			}
 		}
-	}())
+	}
+}())
 });
 
