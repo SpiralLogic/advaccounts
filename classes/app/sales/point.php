@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Sales_Point {
+
     /**
      * @static
      *
@@ -59,7 +60,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM " . "sales_pos as pos
+      $sql    = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM " . "sales_pos as pos
 		LEFT JOIN locations as loc on pos.pos_location=loc.loc_code
 		LEFT JOIN bank_accounts as acc on pos.pos_account=acc.id
 		WHERE pos.id=" . DB::escape($id);
@@ -74,9 +75,9 @@
      * @return mixed
      */
     static public function get_name($id) {
-      $sql = "SELECT pos_name FROM sales_pos WHERE id=" . DB::escape($id);
+      $sql    = "SELECT pos_name FROM sales_pos WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get POS name");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -106,8 +107,12 @@
       }
       echo "<td>";
       echo select_box($name, $selected_id, $sql, 'id', 'pos_name', array(
-        'select_submit' => $submit_on_change, 'async' => TRUE, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')
-      ));
+                                                                        'select_submit' => $submit_on_change,
+                                                                        'async'         => TRUE,
+                                                                        'spec_option'   => $spec_option,
+                                                                        'spec_id'       => -1,
+                                                                        'order'         => array('pos_name')
+                                                                   ));
       echo "</td></tr>\n";
     }
     /**

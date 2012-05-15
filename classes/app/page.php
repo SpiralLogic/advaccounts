@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Page {
+
     /** @var \Renderer */
     public $renderer = NULL;
     /**
@@ -63,19 +63,19 @@
      */
     protected function __construct($title, $index = FALSE) {
       $this->is_index = $index;
-      $this->title = $title;
-      $this->frame = isset($_GET['frame']);
+      $this->title    = $title;
+      $this->frame    = isset($_GET['frame']);
     }
     /**
      * @param $menu
      */
     protected function init($menu) {
-      $this->app = ADVAccounting::i();
-      $this->sel_app = $this->app->selected;
+      $this->app      = ADVAccounting::i();
+      $this->sel_app  = $this->app->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
-      $this->menu = ($this->frame) ? FALSE : $menu;
+      $this->menu     = ($this->frame) ? FALSE : $menu;
       $this->renderer = new Renderer();
-      $this->theme = User::theme();
+      $this->theme    = User::theme();
       $this->encoding = $_SESSION['Language']->encoding;
       $this->lang_dir = $_SESSION['Language']->dir;
       if (!$this->ajaxpage) {
@@ -109,9 +109,10 @@
       echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
         '') . " dir='" . $this->lang_dir . "' >\n";
       echo "<head><title>" . $this->title . "</title>";
-      echo "<meta charset='{$this->encoding}'>";
-      echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
+      HTML::script(NULL, "document.documentElement.className = document.documentElement.className +' js'", FALSE);
       $this->renderCSS();
+
+      echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
       if (class_exists('JS', FALSE)) {
         JS::renderHeader();
       }
@@ -157,7 +158,9 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                         ' ' => '', '/' => '', '&' => 'And'
+                                                                                         ' ' => '',
+                                                                                         '/' => '',
+                                                                                         '&' => 'And'
                                                                                     ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
@@ -166,7 +169,7 @@
     protected function end_page($hide_back_link) {
       if ($this->frame) {
         $hide_back_link = TRUE;
-        $this->header = FALSE;
+        $this->header   = FALSE;
       }
       if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
         Display::link_back(TRUE, !$this->menu);
@@ -220,7 +223,7 @@
      */
     protected function display_loaded() {
       $loaded = Autoloader::getPerf();
-      $row = "<table id='autoloaded'>";
+      $row    = "<table id='autoloaded'>";
       while ($v1 = array_shift($loaded)) {
         $v2 = array_shift($loaded);
         $row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
@@ -233,7 +236,7 @@
     protected function renderCSS() {
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
-      $css = implode(',', $this->css);
+      $css  = implode(',', $this->css);
       echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
     }
     /**
@@ -285,7 +288,7 @@
      * @return array
      */
     static public function simple_mode($numeric_id = TRUE) {
-      $default = $numeric_id ? -1 : '';
+      $default     = $numeric_id ? -1 : '';
       $selected_id = get_post('selected_id', $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {

@@ -32,7 +32,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 		$fno = explode("-", $from);
 		$tno = explode("-", $to);
     /**        code,descr,qty,unit,price,disc,tax,total */
-		$cols = array(4, 75, 350, 380, 405, 430, 450, 485, 480);
+		$cols = array(4, 75, 320, 350, 375, 425, 450, 485, 480,475);
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'center', 'right');
 		$params = array('comments' => $comments);

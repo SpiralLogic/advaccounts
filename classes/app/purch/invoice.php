@@ -616,7 +616,7 @@
       Display::div_start('summary');
       Table::start();
       Row::start();
-      Table::header(_("Invoie #:"));
+      Table::header(_("Invoice #:"));
       if ($creditor_trans->is_invoice && isset($_POST['invoice_no'])) {
         Cell::labels(NULL,
           $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], FALSE) . hidden(
@@ -654,7 +654,7 @@
         $trans = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
         $_POST['supplier_id'] = $trans['supplier_id'];
         $supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-        Cell::label('', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
+        Cell::labels('Supplier', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
       }
       else {
         $_POST['supplier_id'] = Input::post_global('supplier_id', Input::NUMERIC, '');
@@ -669,6 +669,13 @@
         Purch_Invoice::get_supplier_to_trans($creditor_trans, $_POST['supplier_id']);
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
+      if ($creditor_trans->is_invoice) {
+        ref_cells("PO #: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE),'colspan=2');
+      }
+      else {
+        ref_cells("CREDIT #: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT),'colspan=2');
+      }
+      Row::start();
       if (!empty($creditor_trans->terms_description)) {
         Cell::labels(_("Terms:"), $creditor_trans->terms_description);
       }
@@ -676,13 +683,6 @@
       $company_currency = Bank_Currency::for_company();
       GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
       Session::setGlobal('supplier_id', $_POST['supplier_id']);
-      Row::start();
-      if ($creditor_trans->is_invoice) {
-        ref_cells("PO#: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE));
-      }
-      else {
-        ref_cells("CREDIT#: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT));
-      }
       if (!empty($creditor_trans->tax_description)) {
         Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
       }

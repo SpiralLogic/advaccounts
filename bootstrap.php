@@ -8,10 +8,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   if (strpos($_SERVER['HTTP_HOST'], 'dev.advaccounts') === 0) {
-    header('Location: http://dev.advanced.advancedgroup.com.au'.$_SERVER['DOCUMENT_URI']);
+    header('Location: http://dev.advanced.advancedgroup.com.au'.$_SERVER['REQUEST_URI']);
   }
   elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== FALSE) {
-    header('Location: http://advanced.advancedgroup.com.au'.$_SERVER['DOCUMENT_URI']);
+    header('Location: http://advanced.advancedgroup.com.au'.$_SERVER['REQUEST_URI']);
   }
 
   if (extension_loaded('xhprof')) {

@@ -658,7 +658,7 @@
    * @param null $post_label
    * @param bool $submit_on_change
    */
-  function text_cells_ex($label, $name, $size, $max = NULL, $init = NULL, $title = NULL, $labparams = NULL, $post_label = NULL, $submit_on_change = FALSE) {
+  function text_cells_ex($label, $name, $size, $max = NULL, $init = NULL, $title = NULL, $params = NULL, $post_label = NULL, $submit_on_change = FALSE) {
     JS::default_focus($name);
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
       if ($init !== NULL) {
@@ -669,7 +669,7 @@
       }
     }
     if ($label != NULL) {
-      echo "<td class='label'><label for=\"$name\"> $label</label>";
+      echo "<td class='label' $params> <label for=\"$name\"> $label</label>";
     }
     else {
       echo "<td >";

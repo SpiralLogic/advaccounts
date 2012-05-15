@@ -59,7 +59,6 @@
       Table::start($class);
       echo "<tr class='top'><td>\n"; // outer table
     }
-
     /**
      * @param int    $number
      * @param bool   $width
@@ -74,7 +73,6 @@
       }
       echo "<table class='tablestyle_inner $class'>\n";
     }
-
     /**
      * @param int  $breaks
      * @param bool $close_table

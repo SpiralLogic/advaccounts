@@ -3,4 +3,4 @@
     throw new Adv_Exception("Administrator access only");
   }*/
 //todo remove
-phpinfo();
+  phpinfo();
