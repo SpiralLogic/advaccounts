@@ -20,11 +20,12 @@
   $title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
   $encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
   $rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
-
+  if (!headers_sent()) {
+       header("Content-type: text/html; charset=UTF-8");
+     }
   echo "<!DOCTYPE HTML>\n";
   echo "<html dir='$rtl' >\n";
   echo "<head><title>$title</title>\n";
-  echo "<meta charset=$encoding>\n";
   echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
   echo "<link href='/themes/{$def_theme}/default.css' rel='stylesheet'> \n";
   echo "</head>\n";
@@ -37,7 +38,7 @@
   Table::start('login');
   Row::start();
   echo "<td class='center' colspan=2>";
-  echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
+  echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
   if ($login_timeout) {
     echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
   }

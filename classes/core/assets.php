@@ -70,6 +70,7 @@
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
      header("HTTP/1.0 $status");      header("Vary: Accept-Encoding", FALSE);
+      $this->contentHeader();
 
       exit();
     }
@@ -88,11 +89,13 @@
       header("Pragma: no-cache");
       //generate a unique Etag each time
       header('Etag: ' . microtime());
+      $this->contentHeader();
     }
 
     protected function headerNeverExpire() {
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");      header("Vary: Accept-Encoding", FALSE);
+      $this->contentHeader();
 
     }
     /**
@@ -256,6 +259,11 @@
       }
       else {
         $this->headerExit('304 Not Modified');
+      }
+    }
+    protected function contentHeader() {
+      if (isset($this->mimeTypes[$this->fileType])) {
+        header('Content-Type: ' . $this->mimeTypes[$this->fileType]);
       }
     }
   }
