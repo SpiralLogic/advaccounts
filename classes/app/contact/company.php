@@ -105,6 +105,7 @@
 											</div>';
       $type = explode('_', get_called_class());
       $type = array_pop($type);
+      $type= ($type=='c')?'customer':'supplier';
       $details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
       $type = strtolower($type);
       $details->setTemplateData(($id) ? $company : '');
