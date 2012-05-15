@@ -10,10 +10,11 @@
   use User;
   use ADV\Core\JS;
   use ADV\Core\Config;
+  use ADV\Core\Module;
 
-  class Youtrack {
+  class Youtrack extends Module\Base {
 
-    public function init() {
+    public static function _init() {
       User::register_login(__CLASS__, '_login');
     }
     public function _login() {

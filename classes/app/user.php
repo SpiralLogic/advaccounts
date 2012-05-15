@@ -97,9 +97,9 @@
      */
     public function __construct() {
       $this->loginname = $this->username = $this->name = "";
-      $this->company = Config::get('default.company') ? : 'default';
-      $this->logged = FALSE;
-      $this->prefs = new userPrefs();
+      $this->company   = Config::get('default.company') ? : 'default';
+      $this->logged    = FALSE;
+      $this->prefs     = new userPrefs();
     }
     /**
      * @param null $salesmanid
@@ -107,9 +107,9 @@
     public function set_salesman($salesmanid = NULL) {
       if ($salesmanid == NULL) {
         $salesman_name = $this->name;
-        $sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-        $query = DB::query($sql, 'Couldn\'t find current salesman');
-        $result = DB::fetch_assoc($query);
+        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
+        $query         = DB::query($sql, 'Couldn\'t find current salesman');
+        $result        = DB::fetch_assoc($query);
         if (!empty($result['salesman_code'])) {
           $this->salesmanid = $result['salesman_code'];
         }
@@ -145,12 +145,12 @@
     public function login($company, $loginname) {
       $this->set_company($company);
       $this->logged = FALSE;
-      $myrow = Users::get_for_login($loginname, $_POST['password']);
+      $myrow        = Users::get_for_login($loginname, $_POST['password']);
       if ($myrow) {
         if (!$myrow["inactive"]) {
           $this->role_set = array();
-          $this->access = $myrow["role_id"];
-          $this->_hash= $myrow["hash"];
+          $this->access   = $myrow["role_id"];
+          $this->_hash    = $myrow["hash"];
           // store area codes available for current user role
           $role = Security::get_role($this->access);
           if (!$role) {
@@ -165,19 +165,18 @@
           }
         }
         $this->change_password = $myrow['change_password'];
-        $this->logged = TRUE;
-        $this->name = $myrow["real_name"];
-        $this->pos = $myrow["pos"];
-        $this->username = $this->loginname = $loginname;
-        $this->prefs = new userPrefs($myrow);
-        $this->user = $myrow["id"];
-        $this->last_act = time();
-        $this->timeout = DB_Company::get_pref('login_tout');
-        $this->salesmanid = $this->get_salesmanid();
+        $this->logged          = TRUE;
+        $this->name            = $myrow["real_name"];
+        $this->pos             = $myrow["pos"];
+        $this->username        = $this->loginname = $loginname;
+        $this->prefs           = new userPrefs($myrow);
+        $this->user            = $myrow["id"];
+        $this->last_act        = time();
+        $this->timeout         = DB_Company::get_pref('login_tout');
+        $this->salesmanid      = $this->get_salesmanid();
         User::fireHooks('login');
         Session::checkUserAgent();
         Event::register_shutdown('Users', 'update_visitdate', [User::i()->username]);
-        Event::register_shutdown('\Modules\Jobsboard', 'tasks');
         Event::register_shutdown(__CLASS__, 'addLog');
       }
       return $this->logged;
@@ -191,6 +190,16 @@
      */
     public static function register_login($object, $function, $arguments = array()) {
       User::registerHook('login', $object, $function, $arguments);
+    }
+    /**
+     * @static
+     *
+     * @param       $object
+     * @param       $function
+     * @param array $arguments
+     */
+    public static function register_logout($object, $function, $arguments = array()) {
+      User::registerHook('logout', $object, $function, $arguments);
     }
     /**
 
@@ -207,8 +216,10 @@
     }
     public static function addLog() {
       DB::insert('user_login_log')->values(array(
-        'user' => static::i()->username, 'IP' => Users::get_ip(), 'success' => 2
-      ))->exec();
+                                                'user'    => static::i()->username,
+                                                'IP'      => Users::get_ip(),
+                                                'success' => 2
+                                           ))->exec();
     }
     /**
      * @param $page_level
@@ -225,7 +236,7 @@
       }
       $access = FALSE;
       if (isset($security_areas[$page_level])) {
-        $code = $security_areas[$page_level][0];
+        $code   = $security_areas[$page_level][0];
         $access = $code && in_array($code, $this->role_set);
       }
       elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
@@ -266,11 +277,26 @@
      */
     public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
       $user = array(
-        'price_dec' => $price_dec, 'qty_dec' => $qty_dec, 'exrate_dec' => $exrate_dec, 'percent_dec' => $percent_dec,
-        'show_gl' => $show_gl, 'show_codes' => $show_codes, 'date_format' => $date_format, 'date_sep' => $date_sep,
-        'tho_sep' => $tho_sep, 'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $page_size, 'show_hints' => $show_hints,
-        'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size, 'graphic_links' => $graphic_links,
-        'language' => $lang, 'sticky_doc_date' => $stickydate, 'startup_tab' => $startup_tab
+        'price_dec'       => $price_dec,
+        'qty_dec'         => $qty_dec,
+        'exrate_dec'      => $exrate_dec,
+        'percent_dec'     => $percent_dec,
+        'show_gl'         => $show_gl,
+        'show_codes'      => $show_codes,
+        'date_format'     => $date_format,
+        'date_sep'        => $date_sep,
+        'tho_sep'         => $tho_sep,
+        'dec_sep'         => $dec_sep,
+        'theme'           => $theme,
+        'page_size'       => $page_size,
+        'show_hints'      => $show_hints,
+        'print_profile'   => $profile,
+        'rep_popup'       => $rep_popup,
+        'query_size'      => $query_size,
+        'graphic_links'   => $graphic_links,
+        'language'        => $lang,
+        'sticky_doc_date' => $stickydate,
+        'startup_tab'     => $startup_tab
       );
       if (!Config::get('demo_mode')) {
         Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);

@@ -85,11 +85,11 @@
       if ($this->selected !== NULL && is_object($this->selected)) {
         return $this->selected;
       }
-      $path = explode('/', $_SERVER['DOCUMENT_URI']);
-      $app_id = $path[1];
+      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
+      $app_id         = $path[1];
       $this->selected = $this->get_application($app_id);
       if (!$this->selected) {
-        $app_id = User::i()->startup_tab();
+        $app_id         = User::i()->startup_tab();
         $this->selected = $this->get_application($app_id);
       }
       if (!$this->selected || !is_object($this->selected)) {
@@ -112,7 +112,7 @@
      */
     public function set_selected($app_id) {
       static::$user->selectedApp = $this->get_application($app_id);
-      $this->selected = static::$user->selectedApp;
+      $this->selected            = static::$user->selectedApp;
       return $this->selected;
     }
 
@@ -138,12 +138,8 @@
       require APPPATH . "main.php";
       $modules = Config::get_all('modules', array());
       foreach ($modules as $module => $config) {
-        if (Arr::get($config, 'enabled', FALSE) !== TRUE) {
-          continue;
-        }
-        if (isset($config['init']) && $config['init'] && is_callable('\\Modules\\' . $module . '::init')) {
-          call_user_func('\\Modules\\' . $module . '::init');
-        }
+        $module = '\\Modules\\' . $module;
+        new $module($config);
       }
 
       static::$i = Cache::get('App');
