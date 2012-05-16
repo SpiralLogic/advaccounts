@@ -188,7 +188,7 @@
      * @param       $function
      * @param array $arguments
      */
-    public static function register_login($object, $function, $arguments = array()) {
+    public static function register_login($object, $function=null, $arguments = array()) {
       User::registerHook('login', $object, $function, $arguments);
     }
     /**

@@ -23,12 +23,17 @@
      * @param       $function
      * @param array $arguments
      */
-    public static function registerHook($hook, $object, $function, $arguments = array()) {
+    public static function registerHook($hook, $object, $function = NULL, $arguments = array()) {
       if (static::$hooks === NULL) {
         static::$hooks = new \ADV\Core\Hook();
       }
-      
-      $callback = $object . '::' . $function;
+      $callback = $object;
+      if ($function) {
+        $callback = (is_object($object)) ? [$object, $function] : $object . '::' . $function;
+      }
+      elseif (!is_callable($callback)) {
+        return \Event::error('Hook is not callable!');
+      }
       static::$hooks->add($hook, $callback, $arguments);
     }
     /**
@@ -37,7 +42,8 @@
      * @param $hook
      */
     public static function fireHooks($hook) {
-      if (static::$hooks)  {
-      static::$hooks->fire($hook);}
+      if (static::$hooks) {
+        static::$hooks->fire($hook);
+      }
     }
   }

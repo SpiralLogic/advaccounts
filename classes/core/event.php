@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,6 +14,7 @@
 
    */
   class Event {
+
   use \ADV\Core\Traits\Hook;
 
     /**
@@ -40,7 +40,9 @@
     static public function init() {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
       $shutdown_events = Cache::get(static::$shutdown_events_id);
-      if (static::$shutdown_events) {
+
+      if ($shutdown_events) {
+
         while ($msg = array_pop($shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2]);
         }
@@ -64,7 +66,7 @@
      * @return bool
      */
     static public function notice($message) {
-      return static::handle($message, @reset(debug_backtrace()), E_USER_NOTICE);
+      return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
     }
     /**
      * @static
@@ -96,6 +98,7 @@
      * @return bool
      */
     static protected function handle($message, $source, $type) {
+
       if (static::$request_finsihed) {
         static::$shutdown_events[] = array($message, $source, $type);
       }
@@ -133,7 +136,7 @@
         ob_end_flush();
       }
       session_write_close();
-      fastcgi_finish_request();
+     fastcgi_finish_request();
       static::$request_finsihed = TRUE;
       try {
         static::fireHooks('shutdown');
@@ -141,8 +144,6 @@
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      if (count(static::$shutdown_events)) {
-        Cache::set(static::$shutdown_events_id, static::$shutdown_events);
-      }
+      Cache::set(static::$shutdown_events_id, static::$shutdown_events);
     }
   }

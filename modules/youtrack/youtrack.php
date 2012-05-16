@@ -23,7 +23,7 @@
         $host = 'dev.'.$host;
       }
       $js = <<<JS
-$('<iframe>').attr('src','http://$host').hide().appendTo('body');
+$.get('http://$host');
 JS;
       JS::onload($js);
     }

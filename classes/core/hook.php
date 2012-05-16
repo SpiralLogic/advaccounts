@@ -50,9 +50,10 @@
     public function fire($name) {
       foreach ($this->getCallbacks($name) as $callback) {
         if (!is_callable($callback[0])) {
+
           continue;
         }
-        call_user_func_array($callback[0], $callback[1]);
+         call_user_func_array($callback[0], $callback[1]);
       }
     }
   }

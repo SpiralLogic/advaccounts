@@ -39,6 +39,7 @@
      */
     static public $shipping_types = array(
       502 => "Pickup", //
+      28 => "Declined!", //
       902 => "To be calculated", //
       903 => "Use own courier", //
       998 => "Installation", //
@@ -85,9 +86,9 @@
      * @return string
      */
     function getXML() {
-      $apiuser = \Config::get('modules.webstore')['apiuser'];
-      $apikey = \Config::get('modules.webstore')['apikey'];
-      $url = \Config::get('modules.webstore')['apiurl'];
+      $apiuser = \Config::get('modules.Volusion')['apiuser'];
+      $apikey = \Config::get('modules.Volusion')['apikey'];
+      $url = \Config::get('modules.Volusion')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
