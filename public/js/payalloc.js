@@ -73,6 +73,7 @@ Behaviour.register({
 	'.allocateNone':function (e) {
 		e.onclick = function () {
 			Adv.alloc.none(this.name.substr(5));
+			return false;
 		}
 	}
 });

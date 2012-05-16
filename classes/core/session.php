@@ -140,7 +140,7 @@
      * @return mixed
      */
     public function getGlobal($var, $default = NULL) {
-      return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
+        return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**
      * @param $globals

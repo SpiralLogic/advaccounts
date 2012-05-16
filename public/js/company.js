@@ -275,6 +275,7 @@ $(function () {
 		tabs:$("#tabs0"),
 		accFields:$("[name^='acc_']"),
 		changed:false,
+		fieldsChanged:0,
 		btnConfirm:$("#btnConfirm").click(
 		 function () {
 			 Company.Save();

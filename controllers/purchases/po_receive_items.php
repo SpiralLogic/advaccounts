@@ -61,7 +61,7 @@
       Ajax::i()->activate('_page_body');
       Page::footer_exit();
     }
-    $_SESSION['supplier_id'] = $order->supplier_id;
+    Session::i()->setGlobal('creditor',$order->supplier_id);
     $grn = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
     $_SESSION['delivery_po'] = $order->order_no;
     Dates::new_doc_date($_POST['DefaultReceivedDate']);

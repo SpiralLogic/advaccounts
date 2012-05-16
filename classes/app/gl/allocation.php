@@ -243,7 +243,7 @@
           Cell::label($alloc_item->due_date, "class='right'");
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
-          $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
+          $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated+$_POST['amount'.$counter]);
           amount_cells(NULL, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
           Cell::amount($un_allocated, FALSE, '');

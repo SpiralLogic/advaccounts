@@ -180,9 +180,9 @@
   }
   start_form();
   Purch_Invoice::header(Creditor_Trans::i());
-  $_POST['supplier_id'] = Session::getGlobal('supplier_id', '');
+  $_POST['supplier_id'] = Session::i()->getGlobal('creditor', '');
   if (Creditor_Trans::i()) {
-    Session::removeGlobal('supplier_id', 'delivery_po');
+    Session::removeGlobal('creditor', 'delivery_po');
   }
   if ($_POST['supplier_id'] == ALL_TEXT) {
     Event::warning(_("There is no supplier selected."));

@@ -657,7 +657,7 @@
         Cell::labels('Supplier', $supp . hidden('supplier_id', $_POST['supplier_id'], FALSE));
       }
       else {
-        $_POST['supplier_id'] = Input::post_global('supplier_id', Input::NUMERIC, '');
+        $_POST['supplier_id'] = Input::post('supplier_id', Input::NUMERIC, Session::i()->getGlobal('creditor',''));
         Creditor::cells(_("Supplier:"), 'supplier_id', NULL, FALSE, TRUE);
         JS::set_focus('supplier_id');
       }

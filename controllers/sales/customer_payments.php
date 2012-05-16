@@ -110,7 +110,7 @@
     Table::start('tablestyle width70');
     Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
     amount_row(_("Amount of Discount:"), 'discount', 0);
-    if (User::i()->can_access(SS_SALES)) {
+    if (User::i()->can_access(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
       check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
     }
     amount_row(_("Amount:"), 'amount');

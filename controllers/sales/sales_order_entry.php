@@ -23,6 +23,7 @@
   ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
+  $_POST[Orders::CANCEL_CHANGES]=true;
     $_POST['customer_id'] = $_GET['customer_id'];
     Ajax::i()->activate('customer_id');
   }
@@ -106,7 +107,7 @@
     }
     $order->finish();
     if ($trans_type == ST_SALESORDER) {
-      $jb = new      \Modules\Jobsboard();
+      $jb = new      \Modules\Jobsboard([]);
       $jb->addjob($jobsboard_order);
     }
     page_complete($trans_no, $trans_type, TRUE, $modified);
