@@ -44,14 +44,12 @@
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = NULL;
       /** @noinspection PhpUndefinedFunctionInspection */
-      /** @noinspection PhpUndefinedConstantInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path    = ini_set('session.save_path', '127.0.0.1:11211');
         (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
-      /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE) {
         ini_set('session.save_handler', $old_handler);
@@ -60,7 +58,6 @@
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */
-      /** @noinspection PhpUndefinedConstantInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
