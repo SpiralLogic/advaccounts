@@ -58,12 +58,12 @@
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::ADD_ITEM]) && check_item_data()) {
-    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,$_POST['description']);
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::UPDATE_ITEM])) {
     if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
-      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100);
+      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,$_POST['description']);
     }
     Item_Line::start_focus('_stock_id_edit');
   }

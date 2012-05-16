@@ -125,7 +125,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 				}
 				$DisplaySubTot = Num::format($SubTotal, $dec);
 				$DisplayFreight = Num::format($sign * $myrow["ov_freight"], $dec);
-				$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+				$rep->row = $rep->bottomMargin + (12 * $rep->lineHeight);
 				$linetype = true;
 				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
@@ -157,7 +157,8 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $display_total, -2);
 				$words = Item_Price::to_words($myrow['Total'], $j);
-				$rep->NewLine();
+				if ($type==ST_SALESINVOICE){
+        $rep->NewLine();
 				$rep->NewLine();
 				$invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);
 				$rep->TextCol(3, 7, 'Total Received', -2);
@@ -169,7 +170,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 				if ($words != "") {
 					$rep->NewLine(1);
 					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);
-				}
+				}}
 				$rep->Font();
 				if ($email == 1) {
 					$myrow['dimension_id'] = $paylink; // helper for pmt link

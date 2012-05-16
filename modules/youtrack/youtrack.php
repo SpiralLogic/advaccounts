@@ -37,7 +37,7 @@ JS;
       preg_match_all('/^Set-Cookie: (.*?);/m', curl_exec($ch), $m);
       foreach ($m[1] as $n) {
         $cookie = explode('=', $n);
-        setcookie($cookie[0], $cookie[1], time() + Config::get('session_lifetime'), '/', '.advanced.advancedgroup.com.au');
+        setcookie($cookie[0], $cookie[1], time() + mktime(12), '/', '.advanced.advancedgroup.com.au');
       }
     }
   }
