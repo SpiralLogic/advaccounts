@@ -27,8 +27,8 @@
       if (static::$hooks === NULL) {
         static::$hooks = new \ADV\Core\Hook();
       }
+      
       $callback = $object . '::' . $function;
-
       static::$hooks->add($hook, $callback, $arguments);
     }
     /**

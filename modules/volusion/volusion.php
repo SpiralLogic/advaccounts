@@ -16,6 +16,7 @@
   use \ADV\Core\DB\DBInsertException;
   use \ADV\Core\DB\DBSelectException;
   use \ADV\Core\DB\DBUpdateException;
+  use \User;
 
   /**
 
@@ -23,7 +24,7 @@
   class Volusion extends Module\Base {
 
     public function _init() {
-      $this->doWebsales();
+      User::register_login($this, 'doWebsales');
     }
     function doWebsales() {
       $orders = $this->getNewWebsales();
