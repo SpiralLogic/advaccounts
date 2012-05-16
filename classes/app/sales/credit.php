@@ -383,6 +383,7 @@
       if ($id == -1) {
         Sales_Credit::item_controls($order, $k);
       }
+      Table::foot();
       $colspan = 6;
       $display_sub_total = Num::price_format($subtotal);
       Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", 2);
@@ -398,6 +399,8 @@
       $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
       $display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
       Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='right bold'", "class='amount'", 2);
+  Table::footEnd()      ;
+
       Table::end();
       Display::div_end();
     }
@@ -423,7 +426,7 @@
         Ajax::i()->activate('items_table');
       }
       else {
-        Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => ''));
+        Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => $order->line_items[$id]->description));
         if (list_updated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('qty');
