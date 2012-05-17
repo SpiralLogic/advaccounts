@@ -1144,7 +1144,7 @@
           $fname = $dir . '/' . $this->filename;
         }
         else {
-          $fname = $dir . '/' . uniqid('') . '.pdf';
+          $fname = $dir . '/' . uniqid(strtolower($this->title)) . '.pdf';
         }
         $this->Output($fname, 'F');
         if ($email == 1) {

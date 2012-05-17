@@ -67,10 +67,10 @@
           $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
           if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
             $action = BASE_URL . 'reporting/prn_redirect.php';
-            $st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
+            $st_params = "<table><tr><td>\n<form method='POST' action='$action' >\n";
             $st_params .= submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, TRUE), FALSE, '', Config::get('debug.pdf') ?
               FALSE :
-              'default process') . hidden('REP_ID', $report->id, FALSE) . '<br><br>';
+              'default process printlink') . hidden('REP_ID', $report->id, FALSE) . '<br><br>';
             $st_params .= $this->getOptions($report->get_controls());
             $st_params .= "\n</form></td></tr></table>\n";
             JS::set_focus('Rep' . $report->id);

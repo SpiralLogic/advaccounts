@@ -291,7 +291,7 @@ var inserts = {
 			}
 		}
 	},
-	'a.printlink':function (e) {
+	'a.printlink,button.printlink':function (e) {
 		e.onclick = function () {
 			save_focus(this);
 			JsHttpRequest.request(this, null, 60000);
