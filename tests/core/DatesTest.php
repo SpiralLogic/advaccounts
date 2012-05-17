@@ -90,11 +90,10 @@
      * @todo   Implement testNow().
      */
     public function testNow() {
-    $date = Dates::now();
-      $this->assertEquals(date("h:i a"),$date);
-    $this->logicalOr();
-      $this->assertEquals(date("H:i"),$date);
-
+      $date = Dates::now();
+      $this->assertEquals(date("H:i"), $date);
+      $this->logicalOr();
+      $this->assertEquals(date("H:i"), $date);
     }
 
     /**
@@ -147,9 +146,12 @@
      */
     public function testBegin_month() {
       // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $date = \Dates::begin_month('04/03/2011');
+      $expected = '01/04/2011';
+      $this->assertEquals($expected, $date);
+      $date = \Dates::begin_month('12/13/2011');
+      $expected = '01/12/2011';
+      $this->assertEquals($expected, $date);
     }
 
     /**
