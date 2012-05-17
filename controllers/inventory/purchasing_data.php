@@ -1,24 +1,20 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, Input::request('frame'));
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-    if (Input::request('frame')) {
-      Session::i()->setGlobal('stock_id',$_POST['stock_id']);
-    }
     $input_error = 0;
-    if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
+    if (!Input::post('stock_id')) {
       $input_error = 1;
       Event::error(_("There is no item selected."));
       JS::set_focus('stock_id');
@@ -55,9 +51,6 @@
     }
   }
   if ($Mode == MODE_DELETE) {
-    if (!Input::post('stock_id')) {
-      Session::i()->setGlobal('stock_id',$_POST['stock_id']);
-    }
     $sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
     DB::query($sql, "could not delete purchasing data");
@@ -84,14 +77,17 @@
     start_form();
   }
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    $_POST['stock_id'] = Session::i()->getGlobal('stock_id');
   }
   if (!Input::request('frame')) {
     echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:") . '</span>';
     echo Item_Purchase::select('stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
     echo "<hr></div>";
   }
-  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+  else {
+    hidden('stock_id', null,true);
+  }
+  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag = WO::get_mb_flag($_POST['stock_id']);
   if ($mb_flag == -1) {
     Event::warning(_("Entered item is not defined. Please re-enter."));
