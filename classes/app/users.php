@@ -246,9 +246,9 @@
      */
     static public function themes_row($label, $name, $value = NULL) {
       $themes = array();
-      $themedir = opendir(THEME_PATH);
+      $themedir = opendir(DOCROOT.DS.'public'.DS.THEME_PATH);
       while (FALSE !== ($fname = readdir($themedir))) {
-        if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
+        if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(DOCROOT.DS.'public'.DS.THEME_PATH . $fname)) {
           $themes[$fname] = $fname;
         }
       }

@@ -14,7 +14,7 @@
     header('Location: http://advanced.advancedgroup.com.au'.$_SERVER['REQUEST_URI']);
   }
 
-  if (extension_loaded('xhprof')) {
+  if (extension_loaded('xhprof')&& stripos($_SERVER['REQUEST_URI'],'/profile/')===FALSE) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
@@ -82,17 +82,6 @@
     Config::i();
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i();
-  }
-  if (extension_loaded('xhprof')) {
-    register_shutdown_function(function() {
-      $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-      /** @noinspection PhpUndefinedFunctionInspection */
-      $xhprof_data = xhprof_disable();
-      /** @noinspection PhpUndefinedClassInspection */
-      $xhprof_runs = new \XHProfRuns_Default();
-      /** @noinspection PhpUndefinedMethodInspection */
-      $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-    });
   }
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new Assets();

@@ -138,6 +138,18 @@
       session_write_close();
      fastcgi_finish_request();
       static::$request_finsihed = TRUE;
+      if (extension_loaded('xhprof') && stripos($_SERVER['REQUEST_URI'],'/profile/')===FALSE) {
+//        register_shutdown_function(function() {
+          $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+          /** @noinspection PhpUndefinedFunctionInspection */
+          $xhprof_data = xhprof_disable();
+          /** @noinspection PhpUndefinedClassInspection */
+          $xhprof_runs = new \XHProfRuns_Default();
+          /** @noinspection PhpUndefinedMethodInspection */
+          $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+  //      });
+      }
+
       try {
         static::fireHooks('shutdown');
       }
