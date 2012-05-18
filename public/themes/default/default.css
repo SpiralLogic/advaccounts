@@ -166,7 +166,7 @@ img {
 	box-shadow:      0 0 10em black;
 	position:        fixed;
 	text-align:      center;
-	background:      white url("themes/default/images/ajax-loader2.gif") no-repeat center center;
+	background:      white url(themes/default/images/ajax-loader2.gif) no-repeat center center;
 }
 
 #logo {

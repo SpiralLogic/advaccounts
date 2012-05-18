@@ -84,20 +84,17 @@ JS;
 </table>
 </div>
 HTML;
-  UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-  UI::button('btnSave', 'Save', array("style" => "display:none"));
   $menu->endTab();
   $menu->startTab("Accounts", "Accounts");
   echo <<<HTML
 	<div id="Accounts" class="left formbox">
 	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
 		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
-		<label for="sales_account"><span>Sales Account:</span>$sales_account</label>
-		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>
+	{{if sales_account}}	<label for="sales_account"><span>Sales Account:</span>$sales_account</label>{{/if}}
+	{{if inventory_account}}		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>{{/if}}
 	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
-	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label
-	> {{/if}}
-	<label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label></div>
+	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label> {{/if}}
+	{{if assembly_account}} <label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label>{{/if}}</div>
 HTML;
   $menu->endTab();
 
@@ -116,4 +113,6 @@ HTML;
 	height='500' frameborder='0'></iframe> ";
   $menu->endTab();
   $menu->render();
-  Page::end(isset($_GET['frame']));
+
+  UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
+  UI::button('btnSave', 'Save', array("style" => "display:none"));Page::end(true);

@@ -5,7 +5,7 @@ div.hasCalculator, span.hasCalculator {
 
 button.calculator-trigger {
 	width:   25px;
-	padding: 0px;
+	padding: 0;
 }
 
 img.calculator-trigger {
@@ -31,7 +31,7 @@ img.calculator-trigger {
 	position: absolute;
 	top:      3px;
 	right:    3px;
-	width:    0px;
+	width:    0;
 }
 
 .calculator-inline {
@@ -71,7 +71,7 @@ img.calculator-trigger {
 .calculator-result {
 	clear:                 both;
 	margin:                2px;
-	padding:               0px 2px;
+	padding:               0 2px;
 	text-align:            right;
 	background-color:      #fff;
 	border:                1px inset #000;
@@ -106,7 +106,7 @@ img.calculator-trigger {
 	position:   relative;
 	float:      left;
 	margin:     2px;
-	padding:    0px;
+	padding:    0;
 	height:     22px;
 	text-align: center;
 	cursor:     pointer;
@@ -174,10 +174,9 @@ img.calculator-trigger {
 
 .calculator-cover {
 	display:      none;
-	display /**/: block;
 	position:     absolute;
 	z-index:      -1;
-	filter:       mask();
+	/*filter:       mask();*/
 	top:          -4px;
 	left:         -4px;
 	width:        125px;
