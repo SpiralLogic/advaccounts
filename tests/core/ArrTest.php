@@ -13,7 +13,6 @@
 
     /**
      * @covers ADV\Core\Arr::insert
-     * @todo   Implement testInsert().
      * @return void
      */
     public function testInsert() {
