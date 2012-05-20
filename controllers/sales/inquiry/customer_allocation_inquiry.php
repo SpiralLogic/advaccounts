@@ -68,8 +68,8 @@
 	trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue
  	FROM debtor_trans as trans, debtors as debtor
- 	WHERE debtor.debtor_no = trans.debtor_no,";
-  $sql.= "AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
+ 	WHERE debtor.debtor_no = trans.debtor_no
+			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
   if ($_POST['customer_id'] != ALL_TEXT) {
