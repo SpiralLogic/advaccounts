@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -24,11 +25,9 @@
 
    */
   class Dates {
-
-    static $sep=NULL;
-    static $formats=NULL;
-    static $seps=NULL;
-
+    static $sep = NULL;
+    static $formats = NULL;
+    static $seps = NULL;
     /**
      * @static
      *
@@ -39,12 +38,11 @@
      * @return string
      */
     static function __date($year, $month, $day, $format = NULL) {
-      static::$formats = static::$formats?:Config::get('date.formats');
+      static::$formats = static::$formats ? : Config::get('date.formats');
       $how = static::$formats [($format !== NULL) ? $format : \User::date_format()];
-      static::$sep = static::$sep?:Config::get('date.ui_separator');
+      static::$sep = static::$sep ? : Config::get('date.ui_separator');
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how = str_replace('/', static::$sep, $how);
-
       return date($how, $date);
     }
     /**
@@ -54,7 +52,7 @@
      *
      * @return int
      */
-    static function is_date($date=NULL,$format=NULL) {
+    static function is_date($date = NULL, $format = NULL) {
       if ($date == NULL || $date == "") {
         return FALSE;
       }
@@ -112,16 +110,18 @@
      *
      * @param null $date
      *
-     * @return
+     * @return mixed|null
      */
     static function new_doc_date($date = NULL) {
-      if (isset($date) && $date != '') {
-        $_SESSION['_default_date'] = $date;
+      if (isset($date) && !$date) {
+        \Session::i()->setGlobal('date', $date);
+      }else {
+        $date = \Session::i()->getGlobal('date');
       }
-      if (!isset($_SESSION['_default_date']) || !\User::sticky_doc_date()) {
-        $_SESSION['_default_date'] = Dates::today();
+      if (!$date || !\User::sticky_doc_date()) {
+        \Session::i()->setGlobal('date', Dates::today());
       }
-      return $_SESSION['_default_date'];
+      return $date;
     }
     /**
      * @static
@@ -136,7 +136,6 @@
         return 1;
       }
       $myrow = \DB_Company::get_current_fiscalyear();
-
       if ($myrow['closed'] == 1) {
         return 0;
       }
@@ -146,10 +145,8 @@
       else {
         $date2 = $date;
       }
-
       $begin = Dates::sql2date($myrow['begin']);
       $end = Dates::sql2date($myrow['end']);
-
       return (Dates::date1_greater_date2($date2, $begin) || Dates::date1_greater_date2($end, $date2));
     }
     /**
@@ -269,7 +266,7 @@
         return '';
       }
       $how = \User::date_format();
-      static::$seps = static::$seps?:Config::get('date.separators');
+      static::$seps = static::$seps ? : Config::get('date.separators');
       $sep = static::$seps[\User::date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
@@ -386,6 +383,7 @@
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
+     *
      * @static
      *
      * @param $g_y

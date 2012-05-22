@@ -98,13 +98,12 @@
 
     /**
      * @covers ADV\Core\Dates::new_doc_date
-     * @todo   Implement testNew_doc_date().
      */
     public function testNew_doc_date() {
+      $date  = Dates::new_doc_date();
+      $this->assertEquals(Dates::today(),$date);
       // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+
     }
 
     /**
