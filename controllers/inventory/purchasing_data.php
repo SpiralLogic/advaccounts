@@ -94,7 +94,7 @@
     JS::set_focus('stock_id');
   }
   else {
-    $sql = "SELECT purch_data.*,suppliers.supp_name," . "suppliers.curr_code
+    $sql = "SELECT purch_data.*,suppliers.name," . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($_POST['stock_id']);
@@ -118,7 +118,7 @@
       while ($myrow = DB::fetch($result)) {
 
         Cell::label(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
-        Cell::label($myrow["supp_name"]);
+        Cell::label($myrow["name"]);
         Cell::amountDecimal($myrow["price"]);
         Cell::label($myrow["curr_code"]);
         Cell::label($myrow["suppliers_uom"]);
@@ -139,13 +139,13 @@
   }
   $dec2 = 6;
   if ($Mode == MODE_EDIT) {
-    $sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
+    $sql = "SELECT purch_data.*,suppliers.name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
     $result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
     $myrow = DB::fetch($result);
-    $supp_name = $myrow["supp_name"];
+    $name = $myrow["name"];
     $_POST['price'] = Num::price_decimal($myrow["price"], $dec2);
     $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
@@ -156,7 +156,7 @@
   Table::start('tableinfo');
   if ($Mode == MODE_EDIT) {
     hidden('supplier_id');
-    Row::label(_("Supplier:"), $supp_name);
+    Row::label(_("Supplier:"), $name);
   }
   else {
     Creditor::row(_("Supplier:"), 'supplier_id', NULL, FALSE, TRUE);

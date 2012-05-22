@@ -16,7 +16,7 @@
     const TAX_TYPES = "tax_types";
     const TAX_GROUP = "tax_groups";
     const MOVEMENT_TYPES = "movement_types";
-    const BRANCHES = "branches WHERE debtor_no=";
+    const BRANCHES = "branches WHERE debtor_id=";
     const BRANCHES_ACTIVE = "branches WHERE !inactive";
     const SALESPERSONS = "salesman";
     const SALES_AREA = "areas";

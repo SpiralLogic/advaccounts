@@ -117,9 +117,9 @@
         else {
           $name = $row['CompanyName'] = $row['EmailAddress'];
         }
-        $result = \DB::select('debtor_no')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
-        if ($result['debtor_no'] > 0) {
-          $c = new \Debtor($result['debtor_no']);
+        $result = \DB::select('debtor_id')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
+        if ($result['debtor_id'] > 0) {
+          $c = new \Debtor($result['debtor_id']);
         }
         else {
           $c = new \Debtor();
@@ -147,7 +147,7 @@
             $this->status->set(TRUE, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
           continue;
         }
-        if ($c->debtor_no > 0) {
+        if ($c->debtor_id > 0) {
           $this->status->set(TRUE, 'update', "Customer {$c->name} has been updated. {$c->id} ");
           $updated++;
         }

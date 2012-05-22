@@ -89,8 +89,8 @@
 	# __ADVANCEDEDIT__ END #
 	$this->Font('italic');
 	if (!isset($companyto)) {
-		if (isset($myrow['debtor_no'])) {
-			$companyto = new Debtor($myrow['debtor_no']);
+		if (isset($myrow['debtor_id'])) {
+			$companyto = new Debtor($myrow['debtor_id']);
 		}
 		elseif (isset($myrow['supplier_id'])) {
 			$companyto = new Creditor($myrow['supplier_id']);
@@ -145,7 +145,7 @@
 		$this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
 	}
 	$this->NewLine();
-	$this->Text($mcol + 100, $doc_Invoice_no);
+	$this->Text($mcol + 100, $doc_invoice_no);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
 		if (Config::get('print_useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['reference']);
@@ -226,7 +226,7 @@
 		$addr = $myrow['delivery_address'];
 	}
 	elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
-		$name = $myrow['supp_name'];
+		$name = $myrow['name'];
 
 		$addr = $myrow['address'] . "\n";
 		if ($myrow['city']) {
@@ -275,7 +275,7 @@
 	$this->row = $iline3 - $this->lineHeight - 1;
 	$col = $this->leftMargin;
 	if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
-		$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
+		$this->TextWrap($col, $this->row, $width, $myrow['account_no'], 'C');
 	}
 	elseif ($doctype == ST_WORKORDER) {
 		$this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');

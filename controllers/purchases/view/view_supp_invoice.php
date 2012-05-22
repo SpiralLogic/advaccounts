@@ -27,7 +27,7 @@
   Row::start();
   Cell::labels(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
   Cell::labels(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
-  Cell::labels(_("Supplier's Reference"), $creditor_trans->supp_reference, "class='tablerowhead'");
+  Cell::labels(_("Supplier's Reference"), $creditor_trans->supplier_reference, "class='tablerowhead'");
   Row::end();
   Row::start();
   Cell::labels(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");

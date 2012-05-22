@@ -99,7 +99,7 @@
   if (Input::get('frame')) {
     return;
   }
-  $customer = new Debtor($myrow['debtor_no']);
+  $customer = new Debtor($myrow['debtor_id']);
   $emails = $customer->getEmailAddresses();
   Display::submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
   Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), TRUE, ST_SALESINVOICE, 'EmailLink', NULL, $emails, 1);

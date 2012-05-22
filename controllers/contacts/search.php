@@ -15,7 +15,7 @@
         $data['branch'] = new Debtor_Branch(array('branch_id' => $_POST['branch_id']));
       }
       elseif ($_POST['id'] > 0) {
-        $data['branch'] = new Debtor_Branch(array('debtor_no' => $_POST['id']));
+        $data['branch'] = new Debtor_Branch(array('debtor_id' => $_POST['id']));
       }
     }
     JS::renderJSON($data);

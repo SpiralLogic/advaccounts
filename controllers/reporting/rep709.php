@@ -26,7 +26,7 @@ Page::set_security(SA_TAXREP);
 		$sql
 		 = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
 	 taxrec.net_amount*ex_rate AS net_amount,
-				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
+				IF(ISNULL(supp.name), debt.name, supp.name) as name,
 				branch.br_name
 		FROM trans_tax_details taxrec
 		LEFT JOIN creditor_trans strans
@@ -34,7 +34,7 @@ Page::set_security(SA_TAXREP);
 		LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
 		LEFT JOIN debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
-		LEFT JOIN debtors as debt ON dtrans.debtor_no=debt.debtor_no
+		LEFT JOIN debtors as debt ON dtrans.debtor_id=debt.debtor_id
 		LEFT JOIN branches as branch ON dtrans.branch_id=branch.branch_id
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
 			AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "

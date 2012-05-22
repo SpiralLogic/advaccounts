@@ -32,7 +32,7 @@ Page::set_security(SA_SALESANALYTIC);
 			stock_master.stock_id,
 			stock_master.description, stock_master.inactive,
 			stock_moves.loc_code,
-			debtor_trans.debtor_no,
+			debtor_trans.debtor_id,
 			debtors.name AS debtor_name,
 			stock_moves.tran_date,
 			SUM(-stock_moves.qty) AS qty,
@@ -45,7 +45,7 @@ Page::set_security(SA_SALESANALYTIC);
 			stock_moves
 		WHERE stock_master.stock_id=stock_moves.stock_id
 		AND stock_master.category_id=stock_category.category_id
-		AND debtor_trans.debtor_no=debtors.debtor_no
+		AND debtor_trans.debtor_id=debtors.debtor_id
 		AND stock_moves.type=debtor_trans.type
 		AND stock_moves.trans_no=debtor_trans.trans_no
 		AND stock_moves.tran_date>='$from'
@@ -59,7 +59,7 @@ Page::set_security(SA_SALESANALYTIC);
 			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
 		}
 		if ($fromcust != -1) {
-			$sql .= " AND debtors.debtor_no = " . DB::escape($fromcust);
+			$sql .= " AND debtors.debtor_id = " . DB::escape($fromcust);
 		}
 		$sql
 		 .= " GROUP BY stock_master.stock_id, debtors.name ORDER BY stock_master.category_id,
@@ -166,7 +166,7 @@ Page::set_security(SA_SALESANALYTIC);
 				$catt = $trans['cat_name'];
 				$rep->NewLine();
 			}
-			$curr = Bank_Currency::for_debtor($trans['debtor_no']);
+			$curr = Bank_Currency::for_debtor($trans['debtor_id']);
 			$rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
 			$cb = $trans['amt'] - $trans['cost'];

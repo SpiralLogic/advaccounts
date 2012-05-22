@@ -41,10 +41,10 @@
     Page::footer_exit();
   }
   if (isset($_POST['ProcessSuppPayment']) && Creditor_Payment::can_process()) {
-    $supp_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
+    $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
     $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
     $comp_currency = Bank_Currency::for_company();
-    if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
+    if ($comp_currency != $bank_currency && $bank_currency != $supplier_currency) {
       $rate = 0;
     }
     else {

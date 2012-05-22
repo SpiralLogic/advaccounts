@@ -29,7 +29,7 @@ Page::set_security(SA_SALESBULKREP);
 		$todate = Dates::date2sql($to);
 		$sql
 		 = "SELECT sales_orders.order_no,
-				sales_orders.debtor_no,
+				sales_orders.debtor_id,
  sales_orders.branch_id,
  sales_orders.customer_ref,
  sales_orders.ord_date,
@@ -156,7 +156,7 @@ Page::set_security(SA_SALESBULKREP);
 					$rep->NewLine();
 				}
 				$rep->TextCol(0, 1, $myrow['order_no']);
-				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_no']));
+				$rep->TextCol(1, 2, Debtor::get_name($myrow['debtor_id']));
 				$rep->TextCol(2, 3, Sales_Branch::get_name($myrow['branch_id']));
 				$rep->TextCol(3, 4, $myrow['customer_ref']);
 				$rep->DateCol(4, 5, $myrow['ord_date'], TRUE);

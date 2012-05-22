@@ -124,7 +124,7 @@
 		trans.trans_no,
 		trans.reference,
 		trans.tran_date,
-		supplier.supp_name, 
+		supplier.name,
 		supplier.curr_code, 
 		ov_amount+ov_gst+ov_discount AS Total,
 		trans.alloc,
@@ -133,7 +133,7 @@
 		supplier.address";
       /*	$sql = "SELECT trans.*,
                              ov_amount+ov_gst+ov_discount AS Total,
-                             supplier.supp_name, supplier.address,
+                             supplier.name, supplier.address,
                              supplier.curr_code ";
                          */
       if ($extra_fields) {
@@ -162,12 +162,12 @@
       if (!$settled) {
         $settled_sql = "AND round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0";
       }
-      $supp_sql = "";
+      $supplier_sql = "";
       if ($supplier_id != NULL) {
-        $supp_sql = " AND trans.supplier_id = " . DB::quote($supplier_id);
+        $supplier_sql = " AND trans.supplier_id = " . DB::quote($supplier_id);
       }
       $sql = Purch_Allocation::get_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
-        "(type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . " OR type=" . ST_BANKPAYMENT . ") AND (ov_amount < 0) " . $settled_sql . $supp_sql);
+        "(type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . " OR type=" . ST_BANKPAYMENT . ") AND (ov_amount < 0) " . $settled_sql . $supplier_sql);
       return $sql;
     }
     /**
@@ -181,7 +181,7 @@
      */
     static public function get_allocatable_to_trans($supplier_id, $trans_no = NULL, $type = NULL) {
       if ($trans_no != NULL && $type != NULL) {
-        $sql = Purch_Allocation::get_sql("amt, supp_reference", "trans.trans_no = alloc.trans_no_to
+        $sql = Purch_Allocation::get_sql("amt, supplier_reference", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 			AND alloc.trans_type_from=" . DB::escape($type) . "

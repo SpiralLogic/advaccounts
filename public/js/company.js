@@ -294,7 +294,7 @@ $(function () {
 	});
 	$("#useShipAddress").click(function () {
 		if (Adv.accFields.length === 0) {
-			Adv.accFields = $("[name^='supp_'], [name='phone2']").not("[name='supp_name']");
+			Adv.accFields = $("[name='phone2']").not("[name='name']");
 		}
 		Adv.accFields.each(function () {
 			var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();

@@ -65,7 +65,7 @@
     = "SELECT
 	porder.order_no, 
 	porder.reference, 
-	supplier.supp_name,
+	supplier.name,
 	supplier.supplier_id as id,
 	location.location_name,
 	porder.requisition_no, 
@@ -86,7 +86,7 @@
       }
       $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
       $sql
-        .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+        .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		 OR porder.requisition_no LIKE $ajaxsearch
 		 OR location.location_name LIKE $ajaxsearch)";

@@ -17,14 +17,14 @@
       $sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
       $result = DB::query($sql, "could not get recurrent invoice");
       $myrow = DB::fetch($result);
-      if ($myrow['debtor_no'] == 0) {
+      if ($myrow['debtor_id'] == 0) {
         $cust = Sales_Branch::get_from_group($myrow['group_no']);
         while ($row = DB::fetch($cust)) {
-          $invs[] = Sales_Invoice::create_recurrent($row['debtor_no'], $row['branch_id'], $myrow['order_no'], $myrow['id']);
+          $invs[] = Sales_Invoice::create_recurrent($row['debtor_id'], $row['branch_id'], $myrow['order_no'], $myrow['id']);
         }
       }
       else {
-        $invs[] = Sales_Invoice::create_recurrent($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
+        $invs[] = Sales_Invoice::create_recurrent($myrow['debtor_id'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
       }
       if (count($invs) > 0) {
         $min = min($invs);
@@ -53,7 +53,7 @@
       Event::error(_("The entered date is not in fiscal year."));
     }
   }
-  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
+  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
   Table::start('tablestyle grid width70');
   $th = array(
@@ -85,12 +85,12 @@
     }
     Cell::label($myrow["description"]);
     Cell::label(Debtor::trans_view(30, $myrow["order_no"]));
-    if ($myrow["debtor_no"] == 0) {
+    if ($myrow["debtor_id"] == 0) {
       Cell::label("");
       Cell::label(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
-      Cell::label(Debtor::get_name($myrow["debtor_no"]));
+      Cell::label(Debtor::get_name($myrow["debtor_id"]));
       Cell::label(Sales_Branch::get_name($myrow['group_no']));
     }
     Cell::label($myrow["days"]);

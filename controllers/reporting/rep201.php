@@ -141,11 +141,11 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 			$rep->Header();
 			$total = array();
 			$grandtotal = array(0, 0, 0, 0);
-			$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
+			$sql = "SELECT supplier_id, name, curr_code FROM suppliers";
 			if ($fromsupp != ALL_NUMERIC) {
 				$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 			}
-			$sql .= " ORDER BY supp_name";
+			$sql .= " ORDER BY name";
 			$result = DB::query($sql, "The customers could not be retrieved");
 			while ($myrow = DB::fetch($result))
 			{
@@ -192,7 +192,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 					$rep->TextCol(1, 2, $trans['reference']);
-					$rep->TextCol(2, 3, $trans['supp_reference']);
+					$rep->TextCol(2, 3, $trans['supplier_reference']);
 					$rep->DateCol(3, 4, $trans['tran_date'], TRUE);
 					if ($trans['type'] == ST_SUPPINVOICE) {
 						$rep->DateCol(4, 5, $trans['due_date'], TRUE);

@@ -92,11 +92,11 @@
     }
     elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
       // get the supplier name
-      $sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
-      $supp_result = DB::query($sql, "check failed");
-      $supp_row = DB::fetch($supp_result);
-      if (strlen($supp_row['supp_name']) > 0) {
-        $person = $supp_row['supp_name'];
+      $sql = "SELECT name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+      $supplier_result = DB::query($sql, "check failed");
+      $supplier_row = DB::fetch($supplier_result);
+      if (strlen($supplier_row['name']) > 0) {
+        $person = $supplier_row['name'];
       }
     }
     elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST) {

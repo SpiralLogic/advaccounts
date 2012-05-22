@@ -25,7 +25,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 		 = "SELECT grn_batch.id,
 			order_no,
 			grn_batch.supplier_id,
-			suppliers.supp_name,
+			suppliers.name,
 			grn_items.item_code,
 			grn_items.description,
 			qty_recd,
@@ -97,7 +97,7 @@ Page::set_security(SA_SUPPLIERANALYTIC);
 					$rep->NewLine(3);
 					$SuppTot_Val = 0;
 				}
-				$rep->TextCol(0, 6, $GRNs['supp_name']);
+				$rep->TextCol(0, 6, $GRNs['name']);
 				$Supplier = $GRNs['supplier_id'];
 			}
 			$rep->NewLine();

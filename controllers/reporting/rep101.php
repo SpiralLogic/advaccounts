@@ -60,8 +60,8 @@
 			 .= ")) AS OutStanding
 		FROM " . '' . "debtor_trans
  	WHERE " . '' . "debtor_trans.tran_date < '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
-		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_no";
+		AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
+		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_id";
 			$result = DB::query($sql, "No transactions were returned");
 			return DB::fetch($result);
 		}
@@ -85,7 +85,7 @@
  	FROM " . '' . "debtor_trans
  	WHERE " . '' . "debtor_trans.tran_date >= '$from'
 		AND " . '' . "debtor_trans.tran_date <= '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
+		AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
  	ORDER BY " . '' . "debtor_trans.tran_date";
 			return DB::query($sql, "No transactions were returned");
@@ -149,9 +149,9 @@
 			$rep->Info($params, $cols, $headers, $aligns);
 			$rep->Header();
 			$grandtotal = array(0, 0, 0, 0);
-			$sql = "SELECT debtor_no, name, curr_code FROM " . '' . "debtors ";
+			$sql = "SELECT debtor_id, name, curr_code FROM " . '' . "debtors ";
 			if ($fromcust != ALL_NUMERIC) {
-				$sql .= "WHERE debtor_no=" . DB::escape($fromcust);
+				$sql .= "WHERE debtor_id=" . DB::escape($fromcust);
 			}
 			$sql .= " ORDER BY name";
 			$result = DB::query($sql, "The customers could not be retrieved");
@@ -161,14 +161,14 @@
 				if (!$convert && $currency != $myrow['curr_code']) {
 					continue;
 				}
-				$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
+				$bal = get_open_balance($myrow['debtor_id'], $from, $convert);
 				$init[0] = $init[1] = 0.0;
 				$init[0] = Num::round(abs($bal['charges']), $dec);
 				$init[1] = Num::round(Abs($bal['credits']), $dec);
 				$init[2] = Num::round($bal['Allocated'], $dec);
 				$init[3] = Num::round($bal['OutStanding'], $dec);
 				;
-				$res = get_transactions($myrow['debtor_no'], $from, $to);
+				$res = get_transactions($myrow['debtor_id'], $from, $to);
 				if ($no_zeros && DB::num_rows($res) == 0) {
 					continue;
 				}

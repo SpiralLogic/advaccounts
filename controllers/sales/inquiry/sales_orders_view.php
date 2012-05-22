@@ -134,7 +134,7 @@
 		sorder.ord_date,
 		sorder.delivery_date,
 		debtor.name,
-		debtor.debtor_no,
+		debtor.debtor_id,
 		branch.br_name,
 		sorder.deliver_to,
 		Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
@@ -157,11 +157,11 @@
   else {
     $sql .= " AND sorder.trans_type = " . $trans_type;
   }
-  $sql .= " AND sorder.debtor_no = debtor.debtor_no
+  $sql .= " AND sorder.debtor_id = debtor.debtor_id
 		AND sorder.branch_id = branch.branch_id
-		AND debtor.debtor_no = branch.debtor_no";
+		AND debtor.debtor_id = branch.debtor_id";
   if ($selected_customer != -1) {
-    $sql .= " AND sorder.debtor_no = " . DB::quote($selected_customer);
+    $sql .= " AND sorder.debtor_id = " . DB::quote($selected_customer);
   }
   if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
     // search orders with number like
@@ -176,14 +176,14 @@
         continue;
       }
       $ajaxsearch = DB::quote("%" . trim($ajaxsearch) . "%");
-      $sql .= " AND ( debtor.debtor_no = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+      $sql .= " AND ( debtor.debtor_id = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
     }
     $sql .= " GROUP BY sorder.ord_date,
 				 sorder.order_no,
-				sorder.debtor_no,
+				sorder.debtor_id,
 				sorder.branch_id,
 				sorder.customer_ref,
 				sorder.deliver_to";
@@ -199,7 +199,7 @@
       $sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::today()) . "'";
     }
     if ($selected_customer != -1) {
-      $sql .= " AND sorder.debtor_no=" . DB::quote($selected_customer);
+      $sql .= " AND sorder.debtor_id=" . DB::quote($selected_customer);
     }
     if (isset($selected_stock_item)) {
       $sql .= " AND line.stk_code=" . DB::quote($selected_stock_item);
@@ -216,7 +216,7 @@
     }
     $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
-				sorder.debtor_no,
+				sorder.debtor_id,
 				sorder.branch_id,
 				sorder.customer_ref,
 				sorder.deliver_to";
@@ -328,7 +328,7 @@
           ),
           array(
             'insert' => TRUE, 'fun' => function ($row) {
-            return Reporting::emailDialogue($row['debtor_no'], $row['trans_type'], $row['order_no']);
+            return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
           }
           ),
           array(

@@ -23,7 +23,7 @@
    */function get_po($order_no) {
 		# __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
 		$sql
-		 = "SELECT purch_orders.*, suppliers.supp_name, suppliers.supp_account_no,
+		 = "SELECT purch_orders.*, suppliers.name, suppliers.account_no,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
  		suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
 		FROM purch_orders, suppliers, locations
@@ -138,7 +138,7 @@
 				$rep->NewLine();
 				$rep->TextColLines(1, 5, $myrow['comments'], -2);
 			}
-			$DisplaySubTot = Num::format($SubTotal, $dec);
+			$display_sub_total = Num::format($SubTotal, $dec);
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = TRUE;
 			$doctype = ST_PURCHORDER;
@@ -148,7 +148,7 @@
 				include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 			}
 			$rep->TextCol(3, 6, Report::SUBTOTAL, -2);
-			$rep->TextCol(6, 7, $DisplaySubTot, -2);
+			$rep->TextCol(6, 7, $display_sub_total, -2);
 			$rep->NewLine();
 			$rep->TextCol(3, 6, 'Freight:', -2);
 			$rep->TextCol(6, 7, Num::format($myrow['freight'], $dec), -2);
@@ -167,8 +167,8 @@
 				$myrow['contact_email'] = $myrow['email'];
 				if (isset($myrow['contact'])) {
 					$myrow['DebtorName'] = $myrow['contact'];
-				} elseif (isset($myrow['supp_name'])) {
-					$myrow['DebtorName'] = $myrow['supp_name'];
+				} elseif (isset($myrow['name'])) {
+					$myrow['DebtorName'] = $myrow['name'];
 				}
 				if ($myrow['reference'] == "") {
 					$myrow['reference'] = $myrow['order_no'];

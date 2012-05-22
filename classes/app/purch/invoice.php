@@ -16,7 +16,7 @@
      * @param $supplier_id
      */
     static public function get_supplier_to_trans($creditor_trans, $supplier_id) {
-      $sql = "SELECT suppliers.supp_name, payment_terms.terms, "
+      $sql = "SELECT suppliers.name, payment_terms.terms, "
         . "payment_terms.days_before_due,
 		payment_terms.day_in_following_month,
 		suppliers.tax_group_id, tax_groups.name As tax_group_name
@@ -27,7 +27,7 @@
       $result = DB::query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
       $myrow = DB::fetch($result);
       $creditor_trans->supplier_id = $supplier_id;
-      $creditor_trans->supplier_name = $myrow['supp_name'];
+      $creditor_trans->supplier_name = $myrow['name'];
       $creditor_trans->terms_description = $myrow['terms'];
       if ($myrow['days_before_due'] == 0) {
         $creditor_trans->terms = "1" . $myrow['day_in_following_month'];
@@ -159,7 +159,7 @@
       /*First insert the invoice into the creditor_trans table*/
       $invoice_id = Creditor_Trans::add(
         $trans_type, $creditor_trans->supplier_id, $date_, $creditor_trans->due_date,
-        $creditor_trans->reference, $creditor_trans->supp_reference,
+        $creditor_trans->reference, $creditor_trans->supplier_reference,
         $invoice_items_total, $tax_total, $creditor_trans->ov_discount
       );
       $total = 0;
@@ -206,7 +206,7 @@
         GL_Trans::add_gl_tax_details(
           $entered_gl_code->gl_code,
           $trans_type, $invoice_id, $entered_gl_code->amount,
-          $ex_rate, $date_, $creditor_trans->supp_reference
+          $ex_rate, $date_, $creditor_trans->supplier_reference
         );
       }
       foreach (
@@ -318,7 +318,7 @@
           GL_Trans::add_tax_details(
             $trans_type, $invoice_id,
             $taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
-            $taxitem['Net'], $ex_rate, $date_, $creditor_trans->supp_reference
+            $taxitem['Net'], $ex_rate, $date_, $creditor_trans->supplier_reference
           );
           if (!$creditor_trans->is_invoice) {
             $taxitem['Value'] = -$taxitem['Value'];
@@ -394,20 +394,20 @@
      */
     static public function get($trans_no, $trans_type, $creditor_trans) {
       $sql
-        = "SELECT creditor_trans.*, supp_name FROM creditor_trans,suppliers
+        = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
 		WHERE trans_no = " . DB::escape($trans_no) . " AND type = " . DB::escape($trans_type) . "
 		AND suppliers.supplier_id=creditor_trans.supplier_id";
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       if (DB::num_rows($result) == 1) {
         $trans_row = DB::fetch($result);
         $creditor_trans->supplier_id = $trans_row["supplier_id"];
-        $creditor_trans->supplier_name = $trans_row["supp_name"];
+        $creditor_trans->supplier_name = $trans_row["name"];
         $creditor_trans->tran_date = Dates::sql2date($trans_row["tran_date"]);
         $creditor_trans->due_date = Dates::sql2date($trans_row["due_date"]);
         //$creditor_trans->Comments = $trans_row["TransText"];
         $creditor_trans->Comments = "";
         $creditor_trans->reference = $trans_row["reference"];
-        $creditor_trans->supp_reference = $trans_row["supp_reference"];
+        $creditor_trans->supplier_reference = $trans_row["supplier_reference"];
         $creditor_trans->ov_amount = $trans_row["ov_amount"];
         $creditor_trans->ov_discount = $trans_row["ov_discount"];
         $creditor_trans->ov_gst = $trans_row["ov_gst"];
@@ -562,7 +562,7 @@
       $_POST['Comments'] = $creditor_trans->Comments;
       $_POST['tran_date'] = $creditor_trans->tran_date;
       $_POST['due_date'] = $creditor_trans->due_date;
-      $_POST['supp_reference'] = $creditor_trans->supp_reference;
+      $_POST['supplier_reference'] = $creditor_trans->supplier_reference;
       $_POST['reference'] = $creditor_trans->reference;
       $_POST['supplier_id'] = $creditor_trans->supplier_id;
       $_POST['ChgTax'] = $creditor_trans->tax_correction;
@@ -576,7 +576,7 @@
       $creditor_trans->Comments = Input::post('Comments');
       $creditor_trans->tran_date = $_POST['tran_date'];
       $creditor_trans->due_date = $_POST['due_date'];
-      $creditor_trans->supp_reference = $_POST['supp_reference'];
+      $creditor_trans->supplier_reference = $_POST['supplier_reference'];
       $creditor_trans->reference = $_POST['reference'];
       $creditor_trans->ov_amount = 0; /* for starters */
       $creditor_trans->tax_correction = Input::post('ChgTax'); /* for starters */
@@ -620,13 +620,13 @@
       if ($creditor_trans->is_invoice && isset($_POST['invoice_no'])) {
         Cell::labels(NULL,
           $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], FALSE) . hidden(
-            'supp_reference',
+            'supplier_reference',
             $_POST['invoice_no'], FALSE
           )
         );
       }
       else {
-        text_cells(NULL, 'supp_reference', $_POST['supp_reference'], 20, 20);
+        text_cells(NULL, 'supplier_reference', $_POST['supplier_reference'], 20, 20);
       }
       Row::end();
       Row::start();

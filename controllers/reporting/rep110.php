@@ -98,8 +98,8 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}
 			}
-			$DisplaySubTot = Num::format($SubTotal, $dec);
-			$DisplayFreight = Num::format($myrow["ov_freight"], $dec);
+			$display_sub_total = Num::format($SubTotal, $dec);
+			$display_freight = Num::format($myrow["ov_freight"], $dec);
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
 			$doctype = ST_CUSTDELIVERY;

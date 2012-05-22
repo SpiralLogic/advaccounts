@@ -31,7 +31,7 @@
   if (list_updated('branch_id')) {
     // when branch is selected via external editor also customer can change
     $br = Sales_Branch::get(get_post('branch_id'));
-    $_POST['customer_id'] = $br['debtor_no'];
+    $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }
   if (isset($_GET[ADDED_ID])) {

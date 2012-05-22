@@ -149,7 +149,7 @@
       $data['Email']                = $job_data->email;
       $data['order_ref']            = $job_data->reference;
       $data['Client_PO']            = $job_data->cust_ref;
-      $data['debtor_no']            = $job_data->customer_id;
+      $data['debtor_id']            = $job_data->customer_id;
       $data['Site_Ship_to_Address'] = $job_data->deliver_to . chr(13) . chr(10) . str_replace('\n', chr(13) . chr(10), $job_data->delivery_address);
       $data['Deliver_to_Company']   = $job_data->deliver_to;
       $data['Attention']            = $job_data->name;

@@ -24,7 +24,7 @@ Page::set_security(SA_SUPPPAYMREP);
 		$date = Dates::date2sql($date);
 		$dec = User::price_dec();
 		$sql
-		 = "SELECT creditor_trans.supp_reference,
+		 = "SELECT creditor_trans.supplier_reference,
 			creditor_trans.tran_date,
 			creditor_trans.due_date,
 			creditor_trans.trans_no,
@@ -99,14 +99,14 @@ Page::set_security(SA_SUPPPAYMREP);
 		$total = array();
 		$grandtotal = array(0, 0);
 		$sql
-		 = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
+		 = "SELECT supplier_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms
 		WHERE ";
 		if ($fromsupp != ALL_NUMERIC) {
 			$sql .= "supplier_id=" . DB::escape($fromsupp) . " AND ";
 		}
 		$sql
 		 .= "suppliers.payment_terms = payment_terms.terms_indicator
-		ORDER BY supp_name";
+		ORDER BY name";
 		$result = DB::query($sql, "The customers could not be retrieved");
 		while ($myrow = DB::fetch($result))
 		{
@@ -142,7 +142,7 @@ Page::set_security(SA_SUPPPAYMREP);
 				}
 				$rep->NewLine(1, 2);
 				$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-				$rep->TextCol(1, 2, $trans['supp_reference']);
+				$rep->TextCol(1, 2, $trans['supplier_reference']);
 				if ($trans['type'] == ST_SUPPINVOICE) {
 					$rep->DateCol(2, 3, $trans['due_date'], TRUE);
 				}

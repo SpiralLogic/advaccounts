@@ -48,7 +48,7 @@
     /**
      * @var
      */
-    public $debtor_no;
+    public $debtor_id;
     /**
      * @var string
      */
@@ -228,7 +228,7 @@
       }
       $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
         ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
-        'b.debtor_no=c.debtor_no',
+        'b.debtor_id=c.debtor_id',
         'b.tax_group_id=t.id',
         'b.area=a.area_code',
         'b.salesman=s.salesman_code'
@@ -255,7 +255,7 @@
     static public function select($customer_id, $name, $selected_id = NULL, $spec_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       $sql
         = "SELECT branch_id, branch_ref FROM branches
-			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_no='" . $customer_id . "' ";
+			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
 
       $where = $enabled ? array("disable_trans = 0") : array();
       return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(

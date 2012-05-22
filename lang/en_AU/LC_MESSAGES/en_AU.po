@@ -6124,65 +6124,65 @@ msgstr ""
 msgid "Invoices/Credits"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:23
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:23
 msgid "View Creditor Credit Note"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:39
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:39
 msgid "SUPPLIER CREDIT NOTE"
 msgstr "SUPPLIER ADJUSTMENT CREDIT NOTE"
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:48
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:51
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:48
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:51
 msgid "Invoice Date"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:61
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:66
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:61
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:66
 msgid "Sub Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:67
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:67
 msgid "TOTAL CREDIT NOTE"
 msgstr "TOTAL CREDIT ADJUSTMENT NOTE"
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:71
+#: c:\Apache2\htdocs\account226/purchasing/view/view_credit.php:71
 msgid "This credit note has been voided."
 msgstr "This credit adjustment note has been voided."
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:23
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:23
 msgid "View Creditor Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:41
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:41
 msgid "SUPPLIER INVOICE"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:73
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:73
 msgid "TOTAL INVOICE"
 msgstr "TOTAL INCLUDING GST"
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:77
+#: c:\Apache2\htdocs\account226/purchasing/view/view_invoice.php:77
 msgid "This invoice has been voided."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:22
+#: c:\Apache2\htdocs\account226/purchasing/view/view_payment.php:22
 msgid "View Payment to Creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:47
+#: c:\Apache2\htdocs\account226/purchasing/view/view_payment.php:47
 msgid "Payment to Creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:53
+#: c:\Apache2\htdocs\account226/purchasing/view/view_payment.php:53
 msgid "To Creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:59
+#: c:\Apache2\htdocs\account226/purchasing/view/view_payment.php:59
 msgid "Payment Currency"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:66
+#: c:\Apache2\htdocs\account226/purchasing/view/view_payment.php:66
 msgid "Creditor's Currency"
 msgstr ""
 

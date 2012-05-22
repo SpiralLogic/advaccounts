@@ -25,7 +25,7 @@
 			$sql
 			 = "SELECT creditor_trans.*,
  		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
- 		suppliers.supp_name, suppliers.supp_account_no, suppliers.city, suppliers.postcode, suppliers.state,
+ 		suppliers.name, suppliers.account_no, suppliers.city, suppliers.postcode, suppliers.state,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
  		suppliers.email, suppliers.address, suppliers.contact
 		FROM creditor_trans, suppliers
@@ -47,7 +47,7 @@
    * @return null|PDOStatement
    */function get_allocations_for_remittance($supplier_id, $type, $trans_no)
 		{
-			$sql = Purch_Allocation::get_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+			$sql = Purch_Allocation::get_sql("amt, supplier_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 		AND alloc.trans_type_from=" . DB::escape($type) . "
@@ -130,7 +130,7 @@
 					while ($myrow2 = DB::fetch($result))
 					{
 						$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
-						$rep->TextCol(1, 2, $myrow2['supp_reference'], -2);
+						$rep->TextCol(1, 2, $myrow2['supplier_reference'], -2);
 						$rep->TextCol(2, 3, Dates::sql2date($myrow2['tran_date']), -2);
 						$rep->TextCol(3, 4, Dates::sql2date($myrow2['due_date']), -2);
 						$rep->AmountCol(4, 5, $myrow2['Total'], $dec, -2);
@@ -161,7 +161,7 @@
 					$rep->Font();
 					if ($email == 1) {
 						$myrow['contact_email'] = $myrow['email'];
-						$myrow['DebtorName'] = $myrow['supp_name'];
+						$myrow['DebtorName'] = $myrow['name'];
 						if ($myrow['contact'] != '') {
 							$myrow['DebtorName'] = $myrow['contact'];
 						}

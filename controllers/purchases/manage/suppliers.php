@@ -21,22 +21,22 @@
     /* actions to take once the user has clicked the submit button
                    ie the page has called itself with some user input */
     //first off validate inputs sensible
-    if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") {
+    if (strlen($_POST['name']) == 0 || $_POST['name'] == "") {
       $input_error = 1;
       Event::error(_("The supplier name must be entered."));
-      JS::set_focus('supp_name');
+      JS::set_focus('name');
     }
-    if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") {
+    if (strlen($_POST['ref']) == 0 || $_POST['ref'] == "") {
       $input_error = 1;
       Event::error(_("The supplier short name must be entered."));
-      JS::set_focus('supp_ref');
+      JS::set_focus('ref');
     }
     if ($input_error != 1) {
       if (!$new_supplier) {
-        $sql = "UPDATE suppliers SET supp_name=" . DB::escape($_POST['supp_name']) . ",
-				supp_ref=" . DB::escape($_POST['supp_ref']) . ",
+        $sql = "UPDATE suppliers SET name=" . DB::escape($_POST['name']) . ",
+				ref=" . DB::escape($_POST['ref']) . ",
  address=" . DB::escape($_POST['address']) . ",
- supp_address=" . DB::escape($_POST['supp_address']) . ",
+ address=" . DB::escape($_POST['address']) . ",
  phone=" . DB::escape($_POST['phone']) . ",
  phone2=" . DB::escape($_POST['phone2']) . ",
  fax=" . DB::escape($_POST['fax']) . ",
@@ -44,7 +44,7 @@
  email=" . DB::escape($_POST['email']) . ",
  website=" . DB::escape($_POST['website']) . ",
  contact=" . DB::escape($_POST['contact']) . ",
- supp_account_no=" . DB::escape($_POST['supp_account_no']) . ",
+ account_no=" . DB::escape($_POST['account_no']) . ",
  bank_account=" . DB::escape($_POST['bank_account']) . ",
  credit_limit=" . Validation::input_num('credit_limit', 0) . ",
  dimension_id=" . DB::escape($_POST['dimension_id']) . ",
@@ -62,10 +62,10 @@
         Event::success(_("Supplier has been updated."));
       }
       else {
-        $sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
-				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
+        $sql = "INSERT INTO suppliers (name, ref, address, address, phone, phone2, fax, gst_no, email, website,
+				contact, account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::escape($_POST['supp_name']) . ", " . DB::escape($_POST['supp_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['supp_address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['supp_account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit',
+				VALUES (" . DB::escape($_POST['name']) . ", " . DB::escape($_POST['ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit',
           0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
         DB::query($sql, "The supplier could not be added");
         $_POST['supplier_id'] = DB::insert_id();
@@ -125,10 +125,10 @@
   if (!$new_supplier) {
     //SupplierID exists - either passed when calling the form or from the form itself
     $myrow = Creditor::get($_POST['supplier_id']);
-    $_POST['supp_name'] = $myrow["supp_name"];
-    $_POST['supp_ref'] = $myrow["supp_ref"];
+    $_POST['name'] = $myrow["name"];
+    $_POST['ref'] = $myrow["ref"];
     $_POST['address'] = $myrow["address"];
-    $_POST['supp_address'] = $myrow["supp_address"];
+    $_POST['address'] = $myrow["address"];
     $_POST['phone'] = $myrow["phone"];
     $_POST['phone2'] = $myrow["phone2"];
     $_POST['fax'] = $myrow["fax"];
@@ -136,7 +136,7 @@
     $_POST['email'] = $myrow["email"];
     $_POST['website'] = $myrow["website"];
     $_POST['contact'] = $myrow["contact"];
-    $_POST['supp_account_no'] = $myrow["supp_account_no"];
+    $_POST['account_no'] = $myrow["account_no"];
     $_POST['bank_account'] = $myrow["bank_account"];
     $_POST['dimension_id'] = $myrow["dimension_id"];
     $_POST['dimension2_id'] = $myrow["dimension2_id"];
@@ -151,7 +151,7 @@
     $_POST['inactive'] = $myrow["inactive"];
   }
   else {
-    $_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
+    $_POST['name'] = $_POST['ref'] = $_POST['address'] = $_POST['address'] = $_POST['tax_group_id'] = $_POST['website'] = $_POST['account_no'] = $_POST['notes'] = '';
     $_POST['dimension_id'] = 0;
     $_POST['dimension2_id'] = 0;
     $_POST['sales_type'] = -1;
@@ -166,18 +166,18 @@
     $_POST['inactive'] = 0;
   }
   Table::sectionTitle(_("Name and Contact"));
-  text_row(_("Supplier Name:"), 'supp_name', NULL, 42, 40);
-  text_row(_("Supplier Short Name:"), 'supp_ref', NULL, 30, 30);
+  text_row(_("Supplier Name:"), 'name', NULL, 42, 40);
+  text_row(_("Supplier Short Name:"), 'ref', NULL, 30, 30);
   text_row(_("Contact Person:"), 'contact', NULL, 42, 40);
   text_row(_("Phone Number:"), 'phone', NULL, 32, 30);
   text_row(_("Secondary Phone Number:"), 'phone2', NULL, 32, 30);
   text_row(_("Fax Number:"), 'fax', NULL, 32, 30);
   email_row(_("E-mail:"), 'email', NULL, 35, 55);
   link_row(_("Website:"), 'website', NULL, 35, 55);
-  text_row(_("Our Customer No:"), 'supp_account_no', NULL, 42, 40);
+  text_row(_("Our Customer No:"), 'account_no', NULL, 42, 40);
   Table::sectionTitle(_("Addresses"));
   textarea_row(_("Mailing Address:"), 'address', NULL, 35, 5);
-  textarea_row(_("Physical Address:"), 'supp_address', NULL, 35, 5);
+  textarea_row(_("Physical Address:"), 'address', NULL, 35, 5);
   Table::section(2);
   Table::sectionTitle(_("Purchasing"));
   text_row(_("GSTNo:"), 'gst_no', NULL, 42, 40);

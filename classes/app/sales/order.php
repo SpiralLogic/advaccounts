@@ -404,7 +404,7 @@
      * @return bool
      */
     public function check_cust_ref($cust_ref) {
-      $sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
+      $sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_id=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
       $result = DB::query($sql);
       return (DB::num_rows($result) > 0) ? TRUE : FALSE;
     }
@@ -731,7 +731,7 @@
       $del_date = Dates::date2sql($this->due_date);
       $order_type = 0; // this is default on new order
       $sql
-        = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
+        = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
 			order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 			contact_email, freight_cost, from_stk_loc, delivery_date)
 			VALUES (" .
@@ -813,7 +813,7 @@
       $this->trans_type = $myrow['trans_type'];
       $this->so_type = $myrow["type"];
       $this->trans_no = array($order_no => $myrow["version"]);
-      $this->set_customer($myrow["debtor_no"], $myrow["name"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+      $this->set_customer($myrow["debtor_id"], $myrow["name"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
       $this->set_branch($myrow["branch_id"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
       $this->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
       $this->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
@@ -942,7 +942,7 @@
       $version = current($this->trans_no);
       DB::begin();
       $sql = "UPDATE sales_orders SET type =" . DB::escape($this->so_type) . " ,
-					debtor_no = " . DB::escape($this->customer_id) . ",
+					debtor_id = " . DB::escape($this->customer_id) . ",
 					branch_id = " . DB::escape($this->Branch) . ",
 					customer_ref = " . DB::escape($this->cust_ref) . ",
 					source_no = " . DB::escape($this->source_no) . ",
@@ -1570,7 +1570,7 @@
 		WHERE sales_orders.order_type=sales_types.id
 			AND branches.branch_id = sales_orders.branch_id
 			AND branches.tax_group_id = tax_groups.id
-			AND sales_orders.debtor_no = debtors.debtor_no
+			AND sales_orders.debtor_id = debtors.debtor_id
 			AND locations.loc_code = sales_orders.from_stk_loc
 			AND shippers.shipper_id = sales_orders.ship_via
 			AND sales_orders.trans_type = " . DB::escape($trans_type) . "
@@ -1635,9 +1635,9 @@
         return Dates::new_doc_date();
       }
       $sql
-        = "SELECT debtors.debtor_no, debtors.payment_terms, payment_terms.* FROM debtors,
+        = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
 			payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
-			debtors.debtor_no = " . DB::escape($debtorno);
+			debtors.debtor_id = " . DB::escape($debtorno);
       $result = DB::query($sql, "The customer details could not be retrieved");
       $myrow = DB::fetch($result);
       if (DB::num_rows($result) == 0) {
@@ -1677,7 +1677,7 @@
 			FROM debtors, credit_status, sales_types
 			WHERE debtors.sales_type=sales_types.id
 			AND debtors.credit_status=credit_status.id
-			AND debtors.debtor_no = " . DB::escape($customer_id);
+			AND debtors.debtor_id = " . DB::escape($customer_id);
       $result = DB::query($sql, "Customer Record Retreive");
       return DB::fetch($result);
     }
@@ -1700,7 +1700,7 @@
 				WHERE branches.tax_group_id = tax_groups.id
 					AND locations.loc_code=default_location
 					AND branches.branch_id=" . DB::escape($branch_id) . "
-					AND branches.debtor_no = " . DB::escape($customer_id);
+					AND branches.debtor_id = " . DB::escape($customer_id);
       return DB::query($sql, "Customer Branch Record Retreive");
     }
     /**

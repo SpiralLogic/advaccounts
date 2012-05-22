@@ -17,7 +17,7 @@
      * @return array|string
      */
     static public function search($terms) {
-      $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
+      $sql = "SELECT supplier_id as id, ref as label, ref as value FROM suppliers WHERE ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
       }
@@ -42,7 +42,7 @@
     /**
      * @var
      */
-    public $supp_name; //
+    public $name; //
     /**
      * @var
      */
@@ -63,20 +63,20 @@
     /**
      * @var
      */
-    public $post_address, $supp_address; //
+    public $post_address, $address; //
 
     /**
      * @var string
      */
-    public $supp_city = "";
+    public $city = "";
     /**
      * @var string
      */
-    public $supp_state = "";
+    public $state = "";
     /**
      * @var string
      */
-    public $supp_postcode = "";
+    public $postcode = "";
     /**
      * @var string
      */
@@ -88,7 +88,7 @@
     /**
      * @var string
      */
-    public $supp_phone = "";
+    public $phone = "";
     /**
      * @var string
      */
@@ -115,7 +115,7 @@
     /**
      * @var string
      */
-    public $account_no = '', $supp_account_no = ''; //
+    public $account_no = '', $account_no = ''; //
     /**
      * @var
      */
@@ -139,7 +139,7 @@
     /**
      * @var string
      */
-    public $supp_ref = '';
+    public $ref = '';
     /**
      * @var array
      */
@@ -175,18 +175,18 @@
       $this->supplier_id = &$this->id;
       $this->gst_no = &$this->tax_id;
       $this->contact = &$this->contact_name;
-      $this->supp_address = &$this->post_address;
-      $this->supp_account_no = &$this->account_no;
-      $this->phone2 = &$this->supp_phone;
+      $this->address = &$this->post_address;
+      $this->account_no = &$this->account_no;
+      $this->phone2 = &$this->phone;
       parent::__construct($id);
 
-      $this->supp_ref = substr($this->supp_name, 0, 29);
+      $this->ref = substr($this->name, 0, 29);
     }
     /**
      * @return array
      */
     public function getEmailAddresses() {
-      return array('Accounts' => array($this->id => array($this->supp_name, $this->email)));
+      return array('Accounts' => array($this->id => array($this->name, $this->email)));
     }
     /**
      * @param array|null $changes
@@ -222,7 +222,7 @@
         }
       }
       $this->discount = User::numeric($this->discount) / 100;
-      $this->supp_ref = substr($this->supp_name, 0, 29);
+      $this->ref = substr($this->name, 0, 29);
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
@@ -236,8 +236,8 @@
      * @return bool
      */
     protected function _canProcess() {
-      if (empty($this->supp_name)) {
-        $this->_status(FALSE, 'Processing', "The supplier name cannot be empty.", 'supp_name');
+      if (empty($this->name)) {
+        $this->_status(FALSE, 'Processing', "The supplier name cannot be empty.", 'name');
         return FALSE;
       }
       return TRUE;
@@ -317,7 +317,7 @@
       // removed - creditor_trans.alloc from all summations
       $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
       $due = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
+      $sql = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
 
 		Sum($value) AS Balance,
 
@@ -336,7 +336,7 @@
 			 AND suppliers.supplier_id = creditor_trans.supplier_id
 
 		GROUP BY
-			 suppliers.supp_name,
+			 suppliers.name,
 			 payment_terms.terms,
 			 payment_terms.days_before_due,
 			 payment_terms.day_in_following_month";
@@ -344,7 +344,7 @@
       if (DB::num_rows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = TRUE;
-        $sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
+        $sql = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
 			FROM suppliers,
 				 payment_terms
 			WHERE
@@ -413,7 +413,7 @@
      * @return mixed
      */
     static public function get_name($supplier_id) {
-      $sql = "SELECT supp_name AS supp_name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+      $sql = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       $row = DB::fetch_row($result);
       return $row[0];
@@ -443,12 +443,12 @@
      * @return string
      */
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
-      $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
+      $sql = "SELECT supplier_id, ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
 
-      return select_box($name, $selected_id, $sql, 'supplier_id', 'supp_name', array(
+      return select_box($name, $selected_id, $sql, 'supplier_id', 'name', array(
         'format' => '_format_add_curr',
-        'order' => array('supp_ref'),
+        'order' => array('ref'),
         'search_box' => $mode != 0,
         'type' => 1,
         'spec_option' => $spec_option === TRUE ? _("All Suppliers") : $spec_option,
@@ -495,7 +495,7 @@
      * @return void
      */
     static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
-      echo "<tr><td class='label' name='supp_name'><label for='$name'>$label</label></td><td>";
+      echo "<tr><td class='label' name='name'><label for='$name'>$label</label></td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";
     }

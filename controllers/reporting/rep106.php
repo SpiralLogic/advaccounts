@@ -34,7 +34,7 @@ Page::set_security(SA_SALESMANREP);
 		WHERE sales_orders.order_no=debtor_trans.order_
 		 AND sales_orders.branch_id=branches.branch_id
 		 AND branches.salesman=salesman.salesman_code
-		 AND debtor_trans.debtor_no=debtors.debtor_no
+		 AND debtor_trans.debtor_id=debtors.debtor_id
 		 AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
 		 AND debtor_trans.tran_date>='$fromdate'
 		 AND debtor_trans.tran_date<='$todate'

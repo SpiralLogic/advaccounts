@@ -24,7 +24,7 @@
           = "UPDATE recurrent_invoices SET
  			description=" . DB::escape($_POST['description']) . ",
  			order_no=" . DB::escape($_POST['order_no']) . ",
- 			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
+ 			debtor_id=" . DB::escape($_POST['debtor_id']) . ",
  			group_no=" . DB::escape($_POST['group_no']) . ",
  			days=" . Validation::input_num('days', 0) . ",
  			monthly=" . Validation::input_num('monthly', 0) . ",
@@ -35,8 +35,8 @@
       }
       else {
         $sql
-          = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
- 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days',
+          = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_id']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days',
           0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
         $note = _('New recurrent invoice has been added');
       }
@@ -58,7 +58,7 @@
     $selected_id = -1;
     unset($_POST);
   }
-  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
+  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
   start_form();
   Table::start('tablestyle grid width70');
@@ -75,12 +75,12 @@
 
     Cell::label($myrow["description"]);
     Cell::label(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
-    if ($myrow["debtor_no"] == 0) {
+    if ($myrow["debtor_id"] == 0) {
       Cell::label("");
       Cell::label(Sales_Group::get_name($myrow["group_no"]));
     }
     else {
-      Cell::label(Debtor::get_name($myrow["debtor_no"]));
+      Cell::label(Debtor::get_name($myrow["debtor_id"]));
       Cell::label(Sales_Branch::get_name($myrow['group_no']));
     }
     Cell::label($myrow["days"]);
@@ -105,7 +105,7 @@
       $myrow = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
       $_POST['order_no'] = $myrow["order_no"];
-      $_POST['debtor_no'] = $myrow["debtor_no"];
+      $_POST['debtor_id'] = $myrow["debtor_id"];
       $_POST['group_no'] = $myrow["group_no"];
       $_POST['days'] = $myrow["days"];
       $_POST['monthly'] = $myrow["monthly"];
@@ -116,9 +116,9 @@
   }
   text_row_ex(_("Description:"), 'description', 50);
   Sales_UI::templates_row(_("Template:"), 'order_no');
-  Debtor::row(_("Customer:"), 'debtor_no', NULL, " ", TRUE);
-  if ($_POST['debtor_no'] > 0) {
-    Debtor_Branch::row(_("Branch:"), $_POST['debtor_no'], 'group_no', NULL, FALSE);
+  Debtor::row(_("Customer:"), 'debtor_id', NULL, " ", TRUE);
+  if ($_POST['debtor_id'] > 0) {
+    Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'group_no', NULL, FALSE);
   }
   else {
     Sales_UI::groups_row(_("Sales Group:"), 'group_no', NULL, " ");

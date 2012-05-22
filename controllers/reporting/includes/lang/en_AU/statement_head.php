@@ -74,7 +74,7 @@
 	$this->TextWrapLines($ccol, $icol, $this->company['postal_address']);
 	$this->NewLine();
 	$this->Font('italic');
-	$customer_branch_details = Sales_Branch::get_main($myrow['debtor_no']);
+	$customer_branch_details = Sales_Branch::get_main($myrow['debtor_id']);
 	if ($this->company['phone'] != "") {
 		$this->Text($ccol, _("Phone"), $c2col);
 		$this->Text($c2col, $this->company['phone'], $mcol);
@@ -110,7 +110,7 @@
 	$this->Text($mcol + 100, $txt_date);
 	$this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
 	$this->NewLine();
-	$this->Text($mcol + 100, $doc_Invoice_no);
+	$this->Text($mcol + 100, $doc_invoice_no);
 	if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
 		if (Config::get('print_useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['trans_no']);

@@ -141,7 +141,7 @@
       $this->allocs = array();
       if ($trans_no) {
         $trans = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
-        $this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
+        $this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_id'];
         $this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
         $this->amount = $trans["Total"];
         $this->date_ = Dates::sql2date($trans["tran_date"]);

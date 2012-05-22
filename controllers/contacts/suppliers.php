@@ -16,7 +16,7 @@
       JS::renderJSON($data);
     }
   }
-  if (isset($_POST['supp_name'])) {
+  if (isset($_POST['name'])) {
     $data['company'] = $supplier = new Creditor();
     $data['company']->save($_POST);
   }
@@ -58,10 +58,10 @@
   HTML::div('companyIDs');
   HTML::table(array("class" => "marginauto bold"))->tr(TRUE)->td(TRUE);
   HTML::label(array(
-    'for' => 'supp_name', 'content' => 'Supplier name:'
+    'for' => 'name', 'content' => 'Supplier name:'
   ), FALSE);
-  HTML::input('supp_name', array(
-    'value' => $supplier->supp_name, 'name' => 'supp_name', 'size' => 50
+  HTML::input('name', array(
+    'value' => $supplier->name, 'name' => 'name', 'size' => 50
   ));
   HTML::td()->td(array(
     'content' => _("Supplier ID: "), "style" => "width:90px"
@@ -95,16 +95,16 @@
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
   HTML::_td()->tr;
-  text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
-  textarea_row(_("Address:"), 'supp_address', $supplier->supp_address, 35, 2);
+  text_row(_("Phone Number:"), 'phone', $supplier->phone2, 35, 30);
+  textarea_row(_("Address:"), 'address', $supplier->address, 35, 2);
 
-  $supp_postcode = new Contact_Postcode(array(
-      'city' => array('supp_city', $supplier->supp_city),
-      'state' => array('supp_state', $supplier->supp_state),
-      'postcode' => array('supp_postcode', $supplier->supp_postcode)
+  $postcode = new Contact_Postcode(array(
+      'city' => array('city', $supplier->city),
+      'state' => array('state', $supplier->state),
+      'postcode' => array('postcode', $supplier->postcode)
     )
   );
-  $supp_postcode->render();
+  $postcode->render();
   Table::endOuter(1);
   $menu->endTab()->startTab('Accounts', 'Accounts');
   Table::startOuter('tablestyle2');

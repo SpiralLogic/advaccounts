@@ -63,7 +63,7 @@
      * @return mixed
      */
     static public function for_debtor($customer_id) {
-      $sql = "SELECT curr_code FROM debtors WHERE debtor_no = '$customer_id'";
+      $sql = "SELECT curr_code FROM debtors WHERE debtor_id = '$customer_id'";
       $result = DB::query($sql, "Retreive currency of customer $customer_id");
       $myrow = DB::fetch_row($result);
       return $myrow[0];

@@ -25,7 +25,7 @@
   if (isset($_GET['New'])) {
     Creditor_Trans::i(TRUE)->is_invoice = FALSE;
     if (isset($_GET['invoice_no'])) {
-      Creditor_Trans::i()->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
+      Creditor_Trans::i()->supplier_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
     }
   }
   //	GL postings are often entered in the same form to two accounts
@@ -194,9 +194,9 @@ JS;
     if (!Ref::is_new(Creditor_Trans::i()->reference, ST_SUPPCREDIT)) {
       Creditor_Trans::i()->reference = Ref::get_next(ST_SUPPCREDIT);
     }
-    if (!Ref::is_valid(Creditor_Trans::i()->supp_reference)) {
+    if (!Ref::is_valid(Creditor_Trans::i()->supplier_reference)) {
       Event::error(_("You must enter a supplier's credit note reference."));
-      JS::set_focus('supp_reference');
+      JS::set_focus('supplier_reference');
       return FALSE;
     }
     if (!Dates::is_date(Creditor_Trans::i()->tran_date)) {

@@ -149,7 +149,7 @@
       			credit_status.dissallow_invoices
       			FROM debtors, credit_status
       			WHERE debtors.credit_status = credit_status.id
-      				AND debtors.debtor_no = " . $customer_id;
+      				AND debtors.debtor_id = " . $customer_id;
         $result = DB::query($sql, "could not query customers");
         $myrow = DB::fetch($result);
         $type = ST_CUSTREFUND;

@@ -47,7 +47,7 @@
   Table::end(1);
   $voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
   if (!$voided && ($trans_type != ST_CUSTREFUND)) {
-    GL_Allocation::from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
+    GL_Allocation::from(PT_CUSTOMER, $receipt['debtor_id'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
   }
   if (Input::get('frame')) {
     return;

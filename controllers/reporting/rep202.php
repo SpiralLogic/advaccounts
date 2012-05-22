@@ -144,11 +144,11 @@
 		$txt_now_due = "1-" . $past_due1 . " " . _('Days');
 		$txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
 		$txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
-		$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
+		$sql = "SELECT supplier_id, name AS name, curr_code FROM suppliers";
 		if ($fromsupp != ALL_NUMERIC) {
 			$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 		}
-		$sql .= " ORDER BY supp_name";
+		$sql .= " ORDER BY name";
 		$result = DB::query($sql, "The suppliers could not be retrieved");
 		while ($myrow = DB::fetch($result)) {
 			if (!$convert && $currency != $myrow['curr_code']) {

@@ -29,7 +29,7 @@
  				debtors.curr_code, debtors.payment_terms, debtors.tax_id AS tax_id,
  				debtors.email, debtors.address
  			FROM debtor_trans, debtors
-				WHERE debtor_trans.debtor_no = debtors.debtor_no
+				WHERE debtor_trans.debtor_id = debtors.debtor_id
 				AND debtor_trans.type = " . DB::escape($type) . "
 				AND debtor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
@@ -51,7 +51,7 @@
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type
-		AND trans.debtor_no=" . DB::escape($debtor_id),
+		AND trans.debtor_id=" . DB::escape($debtor_id),
 				"debtor_allocations as alloc");
 			$sql .= " ORDER BY trans_no";
 			return DB::query($sql, "Cannot retreive alloc to transactions");
@@ -102,7 +102,7 @@
 					$params['bankaccount'] = $baccount['id'];
 					$rep->title = _('RECEIPT');
 					$rep->Header2($myrow, NULL, $myrow, $baccount, ST_CUSTPAYMENT);
-					$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
+					$result = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
 					$linetype = TRUE;
 					$doctype = ST_CUSTPAYMENT;
 					if ($rep->currency != $myrow['curr_code']) {

@@ -38,7 +38,7 @@
       }
       $doc_Delivered_To = _("Delivered To");
     }
-    $doc_Shipping_Company = _("Shipping Company");
+    $doc_shipping_company = _("Shipping Company");
     if ($doctype == ST_SALESQUOTE) {
       $doc_Due_Date = _("Valid until");
     }
@@ -197,37 +197,37 @@
     if (isset($header2type) || isset($linetype)) {
       switch ($doctype) {
         case ST_CUSTDELIVERY:
-          $doc_Invoice_no = "Delivery Note No.";
+          $doc_invoice_no = "Delivery Note No.";
           break;
         case ST_CUSTPAYMENT:
-          $doc_Invoice_no = "Receipt No.";
+          $doc_invoice_no = "Receipt No.";
           break;
         case ST_CUSTREFUND:
-          $doc_Invoice_no = "Refund No.";
+          $doc_invoice_no = "Refund No.";
           break;
         case ST_SUPPAYMENT:
-          $doc_Invoice_no = "Remittance No.";
+          $doc_invoice_no = "Remittance No.";
           break;
         case ST_PURCHORDER:
-          $doc_Invoice_no = "Purchase Order #:";
+          $doc_invoice_no = "Purchase Order #:";
           break;
         case ST_SALESORDER:
-          $doc_Invoice_no = "Order No.";
+          $doc_invoice_no = "Order No.";
           break;
         case ST_SALESINVOICE:
-          $doc_Invoice_no = "Invoice No.";
+          $doc_invoice_no = "Invoice No.";
           break;
         case ST_SALESQUOTE:
-          $doc_Invoice_no = "Quotation No.";
+          $doc_invoice_no = "Quotation No.";
           break;
         case ST_WORKORDER:
-          $doc_Invoice_no = "Work Order No.";
+          $doc_invoice_no = "Work Order No.";
           break;
         case ST_CUSTCREDIT:
-          $doc_Invoice_no = "Credit No.";
+          $doc_invoice_no = "Credit No.";
           break;
         default:
-          $doc_Invoice_no = '';
+          $doc_invoice_no = '';
       }
     }
     $doc_Delivery_no = _("Delivery Note No.");
@@ -236,11 +236,11 @@
   if (isset($linetype)) {
     if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY
     ) {
-      $doc_Sub_total = _("Subtotal");
-      $doc_Shipping = _("Shipping");
-      $doc_Included = _("Included");
-      $doc_Amount = _("Amount");
-      $doc_TOTAL_INVOICE = $doctype == ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
+      $doc_sub_total = _("Subtotal");
+      $doc_shipping = _("Shipping");
+      $doc_included = _("Included");
+      $doc_amount = _("Amount");
+      $doc_total_invoice = $doctype == ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
       $doc_TOTAL_ORDER = _("TOTAL ORDER EX GST");
       $doc_TOTAL_ORDER2 = _("TOTAL ORDER GST INCL.");
       $doc_TOTAL_PO = _("TOTAL PO EX GST");

@@ -74,15 +74,15 @@
         $trans = Debtor_Trans::get($trans_no, $type);
         $pyt_trans = Debtor_Trans::get($pyt_no, $pyt_type);
         $ar_ap_act = $trans['receivables_account'];
-        $person_id = $trans['debtor_no'];
+        $person_id = $trans['debtor_id'];
         $curr = $trans['curr_code'];
         $date = Dates::sql2date($trans['tran_date']);
       }
       else {
         $trans = Creditor_Trans::get($trans_no, $type);
         $pyt_trans = Creditor_Trans::get($pyt_no, $pyt_type);
-        $supp_accs = Creditor::get_accounts_name($trans['supplier_id']);
-        $ar_ap_act = $supp_accs['payable_account'];
+        $supplier_accs = Creditor::get_accounts_name($trans['supplier_id']);
+        $ar_ap_act = $supplier_accs['payable_account'];
         $person_id = $trans['supplier_id'];
         $curr = $trans['SupplierCurrCode'];
         $date = Dates::sql2date($trans['tran_date']);

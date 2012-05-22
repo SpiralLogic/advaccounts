@@ -22,7 +22,7 @@
    */function get_customer_details_for_report($area = 0, $salesid = 0)
 	{
 		$sql
-		 = "SELECT debtors.debtor_no,
+		 = "SELECT debtors.debtor_id,
 			debtors.name,
 			debtors.address,
 			sales_types.sales_type,
@@ -39,7 +39,7 @@
 			salesman.salesman_name
 		FROM debtors
 		INNER JOIN branches
-			ON debtors.debtor_no=branches.debtor_no
+			ON debtors.debtor_id=branches.debtor_id
 		INNER JOIN sales_types
 			ON debtors.sales_type=sales_types.id
 		INNER JOIN areas
@@ -63,7 +63,7 @@
 		$sql
 		 .= " ORDER BY description,
 			salesman.salesman_name,
-			debtors.debtor_no,
+			debtors.debtor_id,
 			branches.branch_id";
 		return DB::query($sql, "No transactions were returned");
 	}
@@ -80,7 +80,7 @@
 		$sql
 		 = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
-		WHERE debtor_no=" . DB::escape($debtorno) . "
+		WHERE debtor_id=" . DB::escape($debtorno) . "
 		AND branch_id=" . DB::escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
@@ -165,7 +165,7 @@
 		{
 			$printcustomer = TRUE;
 			if ($more != '' || $less != '') {
-				$turnover = get_transactions($myrow['debtor_no'], $myrow['branch_id'], $from);
+				$turnover = get_transactions($myrow['debtor_id'], $myrow['branch_id'], $from);
 				if ($more != 0.0 && $turnover <= (double)$more) {
 					$printcustomer = FALSE;
 				}

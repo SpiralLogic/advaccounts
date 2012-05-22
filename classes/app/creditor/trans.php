@@ -87,7 +87,7 @@
     /**
      * @var
      */
-    public $supp_reference;
+    public $supplier_reference;
     /**
      * @var
      */
@@ -249,7 +249,7 @@
      * @param        $date_
      * @param        $due_date
      * @param        $reference
-     * @param        $supp_reference
+     * @param        $supplier_reference
      * @param        $amount
      * @param        $amount_tax
      * @param        $discount
@@ -258,7 +258,7 @@
      *
      * @return int
      */
-    static public function add($type, $supplier_id, $date_, $due_date, $reference, $supp_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
+    static public function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
       $date = Dates::date2sql($date_);
       if ($due_date == "") {
         $due_date = "0000-00-00";
@@ -273,9 +273,9 @@
       }
       $sql
         = "INSERT INTO creditor_trans (trans_no, type, supplier_id, tran_date, due_date,
-				reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
+				reference, supplier_reference, ov_amount, ov_gst, rate, ov_discount) ";
       $sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type) . ", " . DB::escape($supplier_id) . ", '$date', '$due_date',
-				" . DB::escape($reference) . ", " . DB::escape($supp_reference) . ", " . DB::escape($amount) . ", " . DB::escape($amount_tax) . ", " . DB::escape($rate) . ", " . DB::escape($discount) . ")";
+				" . DB::escape($reference) . ", " . DB::escape($supplier_reference) . ", " . DB::escape($amount) . ", " . DB::escape($amount_tax) . ", " . DB::escape($rate) . ", " . DB::escape($discount) . ")";
       if ($err_msg == "") {
         $err_msg = "Cannot insert a supplier transaction record";
       }
@@ -295,7 +295,7 @@
 
       $sql
         = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
-				suppliers.supp_name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
+				suppliers.name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
       if ($trans_type == ST_SUPPAYMENT) {
         // it's a payment so also get the bank account
         $sql

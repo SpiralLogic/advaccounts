@@ -68,7 +68,7 @@
 		trans.tran_date,
 		trans.due_date,
 		debtor.name,
-		debtor.debtor_no,
+		debtor.debtor_id,
 		branch.br_name,
 		debtor.curr_code,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight
@@ -82,8 +82,8 @@
 			AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue, SUM(details.quantity - qty_done) as
 			still_to_deliver
 		FROM debtors as debtor, branches as branch,debtor_trans as trans
-		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_no =
-		trans.debtor_no AND trans.branch_id = branch.branch_id";
+		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_id =
+		trans.debtor_id AND trans.branch_id = branch.branch_id";
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $sql = "SELECT * FROM debtor_trans_view WHERE ";
     foreach ($searchArray as $key => $ajaxsearch) {
@@ -103,7 +103,7 @@
         continue;
       }
       if (is_numeric($ajaxsearch)) {
-        $sql .= " debtor_no = $ajaxsearch OR ";
+        $sql .= " debtor_id = $ajaxsearch OR ";
       }
       $search_value = DB::quote("%" . $ajaxsearch . "%");
       $sql .= " name LIKE $search_value ";
@@ -126,7 +126,7 @@
     $sql .= " AND trans.reference LIKE " . DB::quote($number_like);
   }
   if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
-    $sql .= " AND trans.debtor_no = " . DB::quote($_POST['customer_id']);
+    $sql .= " AND trans.debtor_id = " . DB::quote($_POST['customer_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if ($_POST['filterType'] == '1') {
@@ -218,7 +218,7 @@
         ),array(
               'insert' => TRUE, 'align' => 'center', 'fun' => function ($row) {
               return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-                DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_no'], ICON_MONEY) : '';
+                DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_id'], ICON_MONEY) : '';
             }
             ),
     array(
@@ -268,7 +268,7 @@
       HTML::setReturn(TRUE);
       UI::button(FALSE, 'Email', array(
         'class' => 'button email-button',
-        'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']
+        'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
       ));
       return HTML::setReturn(FALSE);
     }

@@ -12,8 +12,8 @@
           * ********************************************************************* */
 
   Page::start(_($help_context = "Customers"), SA_CUSTOMER, Input::request('frame'));
-  if (isset($_GET['debtor_no'])) {
-    $_POST['customer_id'] = $_GET['debtor_no'];
+  if (isset($_GET['debtor_id'])) {
+    $_POST['customer_id'] = $_GET['debtor_id'];
   }
   $new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == "");
   if (isset($_POST['submit'])) {
@@ -58,9 +58,9 @@
     	 credit_limit=" . Validation::input_num('credit_limit') . ",
     	 sales_type = " . DB::escape($_POST['sales_type']) . ",
     	 notes=" . DB::escape($_POST['notes']) . "
-    	 WHERE debtor_no = " . DB::escape($_POST['customer_id']);
+    	 WHERE debtor_id = " . DB::escape($_POST['customer_id']);
       DB::query($sql, "The customer could not be updated");
-      DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_no');
+      DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_id');
       Ajax::i()->activate('customer_id'); // in case of status change
       Event::success(_("Customer has been updated."));
     }
@@ -85,7 +85,7 @@
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
     $sel_id = DB::escape($_POST['customer_id']);
-    $sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
+    $sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_id=$sel_id";
     $result = DB::query($sql, "check failed");
     $myrow = DB::fetch_row($result);
     if ($myrow[0] > 0) {
@@ -93,7 +93,7 @@
       Event::error(_("This customer cannot be deleted because there are transactions that refer to it."));
     }
     else {
-      $sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
+      $sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_id=$sel_id";
       $result = DB::query($sql, "check failed");
       $myrow = DB::fetch_row($result);
       if ($myrow[0] > 0) {
@@ -101,7 +101,7 @@
         Event::error(_("Cannot delete the customer record because orders have been created against it."));
       }
       else {
-        $sql = "SELECT COUNT(*) FROM branches WHERE debtor_no=$sel_id";
+        $sql = "SELECT COUNT(*) FROM branches WHERE debtor_id=$sel_id";
         $result = DB::query($sql, "check failed");
         $myrow = DB::fetch_row($result);
         if ($myrow[0] > 0) {
@@ -112,7 +112,7 @@
       }
     }
     if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
-      $sql = "DELETE FROM debtors WHERE debtor_no=$sel_id";
+      $sql = "DELETE FROM debtors WHERE debtor_id=$sel_id";
       DB::query($sql, "cannot delete customer");
       Event::notice(_("Selected customer has been deleted."));
       unset($_POST['customer_id']);
@@ -151,7 +151,7 @@
     $_POST['inactive'] = 0;
   }
   else {
-    $sql = "SELECT * FROM debtors WHERE debtor_no = " . DB::escape($_POST['customer_id']);
+    $sql = "SELECT * FROM debtors WHERE debtor_id = " . DB::escape($_POST['customer_id']);
     $result = DB::query($sql, "check failed");
     $myrow = DB::fetch($result);
     $_POST['CustName'] = $myrow["name"];
@@ -211,7 +211,7 @@
     Row::start();
     echo '<td>' . _('Customer branches') . ':</td>';
     Display::link_params_td("/sales/manage/customer_branches.php", "<span class='bold'>" . (Input::request('frame') ?
-      _("Select or &Add") : _("&Add or Edit ")) . '</span>', "debtor_no=" . $_POST['customer_id'] . (Input::request('frame') ?
+      _("Select or &Add") : _("&Add or Edit ")) . '</span>', "debtor_id=" . $_POST['customer_id'] . (Input::request('frame') ?
       '&frame=1' : ''));
     Row::end();
   }

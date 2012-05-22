@@ -30,9 +30,9 @@
 				AS TotalAmount, SUM(debtor_trans.alloc) AS Allocated,
 				( debtor_trans.due_date < '$datestart') AS OverDue
  			FROM debtor_trans
- 			WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
+ 			WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_id = " . DB::escape($debtorno) . "
  				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-						 GROUP BY debtor_no, ";
+						 GROUP BY debtor_id, ";
     $sql .= ($inc_all) ? " debtor_trans.trans_no " : " if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no) ";
     $sql .= " ORDER BY  debtor_trans.tran_date,	debtor_trans.type,	debtor_trans.branch_id";
 
@@ -81,9 +81,9 @@
     $sql
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
-		debtors c WHERE db.debtor_no = a.debtor_no AND c.debtor_no=db.debtor_no AND a.branch_ref = "Accounts" AND Balance>0  ';
+		debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" AND Balance>0  ';
     if ($customer > 0) {
-      $sql .= " AND c.debtor_no = " . DB::escape($customer);
+      $sql .= " AND c.debtor_id = " . DB::escape($customer);
     }
     else {
       $sql .= " ORDER by name";
@@ -92,7 +92,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
     while ($myrow = DB::fetch($result)) {
       $date = $myrow['tran_date'] = date('Y-m-1', strtotime("now - $month months"));
       $myrow['order_'] = "";
-      $customer_record = Debtor::get_details($myrow['debtor_no'], mktime(0, 0, 0, date('n') - $month, 0), TRUE);
+      $customer_record = Debtor::get_details($myrow['debtor_id'], mktime(0, 0, 0, date('n') - $month, 0), TRUE);
       if (round($customer_record["Balance"], 2) == 0) {
         continue;
       }
@@ -101,7 +101,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       }
       $baccount = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
-      $trans_rows = get_transactions($myrow['debtor_no'], $month, $inc_all);
+      $trans_rows = get_transactions($myrow['debtor_id'], $month, $inc_all);
       if ((DB::num_rows($trans_rows) == 0)) {
         continue;
       }
@@ -119,7 +119,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         $rep->currency = $cur;
         $rep->Font();
         $rep->title = _('STATEMENT');
-        $rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
+        $rep->filename = "Statement" . $myrow['debtor_id'] . ".pdf";
         $rep->Info($params, $cols, NULL, $aligns);
       }
       $rep->Header2($myrow, Sales_Branch::get($transactions[0]['branch_id']), NULL, $baccount, ST_STATEMENT);

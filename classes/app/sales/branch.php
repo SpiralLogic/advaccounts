@@ -63,7 +63,7 @@
      */
     static public function get_from_group($group_no) {
       $sql
-        = "SELECT branch_id, debtor_no FROM branches
+        = "SELECT branch_id, debtor_id FROM branches
 		WHERE group_no = " . DB::escape($group_no);
       return DB::query($sql, "could not retreive branches for group " . $group_no);
     }
@@ -78,7 +78,7 @@
       $sql
         = "SELECT *
  FROM branches
- WHERE debtor_no={$customer_no}
+ WHERE debtor_id={$customer_no}
  ORDER BY branch_id ";
       $result = DB::query($sql, "Could not retrieve any branches");
       $myrow = DB::fetch_assoc($result);

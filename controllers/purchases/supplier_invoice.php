@@ -29,7 +29,7 @@
     Creditor_Trans::i(TRUE);
     Creditor_Trans::i()->is_invoice = TRUE;
     $supplier_id=Input::get('supplier_id', Input::NUMERIC);
-    $supplier_id=Session::setGlobal('supplier_id',$supplier_id );
+    Session::i()->setGlobal('supplier_id',$supplier_id);
   }
   //	GL postings are often entered in the same form to two accounts
   // so fileds are cleared only on user demand.
@@ -261,9 +261,9 @@ JS;
     if (!Ref::is_new(Creditor_Trans::i()->reference, ST_SUPPINVOICE)) {
       Creditor_Trans::i()->reference = Ref::get_next(ST_SUPPINVOICE);
     }
-    if (!Ref::is_valid(Creditor_Trans::i()->supp_reference)) {
+    if (!Ref::is_valid(Creditor_Trans::i()->supplier_reference)) {
       Event::error(_("You must enter a supplier's invoice reference."));
-      JS::set_focus('supp_reference');
+      JS::set_focus('supplier_reference');
       return FALSE;
     }
     if (!Dates::is_date(Creditor_Trans::i()->tran_date)) {
@@ -281,11 +281,11 @@ JS;
       JS::set_focus('due_date');
       return FALSE;
     }
-    $sql = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+    $sql = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
     $result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
     $myrow = DB::fetch_row($result);
     if ($myrow[0] == 1) { /*Transaction reference already entered */
-      Event::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supp_reference'] . ")"));
+      Event::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supplier_reference'] . ")"));
       return FALSE;
     }
     return TRUE;

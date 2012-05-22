@@ -53,9 +53,9 @@
     = "SELECT trans.type,
 		trans.trans_no,
 		trans.reference, 
-		supplier.supp_name,
+		supplier.name,
 		supplier.supplier_id as id,
-		trans.supp_reference,
+		trans.supplier_reference,
  	trans.tran_date,
 		trans.due_date,
 		supplier.curr_code,
@@ -74,7 +74,7 @@
       }
       $ajaxsearch = "%" . $ajaxsearch . "%";
       $sql .= " AND (";
-      $sql .= " supplier.supp_name LIKE " . DB::quote($ajaxsearch) . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch) . " OR trans.reference LIKE " . DB::quote($ajaxsearch) . " OR trans.supp_reference LIKE " . DB::quote($ajaxsearch) . ")";
+      $sql .= " supplier.name LIKE " . DB::quote($ajaxsearch) . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch) . " OR trans.reference LIKE " . DB::quote($ajaxsearch) . " OR trans.supplier_reference LIKE " . DB::quote($ajaxsearch) . ")";
     }
   }
   else {

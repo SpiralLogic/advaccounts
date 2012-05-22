@@ -40,8 +40,8 @@
 
 		WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
 			AND debtors.payment_terms = payment_terms.terms_indicator
-			AND debtors.debtor_no = debtor_trans.debtor_no
-			AND debtor_trans.debtor_no = $customer_id
+			AND debtors.debtor_id = debtor_trans.debtor_id
+			AND debtor_trans.debtor_id = $customer_id
 			AND debtor_trans.tran_date <= '$todate'
 			AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
 			ORDER BY debtor_trans.tran_date";
@@ -140,9 +140,9 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$total = array(0, 0, 0, 0, 0);
-		$sql = "SELECT debtor_no, name, curr_code FROM debtors";
+		$sql = "SELECT debtor_id, name, curr_code FROM debtors";
 		if ($fromcust != ALL_NUMERIC) {
-			$sql .= " WHERE debtor_no=" . DB::escape($fromcust);
+			$sql .= " WHERE debtor_id=" . DB::escape($fromcust);
 		}
 		$sql .= " ORDER BY name";
 		$result = DB::query($sql, "The customers could not be retrieved");
@@ -156,7 +156,7 @@
 			else {
 				$rate = 1.0;
 			}
-			$custrec = Debtor::get_details($myrow['debtor_no'], $to);
+			$custrec = Debtor::get_details($myrow['debtor_id'], $to);
 			foreach (
 				$custrec as $i => $value
 			) {
@@ -190,7 +190,7 @@
 			}
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
-				$res = get_invoices($myrow['debtor_no'], $to);
+				$res = get_invoices($myrow['debtor_id'], $to);
 				if (DB::num_rows($res) == 0) {
 					continue;
 				}

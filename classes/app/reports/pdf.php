@@ -471,7 +471,7 @@
         $doctype = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
       }
       if ($doctype == ST_STATEMENT) {
-        $customer = new Debtor($myrow['debtor_no']);
+        $customer = new Debtor($myrow['debtor_id']);
         // include("includes/lang/en_AU/statement.php");
         // include("includes/lang/en_AU/statement_head.php");
         //} else
@@ -1172,8 +1172,8 @@
           $msg .= $doc_Kindest_regards . "\n\n";
           $sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
           //$mail->to($to);
-          if (!empty($myrow['debtor_no'])) {
-            $customer = new Debtor($myrow['debtor_no']);
+          if (!empty($myrow['debtor_id'])) {
+            $customer = new Debtor($myrow['debtor_id']);
             $emailAddress = $customer->accounts->email;
           }
           if (empty($emailAddress)) {

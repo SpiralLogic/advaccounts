@@ -136,7 +136,7 @@
      *
      * @param        $trans_type
      * @param        $trans_no
-     * @param        $debtor_no
+     * @param        $debtor_id
      * @param        $branch_no
      * @param        $date_     is display date (non-sql)
      * @param        $reference
@@ -157,10 +157,10 @@
      *
      * @return int
      */
-    static public function write($trans_type, $trans_no, $debtor_no, $branch_no, $date_, $reference, $total, $discount = 0, $tax = 0, $freight = 0, $freight_tax = 0, $sales_type = 0, $order_no = 0, $trans_link = 0, $ship_via = 0, $due_date = "", $alloc_amt = 0, $rate = 0, $dimension_id = 0,
+    static public function write($trans_type, $trans_no, $debtor_id, $branch_no, $date_, $reference, $total, $discount = 0, $tax = 0, $freight = 0, $freight_tax = 0, $sales_type = 0, $order_no = 0, $trans_link = 0, $ship_via = 0, $due_date = "", $alloc_amt = 0, $rate = 0, $dimension_id = 0,
                                  $dimension2_id = 0) {
       $new = $trans_no == 0;
-      $curr = Bank_Currency::for_debtor($debtor_no);
+      $curr = Bank_Currency::for_debtor($debtor_id);
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
@@ -182,7 +182,7 @@
         $sql
           = "INSERT INTO debtor_trans (
 		trans_no, type,
-		debtor_no, branch_id,
+		debtor_id, branch_id,
 		tran_date, due_date,
 		reference, tpe,
 		order_, ov_amount, ov_discount,
@@ -190,7 +190,7 @@
 		rate, ship_via, alloc, trans_link,
 		dimension_id, dimension2_id
 		) VALUES ($trans_no, " . DB::escape($trans_type) . ",
-		" . DB::escape($debtor_no) . ", " . DB::escape($branch_no) . ",
+		" . DB::escape($debtor_id) . ", " . DB::escape($branch_no) . ",
 		'$SQLDate', '$SQLDueDate', " . DB::escape($reference) . ",
 		" . DB::escape($sales_type) . ", " . DB::escape($order_no) . ", $total, " . DB::escape($discount) . ", $tax,
 		" . DB::escape($freight) . ",
@@ -200,7 +200,7 @@
       else { // may be optional argument should stay unchanged ?
         $sql
           = "UPDATE debtor_trans SET
-		debtor_no=" . DB::escape($debtor_no) . " , branch_id=" . DB::escape($branch_no) . ",
+		debtor_id=" . DB::escape($debtor_id) . " , branch_id=" . DB::escape($branch_no) . ",
 		tran_date='$SQLDate', due_date='$SQLDueDate',
 		reference=" . DB::escape($reference) . ", tpe=" . DB::escape($sales_type) . ", order_=" . DB::escape($order_no) . ",
 		ov_amount=$total, ov_discount=" . DB::escape($discount) . ", ov_gst=$tax,
@@ -240,7 +240,7 @@
           $order->trans_no = array($trans_no[0] => $myrow["version"]);
         }
         $order->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);
-        $order->set_customer($myrow["debtor_no"], $myrow["DebtorName"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+        $order->set_customer($myrow["debtor_id"], $myrow["DebtorName"], $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
         $order->set_branch($myrow["branch_id"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
         $order->reference = $myrow["reference"];
         $order->order_no = $myrow["order_"];
@@ -304,7 +304,7 @@
       }
       $sql .= " WHERE debtor_trans.trans_no=" . DB::escape($trans_id) . "
 		AND debtor_trans.type=" . DB::escape($trans_type) . "
-		AND debtor_trans.debtor_no=debtors.debtor_no";
+		AND debtor_trans.debtor_id=debtors.debtor_id";
       if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
         // it's a payment so also get the bank account
         $sql
@@ -376,7 +376,7 @@
         = "SELECT debtors.name, debtors.curr_code, branches.br_name
 		FROM debtors,branches,debtor_trans
 		WHERE debtor_trans.type=" . DB::escape($type) . " AND debtor_trans.trans_no=" . DB::escape($type_no) . "
-		AND debtors.debtor_no = debtor_trans.debtor_no
+		AND debtors.debtor_id = debtor_trans.debtor_id
 		AND	branches.branch_id = debtor_trans.branch_id";
       $result = DB::query($sql, "could not get customer details from trans");
       return DB::fetch($result);

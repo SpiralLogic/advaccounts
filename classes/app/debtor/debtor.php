@@ -12,7 +12,7 @@
     /**
      * @var int
      */
-    public $debtor_no = 0;
+    public $debtor_id = 0;
     /**
      * @var string
      */
@@ -84,12 +84,12 @@
     /**
      * @var string
      */
-    protected $_id_column = 'debtor_no';
+    protected $_id_column = 'debtor_id';
     /**
      * @param int|null $id
      */
     public function __construct($id = NULL) {
-      $this->id = &$this->debtor_no;
+      $this->id = &$this->debtor_id;
       $this->pymt_discount =& $this->payment_discount;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
@@ -118,7 +118,7 @@
      */
     public function addBranch($details = NULL) {
       $branch = new Debtor_Branch($details);
-      $branch->debtor_no = $this->id;
+      $branch->debtor_id = $this->id;
       $branch->save();
       $this->branches[$branch->branch_id] = $branch;
     }
@@ -138,7 +138,7 @@
       if ($this->_countContacts() > 0) {
         return $this->_status(FALSE, 'delete', "Cannot delete this customer because there are contact records set up against it.");
       }
-      $sql = "DELETE FROM debtors WHERE debtor_no=" . $this->id;
+      $sql = "DELETE FROM debtors WHERE debtor_id=" . $this->id;
       DB::query($sql, "cannot delete customer");
       unset($this->id);
       $this->_new();
@@ -177,8 +177,8 @@
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 						AS TotalAmount, debtor_trans.alloc AS Allocated
 						FROM debtor_trans LEFT OUTER JOIN sales_orders ON debtor_trans.order_ = sales_orders.order_no
-		 			WHERE debtor_trans.debtor_no = " . DB::escape($this->id) . "
-		 			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
+		 			WHERE debtor_trans.debtor_id = " . DB::escape($this->id) . "
+		 			 AND sales_orders.debtor_id = " . DB::escape($this->id) . "
 		 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
 		 				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 						debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
@@ -204,10 +204,10 @@
         $this->_setDefaults();
         return FALSE;
       }
-      $this->accounts->save(array('debtor_no' => $this->id));
+      $this->accounts->save(array('debtor_id' => $this->id));
       foreach ($this->branches as $branch_id => $branch) {
         /** @var Debtor_Branch $branch */
-        $branch->save(array('debtor_no' => $this->id));
+        $branch->save(array('debtor_id' => $this->id));
         if ($branch_id == 0) {
           $this->branches[$branch->branch_id] = $branch;
           unset($this->branches[0]);
@@ -281,28 +281,28 @@
      * @return int
      */
     protected function _countBranches() {
-      DB::select('COUNT(*)')->from('branches')->where('debtor_no=', $this->id);
+      DB::select('COUNT(*)')->from('branches')->where('debtor_id=', $this->id);
       return DB::num_rows();
     }
     /**
      * @return int
      */
     protected function _countContacts() {
-      DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
+      DB::select('COUNT(*)')->from('contacts')->where('debtor_id=', $this->id);
       return DB::num_rows();
     }
     /**
      * @return int
      */
     protected function _countOrders() {
-      DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
+      DB::select('COUNT(*)')->from('sales_orders')->where('debtor_id=', $this->id);
       return DB::num_rows();
     }
     /**
      * @return int|mixed
      */
     protected function _countTransactions() {
-      DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
+      DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
       return (int) DB::num_rows();
     }
     /**
@@ -318,7 +318,7 @@
       $this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
     }
     protected function _getAccounts() {
-      DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
+      DB::select()->from('branches')->where('debtor_id=', $this->debtor_id)->and_where('branch_ref=', 'accounts');
       $this->accounts = DB::fetch()->asClassLate('Debtor_Account')->one();
       if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
         $this->accounts = clone($this->branches[$this->defaultBranch]);
@@ -327,7 +327,7 @@
       }
     }
     protected function _getBranches() {
-      DB::select()->from('branches')->where('debtor_no=', $this->debtor_no)->where('branch_ref !=', 'accounts');
+      DB::select()->from('branches')->where('debtor_id=', $this->debtor_id)->where('branch_ref !=', 'accounts');
 
       $branches = DB::fetch()->asClassLate('Debtor_Branch');
       foreach ($branches as $branch) {
@@ -357,7 +357,7 @@
       $this->accounts = new Debtor_Account();
       $this->branches[0] = new Debtor_Branch();
       $this->contacts[0] = new Contact(CT_CUSTOMER);
-      $this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->id = 0;
+      $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
       $this->contacts[0]->parent_id = 0;
       $this->_setDefaults();
       return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
@@ -428,11 +428,11 @@ JS;
       $data = array();
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
 
-      $sql = DB::select('debtor_no as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
+      $sql = DB::select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . DB::quote(trim($terms) . '%') . ",0,5) as weight")
         ->from('debtors')->where('name LIKE ', trim($terms) . "%")->or_where('name LIKE ', trim($terms))
         ->or_where('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
-        $sql->or_where('debtor_no LIKE', "$terms%");
+        $sql->or_where('debtor_id LIKE', "$terms%");
       }
       $sql->orderby('weight,name')->limit(20);
       $results = DB::fetch();
@@ -459,9 +459,9 @@ JS;
       }, $term)) . '%');
       $where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
       $sql
-        = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
-									UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors
-									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
+        = "(SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+									UNION (SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors
+									WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_id LIKE $term1 $where ORDER BY debtor_id, name LIMIT 20)";
       $result = DB::query($sql, 'Couldn\'t Get Customers');
       $data = '';
       while ($row = DB::fetch_assoc($result)) {
@@ -516,10 +516,10 @@ JS;
 			WHERE
 				 debtors.payment_terms = payment_terms.terms_indicator
 				 AND debtors.credit_status = credit_status.id
-				 AND debtors.debtor_no = " . DB::escape($customer_id) . "
+				 AND debtors.debtor_id = " . DB::escape($customer_id) . "
 				 AND debtor_trans.tran_date <= '$todate'
 				 AND debtor_trans.type <> 13
-				 AND debtors.debtor_no = debtor_trans.debtor_no
+				 AND debtors.debtor_id = debtor_trans.debtor_id
 			GROUP BY
 				 debtors.name,
 				 payment_terms.terms,
@@ -533,7 +533,7 @@ JS;
         /* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = TRUE;
         $sql
-          = "SELECT debtors.name, debtors.curr_code, debtors.debtor_no, payment_terms.terms,
+          = "SELECT debtors.name, debtors.curr_code, debtors.debtor_id, payment_terms.terms,
 	 		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
 	 		FROM debtors,
 	 		 payment_terms,
@@ -542,7 +542,7 @@ JS;
 	 		WHERE
 	 		 debtors.payment_terms = payment_terms.terms_indicator
 	 		 AND debtors.credit_status = credit_status.id
-	 		 AND debtors.debtor_no = " . DB::escape($customer_id);
+	 		 AND debtors.debtor_id = " . DB::escape($customer_id);
         $result = DB::query($sql, "The customer details could not be retrieved");
       }
       else {
@@ -558,7 +558,7 @@ JS;
      * @return Array|DB_Query_Result
      */
     static public function get($customer_id) {
-      $sql = "SELECT * FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
+      $sql = "SELECT * FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
       $result = DB::query($sql, "could not get customer");
       return DB::fetch($result);
     }
@@ -570,7 +570,7 @@ JS;
      * @return mixed
      */
     static public function get_name($customer_id) {
-      $sql = "SELECT name FROM debtors WHERE debtor_no=" . DB::escape($customer_id);
+      $sql = "SELECT name FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
       $result = DB::query($sql, "could not get customer");
       $row = DB::fetch_row($result);
       return $row[0];
@@ -588,7 +588,7 @@ JS;
 				 credit_status.dissallow_invoices
 				FROM debtors, credit_status
 				WHERE debtors.credit_status = credit_status.id
-					AND debtors.debtor_no = " . DB::escape($customer_id);
+					AND debtors.debtor_id = " . DB::escape($customer_id);
       $result = DB::query($sql, "could not query customers");
       return DB::fetch($result);
     }
@@ -638,7 +638,7 @@ JS;
      */
     static public function is_new($id) {
       $tables = array('branches', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
-      return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
+      return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_id');
     }
     /**
      * @static
@@ -690,10 +690,10 @@ JS;
      * @return string
      */
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
-      $sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors ";
+      $sql = "SELECT debtor_id, debtor_ref, curr_code, inactive FROM debtors ";
       $mode = DB_Company::get_pref('no_customer_list');
 
-      return select_box($name, $selected_id, $sql, 'debtor_no', 'name', array(
+      return select_box($name, $selected_id, $sql, 'debtor_id', 'name', array(
         'format' => '_format_add_curr',
         'order' => array('debtor_ref'),
         'search_box' => $mode != 0,

@@ -11,13 +11,13 @@
   Page::start(_("Email Statements"), SA_OPEN);
 
   echo "<pre>";
-  $sql = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_no = b.debtor_no AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
+  $sql = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_id = b.debtor_id AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
   $result = DB::query($sql, "The customer details could not be retrieved");
   echo "<table id='table' class='grid center pad2'>";
   echo "<tr><th><button id='all'>All</button></th><th>Name</th><th>Phone</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";
   $balance = $due = $overdue1 = $overdue2 = 0;
   while ($row = DB::fetch($result)) {
-    echo "<tr><td class='aligncenter'><input class='email' type='checkbox' value='" . $row['debtor_no'] . "' checked></input>
+    echo "<tr><td class='aligncenter'><input class='email' type='checkbox' value='" . $row['debtor_id'] . "' checked></input>
 		</td>"
       . "<td class='left'><span class='bold'>" . $row['name'] . "</span>(" . $row['email'] . ")</td>"
       . "<td>" . $row['phone'] . "</td>"

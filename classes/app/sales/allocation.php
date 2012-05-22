@@ -133,7 +133,7 @@
       if ($extra_tables) {
         $sql .= ",$extra_tables ";
       }
-      $sql .= " WHERE trans.debtor_no=debtor.debtor_no";
+      $sql .= " WHERE trans.debtor_id=debtor.debtor_id";
       if ($extra_conditions) {
         $sql .= " AND $extra_conditions ";
       }
@@ -154,9 +154,9 @@
       }
       $cust_sql = "";
       if ($customer_id != NULL) {
-        $cust_sql = " AND trans.debtor_no = " . DB::quote($customer_id);
+        $cust_sql = " AND trans.debtor_id = " . DB::quote($customer_id);
 
-      }        $cust_sql.=' and  trans.debtor_no<>4721 '; //TODO: REMOVE
+      }        $cust_sql.=' and  trans.debtor_id<>4721 '; //TODO: REMOVE
 
       $sql = Sales_Allocation::get_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,2) <= 0 AS settled",
         "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
@@ -177,7 +177,7 @@
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=$trans_no
 			AND alloc.trans_type_from=$type
-			AND trans.debtor_no=" . DB::escape($customer_id),
+			AND trans.debtor_id=" . DB::escape($customer_id),
           "debtor_allocations as alloc");
       }
       else {
@@ -187,7 +187,7 @@
 			AND trans.type <> " . ST_BANKDEPOSIT . "
 			AND trans.type <> " . ST_CUSTCREDIT . "
 			AND trans.type <> " . ST_CUSTDELIVERY . "
-			AND trans.debtor_no=" . DB::escape($customer_id));
+			AND trans.debtor_id=" . DB::escape($customer_id));
       }
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }

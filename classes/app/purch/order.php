@@ -405,7 +405,7 @@
      */
     public function get_header($order_no) {
       $sql
-        = "SELECT purch_orders.*, suppliers.supp_name,
+        = "SELECT purch_orders.*, suppliers.name,
 	 		suppliers.curr_code, locations.location_name
 			FROM purch_orders, suppliers, locations
 			WHERE purch_orders.supplier_id = suppliers.supplier_id
@@ -416,7 +416,7 @@
         $myrow = DB::fetch($result);
         $this->order_no = $order_no;
         $this->supplier_id = $myrow["supplier_id"];
-        $this->supplier_name = $myrow["supp_name"];
+        $this->supplier_name = $myrow["name"];
         $this->curr_code = $myrow["curr_code"];
         $this->orig_order_date = Dates::sql2date($myrow["ord_date"]);
         $this->Comments = $myrow["comments"];
@@ -507,7 +507,7 @@
       $myrow = DB::fetch_assoc($result);
       $this->supplier_details = $myrow;
       $this->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
-      $this->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
+      $this->supplier_name = $_POST['supplier_name'] = $myrow["name"];
       $this->supplier_id = $_POST['supplier_id'] = $supplier_id;
     }
     /*

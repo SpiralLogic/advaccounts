@@ -69,7 +69,7 @@
      * @return null|PDOStatement
      */
     static public function get_all($stock_id) {
-      $sql = "SELECT purch_data.*,suppliers.supp_name, suppliers.curr_code
+      $sql = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($stock_id);
@@ -84,7 +84,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($selected_id, $stock_id) {
-      $sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
+      $sql = "SELECT purch_data.*,suppliers.name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($stock_id);

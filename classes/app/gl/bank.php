@@ -158,10 +158,10 @@
       elseif ($person_type_id == PT_SUPPLIER) {
         // we need to add a supplier transaction record
         // convert to supp currency
-        $supp_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
+        $supplier_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
         // we need to negate it too
-        $supp_amount = -$supp_amount;
-        $trans_no = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supp_amount, 0, 0);
+        $supplier_amount = -$supplier_amount;
+        $trans_no = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supplier_amount, 0, 0);
       }
       else {
         $trans_no = SysTypes::get_next_trans_no($trans_type);

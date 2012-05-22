@@ -52,7 +52,7 @@
   $sql = "SELECT
 	porder.order_no, 
 	porder.reference,
-	supplier.supp_name,
+	supplier.name,
 	 supplier.supplier_id as id,
 	location.location_name,
 	porder.requisition_no, 

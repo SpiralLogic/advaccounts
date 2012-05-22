@@ -98,12 +98,12 @@
 	FROM sales_orders as sorder, debtor_trans as trans, debtor_trans_details as line, debtors as debtor, branches as branch
 		WHERE
 		sorder.order_no = trans.order_ AND
-		trans.debtor_no = debtor.debtor_no
+		trans.debtor_id = debtor.debtor_id
 			AND trans.type = " . ST_CUSTDELIVERY . "
 			AND line.debtor_trans_no = trans.trans_no
 			AND line.debtor_trans_type = trans.type
 			AND trans.branch_id = branch.branch_id
-			AND trans.debtor_no = branch.debtor_no ";
+			AND trans.debtor_id = branch.debtor_id ";
   if ($_POST['OutstandingOnly']) {
     $sql .= " AND line.qty_done < line.quantity ";
   }
@@ -117,7 +117,7 @@
     $sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
     $sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
     if ($selected_customer != -1) {
-      $sql .= " AND trans.debtor_no=" . DB::quote($selected_customer) . " ";
+      $sql .= " AND trans.debtor_id=" . DB::quote($selected_customer) . " ";
     }
     if (isset($selected_stock_item)) {
       $sql .= " AND line.stock_id=" . DB::quote($selected_stock_item) . " ";

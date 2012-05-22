@@ -100,10 +100,10 @@
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
 					$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
 				}
-				$DisplayFreight = Num::format($myrow["freight_cost"], $dec);
+				$display_freight = Num::format($myrow["freight_cost"], $dec);
 				$TaxTotal += $myrow["freight_cost"] * .1;
 				$DisplayTaxTot = Num::format($TaxTotal, $dec);
-				$DisplaySubTot = Num::format($SubTotal, $dec);
+				$display_sub_total = Num::format($SubTotal, $dec);
 				$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 				$linetype = true;
 				$doctype = ST_SALESQUOTE;
@@ -112,11 +112,11 @@
 				} else {
 					include(REPORTS_PATH . 'includes'.DS.'doctext.php');
 				}
-				$rep->TextCol(4, 7, $doc_Sub_total, -2);
-				$rep->TextCol(7, 8, $DisplaySubTot, -2);
+				$rep->TextCol(4, 7, $doc_sub_total, -2);
+				$rep->TextCol(7, 8, $display_sub_total, -2);
 				$rep->NewLine();
-				$rep->TextCol(4, 7, $doc_Shipping . ' (ex.GST)', -2);
-				$rep->TextCol(7, 8, $DisplayFreight, -2);
+				$rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
+				$rep->TextCol(7, 8, $display_freight, -2);
 				$rep->NewLine();
 				# __ADVANCEDEDIT__ BEGIN # added tax to invoice
 				$rep->TextCol(4, 7, 'Total GST (10%)', -2);
@@ -145,7 +145,7 @@
 						$myrow['DebtorName'] = $myrow['name'];
 					}
 					//$myrow['reference'] = $i;
-					$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
+					$rep->End($email, $doc_invoice_no . " " . $i, $myrow);
 				}
 			}
 			if ($email == 0) {
