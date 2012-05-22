@@ -29,7 +29,8 @@
     Creditor_Trans::i(TRUE);
     Creditor_Trans::i()->is_invoice = TRUE;
     $supplier_id=Input::get('supplier_id', Input::NUMERIC);
-    Session::i()->setGlobal('supplier_id',$supplier_id);
+    if ($supplier_id){
+      Session::i()->setGlobal('creditor', $supplier_id);}
   }
   //	GL postings are often entered in the same form to two accounts
   // so fileds are cleared only on user demand.
@@ -104,7 +105,7 @@
     }
     $invoice_no = Purch_Invoice::add(Creditor_Trans::i());
     $_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
-    Session::setGlobal('supplier_id', $_POST['supplier_id'], '');
+    Session::i()->setGlobal('creditor', $_POST['supplier_id'], '');
     Creditor_Trans::i()->clear_items();
     Creditor_Trans::killInstance();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
@@ -182,7 +183,7 @@
   Purch_Invoice::header(Creditor_Trans::i());
   $_POST['supplier_id'] = Session::i()->getGlobal('creditor', '');
   if (Creditor_Trans::i()) {
-    Session::removeGlobal('creditor', 'delivery_po');
+    Session::i()->removeGlobal('creditor', 'delivery_po');
   }
   if ($_POST['supplier_id'] == ALL_TEXT) {
     Event::warning(_("There is no supplier selected."));
