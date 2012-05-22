@@ -23,21 +23,12 @@
      *
      * @return bool|string
      */
-    static public function add($contact_id, $contact_name, $type, $message) {
-      if (!isset($contact_id)) {
+    static public function add($parent_id, $contact_name, $type, $message) {
+      if (!isset($contact_id,$contact_name,$type,$message)) {
         return FALSE;
       }
-      if (!isset($contact_name)) {
-        return FALSE;
-      }
-      if (!isset($type)) {
-        return FALSE;
-      }
-      if (!isset($message)) {
-        return FALSE;
-      }
-      $sql = "INSERT INTO " . self::$dbTable . " (contact_id, contact_name, type,
- message) VALUES (" . DB::escape($contact_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
+      $sql = "INSERT INTO " . self::$dbTable . " (parent_id, contact_name, type,
+ message) VALUES (" . DB::escape($parent_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
  " . DB::escape($message) . ")";
       DB::query($sql, "Couldn't insert contact log");
       return DB::insert_id();
@@ -50,14 +41,11 @@
      *
      * @return array|bool
      */
-    static public function read($contact_id, $type) {
-      if (!isset($contact_id) || $contact_id == 0) {
+    static public function read($parent_id, $type) {
+      if (!isset($parent_id,$type) || !$parent_id) {
         return FALSE;
       }
-      if (!isset($type)) {
-        return FALSE;
-      }
-      $sql = "SELECT * FROM " . self::$dbTable . " WHERE contact_id=" . $contact_id . " AND type=" . DB::escape($type) . " ORDER BY date DESC";
+      $sql = "SELECT * FROM " . self::$dbTable . " WHERE parent_id=" . $parent_id. " AND type=" . DB::escape($type) . " ORDER BY date DESC";
       $result = DB::query($sql, "Couldn't get contact log entries");
       $results = array();
       while ($row = DB::fetch_assoc($result)) {
