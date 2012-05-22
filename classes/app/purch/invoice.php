@@ -682,7 +682,7 @@
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
       $company_currency = Bank_Currency::for_company();
       GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
-      Session::setGlobal('supplier_id', $_POST['supplier_id']);
+      Session::i()->setGlobal('creditor', $_POST['supplier_id']);
       if (!empty($creditor_trans->tax_description)) {
         Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
       }

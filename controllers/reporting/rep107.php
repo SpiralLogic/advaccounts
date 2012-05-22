@@ -157,7 +157,7 @@ Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : 
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $display_total, -2);
 				$words = Item_Price::to_words($myrow['Total'], $j);
-				if ($type==ST_SALESINVOICE){
+				if ($myrow['type']==ST_SALESINVOICE){
         $rep->NewLine();
 				$rep->NewLine();
 				$invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);
