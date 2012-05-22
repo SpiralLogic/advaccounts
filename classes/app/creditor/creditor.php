@@ -88,7 +88,7 @@
     /**
      * @var string
      */
-    public $phone = "";
+    public $supp_phone = "";
     /**
      * @var string
      */
@@ -115,7 +115,7 @@
     /**
      * @var string
      */
-    public $account_no = '', $account_no = ''; //
+    public $account_no = '';
     /**
      * @var
      */
@@ -151,15 +151,15 @@
     /**
      * @var
      */
-    public $city;
+    public $supp_city;
     /**
      * @var
      */
-    public $state;
+    public $supp_state;
     /**
      * @var
      */
-    public $postcode;
+    public $supp_postcode;
     /**
      * @var string
      */
@@ -172,11 +172,9 @@
      * @param int|null $id
      */
     public function __construct($id = NULL) {
-      $this->supplier_id = &$this->id;
       $this->gst_no = &$this->tax_id;
       $this->contact = &$this->contact_name;
       $this->address = &$this->post_address;
-      $this->account_no = &$this->account_no;
       $this->phone2 = &$this->phone;
       parent::__construct($id);
 
@@ -274,7 +272,7 @@
      * @return void
      */
     protected function _getContacts() {
-      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=', CT_SUPPLIER);
+      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type=', CT_SUPPLIER);
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
