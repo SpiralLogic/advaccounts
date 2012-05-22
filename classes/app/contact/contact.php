@@ -20,7 +20,7 @@
     /**
      * @var int
      */
-    public $type;
+    public $parent_type;
     /**
      * @var string
      */
@@ -48,14 +48,14 @@
     /**
      * @var string
      */
-    protected $_id_column = 'id';
+    protected $_id_column = 'contact_id';
     /**
      * @param int       $type
      * @param array|int $id
      */
     public function __construct($type, $id = 0) {
-      $this->type = $type;
-      parent::__construct($id, array('type' => $type));
+      $this->parent_type = $type;
+      parent::__construct($id, array('parent_type' => $type));
     }
 
     public function delete() {
@@ -71,9 +71,9 @@
      * @return bool|int
      */
     protected function _saveNew() {
-      $temp = new Contact($this->type);
+      $temp = new Contact($this->parent_type);
       foreach ($this as $key => $value) {
-        if ($key != 'parent_id' && $key != 'id' && $key != 'type' && $key != '_status' && $temp->$key != $value) {
+        if ($key != 'parent_id' && $key != 'id' && $key != 'parent_type' && $key != '_status' && $temp->$key != $value) {
           return parent::_saveNew();
         }
       }

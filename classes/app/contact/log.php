@@ -12,22 +12,23 @@
     /**
      * @var string
      */
-    static private $dbTable = 'contact_log';
+    static private $_table = 'contact_log';
     /**
      * @static
      *
-     * @param $contact_id
+     * @param $parent_id
      * @param $contact_name
      * @param $type
      * @param $message
      *
+     * @internal param $contact_id
      * @return bool|string
      */
     static public function add($parent_id, $contact_name, $type, $message) {
       if (!isset($contact_id,$contact_name,$type,$message)) {
         return FALSE;
       }
-      $sql = "INSERT INTO " . self::$dbTable . " (parent_id, contact_name, type,
+      $sql = "INSERT INTO " . self::$_table . " (parent_id, contact_name, parent_type,
  message) VALUES (" . DB::escape($parent_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
  " . DB::escape($message) . ")";
       DB::query($sql, "Couldn't insert contact log");
@@ -36,16 +37,17 @@
     /**
      * @static
      *
-     * @param $contact_id
+     * @param $parent_id
      * @param $type
      *
+     * @internal param $contact_id
      * @return array|bool
      */
     static public function read($parent_id, $type) {
       if (!isset($parent_id,$type) || !$parent_id) {
         return FALSE;
       }
-      $sql = "SELECT * FROM " . self::$dbTable . " WHERE parent_id=" . $parent_id. " AND type=" . DB::escape($type) . " ORDER BY date DESC";
+      $sql = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id. " AND parent_type=" . DB::escape($type) . " ORDER BY date DESC";
       $result = DB::query($sql, "Couldn't get contact log entries");
       $results = array();
       while ($row = DB::fetch_assoc($result)) {

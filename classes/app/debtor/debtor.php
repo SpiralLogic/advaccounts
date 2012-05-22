@@ -12,7 +12,7 @@
     /**
      * @var int
      */
-    public $debtor_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
@@ -339,7 +339,7 @@
      * @return void
      */
     protected function _getContacts() {
-      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('type=', CT_CUSTOMER);
+      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type =', CT_CUSTOMER);
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_CUSTOMER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {

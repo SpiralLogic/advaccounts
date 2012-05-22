@@ -151,7 +151,7 @@
     'class' => 'ui-widget-content center'
   ));
   UI::button('addLog', "Add log entry")->td->tr->tr(TRUE)->td(NULL)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
-  Contact_Log::read($customer->id, 'C');
+  Contact_Log::read($customer->id, CT_CUSTOMER);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::textarea()->td->tr;
   Table::endOuter(1);

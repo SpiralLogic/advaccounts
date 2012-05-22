@@ -71,6 +71,8 @@
      * @param array $extra
      */
     protected function __construct($id = 0, $extra = array()) {
+      $_id_column = $this->_id_column;
+      if ($_id_column && $_id_column!='id')$this->id = &$this->$_id_column;
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
         $this->_read($id, $extra);
