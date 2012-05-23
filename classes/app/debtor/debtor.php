@@ -76,6 +76,10 @@
     /**
      * @var
      */
+    public $debtor_id;
+    /**
+     * @var
+     */
     public $notes;
     /**
      * @var string
