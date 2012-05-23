@@ -17,7 +17,7 @@
      * @return array|string
      */
     static public function search($terms) {
-      $sql = "SELECT supplier_id as id, ref as label, ref as value FROM suppliers WHERE ref LIKE '%" . $terms . "%' ";
+      $sql = "SELECT supplier_id as id, ref as label, supp_ref as value FROM suppliers WHERE ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
       }

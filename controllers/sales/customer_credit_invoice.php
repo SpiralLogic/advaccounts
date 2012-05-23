@@ -53,11 +53,11 @@
     for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
       $ci->line_items[$line_no]->qty_dispatched = '0';
     }
-    copy_from_order($ci);
+    copy_from_credit($ci);
   }
   elseif (isset($_GET[Orders::MODIFY_CREDIT]) && $_GET[Orders::MODIFY_CREDIT] > 0) {
     $ci = new Sales_Order(ST_CUSTCREDIT, $_GET[Orders::MODIFY_CREDIT]);
-    copy_from_order($ci);
+    copy_from_credit($ci);
   }
   elseif (!Sales_Order::active()) {
     /* This page can only be called with an invoice number for crediting*/
@@ -72,7 +72,7 @@
     if (!isset($_POST['WriteOffGLCode'])) {
       $_POST['WriteOffGLCode'] = 0;
     }
-    copy_to_order();
+    copy_to_credit();
     if ($new_credit) {
       Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
     }
@@ -168,7 +168,7 @@
     return TRUE;
   }
 
-  function copy_to_order() {
+  function copy_to_credit() {
     $order = Orders::session_get($_POST['order_id']);
     $order->ship_via = $_POST['ShipperID'];
     $order->freight_cost = Validation::input_num('ChargeFreightCost');
@@ -183,7 +183,7 @@
   /**
    * @param $order
    */
-  function copy_from_order($order) {
+  function copy_from_credit($order) {
     $order = Sales_Order::check_edit_conflicts($order);
     $_POST['ShipperID'] = $order->ship_via;
     $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
