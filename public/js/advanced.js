@@ -275,7 +275,7 @@ Adv.extend({Forms:(function () {
 	return {
 		setFormValue:function (id, value, disabled) {
 			var isdefault, els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
-			if (!els.length) {
+				if (!els.length) {
 				els = [document.getElementById(id)];
 			}
 			isdefault = !!arguments[3];

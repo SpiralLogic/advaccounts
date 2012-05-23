@@ -56,14 +56,20 @@ var Contacts = function () {
 		addMany:function (data) {
 			var contacts = [];
 			$.each(data, function ($k, $v) {
-				if (!blank && $v.id === 0) {blank = $v;}
-				if ($v.id !== 0) {contacts[contacts.length] = $v;}
+				if (!blank && $v.id === 0) {
+					blank = $v;
+				}
+				if ($v.id !== 0) {
+					contacts[contacts.length] = $v;
+				}
 			});
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
 		setval:function (key, value) {
 			key = key.split('-');
-			if (value !== undefined) {Company.get().contacts[key[1]][key[0]] = value;}
+			if (value !== undefined) {
+				Company.get().contacts[key[1]][key[0]] = value;
+			}
 		},
 		New:function () {
 			$.tmpl('contact', blank).appendTo($Contacts);
@@ -77,7 +83,9 @@ var Branches = function () {
 		init:function () {
 			btn.hide().removeClass('invis');
 			list.change(function () {
-				if (!$(this).val().length) {return;}
+				if (!$(this).val().length) {
+					return;
+				}
 				var ToBranch = Company.get().branches[$(this).val()];
 				Branches.change(ToBranch);
 			})
@@ -110,7 +118,7 @@ var Branches = function () {
 				data = Company.get().branches[data];
 			}
 			$.each(data, function (key, value) {
-				Adv.Forms.setFormDefaults('br_' + key, value);
+				Adv.Forms.setFormDefaults('branch[' + key + ']', value);
 			});
 			Adv.Forms.resetHighlights();
 			list.val(data.branch_id);
@@ -151,7 +159,7 @@ var Accounts = function () {
 	return {
 		change:function (data) {
 			$.each(data, function (id, value) {
-				Adv.Forms.setFormDefaults('acc_' + id, value);
+				Adv.Forms.setFormDefaults('accounts[' + id + ']', value);
 			})
 		}
 	}
@@ -188,7 +196,9 @@ var Company = function () {
 			 });
 		},
 		setValues:function (content) {
-			if (!content.company) {return;}
+			if (!content.company) {
+				return;
+			}
 			company = content.company;
 			var data = company;
 			var activetabs = (!company.id) ? [0, 1, 2, 3, 4] : [];
@@ -223,16 +233,22 @@ var Company = function () {
 			$companyID.autocomplete('enable');
 		},
 		fetch:function (item) {
-			if (typeof(item) === "number") {item = {id:item};}
+			if (typeof(item) === "number") {
+				item = {id:item};
+			}
 			$.post('#', {"id":item.id}, function (data) {
 				Company.setValues(data);
 			}, 'json');
 			Company.getFrames(item.id);
 		},
 		getFrames:function (id, data) {
-			if (id === undefined && company.id) { id = company.id}
+			if (id === undefined && company.id) {
+				id = company.id
+			}
 			var $invoiceFrame = $('#invoiceFrame'), urlregex = /[\w\-\.:/=&!~\*\'"(),]+/g, $invoiceFrameSrc = $invoiceFrame.data('src').match(urlregex)[0];
-			if (!id) {return;}
+			if (!id) {
+				return;
+			}
 			data = data || '';
 			$invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
 		},
@@ -243,7 +259,9 @@ var Company = function () {
 				if (data.status) {
 					Adv.showStatus(data.status);
 					Adv.btnConfirm.prop('disabled', false);
-					if (!data.status.status) {return;}
+					if (!data.status.status) {
+						return;
+					}
 				}
 				Adv.Forms.resetHighlights();
 				Branches.adding = false;
@@ -251,18 +269,23 @@ var Company = function () {
 			}, 'json');
 		},
 		set:function (key, value) {
-			if (key.substr(0, 4) == ('acc_')) {
-				company.accounts[key.substr(4)] = value;
-			} else {
-				if (key.substr(0, 3) == ('br_')) {
-					Branches.setval(key.substr(3), value);
-				} else {
-					if (key.substr(0, 4) == ('con_')) {
-						Contacts.setval(key.substr(4), value);
-					} else {
-						company[key] = value;
-					}
-				}
+			var group, valarray = key.match(/([^[]*)\[(.+)\]/);
+			if (valarray !== null) {
+				group = valarray[1];
+				key = valarray[2];
+			}
+			switch (group) {
+				case 'accounts':
+					company.accounts[key] = value;
+					break;
+				case 'branch':
+					Branches.setval(key, value);
+					break;
+				case 'contact':
+					Contacts.setval(key, value);
+					break;
+				default:
+					company[key] = value;
 			}
 		},
 		get:function () {
@@ -273,7 +296,7 @@ var Company = function () {
 $(function () {
 	Adv.extend({
 		tabs:$("#tabs0"),
-		accFields:$("[name^='acc_']"),
+		accFields:$("[name^='accounts']"),
 		changed:false,
 		fieldsChanged:0,
 		btnConfirm:$("#btnConfirm").click(
@@ -288,23 +311,24 @@ $(function () {
 		ContactLog:$("#contactLog").hide(),
 		tabs1:$("#tabs1").tabs({ select:function (event, ui) {
 			var url = $.data(ui.tab, 'load.tabs');
-			if (url) {location.href = url + Company.get().id;}
+			if (url) {
+				location.href = url + Company.get().id;
+			}
 			return false;
 		}, selected:-1 })
 	});
 	$("#useShipAddress").click(function () {
-		if (Adv.accFields.length === 0) {
-			Adv.accFields = $("[name='phone2']").not("[name='name']");
-		}
 		Adv.accFields.each(function () {
-			var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
+			var name= $(this).attr('name').match(/([^[]*)\[(.+)\]/);
+			if (!name) return;
+			var newVal = $("[name='branch[" +name[2]+ "]']").val();
+			console.log("[name='branch[" +name[2]+ "]']");
 			console.log(newVal);
 			if (!newVal || !newVal.length) {
-				newVal = $("[name='" + $(this).attr('name').substr(5) + "']").val();
+				newVal = $("[name='" + name[0] + "'").val();
 			}
-			console.log(newVal);
 			$(this).val(newVal).trigger('change');
-			Company.set($(this).attr('name'), newVal);
+			Company.set(name[0], newVal);
 		});
 		return false;
 	});

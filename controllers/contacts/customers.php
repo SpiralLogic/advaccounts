@@ -86,17 +86,17 @@
     'class' => 'invis', 'name' => 'addBranch'
   ));
   HTML::td()->tr;
-  text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
+  text_row(_("Contact:"), 'branch[contact_name]', $currentBranch->contact_name, 35, 40);
   //hidden('br_contact_name', $customer->contact_name);
-  text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 35, 30);
-  text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 35, 30);
-  text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 35, 30);
-  email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
-  textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
+  text_row(_("Phone Number:"), 'branch[phone]', $currentBranch->phone, 35, 30);
+  text_row(_("2nd Phone Number:"), 'branch[phone2]', $currentBranch->phone2, 35, 30);
+  text_row(_("Fax Number:"), 'branch[fax]', $currentBranch->fax, 35, 30);
+  email_row(_("Email:"), 'branch[email]', $currentBranch->email, 35, 55);
+  textarea_row(_("Street:"), 'branch[br_address]', $currentBranch->br_address, 35, 2);
   $branch_postcode = new Contact_Postcode(array(
-      'city' => array('br_city', $currentBranch->city),
-      'state' => array('br_state', $currentBranch->state),
-      'postcode' => array('br_postcode', $currentBranch->postcode)
+      'city' => array('branch[city]', $currentBranch->city),
+      'state' => array('branch[state]', $currentBranch->state),
+      'postcode' => array('branch[postcode]', $currentBranch->postcode)
     )
   );
   $branch_postcode->render();
@@ -108,16 +108,16 @@
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
   HTML::td(FALSE)->_tr();
-  text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 35, 40);
-  text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 35, 30);
-  text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 35, 30);
-  text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 35, 30);
-  email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 55);
-  textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
+  text_row(_("Accounts Contact:"), 'accounts[contact_name]', $customer->accounts->contact_name, 35, 40);
+  text_row(_("Phone Number:"), 'accounts[phone]', $customer->accounts->phone, 35, 30);
+  text_row(_("Secondary Phone Number:"), 'accounts[phone2]', $customer->accounts->phone2, 35, 30);
+  text_row(_("Fax Number:"), 'accounts[fax]', $customer->accounts->fax, 35, 30);
+  email_row(_("E-mail:"), 'accounts[email]', $customer->accounts->email, 35, 55);
+  textarea_row(_("Street:"), 'accounts[br_address]', $customer->accounts->br_address, 35, 2);
   $accounts_postcode = new Contact_Postcode(array(
-      'city' => array('acc_city', $customer->accounts->city),
-      'state' => array('acc_state', $customer->accounts->state),
-      'postcode' => array('acc_postcode', $customer->accounts->postcode)
+      'city' => array('accounts[city]', $customer->accounts->city),
+      'state' => array('accounts[state]', $customer->accounts->state),
+      'postcode' => array('accounts[postcode]', $customer->accounts->postcode)
     )
   );
   $accounts_postcode->render();
@@ -164,24 +164,24 @@
     'class' => 'tablehead',
     'colspan' => 2
   ))->td->tr;
-  text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
-  text_row("Phone:", 'con_phone1-${id}', '${phone1}', 35, 40);
-  text_row("Phone2:", 'con_phone2-${id}', '${phone2}', 35, 40);
-  text_row("Email:", 'con_email-${id}', '${email}', 35, 40);
-  text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
+  text_row("Name:", 'contact[name-${id}]', '${name}', 35, 40);
+  text_row("Phone:", 'contact[phone1-${id}]', '${phone1}', 35, 40);
+  text_row("Phone2:", 'contact[phone2-${id}]', '${phone2}', 35, 40);
+  text_row("Email:", 'contact[email-${id}]', '${email}', 35, 40);
+  text_row("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
   $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
   Table::startOuter('tablestyle2');
   hidden('branch_id', $currentBranch->branch_id);
   Table::section(1);
   Table::sectionTitle(_("Sales"));
-  Sales_UI::persons_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
-  Sales_UI::areas_row(_("Sales Area:"), 'br_area', $currentBranch->area);
-  Sales_UI::groups_row(_("Sales Group:"), 'br_group_no', $currentBranch->group_no);
-  Inv_Location::row(_("Default Inventory Location:"), 'br_default_location', $currentBranch->default_location);
-  Sales_UI::shippers_row(_("Default Shipping Company:"), 'br_default_ship_via', $currentBranch->default_ship_via);
-  Tax_Groups::row(_("Tax Group:"), 'br_tax_group_id', $currentBranch->tax_group_id);
-  yesno_list_row(_("Disable this Branch:"), 'br_disable_trans', $currentBranch->disable_trans);
+  Sales_UI::persons_row(_("Sales Person:"), 'branch[salesman]', $currentBranch->salesman);
+  Sales_UI::areas_row(_("Sales Area:"), 'branch[area]', $currentBranch->area);
+  Sales_UI::groups_row(_("Sales Group:"), 'branch[group_no]', $currentBranch->group_no);
+  Inv_Location::row(_("Default Inventory Location:"), 'branch[default_location]', $currentBranch->default_location);
+  Sales_UI::shippers_row(_("Default Shipping Company:"), 'branch[default_ship_via]', $currentBranch->default_ship_via);
+  Tax_Groups::row(_("Tax Group:"), 'branch[tax_group_id]', $currentBranch->tax_group_id);
+  yesno_list_row(_("Disable this Branch:"), 'branch[disable_trans]', $currentBranch->disable_trans);
   HTML::tr(TRUE)->td(array(
     'content' => _("Website ID: "), "class" => "label"
   ), FALSE)->td(TRUE);
@@ -191,12 +191,12 @@
   HTML::td()->tr;
   Table::section(2);
   Table::sectionTitle(_("GL Accounts"));
-  GL_UI::all_row(_("Sales Account:"), 'br_sales_account', $currentBranch->sales_account, FALSE, FALSE, TRUE);
-  GL_UI::all_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
-  GL_UI::all_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
-  GL_UI::all_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
+  GL_UI::all_row(_("Sales Account:"), 'branch[sales_account]', $currentBranch->sales_account, FALSE, FALSE, TRUE);
+  GL_UI::all_row(_("Sales Discount Account:"), 'branch[sales_discount_account]', $currentBranch->sales_discount_account);
+  GL_UI::all_row(_("Accounts Receivable Account:"), 'branch[receivables_account]', $currentBranch->receivables_account);
+  GL_UI::all_row(_("Prompt Payment Discount Account:"), 'branch[payment_discount_account]', $currentBranch->payment_discount_account);
   Table::sectionTitle(_("Notes"));
-  textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
+  textarea_row(_("General Notes:"), 'branch[notes]', $currentBranch->notes, 35, 4);
   Table::endOuter(1);
   $menu->endTab();
   $menu->startTab('Invoices', 'Invoices');
