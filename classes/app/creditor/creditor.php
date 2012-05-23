@@ -446,7 +446,7 @@
 
       return select_box($name, $selected_id, $sql, 'supplier_id', 'name', array(
         'format' => '_format_add_curr',
-        'order' => array('ref'),
+        'order' => array('supp_ref'),
         'search_box' => $mode != 0,
         'type' => 1,
         'spec_option' => $spec_option === TRUE ? _("All Suppliers") : $spec_option,
