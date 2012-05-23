@@ -32,9 +32,9 @@
       JS::set_focus('credit_limit');
       return FALSE;
     }
-    if (!Validation::is_num('pymt_discount', 0, 100)) {
+    if (!Validation::is_num('payment_discount', 0, 100)) {
       Event::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-      JS::set_focus('pymt_discount');
+      JS::set_focus('payment_discount');
       return FALSE;
     }
     if (!Validation::is_num('discount', 0, 100)) {
@@ -54,7 +54,7 @@
     	 credit_status=" . DB::escape($_POST['credit_status']) . ",
     	 payment_terms=" . DB::escape($_POST['payment_terms']) . ",
     	 discount=" . Validation::input_num('discount') / 100 . ",
-    	 pymt_discount=" . Validation::input_num('pymt_discount') / 100 . ",
+    	 payment_discount=" . Validation::input_num('payment_discount') / 100 . ",
     	 credit_limit=" . Validation::input_num('credit_limit') . ",
     	 sales_type = " . DB::escape($_POST['sales_type']) . ",
     	 notes=" . DB::escape($_POST['notes']) . "
@@ -68,10 +68,10 @@
       DB::begin();
       $sql
         = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
-    				curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
+    				curr_code, credit_status, payment_terms, discount, payment_discount,credit_limit,
     				sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
     				" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
-    				" . Validation::input_num('pymt_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
+    				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
       DB::query($sql, "The customer could not be added");
       $_POST['customer_id'] = DB::insert_id();
       $new_customer = FALSE;
@@ -146,7 +146,7 @@
     $_POST['curr_code'] = Bank_Currency::for_company();
     $_POST['credit_status'] = -1;
     $_POST['payment_terms'] = $_POST['notes'] = '';
-    $_POST['discount'] = $_POST['pymt_discount'] = Num::percent_format(0);
+    $_POST['discount'] = $_POST['payment_discount'] = Num::percent_format(0);
     $_POST['credit_limit'] = Num::price_format(DB_Company::get_pref('default_credit_limit'));
     $_POST['inactive'] = 0;
   }
@@ -166,7 +166,7 @@
     $_POST['credit_status'] = $myrow["credit_status"];
     $_POST['payment_terms'] = $myrow["payment_terms"];
     $_POST['discount'] = Num::percent_format($myrow["discount"] * 100);
-    $_POST['pymt_discount'] = Num::percent_format($myrow["pymt_discount"] * 100);
+    $_POST['payment_discount'] = Num::percent_format($myrow["payment_discount"] * 100);
     $_POST['credit_limit'] = Num::price_format($myrow["credit_limit"]);
     $_POST['notes'] = $myrow["notes"];
     $_POST['inactive'] = $myrow["inactive"];
@@ -190,7 +190,7 @@
   Table::section(2);
   Table::sectionTitle(_("Sales"));
   percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-  percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
+  percent_row(_("Prompt Payment Discount Percent:"), 'payment_discount', $_POST['payment_discount']);
   amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
   GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
   Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);

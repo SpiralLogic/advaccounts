@@ -120,6 +120,7 @@
     protected function _saveNew() {
       try {
         $this->id = DB::insert($this->_table)->values((array) $this)->exec();
+        var_dump($this->id);
       }
       catch (DBInsertException $e) {
         return $this->_status(FALSE, 'write', 'Could not add to databse: ' . get_class($this));

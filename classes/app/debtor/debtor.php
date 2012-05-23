@@ -36,7 +36,7 @@
     /**
      * @var int
      */
-    public $pymt_discount = 0;
+    public $payment_discount = 0;
     /**
      * @var int
      */
@@ -93,8 +93,8 @@
      * @param int|null $id
      */
     public function __construct($id = NULL) {
-      $this->id = &$this->debtor_id;
-      $this->pymt_discount =& $this->payment_discount;
+      $this->debtor_id =&$this->id;
+      $this->payment_discount =& $this->payment_discount;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
     }
@@ -202,7 +202,7 @@
     public function save($changes = NULL) {
       $data['debtor_ref'] = substr($this->name, 0, 29);
       $data['discount'] = User::numeric($this->discount) / 100;
-      $data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+      $data['payment_discount'] = User::numeric($this->payment_discount) / 100;
       $data['credit_limit'] = User::numeric($this->credit_limit);
       if (!parent::save($changes)) {
         $this->_setDefaults();
@@ -260,9 +260,9 @@
         JS::set_focus('credit_limit');
         return $this->_status(FALSE, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
-      if (!Validation::is_num($this->pymt_discount, 0, 100)) {
-        JS::set_focus('pymt_discount');
-        return $this->_status(FALSE, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'pymt_discount');
+      if (!Validation::is_num($this->payment_discount, 0, 100)) {
+        JS::set_focus('payment_discount');
+        return $this->_status(FALSE, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'payment_discount');
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
         JS::set_focus('discount');
@@ -318,7 +318,7 @@
       $this->name = $this->address = $this->email = $this->tax_id = $this->notes = $this->debtor_ref = '';
 
       $this->curr_code = Bank_Currency::for_company();
-      $this->discount = $this->pymt_discount = Num::percent_format(0);
+      $this->discount = $this->payment_discount = Num::percent_format(0);
       $this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
     }
     protected function _getAccounts() {
@@ -379,7 +379,7 @@
       $this->_getAccounts();
       $this->_getContacts();
       $this->discount = $this->discount * 100;
-      $this->pymt_discount = $this->pymt_discount * 100;
+      $this->payment_discount = $this->payment_discount * 100;
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
     /**
@@ -588,7 +588,7 @@ JS;
      */
     static public function get_habit($customer_id) {
       $sql
-        = "SELECT debtors.pymt_discount,
+        = "SELECT debtors.payment_discount,
 				 credit_status.dissallow_invoices
 				FROM debtors, credit_status
 				WHERE debtors.credit_status = credit_status.id

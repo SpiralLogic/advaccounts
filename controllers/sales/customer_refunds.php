@@ -79,7 +79,7 @@
   }
   Debtor_Payment::read_customer_data($customer->id, TRUE);
   Session::i()->setGlobal('debtor',$customer->id);
-  $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
+  $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
   Table::section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', NULL, TRUE);
   text_row(_("Reference:"), 'ref', NULL, 20, 40);

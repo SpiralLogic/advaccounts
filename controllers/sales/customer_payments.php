@@ -84,7 +84,7 @@
     Event::error(_("This customer account is on hold."));
   }
   else {
-    $display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
+    $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
     Table::section(2);
     if (!list_updated('bank_account')) {
       $_POST['bank_account'] = Bank_Account::get_customer_default($_POST['customer_id']);

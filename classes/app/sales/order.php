@@ -1059,7 +1059,7 @@
       if ($myrow['dissallow_invoices'] == 1) {
         $ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
       }
-      $this->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']); // the sales type determines the price list to be used by default
+      $this->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['payment_terms'], $myrow['payment_discount']); // the sales type determines the price list to be used by default
       $this->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
       if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) {
         $this->dimension_id = $myrow['dimension_id'];
@@ -1672,7 +1672,7 @@
 		 sales_types.factor,
 		 debtors.curr_code,
 		 debtors.discount,
-		 debtors.pymt_discount,
+		 debtors.payment_discount,
 		 debtors.payment_terms
 			FROM debtors, credit_status, sales_types
 			WHERE debtors.sales_type=sales_types.id

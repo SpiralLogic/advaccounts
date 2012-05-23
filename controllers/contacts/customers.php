@@ -128,7 +128,7 @@
   Table::section(1);
   Table::sectionTitle(_("Accounts Details:"), 2);
   percent_row(_("Discount Percent:"), 'discount', $customer->discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-  percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+  percent_row(_("Prompt Payment Discount Percent:"), 'payment_discount', $customer->payment_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");
   amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, NULL, NULL, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");

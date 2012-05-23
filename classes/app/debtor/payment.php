@@ -145,7 +145,7 @@
       }
       else {
         $sql
-          = "SELECT debtors.pymt_discount,
+          = "SELECT debtors.payment_discount,
       			credit_status.dissallow_invoices
       			FROM debtors, credit_status
       			WHERE debtors.credit_status = credit_status.id
@@ -155,7 +155,7 @@
         $type = ST_CUSTREFUND;
       }
       $_POST['HoldAccount'] = $myrow["dissallow_invoices"];
-      $_POST['pymt_discount'] = $myrow["pymt_discount"];
+      $_POST['payment_discount'] = $myrow["payment_discount"];
       $_POST['ref'] = Ref::get_next($type);
     }
     /**
