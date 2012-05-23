@@ -36,10 +36,6 @@
     /**
      * @var int
      */
-    public $payment_discount = 0;
-    /**
-     * @var int
-     */
     public $defaultBranch = 0;
     /**
      * @var int
