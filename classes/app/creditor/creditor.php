@@ -441,7 +441,7 @@
      * @return string
      */
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
-      $sql = "SELECT supplier_id, ref, curr_code, inactive FROM suppliers ";
+      $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
 
       return select_box($name, $selected_id, $sql, 'supplier_id', 'name', array(
