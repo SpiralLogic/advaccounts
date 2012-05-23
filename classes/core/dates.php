@@ -88,10 +88,7 @@
      * @return string
      */
     static function today() {
-      $year = date("Y");
-      $month = date("n");
-      $day = date("j");
-      return Dates::__date($year, $month, $day);
+      return Dates::__date(date("Y"),date("n"),date("j"));
     }
     /**
      * @static

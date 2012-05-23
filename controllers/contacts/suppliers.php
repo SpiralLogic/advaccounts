@@ -95,13 +95,13 @@
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
   HTML::_td()->tr;
-  text_row(_("Phone Number:"), 'phone', $supplier->phone2, 35, 30);
-  textarea_row(_("Address:"), 'address', $supplier->address, 35, 2);
+  text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
+  textarea_row(_("Address:"), 'supp_address', $supplier->address, 35, 2);
 
   $postcode = new Contact_Postcode(array(
-      'city' => array('city', $supplier->city),
-      'state' => array('state', $supplier->state),
-      'postcode' => array('postcode', $supplier->postcode)
+      'city' => array('supp_city', $supplier->city),
+      'state' => array('supp_state', $supplier->state),
+      'postcode' => array('supp_postcode', $supplier->postcode)
     )
   );
   $postcode->render();
@@ -147,11 +147,11 @@
   ))->tr(TRUE)->td(array('content' => '${name}','class' => 'tablehead',
     'colspan' => 2
   ))->td->tr;
-  text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
-  text_row("Phone:", 'con_phone1-${id}', '${phone1}', 35, 40);
-  text_row("Phone2:", 'con_phone2-${id}', '${phone2}', 35, 40);
-  text_row("Email:", 'con_email-${id}', '${email}', 35, 40);
-  text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
+  text_row("Name:", 'contact[name-${id}]', '${name}', 35, 40);
+  text_row("Phone:", 'contact[phone1-${id}]', '${phone1}', 35, 40);
+  text_row("Phone2:", 'contact[phone2-${id}]', '${phone2}', 35, 40);
+  text_row("Email:", 'contact[email-${id}]', '${email}', 35, 40);
+  text_row("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
 
   $menu->endTab()->startTab('Invoices', 'Invoices');

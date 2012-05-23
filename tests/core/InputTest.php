@@ -30,35 +30,62 @@
      * @covers ADV\Core\Input::post
      */
     public function testPost() {
-      $this->assertEquals('', Input::post('test', Input::STRING));
-      $this->assertEquals('ing', Input::post('test', Input::STRING, 'ing'));
-      $_POST['test'] = 'ing';
-      $this->assertEquals('ing', Input::post('test'));
-      $this->assertEquals('ing', Input::post('test', Input::STRING));
-      $this->assertEquals('ing', Input::post('test', Input::STRING, ''));
-      $this->assertEquals(0, Input::post('test', Input::NUMERIC));
-      $this->assertEquals(0, Input::post('test', Input::NUMERIC, 0));
-      $this->assertEquals(1, Input::post('test', Input::NUMERIC, 1));
 
+      $_POST['test0'] = 'wawa';
+      $expected = 'wawa';
+      $actual = Input::post('test0');
+      $this->assertSame($expected, $actual);
+
+
+      $_POST['test0'] = '0';
+      $expected = '0';
+      $actual = Input::post('test0');
+      $this->assertSame($expected, $actual);
+
+
+      $expected = '';
+      $actual = Input::post('name', Input::STRING);
+      $this->assertSame($expected, $actual);
+
+      $expected = 'phil';
+      $actual = Input::post('name', Input::STRING, 'phil');
+      $this->assertSame($expected, $actual);
+
+      $_POST['test'] = 'ing';
+      $this->assertSame('ing', Input::post('test'));
+      $this->assertSame('ing', Input::post('test', Input::STRING));
+      $this->assertSame('ing', Input::post('test', Input::STRING, ''));
+
+      $this->assertSame(0, Input::post('test', Input::NUMERIC));
+      $this->assertSame(0, Input::post('test', Input::NUMERIC, 0));
+      $this->assertSame(1, Input::post('test', Input::NUMERIC, 1));
+
+      $this->assertSame(null, Input::post('test2'));
       $this->assertEquals('', Input::post('test2'));
-      $this->assertEquals('', Input::post('test2', Input::STRING));
-      $this->assertEquals(0, Input::post('test2', Input::NUMERIC));
-      $this->assertEquals(5, Input::post('test2', Input::NUMERIC, 5));
+      $this->assertSame('', Input::post('test2', Input::STRING));
+      $this->assertSame(0, Input::post('test2', Input::NUMERIC));
+      $this->assertSame(5, Input::post('test2', Input::NUMERIC, 5));
+    }
+    function testPortType() {
       $_POST['test2'] = '0';
-      $this->assertEquals('0', Input::post('test2'));
-      $this->assertEquals('0', Input::post('test2', Input::STRING));
-      $this->assertEquals('0', Input::post('test2', Input::STRING, ''));
-      $this->assertEquals(0, Input::post('test2', Input::NUMERIC));
-      $this->assertEquals(0, Input::post('test2', Input::NUMERIC, 0));
-      $this->assertEquals(0, Input::post('test2', Input::NUMERIC, 1));
+      $this->assertSame('0', Input::post('test2'));
+      $this->assertSame('0', Input::post('test2', Input::STRING));
+      $this->assertSame('0', Input::post('test2', Input::STRING, ''));
+
+      $this->assertSame(0, Input::post('test2', Input::NUMERIC));
+      $this->assertSame(0, Input::post('test2', Input::NUMERIC, 0));
+      $this->assertSame(0, Input::post('test2', Input::NUMERIC, 1));
+
+      $this->assertSame(null, Input::post('test3'));
       $this->assertEquals(0, Input::post('test3'));
+
       $_POST['test3'] = 7;
-      $this->assertEquals(7, Input::post('test3'));
-      $this->assertEquals('', Input::post('test3', Input::STRING));
-      $this->assertEquals('', Input::post('test3', Input::STRING, ''));
-      $this->assertEquals(7, Input::post('test3', Input::NUMERIC));
-      $this->assertEquals(7, Input::post('test3', Input::NUMERIC, 0));
-      $this->assertEquals(7, Input::post('test3', Input::NUMERIC, 1));
+      $this->assertSame(7, Input::post('test3'));
+      $this->assertSame('', Input::post('test3', Input::STRING));
+      $this->assertSame('', Input::post('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
     }
 
     /**
