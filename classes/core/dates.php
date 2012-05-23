@@ -297,6 +297,7 @@
      */
     static function date1_greater_date2($date1, $date2) {
       /* returns 1 true if date1 is greater than date_ 2 */
+      if (!$date1 || !$date2) { return false;}
       $date1 = Dates::date2sql($date1);
       $date2 = Dates::date2sql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
@@ -360,8 +361,8 @@
      * @throws \Adv_Exception
      * @return array
      */
-    static function explode_date_to_dmy($date_) {
-      $date = Dates::date2sql($date_);
+    static function explode_date_to_dmy($date) {
+      $date = Dates::date2sql($date);
       if ($date == "") {
         $disp = \User::date_display();
         throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
