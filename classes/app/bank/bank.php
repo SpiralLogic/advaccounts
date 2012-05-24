@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   //	Check if given account is used by any bank_account.
   //	Returns id of first bank_account using account_code, null otherwise.
   //
@@ -15,6 +15,7 @@
   //	there is more than one using given gl account.
   //
   class Bank {
+
     /**
      * @static
      *
@@ -71,21 +72,21 @@
     static public function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = FALSE) {
       global $systypes_array;
       if ($person_type == PT_CUSTOMER) {
-        $trans = Debtor_Trans::get($trans_no, $type);
+        $trans     = Debtor_Trans::get($trans_no, $type);
         $pyt_trans = Debtor_Trans::get($pyt_no, $pyt_type);
         $ar_ap_act = $trans['receivables_account'];
         $person_id = $trans['debtor_id'];
-        $curr = $trans['curr_code'];
-        $date = Dates::sql2date($trans['tran_date']);
+        $curr      = $trans['curr_code'];
+        $date      = Dates::sql2date($trans['tran_date']);
       }
       else {
-        $trans = Creditor_Trans::get($trans_no, $type);
-        $pyt_trans = Creditor_Trans::get($pyt_no, $pyt_type);
+        $trans         = Creditor_Trans::get($trans_no, $type);
+        $pyt_trans     = Creditor_Trans::get($pyt_no, $pyt_type);
         $supplier_accs = Creditor::get_accounts_name($trans['supplier_id']);
-        $ar_ap_act = $supplier_accs['payable_account'];
-        $person_id = $trans['supplier_id'];
-        $curr = $trans['SupplierCurrCode'];
-        $date = Dates::sql2date($trans['tran_date']);
+        $ar_ap_act     = $supplier_accs['payable_account'];
+        $person_id     = $trans['supplier_id'];
+        $curr          = $trans['SupplierCurrCode'];
+        $date          = Dates::sql2date($trans['tran_date']);
       }
       if (Bank_Currency::is_company($curr)) {
         return;
@@ -153,7 +154,7 @@
         case PT_MISC :
           return $person_id;
         case PT_QUICKENTRY :
-          $qe = GL_QuickEntry::get($person_id);
+          $qe      = GL_QuickEntry::get($person_id);
           $comment = '';
           if (!is_null($trans_no)) {
             $comment = "<br>" . DB_Comments::get_string(ST_BANKPAYMENT, $trans_no);

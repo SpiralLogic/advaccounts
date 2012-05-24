@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Bank_Trans {
 
     // add a bank transaction
@@ -45,7 +45,7 @@
       }
       // Also store the rate to the home
       //$BankToHomeCurrencyRate = Bank_Currency::exchange_rate_to_home($bank_account_currency, $date_);
-      $sql = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
+      $sql         = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
       $undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
       $sql .= "VALUES ($type, $trans_no, '$bank_act', " . DB::escape($ref) . ", '$sqlDate',
@@ -64,7 +64,7 @@
      * @return bool
      */
     static public function exists($type, $type_no) {
-      $sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
+      $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a bank transaction");
       return (DB::num_rows($result) > 0);
     }

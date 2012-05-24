@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Bank_Currency {
+
     /**
      * @static
      *
@@ -50,9 +51,9 @@
      * @return mixed
      */
     static public function for_bank_account($id) {
-      $sql = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
+      $sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
       $result = DB::query($sql, "retreive bank account currency");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -63,9 +64,9 @@
      * @return mixed
      */
     static public function for_debtor($customer_id) {
-      $sql = "SELECT curr_code FROM debtors WHERE debtor_id = '$customer_id'";
+      $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$customer_id'";
       $result = DB::query($sql, "Retreive currency of customer $customer_id");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -76,9 +77,9 @@
      * @return mixed
      */
     static public function for_creditor($supplier_id) {
-      $sql = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
+      $sql    = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
       $result = DB::query($sql, "Retreive currency of supplier $supplier_id");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -117,7 +118,7 @@
       }
       $date = Dates::date2sql($date_);
       $sql
-        = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
+              = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
 						AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
       $result = DB::query($sql, "could not query exchange rates");
       if (DB::num_rows($result) == 0) {

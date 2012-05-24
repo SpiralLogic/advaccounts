@@ -84,7 +84,7 @@
         //	break;
       }
       $person_currency = Bank_Currency::for_payment_person($_POST['PayType'], $_POST['person_id']);
-      $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+      $bank_currency   = Bank_Currency::for_company($_POST['bank_account']);
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
       Table::section(3, "33%");
       if (isset($_GET['NewPayment'])) {
@@ -103,7 +103,7 @@
      * @param $order
      */
     static public function items($title, &$order) {
-      $dim = DB_Company::get_pref('use_dimension');
+      $dim     = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
       Display::heading($title);
       Display::div_start('items_table');
@@ -129,7 +129,7 @@
         $th[] = '';
       }
       Table::header($th);
-      $k = 0; //row colour counter
+      $k  = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
@@ -181,13 +181,13 @@
       Row::start();
       $id = find_submit(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
-        $item = $order->gl_items[$Index];
-        $_POST['code_id'] = $item->code_id;
-        $_POST['dimension_id'] = $item->dimension_id;
+        $item                   = $order->gl_items[$Index];
+        $_POST['code_id']       = $item->code_id;
+        $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
-        $_POST['amount'] = Num::price_format(abs($item->amount));
-        $_POST['description'] = $item->description;
-        $_POST['LineMemo'] = $item->reference;
+        $_POST['amount']        = Num::price_format(abs($item->amount));
+        $_POST['description']   = $item->description;
+        $_POST['LineMemo']      = $item->reference;
         hidden('Index', $id);
         echo GL_UI::all('code_id', NULL, TRUE, TRUE);
         if ($dim >= 1) {
@@ -199,19 +199,19 @@
         Ajax::i()->activate('items_table');
       }
       else {
-        $_POST['amount'] = Num::price_format(0);
-        $_POST['dimension_id'] = 0;
+        $_POST['amount']        = Num::price_format(0);
+        $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         //$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
         if (isset($_POST['_code_id_update'])) {
           Ajax::i()->activate('code_id');
         }
         if ($_POST['PayType'] == PT_CUSTOMER) {
-          $acc = Sales_Branch::get_accounts($_POST['PersonDetailID']);
+          $acc              = Sales_Branch::get_accounts($_POST['PersonDetailID']);
           $_POST['code_id'] = $acc['receivables_account'];
         }
         elseif ($_POST['PayType'] == PT_SUPPLIER) {
-          $acc = Creditor::get_accounts_name($_POST['person_id']);
+          $acc              = Creditor::get_accounts_name($_POST['person_id']);
           $_POST['code_id'] = $acc['payable_account'];
         } //elseif ($_POST['PayType'] == PT_WORKORDER)
         //	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');
@@ -294,7 +294,7 @@
      * @param string $parms
      */
     static public function  balance_row($bank_acc, $parms = '') {
-      $to = Dates::add_days(Dates::today(), 1);
+      $to  = Dates::add_days(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       Row::label(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
         '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);

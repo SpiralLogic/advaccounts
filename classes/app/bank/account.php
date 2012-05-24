@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Bank_Account {
+
     /**
      * @static
      *
@@ -74,7 +75,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not retreive bank account for $id");
       return DB::fetch($result);
     }
@@ -86,8 +87,8 @@
      * @return mixed
      */
     static public function get_gl($id) {
-      $sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not retreive bank account for $id");
+      $sql          = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
+      $result       = DB::query($sql, "could not retreive bank account for $id");
       $bank_account = DB::fetch($result);
       return $bank_account['account_code'];
     }
@@ -106,9 +107,9 @@
                          . first defined account in home currency
                        */
       $home_curr = DB_Company::get_pref('curr_default');
-      $sql = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM " . "bank_accounts b" . " WHERE b.bank_curr_code=" . DB::escape($curr) . " OR b.bank_curr_code='$home_curr'
+      $sql       = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM " . "bank_accounts b" . " WHERE b.bank_curr_code=" . DB::escape($curr) . " OR b.bank_curr_code='$home_curr'
 		ORDER BY fall_back, dflt_curr_act desc";
-      $result = DB::query($sql, "could not retreive default bank account");
+      $result    = DB::query($sql, "could not retreive default bank account");
       return DB::fetch($result);
     }
     /**
@@ -119,10 +120,10 @@
      * @return mixed
      */
     static public function get_customer_default($cust_id) {
-      $sql = "SELECT curr_code FROM debtors WHERE debtor_id=" . DB::escape($cust_id);
+      $sql    = "SELECT curr_code FROM debtors WHERE debtor_id=" . DB::escape($cust_id);
       $result = DB::query($sql, "could not retreive default customer currency code");
-      $row = DB::fetch_row($result);
-      $ba = static::get_default($row[0]);
+      $row    = DB::fetch_row($result);
+      $ba     = static::get_default($row[0]);
       return $ba['id'];
     }
     /**
@@ -133,7 +134,7 @@
      * @return bool
      */
     static public function is($account_code) {
-      $sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
+      $sql    = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
       $result = DB::query($sql, "checking account is bank account");
       if (DB::num_rows($result) > 0) {
         $acct = DB::fetch($result);
@@ -156,9 +157,9 @@
       $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
 												FROM bank_accounts";
       return select_box($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-        'format' => '_format_add_curr',
+        'format'        => '_format_add_curr',
         'select_submit' => $submit_on_change,
-        'async' => FALSE
+        'async'         => FALSE
       ));
     }
     /**
