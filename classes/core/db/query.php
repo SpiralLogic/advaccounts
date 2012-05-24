@@ -7,13 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-namespace ADV\Core\DB;
-use PDO, PDOStatement, PDOException, PDORow;
+  namespace ADV\Core\DB;
+  use PDO, PDOStatement, PDOException, PDORow;
 
-/**
+  /**
 
- */
-abstract class Query extends Query_Where {
+   */
+  abstract class Query extends Query_Where {
 
     /**
      * @var Query
@@ -40,7 +40,7 @@ abstract class Query extends Query_Where {
      * @param $conn
      */
     protected function __construct($conn) {
-      $this->conn = $conn;
+      $this->conn    = $conn;
       static::$query = $this;
     }
     /**

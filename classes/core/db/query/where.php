@@ -34,7 +34,7 @@
     protected $count = 0;
     protected function resetWhere() {
       $this->wheredata = $this->where = array();
-      $this->count = 0;
+      $this->count     = 0;
     }
     /***
      * @param array  $conditions
@@ -59,7 +59,7 @@
         $name = ':dbcondition' . $this->count;
         $this->count++;
         $this->wheredata[$name] = $uservar;
-        $conditions = $conditions . ' ' . $name;
+        $conditions             = $conditions . ' ' . $name;
       }
       $this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
       return $this;

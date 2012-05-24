@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class menu_item {
 
@@ -27,7 +27,7 @@
      */
     function menu_item($label, $link) {
       $this->label = $label;
-      $this->link = $link;
+      $this->link  = $link;
     }
   }
 

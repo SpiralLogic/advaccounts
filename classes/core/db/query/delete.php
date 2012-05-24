@@ -25,7 +25,7 @@
      */
     public function __construct($table = FALSE, $db) {
       $this->table = $table;
-      $this->type = DB::DELETE;
+      $this->type  = DB::DELETE;
       parent::__construct($db);
     }
     /**

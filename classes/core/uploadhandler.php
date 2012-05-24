@@ -12,7 +12,7 @@
 
   namespace ADV\Core;
   /**
-   *
+
    */
   class UploadHandler {
 
@@ -38,18 +38,18 @@
       ini_set('post_max_size', '3M');
       ini_set('upload_max_filesize', '3M');
       $this->options = array(
-        'script_url' => $_SERVER['DOCUMENT_URI'],
-        'upload_dir' => DOCROOT . '/upload/upload/',
-        'upload_url' => BASE_URL . '/upload/upload/',
-        'param_name' => 'files',
+        'script_url'              => $_SERVER['DOCUMENT_URI'],
+        'upload_dir'              => DOCROOT . '/upload/upload/',
+        'upload_url'              => BASE_URL . '/upload/upload/',
+        'param_name'              => 'files',
         // The php.ini settings upload_max_filesize and post_max_size
         // take precedence over the following max_file_size setting:
-        'max_file_size' => NULL,
-        'min_file_size' => 1,
-        'accept_file_types' => '/.+$/i',
-        'max_number_of_files' => 10,
+        'max_file_size'           => NULL,
+        'min_file_size'           => 1,
+        'accept_file_types'       => '/.+$/i',
+        'max_number_of_files'     => 10,
         'discard_aborted_uploads' => TRUE,
-        'image_versions' => array(
+        'image_versions'          => array(
           // Uncomment the following version to restrict the size of
           // uploaded images. You can also add additional versions with
           // their own upload directories:
@@ -64,7 +64,7 @@
           'thumbnail' => array(
             'upload_dir' => DOCROOT . 'upload/upload/thumbnails/',
             'upload_url' => BASE_URL . 'upload/upload/thumbnails/',
-            'max_width' => 80,
+            'max_width'  => 80,
             'max_height' => 80
           )
         )
@@ -81,17 +81,17 @@
     private function get_file_object($file_name) {
       $file_path = $this->options['upload_dir'] . $file_name;
       if (is_file($file_path) && $file_name[0] !== '.') {
-        $file = new \stdClass();
+        $file       = new \stdClass();
         $file->name = $file_name;
         $file->size = filesize($file_path);
-        $file->url = $this->options['upload_url'] . rawurlencode($file->name);
+        $file->url  = $this->options['upload_url'] . rawurlencode($file->name);
         foreach ($this->options['image_versions'] as $version => $options) {
           if (is_file($options['upload_dir'] . $file_name)) {
             $file->{$version . '_url'} = $options['upload_url']
               . rawurlencode($file->name);
           }
         }
-        $file->delete_url = $this->options['script_url']
+        $file->delete_url  = $this->options['script_url']
           . '?file=' . rawurlencode($file->name);
         $file->delete_type = 'DELETE';
         return $file;
@@ -123,7 +123,7 @@
      * @return bool
      */
     private function create_scaled_image($file_name, $options) {
-      $file_path = $this->options['upload_dir'] . $file_name;
+      $file_path     = $this->options['upload_dir'] . $file_name;
       $new_file_path = $options['upload_dir'] . $file_name;
       list($img_width, $img_height) = @getimagesize($file_path);
       if (!$img_width || !$img_height) {
@@ -136,25 +136,25 @@
       if ($scale > 1) {
         $scale = 1;
       }
-      $new_width = $img_width * $scale;
+      $new_width  = $img_width * $scale;
       $new_height = $img_height * $scale;
-      $new_img = @imagecreatetruecolor($new_width, $new_height);
+      $new_img    = @imagecreatetruecolor($new_width, $new_height);
       switch (strtolower(substr(strrchr($file_name, '.'), 1))) {
         case 'jpg':
         case 'jpeg':
-          $src_img = @imagecreatefromjpeg($file_path);
+          $src_img     = @imagecreatefromjpeg($file_path);
           $write_image = 'imagejpeg';
           break;
         case 'gif':
           @imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
-          $src_img = @imagecreatefromgif($file_path);
+          $src_img     = @imagecreatefromgif($file_path);
           $write_image = 'imagegif';
           break;
         case 'png':
           @imagecolortransparent($new_img, @imagecolorallocate($new_img, 0, 0, 0));
           @imagealphablending($new_img, FALSE);
           @imagesavealpha($new_img, TRUE);
-          $src_img = @imagecreatefrompng($file_path);
+          $src_img     = @imagecreatefrompng($file_path);
           $write_image = 'imagepng';
           break;
         default:
@@ -229,9 +229,9 @@
       $file->name = trim(basename(stripslashes($name)), ".\x00..\x20");
       $file->size = intval($size);
       $file->type = $type;
-      $error = $this->has_error($uploaded_file, $file, $error);
+      $error      = $this->has_error($uploaded_file, $file, $error);
       if (!$error && $file->name) {
-        $file_path = $this->options['upload_dir'] . $file->name;
+        $file_path   = $this->options['upload_dir'] . $file->name;
         $append_file = !$this->options['discard_aborted_uploads'] &&
           is_file($file_path) && $file->size > filesize($file_path);
         clearstatcache();
@@ -272,8 +272,8 @@
             $file->error = 'abort';
           }
         }
-        $file->size = $file_size;
-        $file->delete_url = $this->options['script_url']
+        $file->size        = $file_size;
+        $file->delete_url  = $this->options['script_url']
           . '?file=' . rawurlencode($file->name);
         $file->delete_type = 'MODE_DELETE';
       }
@@ -291,10 +291,10 @@
      * @return mixed
      */
     public function get() {
-      $info = array();
+      $info      = array();
       $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : NULL;
       if ($upload_id) {
-        $sql = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
+        $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
         $result = DB::query($sql, 'Could not retrieve file');
         $result = DB::fetch_assoc($result);
         header('Cache-Control: no-cache, must-revalidate');
@@ -303,7 +303,7 @@
         echo $content;
       }
       else {
-        $sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
+        $sql    = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
         $result = DB::query($sql, 'Could not retrieve upload information');
         if (DB::num_rows($result) < 1) {
           return;
@@ -326,12 +326,12 @@
       $upload = isset($_FILES[$this->options['param_name']]) ?
         $_FILES[$this->options['param_name']] : array(
           'tmp_name' => NULL,
-          'name' => NULL,
-          'size' => NULL,
-          'type' => NULL,
-          'error' => NULL
+          'name'     => NULL,
+          'size'     => NULL,
+          'type'     => NULL,
+          'error'    => NULL
         );
-      $info = array();
+      $info   = array();
       if (is_array($upload['tmp_name'])) {
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($upload['tmp_name'] as $index => $value) {
@@ -440,9 +440,9 @@
 
      */
     public function delete() {
-      $name = isset($_REQUEST['file']) ? ($_REQUEST['file']) : NULL;
-      $id = isset($_REQUEST['id']) ? ($_REQUEST['id']) : NULL;
-      $sql = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
+      $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : NULL;
+      $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : NULL;
+      $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
       $result = DB::query($sql, 'Could not delete file');
       header('Content-type: application/json');
       echo json_encode($result);

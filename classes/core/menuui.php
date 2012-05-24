@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class MenuUI extends Menu {
 
@@ -53,7 +53,7 @@
      * @return MenuUI
      */
     public function addLink($title, $tooltip = '', $link, $param_element, $target = NULL) {
-      $this->items[] = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
+      $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = TRUE;
       return $this;
     }
@@ -66,7 +66,7 @@
      * @return MenuUI
      */
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
-      $this->items[] = new MenuUI_item($title, $tooltip, '#' . $name);
+      $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = TRUE;
       JS::onload($onselect);
       return $this;
@@ -151,10 +151,10 @@
      * @param null   $target
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = NULL, $target = NULL) {
-      $this->label = $label;
-      $this->link = e($link);
-      $this->tooltip = e($tooltip);
+      $this->label         = $label;
+      $this->link          = e($link);
+      $this->tooltip       = e($tooltip);
       $this->param_element = $param_element;
-      $this->target = $target;
+      $this->target        = $target;
     }
   }

@@ -82,7 +82,7 @@
       if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
       }
-      $js = "Adv.Forms.autocomplete('$id','$url',$callback);";
+      $js    = "Adv.Forms.autocomplete('$id','$url',$callback);";
       $clean = "Adv.o.autocomplete['$id'].autocomplete('destroy');";
       static::addLive($js, $clean);
     }
@@ -95,9 +95,9 @@
      */
     static public function gmap($selector, $address, $title) {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
-      $apikey = Config::get('js.maps_api_key');
+      $apikey  = Config::get('js.maps_api_key');
       $js
-        = <<<JS
+               = <<<JS
 
 				Adv.maps = { api_key: '$apikey'}
 JS;
@@ -221,7 +221,7 @@ JSS;
       }
       else {
         self::$_beforeload = array_merge(self::$_beforeload, self::$_onlive, self::$_onload);
-        self::$_onlive = self::$_onload = array();
+        self::$_onlive     = self::$_onload = array();
       }
       if (self::$_beforeload) {
         $content .= implode("", self::$_beforeload);
@@ -256,7 +256,7 @@ JSS;
      * @param $data
      */
     static public function renderJSON($data) {
-      $data = (array) $data;
+      $data  = (array) $data;
       $error = Errors::JSONError();
       if (isset($data['status']) && $data['status'] && Errors::dbErrorCount()) {
         $data['status'] = $error;
@@ -289,15 +289,15 @@ JSS;
     static public function arrayToOptions($options = array(), $funcs = array(), $level = 0) {
       foreach ($options as $key => $value) {
         if (is_array($value)) {
-          $ret = static::arrayToOptions($value, $funcs, 1);
+          $ret           = static::arrayToOptions($value, $funcs, 1);
           $options[$key] = $ret[0];
-          $funcs = $ret[1];
+          $funcs         = $ret[1];
         }
         else {
           if (substr($value, 0, 9) == 'function(') {
-            $func_key = "#" . uniqid() . "#";
+            $func_key         = "#" . uniqid() . "#";
             $funcs[$func_key] = $value;
-            $options[$key] = $func_key;
+            $options[$key]    = $func_key;
           }
         }
       }
@@ -430,7 +430,7 @@ JSS;
         }
       }
       else {
-        $dir = dirname($file);
+        $dir  = dirname($file);
         $file = basename($file);
         isset($var[$dir]) or $var[$dir] = array();
         $var[$dir][$file] = $file;

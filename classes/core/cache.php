@@ -88,7 +88,6 @@
      * @static
      *
      * @param      $key
-     *
      * @param bool $default
      *
      * @return mixed
@@ -146,7 +145,7 @@
     /**
      * @static
      *
-     * @param array|closure $constants
+     * @param array|closure  $constants
      * @param null           $name
      */
     static public function define_constants($name, $constants) {

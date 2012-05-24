@@ -15,7 +15,7 @@
    */
   class Ajax extends \JsHttpRequest {
 
-  use Traits\Singleton;
+    use Traits\Singleton;
 
     /**
      * @var array
@@ -165,9 +165,9 @@
     function _addCommand($trigger, $aAttributes, $mData) {
       if ($this->isActive() && ($trigger !== FALSE)) {
         //		Event::error('adding '.$trigger.':'.htmlentities($mData));
-        $aAttributes['why'] = $trigger;
+        $aAttributes['why']  = $trigger;
         $aAttributes['data'] = $mData;
-        $this->aCommands[] = $aAttributes;
+        $this->aCommands[]   = $aAttributes;
       }
     }
     /**

@@ -48,16 +48,16 @@
      * @param array $options
      */
     public function __construct($title, $name = FALSE, $contents = FALSE, $options = array()) {
-      $this->name = $name;
+      $this->name  = $name;
       $this->title = ($title) ? $title : "Message Box";
       if ($contents) {
         $this->setContents($contents);
       }
       $this->options = array(
-        'autoOpen' => FALSE,
-        'modal' => FALSE,
-        'width' => 300,
-        'resizable' => TRUE,
+        'autoOpen'      => FALSE,
+        'modal'         => FALSE,
+        'width'         => 300,
+        'resizable'     => TRUE,
         'closeOnEscape' => TRUE
       );
       $this->setOptions($options);
@@ -85,7 +85,7 @@
      * @param string $data
      */
     public function setTemplateData($data = '') {
-      $this->data = $data;
+      $this->data      = $data;
       $this->_template = TRUE;
     }
     /**

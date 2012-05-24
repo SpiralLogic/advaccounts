@@ -20,7 +20,7 @@
    */
   class Config {
 
-  use Traits\Singleton;
+    use Traits\Singleton;
 
     /***
      * @var array|null

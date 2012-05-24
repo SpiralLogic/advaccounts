@@ -1,6 +1,5 @@
 <?php  /**
  * PHP version 5.4
- *
  * @category  PHP
  * @package   adv.accounts.core
  * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,9 +8,10 @@
  **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class HookException extends \Exception {
+
   }
 
   /**
@@ -25,8 +25,9 @@
     protected $hooks = array();
     /**
      * @param                              $name
-     * @param                      $callback
+     * @param                              $callback
      * @param array                        $arguments
+     *
      * @return bool
      */
     public function add($name, $callback, $arguments = array()) {
@@ -53,7 +54,7 @@
 
           continue;
         }
-         call_user_func_array($callback[0], $callback[1]);
+        call_user_func_array($callback[0], $callback[1]);
       }
     }
   }

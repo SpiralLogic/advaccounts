@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB;
-  use PDO, PDOStatement, PDOException, PDORow,Cache;
+  use PDO, PDOStatement, PDOException, PDORow, Cache;
 
   /**
 
@@ -44,7 +44,7 @@
       if ($table) {
         $this->into($table);
       }
-      $this->type = DB::INSERT;
+      $this->type      = DB::INSERT;
       $this->hasfields = Cache::get('INFORMATION_SCHEMA.COLUMNS.' . $table);
       if (!$this->hasfields) {
         $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), FALSE);
@@ -108,7 +108,7 @@
       if ($this->data !== NULL) {
         $this->values((array) $data);
       }
-      $this->data = array_intersect_key($this->data, array_flip($this->hasfields));
+      $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
       $this->fields = array_keys($this->data);
       return $this->_buildQuery();
     }

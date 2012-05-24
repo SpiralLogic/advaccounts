@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,13 +14,15 @@
 
    */
   class SessionException extends \Exception {
+
   }
 
   /**
    * @property \ADVAccounting App
    */
   class Session {
-  use Traits\Singleton;
+
+    use Traits\Singleton;
 
     /***
      * @var \gettextNativeSupport|\gettext_php_support
@@ -127,7 +128,7 @@
         return NULL;
       }
       $_SESSION['globals'][$var] = $value;
-      $_SESSION[$var] = $value;
+      $_SESSION[$var]            = $value;
       return $value;
     }
     /**
@@ -137,7 +138,7 @@
      * @return mixed
      */
     public function getGlobal($var, $default = NULL) {
-        return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
+      return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**
      * @param $globals

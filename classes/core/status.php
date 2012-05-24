@@ -10,7 +10,7 @@
 
   namespace ADV\Core;
   /**
-   *
+
    */
   class Status {
 
@@ -23,9 +23,9 @@
      */
     protected $_errors = array();
     const SUCCESS = E_SUCCESS;
-    const INFO = E_USER_NOTICE;
+    const INFO    = E_USER_NOTICE;
     const WARNING = E_USER_WARNING;
-    const ERROR = E_USER_ERROR;
+    const ERROR   = E_USER_ERROR;
     /**
      * @param null   $status
      * @param null   $process
@@ -51,12 +51,12 @@
         $status = self::ERROR;
       }
       if ($status === NULL || $process === NULL) {
-        $newstatus['status'] = self::ERROR;
+        $newstatus['status']  = self::ERROR;
         $newstatus['process'] = 'status';
         $newstatus['message'] = 'Not enough parameters passed for status update.';
       }
       else {
-        $newstatus['status'] = $status;
+        $newstatus['status']  = $status;
         $newstatus['process'] = $process;
         $newstatus['message'] = $message;
         if (!empty($var) && $var != NULL) {
@@ -71,7 +71,6 @@
     }
     /**
      * @param array $status
-     *
      * @param bool  $error_only
      *
      * @return mixed
@@ -115,7 +114,7 @@
      */
     public function __toString() {
       $last = $this->get();
-      $str = ucwords($last['process']);
+      $str  = ucwords($last['process']);
       $str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
       $str .= $last['message'];
       return $str;

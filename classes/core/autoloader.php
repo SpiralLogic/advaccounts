@@ -46,8 +46,8 @@
       $cachedClasses = \ADV\Core\Cache::get('autoload', array());
       if ($cachedClasses) {
         static::$global_classes = $cachedClasses['global_classes'];
-        static::$classes = $cachedClasses['classes'];
-        static::$loaded = $cachedClasses['paths'];
+        static::$classes        = $cachedClasses['classes'];
+        static::$loaded         = $cachedClasses['paths'];
       }
       else {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
@@ -174,15 +174,15 @@
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
       }
-      $alias = FALSE;
+      $alias      = FALSE;
       $class_file = str_replace('_', DS, $classname);
       if (isset(static::$global_classes[$classname]) && (!$namespace || static::$global_classes[$classname] == $namespace)) {
         $namespace = static::$global_classes[$classname];
-        $alias = TRUE;
+        $alias     = TRUE;
       }
       if ($namespace) {
         $namespacepath = str_replace(['\\', 'ADV'], [DS, 'classes'], $namespace);
-        $dir = DOCROOT . strtolower($namespacepath);
+        $dir           = DOCROOT . strtolower($namespacepath);
       }
       elseif (isset(static::$classes[$classname])) {
         $dir = static::$classes[$classname] . DS . $class_file;
@@ -191,13 +191,13 @@
         $dir = APPPATH . strtolower($class_file);
       }
       $class_file = strtolower($class_file);
-      $paths[] = $dir . '.php';
-      $paths[] = $dir . DS . $class_file . '.php';
-      $paths[] = $dir . DS . $class_file . DS . $class_file . '.php';
-      $paths[] = $dir . DS . 'classes' . DS . $class_file . '.php';
-      $result = static::trypath($paths, $requested_class);
+      $paths[]    = $dir . '.php';
+      $paths[]    = $dir . DS . $class_file . '.php';
+      $paths[]    = $dir . DS . $class_file . DS . $class_file . '.php';
+      $paths[]    = $dir . DS . 'classes' . DS . $class_file . '.php';
+      $result     = static::trypath($paths, $requested_class);
       if ($result && $alias) {
-        $fullclass = static::$global_classes[$classname] . '\\' . $classname;
+        $fullclass                  = static::$global_classes[$classname] . '\\' . $classname;
         static::$loaded[$fullclass] = static::$loaded[$requested_class];
         static::$loaded[$classname] = static::$loaded[$requested_class];
         class_alias($fullclass, $classname);
@@ -211,7 +211,7 @@
     static public function _shutdown() {
       Cache::set('autoload', array(
         'classes' => static::$classes, 'global_classes' => static::$global_classes,
-        'paths' => static::$loaded
+        'paths'   => static::$loaded
       ));
     }
   }

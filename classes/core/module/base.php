@@ -8,11 +8,20 @@
    */
   namespace ADV\Core\Module;
 
+  /**
+
+   */
   abstract class Base implements Loadable {
 
+    /**
+     * @var array
+     */
     protected $_enabled;
-    public function __construct($config) {
-      $this->_enabled = \Arr::get($config, 'enabled', FALSE);
+    /**
+     * @param array $config
+     */
+    public function __construct($config = []) {
+      $this->_enabled = $config and \Arr::get($config, 'enabled', FALSE);
       if ($this->_enabled) {
         $this->_init();
       }

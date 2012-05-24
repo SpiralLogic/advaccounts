@@ -60,7 +60,7 @@
      * @return Query_Select
      */
     public function select() {
-      $columns = func_get_args();
+      $columns      = func_get_args();
       $this->select = array_merge($this->select, $columns);
       return $this;
     }
@@ -73,7 +73,7 @@
       if (is_null($tables)) {
         return $this;
       }
-      $tables = func_get_args();
+      $tables     = func_get_args();
       $this->from = array_merge($this->from, $tables);
       return $this;
     }
@@ -86,7 +86,7 @@
       if (is_null($by)) {
         return $this;
       }
-      $by = func_get_args();
+      $by            = func_get_args();
       $this->orderby = array_merge($this->orderby, $by);
       return $this;
     }
@@ -99,7 +99,7 @@
       if (is_null($by)) {
         return $this;
       }
-      $by = func_get_args();
+      $by            = func_get_args();
       $this->groupby = array_merge($this->groupby, $by);
       return $this;
     }
@@ -118,14 +118,15 @@
      */
     public function union() {
       $this->union[] = '(' . $this->_buildQuery() . ')';
-      $this->select = $this->from = $this->orderby = $this->groupby = array();
-      $this->limit = '';
+      $this->select  = $this->from = $this->orderby = $this->groupby = array();
+      $this->limit   = '';
       $this->resetWhere();
       return $this;
     }
     /**
      * @param $condition
      * @param $var
+     *
      * @return void
      */
     public function union_or($condition, $var) {

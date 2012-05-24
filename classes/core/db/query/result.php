@@ -45,7 +45,7 @@
      * @param null $data
      */
     public function __construct($prepared, $data = NULL) {
-      $this->data = $data;
+      $this->data     = $data;
       $this->prepared = $prepared;
       $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
       $this->execute();
@@ -55,14 +55,14 @@
      */
     protected function execute() {
       $this->cursor = 0;
-      $this->valid = $this->prepared->execute($this->data);
-      $this->count = $this->prepared->rowCount();
+      $this->valid  = $this->prepared->execute($this->data);
+      $this->count  = $this->prepared->rowCount();
     }
     /**
      * @return array
      */
     public function all() {
-      $result = $this->prepared->fetchAll();
+      $result         = $this->prepared->fetchAll();
       $this->prepared = NULL;
       return $result;
     }
@@ -121,7 +121,7 @@
     public function intoObject($object) {
       $this->prepared->setFetchMode(\PDO::FETCH_INTO, $object);
       $this->prepared->fetch();
-      $this->count = $this->prepared->rowCount();
+      $this->count    = $this->prepared->rowCount();
       $this->prepared = NULL;
       return $this->count;
     }

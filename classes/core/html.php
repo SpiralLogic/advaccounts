@@ -10,7 +10,7 @@
 
   namespace ADV\Core;
   /**
-   *
+
    */
   class HTML {
 
@@ -90,7 +90,7 @@
           $attrs .= ' ' . $key;
           continue;
         }
-        if ($key=='input') {
+        if ($key == 'input') {
           $value = \Form::prep_value($value);
         }
         $attrs .= (empty($value) || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';

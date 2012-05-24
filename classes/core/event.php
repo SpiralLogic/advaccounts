@@ -15,7 +15,7 @@
    */
   class Event {
 
-  use \ADV\Core\Traits\Hook;
+    use \ADV\Core\Traits\Hook;
 
     /**
      * @var array all objects with methods to be run on shutdown
@@ -39,7 +39,7 @@
      */
     static public function init() {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
-      $shutdown_events = Cache::get(static::$shutdown_events_id);
+      $shutdown_events            = Cache::get(static::$shutdown_events_id);
 
       if ($shutdown_events) {
 
@@ -136,7 +136,7 @@
         ob_end_flush();
       }
       session_write_close();
-     fastcgi_finish_request();
+      fastcgi_finish_request();
       static::$request_finsihed = TRUE;
       try {
         static::fireHooks('shutdown');

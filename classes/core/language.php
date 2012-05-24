@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.core
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.core
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /**
    * PHP version 5.4
    * @category  PHP
@@ -17,10 +17,12 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class Language {
-use Traits\Singleton;
+
+    use Traits\Singleton;
+
     /**
      * @var
      */
@@ -56,10 +58,10 @@ use Traits\Singleton;
      * @param string $dir
      */
     public function __construct($name, $code, $encoding, $dir = 'ltr') {
-      $this->name = $name;
-      $this->code = $code ? $code : 'en_US';
+      $this->name     = $name;
+      $this->code     = $code ? $code : 'en_US';
       $this->encoding = $encoding;
-      $this->dir = $dir;
+      $this->dir      = $dir;
     }
 
     /**
@@ -67,15 +69,15 @@ use Traits\Singleton;
      */
     public function set_language($code) {
       $changed = $this->code != $code;
-      $lang = Arr::search_value($code, Config::get('languages.installed'), 'code');
+      $lang    = Arr::search_value($code, Config::get('languages.installed'), 'code');
       if ($lang && $changed) {
         // flush cache as we can use several languages in one account
         Files::flush_dir(COMPANY_PATH . 'js_cache');
-        $this->name = $lang['name'];
-        $this->code = $lang['code'];
-        $this->encoding = $lang['encoding'];
-        $this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-        $locale = DOCROOT . "lang/" . $this->code . "/locale.php";
+        $this->name           = $lang['name'];
+        $this->code           = $lang['code'];
+        $this->encoding       = $lang['encoding'];
+        $this->dir            = isset($lang['rtl']) ? 'rtl' : 'ltr';
+        $locale               = DOCROOT . "lang/" . $this->code . "/locale.php";
         $this->is_locale_file = file_exists($locale);
       }
       $_SESSION['get_text']->set_language($this->code, $this->encoding);
@@ -92,7 +94,7 @@ use Traits\Singleton;
      */
     static public function set() {
       if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
-        $l = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
+        $l         = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
         static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
         static::$i->set_language(static::$i->code);
         if (file_exists(DOCROOT . "lang/" . static::$i->code . "/locale.php")) {

@@ -7,11 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-namespace ADV\Core;
-/**
- *
- */
-class Arr {
+  namespace ADV\Core;
+  /**
+
+   */
+  class Arr {
 
     /**
      * @static
@@ -21,12 +21,13 @@ class Arr {
      * @param $elements
      * Inserts $elements into $array at position $index.
      * $elements is list of any objects
+     *
      * @return bool
      */
     static function insert(&$array, $index, $elements) {
-        $elements = (array)($elements);
-      $head = array_splice($array, 0, $index);
-      $array = array_merge($head, $elements, $array);
+      $elements = (array) ($elements);
+      $head     = array_splice($array, 0, $index);
+      $array    = array_merge($head, $elements, $array);
       return TRUE;
     }
     /**
@@ -35,6 +36,7 @@ class Arr {
      * @param     $array
      * @param     $index
      * @param int $len
+     *
      * @return bool
      */
     static function remove(&$array, $index, $len = 1) {
@@ -60,6 +62,7 @@ class Arr {
      * @param $index
      * @param $len
      * @param $elements
+     *
      * @return bool
      */
     static function substitute(&$array, $index, $len, $elements) {
@@ -69,11 +72,12 @@ class Arr {
     }
     /**
      * @static
-     * @param &$array
+     *
+     * @param             &$array
      * @param array|mixed $elements elements to append,
      */
-    static function append(&$array, $elements=array()) {
-      $elements = (array)$elements;
+    static function append(&$array, $elements = array()) {
+      $elements = (array) $elements;
       foreach ($elements as $key => $el) {
         if (is_int($key)) {
           $array[] = $el;
@@ -119,16 +123,16 @@ class Arr {
       }
       return NULL;
     }
-  /**
-   * @return array Returns the array sorted as required
-   *
-   * @param             $aryData     Array containing data to sort
-   * @param string      $strIndex    name of column to use as an index
-   * @param string      $strSortBy   Column to sort the array by
-   * @param bool|String $strSortType String containing either asc or desc [default to asc]
-   *
-   * @desc Naturally sorts an array using by the column $strSortBy
-   */
+    /**
+     * @return array Returns the array sorted as required
+     *
+     * @param             $aryData     Array containing data to sort
+     * @param string      $strIndex    name of column to use as an index
+     * @param string      $strSortBy   Column to sort the array by
+     * @param bool|String $strSortType String containing either asc or desc [default to asc]
+     *
+     * @desc Naturally sorts an array using by the column $strSortBy
+     */
     static function natsort($aryData, $strIndex, $strSortBy, $strSortType = FALSE) {
       // if the parameters are invalid
       if (!is_array($aryData) || !$strSortBy

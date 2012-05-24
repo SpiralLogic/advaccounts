@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class XMLParser {
 
@@ -80,7 +80,7 @@
       if (!$this->parse_init()) {
         return FALSE;
       }
-      $this->index = 0;
+      $this->index  = 0;
       $this->parsed = $this->parse_recurse();
       $this->status = 'parsing complete';
       return $this->parsed;
@@ -89,7 +89,7 @@
      * @return array
      */
     function parse_recurse() {
-      $found = array();
+      $found    = array();
       $tagCount = array();
       while (isset($this->valueArray[$this->index])) {
         $tag = $this->valueArray[$this->index];
@@ -98,7 +98,7 @@
           return $found;
         }
         if ($tag['type'] == 'cdata') {
-          $tag['tag'] = $this->cdataKey;
+          $tag['tag']  = $this->cdataKey;
           $tag['type'] = 'complete';
         }
         $tagName = $tag['tag'];
@@ -111,7 +111,7 @@
         }
         else {
           $tagCount[$tagName] = 1;
-          $tagRef = & $found[$tagName];
+          $tagRef             = & $found[$tagName];
         }
         switch ($tag['type']) {
           case 'open':
@@ -132,7 +132,7 @@
           case 'complete':
             if (isset($tag['attributes'])) {
               $tagRef[$this->attribKey] = $tag['attributes'];
-              $tagRef = & $tagRef[$this->valueKey];
+              $tagRef                   = & $tagRef[$this->valueKey];
             }
             if (isset($tag['value'])) {
               $tagRef = $tag['value'];
@@ -147,12 +147,12 @@
      */
     function parse_init() {
       $this->parser = xml_parser_create();
-      $parser = $this->parser;
+      $parser       = $this->parser;
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
       xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
       if (!$res = (bool) xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray)) {
         $this->isError = TRUE;
-        $this->error = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
+        $this->error   = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
       }
       xml_parser_free($parser);
       return $res;
@@ -165,8 +165,8 @@
      * @return array|mixed
      */
     static function XMLtoArray($data) {
-      $XML = new XMLParser($data);
-      $array = $XML->parse();
+      $XML    = new XMLParser($data);
+      $array  = $XML->parse();
       $result = '';
       if (!$XML->isError && is_array($array['xmldata'])) {
         foreach ($array['xmldata'] as $key => $value) {

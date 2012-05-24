@@ -33,34 +33,34 @@
     protected $clientCacheCheck = TRUE;
     protected $file = array();
     protected $minifyTypes = array(
-      'js' => array(
-        'minify' => TRUE, //
+      'js'  => array(
+        'minify'   => TRUE, //
         'minifier' => 'JSMin', //
         'settings' => array() //
       ), //
       'css' => array( //
-        'minify' => TRUE, //
+        'minify'   => TRUE, //
         'minifier' => 'CSSMin', //
         'settings' => array( //
-          'embed' => TRUE, //
-          'embedMaxSize' => 5120, //
+          'embed'           => TRUE, //
+          'embedMaxSize'    => 5120, //
           'embedExceptions' => 'htc',
         )
       )
     );
     protected $mimeTypes = array(
-      "js" => "text/javascript",
-      "css" => "text/css",
-      "htm" => "text/html",
+      "js"   => "text/javascript",
+      "css"  => "text/css",
+      "htm"  => "text/html",
       "html" => "text/html",
-      "xml" => "text/xml",
-      "txt" => "text/plain",
-      "jpg" => "image/jpeg",
+      "xml"  => "text/xml",
+      "txt"  => "text/plain",
+      "jpg"  => "image/jpeg",
       "jpeg" => "image/jpeg",
-      "png" => "image/png",
-      "gif" => "image/gif",
-      "swf" => "application/x-shockwave-flash",
-      "ico" => "image/x-icon",
+      "png"  => "image/png",
+      "gif"  => "image/gif",
+      "swf"  => "application/x-shockwave-flash",
+      "ico"  => "image/x-icon",
     ); //mime types
     /**
      * @param $status
@@ -69,7 +69,8 @@
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
-     header("HTTP/1.0 $status");      header("Vary: Accept-Encoding", FALSE);
+      header("HTTP/1.0 $status");
+      header("Vary: Accept-Encoding", FALSE);
       $this->contentHeader();
 
       exit();
@@ -94,9 +95,9 @@
 
     protected function headerNeverExpire() {
       header("Expires: " . $this->gmdatestr(time() + 315360000));
-      header("Cache-Control: max-age=315360000");      header("Vary: Accept-Encoding", FALSE);
+      header("Cache-Control: max-age=315360000");
+      header("Vary: Accept-Encoding", FALSE);
       $this->contentHeader();
-
     }
     /**
      * @param $msg
@@ -148,14 +149,14 @@
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];
-        $fileDir = $this->baseDir . $matchResult[1];
+        $fileDir   = $this->baseDir . $matchResult[1];
       }
       else {
         $this->debugExit("Invalid file name ($query)");
       }
       if ($this->concatenate) {
-        $this->files = explode('&', $fileNames);
-        $this->files = explode($this->separator, $this->files[0]);
+        $this->files       = explode('&', $fileNames);
+        $this->files       = explode($this->separator, $this->files[0]);
         $this->concatenate = count($this->files) > 1;
       }
       else {
@@ -187,15 +188,15 @@
       if ($this->gzip) {
         header("Content-Encoding: gzip");
       }
-      $this->minify = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
+      $this->minify      = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
       $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
       if ($this->serverCache) {
         $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       }
       $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck
         || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
-          || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime())))
-        || ($this->serverCache &&  (!file_exists($cachedFile) ||
+        || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime())))
+        || ($this->serverCache && (!file_exists($cachedFile) ||
           ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
 
       if ($this->clientCache && $this->clientCacheCheck) {
@@ -233,10 +234,10 @@
               if (!isset($minify_type_settings['minifier'])) {
                 $this->debugExit("Minifier not set for type " . $this->fileType);
               }
-              $minifier_class = $minify_type_settings['minifier'];
+              $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
-              $minifier = new $minifier_class($content,array('fileDir'=>$fileDir, 'minify_type_settings'=>$minify_type_settings['settings'], 'mimeTypes'=>$this->mimeTypes));
-              $content = $minifier->minify();
+              $minifier                         = new $minifier_class($content, array('fileDir'=> $fileDir, 'minify_type_settings'=> $minify_type_settings['settings'], 'mimeTypes'=> $this->mimeTypes));
+              $content                          = $minifier->minify();
             }
           }
           if ($this->gzip) {

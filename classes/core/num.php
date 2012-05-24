@@ -10,10 +10,12 @@
 
   namespace ADV\Core;
   /**
-   *
+
    */
   class Num {
-use Traits\Singleton;
+
+    use Traits\Singleton;
+
     /**
      * @var int
      */
@@ -36,13 +38,13 @@ use Traits\Singleton;
     public static $percent_dec;
 
     /**
-     *
+
      */
     protected function __construct() {
-      static::$price_dec = \User::prefs()->price_dec();
-      static::$tho_sep = \User::tho_sep();
-      static::$dec_sep = \User::dec_sep();
-      static::$exrate_dec = \User::prefs()->exrate_dec();
+      static::$price_dec   = \User::prefs()->price_dec();
+      static::$tho_sep     = \User::tho_sep();
+      static::$dec_sep     = \User::dec_sep();
+      static::$exrate_dec  = \User::prefs()->exrate_dec();
       static::$percent_dec = \User::prefs()->percent_dec();
     }
 
@@ -102,7 +104,7 @@ use Traits\Singleton;
       $tsep = static::$tho_sep;
       $dsep = static::$dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
-      $delta = ($number < 0 ? -.0000000001 : .0000000001);
+      $delta  = ($number < 0 ? -.0000000001 : .0000000001);
       $number = number_format($number + $delta, $decimals, $dsep, $tsep);
       return ($number == -0 ? 0 : $number);
     }
@@ -173,8 +175,8 @@ use Traits\Singleton;
       $number -= $kn * 1000;
       $Hn = floor($number / 100); /* Hundreds (hecto) */
       $number -= $Hn * 100;
-      $Dn = (int) floor($number / 10); /* Tens (deca) */
-      $n = $number % 10; /* Ones */
+      $Dn  = (int) floor($number / 10); /* Tens (deca) */
+      $n   = $number % 10; /* Ones */
       $res = "";
       if ($Bn) {
         $res .= Num::to_words($Bn) . " Billion";

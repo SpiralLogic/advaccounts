@@ -37,22 +37,22 @@
     /** @var array */
     static protected $levels
       = array(
-        -1 => 'Fatal!',
-        0 => 'Error',
-        E_ERROR => 'Error',
-        E_WARNING => 'Warning',
-        E_PARSE => 'Parsing Error',
-        E_NOTICE => 'Notice',
-        E_CORE_ERROR => 'Core Error',
-        E_CORE_WARNING => 'Core Warning',
-        E_COMPILE_ERROR => 'Compile Error',
+        -1                => 'Fatal!',
+        0                 => 'Error',
+        E_ERROR           => 'Error',
+        E_WARNING         => 'Warning',
+        E_PARSE           => 'Parsing Error',
+        E_NOTICE          => 'Notice',
+        E_CORE_ERROR      => 'Core Error',
+        E_CORE_WARNING    => 'Core Warning',
+        E_COMPILE_ERROR   => 'Compile Error',
         E_COMPILE_WARNING => 'Compile Warning',
-        E_USER_ERROR => 'User Error',
-        E_USER_WARNING => 'User Warning',
-        E_USER_NOTICE => 'User Notice',
-        E_STRICT => 'Runtime Notice',
-        E_ALL => 'No Error',
-        E_SUCCESS => 'Success!'
+        E_USER_ERROR      => 'User Error',
+        E_USER_WARNING    => 'User Warning',
+        E_USER_NOTICE     => 'User Notice',
+        E_STRICT          => 'Runtime Notice',
+        E_ALL             => 'No Error',
+        E_SUCCESS         => 'Success!'
       );
     /** @var string  temporary container for output html data before error box */
     static public $before_box = '';
@@ -110,7 +110,7 @@
       }
       if (!in_array($type, static::$user_errors) || $type == E_USER_ERROR) {
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
-        static::$errors[] = $error;
+        static::$errors[]   = $error;
       }
       return TRUE;
     }
@@ -120,20 +120,20 @@
      * @param \Exception $e
      */
     static function exception_handler(\Exception $e) {
-      $error = array(
-        'type' => -1,
-        'code' => $e->getCode(),
+      $error                    = array(
+        'type'    => -1,
+        'code'    => $e->getCode(),
         'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
+        'file'    => $e->getFile(),
+        'line'    => $e->getLine()
       );
       static::$current_severity = -1;
-      static::$messages[] = $error;
+      static::$messages[]       = $error;
       if (is_writable(DOCROOT . 'tmp/errors.log')) {
         error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . 'tmp/errors.log');
       }
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
-      static::$errors[] = $error;
+      static::$errors[]   = $error;
     }
     /** @static */
     static function error_box() {
@@ -148,13 +148,13 @@
      */
     static function format() {
       $msg_class = array(
-        E_USER_ERROR => array('ERROR', 'err_msg'),
+        E_USER_ERROR        => array('ERROR', 'err_msg'),
         E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
-        E_USER_WARNING => array('WARNING', 'warn_msg'),
-        E_USER_NOTICE => array('USER', 'info_msg'),
-        E_SUCCESS => array('SUCCESS', 'success_msg')
+        E_USER_WARNING      => array('WARNING', 'warn_msg'),
+        E_USER_NOTICE       => array('USER', 'info_msg'),
+        E_SUCCESS           => array('SUCCESS', 'success_msg')
       );
-      $content = '';
+      $content   = '';
       foreach (static::$messages as $msg) {
         if (!isset($msg['type']) || $msg['type'] < E_USER_ERROR) {
           $msg['type'] = E_USER_ERROR;
@@ -175,7 +175,7 @@
      */
     static public function send_debug_email() {
       if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))) {
-        $text = '';
+        $text            = '';
         $with_back_trace = array();
         if (count(static::$debugLog)) {
           $text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, TRUE) . "\n\n";
@@ -215,7 +215,7 @@
           $subject .= static::$session['current_user']->username;
         }
         if (count(static::$session)) {
-      //    unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
+          //    unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
           if (isset(static::$session['orders_tbl'])) {
             static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
           }
@@ -231,7 +231,7 @@
           $subject .= ', DB Error';
         }
         $subject .= ' ' . $id;
-        $to = 'errors@advancedgroup.com.au';
+        $to      = 'errors@advancedgroup.com.au';
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
@@ -265,15 +265,15 @@
 
      */
     public static function process() {
-      $last_error = error_get_last();
-       static::$session = (session_status()==PHP_SESSION_ACTIVE)?$_SESSION:array();
+      $last_error      = error_get_last();
+      static::$session = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION : array();
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
         if (class_exists('Ajax', FALSE)) {
           Ajax::i()->aCommands = array();
         }
         static::$current_severity = -1;
-        $error = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
+        $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
           $last_error['line']);
         static::exception_handler($error);
       }
@@ -339,13 +339,13 @@
     static public function JSONError() {
       $status = FALSE;
       if (count(static::$dberrors) > 0) {
-        $dberror = end(static::$dberrors);
-        $status['status'] = E_ERROR;
+        $dberror           = end(static::$dberrors);
+        $status['status']  = E_ERROR;
         $status['message'] = $dberror['message'];
       }
       elseif (count(static::$messages) > 0) {
-        $message = end(static::$messages);
-        $status['status'] = $message['type'];
+        $message           = end(static::$messages);
+        $status['status']  = $message['type'];
         $status['message'] = $message['message'];
         if (static::$useConfigClass && Config::get('debug.enabled')) {
           $status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
@@ -374,17 +374,17 @@
      * @internal param bool $exit
      */
     static public function db_error($error, $sql = NULL, $data = array()) {
-      $errorCode = DB\DB::error_no();
+      $errorCode        = DB\DB::error_no();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
       }
-      $error['debug'] = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
-      $backtrace = debug_backtrace();
-      $source = array_shift($backtrace);
+      $error['debug']     = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
+      $backtrace          = debug_backtrace();
+      $source             = array_shift($backtrace);
       $error['backtrace'] = static::prepare_backtrace($backtrace);
       static::$dberrors[] = $error;
-      $db_class_file = $source['file'];
+      $db_class_file      = $source['file'];
       while ($source['file'] == $db_class_file) {
         $source = array_shift($backtrace);
       }
@@ -395,8 +395,8 @@
 
      */
     static public function log() {
-      $source = reset(debug_backtrace());
-      $args = func_get_args();
+      $source  = reset(debug_backtrace());
+      $args    = func_get_args();
       $content = array();
       foreach ($args as $arg) {
         $content[] = var_export($arg, TRUE);

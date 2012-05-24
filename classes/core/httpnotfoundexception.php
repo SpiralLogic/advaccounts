@@ -7,6 +7,6 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
-  class HttpNotFoundException extends Adv_Exception{
+  class HttpNotFoundException extends Adv_Exception {
 
   }

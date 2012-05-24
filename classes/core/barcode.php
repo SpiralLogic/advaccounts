@@ -26,9 +26,10 @@
      */
   namespace ADV\Core;
   /**
-   *
+
    */
   class Barcode {
+
     /**
      * @static
      *
@@ -60,23 +61,23 @@
       if ($code == '') {
         return FALSE;
       }
-      $code = (string) $code;
+      $code  = (string) $code;
       $digit = BarcodeDatamatrix::getDigit($code, $rect);
-      $hri = $code;
+      $hri   = $code;
       if ($digit == '') {
         return FALSE;
       }
-      $width = 2;
-      $marge = 3;
+      $width  = 2;
+      $marge  = 3;
       $height = $width;
-      $size = ($width * count($digit)) + $marge;
-      $res = imagecreatetruecolor($size, $size);
-      $black = ImageColorAllocate($res, 0x00, 0x00, 0x00);
-      $white = ImageColorAllocate($res, 0xff, 0xff, 0xff);
-      $red = ImageColorAllocate($res, 0xff, 0x00, 0x00);
-      $blue = ImageColorAllocate($res, 0x00, 0x00, 0xff);
+      $size   = ($width * count($digit)) + $marge;
+      $res    = imagecreatetruecolor($size, $size);
+      $black  = ImageColorAllocate($res, 0x00, 0x00, 0x00);
+      $white  = ImageColorAllocate($res, 0xff, 0xff, 0xff);
+      $red    = ImageColorAllocate($res, 0xff, 0x00, 0x00);
+      $blue   = ImageColorAllocate($res, 0x00, 0x00, 0xff);
       imagefilledrectangle($res, 0, 0, $size, $size, $white);
-      $result = self::digitToGDRenderer($res, $black, $size / 2, $size / 2, 0, $width, $height, $digit);
+      $result        = self::digitToGDRenderer($res, $black, $size / 2, $size / 2, 0, $width, $height, $digit);
       $result['hri'] = $hri;
       ob_start(); /*don't send the output to the browser since we'll need to manipulate it*/
       imagegif($res, NULL, 100);
@@ -92,7 +93,7 @@
      * @return array
      */
     static private function bitStringTo2DArray($digit) {
-      $d = array();
+      $d   = array();
       $len = strlen($digit);
       for ($i = 0; $i < $len; $i++) {
         $d[$i] = $digit[$i];
@@ -115,16 +116,16 @@
      * @return array
      */
     static private function digitToGDRenderer($gd, $color, $xi, $yi, $angle, $mw, $mh, $digit) {
-      $lines = count($digit);
+      $lines   = count($digit);
       $columns = count($digit[0]);
-      $angle = deg2rad(-$angle);
-      $cos = cos($angle);
-      $sin = sin($angle);
+      $angle   = deg2rad(-$angle);
+      $cos     = cos($angle);
+      $sin     = sin($angle);
       self::_rotate($columns * $mw / 2, $lines * $mh / 2, $cos, $sin, $x, $y);
       $xi -= $x;
       $yi -= $y;
       for ($y = 0; $y < $lines; $y++) {
-        $len = 0;
+        $len     = 0;
         $current = $digit[$y][0];
         for ($x = 0; $x < $columns; $x++) {
           if ($current == $digit[$y][$x]) {
@@ -153,13 +154,13 @@
               }
             }
             $current = $digit[$y][$x];
-            $len = 1;
+            $len     = 1;
           }
         }
         if (($len > 0) && ($current == '1')) {
           $px = $len * $mw;
           $xt = $xi + ($columns - $len) * $mw;
-          $y = $lines - 1;
+          $y  = $lines - 1;
           if ($angle == 0) {
             if ($px > 2) {
               imagefilledrectangle($gd, $xt, $yi + $y * $mh, $xt + $px - 1, $yi + ($y + 1) * $mh, $color);
@@ -237,15 +238,15 @@
      */
     static public function rotate($x1, $y1, $angle, &$x, &$y) {
       $angle = deg2rad(-$angle);
-      $cos = cos($angle);
-      $sin = sin($angle);
-      $x = $x1 * $cos - $y1 * $sin;
-      $y = $x1 * $sin + $y1 * $cos;
+      $cos   = cos($angle);
+      $sin   = sin($angle);
+      $x     = $x1 * $cos - $y1 * $sin;
+      $y     = $x1 * $sin + $y1 * $cos;
     }
   }
 
   /**
-   *
+
    */
   class BarcodeDatamatrix {
 
@@ -678,8 +679,8 @@
      */
     static private function encodeDataCodeWordsASCII($text) {
       $dataCodeWords = array();
-      $n = 0;
-      $len = strlen($text);
+      $n             = 0;
+      $len           = strlen($text);
       for ($i = 0; $i < $len; $i++) {
         $c = ord($text[$i]);
         if ($c > 127) {
@@ -717,7 +718,7 @@
       }
       $tab[$from] = 129;
       for ($i = $from + 1; $i < $to; $i++) {
-        $r = ((149 * ($i + 1)) % 253) + 1;
+        $r       = ((149 * ($i + 1)) % 253) + 1;
         $tab[$i] = (129 + $r) % 254;
       }
     }
@@ -752,8 +753,8 @@
      * @return array
      */
     static private function addReedSolomonCW($nSolomonCW, $coeffTab, $nDataCW, &$dataTab, $blocks) { // Add the Reed Solomon codewords
-      $temp = 0;
-      $errorBlocks = $nSolomonCW / $blocks;
+      $temp         = 0;
+      $errorBlocks  = $nSolomonCW / $blocks;
       $correctionCW = array();
       for ($k = 0; $k < $blocks; $k++) {
         for ($i = 0; $i < $errorBlocks; $i++) {
@@ -777,7 +778,7 @@
         $j = $nDataCW + $k;
         for ($i = $errorBlocks - 1; $i >= 0; $i--) {
           $dataTab[$j] = $correctionCW[$i];
-          $j = $j + $blocks;
+          $j           = $j + $blocks;
         }
       }
       return $dataTab;
@@ -977,7 +978,7 @@
       }
       if (!isset($assigned[$row][$col]) || $assigned[$row][$col] != 1) {
         $datamatrix[$row][$col] = $bit;
-        $assigned[$row][$col] = 1;
+        $assigned[$row][$col]   = 1;
       }
     }
     /**
@@ -992,13 +993,13 @@
      * @return array
      */
     static private function addFinderPattern($datamatrix, $rowsRegion, $colsRegion, $rowsRegionCW, $colsRegionCW) { // Add the finder pattern
-      $totalRowsCW = ($rowsRegionCW + 2) * $rowsRegion;
-      $totalColsCW = ($colsRegionCW + 2) * $colsRegion;
-      $datamatrixTemp = array();
+      $totalRowsCW       = ($rowsRegionCW + 2) * $rowsRegion;
+      $totalColsCW       = ($colsRegionCW + 2) * $colsRegion;
+      $datamatrixTemp    = array();
       $datamatrixTemp[0] = array_fill(0, $totalColsCW + 2, 0);
       for ($i = 0; $i < $totalRowsCW; $i++) {
-        $datamatrixTemp[$i + 1] = array();
-        $datamatrixTemp[$i + 1][0] = 0;
+        $datamatrixTemp[$i + 1]                   = array();
+        $datamatrixTemp[$i + 1][0]                = 0;
         $datamatrixTemp[$i + 1][$totalColsCW + 1] = 0;
         for ($j = 0; $j < $totalColsCW; $j++) {
           if ($i % ($rowsRegionCW + 2) == 0) {
@@ -1050,23 +1051,23 @@
      * @return array
      */
     static public function getDigit($text, $rectangular) {
-      $dataCodeWords = self::encodeDataCodeWordsASCII($text); // Code the text in the ASCII mode
-      $dataCWCount = count($dataCodeWords);
-      $index = self::selectIndex($dataCWCount, $rectangular); // Select the index for the data tables
-      $totalDataCWCount = self::$dataCWCount[$index]; // Number of data CW
-      $solomonCWCount = self::$solomonCWCount[$index]; // Number of Reed Solomon CW
-      $totalCWCount = $totalDataCWCount + $solomonCWCount; // Number of CW
-      $rowsTotal = self::$lengthRows[$index]; // Size of symbol
-      $colsTotal = self::$lengthCols[$index];
-      $rowsRegion = self::$regionRows[$index]; // Number of region
-      $colsRegion = self::$regionCols[$index];
-      $rowsRegionCW = self::$dataRegionRows[$index];
-      $colsRegionCW = self::$dataRegionCols[$index];
+      $dataCodeWords     = self::encodeDataCodeWordsASCII($text); // Code the text in the ASCII mode
+      $dataCWCount       = count($dataCodeWords);
+      $index             = self::selectIndex($dataCWCount, $rectangular); // Select the index for the data tables
+      $totalDataCWCount  = self::$dataCWCount[$index]; // Number of data CW
+      $solomonCWCount    = self::$solomonCWCount[$index]; // Number of Reed Solomon CW
+      $totalCWCount      = $totalDataCWCount + $solomonCWCount; // Number of CW
+      $rowsTotal         = self::$lengthRows[$index]; // Size of symbol
+      $colsTotal         = self::$lengthCols[$index];
+      $rowsRegion        = self::$regionRows[$index]; // Number of region
+      $colsRegion        = self::$regionCols[$index];
+      $rowsRegionCW      = self::$dataRegionRows[$index];
+      $colsRegionCW      = self::$dataRegionCols[$index];
       $rowsLengthMatrice = $rowsTotal - 2 * $rowsRegion; // Size of matrice data
       $colsLengthMatrice = $colsTotal - 2 * $colsRegion;
-      $blocks = self::$interleavedBlocks[$index]; // Number of Reed Solomon blocks
-      $errorBlocks = $solomonCWCount / $blocks;
-      $dataBlocks = $totalDataCWCount / $blocks;
+      $blocks            = self::$interleavedBlocks[$index]; // Number of Reed Solomon blocks
+      $errorBlocks       = $solomonCWCount / $blocks;
+      $dataBlocks        = $totalDataCWCount / $blocks;
       self::addPadCW($dataCodeWords, $dataCWCount, $totalDataCWCount); // Add codewords pads
       $g = self::calculSolFactorTable($errorBlocks); // Calculate correction coefficients
       self::addReedSolomonCW($solomonCWCount, $g, $totalDataCWCount, $dataCodeWords, $blocks); // Add Reed Solomon codewords
@@ -1075,17 +1076,17 @@
         $codeWordsBits[$i] = self::getBits($dataCodeWords[$i]);
       }
       $datamatrix = array_fill(0, $colsLengthMatrice, array());
-      $assigned = array_fill(0, $colsLengthMatrice, array());
+      $assigned   = array_fill(0, $colsLengthMatrice, array());
       // Add the bottom-right corner if needed
       if ((($rowsLengthMatrice * $colsLengthMatrice) % 8) == 4) {
         $datamatrix[$rowsLengthMatrice - 2][$colsLengthMatrice - 2] = 1;
         $datamatrix[$rowsLengthMatrice - 1][$colsLengthMatrice - 1] = 1;
         $datamatrix[$rowsLengthMatrice - 1][$colsLengthMatrice - 2] = 0;
         $datamatrix[$rowsLengthMatrice - 2][$colsLengthMatrice - 1] = 0;
-        $assigned[$rowsLengthMatrice - 2][$colsLengthMatrice - 2] = 1;
-        $assigned[$rowsLengthMatrice - 1][$colsLengthMatrice - 1] = 1;
-        $assigned[$rowsLengthMatrice - 1][$colsLengthMatrice - 2] = 1;
-        $assigned[$rowsLengthMatrice - 2][$colsLengthMatrice - 1] = 1;
+        $assigned[$rowsLengthMatrice - 2][$colsLengthMatrice - 2]   = 1;
+        $assigned[$rowsLengthMatrice - 1][$colsLengthMatrice - 1]   = 1;
+        $assigned[$rowsLengthMatrice - 1][$colsLengthMatrice - 2]   = 1;
+        $assigned[$rowsLengthMatrice - 2][$colsLengthMatrice - 1]   = 1;
       }
       // Put the codewords into the matrix
       self::next(0, $rowsLengthMatrice, $colsLengthMatrice, $codeWordsBits, $datamatrix, $assigned);

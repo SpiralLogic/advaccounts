@@ -10,8 +10,6 @@
   namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow, Cache;
 
-
-
   /**
 
    */
@@ -88,11 +86,11 @@
      */
     protected function __construct($config) {
       $this->useConfig = class_exists('Config');
-      $this->useCache = class_exists('Cache');
+      $this->useCache  = class_exists('Cache');
       if (!$config && !$this->useConfig) {
         throw new DBException('No database configuration provided');
       }
-      $config = $config ? : \Config::get('db.default');
+      $config        = $config ? : \Config::get('db.default');
       static::$debug = FALSE;
       $this->_connect($config);
       $this->default_connection = $config['name'];
@@ -204,7 +202,7 @@
       $value = trim($value);
       if (!isset($value) || is_null($value) || $value === "") {
         $value = ($null) ? 'NULL' : '';
-        $type = \PDO::PARAM_NULL;
+        $type  = \PDO::PARAM_NULL;
       }
       elseif (is_int($value)) {
         $type = \PDO::PARAM_INT;
@@ -231,13 +229,13 @@
      * @return bool|\PDOStatement
      */
     protected function _prepare($sql, $debug = FALSE) {
-      static::$debug = $debug;
+      static::$debug     = $debug;
       static::$errorInfo = FALSE;
-      static::$errorSql = $sql;
-      $data = static::$data;
+      static::$errorSql  = $sql;
+      $data              = static::$data;
       try {
         $prepared = $this->conn->prepare($sql);
-        $params = substr_count($sql, '?');
+        $params   = substr_count($sql, '?');
         if ($data && $params > count($data)) {
           throw new DBException('There are more escaped values than there are placeholders!!');
         }
@@ -309,8 +307,8 @@
      */
     static public function select($columns = NULL) {
       static::$prepared = NULL;
-      $columns = (is_string($columns)) ? func_get_args() : array();
-      static::$query = new Query_Select($columns, static::i());
+      $columns          = (is_string($columns)) ? func_get_args() : array();
+      static::$query    = new Query_Select($columns, static::i());
       return static::$query;
     }
     /**
@@ -322,7 +320,7 @@
      */
     static public function update($into) {
       static::$prepared = NULL;
-      static::$query = new Query_Update($into, static::i());
+      static::$query    = new Query_Update($into, static::i());
       return static::$query;
     }
     /**
@@ -334,7 +332,7 @@
      */
     static public function insert($into) {
       static::$prepared = NULL;
-      static::$query = new Query_Insert($into, static::i());
+      static::$query    = new Query_Insert($into, static::i());
       return static::$query;
     }
     /**
@@ -346,7 +344,7 @@
      */
     static public function delete($into) {
       static::$prepared = NULL;
-      static::$query = new Query_Delete($into, static::i());
+      static::$query    = new Query_Delete($into, static::i());
       return static::$query;
     }
     /***
@@ -448,9 +446,9 @@
      * @return bool
      */
     static public function free_result() {
-      $result = (static::$prepared) ? static::$prepared->closeCursor() : FALSE;
+      $result           = (static::$prepared) ? static::$prepared->closeCursor() : FALSE;
       static::$errorSql = static::$errorInfo = static::$prepared = NULL;
-      static::$data = array();
+      static::$data     = array();
       return $result;
     }
     /**
@@ -469,7 +467,7 @@
       }
       $rows = (static::i()->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : FALSE;
       if ($rows !== FALSE) {
-        return (int)$rows;
+        return (int) $rows;
       }
       $rows = static::query($sql)->rowCount();
       if (static::$i->useCache) {
@@ -584,8 +582,8 @@
      */
     public function exec($sql, $type, $data = array()) {
       static::$errorInfo = FALSE;
-      static::$errorSql = $sql;
-      static::$data = $data;
+      static::$errorSql  = $sql;
+      static::$data      = $data;
       if ($data && is_array(reset($data))) {
         static::$queryString = static::placeholderValues(static::$errorSql, $data);
       }
@@ -666,7 +664,7 @@
      * @return bool
      */
     protected function _error(\Exception $e, $msg = FALSE) {
-      $data = static::$data;
+      $data         = static::$data;
       static::$data = array();
       if ($data && is_array(reset($data))) {
         static::$errorSql = static::placeholderValues(static::$errorSql, $data);
@@ -675,9 +673,9 @@
         static::$errorSql = static::namedValues(static::$errorSql, $data);
       }
       static::$queryString = static::$errorSql;
-      static::$errorInfo = $error = $e->errorInfo;
-      $error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-      $error['message'] = ($msg != FALSE) ? $msg : $e->getMessage();
+      static::$errorInfo   = $error = $e->errorInfo;
+      $error['debug']      = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
+      $error['message']    = ($msg != FALSE) ? $msg : $e->getMessage();
       /** @noinspection PhpUndefinedMethodInspection */
       if (is_a($this->conn, '\PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
         $this->conn->rollBack();

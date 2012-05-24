@@ -115,7 +115,8 @@
      * @param null $default
      *
      * @return bool|int|null|string
-     */public static function post_global($var, $type, $default = NULL) {
+     */
+    public static function post_global($var, $type, $default = NULL) {
       $result = static::_isset($_POST, $var, $type, FALSE);
       if ($result === FALSE) {
         $result = static::_get_global($var, $type, $default);
@@ -265,16 +266,16 @@
      * @return bool|int|null|string
      */
     static protected function _isset(array $array, $var, $type = NULL, $default = NULL) {
- //     if ($type!==NULL&&$default===NULL) $default=$type;
+      //     if ($type!==NULL&&$default===NULL) $default=$type;
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {
         case self::NUMERIC:
-          if ($value===NULL || !is_numeric($value)) {
+          if ($value === NULL || !is_numeric($value)) {
             return ($default === NULL) ? self::$default_number : $default;
           }
           return ($value === self::$default_number) ? TRUE : $value + 0;
         case self::STRING:
-          if ($value===NULL || !is_string($value)) {
+          if ($value === NULL || !is_string($value)) {
             return ($default === NULL) ? self::$default_string : $default;
           }
       }

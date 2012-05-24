@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-   *
+
    */
   class Files {
 
@@ -44,11 +44,11 @@
         $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
         // "local file header" segment
         $unc_len = strlen($fileData);
-        $crc = crc32($fileData);
-        $zdata = gzcompress($fileData);
+        $crc     = crc32($fileData);
+        $zdata   = gzcompress($fileData);
         // extend stored file name with suffix
         // needed for decoding (because of crc bug)
-        $name_suffix = substr($zdata, -4, 4);
+        $name_suffix  = substr($zdata, -4, 4);
         $name_suffix2 = "_";
         for ($i = 0; $i < 4; $i++) {
           $name_suffix2 .= sprintf("%03d", ord($name_suffix[$i]));
@@ -59,16 +59,16 @@
         $c_len = strlen($zdata);
         // dos time
         $timearray = getdate($zip);
-        $dostime = (($timearray['year'] - 1980) << 25) | ($timearray['mon'] << 21) | ($timearray['mday'] << 16) |
+        $dostime   = (($timearray['year'] - 1980) << 25) | ($timearray['mon'] << 21) | ($timearray['mday'] << 16) |
           ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
-        $dtime = dechex($dostime);
-        $hexdtime = "\x" . $dtime[6] . $dtime[7] . "\x" . $dtime[4] . $dtime[5] . "\x" . $dtime[2] . $dtime[3] . "\x" .
+        $dtime     = dechex($dostime);
+        $hexdtime  = "\x" . $dtime[6] . $dtime[7] . "\x" . $dtime[4] . $dtime[5] . "\x" . $dtime[2] . $dtime[3] . "\x" .
           $dtime[0] . $dtime[1];
         // ver needed to extract, gen purpose bit flag, compression method, last mod time and date
         $sub1 = "\x14\x00\x00\x00\x08\x00" . $hexdtime;
         // crc32, compressed filesize, uncompressed filesize
         $sub2 = pack('V', $crc) . pack('V', $c_len) . pack('V', $unc_len);
-        $fr = "\x50\x4b\x03\x04" . $sub1 . $sub2;
+        $fr   = "\x50\x4b\x03\x04" . $sub1 . $sub2;
         // length of filename, extra field length
         $fr .= pack('v', strlen($name)) . pack('v', 0);
         $fr .= $name;
@@ -118,7 +118,7 @@
      */
     static public function convert_size($size) {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-      $i = (int) floor(log($size, 1024));
+      $i    = (int) floor(log($size, 1024));
       return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
     /**
