@@ -11,7 +11,7 @@
     'server' => 'mx2.sorijen.net.au', //
     'port' => 25, //
     'username' => 'sales@advancedroadsigns.com.au', //
-    'password' => '14ntigone24ntigone', //
+    'password' => '1Ant1berg', //
     'from_email' => 'sales@advancedroadsigns.com.au', //
     'from_name' => 'Advanced Group Accounts', //
     'bcc' => 'sales@advancedroadsigns.com.au'
