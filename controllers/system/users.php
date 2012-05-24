@@ -37,7 +37,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }
@@ -83,17 +83,17 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing User
-      $myrow = Users::get($selected_id);
-      $_POST['id'] = $myrow["id"];
-      $_POST['user_id'] = $myrow["user_id"];
+      $myrow              = Users::get($selected_id);
+      $_POST['id']        = $myrow["id"];
+      $_POST['user_id']   = $myrow["user_id"];
       $_POST['real_name'] = $myrow["real_name"];
-      $_POST['phone'] = $myrow["phone"];
-      $_POST['email'] = $myrow["email"];
-      $_POST['Access'] = $myrow["role_id"];
-      $_POST['language'] = $myrow["language"];
-      $_POST['profile'] = $myrow["print_profile"];
+      $_POST['phone']     = $myrow["phone"];
+      $_POST['email']     = $myrow["email"];
+      $_POST['Access']    = $myrow["role_id"];
+      $_POST['language']  = $myrow["language"];
+      $_POST['profile']   = $myrow["print_profile"];
       $_POST['rep_popup'] = $myrow["rep_popup"];
-      $_POST['pos'] = $myrow["pos"];
+      $_POST['pos']       = $myrow["pos"];
     }
     hidden('selected_id', $selected_id);
     hidden('user_id');
@@ -102,10 +102,10 @@
   }
   else { //end of if $selected_id only do the else when a new record is being entered
     text_row(_("User Login:"), "user_id", NULL, 22, 20);
-    $_POST['language'] = User::language();
-    $_POST['profile'] = User::print_profile();
+    $_POST['language']  = User::language();
+    $_POST['profile']   = User::print_profile();
     $_POST['rep_popup'] = User::rep_popup();
-    $_POST['pos'] = User::pos();
+    $_POST['pos']       = User::pos();
   }
   $_POST['password'] = "";
   password_row(_("Password:"), 'password', $_POST['password']);

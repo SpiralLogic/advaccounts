@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Tax {
 
     /***
@@ -77,7 +77,7 @@
       }
       // if array already read, then make a copy and use that
       $ret_tax_array = Tax_Groups::get_items_as_array($tax_group[0]);
-      $tax_array = Tax::get_all_for_item($stock_id, $ret_tax_array);
+      $tax_array     = Tax::get_all_for_item($stock_id, $ret_tax_array);
       // if no exemptions or taxgroup is empty, then no included/excluded taxes
       if ($tax_array == NULL) {
         return 0;
@@ -172,7 +172,7 @@
           }
         }
         if (!$skip) {
-          $index = $tax_group_item['tax_type_id'];
+          $index                 = $tax_group_item['tax_type_id'];
           $ret_tax_array[$index] = $tax_group_item;
         }
       }
@@ -273,7 +273,7 @@
      */
     static public function is_account($account_code) {
       $sql
-        = "SELECT id FROM tax_types WHERE
+              = "SELECT id FROM tax_types WHERE
 		sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
       $result = DB::query($sql, "checking account is tax account");
       if (DB::num_rows($result) > 0) {

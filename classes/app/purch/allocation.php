@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Purch_Allocation {
+
     /**
      * @static
      *
@@ -21,7 +22,7 @@
     static public function add($amount, $trans_type_from, $trans_no_from,
                                $trans_type_to, $trans_no_to, $date_) {
       $date = Dates::date2sql($date_);
-      $sql = "INSERT INTO creditor_allocations (
+      $sql  = "INSERT INTO creditor_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)
 		VALUES (" . DB::escape($amount) . ", '$date', "
@@ -47,11 +48,11 @@
      * @return mixed
      */
     static public function get_balance($trans_type, $trans_no) {
-      $sql = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
+      $sql    = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
 		FROM creditor_trans WHERE trans_no="
         . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
       $result = DB::query($sql, "calculate the allocation");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -85,7 +86,7 @@
      */
     static public function clear($type, $type_no, $date = "") {
       // clear any allocations for this transaction
-      $sql = "SELECT * FROM creditor_allocations
+      $sql    = "SELECT * FROM creditor_allocations
 		WHERE (trans_type_from=$type AND trans_no_from=$type_no)
 		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
       $result = DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");

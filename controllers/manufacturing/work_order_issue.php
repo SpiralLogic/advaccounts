@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
@@ -18,14 +17,13 @@
     Page::footer_exit();
   }
 
-
   function handle_new_order() {
     if (isset($_SESSION['issue_items'])) {
       $_SESSION['issue_items']->clear_items();
       unset ($_SESSION['issue_items']);
     }
     Session_register("issue_items");
-    $_SESSION['issue_items'] = new Item_Order(28);
+    $_SESSION['issue_items']           = new Item_Order(28);
     $_SESSION['issue_items']->order_id = $_GET['trans_no'];
   }
 

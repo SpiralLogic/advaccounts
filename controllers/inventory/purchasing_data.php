@@ -85,7 +85,7 @@
     echo "<hr></div>";
   }
   else {
-    hidden('stock_id', null,true);
+    hidden('stock_id', NULL, TRUE);
   }
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag = WO::get_mb_flag($_POST['stock_id']);
@@ -94,7 +94,7 @@
     JS::set_focus('stock_id');
   }
   else {
-    $sql = "SELECT purch_data.*,suppliers.name," . "suppliers.curr_code
+    $sql    = "SELECT purch_data.*,suppliers.name," . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($_POST['stock_id']);
@@ -139,17 +139,17 @@
   }
   $dec2 = 6;
   if ($Mode == MODE_EDIT) {
-    $sql = "SELECT purch_data.*,suppliers.name FROM purch_data
+    $sql                           = "SELECT purch_data.*,suppliers.name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
-    $result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-    $myrow = DB::fetch($result);
-    $name = $myrow["name"];
-    $_POST['price'] = Num::price_decimal($myrow["price"], $dec2);
-    $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
+    $result                        = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+    $myrow                         = DB::fetch($result);
+    $name                          = $myrow["name"];
+    $_POST['price']                = Num::price_decimal($myrow["price"], $dec2);
+    $_POST['suppliers_uom']        = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
-    $_POST['conversion_factor'] = Num::exrate_format($myrow["conversion_factor"]);
+    $_POST['conversion_factor']    = Num::exrate_format($myrow["conversion_factor"]);
   }
   Display::br();
   hidden('selected_id', $selected_id);

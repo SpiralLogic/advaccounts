@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $js = "";
   Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
@@ -40,7 +40,7 @@
    */
   function display_type($type, $typename, $from, $to, $convert, $drilldown) {
     global $levelptr, $k;
-    $dimension = $dimension2 = 0;
+    $dimension  = $dimension2 = 0;
     $acctstotal = 0;
     $typestotal = 0;
     //Get Accounts directly under this group/type
@@ -76,7 +76,7 @@
       }
       //START Patch#1 : Display only direct child types
       $acctype1 = GL_Type::get($type);
-      $parent1 = $acctype1["parent"];
+      $parent1  = $acctype1["parent"];
       if ($drilldown && $parent1 == $_POST["AccGrp"]
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
@@ -101,11 +101,11 @@
   }
 
   function display_balance_sheet() {
-    $from = Dates::begin_fiscalyear();
-    $to = $_POST['TransToDate'];
-    $dim = DB_Company::get_pref('use_dimension');
+    $from      = Dates::begin_fiscalyear();
+    $to        = $_POST['TransToDate'];
+    $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
-    $lconvert = $econvert = 1;
+    $lconvert  = $econvert = 1;
     if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {
       $drilldown = 1;
     } // Deeper Level
@@ -117,14 +117,14 @@
     if (!$drilldown) //Root Level
     {
       $equityclose = $lclose = $calculateclose = 0.0;
-      $parent = -1;
+      $parent      = -1;
       //Get classes for BS
       $classresult = GL_Class::get_all(FALSE, 1);
       while ($class = DB::fetch($classresult)) {
         $classclose = 0.0;
-        $convert = Systypes::get_class_type_convert($class["ctype"]);
-        $ctype = $class["ctype"];
-        $classname = $class["class_name"];
+        $convert    = Systypes::get_class_type_convert($class["ctype"]);
+        $ctype      = $class["ctype"];
+        $classname  = $class["class_name"];
         //Print class Name
         Table::sectionTitle($class["class_name"]);
         //Get Account groups/types under this group/type
@@ -174,11 +174,11 @@
     {
       //Level Pointer : Global variable defined in order to control display of root
       global $levelptr;
-      $levelptr = 0;
+      $levelptr    = 0;
       $accounttype = GL_Type::get($_POST["AccGrp"]);
-      $classid = $accounttype["class_id"];
-      $class = GL_Class::get($classid);
-      $convert = Systypes::get_class_type_convert($class["ctype"]);
+      $classid     = $accounttype["class_id"];
+      $class       = GL_Class::get($classid);
+      $convert     = Systypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]));
       $classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, BASE_URL);

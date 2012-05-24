@@ -17,8 +17,8 @@
     $trans_id = $_POST["trans_no"];
   }
   // 3 different queries to get the information - what a JOKE !!!!
-  $myrow = Debtor_Trans::get($trans_id, ST_SALESINVOICE);
-  $branch = Sales_Branch::get($myrow["branch_id"]);
+  $myrow       = Debtor_Trans::get($trans_id, ST_SALESINVOICE);
+  $branch      = Sales_Branch::get($myrow["branch_id"]);
   $sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
   Table::start('tablestyle2 width90');
   echo "<tr class='tablerowhead top'><th colspan=6>";
@@ -57,7 +57,7 @@
       _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
     );
     Table::header($th);
-    $k = 0; //row colour counter
+    $k         = 0; //row colour counter
     $sub_total = 0;
     while ($myrow2 = $result->fetch()) {
       if ($myrow2["quantity"] == 0) {
@@ -100,7 +100,7 @@
     return;
   }
   $customer = new Debtor($myrow['debtor_id']);
-  $emails = $customer->getEmailAddresses();
+  $emails   = $customer->getEmailAddresses();
   Display::submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
   Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), TRUE, ST_SALESINVOICE, 'EmailLink', NULL, $emails, 1);
   Page::end();

@@ -1,21 +1,20 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 
   if (isset($_POST['submit']) && can_process()) {
     $_POST['allow_negative_stock'] = check_value('allow_negative_stock');
-    $_POST['po_over_receive'] = Validation::input_num('po_over_receive');
-    $_POST['po_over_charge'] = Validation::input_num('po_over_charge');
-    $_POST['accumulate_shipping'] = check_value('accumulate_shipping');
+    $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
+    $_POST['po_over_charge']       = Validation::input_num('po_over_charge');
+    $_POST['accumulate_shipping']  = check_value('accumulate_shipping');
     DB_Company::update_gl_setup($_POST);
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */
@@ -23,34 +22,34 @@
   //Table::startOuter("class='tablestyle'");
   Table::startOuter('tablestyle2');
   Table::section(1);
-  $myrow = DB_Company::get_prefs();
-  $_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];
-  $_POST['profit_loss_year_act'] = $myrow["profit_loss_year_act"];
-  $_POST['debtors_act'] = $myrow["debtors_act"];
-  $_POST['creditors_act'] = $myrow["creditors_act"];
-  $_POST['freight_act'] = $myrow["freight_act"];
-  $_POST['pyt_discount_act'] = $myrow["pyt_discount_act"];
-  $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
-  $_POST['bank_charge_act'] = $myrow["bank_charge_act"];
-  $_POST['default_sales_act'] = $myrow["default_sales_act"];
+  $myrow                               = DB_Company::get_prefs();
+  $_POST['retained_earnings_act']      = $myrow["retained_earnings_act"];
+  $_POST['profit_loss_year_act']       = $myrow["profit_loss_year_act"];
+  $_POST['debtors_act']                = $myrow["debtors_act"];
+  $_POST['creditors_act']              = $myrow["creditors_act"];
+  $_POST['freight_act']                = $myrow["freight_act"];
+  $_POST['pyt_discount_act']           = $myrow["pyt_discount_act"];
+  $_POST['exchange_diff_act']          = $myrow["exchange_diff_act"];
+  $_POST['bank_charge_act']            = $myrow["bank_charge_act"];
+  $_POST['default_sales_act']          = $myrow["default_sales_act"];
   $_POST['default_sales_discount_act'] = $myrow["default_sales_discount_act"];
   $_POST['default_prompt_payment_act'] = $myrow["default_prompt_payment_act"];
-  $_POST['default_inventory_act'] = $myrow["default_inventory_act"];
-  $_POST['default_credit_limit'] = $myrow["default_credit_limit"];
-  $_POST['default_cogs_act'] = $myrow["default_cogs_act"];
-  $_POST['default_adj_act'] = $myrow["default_adj_act"];
-  $_POST['default_inv_sales_act'] = $myrow['default_inv_sales_act'];
-  $_POST['default_assembly_act'] = $myrow['default_assembly_act'];
-  $_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
-  $_POST['po_over_receive'] = Num::percent_format($myrow['po_over_receive']);
-  $_POST['po_over_charge'] = Num::percent_format($myrow['po_over_charge']);
-  $_POST['past_due_days'] = $myrow['past_due_days'];
-  $_POST['default_credit_limit'] = $myrow['default_credit_limit'];
-  $_POST['legal_text'] = $myrow['legal_text'];
-  $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
+  $_POST['default_inventory_act']      = $myrow["default_inventory_act"];
+  $_POST['default_credit_limit']       = $myrow["default_credit_limit"];
+  $_POST['default_cogs_act']           = $myrow["default_cogs_act"];
+  $_POST['default_adj_act']            = $myrow["default_adj_act"];
+  $_POST['default_inv_sales_act']      = $myrow['default_inv_sales_act'];
+  $_POST['default_assembly_act']       = $myrow['default_assembly_act'];
+  $_POST['allow_negative_stock']       = $myrow['allow_negative_stock'];
+  $_POST['po_over_receive']            = Num::percent_format($myrow['po_over_receive']);
+  $_POST['po_over_charge']             = Num::percent_format($myrow['po_over_charge']);
+  $_POST['past_due_days']              = $myrow['past_due_days'];
+  $_POST['default_credit_limit']       = $myrow['default_credit_limit'];
+  $_POST['legal_text']                 = $myrow['legal_text'];
+  $_POST['accumulate_shipping']        = $myrow['accumulate_shipping'];
   $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
-  $_POST['default_dim_required'] = $myrow['default_dim_required'];
-  $_POST['default_delivery_required'] = $myrow['default_delivery_required'];
+  $_POST['default_dim_required']       = $myrow['default_dim_required'];
+  $_POST['default_delivery_required']  = $myrow['default_delivery_required'];
   Table::sectionTitle(_("General GL"));
   // Not used in FA2.0.
   //GL_UI::all_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);

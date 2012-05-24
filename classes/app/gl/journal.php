@@ -1,14 +1,15 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   class GL_Journal {
+
     /**
      * @static
      *
@@ -80,7 +81,7 @@
         $th[] = '';
       }
       Table::header($th);
-      $k = 0;
+      $k  = 0;
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
@@ -137,20 +138,20 @@
       $id = find_submit(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         // Modifying an existing row
-        $item = $order->gl_items[$Index];
-        $_POST['code_id'] = $item->code_id;
-        $_POST['dimension_id'] = $item->dimension_id;
+        $item                   = $order->gl_items[$Index];
+        $_POST['code_id']       = $item->code_id;
+        $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
         if ($item->amount > 0) {
-          $_POST['AmountDebit'] = Num::price_format($item->amount);
+          $_POST['AmountDebit']  = Num::price_format($item->amount);
           $_POST['AmountCredit'] = "";
         }
         else {
-          $_POST['AmountDebit'] = "";
+          $_POST['AmountDebit']  = "";
           $_POST['AmountCredit'] = Num::price_format(abs($item->amount));
         }
         $_POST['description'] = $item->description;
-        $_POST['LineMemo'] = $item->reference;
+        $_POST['LineMemo']    = $item->reference;
         hidden('Index', $id);
         $skip_bank = !User::i()->can_access(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', NULL, $skip_bank, TRUE);
@@ -164,13 +165,13 @@
       }
       else {
         // Adding a new row
-        $_POST['AmountDebit'] = ''; //Num::price_format(0);
-        $_POST['AmountCredit'] = ''; //Num::price_format(0);
-        $_POST['dimension_id'] = 0;
+        $_POST['AmountDebit']   = ''; //Num::price_format(0);
+        $_POST['AmountCredit']  = ''; //Num::price_format(0);
+        $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         //$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
         $_POST['_code_id_edit'] = "";
-        $_POST['code_id'] = "";
+        $_POST['code_id']       = "";
         if (isset($_POST['_code_id_update'])) {
           Ajax::i()->activate('code_id');
         }
@@ -269,11 +270,11 @@
      * @return string
      */
     static public function write($order, $reverse, $use_transaction = TRUE) {
-      $date_ = $order->tran_date;
-      $ref = $order->reference;
-      $memo_ = $order->memo_;
+      $date_      = $order->tran_date;
+      $ref        = $order->reference;
+      $memo_      = $order->memo_;
       $trans_type = $order->trans_type;
-      $new = $order->order_id == 0;
+      $new        = $order->order_id == 0;
       if ($new) {
         $order->order_id = SysTypes::get_next_trans_no($trans_type);
       }
@@ -306,7 +307,7 @@
       if ($reverse) {
         //$reversingDate = date(User::date_display(),
         //	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-        $reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
+        $reversingDate    = Dates::begin_month(Dates::add_months($date_, 1));
         $trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
         foreach ($order->gl_items as $journal_item) {
           $is_bank_to = Bank_Account::is($journal_item->code_id);

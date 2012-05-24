@@ -211,9 +211,9 @@
       HTML::br()->p(array('class' => 'center'));
       UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:600px'))->br;
       UI::button('EmailButton' . $type_no, $link_text, array(
-                                                            'style'    => 'margin:20px',
-                                                            'data-url' => $url
-                                                       ))->p;
+        'style'    => 'margin:20px',
+        'data-url' => $url
+      ))->p;
       $js = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
@@ -280,10 +280,10 @@ JS;
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
       HTML::setReturn(TRUE);
       UI::button(FALSE, $text, array(
-                                    'class'        => 'button email-button',
-                                    'data-emailid' => $id . '-' . $type . '-' .
-                                      $type_no
-                               ));
+        'class'        => 'button email-button',
+        'data-emailid' => $id . '-' . $type . '-' .
+          $type_no
+      ));
       return HTML::setReturn(FALSE);
     }
   }

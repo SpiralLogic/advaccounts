@@ -9,7 +9,7 @@
    **/
   class userPrefs {
 
-  use \ADV\Core\Traits\SetFromArray;
+    use \ADV\Core\Traits\SetFromArray;
 
     /**
      * @var Array|mixed
@@ -97,9 +97,9 @@
     function __construct($user = NULL) {
       if ($user == NULL) {
         // set default values, used before login
-        $this->date_sep = Config::get('date.ui_separator');
+        $this->date_sep    = Config::get('date.ui_separator');
         $this->date_format = Config::get('date.ui_format');
-        $this->language = Config::get('default.lang');
+        $this->language    = Config::get('default.lang');
         $this->startup_tab = Config::get('apps.default');
       }
       else {
@@ -154,7 +154,7 @@
      */
     function date_display() {
       $date_seps = Config::get('date.separators');
-      $sep = $date_seps[$this->date_sep];
+      $sep       = $date_seps[$this->date_sep];
       if ($this->date_format == 0) {
         return "m" . $sep . "d" . $sep . "Y";
       }
@@ -215,5 +215,4 @@
     function start_up_tab() {
       return $this->startup_tab;
     }
-
   }

@@ -350,6 +350,7 @@
   }
 
   class Config extends ADV\Core\Config {
+
     /**
      * @static
      * @return ADV\Core\Config

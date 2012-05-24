@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_Type {
+
     /**
      * @static
      *
@@ -72,7 +73,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT * FROM chart_types WHERE id = " . DB::escape($id);
+      $sql    = "SELECT * FROM chart_types WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get account type");
       return DB::fetch($result);
     }
@@ -84,9 +85,9 @@
      * @return mixed
      */
     static public function get_name($id) {
-      $sql = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
+      $sql    = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get account type");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**

@@ -326,7 +326,7 @@
 				/** @noinspection PhpIncludeInspection */
 				$d->_keys = include $php_domain;
 			}
-			$this->_domains[] = &$d;
+			$this->_domains[] = $d;
 			return 0;
 		}
 

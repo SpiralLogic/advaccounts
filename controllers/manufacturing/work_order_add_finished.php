@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"), SA_MANUFRECEIVE);
@@ -15,7 +14,7 @@
     $_POST['selected_id'] = $_GET['trans_no'];
   }
   if (isset($_GET[ADDED_ID])) {
-    $id = $_GET[ADDED_ID];
+    $id    = $_GET[ADDED_ID];
     $stype = ST_WORKORDER;
     Event::success(_("The manufacturing process has been entered."));
     Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
@@ -69,7 +68,7 @@
     // if unassembling we need to check the qoh
     if (($_POST['ProductionType'] == 0) && !DB_Company::get_pref('allow_negative_stock')) {
       $wo_details = WO::get($_POST['selected_id']);
-      $qoh = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
+      $qoh        = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
       if (-Validation::input_num('quantity') + $qoh < 0) {
         Event::error(_("The unassembling cannot be processed because there is insufficient stock."));
         JS::set_focus('quantity');
@@ -78,7 +77,7 @@
     }
     // if production we need to check the qoh of the wo requirements
     if (($_POST['ProductionType'] == 1) && !DB_Company::get_pref('allow_negative_stock')) {
-      $err = FALSE;
+      $err    = FALSE;
       $result = WO_Requirements::get($_POST['selected_id']);
       while ($row = DB::fetch($result)) {
         if ($row['mb_flag'] == 'D') // service, non stock

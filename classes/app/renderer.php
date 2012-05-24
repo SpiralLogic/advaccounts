@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Renderer {
 
     public function menu() {
@@ -14,11 +14,11 @@
       $application = ADVAccounting::i();
       echo '<ul class="menu" id="topmenu">';
       foreach ($application->applications as $app) {
-        $acc = Display::access_string($app->name);
+        $acc         = Display::access_string($app->name);
         $selectedapp = $application->get_selected();
         echo "<li " . ($selectedapp->id == $app->id ? "class='active' " : "") . ">";
         if ($app->direct) {
-          echo "<a href='/".ltrim($app->direct,'/')."'$acc[1]>" . $acc[0] . "</a></li>\n";
+          echo "<a href='/" . ltrim($app->direct, '/') . "'$acc[1]>" . $acc[0] . "</a></li>\n";
         }
         else {
           echo "<a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";

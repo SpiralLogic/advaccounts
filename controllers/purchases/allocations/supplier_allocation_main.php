@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
@@ -21,7 +20,7 @@
   echo "<br>";
   check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
   echo "</div><br><br>";
-  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
+  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
     unset($_POST['supplier_id']);
   }
@@ -89,17 +88,17 @@
     return $row['settled'] == 1;
   }
 
-  $sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
+  $sql  = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
   $cols = array(
     _("Transaction Type") => array('fun' => 'systype_name'),
-    _("#") => array('fun' => 'trans_view'),
+    _("#")                => array('fun' => 'trans_view'),
     _("Reference"),
-    _("Date") => array( 'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc' ),
-    _("Supplier") => array('ord' => ''),
-    _("Currency") => array('align' => 'center'),
-    _("Total") => array( 'align' => 'right', 'fun' => 'amount_total'),
-    _("Left to Allocate") => array( 'align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left' ),
-    array( 'insert' => TRUE, 'fun' => 'alloc_link' )
+    _("Date")             => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Supplier")         => array('ord' => ''),
+    _("Currency")         => array('align' => 'center'),
+    _("Total")            => array('align' => 'right', 'fun' => 'amount_total'),
+    _("Left to Allocate") => array('align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left'),
+    array('insert' => TRUE, 'fun' => 'alloc_link')
   );
   if (isset($_POST['customer_id'])) {
     $cols[_("Supplier")] = 'skip';

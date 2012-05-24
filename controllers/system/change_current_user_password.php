@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
   /**
@@ -37,7 +37,7 @@
         Event::warning(_("Password cannot be changed in demo mode."));
       }
       else {
-        $auth = new Auth(User::i()->username);
+        $auth  = new Auth(User::i()->username);
         $check = $auth->checkPasswordStrength($_POST['password']);
         if ($check['error'] > 0) {
           Event::error($check['text']);

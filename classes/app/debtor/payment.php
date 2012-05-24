@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,6 +14,7 @@
 
    */
   class Debtor_Payment {
+
     /**
      * @static
      *
@@ -35,8 +35,8 @@
      */
     static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
       DB::begin();
-      $company_record = DB_Company::get_prefs();
-      $payment_no = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
+      $company_record  = DB_Company::get_prefs();
+      $payment_no      = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
         DB_Comments::delete(ST_CUSTPAYMENT, $trans_no);
@@ -48,13 +48,13 @@
       /* Bank account entry first */
       $total += Debtor_TransDetail::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_, $bank_gl_account, 0, 0, $amount - $charge, $customer_id, "Cannot insert a GL transaction for the bank account debit", $rate);
       if ($branch_id != ANY_NUMERIC) {
-        $branch_data = Sales_Branch::get_accounts($branch_id);
-        $debtors_account = $branch_data["receivables_account"];
+        $branch_data      = Sales_Branch::get_accounts($branch_id);
+        $debtors_account  = $branch_data["receivables_account"];
         $discount_account = $branch_data["payment_discount_account"];
-        $tax_group = Tax_Groups::get($branch_data["payment_discount_account"]);
+        $tax_group        = Tax_Groups::get($branch_data["payment_discount_account"]);
       }
       else {
-        $debtors_account = $company_record["debtors_act"];
+        $debtors_account  = $company_record["debtors_act"];
         $discount_account = $company_record["default_prompt_payment_act"];
       }
       if (($discount + $amount) != 0) {
@@ -122,12 +122,12 @@
       echo "<td>\n";
       $allocs = array(
         ALL_TEXT => _("All Types"),
-        '1' => _("Sales Invoices"),
-        '2' => _("Overdue Invoices"),
-        '3' => _("Payments"),
-        '4' => _("Credit Notes"),
-        '5' => _("Delivery Notes"),
-        '6' => _("Invoices Only")
+        '1'      => _("Sales Invoices"),
+        '2'      => _("Overdue Invoices"),
+        '3'      => _("Payments"),
+        '4'      => _("Credit Notes"),
+        '5'      => _("Delivery Notes"),
+        '6'      => _("Invoices Only")
       );
       echo array_selector($name, $selected, $allocs);
       echo "</td>\n";
@@ -141,22 +141,22 @@
     static public function read_customer_data($customer_id, $refund = FALSE) {
       if ($refund == FALSE) {
         $myrow = Debtor::get_habit($customer_id);
-        $type = ST_CUSTPAYMENT;
+        $type  = ST_CUSTPAYMENT;
       }
       else {
         $sql
-          = "SELECT debtors.payment_discount,
+                = "SELECT debtors.payment_discount,
       			credit_status.dissallow_invoices
       			FROM debtors, credit_status
       			WHERE debtors.credit_status = credit_status.id
       				AND debtors.debtor_id = " . $customer_id;
         $result = DB::query($sql, "could not query customers");
-        $myrow = DB::fetch($result);
-        $type = ST_CUSTREFUND;
+        $myrow  = DB::fetch($result);
+        $type   = ST_CUSTREFUND;
       }
-      $_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+      $_POST['HoldAccount']      = $myrow["dissallow_invoices"];
       $_POST['payment_discount'] = $myrow["payment_discount"];
-      $_POST['ref'] = Ref::get_next($type);
+      $_POST['ref']              = Ref::get_next($type);
     }
     /**
      * @static

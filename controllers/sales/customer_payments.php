@@ -16,7 +16,7 @@
   $_POST['customer_id'] = Input::post_get('customer_id', FALSE);
   if (list_updated('branch_id') || !$_POST['customer_id']) {
     // when branch is selected via external editor also customer can change
-    $br = Sales_Branch::get(get_post('branch_id'));
+    $br                   = Sales_Branch::get(get_post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }
@@ -60,7 +60,7 @@
     if (check_value('createinvoice')) {
       Gl_Allocation::create_miscorder(new Debtor($_POST['customer_id']), $_POST['branch_id'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
     }
-    $payment_no = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
+    $payment_no                  = Debtor_Payment::add(0, $_POST['customer_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
     $_SESSION['alloc']->trans_no = $payment_no;
     $_SESSION['alloc']->write();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_no");

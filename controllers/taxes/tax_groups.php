@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Tax Groups"), SA_TAXGROUPS);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -62,14 +62,13 @@
     }
   }
 
-
   if ($Mode == MODE_DELETE) {
-      Tax_Groups::delete($selected_id);
+    Tax_Groups::delete($selected_id);
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -104,14 +103,14 @@
   if ($selected_id != -1) {
     //editing an existing status code
     if ($Mode == MODE_EDIT) {
-      $group = Tax_Groups::get($selected_id);
-      $_POST['name'] = $group["name"];
+      $group                 = Tax_Groups::get($selected_id);
+      $_POST['name']         = $group["name"];
       $_POST['tax_shipping'] = $group["tax_shipping"];
-      $items = Tax_Groups::get_for_item($selected_id);
-      $i = 0;
+      $items                 = Tax_Groups::get_for_item($selected_id);
+      $i                     = 0;
       while ($tax_item = DB::fetch($items)) {
         $_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-        $_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);
+        $_POST['rate' . $i]        = Num::percent_format($tax_item["rate"]);
         $i++;
       }
       while ($i < 5) {

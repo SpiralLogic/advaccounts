@@ -9,7 +9,7 @@
    **/
   class User {
 
-  use \ADV\Core\Traits\Hook;
+    use \ADV\Core\Traits\Hook;
 
     /***
      * @static
@@ -188,7 +188,7 @@
      * @param       $function
      * @param array $arguments
      */
-    public static function register_login($object, $function=null, $arguments = array()) {
+    public static function register_login($object, $function = NULL, $arguments = array()) {
       User::registerHook('login', $object, $function, $arguments);
     }
     /**
@@ -216,10 +216,10 @@
     }
     public static function addLog() {
       DB::insert('user_login_log')->values(array(
-                                                'user'    => static::i()->username,
-                                                'IP'      => Users::get_ip(),
-                                                'success' => 2
-                                           ))->exec();
+        'user'    => static::i()->username,
+        'IP'      => Users::get_ip(),
+        'success' => 2
+      ))->exec();
     }
     /**
      * @param $page_level

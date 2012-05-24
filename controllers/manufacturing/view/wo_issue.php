@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, TRUE);
@@ -51,8 +50,8 @@
       Table::start('tablestyle grid');
       $th = array(_("Component"), _("Quantity"), _("Units"));
       Table::header($th);
-      $j = 1;
-      $k = 0; //row colour counter
+      $j          = 1;
+      $k          = 0; //row colour counter
       $total_cost = 0;
       while ($myrow = DB::fetch($result)) {
 

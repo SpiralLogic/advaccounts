@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO {
 
     /**
@@ -24,7 +24,7 @@
      */
     static protected function load_stock_levels($location = '') {
       $date = Dates::date2sql(Dates::today());
-      $sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
+      $sql  = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
       if ($location != '') {
         $sql .= " AND loc_code = " . DB::escape($location);
       }
@@ -72,7 +72,7 @@
           $sql .= " AND loc_code = " . DB::escape($location);
         }
         $result = DB::query($sql, "Could not search bom");
-        $bom = array();
+        $bom    = array();
         // Even if we get no results, remember that fact
         $bom[] = array($stock_id, '', 0);
         while ($row = DB::fetch_row($result)) {
@@ -85,7 +85,7 @@
         $bom = static::$bom_list[$stock_id];
       }
       $len = count($bom);
-      $i = 0;
+      $i   = 0;
       while ($i < $len) {
         $row = $bom[$i];
         $i++;
@@ -111,7 +111,7 @@
      */
     static public function get_demand_asm_qty($stock_id, $location) {
       $demand_qty = 0.0;
-      $sql = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
+      $sql        = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
 				 AS Demmand
 				 FROM sales_order_details,
 						sales_orders,
@@ -153,7 +153,7 @@
       $qoo_result = DB::query($sql, "could not receive quantity on order for item");
       if (DB::num_rows($qoo_result) == 1) {
         $qoo_row = DB::fetch_row($qoo_result);
-        $qoo = $qoo_row[0];
+        $qoo     = $qoo_row[0];
       }
       else {
         $qoo = 0;
@@ -181,7 +181,7 @@
       $qoo_result = DB::query($sql, "could not receive quantity on order for item");
       if (DB::num_rows($qoo_result) == 1) {
         $qoo_row = DB::fetch_row($qoo_result);
-        $qoo = $qoo_row[0];
+        $qoo     = $qoo_row[0];
       }
       else {
         $qoo = 0.0;
@@ -211,7 +211,7 @@
      * @return int
      */
     static public function get_mb_flag($stock_id) {
-      $sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
+      $sql    = "SELECT mb_flag FROM stock_master WHERE stock_id = "
         . DB::escape($stock_id);
       $result = DB::query($sql, "retreive mb_flag from item");
       if (DB::num_rows($result) == 0) {
@@ -265,8 +265,8 @@
           _("Component"), _("Description"), _("Work Centre"), _("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost")
         );
         Table::header($th);
-        $j = 1;
-        $k = 0; //row colour counter
+        $j          = 1;
+        $k          = 0; //row colour counter
         $total_cost = 0;
         while ($myrow = DB::fetch($result)) {
 
@@ -360,9 +360,9 @@
       }
       DB::begin();
       WO_Cost::add_material($stock_id, $units_reqd, $date_);
-      $date = Dates::date2sql($date_);
+      $date     = Dates::date2sql($date_);
       $required = Dates::date2sql($required_by);
-      $sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
+      $sql      = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
 				type, date_, required_by)
 		 	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 				" . DB::escape($type) . ", '$date', " . DB::escape($required) . ")";
@@ -389,9 +389,9 @@
       DB::begin();
       WO_Cost::add_material($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
       WO_Cost::add_material($stock_id, $units_reqd, $date_);
-      $date = Dates::date2sql($date_);
+      $date     = Dates::date2sql($date_);
       $required = Dates::date2sql($required_by);
-      $sql = "UPDATE workorders SET loc_code=" . DB::escape($loc_code) . ",
+      $sql      = "UPDATE workorders SET loc_code=" . DB::escape($loc_code) . ",
 				units_reqd=" . DB::escape($units_reqd) . ", stock_id=" . DB::escape($stock_id) . ",
 				required_by=" . DB::escape($required) . ",
 				date_='$date'
@@ -427,7 +427,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($woid, $allow_null = FALSE) {
-      $sql = "SELECT workorders.*, stock_master.description As StockItemName,
+      $sql    = "SELECT workorders.*, stock_master.description As StockItemName,
 				locations.location_name, locations.delivery_address
 				FROM workorders, stock_master, locations
 				WHERE stock_master.stock_id=workorders.stock_id
@@ -448,9 +448,9 @@
      * @return bool
      */
     static public function has_productions($woid) {
-      $sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
+      $sql    = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
       $result = DB::query($sql, "query work order for productions");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
     /**
@@ -461,9 +461,9 @@
      * @return bool
      */
     static public function has_issues($woid) {
-      $sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
+      $sql    = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
       $result = DB::query($sql, "query work order for issues");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
     /**
@@ -486,10 +486,10 @@
      */
     static public function release($woid, $releaseDate, $memo_) {
       DB::begin();
-      $myrow = WO::get($woid);
+      $myrow    = WO::get($woid);
       $stock_id = $myrow["stock_id"];
-      $date = Dates::date2sql($releaseDate);
-      $sql = "UPDATE workorders SET released_date='$date',
+      $date     = Dates::date2sql($releaseDate);
+      $sql      = "UPDATE workorders SET released_date='$date',
 				released=1 WHERE id = " . DB::escape($woid);
       DB::query($sql, "could not release work order");
       // create Work Order Requirements based on the bom
@@ -515,9 +515,9 @@
      * @return bool
      */
     static public function is_closed($woid) {
-      $sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
+      $sql    = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
       $result = DB::query($sql, "could not query work order");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return ($row[0] > 0);
     }
     /**
@@ -547,7 +547,7 @@
       $work_order = WO::get($woid);
       if (!($work_order["type"] == WO_ADVANCED)) {
         $date = Dates::sql2date($work_order['date_']);
-        $qty = $work_order['units_reqd'];
+        $qty  = $work_order['units_reqd'];
         WO_Cost::add_material($work_order['stock_id'], -$qty, $date); // remove avg. cost for qty
         $cost = WO::get_gl($woid, WO_LABOUR); // get the labour cost and reduce avg cost
         if ($cost != 0) {
@@ -571,7 +571,7 @@
         $date = Dates::sql2date($work_order['date_']);
         WO_Cost::add_material($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty
         $result = WO_Produce::get_all($woid); // check the produced quantity
-        $qty = 0;
+        $qty    = 0;
         while ($row = DB::fetch($result)) {
           $qty += $row['quantity'];
           // clear the production record
@@ -579,12 +579,12 @@
           DB::query($sql, "Cannot void a wo production");
           Inv_Movement::void(ST_MANURECEIVE, $row['id']); // and void the stock moves;
         }
-        $result = WO_Issue::get_additional($woid); // check the issued quantities
-        $cost = 0;
+        $result   = WO_Issue::get_additional($woid); // check the issued quantities
+        $cost     = 0;
         $issue_no = 0;
         while ($row = DB::fetch($result)) {
           $std_cost = Item_Price::get_standard_cost($row['stock_id']);
-          $icost = $std_cost * $row['qty_issued'];
+          $icost    = $std_cost * $row['qty_issued'];
           $cost += $icost;
           if ($issue_no == 0) {
             $issue_no = $row['issue_no'];
@@ -627,7 +627,7 @@
      * @return int
      */
     static public function get_gl($woid, $cost_type) {
-      $cost = 0;
+      $cost   = 0;
       $result = GL_Trans::get_wo_cost($woid, $cost_type);
       while ($row = DB::fetch($result)) {
         $cost += -$row['amount'];

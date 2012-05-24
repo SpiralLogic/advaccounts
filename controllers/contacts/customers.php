@@ -20,7 +20,7 @@
     $data['company']->save($_POST);
   }
   elseif (Input::request('id', Input::NUMERIC) > 0) {
-    $data['company'] = $customer = new Debtor(Input::request('id', Input::NUMERIC));
+    $data['company']     = $customer = new Debtor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
     Session::i()->setGlobal('debtor', $customer->id);
   }
@@ -40,7 +40,7 @@
   Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
   JS::onload("Company.setValues(" . json_encode($data) . ");");
   $currentContact = $customer->contacts[$customer->defaultContact];
-  $currentBranch = $customer->branches[$customer->defaultBranch];
+  $currentBranch  = $customer->branches[$customer->defaultBranch];
   if (isset($_POST['delete'])) {
     $customer->delete();
     $status = $customer->getStatus();
@@ -94,8 +94,8 @@
   email_row(_("Email:"), 'branch[email]', $currentBranch->email, 35, 55);
   textarea_row(_("Street:"), 'branch[br_address]', $currentBranch->br_address, 35, 2);
   $branch_postcode = new Contact_Postcode(array(
-      'city' => array('branch[city]', $currentBranch->city),
-      'state' => array('branch[state]', $currentBranch->state),
+      'city'     => array('branch[city]', $currentBranch->city),
+      'state'    => array('branch[state]', $currentBranch->state),
       'postcode' => array('branch[postcode]', $currentBranch->postcode)
     )
   );
@@ -115,8 +115,8 @@
   email_row(_("E-mail:"), 'accounts[email]', $customer->accounts->email, 35, 55);
   textarea_row(_("Street:"), 'accounts[br_address]', $customer->accounts->br_address, 35, 2);
   $accounts_postcode = new Contact_Postcode(array(
-      'city' => array('accounts[city]', $customer->accounts->city),
-      'state' => array('accounts[state]', $customer->accounts->state),
+      'city'     => array('accounts[city]', $customer->accounts->city),
+      'state'    => array('accounts[state]', $customer->accounts->state),
       'postcode' => array('accounts[postcode]', $customer->accounts->postcode)
     )
   );
@@ -161,7 +161,7 @@
     'class' => '', 'style' => 'display:inline-block'
   ))->tr(TRUE)->td(array(
     'content' => '${name}',
-    'class' => 'tablehead',
+    'class'   => 'tablehead',
     'colspan' => 2
   ))->td->tr;
   text_row("Name:", 'contact[name-${id}]', '${name}', 35, 40);

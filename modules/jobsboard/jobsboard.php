@@ -12,6 +12,7 @@
   use \ADV\Core\Config;
   use \ADV\Core\DB;
   use \User;
+
   /**
    * Jobsboard
    */
@@ -29,43 +30,16 @@
      * @var
      */
     public $order_no;
-
-    /**
-     * @static
-
-     */
-    static public function tasks() {
-      \DB::change_connection('jobsboard');
-      $result = FALSE;
-      try {
-        \DB::query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
-    Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0');
-        $result = \DB::num_rows();
-      }
-      catch (\Exception $e) {
-      }
-      if ($result) {
-        \Event::notice($result . ' Jobs were returned to their previous responslble person.');
-      }
-      $result = FALSE;
-      try {
-        \DB::query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
-    Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
-        $result = \DB::num_rows();
-      }
-      catch (\Exception $e) {
-      }
-      if ($result) {
-        \Event::notice($result . ' Jobs were changed back to having "work can be done" due to inactivity.');
-      }
-      \DB::change_connection();
+    public function _init() {
+      User::register_login('\Modules\Jobsboard', 'tasks');
     }
+
     /**
      * @param $trans_no
      *
      * @return mixed
      */
-    function removejob($trans_no) {
+    public function removejob($trans_no) {
       \DB::change_connection('jobsboard');
       $job = $this->get_job($trans_no);
       if ($trans_no && $this->jobExists($trans_no)) {
@@ -92,7 +66,7 @@
      * @internal param $so_type
      * @return mixed
      */
-    function addjob($job_data) {
+    public function addjob($job_data) {
       $this->order_no = $order_no = $job_data->trans_no;
       $user_name      = \User::i()->name;
       $orderlines     = $this->getOrderLines();
@@ -165,7 +139,7 @@
      *
      * @return array
      */
-    function get_job($trans_no) {
+    protected function get_job($trans_no) {
       $this->currentJob = \DB::select()->from('Job_List')->where('order_no=', $trans_no)->fetch()->one();
       if ($this->currentJob) {
         $this->getLines();
@@ -254,8 +228,35 @@
       $lines = \DB::select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
       return $lines;
     }
-    public function _init() {
-      User::register_login('\Modules\Jobsboard', 'tasks');
+    /**
+     * @static
+
+     */
+    static public function tasks() {
+      \DB::change_connection('jobsboard');
+      $result = FALSE;
+      try {
+        \DB::query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
+        Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0');
+        $result = \DB::num_rows();
+      }
+      catch (\Exception $e) {
+      }
+      if ($result) {
+        \Event::notice($result . ' Jobs were returned to their previous responslble person.');
+      }
+      $result = FALSE;
+      try {
+        \DB::query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
+        Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
+        $result = \DB::num_rows();
+      }
+      catch (\Exception $e) {
+      }
+      if ($result) {
+        \Event::notice($result . ' Jobs were changed back to having "work can be done" due to inactivity.');
+      }
+      \DB::change_connection();
     }
   }
 

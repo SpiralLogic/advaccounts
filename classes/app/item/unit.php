@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Item_Unit {
+
     /**
      * @static
      *
@@ -50,7 +51,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($unit) {
-      $sql = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
+      $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "an unit of measure could not be retrieved");
       return DB::fetch($result);
     }
@@ -62,9 +63,9 @@
      * @return mixed
      */
     static public function desc($unit) {
-      $sql = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
+      $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "could not unit description");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -75,9 +76,9 @@
      * @return bool
      */
     static public function used($unit) {
-      $sql = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
+      $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
       $result = DB::query($sql, "could not query stock master");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return ($myrow[0] > 0);
     }
     /**
@@ -104,10 +105,10 @@
      */
     static public function get_decimal($stock_id) {
       $sql
-        = "SELECT decimals FROM item_units,	stock_master
+              = "SELECT decimals FROM item_units,	stock_master
 		WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
       $result = DB::query($sql, "could not get unit decimals");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -142,7 +143,7 @@
      */
     static public function select($name, $value = NULL, $enabled = TRUE) {
       $result = Item_Unit::get_all();
-      $units = array();
+      $units  = array();
       while ($unit = DB::fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }

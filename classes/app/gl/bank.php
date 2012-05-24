@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_Bank {
+
     /**
      * @static
      *
@@ -33,7 +34,7 @@
       // We have to calculate all the currency accounts belonging to the GL account
       // upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
       // 2010-02-23 Joe Hunt with help of Ary Wibowo
-      $sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
+      $sql    = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
@@ -46,7 +47,7 @@
         $for_amount += Num::round($row['for_amount'] * $rate, User::price_dec());
       }
       $amount = GL_Trans::get_from_to("", $date_, $account);
-      $diff = $amount - $for_amount;
+      $diff   = $amount - $for_amount;
       if ($diff != 0) {
         if ($trans_type == NULL) {
           $trans_type = ST_JOURNAL;
@@ -81,12 +82,12 @@
      */
     static public function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
       DB::begin();
-      $trans_type = ST_BANKTRANSFER;
-      $currency = Bank_Currency::for_company($from_account);
-      $trans_no = SysTypes::get_next_trans_no($trans_type);
+      $trans_type      = ST_BANKTRANSFER;
+      $currency        = Bank_Currency::for_company($from_account);
+      $trans_no        = SysTypes::get_next_trans_no($trans_type);
       $from_gl_account = Bank_Account::get_gl($from_account);
-      $to_gl_account = Bank_Account::get_gl($to_account);
-      $total = 0;
+      $to_gl_account   = Bank_Account::get_gl($to_account);
+      $total           = 0;
       // do the source account postings
       $total += GL_Trans::add($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "", -($amount + $charge), $currency);
       Bank_Trans::add($trans_type, $trans_no, $from_account, $ref, $date_, -($amount + $charge), PT_MISC, "", $currency, "Cannot insert a source bank transaction");
@@ -143,7 +144,7 @@
       if ($use_transaction) {
         DB::begin();
       }
-      $currency = Bank_Currency::for_company($from_account);
+      $currency        = Bank_Currency::for_company($from_account);
       $bank_gl_account = Bank_Account::get_gl($from_account);
       // the gl items are already inversed/negated for type 2 (deposit)
       $total_amount = $items->gl_items_total();
@@ -153,7 +154,7 @@
         $cust_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_debtor($person_id), $date_);
         // we need to negate it too
         $cust_amount = -$cust_amount;
-        $trans_no = Debtor_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
+        $trans_no    = Debtor_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
       }
       elseif ($person_type_id == PT_SUPPLIER) {
         // we need to add a supplier transaction record
@@ -161,10 +162,10 @@
         $supplier_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
         // we need to negate it too
         $supplier_amount = -$supplier_amount;
-        $trans_no = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supplier_amount, 0, 0);
+        $trans_no        = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supplier_amount, 0, 0);
       }
       else {
-        $trans_no = SysTypes::get_next_trans_no($trans_type);
+        $trans_no             = SysTypes::get_next_trans_no($trans_type);
         $do_exchange_variance = TRUE;
       }
       // do the source account postings
@@ -185,7 +186,7 @@
           }
         }
         // store tax details if the gl account is a tax account
-        $amount = $gl_item->amount;
+        $amount  = $gl_item->amount;
         $ex_rate = Bank_Currency::exchange_rate_from_home($currency, $date_);
         GL_Trans::add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount, $ex_rate, $date_, $memo_);
       }

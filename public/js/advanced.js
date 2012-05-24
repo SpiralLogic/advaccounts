@@ -273,23 +273,23 @@ Adv.extend({Forms:(function () {
 		return el;
 	};
 	return {
+    findInputEl:function(id) { var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
+      if (!els.length) {els = [document.getElementById(id)];}return els;},
 		setFormValue:function (id, value, disabled) {
-			var isdefault, els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
-				if (!els.length) {
-				els = [document.getElementById(id)];
-			}
-			isdefault = !!arguments[3];
+			var isdefault,els=Adv.Forms.findInputEl(id);
+      isdefault = !!arguments[3];
 			$.each(els, function (k, el) {
 				_setFormValue(el, value, disabled, isdefault);
-			})
+			});
 			return els;
 		},
 		setFormDefaults:function (id, value, disabled) {
 			this.setFormValue(id, value, disabled, true);
 		},
 		autocomplete:function (id, url, callback) {
-			var $this;
-			Adv.o.autocomplete[id] = $this = $('#' + id)
+			var $this,els=Adv.Forms.findInputEl(id);
+      Adv.Forms.findInputEl(id);
+			Adv.o.autocomplete[id] = $this = $(els)
 			 .autocomplete({
 				 minLength:2,
 				 delay:400,

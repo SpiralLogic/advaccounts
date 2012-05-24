@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Messages {
+
     /**
      * @var string
      */
@@ -18,7 +18,7 @@
      */
     static protected $count = 0;
     /**
-     *
+
      */
     public function __construct() {
     }
@@ -33,7 +33,7 @@
       if (!$userid) {
         return FALSE;
       }
-      $result = DB::select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
+      $result        = DB::select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
         ->and_where('um.from=u.id')->and_where('unread>', 0)->fetch()->all();
       static::$count = count($result);
       foreach ($result as $row) {
@@ -49,8 +49,8 @@
             . trim($row['message']) . '</div>';
         }
         $unread = $row['unread'] - 1;
-        $id = $row['id'];
-        $sql2 = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
+        $id     = $row['id'];
+        $sql2   = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
         DB::query($sql2, 'Could not mark messages as unread');
       }
       return static::$count;
@@ -65,7 +65,7 @@
      * @return null|PDOStatement
      */
     static public function set($userid, $subject, $message) {
-      $sql = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1, " . DB::escape(User::i()->user) . ")";
+      $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1, " . DB::escape(User::i()->user) . ")";
       $result = DB::query($sql, "Couldn't add message for $userid");
       return $result;
     }
@@ -88,11 +88,11 @@
       $dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
       $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
       $dialog->setOptions(array(
-                               'autoOpen' => TRUE,
-                               'modal' => TRUE,
-                               'width' => '500',
-                               'resizeable' => FALSE
-                          ));
+        'autoOpen'   => TRUE,
+        'modal'      => TRUE,
+        'width'      => '500',
+        'resizeable' => FALSE
+      ));
       $dialog->show();
     }
   }

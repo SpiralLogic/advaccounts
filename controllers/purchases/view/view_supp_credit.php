@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Supplier Credit Note"), SA_SUPPTRANSVIEW, TRUE);
@@ -17,7 +16,7 @@
   elseif (isset($_POST["trans_no"])) {
     $trans_no = $_POST["trans_no"];
   }
-  $creditor_trans = new Creditor_Trans();
+  $creditor_trans             = new Creditor_Trans();
   $creditor_trans->is_invoice = FALSE;
   Purch_Invoice::get($trans_no, ST_SUPPCREDIT, $creditor_trans);
   Display::heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
@@ -35,8 +34,8 @@
   Row::end();
   DB_Comments::display_row(ST_SUPPCREDIT, $trans_no);
   Table::end(1);
-  $total_gl = Purch_GLItem::display_items($creditor_trans, 3);
-  $total_grn = Purch_GRN::display_items($creditor_trans, 2);
+  $total_gl        = Purch_GLItem::display_items($creditor_trans, 3);
+  $total_grn       = Purch_GRN::display_items($creditor_trans, 2);
   $display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
   Table::start('tablestyle width95');
   Row::label(_("Sub Total"), $display_sub_tot, "class='right'", " class='nowrap right width17' ");

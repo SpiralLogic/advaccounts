@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Units of Measure"), SA_UOM);
   list($Mode, $selected_id) = Page::simple_mode(FALSE);
@@ -53,7 +52,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = '';
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -80,10 +79,10 @@
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
       //editing an existing item category
-      $myrow = Item_Unit::get($selected_id);
-      $_POST['abbr'] = $myrow["abbr"];
+      $myrow                = Item_Unit::get($selected_id);
+      $_POST['abbr']        = $myrow["abbr"];
       $_POST['description'] = $myrow["name"];
-      $_POST['decimals'] = $myrow["decimals"];
+      $_POST['decimals']    = $myrow["decimals"];
     }
     hidden('selected_id', $selected_id);
   }

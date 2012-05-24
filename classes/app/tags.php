@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Tags {
+
     /**
      * @static
      *
@@ -64,7 +65,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT * FROM tags WHERE id = " . DB::escape($id);
+      $sql    = "SELECT * FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag");
       return DB::fetch($result);
     }
@@ -76,9 +77,9 @@
      * @return mixed
      */
     static public function get_type($id) {
-      $sql = "SELECT type FROM tags WHERE id = " . DB::escape($id);
+      $sql    = "SELECT type FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag type");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -89,9 +90,9 @@
      * @return mixed
      */
     static public function get_name($id) {
-      $sql = "SELECT name FROM tags WHERE id = " . DB::escape($id);
+      $sql    = "SELECT name FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag name");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -102,9 +103,9 @@
      * @return mixed
      */
     static public function get_description($id) {
-      $sql = "SELECT description FROM tags WHERE id = " . DB::escape($id);
+      $sql    = "SELECT description FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag description");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -185,16 +186,16 @@
      */
     static public function get_associated_records($id) {
       // Which table we query is based on the tag type
-      $type = Tags::get_type($id);
+      $type  = Tags::get_type($id);
       $table = $key = '';
       switch ($type) {
         case TAG_ACCOUNT:
           $table = "chart_master";
-          $key = "account_code";
+          $key   = "account_code";
           break;
         case TAG_DIMENSION:
           $table = "dimensions";
-          $key = "id";
+          $key   = "id";
           break;
       }
       $sql = "SELECT $table.* FROM $table

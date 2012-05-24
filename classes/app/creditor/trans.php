@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
    */
   class Creditor_Trans {
@@ -113,12 +113,12 @@
      */
     public $gl_codes_counter = 0;
     /**
-     *
+
      */
     public function __construct() {
       /*Constructor function initialises a new Supplier Transaction object */
       $this->grn_items = array();
-      $this->gl_codes = array();
+      $this->gl_codes  = array();
     }
     /**
      * @param      $grn_item_id
@@ -180,7 +180,7 @@
       unset($this->grn_items, $this->gl_codes);
       $this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
       $this->grn_items = array();
-      $this->gl_codes = array();
+      $this->gl_codes  = array();
     }
     /**
      * @param null $tax_group_id
@@ -190,7 +190,7 @@
      * @return array|null
      */
     public function get_taxes($tax_group_id = NULL, $shipping_cost = 0, $gl_codes = TRUE) {
-      $items = array();
+      $items  = array();
       $prices = array();
       if ($tax_group_id == NULL) {
         $tax_group_id = $this->tax_group_id;
@@ -198,7 +198,7 @@
       $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
       /** @var Purch_GLItem $line  */
       foreach ($this->grn_items as $line) {
-        $items[] = $line->item_code;
+        $items[]  = $line->item_code;
         $prices[] = round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
       }
       if ($tax_group_id == NULL) {
@@ -267,7 +267,7 @@
         $due_date = Dates::date2sql($due_date);
       }
       $trans_no = SysTypes::get_next_trans_no($type);
-      $curr = Bank_Currency::for_creditor($supplier_id);
+      $curr     = Bank_Currency::for_creditor($supplier_id);
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
@@ -344,7 +344,7 @@
       if ($type == ST_SUPPRECEIVE) {
         return Purch_GRN::exists($type_no);
       }
-      $sql = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::escape($type) . "
+      $sql    = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::escape($type) . "
 				AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       return (DB::num_rows($result) > 0);
@@ -420,7 +420,7 @@
      */
     static public function get_conversion_factor($supplier_id, $stock_id) {
       $sql
-        = "SELECT conversion_factor FROM purch_data
+              = "SELECT conversion_factor FROM purch_data
 					WHERE supplier_id = " . DB::escape($supplier_id) . "
 					AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");

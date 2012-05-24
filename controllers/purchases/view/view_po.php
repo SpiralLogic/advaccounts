@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, TRUE);
@@ -23,7 +23,7 @@
     _("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"), _("Received"), _("Invoiced")
   );
   Table::header($th);
-  $total = $k = 0;
+  $total         = $k = 0;
   $overdue_items = FALSE;
   foreach ($order->line_items as $stock_item) {
     $line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
@@ -34,7 +34,6 @@
       $overdue_items = TRUE;
     }
     else {
-
     }
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
@@ -56,7 +55,7 @@
   if ($overdue_items) {
     Event::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
   }
-  $k = 0;
+  $k           = 0;
   $grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
   if (DB::num_rows($grns_result) > 0) {
     echo "</td><td class='top'>"; // outer table
@@ -74,7 +73,7 @@
     Table::end();
   }
   $invoice_result = Purch_Invoice::get_po_credits($_GET['trans_no']);
-  $k = 0;
+  $k              = 0;
   if (DB::num_rows($invoice_result) > 0) {
     echo "</td><td class='top'>"; // outer table
     Display::heading(_("Invoices/Credits"));

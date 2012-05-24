@@ -73,7 +73,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($item_location) {
-      $sql = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
+      $sql    = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
       $result = DB::query($sql, "a location could not be retrieved");
       return DB::fetch($result);
     }
@@ -127,7 +127,7 @@
      */
     static public function get_name($loc_code) {
 
-      $sql = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
+      $sql    = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
       $result = DB::query($sql, "could not retreive the location name for $loc_code");
       if (DB::num_rows($result) == 1) {
         $row = DB::fetch_row($result);
@@ -146,7 +146,7 @@
 
      */
     static public function get_for_trans($order) {
-      $sql = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
+      $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
       $result = DB::query($sql, 'Retreiving inventory location');
       if (DB::num_rows($result)) {
         return DB::fetch($result);
@@ -170,8 +170,8 @@
       }
       return select_box($name, $selected_id, $sql, 'loc_code', 'location_name',
         array(
-          'spec_option' => $all_option === TRUE ? _("All Locations") : $all_option,
-          'spec_id' => ALL_TEXT,
+          'spec_option'   => $all_option === TRUE ? _("All Locations") : $all_option,
+          'spec_id'       => ALL_TEXT,
           'select_submit' => $submit_on_change
         ));
     }

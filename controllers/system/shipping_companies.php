@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Shipping Company"), SA_SHIPPING);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -30,18 +30,18 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
-    $sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
     }
     else {
       // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-      $sql = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
       $result = DB::query($sql, "check failed");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         $cancel_delete = 1;
         Event::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
@@ -56,7 +56,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -90,14 +90,14 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing Shipper
-      $sql = "SELECT * FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not get shipper");
-      $myrow = DB::fetch($result);
+      $sql                   = "SELECT * FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
+      $result                = DB::query($sql, "could not get shipper");
+      $myrow                 = DB::fetch($result);
       $_POST['shipper_name'] = $myrow["shipper_name"];
-      $_POST['contact'] = $myrow["contact"];
-      $_POST['phone'] = $myrow["phone"];
-      $_POST['phone2'] = $myrow["phone2"];
-      $_POST['address'] = $myrow["address"];
+      $_POST['contact']      = $myrow["contact"];
+      $_POST['phone']        = $myrow["phone"];
+      $_POST['phone2']       = $myrow["phone2"];
+      $_POST['address']      = $myrow["address"];
     }
     hidden('selected_id', $selected_id);
   }

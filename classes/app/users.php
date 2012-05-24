@@ -132,7 +132,7 @@
      * @return DB_Query_Result
      */
     static public function  get($id) {
-      $sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM users WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get user $id");
       return DB::fetch($result);
     }
@@ -146,7 +146,7 @@
      * @return DB_Query_Result
      */
     static public function  get_by_login($user_id) {
-      $sql = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
+      $sql    = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
       $result = DB::query($sql, "could not get user $user_id");
       return DB::fetch($result);
     }
@@ -192,9 +192,9 @@
      * @return mixed
      */
     static public function  check_activity($id) {
-      $sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::escape($id);
+      $sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::escape($id);
       $result = DB::query($sql, "Cant check user activity");
-      $ret = DB::fetch($result);
+      $ret    = DB::fetch($result);
       return $ret[0];
     }
     /**
@@ -245,7 +245,7 @@
      * @param null $value
      */
     static public function themes_row($label, $name, $value = NULL) {
-      $themes = array();
+      $themes   = array();
       $themedir = opendir(THEME_PATH);
       while (FALSE !== ($fname = readdir($themedir))) {
         if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
@@ -339,16 +339,16 @@
       $result = DB::query("SHOW TABLES LIKE 'useronline'");
       if (DB::num_rows($result) == 1) {
         $timeoutseconds = 120;
-        $timestamp = time();
-        $timeout = $timestamp - $timeoutseconds;
-        $ip = static::get_ip();
+        $timestamp      = time();
+        $timeout        = $timestamp - $timeoutseconds;
+        $ip             = static::get_ip();
         // Add user to database
         DB::insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['DOCUMENT_URI']))->exec();
         //Remove users that were not online within $timeoutseconds.
         DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
         // Select online users
         $result = DB::query("SELECT DISTINCT ip FROM useronline");
-        $users = DB::num_rows($result);
+        $users  = DB::num_rows($result);
       }
       else {
         $users = 1;

@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,11 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Item_Price {
-    const PURCHASE = 1;
-    const SALE = 2;
+
+    const PURCHASE    = 1;
+    const SALE        = 2;
     const SORT_UPDATE = 'last_update';
-    const SORT_PRICE = 'price';
-    const SORT_CODE = 'stock_id';
+    const SORT_PRICE  = 'price';
+    const SORT_CODE   = 'stock_id';
     /**
      * @var
      */
@@ -140,7 +140,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($price_id) {
-      $sql = "SELECT * FROM prices WHERE id=" . DB::escape($price_id);
+      $sql    = "SELECT * FROM prices WHERE id=" . DB::escape($price_id);
       $result = DB::query($sql, "price could not be retreived");
       return DB::fetch($result);
     }
@@ -152,10 +152,10 @@
      * @return mixed
      */
     static public function get_standard_cost($stock_id) {
-      $sql = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
+      $sql    = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 				FROM stock_master s WHERE stock_id=" . DB::escape($stock_id);
       $result = DB::query($sql, "The standard cost cannot be retrieved");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -189,23 +189,23 @@
         $date = Dates::new_doc_date();
       }
       if ($factor === NULL) {
-        $myrow = Sales_Type::get($sales_type_id);
+        $myrow  = Sales_Type::get($sales_type_id);
         $factor = $myrow['factor'];
       }
-      $add_pct = DB_Company::get_pref('add_pct');
-      $base_id = DB_Company::get_base_sales_type();
+      $add_pct   = DB_Company::get_pref('add_pct');
+      $base_id   = DB_Company::get_base_sales_type();
       $home_curr = Bank_Currency::for_company();
       //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
       $sql
-        = "SELECT price, curr_abrev, sales_type_id
+                = "SELECT price, curr_abrev, sales_type_id
 			FROM prices
 			WHERE stock_id = " . DB::escape($stock_id) . "
 				AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
-      $result = DB::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
+      $result   = DB::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
       $num_rows = DB::num_rows($result);
-      $rate = Num::round(Bank_Currency::exchange_rate_from_home($currency, $date), User::exrate_dec());
+      $rate     = Num::round(Bank_Currency::exchange_rate_from_home($currency, $date), User::exrate_dec());
       $round_to = DB_Company::get_pref('round_to');
-      $prices = array();
+      $prices   = array();
       while ($myrow = DB::fetch($result)) {
         $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
       }
@@ -286,7 +286,7 @@
         else {
           // stock item
           $kit_price += $item['quantity'] * static::get_calculated_price($item['stock_id'], $currency, $sales_type_id, $factor,
-                                                                         $date);
+            $date);
         }
       }
       return $kit_price;
@@ -301,7 +301,7 @@
      */
     static public function get_purchase($supplier_id, $stock_id) {
       $sql
-        = "SELECT price, conversion_factor FROM purch_data
+              = "SELECT price, conversion_factor FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -336,21 +336,21 @@
 						last_cost=" . DB::escape($last_cost) . "
 						WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
-      $qoh = Item::get_qoh_on_date($_POST['stock_id']);
+      $qoh   = Item::get_qoh_on_date($_POST['stock_id']);
       $date_ = Dates::today();
       if ($qoh > 0) {
         $update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
         if (!Dates::is_date_in_fiscalyear($date_)) {
           $date_ = Dates::end_fiscalyear();
         }
-        $stock_gl_code = Item::get_gl_code($stock_id);
-        $new_cost = $material_cost + $labour_cost + $overhead_cost;
+        $stock_gl_code   = Item::get_gl_code($stock_id);
+        $new_cost        = $material_cost + $labour_cost + $overhead_cost;
         $value_of_change = $qoh * ($new_cost - $last_cost);
-        $memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
+        $memo_           = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
         GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"],
-                               $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
+          $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
         GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_,
-                               $value_of_change);
+          $value_of_change);
       }
       DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);
       DB::commit();
@@ -375,10 +375,10 @@
       $dec = User::price_dec();
       if ($dec > 0) {
         $divisor = pow(10, $dec);
-        $frac = Num::round($amount - floor($amount), $dec) * $divisor;
-        $frac = sprintf("%0{$dec}d", $frac);
-        $and = _("and");
-        $frac = " $and $frac/$divisor";
+        $frac    = Num::round($amount - floor($amount), $dec) * $divisor;
+        $frac    = sprintf("%0{$dec}d", $frac);
+        $and     = _("and");
+        $frac    = " $and $frac/$divisor";
       }
       else {
         $frac = "";

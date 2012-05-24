@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_Account {
+
     /**
      * @static
      *
@@ -84,7 +85,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($code) {
-      $sql = "SELECT * FROM chart_master WHERE account_code=" . DB::escape($code);
+      $sql    = "SELECT * FROM chart_master WHERE account_code=" . DB::escape($code);
       $result = DB::query($sql, "could not get gl account");
       return DB::fetch($result);
     }
@@ -137,7 +138,7 @@
      */
     static public function get_ending_reconciled($bank_account, $bank_date) {
       $sql
-        = "SELECT ending_reconcile_balance
+              = "SELECT ending_reconcile_balance
 		FROM bank_accounts WHERE id=" . DB::escape($bank_account)
         . " AND last_reconciled_date=" . DB::escape($bank_date);
       $result = DB::query($sql, "Cannot retrieve last reconciliation");
@@ -166,6 +167,7 @@
      *
      * @param $bank_account
      * @param $date
+     *
      * @return null|\PDOStatement
      */
     static public function reset_sql_for_reconcile($bank_account, $date) {
@@ -180,13 +182,13 @@
      * @return bool
      */
     static public function is_balancesheet($code) {
-      $sql = "SELECT chart_class.ctype FROM chart_class, "
+      $sql    = "SELECT chart_class.ctype FROM chart_class, "
         . "chart_types, chart_master
 		WHERE chart_master.account_type=chart_types.id AND
 		chart_types.class_id=chart_class.cid
 		AND chart_master.account_code=" . DB::escape($code);
       $result = DB::query($sql, "could not retreive the account class for $code");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0] > 0 && $row[0] < CL_INCOME;
     }
     /**
@@ -197,7 +199,7 @@
      * @return mixed
      */
     static public function get_name($code) {
-      $sql = "SELECT account_name from chart_master WHERE account_code=" . DB::escape($code);
+      $sql    = "SELECT account_name from chart_master WHERE account_code=" . DB::escape($code);
       $result = DB::query($sql, "could not retreive the account name for $code");
       if (DB::num_rows($result) == 1) {
         $row = DB::fetch_row($result);

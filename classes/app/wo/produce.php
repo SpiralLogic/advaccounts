@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_Produce {
+
     /**
      * @static
      *
@@ -31,7 +32,7 @@
         exit;
       }
       $date = Dates::date2sql($date_);
-      $sql = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
+      $sql  = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
 		VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity) . ", '$date')";
       DB::query($sql, "A work order manufacture could not be added");
       $id = DB::insert_id();
@@ -58,7 +59,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
+      $sql    = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
 		FROM wo_manufacture, workorders, stock_master
 		WHERE wo_manufacture.workorder_id=workorders.id
 		AND stock_master.stock_id=workorders.stock_id
@@ -85,7 +86,7 @@
      * @return bool
      */
     static public function exists($id) {
-      $sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
+      $sql    = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "Cannot retreive a wo production");
       return (DB::num_rows($result) > 0);
     }
@@ -128,7 +129,7 @@
         Table::start('tablestyle grid');
         $th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
         Table::header($th);
-        $k = 0; //row colour counter
+        $k         = 0; //row colour counter
         $total_qty = 0;
         while ($myrow = DB::fetch($result)) {
 

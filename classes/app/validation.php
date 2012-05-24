@@ -9,38 +9,38 @@
    **/
   class Validation {
 
-    const CUSTOMERS = "debtors";
-    const CURRENCIES = "currencies";
-    const SALES_TYPES = "sales_types";
-    const ITEM_TAX_TYPES = "item_tax_types";
-    const TAX_TYPES = "tax_types";
-    const TAX_GROUP = "tax_groups";
-    const MOVEMENT_TYPES = "movement_types";
-    const BRANCHES = "branches WHERE debtor_id=";
-    const BRANCHES_ACTIVE = "branches WHERE !inactive";
-    const SALESPERSONS = "salesman";
-    const SALES_AREA = "areas";
-    const SHIPPERS = "shippers";
-    const OPEN_WORKORDERS = "workorders WHERE closed=0";
-    const WORKORDERS = "workorders";
-    const OPEN_DIMENSIONS = "dimensions WHERE closed=0";
-    const DIMENSIONS = "dimensions";
-    const SUPPLIERS = "suppliers";
-    const STOCK_ITEMS = "stock_master";
-    const BOM_ITEMS = "stock_master WHERE mb_flag=";
+    const CUSTOMERS         = "debtors";
+    const CURRENCIES        = "currencies";
+    const SALES_TYPES       = "sales_types";
+    const ITEM_TAX_TYPES    = "item_tax_types";
+    const TAX_TYPES         = "tax_types";
+    const TAX_GROUP         = "tax_groups";
+    const MOVEMENT_TYPES    = "movement_types";
+    const BRANCHES          = "branches WHERE debtor_id=";
+    const BRANCHES_ACTIVE   = "branches WHERE !inactive";
+    const SALESPERSONS      = "salesman";
+    const SALES_AREA        = "areas";
+    const SHIPPERS          = "shippers";
+    const OPEN_WORKORDERS   = "workorders WHERE closed=0";
+    const WORKORDERS        = "workorders";
+    const OPEN_DIMENSIONS   = "dimensions WHERE closed=0";
+    const DIMENSIONS        = "dimensions";
+    const SUPPLIERS         = "suppliers";
+    const STOCK_ITEMS       = "stock_master";
+    const BOM_ITEMS         = "stock_master WHERE mb_flag=";
     const MANUFACTURE_ITEMS = "stock_master WHERE mb_flag=";
-    const PURCHASE_ITEMS = "stock_master WHERE mb_flag=";
-    const COST_ITEMS = "stock_master WHERE mb_flag!=";
-    const STOCK_CATEGORIES = "stock_category";
-    const WORKCENTRES = "workcentres";
-    const LOCATIONS = "locations";
-    const BANK_ACCOUNTS = "bank_accounts";
-    const CASH_ACCOUNTS = "bank_accounts";
-    const  GL_ACCOUNTS = "chart_master";
+    const PURCHASE_ITEMS    = "stock_master WHERE mb_flag=";
+    const COST_ITEMS        = "stock_master WHERE mb_flag!=";
+    const STOCK_CATEGORIES  = "stock_category";
+    const WORKCENTRES       = "workcentres";
+    const LOCATIONS         = "locations";
+    const BANK_ACCOUNTS     = "bank_accounts";
+    const CASH_ACCOUNTS     = "bank_accounts";
+    const  GL_ACCOUNTS      = "chart_master";
     const GL_ACCOUNT_GROUPS = "chart_types";
-    const QUICK_ENTRIES = "quick_entries";
-    const TAGS = "FROM tags WHERE type=";
-    const EMPTY_RESULT = "";
+    const QUICK_ENTRIES     = "quick_entries";
+    const TAGS              = "FROM tags WHERE type=";
+    const EMPTY_RESULT      = "";
     /**
      * @static
      *
@@ -73,7 +73,7 @@
       }
 
       $result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if (!($myrow[0] > 0)) {
         throw new Adv_Exception($msg);
       }

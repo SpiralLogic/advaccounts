@@ -1,13 +1,14 @@
-  <?php
+<?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_ExchangeRate {
+
     /**
      * @static
      *
@@ -16,7 +17,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($rate_id) {
-      $sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
+      $sql    = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       $result = DB::query($sql, "could not get exchange rate for $rate_id");
       return DB::fetch($result);
     }
@@ -31,8 +32,8 @@
      * @return int
      */
     static public function get_date($curr_code, $date_) {
-      $date = Dates::date2sql($date_);
-      $sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
+      $date   = Dates::date2sql($date_);
+      $sql    = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
         . " AND date_='$date'";
       $result = DB::query($sql, "could not get exchange rate for $curr_code - $date_");
       if (DB::num_rows($result) == 0) {
@@ -54,7 +55,7 @@
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
       }
       $date = Dates::date2sql($date_);
-      $sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate)
+      $sql  = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate)
         . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
       DB::query($sql, "could not add exchange rate for $curr_code");
     }
@@ -71,7 +72,7 @@
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
       }
       $date = Dates::date2sql($date_);
-      $sql = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
+      $sql  = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (" . DB::escape($curr_code) . ", '$date', " . DB::escape($buy_rate)
         . ", " . DB::escape($sell_rate) . ")";
       DB::query($sql, "could not add exchange rate for $curr_code");
@@ -118,15 +119,15 @@
       $curr_a = DB_Company::get_pref('curr_default');
       if ($provider == 'ECB') {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";
-        $site = "www.ecb.int";
+        $site     = "www.ecb.int";
       }
       elseif ($provider == 'YAHOO') {
         $filename = "/q?s={$curr_a}{$curr_b}=X";
-        $site = "finance.yahoo.com";
+        $site     = "finance.yahoo.com";
       }
       elseif ($provider == 'GOOGLE') {
         $filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
-        $site = "finance.google.com";
+        $site     = "finance.google.com";
       }
       $contents = '';
       if (function_exists('curl_init')) { // first check with curl as we can set short timeout;
@@ -164,11 +165,11 @@
         Event::warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
       }
       if ($provider == 'ECB') {
-        $contents = str_replace("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
+        $contents  = str_replace("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
         $from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
         preg_match($from_mask, $contents, $out);
-        $val_a = isset($out[1]) ? $out[1] : 0;
-        $val_a = str_replace(',', '', $val_a);
+        $val_a   = isset($out[1]) ? $out[1] : 0;
+        $val_a   = str_replace(',', '', $val_a);
         $to_mask = "|<Cube\s*currency=\'" . $curr_b . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
         preg_match($to_mask, $contents, $out);
         $val_b = isset($out[1]) ? $out[1] : 0;
@@ -191,7 +192,7 @@
         }
       }
       elseif ($provider == 'GOOGLE') {
-        $val = '';
+        $val    = '';
         $regexp = "%([\d|.]+)\s+{$curr_a}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_b}\s*</span>%s";
         if (preg_match($regexp, $contents, $matches)) {
           $val = $matches[3];

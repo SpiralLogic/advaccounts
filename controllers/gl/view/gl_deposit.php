@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
@@ -18,9 +17,9 @@
   if (DB::num_rows($result) != 1) {
     Errors::db_error("duplicate payment bank transaction found", "");
   }
-  $to_trans = DB::fetch($result);
+  $to_trans         = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies = FALSE;
+  $show_currencies  = FALSE;
   if ($to_trans['bank_curr_code'] != $company_currency) {
     $show_currencies = TRUE;
   }
@@ -83,7 +82,7 @@
       }
     }
     Table::header($th);
-    $k = 0; //row colour counter
+    $k            = 0; //row colour counter
     $total_amount = 0;
     while ($item = DB::fetch($items)) {
       if ($item["account"] != $to_trans["account_code"]) {

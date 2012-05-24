@@ -17,14 +17,14 @@
     Ajax::i()->activate('trans_tbl');
   }
   if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
-    $date = Dates::today();
-    $row = DB_Company::get_prefs();
-    $edate = Dates::add_months($date, -$row['tax_last']);
-    $edate = Dates::end_month($edate);
-    $bdate = Dates::begin_month($edate);
-    $bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
+    $date                   = Dates::today();
+    $row                    = DB_Company::get_prefs();
+    $edate                  = Dates::add_months($date, -$row['tax_last']);
+    $edate                  = Dates::end_month($edate);
+    $bdate                  = Dates::begin_month($edate);
+    $bdate                  = Dates::add_months($bdate, -$row['tax_prd'] + 1);
     $_POST["TransFromDate"] = $bdate;
-    $_POST["TransToDate"] = $edate;
+    $_POST["TransToDate"]   = $edate;
   }
   tax_inquiry_controls();
   show_results();
@@ -54,15 +54,15 @@
     Table::start('tablestyle grid');
     $th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
     Table::header($th);
-    $k = 0;
+    $k     = 0;
     $total = 0;
     $bdate = Dates::date2sql($_POST['TransFromDate']);
     $edate = Dates::date2sql($_POST['TransToDate']);
     $taxes = GL_Trans::get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
     while ($tx = DB::fetch($taxes)) {
-      $payable = $tx['payable'];
+      $payable     = $tx['payable'];
       $collectible = $tx['collectible'];
-      $net = $collectible + $payable;
+      $net         = $collectible + $payable;
       $total += $net;
 
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");

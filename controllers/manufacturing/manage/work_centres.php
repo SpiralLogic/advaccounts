@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -37,16 +36,16 @@
    * @return bool
    */
   function can_delete($selected_id) {
-    $sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
       return FALSE;
     }
-    $sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
       return FALSE;
@@ -63,7 +62,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -89,8 +88,8 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = WO_WorkCentre::get($selected_id);
-      $_POST['name'] = $myrow["name"];
+      $myrow                = WO_WorkCentre::get($selected_id);
+      $_POST['name']        = $myrow["name"];
       $_POST['description'] = $myrow["description"];
     }
     hidden('selected_id', $selected_id);

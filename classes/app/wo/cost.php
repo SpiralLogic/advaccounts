@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_Cost {
+
     /**
      * @static
      *
@@ -24,11 +25,11 @@
       }
       $dec = User::price_dec();
       Num::price_decimal($m_cost, $dec);
-      $sql = "SELECT material_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
-      $result = DB::query($sql);
-      $myrow = DB::fetch($result);
+      $sql           = "SELECT material_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
+      $result        = DB::query($sql);
+      $myrow         = DB::fetch($result);
       $material_cost = $myrow['material_cost'];
-      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -36,7 +37,7 @@
         $material_cost = ($qoh * $material_cost + $qty * $m_cost) / ($qoh + $qty);
       }
       $material_cost = Num::round($material_cost, $dec);
-      $sql = "UPDATE stock_master SET material_cost=$material_cost
+      $sql           = "UPDATE stock_master SET material_cost=$material_cost
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
@@ -54,11 +55,11 @@
       if ($qty != 0) {
         $costs /= $qty;
       }
-      $sql = "SELECT overhead_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
-      $result = DB::query($sql);
-      $myrow = DB::fetch($result);
+      $sql           = "SELECT overhead_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
+      $result        = DB::query($sql);
+      $myrow         = DB::fetch($result);
       $overhead_cost = $myrow['overhead_cost'];
-      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -66,7 +67,7 @@
         $overhead_cost = ($qoh * $overhead_cost + $qty * $costs) / ($qoh + $qty);
       }
       $overhead_cost = Num::round($overhead_cost, $dec);
-      $sql = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
+      $sql           = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
@@ -84,11 +85,11 @@
       if ($qty != 0) {
         $costs /= $qty;
       }
-      $sql = "SELECT labour_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
-      $result = DB::query($sql);
-      $myrow = DB::fetch($result);
+      $sql         = "SELECT labour_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
+      $result      = DB::query($sql);
+      $myrow       = DB::fetch($result);
       $labour_cost = $myrow['labour_cost'];
-      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh         = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -96,7 +97,7 @@
         $labour_cost = ($qoh * $labour_cost + $qty * $costs) / ($qoh + $qty);
       }
       $labour_cost = Num::round($labour_cost, $dec);
-      $sql = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
+      $sql         = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
@@ -112,11 +113,11 @@
       if ($qty != 0) {
         $costs /= $qty;
       }
-      $sql = "SELECT material_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
-      $result = DB::query($sql);
-      $myrow = DB::fetch($result);
+      $sql           = "SELECT material_cost FROM stock_master WHERE stock_id = " . DB::escape($stock_id);
+      $result        = DB::query($sql);
+      $myrow         = DB::fetch($result);
       $material_cost = $myrow['material_cost'];
-      $dec = User::price_dec();
+      $dec           = User::price_dec();
       Num::price_decimal($material_cost, $dec);
       $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
@@ -126,7 +127,7 @@
         $material_cost = ($qty * $costs) / ($qoh + $qty);
       }
       $material_cost = Num::round($material_cost, $dec);
-      $sql = "UPDATE stock_master SET material_cost=material_cost+" . DB::escape($material_cost) . " WHERE stock_id=" . DB::escape($stock_id);
+      $sql           = "UPDATE stock_master SET material_cost=material_cost+" . DB::escape($material_cost) . " WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
   }

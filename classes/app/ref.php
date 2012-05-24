@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Ref {
+
     /**
      * @static
      *
@@ -32,7 +33,7 @@
      * @return bool
      */
     static public function find($type, $reference) {
-      $sql = "SELECT id FROM refs WHERE type=" . DB::escape($type) . " AND reference=" . DB::escape($reference);
+      $sql    = "SELECT id FROM refs WHERE type=" . DB::escape($type) . " AND reference=" . DB::escape($reference);
       $result = DB::query($sql, "could not query reference table");
       return (DB::num_rows($result) > 0);
     }
@@ -54,15 +55,15 @@
      * @return string
      */
     static public function get_next($type) {
-      $sql = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::escape($type);
+      $sql    = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::escape($type);
       $result = DB::query($sql, "The last transaction ref for $type could not be retreived");
-      $row = DB::fetch_row($result);
-      $ref = $row[0];
+      $row    = DB::fetch_row($result);
+      $ref    = $row[0];
       if (!static::is_valid($ref)) {
         $db_info = SysTypes::get_db_info($type);
         $db_name = $db_info[0];
         $db_type = $db_info[1];
-        $db_ref = $db_info[3];
+        $db_ref  = $db_info[3];
         if ($db_ref != NULL) {
           $sql = "SELECT $db_ref FROM $db_name ";
           if ($db_type != NULL) {
@@ -71,13 +72,13 @@
           $sql .= " ORDER BY $db_ref DESC LIMIT 1";
           $result = DB::query($sql, "The last transaction ref for $type could not be retreived");
           $result = DB::fetch($result);
-          $ref = $result[0];
+          $ref    = $result[0];
         }
       }
       $oldref = 'auto';
       while (!static::is_new($ref, $type) && ($oldref != $ref)) {
         $oldref = $ref;
-        $ref = static::increment($ref);
+        $ref    = static::increment($ref);
       }
       return $ref;
     }
@@ -90,9 +91,9 @@
      * @return mixed
      */
     static public function get($type, $id) {
-      $sql = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
+      $sql    = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
       $result = DB::query($sql, "could not query reference table");
-      $row = DB::fetch($result);
+      $row    = DB::fetch($result);
       return $row['reference'];
     }
     /**
@@ -168,8 +169,8 @@
       if (preg_match('/^(\D*?)(\d+)(.*)/', $reference, $result) == 1) {
         list($all, $prefix, $number, $postfix) = $result;
         $dig_count = strlen($number); // How many digits? eg. 0003 = 4
-        $fmt = '%0' . $dig_count . 'd'; // Make a format string - leading zeroes
-        $nextval = sprintf($fmt, intval($number + 1)); // Add one on, and put prefix back on
+        $fmt       = '%0' . $dig_count . 'd'; // Make a format string - leading zeroes
+        $nextval   = sprintf($fmt, intval($number + 1)); // Add one on, and put prefix back on
         return $prefix . $nextval . $postfix;
       }
       else {
@@ -188,7 +189,7 @@
       $db_info = SysTypes::get_db_info($type);
       $db_name = $db_info[0];
       $db_type = $db_info[1];
-      $db_ref = $db_info[3];
+      $db_ref  = $db_info[3];
       if ($db_ref != NULL) {
         $sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
         if ($db_type != NULL) {

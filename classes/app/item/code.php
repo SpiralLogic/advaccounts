@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   CLass Item_Code {
 
     /*
@@ -57,7 +57,7 @@
     static public function  add($item_code, $stock_id, $description, $category, $qty, $foreign = 0) {
       $id = DB::select('id')->from('item_codes')->where('item_code=', $item_code)->fetch()->one();
       $sql
-        = "INSERT INTO item_codes (";
+          = "INSERT INTO item_codes (";
       if (isset($id['id'])) {
         $sql .= "id, ";
       }
@@ -89,7 +89,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function  get($id) {
-      $sql = "SELECT * FROM item_codes WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM item_codes WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "item code could not be retrieved");
       return DB::fetch($result);
     }
@@ -102,7 +102,7 @@
      * @return null|PDOStatement
      */
     static public function  get_all($stock_id, $foreign = 1) {
-      $sql = "SELECT i.*, c.description as cat_name FROM "
+      $sql    = "SELECT i.*, c.description as cat_name FROM "
         . "item_codes as i,"
         . "stock_category as c
 				WHERE stock_id=" . DB::escape($stock_id) . "
@@ -129,7 +129,7 @@
      */
     static public function  get_kit($item_code) {
       $sql
-        = "SELECT DISTINCT kit.*, item.units, comp.description as comp_name
+              = "SELECT DISTINCT kit.*, item.units, comp.description as comp_name
 			FROM "
         . "item_codes kit,"
         . "item_codes comp
@@ -221,7 +221,7 @@
      */
     static public function  get_defaults($stock_id) {
       $sql
-        = "SELECT units, decimals, description, category_id
+              = "SELECT units, decimals, description, category_id
 			FROM stock_master,item_units
 			WHERE stock_id=" . DB::escape($stock_id);
       $result = DB::query($sql, "item code defaults could not be retrieved");

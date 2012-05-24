@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
@@ -26,8 +25,8 @@
     // if selected kit is not included in any other kit.
     //
     $other_kits = Item_Code::get_where_used($_POST['item_code']);
-    $num_kits = DB::num_rows($other_kits);
-    $kit = Item_Code::get_kit($_POST['item_code']);
+    $num_kits   = DB::num_rows($other_kits);
+    $kit        = Item_Code::get_kit($_POST['item_code']);
     if ((DB::num_rows($kit) == 1) && $num_kits) {
       $msg = _("This item cannot be deleted because it is the last item in the kit used by following kits") . ':<br>';
       while ($num_kits--) {
@@ -69,7 +68,7 @@
   else {
     // Kit selected so display bom or edit component
     $_POST['description'] = $props['description'];
-    $_POST['category'] = $props['category_id'];
+    $_POST['category']    = $props['category_id'];
     Table::start('tablestyle2');
     text_row(_("Description:"), 'description', NULL, 50, 200);
     Item_Category::row(_("Category:"), 'category', NULL);
@@ -81,9 +80,9 @@
     Table::start('tablestyle2');
   }
   if ($Mode == MODE_EDIT) {
-    $myrow = Item_Code::get($selected_id);
+    $myrow              = Item_Code::get($selected_id);
     $_POST['component'] = $myrow["stock_id"];
-    $_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
+    $_POST['quantity']  = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
   }
   hidden("selected_id", $selected_id);
   Sales_UI::local_items_row(_("Component:"), 'component', NULL, FALSE, TRUE);
@@ -92,13 +91,13 @@
   if (get_post('item_code') == '') { // new kit/alias
     if ($Mode != ADD_ITEM && $Mode != UPDATE_ITEM) {
       $_POST['description'] = $props['description'];
-      $_POST['category'] = $props['category_id'];
+      $_POST['category']    = $props['category_id'];
     }
     text_row(_("Description:"), 'description', NULL, 50, 200);
     Item_Category::row(_("Category:"), 'category', NULL);
   }
-  $res = Item::get_edit_info(get_post('component'));
-  $dec = $res["decimals"] == '' ? 0 : $res["decimals"];
+  $res   = Item::get_edit_info(get_post('component'));
+  $dec   = $res["decimals"] == '' ? 0 : $res["decimals"];
   $units = $res["units"] == '' ? _('kits') : $res["units"];
   if (list_updated('component')) {
     $_POST['quantity'] = Num::format(1, $dec);
@@ -184,9 +183,9 @@
     }
     if ($selected_item == -1) { // new item alias/kit
       if ($_POST['item_code'] == '') {
-        $kit_code = $_POST['kit_code'];
+        $kit_code     = $_POST['kit_code'];
         $selected_kit = $_POST['item_code'] = $kit_code;
-        $msg = _("New alias code has been created.");
+        $msg          = _("New alias code has been created.");
       }
       else {
         $msg = _("New component has been added to selected kit.");

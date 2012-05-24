@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $js = "";
   Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
@@ -48,10 +48,10 @@
  <td class='tablehead'>" . _("Credit") . "</td>
  </tr>";
     echo $tableheader;
-    $k = 0;
+    $k        = 0;
     $accounts = GL_Account::get_all();
-    $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-    $begin = Dates::begin_fiscalyear();
+    $pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+    $begin    = Dates::begin_fiscalyear();
     if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
       $begin = $_POST['TransFromDate'];
     }
@@ -59,7 +59,7 @@
     while ($account = DB::fetch($accounts)) {
       $prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], FALSE, FALSE);
       $curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], TRUE, TRUE);
-      $tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], FALSE, TRUE);
+      $tot  = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], FALSE, TRUE);
       if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
         continue;
       }

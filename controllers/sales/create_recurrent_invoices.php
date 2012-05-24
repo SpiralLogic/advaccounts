@@ -13,10 +13,10 @@
   if (isset($_GET['recurrent'])) {
     $date = Dates::today();
     if (Dates::is_date_in_fiscalyear($date)) {
-      $invs = array();
-      $sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
+      $invs   = array();
+      $sql    = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
       $result = DB::query($sql, "could not get recurrent invoice");
-      $myrow = DB::fetch($result);
+      $myrow  = DB::fetch($result);
       if ($myrow['debtor_id'] == 0) {
         $cust = Sales_Branch::get_from_group($myrow['group_no']);
         while ($row = DB::fetch($cust)) {
@@ -53,19 +53,19 @@
       Event::error(_("The entered date is not in fiscal year."));
     }
   }
-  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
+  $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
   Table::start('tablestyle grid width70');
   $th = array(
     _("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
   );
   Table::header($th);
-  $k = 0;
+  $k     = 0;
   $today = Dates::add_days(Dates::today(), 1);
-  $due = FALSE;
+  $due   = FALSE;
   while ($myrow = DB::fetch($result)) {
-    $begin = Dates::sql2date($myrow["begin"]);
-    $end = Dates::sql2date($myrow["end"]);
+    $begin     = Dates::sql2date($myrow["begin"]);
+    $end       = Dates::sql2date($myrow["end"]);
     $last_sent = Dates::sql2date($myrow["last_sent"]);
     if ($myrow['monthly'] > 0) {
       $due_date = Dates::begin_month($last_sent);
@@ -75,13 +75,12 @@
     }
     $due_date = Dates::add_months($due_date, $myrow['monthly']);
     $due_date = Dates::add_days($due_date, $myrow['days']);
-    $overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
+    $overdue  = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
     if ($overdue) {
       Row::start("class='overduebg'");
       $due = TRUE;
     }
     else {
-
     }
     Cell::label($myrow["description"]);
     Cell::label(Debtor::trans_view(30, $myrow["order_no"]));

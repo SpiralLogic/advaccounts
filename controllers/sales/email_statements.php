@@ -11,7 +11,7 @@
   Page::start(_("Email Statements"), SA_OPEN);
 
   echo "<pre>";
-  $sql = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_id = b.debtor_id AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
+  $sql    = "SELECT DISTINCT db.*, b.email , b.phone FROM debtor_balances db, branches b WHERE db.debtor_id = b.debtor_id AND LENGTH(b.email)>0 AND b.branch_ref = 'Accounts' AND Balance>0";
   $result = DB::query($sql, "The customer details could not be retrieved");
   echo "<table id='table' class='grid center pad2'>";
   echo "<tr><th><button id='all'>All</button></th><th>Name</th><th>Phone</th><th>Balance</th><th>Due</th><th>Overdue1</th><th>Overdue2</th></tr>";

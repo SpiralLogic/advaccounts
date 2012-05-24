@@ -304,10 +304,10 @@
           $company = Config::get('db.' . $_POST['login_company']);
         }
         if (!isset($company)) {
-          $id = $id ? : User::i()->company;
+          $id      = $id ? : User::i()->company;
           $company = Config::get('db.' . $id);
         }
-        $id = $company['id'];
+        $id        = $company['id'];
         static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
       }
       return static::$i;
@@ -323,9 +323,9 @@
      */
     static public function add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::date2sql($from_date);
-      $to = Dates::date2sql($to_date);
+      $to   = Dates::date2sql($to_date);
       $sql
-        = "INSERT INTO fiscal_year (begin, end, closed)
+            = "INSERT INTO fiscal_year (begin, end, closed)
 		VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
       DB::query($sql, "could not add fiscal year");
     }
@@ -390,9 +390,9 @@
      * @return mixed
      */
     static public function get_base_sales_type() {
-      $sql = "SELECT base_sales FROM company WHERE coy_code=1";
+      $sql    = "SELECT base_sales FROM company WHERE coy_code=1";
       $result = DB::query($sql, "could not get base sales type");
-      $myrow = DB::fetch($result);
+      $myrow  = DB::fetch($result);
       return $myrow[0];
     }
     /**
@@ -403,7 +403,7 @@
      * @return array
      */
     static public function get_company_extensions($id = -1) {
-      $file = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
+      $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = array();
       if (is_file($file)) {
         include($file);
@@ -415,8 +415,8 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get_current_fiscalyear() {
-      $year = DB_Company::get_pref('f_year');
-      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
+      $year   = DB_Company::get_pref('f_year');
+      $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
       $result = DB::query($sql, "could not get current fiscal year");
       return DB::fetch($result);
     }
@@ -428,7 +428,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get_fiscalyear($id) {
-      $sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get fiscal year");
       return DB::fetch($result);
     }
@@ -489,7 +489,7 @@
      */
     static public function get_payment_terms($selected_id) {
       $sql
-        = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+              = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
 	 FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not get payment term");
       return DB::fetch($result);
@@ -540,9 +540,9 @@
         }
         $sqls[] = "(SELECT COUNT(*) as cnt FROM `$tbl` WHERE `$key`=" . DB::escape($id) . ")\n";
       }
-      $sql = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
+      $sql    = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
       $result = DB::query($sql, "check relations for " . implode(',', $tables) . " failed");
-      $count = DB::fetch($result);
+      $count  = DB::fetch($result);
       return $count[0];
     }
     /**

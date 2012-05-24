@@ -14,7 +14,7 @@
   JS::open_window(900, 500);
   if (isset($_GET[Orders::MODIFY_CREDIT])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
-    $help_context = "Modifying Credit Invoice";
+    $help_context           = "Modifying Credit Invoice";
   }
   elseif (isset($_GET['InvoiceNumber'])) {
     $page_title = _($help_context = "Credit all or part of an Invoice");
@@ -25,7 +25,7 @@
 
   Page::start($page_title, SA_SALESCREDITINV);
   if (isset($_GET[ADDED_ID])) {
-    $credit_no = $_GET[ADDED_ID];
+    $credit_no  = $_GET[ADDED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been processed"));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
@@ -34,7 +34,7 @@
     Page::footer_exit();
   }
   elseif (isset($_GET[UPDATED_ID])) {
-    $credit_no = $_GET[UPDATED_ID];
+    $credit_no  = $_GET[UPDATED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been updated"));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
@@ -43,13 +43,13 @@
     Page::footer_exit();
   }
   if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
-    $ci = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], TRUE);
-    $ci->trans_type = ST_CUSTCREDIT;
-    $ci->src_docs = $ci->trans_no;
-    $ci->src_date = $ci->document_date;
-    $ci->trans_no = 0;
+    $ci                = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], TRUE);
+    $ci->trans_type    = ST_CUSTCREDIT;
+    $ci->src_docs      = $ci->trans_no;
+    $ci->src_date      = $ci->document_date;
+    $ci->trans_no      = 0;
     $ci->document_date = Dates::new_doc_date();
-    $ci->reference = Ref::get_next(ST_CUSTCREDIT);
+    $ci->reference     = Ref::get_next(ST_CUSTCREDIT);
     for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
       $ci->line_items[$line_no]->qty_dispatched = '0';
     }
@@ -76,7 +76,7 @@
     if ($new_credit) {
       Dates::new_doc_date(Orders::session_get($_POST['order_id'])->document_date);
     }
-    $credit = Orders::session_get($_POST['order_id']);
+    $credit    = Orders::session_get($_POST['order_id']);
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
     Orders::session_delete($credit);
     if ($new_credit) {
@@ -90,8 +90,8 @@
     Orders::session_get($_POST['order_id'])->location = $_POST['location'];
   }
   if (isset($_POST[Orders::CANCEL_CHANGES])) {
-    $order = Orders::session_get($_POST['order_id']);
-    $type = $order->trans_type;
+    $order    = Orders::session_get($_POST['order_id']);
+    $type     = $order->trans_type;
     $order_no = key($order->trans_no);
     Orders::session_delete($_POST['order_id']);
     create_order($type, $order_no);
@@ -169,12 +169,12 @@
   }
 
   function copy_to_credit() {
-    $order = Orders::session_get($_POST['order_id']);
-    $order->ship_via = $_POST['ShipperID'];
-    $order->freight_cost = Validation::input_num('ChargeFreightCost');
+    $order                = Orders::session_get($_POST['order_id']);
+    $order->ship_via      = $_POST['ShipperID'];
+    $order->freight_cost  = Validation::input_num('ChargeFreightCost');
     $order->document_date = $_POST['CreditDate'];
-    $order->location = $_POST['location'];
-    $order->Comments = $_POST['CreditText'];
+    $order->location      = $_POST['location'];
+    $order->Comments      = $_POST['CreditText'];
     if ($order->trans_no == 0) {
       $order->reference = $_POST['ref'];
     }
@@ -184,14 +184,14 @@
    * @param $order
    */
   function copy_from_credit($order) {
-    $order = Sales_Order::check_edit_conflicts($order);
-    $_POST['ShipperID'] = $order->ship_via;
+    $order                      = Sales_Order::check_edit_conflicts($order);
+    $_POST['ShipperID']         = $order->ship_via;
     $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-    $_POST['CreditDate'] = $order->document_date;
-    $_POST['location'] = $order->location;
-    $_POST['CreditText'] = $order->Comments;
-    $_POST['order_id'] = $order->order_id;
-    $_POST['ref'] = $order->reference;
+    $_POST['CreditDate']        = $order->document_date;
+    $_POST['location']          = $order->location;
+    $_POST['CreditText']        = $order->Comments;
+    $_POST['order_id']          = $order->order_id;
+    $_POST['ref']               = $order->reference;
     Orders::session_set($order);
   }
 
@@ -266,11 +266,11 @@
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
     small_amount_cells(NULL, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
     Row::end();
-    $inv_items_total = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
+    $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
     Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
-    $taxes = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
-    $tax_total = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
+    $taxes         = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
+    $tax_total     = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
     $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
     Table::end();

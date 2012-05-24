@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Debtor_TransDetail {
 
     /**
@@ -22,7 +22,7 @@
         $debtor_trans_no = array(0 => $debtor_trans_no);
       }
       $sql
-        = "SELECT debtor_trans_details.*,
+          = "SELECT debtor_trans_details.*,
 		debtor_trans_details.unit_price+debtor_trans_details.unit_tax AS FullUnitPrice,
 		debtor_trans_details.description As StockDescription,
 		stock_master.units

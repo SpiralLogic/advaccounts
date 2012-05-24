@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_QuickEntry {
+
     /**
      * @static
      *
@@ -226,8 +227,8 @@
         if ($descr != '') {
           $qe['description'] .= ': ' . $descr;
         }
-        $result = GL_QuickEntry::get_lines($id);
-        $totrate = 0;
+        $result   = GL_QuickEntry::get_lines($id);
+        $totrate  = 0;
         $qe_lines = array();
         while ($row = DB::fetch($result)) {
           $qe_lines[] = $row;
@@ -240,7 +241,7 @@
               }
           }
         }
-        $first = TRUE;
+        $first   = TRUE;
         $taxbase = 0;
         if (!count($qe_lines)) {
           Event::error(_('There are no lines for this quick entry!'));
@@ -279,7 +280,7 @@
             case "t-": // ditto & reduce base amount
               if ($first) {
                 $taxbase = $base / ($totrate + 100);
-                $first = FALSE;
+                $first   = FALSE;
               }
               if (substr($qe_line['action'], 0, 1) != 'T') {
                 $part = $taxbase;
@@ -291,8 +292,8 @@
               //if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
               if ($type == QE_SUPPINV) {
                 $taxgroup = $order->tax_group_id;
-                $rates = 0;
-                $res = Tax_Groups::get_for_item($order->tax_group_id);
+                $rates    = 0;
+                $res      = Tax_Groups::get_for_item($order->tax_group_id);
                 while ($row = DB::fetch($res)) {
                   $rates += $row['rate'];
                 }
@@ -347,7 +348,7 @@
      */
     static public function select($name, $selected_id = NULL, $type = NULL, $submit_on_change = FALSE) {
       $where = FALSE;
-      $sql = "SELECT id, description FROM quick_entries";
+      $sql   = "SELECT id, description FROM quick_entries";
       if ($type != NULL) {
         $sql .= " WHERE type=$type";
       }

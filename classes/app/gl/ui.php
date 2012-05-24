@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_UI {
+
     /**
      * @static
      *
@@ -34,8 +35,8 @@
 				WHERE chart.account_type=type.id";
       }
       return select_box($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
-        'cache' => TRUE,
-        'format' => '_format_account', 'type' => 2, 'spec_option' => $all_option === TRUE ?
+        'cache'                  => TRUE,
+        'format'                 => '_format_account', 'type' => 2, 'spec_option' => $all_option === TRUE ?
           _("Use Item Sales Accounts") :
           $all_option, 'spec_id' => '', 'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => FALSE, 'size' => 12, 'max' => 10, 'cells' => TRUE, 'select_submit' => $submit_on_change, 'async' => FALSE, 'category' => 2, 'show_inactive' => $all
       ));
@@ -94,7 +95,7 @@
       $icon = FALSE;
       if ($label == "") {
         $label = _("GL");
-        $icon = ICON_GL;
+        $icon  = ICON_GL;
       }
       return Display::viewer_link($label, "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
     }

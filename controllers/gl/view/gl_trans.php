@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "General Ledger Transaction Details"), SA_GLTRANSVIEW, TRUE);
   if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) { /*Script was not passed the correct parameters */
@@ -15,7 +14,7 @@
     exit;
   }
 
-  $sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+  $sql    = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
   $result = DB::query($sql, "could not get transactions");
@@ -44,7 +43,7 @@
       );
     }
   }
-  $k = 0; //row colour counter
+  $k             = 0; //row colour counter
   $heading_shown = FALSE;
   while ($myrow = DB::fetch($result)) {
     if ($myrow['amount'] == 0) {

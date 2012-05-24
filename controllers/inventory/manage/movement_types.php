@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -37,10 +36,10 @@
    * @return bool
    */
   function can_delete($selected_id) {
-    $sql = "SELECT COUNT(*) FROM stock_moves
+    $sql    = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock moves");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
       return FALSE;
@@ -57,7 +56,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -82,7 +81,7 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = Inv_Movement::get_type($selected_id);
+      $myrow         = Inv_Movement::get_type($selected_id);
       $_POST['name'] = $myrow["name"];
     }
     hidden('selected_id', $selected_id);

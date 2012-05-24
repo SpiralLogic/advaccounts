@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Dimensions {
 
     /**
@@ -23,10 +23,10 @@
      */
     static public function add($reference, $name, $type_, $date_, $due_date, $memo_) {
       DB::begin();
-      $date = Dates::date2sql($date_);
+      $date    = Dates::date2sql($date_);
       $duedate = Dates::date2sql($due_date);
       $sql
-        = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+               = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . DB::escape($reference) . ", " . DB::escape($name) . ", " . DB::escape($type_) . ", '$date', '$duedate')";
       DB::query($sql, "could not add dimension");
       $id = DB::insert_id();
@@ -49,9 +49,9 @@
      */
     static public function update($id, $name, $type_, $date_, $due_date, $memo_) {
       DB::begin();
-      $date = Dates::date2sql($date_);
+      $date    = Dates::date2sql($date_);
       $duedate = Dates::date2sql($due_date);
-      $sql = "UPDATE dimensions SET name=" . DB::escape($name) . ",
+      $sql     = "UPDATE dimensions SET name=" . DB::escape($name) . ",
 		type_ = " . DB::escape($type_) . ",
 		date_='$date',
 		due_date='$duedate'
@@ -83,7 +83,7 @@
      * @return DB_Query_Result
      */
     static public function get($id, $allow_null = FALSE) {
-      $sql = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "The dimension could not be retrieved");
       if (!$allow_null && DB::num_rows($result) == 0) {
         Errors::db_error("Could not find dimension $id", $sql);
@@ -183,9 +183,9 @@
      */
     static public function display_balance($id, $from, $to) {
       $from = Dates::date2sql($from);
-      $to = Dates::date2sql($to);
+      $to   = Dates::date2sql($to);
       $sql
-        = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+              = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 			gl_trans,chart_master WHERE
 			gl_trans.account = chart_master.account_code AND
 			(dimension_id = $id OR dimension2_id = $id) AND
@@ -236,9 +236,9 @@
      * @return string
      */
     static public function select($name, $selected_id = NULL, $no_option = FALSE, $showname = ' ', $submit_on_change = FALSE, $showclosed = FALSE, $showtype = 1) {
-      $sql = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
+      $sql     = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
       $options = array(
-        'order' => 'reference', 'spec_option' => $no_option ? $showname :
+        'order'            => 'reference', 'spec_option' => $no_option ? $showname :
           FALSE, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => FALSE
       );
       if (!$showclosed) {

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /**
 
    */
@@ -30,8 +30,8 @@
      * @param string $access
      */
     function app_function($label, $link, $access = SA_OPEN) {
-      $this->label = $label;
-      $this->link = e($link);
+      $this->label  = $label;
+      $this->link   = e($link);
       $this->access = $access;
     }
   }
@@ -62,8 +62,8 @@
      * @param null $icon
      */
     public function module($name, $icon = NULL) {
-      $this->name = $name;
-      $this->icon = $icon;
+      $this->name          = $name;
+      $this->icon          = $icon;
       $this->lappfunctions = array();
       $this->rappfunctions = array();
     }
@@ -130,8 +130,8 @@
      * @param bool $enabled
      */
     public function __construct($id, $name, $enabled = TRUE) {
-      $this->id = $id;
-      $this->name = $name;
+      $this->id      = $id;
+      $this->name    = $name;
       $this->enabled = $enabled;
       $this->modules = array();
     }

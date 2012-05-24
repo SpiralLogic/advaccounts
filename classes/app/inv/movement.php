@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Inv_Movement {
+
     /**
      * @static
      *
@@ -51,7 +52,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get_type($type_id) {
-      $sql = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
+      $sql    = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get item movement type");
       return DB::fetch($result);
     }
@@ -121,7 +122,7 @@
         return NULL;
       }
       $date = Dates::date2sql($date_);
-      $sql = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
+      $sql  = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
 			tran_date, person_id, reference, qty, standard_cost, visible, price,
 			discount_percent) VALUES (" . DB::escape($stock_id) . ", " . DB::escape($trans_no) . ", " . DB::escape($type) . ",	" . DB::escape($location) . ", '$date', " . DB::escape($person_id) . ", " . DB::escape($reference) . ", " . DB::escape($quantity) . ", " . DB::escape($std_cost) . "," . DB::escape($show_or_hide) . ", " . DB::escape($price) . ", " . DB::escape($discount_percent) . ")";
       if ($error_msg == "") {

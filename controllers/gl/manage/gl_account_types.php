@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "GL Account Groups"), SA_GLACCOUNTGROUP);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -68,10 +68,10 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = GL_Type::get($selected_id);
-      $_POST['id'] = $myrow["id"];
-      $_POST['name'] = $myrow["name"];
-      $_POST['parent'] = $myrow["parent"];
+      $myrow             = GL_Type::get($selected_id);
+      $_POST['id']       = $myrow["id"];
+      $_POST['name']     = $myrow["name"];
+      $_POST['parent']   = $myrow["parent"];
       $_POST['class_id'] = $myrow["class_id"];
       hidden('selected_id', $selected_id);
     }
@@ -97,19 +97,19 @@
     if ($selected_id == -1) {
       return FALSE;
     }
-    $type = DB::escape($selected_id);
-    $sql = "SELECT COUNT(*) FROM chart_master
+    $type   = DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
     $result = DB::query($sql, "could not query chart master");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
       return FALSE;
     }
-    $sql = "SELECT COUNT(*) FROM chart_types
+    $sql    = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
     $result = DB::query($sql, "could not query chart types");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
       return FALSE;

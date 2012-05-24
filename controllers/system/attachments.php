@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   if (isset($_GET['vw'])) {
     $view_id = $_GET['vw'];
@@ -72,11 +71,11 @@
     if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
       //$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
       $tmpname = $_FILES['filename']['tmp_name'];
-      $dir = COMPANY_PATH . "attachments";
+      $dir     = COMPANY_PATH . "attachments";
       if (!file_exists($dir)) {
         mkdir($dir, 0777);
         $index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
-        $fp = fopen($dir . "/index.php", "w");
+        $fp         = fopen($dir . "/index.php", "w");
         fwrite($fp, $index_file);
         fclose($fp);
       }
@@ -92,7 +91,7 @@
     }
     else {
       $unique_name = $filename = $filetype = "";
-      $filesize = 0;
+      $filesize    = 0;
     }
     $date = Dates::date2sql(Dates::today());
     if ($Mode == ADD_ITEM) {
@@ -142,8 +141,8 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $row = get_attachment($selected_id);
-      $_POST['trans_no'] = $row["trans_no"];
+      $row                  = get_attachment($selected_id);
+      $_POST['trans_no']    = $row["trans_no"];
       $_POST['description'] = $row["description"];
       hidden('trans_no', $row['trans_no']);
       hidden('unique_name', $row['unique_name']);

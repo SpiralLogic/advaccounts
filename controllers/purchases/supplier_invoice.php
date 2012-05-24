@@ -28,9 +28,10 @@
   if (isset($_GET['New'])) {
     Creditor_Trans::i(TRUE);
     Creditor_Trans::i()->is_invoice = TRUE;
-    $supplier_id=Input::get('supplier_id', Input::NUMERIC);
-    if ($supplier_id){
-      Session::i()->setGlobal('creditor', $supplier_id);}
+    $supplier_id                    = Input::get('supplier_id', Input::NUMERIC);
+    if ($supplier_id) {
+      Session::i()->setGlobal('creditor', $supplier_id);
+    }
   }
   //	GL postings are often entered in the same form to two accounts
   // so fileds are cleared only on user demand.
@@ -43,15 +44,15 @@
   if (isset($_POST['AddGLCodeToTrans'])) {
     Ajax::i()->activate('gl_items');
     $input_error = FALSE;
-    $sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
-    $result = DB::query($sql, "get account information");
+    $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
+    $result      = DB::query($sql, "get account information");
     if (DB::num_rows($result) == 0) {
       Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
       JS::set_focus('gl_code');
       $input_error = TRUE;
     }
     else {
-      $myrow = DB::fetch_row($result);
+      $myrow       = DB::fetch_row($result);
       $gl_act_name = $myrow[1];
       if (!Validation::post_num('amount')) {
         Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -103,7 +104,7 @@
       Creditor_Trans::i()
         ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
     }
-    $invoice_no = Purch_Invoice::add(Creditor_Trans::i());
+    $invoice_no                          = Purch_Invoice::add(Creditor_Trans::i());
     $_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
     Session::i()->setGlobal('creditor', $_POST['supplier_id'], '');
     Creditor_Trans::i()->clear_items();
@@ -157,9 +158,9 @@
     if ($id2 != -1) {
       DB::begin();
       $myrow = Purch_GRN::get_item($id2);
-      $grn = Purch_GRN::get_batch($myrow['grn_batch_id']);
+      $grn   = Purch_GRN::get_batch($myrow['grn_batch_id']);
       $sql
-        = "UPDATE purch_order_details
+             = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
       DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
       $sql
@@ -282,9 +283,9 @@ JS;
       JS::set_focus('due_date');
       return FALSE;
     }
-    $sql = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+    $sql    = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape(Creditor_Trans::i()->supplier_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
     $result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] == 1) { /*Transaction reference already entered */
       Event::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supplier_reference'] . ")"));
       return FALSE;

@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Inv_Transfer {
+
     /**
      * @static
      *
@@ -113,8 +114,8 @@
      */
     static public function update_pid($type, $stock_id, $from, $to, $pid, $cost) {
       $from = Dates::date2sql($from);
-      $to = Dates::date2sql($to);
-      $sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
+      $to   = Dates::date2sql($to);
+      $sql  = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
 				AND person_id = " . DB::escape($pid);
       DB::query($sql, "The stock movement standard_cost cannot be updated");
     }
@@ -146,7 +147,7 @@
         $th[] = '';
       }
       Table::header($th);
-      $k = 0; //row colour counter
+      $k  = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         if ($id != $line_no) {
@@ -181,8 +182,8 @@
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
-        $_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
-        $_POST['units'] = $order->line_items[$id]->units;
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+        $_POST['units']    = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
@@ -194,9 +195,9 @@
           Ajax::i()->activate('units');
           Ajax::i()->activate('qty');
         }
-        $item_info = Item::get_edit_info(Input::post('stock_id'));
-        $dec = $item_info['decimals'];
-        $_POST['qty'] = Num::format(0, $dec);
+        $item_info      = Item::get_edit_info(Input::post('stock_id'));
+        $dec            = $item_info['decimals'];
+        $_POST['qty']   = Num::format(0, $dec);
         $_POST['units'] = $item_info["units"];
       }
       small_qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);

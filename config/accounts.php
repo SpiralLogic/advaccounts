@@ -9,11 +9,11 @@
    **/
   return array(
     /** Allow charcters in accounts */
-    'allowcharacters' => NULL,
+    'allowcharacters'      => NULL,
     /** email stock location if order below reorder-level */
-    'stock_emailnotify' => FALSE,
+    'stock_emailnotify'    => FALSE,
     /** Allocation ALlowance */
     'allocation_allowance' => 0.005,
     /** Audit Logging */
-    'logs_audits' => TRUE,
+    'logs_audits'          => TRUE,
   );

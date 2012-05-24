@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Sales_CreditStatus {
+
     /**
      * @static
      *
@@ -54,7 +55,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($status_id) {
-      $sql = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
+      $sql    = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
       $result = DB::query($sql, "could not get credit status");
       return DB::fetch($result);
     }
@@ -120,21 +121,21 @@
      * @return bool
      */
     static public function can_delete($selected_id) {
-    $sql = "SELECT COUNT(*) FROM debtors
+      $sql    = "SELECT COUNT(*) FROM debtors
 			WHERE credit_status=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query customers");
-    $myrow = DB::fetch_row($result);
-    if ($myrow[0] > 0) {
-      Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
-      return FALSE;
+      $result = DB::query($sql, "could not query customers");
+      $myrow  = DB::fetch_row($result);
+      if ($myrow[0] > 0) {
+        Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+        return FALSE;
+      }
+      return TRUE;
     }
-    return TRUE;
-  }
     /**
      * @static
      * @return bool
      */
-    static public   function can_process() {
+    static public function can_process() {
       if (strlen($_POST['reason_description']) == 0) {
         Event::error(_("The credit status description cannot be empty."));
         JS::set_focus('reason_description');
@@ -142,5 +143,4 @@
       }
       return TRUE;
     }
-
   }

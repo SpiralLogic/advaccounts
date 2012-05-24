@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT : SA_DEPOSIT;
   JS::open_window(800, 500);
@@ -23,12 +23,12 @@
   Page::start($_SESSION['page_title'], $page_security);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   if (list_updated('PersonDetailID')) {
-    $br = Sales_Branch::get(get_post('PersonDetailID'));
+    $br                 = Sales_Branch::get(get_post('PersonDetailID'));
     $_POST['person_id'] = $br['debtor_id'];
     Ajax::i()->activate('person_id');
   }
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_BANKPAYMENT;
     Event::success(_("Payment $trans_no has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
@@ -37,7 +37,7 @@
     Page::footer_exit();
   }
   if (isset($_GET['AddedDep'])) {
-    $trans_no = $_GET['AddedDep'];
+    $trans_no   = $_GET['AddedDep'];
     $trans_type = ST_BANKDEPOSIT;
     Event::success(_("Deposit $trans_no has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
@@ -83,9 +83,9 @@
     }
   }
   if (isset($_POST['Process'])) {
-    $trans = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
+    $trans      = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
     $trans_type = $trans[0];
-    $trans_no = $trans[1];
+    $trans_no   = $trans[1];
     Dates::new_doc_date($_POST['date_']);
     $_SESSION['pay_items']->clear_items();
     unset($_SESSION['pay_items']);
@@ -125,7 +125,6 @@
   submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
   end_form();
   Page::end();
-
 
   /**
    * @return bool
@@ -187,7 +186,7 @@
       unset ($_SESSION['pay_items']);
     }
     $_SESSION['pay_items'] = new Item_Order($type);
-    $_POST['date_'] = Dates::new_doc_date();
+    $_POST['date_']        = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       $_POST['date_'] = Dates::end_fiscalyear();
     }

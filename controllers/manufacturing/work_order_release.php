@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRELEASE);
@@ -51,9 +50,9 @@
     exit;
   }
   start_form();
-  $myrow = WO::get($selected_id);
+  $myrow             = WO::get($selected_id);
   $_POST['released'] = $myrow["released"];
-  $_POST['memo_'] = "";
+  $_POST['memo_']    = "";
   if (can_process($myrow)) {
     Table::start('tablestyle2');
     Row::label(_("Work Order #:"), $selected_id);

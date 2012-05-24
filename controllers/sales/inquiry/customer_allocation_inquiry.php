@@ -14,7 +14,8 @@
     $_POST['customer_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['customer_id'];
   }
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
+    $_POST['customer_id'] = Session::i()->getGlobal('debtor');
+  }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
       $_POST[$k] = $v;
@@ -29,17 +30,18 @@
   if (!Input::get('frame')) {
     Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
   }
-  Session::i()->setGlobal('debtor',$_POST['customer_id']);  if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
+  Session::i()->setGlobal('debtor', $_POST['customer_id']);
+  if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
     $_POST['TransAfterDate'] = Session::i()->getGlobal('TransAfterDate');
   }
   elseif (isset($_POST['TransAfterDate'])) {
-    Session::i()->setGlobal('TransAfterDate',$_POST['TransAfterDate']);
+    Session::i()->setGlobal('TransAfterDate', $_POST['TransAfterDate']);
   }
   if (!isset($_POST['TransToDate']) && Session::i()->getGlobal('TransToDate')) {
     $_POST['TransToDate'] = Session::i()->getGlobal('TransToDate');
   }
   elseif (isset($_POST['TransToDate'])) {
-    Session::i()->setGlobal('TransToDate',$_POST['TransToDate']);
+    Session::i()->setGlobal('TransToDate', $_POST['TransToDate']);
   }
   date_cells(_("from:"), 'TransAfterDate', '', NULL, -31, -12);
   date_cells(_("to:"), 'TransToDate', '', NULL, 1);
@@ -49,8 +51,8 @@
   Row::end();
   Table::end();
   $data_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to = Dates::date2sql($_POST['TransToDate']);
-  $sql = "SELECT ";
+  $date_to    = Dates::date2sql($_POST['TransToDate']);
+  $sql        = "SELECT ";
   if (Input::get('frame')) {
     $sql .= " IF(trans.type=" . ST_SALESINVOICE . ",0,1), ";
   }
@@ -100,52 +102,52 @@
   }
   $cols = array(
     "<button id='emailInvoices'>Email</button> " => array(
-      'fun' => function ($row) {
+      'fun'   => function ($row) {
         return ($row['type'] == ST_SALESINVOICE) ? checkbox(NULL, 'emailChk') : '';
       }
     , 'align' => 'center'
     ),
-    _("Type") => array(
+    _("Type")                                    => array(
       'fun' => function ($dummy, $type) {
         global $systypes_array;
         return $systypes_array[$type];
       }
     ),
-    _("#") => array(
+    _("#")                                       => array(
       'fun' => function ($trans) {
         return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
       }
     ),
     _("Reference"),
-    _("Order") => array(
+    _("Order")                                   => array(
       'fun' => function ($row) {
         return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
       }
     ),
-    _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
-    _("Due Date") => array(
+    _("Date")                                    => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
+    _("Due Date")                                => array(
       'type' => 'date', 'fun' => function ($row) {
         return $row["type"] == 10 ? $row["due_date"] : '';
       }
     ),
-    _("Customer") => array(),
-    _("Currency") => array('align' => 'center'),
-    _("Debit") => array(
+    _("Customer")                                => array(),
+    _("Currency")                                => array('align' => 'center'),
+    _("Debit")                                   => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value >= 0 ? Num::price_format($value) : '';
       }
     ),
-    _("Credit") => array(
+    _("Credit")                                  => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value > 0 ? Num::price_format($value) : '';
       }
     ),
-    _("Allocated") => 'amount', _("overdue") => array('type' => 'skip'),
-    _("Balance") => array(
+    _("Allocated")                               => 'amount', _("overdue") => array('type' => 'skip'),
+    _("Balance")                                 => array(
       'type' => 'amount', 'insert' => TRUE, 'fun' => function ($row) {
         return $row["TotalAmount"] - $row["Allocated"];
       }

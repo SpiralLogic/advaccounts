@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Create/Update Company"), SA_CREATECOMPANY);
   if (isset($_GET['selected_id'])) {
@@ -59,18 +59,18 @@
    */
   function handle_submit(&$selected_id) {
     $comp_subdirs = Config::get('company_subdirs');
-    $error = FALSE;
+    $error        = FALSE;
     if (!check_data($selected_id)) {
       return FALSE;
     }
-    $id = $_GET['id'];
-    $connections = Config::get_all('db');
-    $new = !isset($connections[$id]);
-    $db_connection['name'] = $_POST['name'];
-    $db_connection['host'] = $_POST['host'];
-    $db_connection['dbuser'] = $_POST['dbuser'];
+    $id                          = $_GET['id'];
+    $connections                 = Config::get_all('db');
+    $new                         = !isset($connections[$id]);
+    $db_connection['name']       = $_POST['name'];
+    $db_connection['host']       = $_POST['host'];
+    $db_connection['dbuser']     = $_POST['dbuser'];
     $db_connection['dbpassword'] = $_POST['dbpassword'];
-    $db_connection['dbname'] = $_POST['dbname'];
+    $db_connection['dbname']     = $_POST['dbname'];
     Config::set($id, $db_connection, 'db');
     if ((bool) $_POST['def'] == TRUE) {
       Config::set('default.company', $id);
@@ -138,7 +138,7 @@
     // rename directory to temporary name to ensure all
     // other subdirectories will have right owners even after
     // unsuccessfull removal.
-    $cdir = COMPANY_PATH . DS . $id;
+    $cdir    = COMPANY_PATH . DS . $id;
     $tmpname = COMPANY_PATH . 'old_' . $id;
     if (!@rename($cdir, $tmpname)) {
       Event::error(_('Cannot rename subdirectory to temporary name.'));
@@ -182,9 +182,9 @@
       _("Company"), _("Database Host"), _("Database User"), _("Database Name"), _("Table Pref"), _("Default"), "", ""
     );
     Table::header($th);
-    $k = 0;
+    $k    = 0;
     $conn = Config::get_all('db');
-    $n = count($conn);
+    $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
       if ($i == Config::get('default.company')) {
         $what = _("Yes");
@@ -196,17 +196,16 @@
         Row::start("class='stockmankobg'");
       }
       else {
-
       }
       Cell::label($conn[$i]['name']);
       Cell::label($conn[$i]['host']);
       Cell::label($conn[$i]['dbuser']);
       Cell::label($conn[$i]['dbname']);
       Cell::label($what);
-      $edit = _("Edit");
+      $edit   = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
-        $edit = set_icon(ICON_EDIT, $edit);
+        $edit   = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
@@ -242,12 +241,12 @@
 			</script>";
     Table::start('tablestyle2');
     if ($selected_id != -1) {
-      $conn = Config::get('db.' . $selected_id);
-      $_POST['name'] = $conn['name'];
-      $_POST['host'] = $conn['host'];
-      $_POST['dbuser'] = $conn['dbuser'];
+      $conn                = Config::get('db.' . $selected_id);
+      $_POST['name']       = $conn['name'];
+      $_POST['host']       = $conn['host'];
+      $_POST['dbuser']     = $conn['dbuser'];
       $_POST['dbpassword'] = $conn['dbpassword'];
-      $_POST['dbname'] = $conn['dbname'];
+      $_POST['dbname']     = $conn['dbname'];
       if ($selected_id == Config::get('default.company')) {
         $_POST['def'] = TRUE;
       }

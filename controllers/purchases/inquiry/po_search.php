@@ -8,13 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
-  $_POST['order_number'] = Input::get_post('order_number', Input::NUMERIC);
-  $_POST['StockLocation'] = Input::get_post('StockLocation', Input::STRING, '');
+  $_POST['order_number']        = Input::get_post('order_number', Input::NUMERIC);
+  $_POST['StockLocation']       = Input::get_post('StockLocation', Input::STRING, '');
   $_POST['SelectStockFromList'] = Input::get_post('SelectStockFromList', Input::STRING, '');
-  $_POST['supplier_id'] = Input::get_post('supplier_id', Input::NUMERIC, 0);
+  $_POST['supplier_id']         = Input::get_post('supplier_id', Input::NUMERIC, 0);
   // Ajax updates
   //
   if (get_post('SearchOrders')) {
@@ -73,7 +72,7 @@
     $sql .= "AND porder.reference LIKE " . DB::quote($_POST['order_number']);
   }
   else {
-    $data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+    $data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
     $data_before = Dates::date2sql($_POST['OrdersToDate']);
     $sql .= " AND porder.ord_date >= '$data_after'";
     $sql .= " AND porder.ord_date <= '$data_before'";
@@ -88,17 +87,17 @@
   $result = DB::query($sql, "No orders were returned");
   /*show a table of the orders returned by the sql */
   $cols = array(
-    _("#") => array('fun' => function ($trans) {return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]);}, 'ord' => ''),
+    _("#")           => array('fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }, 'ord' => ''),
     _("Reference"),
-    _("Supplier") => array('ord' => '', 'type' => 'id'),
+    _("Supplier")    => array('ord' => '', 'type' => 'id'),
     _("Supplier ID") => 'skip',
     _("Location"),
     _("Supplier's Reference"),
-    _("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Currency") => array('align' => 'center'),
+    _("Order Date")  => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Currency")    => array('align' => 'center'),
     _("Order Total") => 'amount',
-    array('insert' => TRUE, 'fun' => function ($row) {return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);}),
-    array('insert' => TRUE, 'fun' => function ($row) {return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_PURCHORDER, ICON_PRINT, 'button printlink');}),
+    array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT); }),
+    array('insert' => TRUE, 'fun' => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, ST_PURCHORDER, ICON_PRINT, 'button printlink'); }),
     array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); })
   );
   if (get_post('StockLocation') != ALL_TEXT) {

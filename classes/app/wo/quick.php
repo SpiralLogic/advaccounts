@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_Quick {
+
     /**
      * @static
      *
@@ -53,7 +54,7 @@
       while ($bom_item = DB::fetch($result)) {
         $unit_quantity = $bom_item["quantity"];
         $item_quantity = $bom_item["quantity"] * $units_reqd;
-        $sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
+        $sql           = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
 			VALUES ($woid, '" . $bom_item["component"] . "',
 			'" . $bom_item["workcentre_added"] . "',
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
@@ -95,7 +96,7 @@
       $total_cost = 0;
       while ($bom_item = DB::fetch($result)) {
         $bom_accounts = Item::get_gl_code($bom_item["component"]);
-        $bom_cost = $bom_item["ComponentCost"] * $units_reqd;
+        $bom_cost     = $bom_item["ComponentCost"] * $units_reqd;
         if ($advanced) {
           WO_Requirements::update($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd);
           // insert a -ve stock move for each item
@@ -107,13 +108,13 @@
       }
       if ($advanced) {
         // also take the additional issues
-        $res = WO_Issue::get_additional($woid);
-        $wo = WO::get($woid);
+        $res         = WO_Issue::get_additional($woid);
+        $wo          = WO::get($woid);
         $issue_total = 0;
         while ($item = DB::fetch($res)) {
           $standard_cost = Item_Price::get_standard_cost($item['stock_id']);
-          $issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
-          $issue = Item::get_gl_code($item['stock_id']);
+          $issue_cost    = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
+          $issue         = Item::get_gl_code($item['stock_id']);
           $total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0, NULL,
             -$issue_cost);
           $issue_total += $issue_cost;

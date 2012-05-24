@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
@@ -27,11 +27,11 @@
   Table::end();
   end_form();
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to = Dates::date2sql($_POST['TransToDate']);
+  $date_to    = Dates::date2sql($_POST['TransToDate']);
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
-  $sql = "SELECT bank_trans.* FROM bank_trans
+  $sql    = "SELECT bank_trans.* FROM bank_trans
 	WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
@@ -45,20 +45,20 @@
     _("Type"), _("#"), _("Reference"), _("Date"), _("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
   );
   Table::header($th);
-  $sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::escape($_POST['bank_account']) . "
+  $sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
   $before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
   Row::start("class='inquirybg'");
   Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
   $bfw_row = DB::fetch_row($before_qty);
-  $bfw = $bfw_row[0];
+  $bfw     = $bfw_row[0];
   Cell::debitOrCredit($bfw);
   Cell::label("");
   Cell::label("", "colspan=2");
   Row::end();
   $running_total = $bfw;
-  $j = 1;
-  $k = 0; //row colour counter
+  $j             = 1;
+  $k             = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
 
     $running_total += $myrow["amount"];

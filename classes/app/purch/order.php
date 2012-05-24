@@ -96,11 +96,11 @@
      */
     public function __construct($order_no = 0, $view = FALSE) {
       /*Constructor function initialises a new purchase order object */
-      $this->line_items = array();
+      $this->line_items     = array();
       $this->lines_on_order = $this->supplier_id = 0;
       $this->set_salesman();
-      $this->location = Config::get('default.location');
-      $this->order_no = $order_no;
+      $this->location        = Config::get('default.location');
+      $this->order_no        = $order_no;
       $this->orig_order_date = Input::post('OrderDate', NULL, Dates::new_doc_date());
       if (!Dates::is_date_in_fiscalyear($this->orig_order_date)) {
         $this->orig_order_date = Dates::end_fiscalyear();
@@ -140,9 +140,9 @@
     public function set_salesman($salesman_code = NULL) {
       if ($salesman_code == NULL) {
         $salesman_name = User::i()->name;
-        $sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-        $query = DB::query($sql, 'Couldn\'t find current salesman');
-        $result = DB::fetch_assoc($query);
+        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
+        $query         = DB::query($sql, 'Couldn\'t find current salesman');
+        $result        = DB::fetch_assoc($query);
         if (!empty($result['salesman_code'])) {
           $salesman_code = $result['salesman_code'];
         }
@@ -161,13 +161,13 @@
      */
     public function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr = '', $discount = 0) {
       $this->line_items[$line_no]->quantity = $qty;
-      $this->line_items[$line_no]->price = $price;
+      $this->line_items[$line_no]->price    = $price;
       $this->line_items[$line_no]->discount = $discount;
       if (!empty($item_descr)) {
         $this->line_items[$line_no]->description = $item_descr;
       }
       $this->line_items[$line_no]->req_del_date = $req_del_date;
-      $this->line_items[$line_no]->price = $price;
+      $this->line_items[$line_no]->price        = $price;
     }
     /**
      * @param $line_no
@@ -193,9 +193,9 @@
      */
     public function clear_items() {
       unset($this->line_items);
-      $this->line_items = array();
+      $this->line_items     = array();
       $this->lines_on_order = 0;
-      $this->order_no = 0;
+      $this->order_no       = 0;
     }
     /**
      * @return int
@@ -296,10 +296,10 @@
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
       $sql
-        = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
   			FROM purch_order_details
   			WHERE order_no=" . DB::escape($this->order_no) . " ORDER BY po_detail_item";
-      $result = DB::query($sql, "could not query purch order details");
+      $result  = DB::query($sql, "could not query purch order details");
       $line_no = 1;
       while ($myrow = DB::fetch($result)) {
         $ln_item = $this->line_items[$line_no];
@@ -405,7 +405,7 @@
      */
     public function get_header($order_no) {
       $sql
-        = "SELECT purch_orders.*, suppliers.name,
+              = "SELECT purch_orders.*, suppliers.name,
 	 		suppliers.curr_code, locations.location_name
 			FROM purch_orders, suppliers, locations
 			WHERE purch_orders.supplier_id = suppliers.supplier_id
@@ -413,19 +413,19 @@
 			AND purch_orders.order_no = " . DB::escape($order_no);
       $result = DB::query($sql, "The order cannot be retrieved");
       if (DB::num_rows($result) == 1) {
-        $myrow = DB::fetch($result);
-        $this->order_no = $order_no;
-        $this->supplier_id = $myrow["supplier_id"];
-        $this->supplier_name = $myrow["name"];
-        $this->curr_code = $myrow["curr_code"];
-        $this->orig_order_date = Dates::sql2date($myrow["ord_date"]);
-        $this->Comments = $myrow["comments"];
-        $this->location = $myrow["into_stock_location"];
-        $this->requisition_no = $myrow["requisition_no"];
-        $this->reference = $myrow["reference"];
+        $myrow                  = DB::fetch($result);
+        $this->order_no         = $order_no;
+        $this->supplier_id      = $myrow["supplier_id"];
+        $this->supplier_name    = $myrow["name"];
+        $this->curr_code        = $myrow["curr_code"];
+        $this->orig_order_date  = Dates::sql2date($myrow["ord_date"]);
+        $this->Comments         = $myrow["comments"];
+        $this->location         = $myrow["into_stock_location"];
+        $this->requisition_no   = $myrow["requisition_no"];
+        $this->reference        = $myrow["reference"];
         $this->delivery_address = $myrow["delivery_address"];
-        $this->freight = $myrow["freight"];
-        $this->salesman = $myrow['salesman'];
+        $this->freight          = $myrow["freight"];
+        $this->salesman         = $myrow['salesman'];
         return TRUE;
       }
       elseif (DB::num_rows($result) > 1) {
@@ -501,14 +501,14 @@
      */
     public function supplier_to_order($supplier_id) {
       $sql
-        = "SELECT * FROM suppliers
+                              = "SELECT * FROM suppliers
 			WHERE supplier_id = '$supplier_id'";
-      $result = DB::query($sql, "The supplier details could not be retreived");
-      $myrow = DB::fetch_assoc($result);
+      $result                 = DB::query($sql, "The supplier details could not be retreived");
+      $myrow                  = DB::fetch_assoc($result);
       $this->supplier_details = $myrow;
-      $this->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
-      $this->supplier_name = $_POST['supplier_name'] = $myrow["name"];
-      $this->supplier_id = $_POST['supplier_id'] = $supplier_id;
+      $this->curr_code        = $_POST['curr_code'] = $myrow["curr_code"];
+      $this->supplier_name    = $_POST['supplier_name'] = $myrow["name"];
+      $this->supplier_id      = $_POST['supplier_id'] = $supplier_id;
     }
     /*
        Check if the order was not destroyed during opening the edition page in
@@ -570,12 +570,12 @@
         $this->supplier_to_order($_POST['supplier_id']);
         // supplier default price update
         foreach ($this->line_items as $line) {
-          $line->price = Item_Price::get_purchase($this->supplier_id, $line->stock_id);
+          $line->price    = Item_Price::get_purchase($this->supplier_id, $line->stock_id);
           $line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor($this->supplier_id, $line->stock_id);
         }
         Ajax::i()->activate('items_table');
       }
-      Session::i()->setGlobal('creditor',$_POST['supplier_id']);
+      Session::i()->setGlobal('creditor', $_POST['supplier_id']);
       if (!Bank_Currency::is_company($this->curr_code)) {
         Row::label(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
@@ -597,13 +597,13 @@
       Inv_Location::row(_("Receive Into:"), 'location', NULL, FALSE, TRUE);
       Table::section(3);
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
-        $sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
+        $sql    = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
         $result = DB::query($sql, "could not get location info");
         if (DB::num_rows($result) == 1) {
-          $loc_row = DB::fetch($result);
+          $loc_row                   = DB::fetch($result);
           $_POST['delivery_address'] = $loc_row["delivery_address"];
           Ajax::i()->activate('delivery_address');
-          $this->location = $_POST['location'];
+          $this->location         = $_POST['location'];
           $this->delivery_address = $_POST['delivery_address'];
         }
         else { /* The default location of the user is crook */
@@ -628,9 +628,9 @@
         $th[] = '';
       }
       Table::header($th);
-      $id = find_submit(MODE_EDIT);
+      $id    = find_submit(MODE_EDIT);
       $total = 0;
-      $k = 0;
+      $k     = 0;
       if (!$this->line_items) {
         //	Event::warning('There are no line items on this Purchase Order');
       }
@@ -719,18 +719,18 @@
     public function item_controls($stock_id = NULL) {
       Row::start();
       $dec2 = 0;
-      $id = find_submit(MODE_EDIT);
+      $id   = find_submit(MODE_EDIT);
       if (($id != -1) && $stock_id != NULL) {
         hidden('line_no', $id);
         $_POST['stock_id'] = $this->line_items[$id]->stock_id;
-        $dec = Item::qty_dec($_POST['stock_id']);
-        $_POST['qty'] = Item::qty_format($this->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+        $dec               = Item::qty_dec($_POST['stock_id']);
+        $_POST['qty']      = Item::qty_format($this->line_items[$id]->quantity, $_POST['stock_id'], $dec);
         //$_POST['price'] = Num::price_format($this->line_items[$id]->price);
-        $_POST['price'] = Num::price_decimal($this->line_items[$id]->price, $dec2);
-        $_POST['discount'] = Num::percent_format($this->line_items[$id]->discount * 100);
+        $_POST['price']        = Num::price_decimal($this->line_items[$id]->price, $dec2);
+        $_POST['discount']     = Num::percent_format($this->line_items[$id]->discount * 100);
         $_POST['req_del_date'] = $this->line_items[$id]->req_del_date;
-        $_POST['description'] = $this->line_items[$id]->description;
-        $_POST['units'] = $this->line_items[$id]->units;
+        $_POST['description']  = $this->line_items[$id]->description;
+        $_POST['units']        = $this->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
         textarea_cells(NULL, 'description', NULL, 50, 5);
@@ -749,15 +749,15 @@
           Ajax::i()->activate('req_del_date');
           Ajax::i()->activate('line_total');
         }
-        $item_info = Item::get_edit_info(Input::post('stock_id'));
-        $_POST['units'] = $item_info["units"];
-        $_POST['description'] = '';
-        $dec = $item_info["decimals"];
-        $_POST['qty'] = Num::format(Creditor_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
-        $_POST['price'] = Num::price_decimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
+        $item_info             = Item::get_edit_info(Input::post('stock_id'));
+        $_POST['units']        = $item_info["units"];
+        $_POST['description']  = '';
+        $dec                   = $item_info["decimals"];
+        $_POST['qty']          = Num::format(Creditor_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
+        $_POST['price']        = Num::price_decimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
         $_POST['req_del_date'] = Dates::add_days(Dates::today(), 10);
-        $_POST['discount'] = Num::percent_format(0);
-        $qty_rcvd = '';
+        $_POST['discount']     = Num::percent_format(0);
+        $qty_rcvd              = '';
       }
       qty_cells(NULL, 'qty', NULL, NULL, NULL, $dec);
       Cell::qty($qty_rcvd, FALSE, $dec);
@@ -787,7 +787,7 @@
      */
     static public function get_data($supplier_id, $stock_id) {
       $sql
-        = "SELECT * FROM purch_data
+              = "SELECT * FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
 				AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -809,13 +809,13 @@
       if ($data === FALSE) {
         $supplier_code = $stock_id;
         $sql
-          = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+                       = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
 					conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
         DB::query($sql, "The supplier purchasing details could not be added");
         return FALSE;
       }
       $price = round($price * $data['conversion_factor'], User::price_dec());
-      $sql = "UPDATE purch_data SET price=" . DB::escape($price);
+      $sql   = "UPDATE purch_data SET price=" . DB::escape($price);
       if ($uom != "") {
         $sql .= ",suppliers_uom=" . DB::escape($uom);
       }
@@ -831,15 +831,15 @@
      * @param $order
      */
     static public function copyFromPost($order) {
-      $order->supplier_id = Input::post('supplier_id', Input::NUMERIC, NULL);
-      $order->orig_order_date = $_POST['OrderDate'];
-      $order->reference = $_POST['ref'];
-      $order->requisition_no = $_POST['Requisition'];
-      $order->Comments = $_POST['Comments'];
-      $order->location = $_POST['location'];
+      $order->supplier_id      = Input::post('supplier_id', Input::NUMERIC, NULL);
+      $order->orig_order_date  = $_POST['OrderDate'];
+      $order->reference        = $_POST['ref'];
+      $order->requisition_no   = $_POST['Requisition'];
+      $order->Comments         = $_POST['Comments'];
+      $order->location         = $_POST['location'];
       $order->delivery_address = $_POST['delivery_address'];
-      $order->freight = $_POST['freight'];
-      $order->salesman = $_POST['salesman'];
+      $order->freight          = $_POST['freight'];
+      $order->salesman         = $_POST['salesman'];
     }
     /**
      * @param $order
@@ -850,16 +850,16 @@
       if (!Input::get('UseOrder')) {
         $order = Purch_Order::check_edit_conflicts($order);
       }
-      $_POST['supplier_id'] = $order->supplier_id;
-      $_POST['OrderDate'] = $order->orig_order_date;
-      $_POST['Requisition'] = $order->requisition_no;
-      $_POST['ref'] = $order->reference;
-      $_POST['Comments'] = $order->Comments;
-      $_POST['location'] = $order->location;
+      $_POST['supplier_id']      = $order->supplier_id;
+      $_POST['OrderDate']        = $order->orig_order_date;
+      $_POST['Requisition']      = $order->requisition_no;
+      $_POST['ref']              = $order->reference;
+      $_POST['Comments']         = $order->Comments;
+      $_POST['location']         = $order->location;
       $_POST['delivery_address'] = $order->delivery_address;
-      $_POST['freight'] = $order->freight;
-      $_POST['salesman'] = $order->salesman;
-      $_POST['order_id'] = $order->order_id;
+      $_POST['freight']          = $order->freight;
+      $_POST['salesman']         = $order->salesman;
+      $_POST['order_id']         = $order->order_id;
       return Orders::session_set($order);
     }
   } /* end of class defintion */

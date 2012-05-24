@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class DB_AuditTrail {
 
     /**
@@ -20,13 +20,13 @@
     static public function add($trans_type, $trans_no, $trans_date, $descr = '') {
       $insertid = DB::insert('audit_trail')
         ->values(array(
-        'type' => $trans_type,
-        'trans_no' => $trans_no,
-        'user' => User::i()->user,
+        'type'        => $trans_type,
+        'trans_no'    => $trans_no,
+        'user'        => User::i()->user,
         'fiscal_year' => DB_Company::get_pref('f_year'),
-        'gl_date' => Dates::date2sql($trans_date),
+        'gl_date'     => Dates::date2sql($trans_date),
         'description' => $descr,
-        'gl_seq' => 0
+        'gl_seq'      => 0
       ))->exec();
       // all audit records beside latest one should have gl_seq set to NULL
       // to avoid need for subqueries (not existing in MySQL 3) all over the code
@@ -44,7 +44,7 @@
      */
     static public function close_transactions($todate) {
       $errors = 0;
-      $sql = "SELECT DISTINCT a.id, a.gl_date, a.fiscal_year"
+      $sql    = "SELECT DISTINCT a.id, a.gl_date, a.fiscal_year"
         . " FROM gl_trans gl"
         . " LEFT JOIN audit_trail a ON
 					(gl.type=a.type AND gl.type_no=a.trans_no)"
@@ -60,7 +60,7 @@
           }
           elseif ($last_year != $row['fiscal_year']) {
             $last_year = $row['fiscal_year'];
-            $counter = 1; // reset counter on fiscal year change
+            $counter   = 1; // reset counter on fiscal year change
           }
           else {
             $counter++;
@@ -128,7 +128,7 @@
      * @param $fromdate
      */
     static public function open_transactions($fromdate) {
-      $sql = "SELECT a.id, a.gl_date, a.fiscal_year"
+      $sql    = "SELECT a.id, a.gl_date, a.fiscal_year"
         . " FROM gl_trans gl"
         . " LEFT JOIN audit_trail a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)"

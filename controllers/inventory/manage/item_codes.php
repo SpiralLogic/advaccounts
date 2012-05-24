@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Foreign Item Codes"), SA_FORITEMCODE);
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
@@ -63,18 +62,18 @@
   }
   start_form();
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
   echo Item_Purchase::select('stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
   echo "<hr></div>";
-  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
-  $result = Item_Code::get_defaults($_POST['stock_id']);
-  $dec = $result['decimals'];
-  $units = $result['units'];
+  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+  $result    = Item_Code::get_defaults($_POST['stock_id']);
+  $dec       = $result['decimals'];
+  $units     = $result['units'];
   $dflt_desc = $result['description'];
-  $dflt_cat = $result['category_id'];
-  $result = Item_Code::get_all($_POST['stock_id']);
+  $dflt_cat  = $result['category_id'];
+  $result    = Item_Code::get_all($_POST['stock_id']);
   Display::div_start('code_table');
   Table::start('tablestyle grid width60');
   $th = array(
@@ -102,16 +101,16 @@
   Display::div_end();
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
-      $myrow = Item_Code::get($selected_id);
-      $_POST['item_code'] = $myrow["item_code"];
-      $_POST['quantity'] = $myrow["quantity"];
+      $myrow                = Item_Code::get($selected_id);
+      $_POST['item_code']   = $myrow["item_code"];
+      $_POST['quantity']    = $myrow["quantity"];
       $_POST['description'] = $myrow["description"];
       $_POST['category_id'] = $myrow["category_id"];
     }
     hidden('selected_id', $selected_id);
   }
   else {
-    $_POST['quantity'] = 1;
+    $_POST['quantity']    = 1;
     $_POST['description'] = $dflt_desc;
     $_POST['category_id'] = $dflt_cat;
   }

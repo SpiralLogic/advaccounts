@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class DB_Utils extends DB {
+
     /**
      * @static
      *
@@ -36,11 +37,11 @@
      * @return bool
      */
     static public function import($filename, $connection = NULL, $force = TRUE) {
-      $allowed_commands = array(
-        "create" => 'table_queries',
-        "alter table" => 'table_queries',
-        "insert" => 'data_queries',
-        "update" => 'data_queries',
+      $allowed_commands     = array(
+        "create"               => 'table_queries',
+        "alter table"          => 'table_queries',
+        "insert"               => 'data_queries',
+        "update"               => 'data_queries',
         "drop table if exists" => 'drop_queries'
       );
       $ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
@@ -51,10 +52,10 @@
         '1062', // duplicate key entry
         '1091' // can't drop key/column check if exists
       );
-      $data_queries = array();
-      $drop_queries = array();
-      $table_queries = array();
-      $sql_errors = array();
+      $data_queries         = array();
+      $drop_queries         = array();
+      $table_queries        = array();
+      $sql_errors           = array();
       ini_set("max_execution_time", "180");
       DB::query("SET foreign_key_checks=0");
       // uncrompress gziped backup files
@@ -74,7 +75,7 @@
         if ($query_table == '') { // check if line begins with one of allowed queries
           foreach ($allowed_commands as $cmd => $table) {
             if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) {
-              $query_table = $table;
+              $query_table      = $table;
               ${$query_table}[] = array('', $line_no + 1);
               break;
             }
@@ -85,7 +86,7 @@
           $table = $query_table;
           if (substr($line, -1) == ';') // end of query found
           {
-            $line = substr($line, 0, strlen($line) - 1); // strip ';'
+            $line        = substr($line, 0, strlen($line) - 1); // strip ';'
             $query_table = '';
           }
           ${$table}[count(${$table}) - 1][0] .= $line . "\n";
@@ -188,7 +189,7 @@
         // get the suffix of the filename in hex
         $crc_bugfix = substr($all, 30, strlen($filename) + 13);
         $crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4), strlen($crc_bugfix) - 12 - 4);
-        $suffix = FALSE;
+        $suffix     = FALSE;
         // convert hex to ascii
         for ($i = 0; $i < 12;) {
           $suffix .= chr($crc_bugfix[$i++] . $crc_bugfix[$i++] . $crc_bugfix[$i++]);
@@ -197,7 +198,7 @@
         $comp = substr($all, -(strlen($all) - 30 - strlen($filename) - 13));
         $comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename) - 13));
         // fix the crc bugfix (see function save_to_file)
-        $comp = "x�" . $comp . $suffix;
+        $comp      = "x�" . $comp . $suffix;
         $file_data = gzuncompress($comp);
       }
       // returns one string or an array of lines
@@ -272,15 +273,15 @@
       }
       //$out.="use ".$db.";\n"; we don't use this option.
       // get auto_increment values and names of all tables
-      $res = DB::query("show table status");
+      $res        = DB::query("show table status");
       $all_tables = array();
       while ($row = DB::fetch($res)) {
         $all_tables[] = $row;
       }
       // get table structures
       foreach ($all_tables as $table) {
-        $res1 = DB::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
-        $tmp = DB::fetch($res1);
+        $res1                      = DB::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
+        $tmp                       = DB::fetch($res1);
         $table_sql[$table['Name']] = $tmp["Create Table"];
       }
       // find foreign keys
@@ -290,8 +291,8 @@
           $tmp_table = $table;
           // save all tables, needed for creating this table in $fks
           while (($ref_pos = strpos($tmp_table, " REFERENCES ")) > 0) {
-            $tmp_table = substr($tmp_table, $ref_pos + 12);
-            $ref_pos = strpos($tmp_table, "(");
+            $tmp_table        = substr($tmp_table, $ref_pos + 12);
+            $ref_pos          = strpos($tmp_table, "(");
             $fks[$tablenme][] = substr($tmp_table, 0, $ref_pos);
           }
         }
@@ -302,7 +303,7 @@
       if (!$error) {
         //while($row=mysql_fetch_array($res))
         foreach ($all_tables as $row) {
-          $tablename = $row['Name'];
+          $tablename             = $row['Name'];
           $auto_incr[$tablename] = $row['Auto_increment'];
           $out .= "\n\n";
           // export tables
@@ -322,10 +323,10 @@
           if (!$error) {
             $out .= "### Data of table `" . $tablename . "` ###\n\n";
             // check if field types are NULL or NOT NULL
-            $res3 = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
+            $res3       = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
             $field_null = array();
             for ($j = 0; $j < DB::num_rows($res3); $j++) {
-              $row3 = DB::fetch($res3);
+              $row3         = DB::fetch($res3);
               $field_null[] = $row3[2] == 'YES' && $row3[4] === NULL;
             }
             $res2 = DB::query("SELECT * FROM `" . $tablename . "`");
@@ -402,8 +403,8 @@
       }
       // order
       $new_tables = array();
-      $existing = array();
-      $modified = TRUE;
+      $existing   = array();
+      $modified   = TRUE;
       while (count($tables) && $modified == TRUE) {
         $modified = FALSE;
         foreach ($tables as $key => $row) {
@@ -417,7 +418,7 @@
             }
           }
           // delete from $tables and add to $new_tables
-          $existing[] = $row['Name'];
+          $existing[]   = $row['Name'];
           $new_tables[] = $row;
           prev($tables);
           unset($tables[$key]);

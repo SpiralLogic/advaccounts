@@ -9,22 +9,22 @@
    **/
   $order = Orders::session_get() ? : NULL;
   Security::set_page((!$order) ? : $order->trans_type, array(
-    ST_SALESORDER => SA_SALESORDER,
-    ST_SALESQUOTE => SA_SALESQUOTE,
+    ST_SALESORDER   => SA_SALESORDER,
+    ST_SALESQUOTE   => SA_SALESQUOTE,
     ST_CUSTDELIVERY => SA_SALESDELIVERY,
     ST_SALESINVOICE => SA_SALESINVOICE
   ), array(
-    Orders::NEW_ORDER => SA_SALESORDER,
+    Orders::NEW_ORDER    => SA_SALESORDER,
     Orders::MODIFY_ORDER => SA_SALESORDER,
-    Orders::NEW_QUOTE => SA_SALESQUOTE,
+    Orders::NEW_QUOTE    => SA_SALESQUOTE,
     Orders::MODIFY_QUOTE => SA_SALESQUOTE,
     Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-    Orders::NEW_INVOICE => SA_SALESINVOICE
+    Orders::NEW_INVOICE  => SA_SALESINVOICE
   ));
   JS::open_window(900, 500);
   if (Input::get('customer_id', Input::NUMERIC)) {
-  $_POST[Orders::CANCEL_CHANGES]=true;
-    $_POST['customer_id'] = $_GET['customer_id'];
+    $_POST[Orders::CANCEL_CHANGES] = TRUE;
+    $_POST['customer_id']          = $_GET['customer_id'];
     Ajax::i()->activate('customer_id');
   }
   $page_title = _($help_context = "New Sales Order Entry");
@@ -50,22 +50,22 @@
     switch (Input::get('type')) {
       case ST_SALESORDER:
         $help_context = 'Modifying Sales Order';
-        $page_title = sprintf(_("Modifying Sales Order # %d"), $_GET[Orders::UPDATE]);
+        $page_title   = sprintf(_("Modifying Sales Order # %d"), $_GET[Orders::UPDATE]);
         break;
       case ST_SALESQUOTE:
         $help_context = 'Modifying Sales Quotation';
-        $page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET[Orders::UPDATE]);
+        $page_title   = sprintf(_("Modifying Sales Quotation # %d"), $_GET[Orders::UPDATE]);
         break;
     }
     $order = create_order(Input::get('type'), Input::get(Orders::UPDATE));
   }
   elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
     $page_title = _($help_context = "New Order from Quote");
-    $order = create_order(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
+    $order      = create_order(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
   }
   elseif (Input::get(Orders::CLONE_ORDER)) {
     $page_title = _($help_context = "New order from previous order");
-    $order = create_order(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
+    $order      = create_order(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
   }
   if (!isset($order)) {
     $order = create_order(ST_SALESORDER, 0);
@@ -73,7 +73,7 @@
   Page::start($page_title);
   if (list_updated('branch_id')) {
     // when branch is selected via external editor also customer can change
-    $br = Sales_Branch::get(get_post('branch_id'));
+    $br                   = Sales_Branch::get(get_post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }
@@ -93,14 +93,14 @@
   //--------------- --------------------------------------------------------------
   if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($order)) {
     Sales_Order::copyFromPost($order);
-    $modified = ($order->trans_no != 0);
-    $so_type = $order->so_type;
+    $modified   = ($order->trans_no != 0);
+    $so_type    = $order->so_type;
     $trans_type = $order->trans_type;
     Dates::new_doc_date($order->document_date);
     Session::i()->setGlobal('debtor', $order->customer_id);
     $order->write(1);
     $jobsboard_order = clone ($order);
-    $trans_no = $jobsboard_order->trans_no = key($order->trans_no);
+    $trans_no        = $jobsboard_order->trans_no = key($order->trans_no);
     if (Errors::getSeverity() == -1) { // abort on failure or error messages are lost
       Ajax::i()->activate('_page_body');
       Page::footer_exit();
@@ -116,7 +116,7 @@
     Ajax::i()->activate('items_table');
   }
   if (isset($_POST[Orders::CANCEL_CHANGES])) {
-    $type = $order->trans_type;
+    $type     = $order->trans_type;
     $order_no = (is_array($order->trans_no)) ? key($order->trans_no) : $order->trans_no;
     Orders::session_delete($_POST['order_id']);
     $order = create_order($type, $order_no);
@@ -140,7 +140,7 @@
           Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
         }
         else {
-          $trans_no = key($order->trans_no);
+          $trans_no   = key($order->trans_no);
           $trans_type = $order->trans_type;
           if (!isset($_GET[REMOVED_ID])) {
             $order->delete($trans_no, $trans_type);
@@ -200,36 +200,36 @@
   Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
   Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
   if ($order && $order->trans_type == ST_SALESINVOICE) {
-    $idate = _("Invoice Date:");
-    $orderitems = _("Sales Invoice Items");
+    $idate           = _("Invoice Date:");
+    $orderitems      = _("Sales Invoice Items");
     $deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-    $deleteorder = _("Delete Invoice");
-    $corder = '';
-    $porder = _("Place Invoice");
+    $deleteorder     = _("Delete Invoice");
+    $corder          = '';
+    $porder          = _("Place Invoice");
   }
   elseif ($order && $order->trans_type == ST_CUSTDELIVERY) {
-    $idate = _("Delivery Date:");
-    $orderitems = _("Delivery Note Items");
+    $idate           = _("Delivery Date:");
+    $orderitems      = _("Delivery Note Items");
     $deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-    $deleteorder = _("Delete Delivery");
-    $corder = '';
-    $porder = _("Place Delivery");
+    $deleteorder     = _("Delete Delivery");
+    $corder          = '';
+    $porder          = _("Place Delivery");
   }
   elseif ($order && $order->trans_type == ST_SALESQUOTE) {
-    $idate = _("Quotation Date:");
-    $orderitems = _("Sales Quotation Items");
+    $idate           = _("Quotation Date:");
+    $orderitems      = _("Sales Quotation Items");
     $deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-    $deleteorder = _("Delete Quotation");
-    $porder = _("Place Quotation");
-    $corder = _("Commit Quotations Changes");
+    $deleteorder     = _("Delete Quotation");
+    $porder          = _("Place Quotation");
+    $corder          = _("Commit Quotations Changes");
   }
   elseif ($order && $order->trans_type == ST_SALESORDER) {
-    $idate = _("Order Date:");
-    $orderitems = _("Sales Order Items");
+    $idate           = _("Order Date:");
+    $orderitems      = _("Sales Order Items");
     $deliverydetails = _("Enter Delivery Details and Confirm Order");
-    $deleteorder = _("Delete Order");
-    $porder = _("Place Order");
-    $corder = _("Commit Order Changes");
+    $deleteorder     = _("Delete Order");
+    $porder          = _("Place Order");
+    $corder          = _("Commit Order Changes");
   }
   start_form();
   if (is_object($order)) {
@@ -305,7 +305,7 @@
     }
 
     $customer = new Debtor(Session::i()->getGlobal('debtor', 0));
-    $emails = $customer->getEmailAddresses();
+    $emails   = $customer->getEmailAddresses();
     Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
     Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
     if ($edit) {
@@ -340,9 +340,9 @@
         Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
     }
     elseif ($trans_type == ST_SALESINVOICE) {
-      $sql = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
+      $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
       $result = DB::query($sql, "could not retrieve customer allocation");
-      $row = DB::fetch($result);
+      $row    = DB::fetch($result);
       if ($row !== FALSE) {
         Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
       }
@@ -508,33 +508,33 @@
    */
   function create_order($type, $trans_no) {
     if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
-      $order = new Sales_Order(ST_SALESQUOTE, array($trans_no));
-      $doc = clone($order);
+      $order          = new Sales_Order(ST_SALESQUOTE, array($trans_no));
+      $doc            = clone($order);
       $doc->source_no = $trans_no;
       $order->finish();
       $doc->convertToOrder();
     }
     elseif (isset($_GET[Orders::CLONE_ORDER])) {
-      $trans_no = $_GET[Orders::CLONE_ORDER];
-      $doc = new Sales_Order(ST_SALESORDER, array($trans_no));
-      $doc->trans_no = 0;
-      $doc->trans_type = ST_SALESORDER;
-      $doc->reference = Ref::get_next($doc->trans_type);
+      $trans_no           = $_GET[Orders::CLONE_ORDER];
+      $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
+      $doc->trans_no      = 0;
+      $doc->trans_type    = ST_SALESORDER;
+      $doc->reference     = Ref::get_next($doc->trans_type);
       $doc->document_date = $doc->due_date = Dates::new_doc_date();
       foreach ($doc->line_items as $line) {
         $line->qty_done = $line->qty_dispatched = 0;
       }
     }
     elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
-      $doc = new Sales_Order(ST_SALESORDER, array($trans_no));
-      $doc->trans_type = $type;
-      $doc->trans_no = 0;
+      $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
+      $doc->trans_type    = $type;
+      $doc->trans_no      = 0;
       $doc->document_date = Dates::new_doc_date();
       if ($type == ST_SALESINVOICE) {
         $doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
-        $doc->pos = User::pos();
-        $pos = Sales_Point::get($doc->pos);
-        $doc->pos = -1;
+        $doc->pos      = User::pos();
+        $pos           = Sales_Point::get($doc->pos);
+        $doc->pos      = -1;
       }
       else {
         $doc->due_date = $doc->document_date;

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
@@ -107,18 +107,18 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   $cols = array(
-    _("#") => array(
+    _("#")       => array(
       'fun' => 'journal_pos', 'align' => 'center'
     ), _("Date") => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
     ),
-    _("Type") => array('fun' => 'systype_name'),
+    _("Type")    => array('fun' => 'systype_name'),
     _("Trans #") => array('fun' => 'view_link'),
     _("Reference"),
-    _("Amount") => array('type' => 'amount'),
+    _("Amount")  => array('type' => 'amount'),
     _("Memo"),
     _("User"),
-    _("View") => array(
+    _("View")    => array(
       'insert' => TRUE, 'fun' => 'gl_link'
     ),
     array(
@@ -128,7 +128,7 @@
   if (!check_value('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
+  $table        =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   DB_Pager::display($table);
   end_form();

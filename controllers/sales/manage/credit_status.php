@@ -31,7 +31,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -64,9 +64,9 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = Sales_CreditStatus::get($selected_id);
+      $myrow                       = Sales_CreditStatus::get($selected_id);
       $_POST['reason_description'] = $myrow["reason_description"];
-      $_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
+      $_POST['DisallowInvoices']   = $myrow["dissallow_invoices"];
     }
     hidden('selected_id', $selected_id);
   }

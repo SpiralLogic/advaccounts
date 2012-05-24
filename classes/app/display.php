@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   $GLOBALS['ajax_divs'] = array();
   /**
 
@@ -26,7 +26,7 @@
       $access = '';
       $slices = array();
       if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-        $label = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' .
+        $label  = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' .
           $slices[3];
         $access = " accesskey='" . strtoupper($slices[2]) . "'";
       }
@@ -173,7 +173,7 @@
     static public function item_heading($stock_id) {
       if ($stock_id != "") {
         $result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
-        $myrow = DB::fetch_row($result);
+        $myrow  = DB::fetch_row($result);
         static::heading("$stock_id - $myrow[0]");
         $units = $myrow[1];
         static::heading(_("in units of : ") . $units);
@@ -190,7 +190,7 @@
      * @return string
      */
     static public function menu_link($url, $label, $id = NULL) {
-      $id = JS::default_focus($id);
+      $id   = JS::default_focus($id);
       $pars = Display::access_string($label);
       return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
     }
@@ -205,7 +205,7 @@
      * @return string
      */
     static public function menu_button($url, $label, $id = NULL) {
-      $id = JS::default_focus($id);
+      $id   = JS::default_focus($id);
       $pars = Display::access_string($label);
       return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
     }
@@ -276,7 +276,7 @@
      * @param bool $button
      */
     static public function link_no_params($target, $label, $center = TRUE, $button = FALSE) {
-      $id = JS::default_focus();
+      $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -315,7 +315,7 @@
      * @param string $params
      */
     static public function link_params($target, $label, $link_params = '', $center = TRUE, $params = '') {
-      $id = JS::default_focus();
+      $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -339,7 +339,7 @@
      * @param string $params
      */
     static public function link_button($target, $label, $link_params = '', $center = TRUE, $params = '') {
-      $id = JS::default_focus();
+      $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -377,7 +377,7 @@
      * @param bool $nobr
      */
     static public function link_params_separate($target, $label, $params, $center = FALSE, $nobr = FALSE) {
-      $id = JS::default_focus();
+      $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if (!$nobr) {
         echo "<br>";
@@ -404,8 +404,6 @@
       echo "</td>\n";
     }
 
-
-
     /**
      * @static
      *
@@ -414,7 +412,7 @@
      * @param null $id
      */
     static public function submenu_option($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(BASE_URL . ltrim($url,'/'), $title, $id), 1,0);
+      Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 1, 0);
     }
 
     /**
@@ -424,7 +422,7 @@
      * @param      $url
      * @param null $id*/
     static public function submenu_button($title, $url, $id = NULL) {
-      Display::note(Display::menu_button(BASE_URL . ltrim($url,'/'), $title, $id), 0, 1);
+      Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 0, 1);
     }
 
     /**
@@ -479,7 +477,7 @@
         if (User::graphic_links() && $icon) {
           $pars[0] = set_icon($icon, $pars[0]);
         }
-        $preview_str = "<a target='_blank' $class $id href='/" . e( ltrim( $url,'/')) . "' $pars[1]>$pars[0]</a>";
+        $preview_str = "<a target='_blank' $class $id href='/" . e(ltrim($url, '/')) . "' $pars[1]>$pars[0]</a>";
       }
       else {
         $preview_str = $label;

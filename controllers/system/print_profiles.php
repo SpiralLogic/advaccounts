@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
   $selected_id = get_post('profile_id', '');
@@ -22,7 +21,7 @@
     if (!$error) {
       $prof = array('' => get_post('Prn')); // store default value/profile name
       foreach (get_reports() as $rep => $descr) {
-        $val = get_post('Prn' . $rep);
+        $val        = get_post('Prn' . $rep);
         $prof[$rep] = $val;
       }
       if ($_POST['profile_id'] == '') {
@@ -69,7 +68,7 @@
   Table::start('tablestyle grid');
   $th = array(_("Report Id"), _("Description"), _("Printer"));
   Table::header($th);
-  $k = 0;
+  $k    = 0;
   $unkn = 0;
   foreach (get_reports() as $rep => $descr) {
 
@@ -107,8 +106,8 @@
   function get_reports() {
     if (Config::get('debug.enabled') || !isset($_SESSION['reports'])) {
       // to save time, store in session.
-      $paths = array(
-        DOCROOT.'controllers'.DS . 'reporting'.DS, COMPANY_PATH . 'reporting/'
+      $paths   = array(
+        DOCROOT . 'controllers' . DS . 'reporting' . DS, COMPANY_PATH . 'reporting/'
       );
       $reports = array('' => _('Default printing destination'));
       foreach ($paths as $dirno => $path) {
@@ -121,7 +120,7 @@
           ) {
             $repno = $match[1];
             $title = '';
-            $line = file_get_contents($path . $fname);
+            $line  = file_get_contents($path . $fname);
             if (preg_match('/.*(ADVReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
               $title = trim($match[2]);
             }
@@ -146,7 +145,7 @@
    * @param $selected_id
    */
   function clear_form(&$selected_id) {
-    $selected_id = '';
+    $selected_id   = '';
     $_POST['name'] = '';
     Ajax::i()->activate('_page_body');
   }

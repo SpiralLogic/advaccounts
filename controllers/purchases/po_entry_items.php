@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /** @noinspection PhpIncludeInspection */
- //
+  //
   JS::open_window(900, 500);
   if (isset($_GET[Orders::MODIFY_ORDER])) {
     Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
@@ -20,9 +19,9 @@
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
   if (isset($_GET[ADDED_ID])) {
-    $order_no = $_GET[ADDED_ID];
+    $order_no   = $_GET[ADDED_ID];
     $trans_type = ST_PURCHORDER;
-    $supplier = new Creditor(Session::i()->getGlobal('creditor'));
+    $supplier   = new Creditor(Session::i()->getGlobal('creditor'));
     if (!isset($_GET['Updated'])) {
       Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been entered"));
     }
@@ -60,7 +59,7 @@
     if (can_commit($order)) {
       if ($order->order_no == 0) {
         /*its a new order to be inserted */
-        $order_no = $order->add();
+        $order_no                           = $order->add();
         $_SESSION['history'][ST_PURCHORDER] = $order->reference;
         Dates::new_doc_date($order->orig_order_date);
         Orders::session_delete($_POST['order_id']);
@@ -68,7 +67,7 @@
       }
       else {
         /*its an existing order need to update the old order info */
-        $order_no = $order->update();
+        $order_no                           = $order->update();
         $_SESSION['history'][ST_PURCHORDER] = $order->reference;
         Orders::session_delete($_POST['order_id']);
         Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no&Updated=1");
@@ -91,7 +90,7 @@
     if ($allow_update == TRUE) {
       if ($allow_update == TRUE) {
         $sql
-          = "SELECT long_description as description , units, mb_flag
+                = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
         $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
         if (DB::num_rows($result) == 0) {
@@ -179,8 +178,6 @@
   }
   Page::end(TRUE);
 
-
-
   /**
    * @param int $order_no
    *
@@ -189,20 +186,20 @@
   function create_order($order_no = 0) {
     if (isset($_GET['UseOrder']) && $_GET['UseOrder'] && isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
       $sales_order = Orders::session_get($_GET['UseOrder']);
-      $order = new Purch_Order($order_no);
-      $stock = $myrow = array();
+      $order       = new Purch_Order($order_no);
+      $stock       = $myrow = array();
       foreach ($sales_order->line_items as $line_item) {
         $stock[] = ' stock_id = ' . DB::escape($line_item->stock_id);
       }
-      $sql = "SELECT AVG(price),supplier_id,COUNT(supplier_id) FROM purch_data WHERE " . implode(' OR ', $stock) . ' GROUP BY supplier_id ORDER BY AVG(price)';
+      $sql    = "SELECT AVG(price),supplier_id,COUNT(supplier_id) FROM purch_data WHERE " . implode(' OR ', $stock) . ' GROUP BY supplier_id ORDER BY AVG(price)';
       $result = DB::query($sql);
-      $row = DB::fetch($result);
+      $row    = DB::fetch($result);
       $order->supplier_to_order($row['supplier_id']);
       foreach ($sales_order->line_items as $line_no => $line_item) {
         $order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::add_days(Dates::today(), 10), 0, 0, 0);
       }
       if (isset($_GET[LOC_DROP_SHIP])) {
-        $item_info = Item::get('DS');
+        $item_info         = Item::get('DS');
         $_POST['location'] = $order->location = LOC_DROP_SHIP;
         $order->add_to_order(count($sales_order->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::today(), 10), 0, 0, 0);
         $address = $sales_order->customer_name . "\n";

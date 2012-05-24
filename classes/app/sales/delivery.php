@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   // insert/update sales delivery
   //
   class Sales_Delivery {
@@ -25,13 +25,13 @@
         $trans_no = key($trans_no);
       }
       DB::begin();
-      $customer = Debtor::get($delivery->customer_id);
+      $customer             = Debtor::get($delivery->customer_id);
       $delivery_items_total = $delivery->get_items_total_dispatch();
-      $freight_tax = $delivery->get_shipping_tax();
+      $freight_tax          = $delivery->get_shipping_tax();
       // mark sales order for concurrency conflicts check
       Sales_Order::update_version($delivery->src_docs);
       $tax_total = 0;
-      $taxes = $delivery->get_taxes(); // all taxes with freight_tax
+      $taxes     = $delivery->get_taxes(); // all taxes with freight_tax
       foreach ($taxes as $taxitem) {
         $taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
         $tax_total += $taxitem['Value'];
@@ -51,9 +51,9 @@
       }
       /** @var Sales_Line $delivery_line */
       foreach ($delivery->line_items as $delivery_line) {
-        $line_price = $delivery_line->line_price();
+        $line_price         = $delivery_line->line_price();
         $line_taxfree_price = Tax::tax_free_price($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array);
-        $line_tax = Tax::full_price_for_item($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
+        $line_tax           = Tax::full_price_for_item($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
         if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
         {
           $delivery_line->standard_cost = Item_Price::get_standard_cost($delivery_line->stock_id);
@@ -73,7 +73,7 @@
             /*first the cost of sales entry*/
             // 2008-08-01. If there is a Customer Dimension, then override with this,
             // else take the Item Dimension (if any)
-            $dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id :
+            $dim  = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id :
               ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
             $dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id :
               ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
@@ -113,7 +113,7 @@
       GL_Trans::void($type, $type_no, TRUE);
       // reverse all the changes in the sales order
       $items_result = Debtor_TransDetail::get($type, $type_no);
-      $order = Debtor_Trans::get_order($type, $type_no);
+      $order        = Debtor_Trans::get_order($type, $type_no);
       if ($order) {
         $order_items = Sales_Order::get_details($order, ST_SALESORDER);
         while ($row = DB::fetch($items_result)) {
@@ -186,12 +186,12 @@
      * @param $order
      */
     static public function copyFromPost($order) {
-      $order->ship_via = $_POST['ship_via'];
-      $order->freight_cost = Validation::input_num('ChargeFreightCost');
+      $order->ship_via      = $_POST['ship_via'];
+      $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['DispatchDate'];
-      $order->due_date = $_POST['due_date'];
-      $order->location = $_POST['location'];
-      $order->Comments = $_POST['Comments'];
+      $order->due_date      = $_POST['due_date'];
+      $order->location      = $_POST['location'];
+      $order->Comments      = $_POST['Comments'];
       if ($order->trans_no == 0) {
         $order->reference = $_POST['ref'];
       }
@@ -202,15 +202,15 @@
      * @param $order
      */
     static public function copyToPost($order) {
-      $order = Sales_Order::check_edit_conflicts($order);
-      $_POST['ship_via'] = $order->ship_via;
+      $order                      = Sales_Order::check_edit_conflicts($order);
+      $_POST['ship_via']          = $order->ship_via;
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-      $_POST['DispatchDate'] = $order->document_date;
-      $_POST['due_date'] = $order->due_date;
-      $_POST['location'] = $order->location;
-      $_POST['Comments'] = $order->Comments;
-      $_POST['ref'] = $order->reference;
-      $_POST['order_id'] = $order->order_id;
+      $_POST['DispatchDate']      = $order->document_date;
+      $_POST['due_date']          = $order->due_date;
+      $_POST['location']          = $order->location;
+      $_POST['Comments']          = $order->Comments;
+      $_POST['ref']               = $order->reference;
+      $_POST['order_id']          = $order->order_id;
       Orders::session_set($order);
     }
     /**
@@ -277,5 +277,4 @@
       }
       return TRUE;
     }
-
   }

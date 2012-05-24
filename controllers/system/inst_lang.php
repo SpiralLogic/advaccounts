@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
   if (isset($_GET['selected_id'])) {
@@ -57,17 +56,17 @@
     if ($_POST['dflt']) {
       Config::set('default.lang', $_POST['code']);
     }
-    $installed_languages[$id]['code'] = $_POST['code'];
-    $installed_languages[$id]['name'] = $_POST['name'];
+    $installed_languages[$id]['code']     = $_POST['code'];
+    $installed_languages[$id]['name']     = $_POST['name'];
     $installed_languages[$id]['encoding'] = $_POST['encoding'];
-    $installed_languages[$id]['rtl'] = (bool) $_POST['rtl'];
-    $lang = Config::get('languages.installed');
-    $lang = $lang[$id]['code'];
-    $filename = LANG_PATH . '$lang'.DS.'LC_MESSAGES';
+    $installed_languages[$id]['rtl']      = (bool) $_POST['rtl'];
+    $lang                                 = Config::get('languages.installed');
+    $lang                                 = $lang[$id]['code'];
+    $filename                             = LANG_PATH . '$lang' . DS . 'LC_MESSAGES';
     if (!Files::save_to_file($filename, '')) {
       return FALSE;
     }
-    $directory =LANG_PATH . $_POST['code'];
+    $directory = LANG_PATH . $_POST['code'];
     if (!file_exists($directory)) {
       mkdir($directory);
       mkdir($directory . "/LC_MESSAGES");
@@ -93,10 +92,10 @@
   }
 
   function handle_delete() {
-    $id = $_GET['id'];
-    $lang = Config::get('languages.installed');
-    $lang = $lang[$id]['code'];
-    $filename = LANG_PATH . $lang.DS.'LC_MESSAGES';
+    $id       = $_GET['id'];
+    $lang     = Config::get('languages.installed');
+    $lang     = $lang[$id]['code'];
+    $filename = LANG_PATH . $lang . DS . 'LC_MESSAGES';
     if ($lang == Config::get('default.lang')) {
       // on delete set default to current.
       Config::set('default.lang', $_SESSION['Language']->code);
@@ -124,15 +123,14 @@
     Table::start('tablestyle grid');
     $th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
     Table::header($th);
-    $k = 0;
+    $k    = 0;
     $conn = Config::get('languages.installed');
-    $n = count($conn);
+    $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
       if ($conn[$i]['code'] == $lang) {
         Row::start("class='stockmankobg'");
       }
       else {
-
       }
       Cell::label($conn[$i]['code']);
       Cell::label($conn[$i]['name']);
@@ -145,10 +143,10 @@
       }
       Cell::label($rtl);
       Cell::label(Config::get('default.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
-      $edit = _("Edit");
+      $edit   = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
-        $edit = set_icon(ICON_EDIT, $edit);
+        $edit   = set_icon(ICON_EDIT, $edit);
         $delete = set_icon(ICON_DELETE, $delete);
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
@@ -179,10 +177,10 @@
 			</script>";
     Table::start('tablestyle2');
     if ($selected_id != -1) {
-      $languages = Config::get('languages.installed');
-      $conn = $languages[$selected_id];
-      $_POST['code'] = $conn['code'];
-      $_POST['name'] = $conn['name'];
+      $languages         = Config::get('languages.installed');
+      $conn              = $languages[$selected_id];
+      $_POST['code']     = $conn['code'];
+      $_POST['name']     = $conn['name'];
       $_POST['encoding'] = $conn['encoding'];
       if (isset($conn['rtl'])) {
         $_POST['rtl'] = $conn['rtl'];

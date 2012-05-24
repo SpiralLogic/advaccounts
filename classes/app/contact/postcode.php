@@ -9,7 +9,7 @@
    **/
   class Contact_Postcode {
 
-  use \ADV\Core\Traits\SetFromArray;
+    use \ADV\Core\Traits\SetFromArray;
 
     /**
      * @var int
@@ -38,12 +38,12 @@
     public function render() {
       HTML::tr(TRUE)->td(array('class' => 'label '))->label(array('content' => 'City: ', 'for' => $this->city[0]), FALSE)->td->td(TRUE);
       UI::search($this->city[0], array(
-        'url' => $this->url . '?city=1',
-        'nodiv' => TRUE,
-        'set' => static::$count,
-        'name' => $this->city[0],
-        'size' => 35,
-        'max' => 40,
+        'url'      => $this->url . '?city=1',
+        'nodiv'    => TRUE,
+        'set'      => static::$count,
+        'name'     => $this->city[0],
+        'size'     => 35,
+        'max'      => 40,
         'callback' => 'Adv.postcode.fetch'
       ));
       HTML::td()->tr;
@@ -51,12 +51,12 @@
       HTML::input($this->state[0], array('maxlength' => 35, 'data-set' => static::$count, 'size' => 35, 'value' => $this->state[1], 'name' => $this->state[0]));
       HTML::td()->tr()->tr(TRUE)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $this->postcode[0]), FALSE)->td->td(TRUE);
       UI::search($this->postcode[0], array(
-        'url' => $this->url . '?postcode=1',
-        'nodiv' => TRUE,
-        'set' => static::$count,
-        'name' => $this->postcode[0],
-        'size' => 35,
-        'max' => 40,
+        'url'      => $this->url . '?postcode=1',
+        'nodiv'    => TRUE,
+        'set'      => static::$count,
+        'name'     => $this->postcode[0],
+        'size'     => 35,
+        'max'      => 40,
         'callback' => 'Adv.postcode.fetch'
       ));
       HTML::td()->tr;
@@ -73,12 +73,12 @@
       if (static::$count == 1) {
         static::initjs();
       }
-      $set = static::$count;
-      $city = "#" . $this->city[0];
-      $state = "#" . $this->state[0];
-      $postcode = "#" . $this->postcode[0];
-      $js = <<<JS
-				Adv.postcode.add('$set','$city}','$state','$postcode');
+      $set      = static::$count;
+      $city     = $this->city[0];
+      $state    = $this->state[0];
+      $postcode = $this->postcode[0];
+      $js       = <<<JS
+				Adv.postcode.add('$set','$city','$state','$postcode');
 JS;
       JS::onload($js);
       static::$count++;
@@ -86,12 +86,13 @@ JS;
     /**
      * @static
      *
-     * @param string $this->cit
+     * @param string $city
      *
+     * @internal param $this $string ->cit
      * @return array
      */
     static public function searchByCity($city = "*") {
-      $sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
+      $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
       $result = DB::query($sql, "Could not find city");
       while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
         ;
@@ -106,7 +107,7 @@ JS;
      * @return array
      */
     static public function searchByPostcode($postcode = "*") {
-      $sql = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
+      $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
       $result = DB::query($sql, "Could not find postcode");
       while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
         ;
@@ -117,13 +118,13 @@ JS;
     protected function initjs() {
       $js = Cache::get('js.postcode');
       if ($js === FALSE) {
-        $js = <<<JS
+        $js    = <<<JS
 						Adv.extend({
 						 postcode: (function() {
 						 var sets= [];
 						 return {
 												add: function(set,city,state,code) {
-													sets[set] = {city:$(city),state:$(state),postcode:$(code)}
+													sets[set] = {city:$(document.getElementsByName(city)),state:$(document.getElementsByName(state)),postcode:$(document.getElementsByName(code))}
 												},
 						 fetch: function(data,item,ui) {
 						 		var set=$(ui).data("set");
@@ -138,7 +139,7 @@ JS;
 						})
 JS;
         $jsmin = new JSMin($js);
-        $js = $jsmin->minify();
+        $js    = $jsmin->minify();
         Cache::set('js.postcode', $js);
       }
       JS::beforeload($js);

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -53,13 +53,13 @@
     $Mode2 = 'RESET2';
   }
   if ($Mode == MODE_RESET) {
-    $selected_id = -1;
+    $selected_id          = -1;
     $_POST['description'] = $_POST['type'] = '';
-    $_POST['base_desc'] = _('Base Amount');
+    $_POST['base_desc']   = _('Base Amount');
     $_POST['base_amount'] = Num::price_format(0);
   }
   if ($Mode2 == 'RESET2') {
-    $selected_id2 = -1;
+    $selected_id2  = -1;
     $_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
   }
   $result = GL_QuickEntry::get_all();
@@ -85,11 +85,11 @@
     //if ($Mode == MODE_EDIT)
     //{
     //editing an existing status code
-    $myrow = GL_QuickEntry::get($selected_id);
-    $_POST['id'] = $myrow["id"];
+    $myrow                = GL_QuickEntry::get($selected_id);
+    $_POST['id']          = $myrow["id"];
     $_POST['description'] = $myrow["description"];
-    $_POST['type'] = $myrow["type"];
-    $_POST['base_desc'] = $myrow["base_desc"];
+    $_POST['type']        = $myrow["type"];
+    $_POST['base_desc']   = $myrow["base_desc"];
     $_POST['base_amount'] = Num::price_format($myrow["base_amount"]);
     hidden('selected_id', $selected_id);
     //}
@@ -161,12 +161,12 @@
     if ($selected_id2 != -1) {
       if ($Mode2 == 'BEd') {
         //editing an existing status code
-        $myrow = GL_QuickEntry::has_line($selected_id2);
-        $_POST['id'] = $myrow["id"];
-        $_POST['dest_id'] = $myrow["dest_id"];
-        $_POST['actn'] = $myrow["action"];
-        $_POST['amount'] = $myrow["amount"];
-        $_POST['dimension_id'] = $myrow["dimension_id"];
+        $myrow                  = GL_QuickEntry::has_line($selected_id2);
+        $_POST['id']            = $myrow["id"];
+        $_POST['dest_id']       = $myrow["dest_id"];
+        $_POST['actn']          = $myrow["action"];
+        $_POST['amount']        = $myrow["amount"];
+        $_POST['dimension_id']  = $myrow["dimension_id"];
         $_POST['dimension2_id'] = $myrow["dimension2_id"];
       }
     }
@@ -218,7 +218,7 @@
    * @return array
    */
   function simple_page_mode2($numeric_id = TRUE) {
-    $default = $numeric_id ? -1 : '';
+    $default      = $numeric_id ? -1 : '';
     $selected_id2 = get_post('selected_id2', $default);
     foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
       if (isset($_POST[$m])) {

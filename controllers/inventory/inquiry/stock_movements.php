@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Inventory Item Movement"), SA_ITEMSTRANSVIEW);
@@ -20,7 +19,7 @@
   }
   start_form();
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   Table::start('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE);
@@ -30,28 +29,28 @@
   submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   Table::end();
   end_form();
-  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $before_date = Dates::date2sql($_POST['BeforeDate']);
-  $after_date = Dates::date2sql($_POST['AfterDate']);
-  $sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
+  $after_date  = Dates::date2sql($_POST['AfterDate']);
+  $sql         = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
 	WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
 	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
-  $result = DB::query($sql, "could not query stock moves");
+  $result      = DB::query($sql, "could not query stock moves");
   Display::div_start('doc_tbl');
   Table::start('tablestyle grid');
   $th = array(
     _("Type"), _("#"), _("Reference"), _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
   );
   Table::header($th);
-  $sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
+  $sql            = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
-  $before_qty = DB::query($sql, "The starting quantity on hand could not be calculated");
+  $before_qty     = DB::query($sql, "The starting quantity on hand could not be calculated");
   $before_qty_row = DB::fetch_row($before_qty);
-  $after_qty = $before_qty = $before_qty_row[0];
+  $after_qty      = $before_qty = $before_qty_row[0];
   if (!isset($before_qty_row[0])) {
     $after_qty = $before_qty = 0;
   }
@@ -61,13 +60,13 @@
   $dec = Item::qty_dec($_POST['stock_id']);
   Cell::qty($before_qty, FALSE, $dec);
   Row::end();
-  $j = 1;
-  $k = 0; //row colour counter
-  $total_in = 0;
+  $j         = 1;
+  $k         = 0; //row colour counter
+  $total_in  = 0;
   $total_out = 0;
   while ($myrow = DB::fetch($result)) {
 
-    $trandate = Dates::sql2date($myrow["tran_date"]);
+    $trandate  = Dates::sql2date($myrow["tran_date"]);
     $type_name = $systypes_array[$myrow["type"]];
     if ($myrow["qty"] > 0) {
       $quantity_formatted = Num::format($myrow["qty"], $dec);
@@ -82,7 +81,7 @@
     Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
     Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
     Cell::label($trandate);
-    $person = $myrow["person_id"];
+    $person     = $myrow["person_id"];
     $gl_posting = "";
     if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
       $cust_row = Debtor_Trans::get_details($myrow["type"], $myrow["trans_no"]);
@@ -92,9 +91,9 @@
     }
     elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
       // get the supplier name
-      $sql = "SELECT name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+      $sql             = "SELECT name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
       $supplier_result = DB::query($sql, "check failed");
-      $supplier_row = DB::fetch($supplier_result);
+      $supplier_row    = DB::fetch($supplier_result);
       if (strlen($supplier_row['name']) > 0) {
         $person = $supplier_row['name'];
       }
@@ -102,7 +101,7 @@
     elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST) {
       // get the adjustment type
       $movement_type = Inv_Movement::get_type($myrow["person_id"]);
-      $person = $movement_type["name"];
+      $person        = $movement_type["name"];
     }
     elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE || $myrow["type"] == ST_MANURECEIVE
     ) {

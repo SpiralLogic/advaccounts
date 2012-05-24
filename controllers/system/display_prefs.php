@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Display Setup"), SA_SETUPDISPLAY);
   if (isset($_POST['setprefs'])) {
@@ -17,7 +17,7 @@
     }
     else {
       $chg_theme = User::theme() != $_POST['theme'];
-      $chg_lang = $_SESSION['Language']->code != $_POST['language'];
+      $chg_lang  = $_SESSION['Language']->code != $_POST['language'];
       User::i()
         ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], check_value('show_gl'), check_value('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], check_value('show_hints'),
         $_POST['profile'], check_value('rep_popup'), (int) ($_POST['query_size']), check_value('graphic_links'), $_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /**
    * if ($writeoff_acc==0) return goods into $order->location
    * if src_docs!=0 => credit invoice else credit note
@@ -23,30 +23,30 @@
      */
     static public function add($credit_note, $write_off_acc) {
       $credit_invoice = is_array($credit_note->src_docs) ? reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
-      $credit_date = $credit_note->document_date;
-      $tax_group_id = $credit_note->tax_group_id;
-      $trans_no = $credit_note->trans_no;
+      $credit_date    = $credit_note->document_date;
+      $tax_group_id   = $credit_note->tax_group_id;
+      $trans_no       = $credit_note->trans_no;
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
       }
       $credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
       DB::begin();
-      $company_data = DB_Company::get_prefs();
-      $branch_data = Sales_Branch::get_accounts($credit_note->Branch);
+      $company_data      = DB_Company::get_prefs();
+      $branch_data       = Sales_Branch::get_accounts($credit_note->Branch);
       $credit_note_total = $credit_note->get_items_total_dispatch();
-      $freight_tax = $credit_note->get_shipping_tax();
-      $taxes = $credit_note->get_taxes();
-      $tax_total = 0;
+      $freight_tax       = $credit_note->get_shipping_tax();
+      $taxes             = $credit_note->get_taxes();
+      $tax_total         = 0;
       foreach ($taxes as $taxitem) {
         $taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
         $tax_total += $taxitem['Value'];
       }
       if ($credit_note->tax_included == 0) {
-        $items_added_tax = $tax_total - $freight_tax;
+        $items_added_tax   = $tax_total - $freight_tax;
         $freight_added_tax = $freight_tax;
       }
       else {
-        $items_added_tax = 0;
+        $items_added_tax   = 0;
         $freight_added_tax = 0;
       }
       // 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
@@ -82,7 +82,7 @@
         $invoice_alloc_balance = Sales_Allocation::get_balance(ST_SALESINVOICE, $credit_invoice);
         Debtor_Trans::update_version(Debtor_Trans::get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs);
         if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated
-          $total = $credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax;
+          $total           = $credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax;
           $allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
           /*Now insert the allocation record if > 0 */
           if ($allocate_amount != 0) {
@@ -101,7 +101,7 @@
           Sales_Order::update_parent_line(11, $credit_line->src_id, ($credit_line->qty_dispatched - $credit_line->qty_old));
         }
         $line_taxfree_price = Tax::tax_free_price($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array);
-        $line_tax = Tax::full_price_for_item($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
+        $line_tax           = Tax::full_price_for_item($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
         Debtor_TransDetail::add(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id, $credit_line->description, $credit_line->qty_dispatched, $credit_line->line_price(), $line_tax, $credit_line->discount_percent, $credit_line->standard_cost, $trans_no == 0 ?
           0 : $credit_line->id);
         Sales_Credit::add_movements($credit_note, $credit_line, $credit_type, $line_taxfree_price + $line_tax, $credit_invoice);
@@ -175,12 +175,12 @@
      */
     static public function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
       $stock_gl_codes = Item::get_gl_code($order_line->stock_id);
-      $customer = Debtor::get($order->customer_id);
+      $customer       = Debtor::get($order->customer_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
       // else take the Item Dimension (if any)
-      $dim = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
+      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
         ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
-      $dim2 = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id :
+      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id :
         ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
       $total = 0;
       /* insert gl_trans to credit stock and debit cost of sales at standard cost*/
@@ -193,14 +193,14 @@
           $stock_entry_account = $write_off_gl_code;
         }
         else {
-          $stock_gl_code = Item::get_gl_code($order_line->stock_id);
+          $stock_gl_code       = Item::get_gl_code($order_line->stock_id);
           $stock_entry_account = $stock_gl_code["inventory_account"];
         }
         $total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0, "", ($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->customer_id, "The stock side (or write off) of the cost of sales GL posting could not be inserted");
       } /* end of if GL and stock integrated and standard cost !=0 */
       if ($order_line->line_price() != 0) {
         $line_taxfree_price = Tax::tax_free_price($order_line->stock_id, $order_line->price, 0, $order->tax_included, $order->tax_group_array);
-        $line_tax = Tax::full_price_for_item($order_line->stock_id, $order_line->price, 0, $order->tax_included, $order->tax_group_array) - $line_taxfree_price;
+        $line_tax           = Tax::full_price_for_item($order_line->stock_id, $order_line->price, 0, $order->tax_included, $order->tax_group_array) - $line_taxfree_price;
         //Post sales transaction to GL credit sales
         // 2008-06-14. If there is a Branch Sales Account, then override with this,
         // else take the Item Sales Account
@@ -229,7 +229,7 @@
       Table::startOuter('tablestyle width90');
       Table::section(1);
       $customer_error = "";
-      $change_prices = 0;
+      $change_prices  = 0;
       if (!isset($_POST['customer_id']) && Session::i()->getGlobal('debtor')) {
         $_POST['customer_id'] = Session::i()->getGlobal('debtor');
       }
@@ -245,13 +245,13 @@
       //	$customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
       if (($order->customer_id != $_POST['customer_id']) || ($order->Branch != $_POST['branch_id'])
       ) {
-        $old_order = (PHP_VERSION < 5) ? $order : clone($order);
-        $customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
-        $_POST['location'] = $order->location;
-        $_POST['deliver_to'] = $order->deliver_to;
+        $old_order                 = (PHP_VERSION < 5) ? $order : clone($order);
+        $customer_error            = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
+        $_POST['location']         = $order->location;
+        $_POST['deliver_to']       = $order->deliver_to;
         $_POST['delivery_address'] = $order->delivery_address;
-        $_POST['name'] = $order->name;
-        $_POST['phone'] = $order->phone;
+        $_POST['name']             = $order->name;
+        $_POST['phone']            = $order->phone;
         Ajax::i()->activate('location');
         Ajax::i()->activate('deliver_to');
         Ajax::i()->activate('name');
@@ -276,7 +276,7 @@
         }
         unset($old_order);
       }
-      Session::i()->setGlobal('debtor',$_POST['customer_id']);
+      Session::i()->setGlobal('debtor', $_POST['customer_id']);
       if (!isset($_POST['ref'])) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }
@@ -358,8 +358,8 @@
       }
       Table::header($th);
       $subtotal = 0;
-      $k = 0; //row colour counter
-      $id = find_submit(MODE_EDIT);
+      $k        = 0; //row colour counter
+      $id       = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $line) {
         $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
         if ($id != $line_no) {
@@ -384,7 +384,7 @@
         Sales_Credit::item_controls($order, $k);
       }
       Table::foot();
-      $colspan = 6;
+      $colspan           = 6;
       $display_sub_total = Num::price_format($subtotal);
       Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", 2);
       if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
@@ -395,11 +395,11 @@
       small_amount_cells(NULL, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
       Cell::label('', 'colspan=2');
       Row::end();
-      $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
-      $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
+      $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
+      $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
       $display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
       Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='right bold'", "class='amount'", 2);
-  Table::footEnd()      ;
+      Table::footEnd();
 
       Table::end();
       Display::div_end();
@@ -416,10 +416,10 @@
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
-        $_POST['qty'] = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
-        $_POST['price'] = Num::price_format($order->line_items[$id]->price);
-        $_POST['Disc'] = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
-        $_POST['units'] = $order->line_items[$id]->units;
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
+        $_POST['price']    = Num::price_format($order->line_items[$id]->price);
+        $_POST['Disc']     = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
+        $_POST['units']    = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
@@ -433,9 +433,9 @@
           Ajax::i()->activate('units');
           Ajax::i()->activate('line_total');
         }
-        $item_info = Item::get_edit_info(Input::post('stock_id'));
-        $dec = $item_info['decimals'];
-        $_POST['qty'] = Num::format(0, $dec);
+        $item_info      = Item::get_edit_info(Input::post('stock_id'));
+        $dec            = $item_info['decimals'];
+        $_POST['qty']   = Num::format(0, $dec);
         $_POST['units'] = $item_info["units"];
         $_POST['price'] = Num::price_format(Item_Price::get_calculated_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, $order->document_date));
         // default to the customer's discount %

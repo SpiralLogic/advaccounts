@@ -17,8 +17,8 @@
     $trans_id = $_POST["trans_no"];
   }
   // 3 different queries to get the information - what a JOKE !!!!
-  $myrow = Debtor_Trans::get($trans_id, ST_CUSTDELIVERY);
-  $branch = Sales_Branch::get($myrow["branch_id"]);
+  $myrow       = Debtor_Trans::get($trans_id, ST_CUSTDELIVERY);
+  $branch      = Sales_Branch::get($myrow["branch_id"]);
   $sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
   Table::start('tablestyle2 width90');
   echo "<tr class='tablerowhead top'><th colspan=6>";
@@ -57,7 +57,7 @@
       _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
     );
     Table::header($th);
-    $k = 0; //row colour counter
+    $k         = 0; //row colour counter
     $sub_total = 0;
     while ($myrow2 = DB::fetch($result)) {
       if ($myrow2['quantity'] == 0) {

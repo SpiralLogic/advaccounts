@@ -128,16 +128,16 @@
     $sql .= " GROUP BY trans.trans_no ";
   } //end no delivery number selected
   $cols = array(
-    _("Delivery #") => array(
+    _("Delivery #")                                                        => array(
       'fun' => function ($trans, $trans_no) {
         return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
       }
-    ), _("Customer"), _("branch_id") => 'skip', _("Contact"), _("Address"),
-    _("Reference"), _("Cust Ref"), _("Delivery Date") => array(
+    ), _("Customer"), _("branch_id")                                       => 'skip', _("Contact"), _("Address"),
+    _("Reference"), _("Cust Ref"), _("Delivery Date")                      => array(
       'type' => 'date', 'ord' => ''
-    ), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
+    ), _("Due By")                                                         => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
-    ), _("Currency") => array('align' => 'center'),
+    ), _("Currency")                                                       => array('align' => 'center'),
     submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
       'insert' => TRUE, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
@@ -145,7 +145,7 @@
           "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
             . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
       }
-    , 'align' => 'center'
+    , 'align'  => 'center'
     ), array(
       'insert' => TRUE, 'fun' => function ($row) {
         return $row["Outstanding"] == 0 ? '' :
