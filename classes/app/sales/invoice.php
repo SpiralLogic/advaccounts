@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Sales_Invoice {
+
     /**
      * @static
      *
@@ -20,12 +21,12 @@
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
       }
-      $date_ = $invoice->document_date;
+      $date_           = $invoice->document_date;
       $charge_shipping = $invoice->freight_cost;
       DB::begin();
       $company_data = DB_Company::get_prefs();
-      $branch_data = Sales_Branch::get_accounts($invoice->Branch);
-      $customer = Debtor::get($invoice->customer_id);
+      $branch_data  = Sales_Branch::get_accounts($invoice->Branch);
+      $customer     = Debtor::get($invoice->customer_id);
       // offer price values without freight costs
       $items_total = $invoice->get_items_total_dispatch();
       $freight_tax = $invoice->get_shipping_tax();
@@ -35,16 +36,16 @@
       }
       Debtor_Trans::update_version(Debtor_Trans::get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
       $ov_gst = 0;
-      $taxes = $invoice->get_taxes(); // all taxes with freight_tax
+      $taxes  = $invoice->get_taxes(); // all taxes with freight_tax
       foreach ($taxes as $taxitem) {
         $ov_gst += $taxitem['Value'];
       }
       if ($invoice->tax_included == 0) {
-        $items_added_tax = $ov_gst - $freight_tax;
+        $items_added_tax   = $ov_gst - $freight_tax;
         $freight_added_tax = $freight_tax;
       }
       else {
-        $items_added_tax = 0;
+        $items_added_tax   = 0;
         $freight_added_tax = 0;
       }
       // 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
@@ -76,7 +77,7 @@
       $total = 0;
       foreach ($invoice->line_items as $line_no => $invoice_line) {
         $line_taxfree_price = Tax::tax_free_price($invoice_line->stock_id, $invoice_line->price, 0, $invoice->tax_included, $invoice->tax_group_array);
-        $line_tax = Tax::full_price_for_item($invoice_line->stock_id, $invoice_line->price, 0, $invoice->tax_included, $invoice->tax_group_array) - $line_taxfree_price;
+        $line_tax           = Tax::full_price_for_item($invoice_line->stock_id, $invoice_line->price, 0, $invoice->tax_included, $invoice->tax_group_array) - $line_taxfree_price;
         Debtor_TransDetail::add(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id, $invoice_line->description, $invoice_line->qty_dispatched, $invoice_line->line_price(), $line_tax, $invoice_line->discount_percent, $invoice_line->standard_cost, $trans_no ?
           $invoice_line->id : 0);
         // Update delivery items for the quantity invoiced
@@ -92,7 +93,7 @@
             $sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
             // 2008-08-01. If there is a Customer Dimension, then override with this,
             // else take the Item Dimension (if any)
-            $dim = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id :
+            $dim  = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id :
               ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
             $dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id :
               ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
@@ -139,7 +140,7 @@
       GL_Trans::void($type, $type_no, TRUE);
       // reverse all the changes in parent document(s)
       $items_result = Debtor_TransDetail::get($type, $type_no);
-      $deliveries = Debtor_Trans::get_parent($type, $type_no);
+      $deliveries   = Debtor_Trans::get_parent($type, $type_no);
       if ($deliveries !== 0) {
         $srcdetails = Debtor_TransDetail::get(Debtor_Trans::get_parent_type($type), $deliveries);
         while ($row = DB::fetch($items_result)) {
@@ -161,7 +162,7 @@
      *
      * @return int
      */
-    static public  function check_quantities($order) {
+    static public function check_quantities($order) {
       $ok = 1;
       foreach ($order->line_items as $line_no => $itm) {
         if (isset($_POST['Line' . $line_no])) {
@@ -210,12 +211,12 @@
     /**
      * @param $order
      */
-    static public   function copyFromPost($order) {
-      $order->ship_via = $_POST['ship_via'];
-      $order->freight_cost = Validation::input_num('ChargeFreightCost');
+    static public function copyFromPost($order) {
+      $order->ship_via      = $_POST['ship_via'];
+      $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['InvoiceDate'];
-      $order->due_date = $_POST['due_date'];
-      $order->Comments = $_POST['Comments'];
+      $order->due_date      = $_POST['due_date'];
+      $order->Comments      = $_POST['Comments'];
       if ($order->trans_no == 0) {
         $order->reference = $_POST['ref'];
       }
@@ -223,18 +224,19 @@
 
     /**
      * @param $order
+     *
      * @return \Purch_Order|\Sales_Order
      */
-    static public  function copyToPost($order) {
+    static public function copyToPost($order) {
       $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
 
       $order = Sales_Order::check_edit_conflicts($order);
       if (!$order->view_only) {
-        $_POST['ship_via'] = $order->ship_via;
+        $_POST['ship_via']          = $order->ship_via;
         $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-        $_POST['InvoiceDate'] = $order->document_date;
-        $_POST['due_date'] = $order->due_date;
-        $_POST['ref'] = $order->reference;
+        $_POST['InvoiceDate']       = $order->document_date;
+        $_POST['due_date']          = $order->due_date;
+        $_POST['ref']               = $order->reference;
       }
       $_POST['order_id'] = $order->order_id;
       $_POST['Comments'] = $order->Comments;
@@ -246,7 +248,7 @@
      *
      * @return bool
      */
-    static public  function check_data($order) {
+    static public function check_data($order) {
       if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is invalid."));
         JS::set_focus('InvoiceDate');
@@ -300,26 +302,26 @@
      *
      * @return int|void
      */
-    static public  function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
+    static public function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
       $doc = new Sales_Order(ST_SALESORDER, array($order_no));
       $doc->customer_to_order($customer_id, $branch_id);
-      $doc->trans_type = ST_SALESORDER;
-      $doc->trans_no = 0;
+      $doc->trans_type    = ST_SALESORDER;
+      $doc->trans_no      = 0;
       $doc->document_date = Dates::today(); // 2006-06-15. Added so Invoices and Deliveries get current day
-      $doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
-      $doc->reference = Ref::get_next($doc->trans_type);
+      $doc->due_date      = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
+      $doc->reference     = Ref::get_next($doc->trans_type);
       //$doc->Comments='';
       foreach ($doc->line_items as $line_no => $item) {
-        $line = &$doc->line_items[$line_no];
+        $line        = &$doc->line_items[$line_no];
         $line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type, $doc->price_factor, $doc->document_date);
       }
-      $order = $doc;
+      $order             = $doc;
       $order->trans_type = ST_SALESINVOICE;
-      $order->reference = Ref::get_next($order->trans_type);
-      $invno = $order->write(1);
-          $date = Dates::date2sql($order->document_date);
-          $sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($tmpl_no);
-          DB::query($sql, "The recurrent invoice could not be updated or added");
+      $order->reference  = Ref::get_next($order->trans_type);
+      $invno             = $order->write(1);
+      $date              = Dates::date2sql($order->document_date);
+      $sql               = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($tmpl_no);
+      DB::query($sql, "The recurrent invoice could not be updated or added");
       return $invno;
     }
   }

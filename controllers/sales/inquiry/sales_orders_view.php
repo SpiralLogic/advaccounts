@@ -41,24 +41,24 @@
   if ($trans_type == ST_SALESORDER) {
     if (Input::get('OutstandingOnly')) {
       $_POST['order_view_mode'] = 'OutstandingOnly';
-      Session::i()->page_title = _($help_context = "Search Outstanding Sales Orders");
+      Session::i()->page_title  = _($help_context = "Search Outstanding Sales Orders");
     }
     elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == TRUE)) {
       $_POST['order_view_mode'] = 'InvoiceTemplates';
-      Session::i()->page_title = _($help_context = "Search Template for Invoicing");
+      Session::i()->page_title  = _($help_context = "Search Template for Invoicing");
     }
     elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == TRUE)) {
       $_POST['order_view_mode'] = 'DeliveryTemplates';
-      Session::i()->page_title = _($help_context = "Select Template for Delivery");
+      Session::i()->page_title  = _($help_context = "Select Template for Delivery");
     }
     elseif (!isset($_POST['order_view_mode'])) {
       $_POST['order_view_mode'] = FALSE;
-      Session::i()->page_title = _($help_context = "Search All Sales Orders");
+      Session::i()->page_title  = _($help_context = "Search All Sales Orders");
     }
   }
   else {
     $_POST['order_view_mode'] = "Quotations";
-    Session::i()->page_title = _($help_context = "Search All Sales Quotations");
+    Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title);
   $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
@@ -191,7 +191,7 @@
   else { // ... or select inquiry constraints
     if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['ajaxsearch'])
     ) {
-      $date_after = Dates::date2sql($_POST['OrdersAfterDate']);
+      $date_after  = Dates::date2sql($_POST['OrdersAfterDate']);
       $date_before = Dates::date2sql($_POST['OrdersToDate']);
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
@@ -223,45 +223,45 @@
   }
   $ord = NULL;
   if ($trans_type == ST_SALESORDER) {
-    $ord = "Order #";
+    $ord  = "Order #";
     $cols = array(
       array('type' => 'skip'),
-      _("Order #") => array(
+      _("Order #")  => array(
         'fun' => function ($row, $order_no) {
           return Debtor::trans_view($row['trans_type'], $order_no);
         }
       , 'ord' => ''
       ),
-      _("Ref") => array('ord' => ''),
-      _("PO#") => array('ord' => ''),
-      _("Date") => array('type' => 'date', 'ord' => 'asc'),
+      _("Ref")      => array('ord' => ''),
+      _("PO#")      => array('ord' => ''),
+      _("Date")     => array('type' => 'date', 'ord' => 'asc'),
       _("Required") => array('type' => 'date', 'ord' => ''),
       _("Customer") => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch") => array('ord' => ''),
+      _("Branch")   => array('ord' => ''),
       _("Address"),
-      _("Total") => array('type' => 'amount', 'ord' => ''),
+      _("Total")    => array('type' => 'amount', 'ord' => ''),
     );
   }
   else {
-    $ord = "Quote #";
+    $ord  = "Quote #";
     $cols = array(
       array('type' => 'skip'),
-      _("Quote #") => array(
+      _("Quote #")     => array(
         'fun' => function ($row, $order_no) {
           return Debtor::trans_view($row['trans_type'], $order_no);
         }
       , 'ord' => ''
       ),
-      _("Ref") => array('ord' => ''),
-      _("PO#") => array('type' => 'skip'),
-      _("Date") => array('type' => 'date', 'ord' => 'desc'),
+      _("Ref")         => array('ord' => ''),
+      _("PO#")         => array('type' => 'skip'),
+      _("Date")        => array('type' => 'date', 'ord' => 'desc'),
       _("Valid until") => array('type' => 'date', 'ord' => ''),
-      _("Customer") => array('ord' => 'asc'),
+      _("Customer")    => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch") => array('ord' => ''),
+      _("Branch")      => array('ord' => ''),
       _("Delivery To"),
-      _("Total") => array('type' => 'amount', 'ord' => ''),
+      _("Total")       => array('type' => 'amount', 'ord' => ''),
     );
   }
   if ($trans_type == ST_CUSTDELIVERY) {
@@ -314,7 +314,7 @@
             if ($row['trans_type'] == ST_SALESQUOTE) {
               return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no'], ICON_DOC);
             }
-            $name = "chgtpl" . $row['order_no'];
+            $name  = "chgtpl" . $row['order_no'];
             $value = $row['type'] ? 1 : 0;
             // save also in hidden field for testing during 'Update'
             return checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' . $row

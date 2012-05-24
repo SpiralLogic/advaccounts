@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class GL_PaymentMethod {
+
     /**
      * @static
      *
@@ -49,7 +50,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT * FROM payment_methods WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM payment_methods WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not retreive bank account for $id");
       return DB::fetch($result);
     }

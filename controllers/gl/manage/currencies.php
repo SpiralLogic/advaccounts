@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Currencies"), SA_CURRENCY);
   list($Mode, $selected_id) = Page::simple_mode(FALSE);
@@ -17,9 +17,9 @@
     handle_delete();
   }
   if ($Mode == MODE_RESET) {
-    $selected_id = '';
-    $_POST['Abbreviation'] = $_POST['Symbol'] = '';
-    $_POST['CurrencyName'] = $_POST['country'] = '';
+    $selected_id            = '';
+    $_POST['Abbreviation']  = $_POST['Symbol'] = '';
+    $_POST['CurrencyName']  = $_POST['country'] = '';
     $_POST['hundreds_name'] = '';
   }
   start_form();
@@ -86,31 +86,31 @@
     }
     $curr = DB::escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN debtors
-    $sql = "SELECT COUNT(*) FROM debtors WHERE curr_code = $curr";
+    $sql    = "SELECT COUNT(*) FROM debtors WHERE curr_code = $curr";
     $result = DB::query($sql);
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
       return FALSE;
     }
-    $sql = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
+    $sql    = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
     $result = DB::query($sql);
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
       return FALSE;
     }
-    $sql = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
+    $sql    = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
     $result = DB::query($sql);
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because the company preferences uses this currency."));
       return FALSE;
     }
     // see if there are any bank accounts that use this currency
-    $sql = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
+    $sql    = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
     $result = DB::query($sql);
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
       return FALSE;
@@ -133,7 +133,7 @@
 
   function display_currencies() {
     $company_currency = Bank_Currency::for_company();
-    $result = GL_Currency::get_all(check_value('show_inactive'));
+    $result           = GL_Currency::get_all(check_value('show_inactive'));
     Table::start('tablestyle grid');
     $th = array(
       _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
@@ -146,7 +146,6 @@
         Row::start("class='currencybg'");
       }
       else {
-
       }
       Cell::label($myrow["curr_abrev"]);
       Cell::label($myrow["curr_symbol"]);
@@ -178,13 +177,13 @@
     if ($selected_id != '') {
       if ($Mode == MODE_EDIT) {
         //editing an existing currency
-        $myrow = GL_Currency::get($selected_id);
-        $_POST['Abbreviation'] = $myrow["curr_abrev"];
-        $_POST['Symbol'] = $myrow["curr_symbol"];
-        $_POST['CurrencyName'] = $myrow["currency"];
-        $_POST['country'] = $myrow["country"];
+        $myrow                  = GL_Currency::get($selected_id);
+        $_POST['Abbreviation']  = $myrow["curr_abrev"];
+        $_POST['Symbol']        = $myrow["curr_symbol"];
+        $_POST['CurrencyName']  = $myrow["currency"];
+        $_POST['country']       = $myrow["country"];
         $_POST['hundreds_name'] = $myrow["hundreds_name"];
-        $_POST['auto_update'] = $myrow["auto_update"];
+        $_POST['auto_update']   = $myrow["auto_update"];
       }
       hidden('Abbreviation');
       hidden('selected_id', $selected_id);

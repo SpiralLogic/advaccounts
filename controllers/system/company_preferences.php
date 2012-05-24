@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Company Setup"), SA_SETUPCOMPANY);
   if (isset($_POST['update']) && $_POST['update'] != "") {
@@ -22,7 +22,7 @@
       JS::set_focus('coy_name');
     }
     if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
-      $result = $_FILES['pic']['error'];
+      $result   = $_FILES['pic']['error'];
       $filename = COMPANY_PATH . "images";
       if (!file_exists($filename)) {
         mkdir($filename);
@@ -50,7 +50,7 @@
         }
       }
       if ($input_error != 1) {
-        $result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
+        $result            = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
         $_POST['coy_logo'] = $_FILES['pic']['name'];
         if (!$result) {
           Event::error(_('Error uploading logo file'));
@@ -85,33 +85,33 @@
     Ajax::i()->activate('_page_body');
   } /* end of if submit */
   start_form(TRUE);
-  $myrow = DB_Company::get_prefs();
-  $_POST['coy_name'] = $myrow["coy_name"];
-  $_POST['gst_no'] = $myrow["gst_no"];
-  $_POST['tax_prd'] = $myrow["tax_prd"];
-  $_POST['tax_last'] = $myrow["tax_last"];
-  $_POST['coy_no'] = $myrow["coy_no"];
-  $_POST['postal_address'] = $myrow["postal_address"];
-  $_POST['phone'] = $myrow["phone"];
-  $_POST['fax'] = $myrow["fax"];
-  $_POST['email'] = $myrow["email"];
-  $_POST['coy_logo'] = $myrow["coy_logo"];
-  $_POST['suburb'] = $myrow["suburb"];
-  $_POST['use_dimension'] = $myrow["use_dimension"];
-  $_POST['base_sales'] = $myrow["base_sales"];
-  $_POST['no_item_list'] = $myrow["no_item_list"];
+  $myrow                     = DB_Company::get_prefs();
+  $_POST['coy_name']         = $myrow["coy_name"];
+  $_POST['gst_no']           = $myrow["gst_no"];
+  $_POST['tax_prd']          = $myrow["tax_prd"];
+  $_POST['tax_last']         = $myrow["tax_last"];
+  $_POST['coy_no']           = $myrow["coy_no"];
+  $_POST['postal_address']   = $myrow["postal_address"];
+  $_POST['phone']            = $myrow["phone"];
+  $_POST['fax']              = $myrow["fax"];
+  $_POST['email']            = $myrow["email"];
+  $_POST['coy_logo']         = $myrow["coy_logo"];
+  $_POST['suburb']           = $myrow["suburb"];
+  $_POST['use_dimension']    = $myrow["use_dimension"];
+  $_POST['base_sales']       = $myrow["base_sales"];
+  $_POST['no_item_list']     = $myrow["no_item_list"];
   $_POST['no_customer_list'] = $myrow["no_customer_list"];
   $_POST['no_supplier_list'] = $myrow["no_supplier_list"];
-  $_POST['curr_default'] = $myrow["curr_default"];
-  $_POST['f_year'] = $myrow["f_year"];
-  $_POST['time_zone'] = $myrow["time_zone"];
-  $_POST['version_id'] = $myrow["version_id"];
-  $_POST['add_pct'] = $myrow['add_pct'];
-  $_POST['login_tout'] = $myrow['login_tout'];
+  $_POST['curr_default']     = $myrow["curr_default"];
+  $_POST['f_year']           = $myrow["f_year"];
+  $_POST['time_zone']        = $myrow["time_zone"];
+  $_POST['version_id']       = $myrow["version_id"];
+  $_POST['add_pct']          = $myrow['add_pct'];
+  $_POST['login_tout']       = $myrow['login_tout'];
   if ($_POST['add_pct'] == -1) {
     $_POST['add_pct'] = "";
   }
-  $_POST['round_to'] = $myrow['round_to'];
+  $_POST['round_to']     = $myrow['round_to'];
   $_POST['del_coy_logo'] = 0;
   Table::startOuter('tablestyle2');
   Table::section(1);

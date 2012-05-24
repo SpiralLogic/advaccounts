@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Item_Line {
 
     /**
@@ -49,7 +49,7 @@
         Errors::db_error("invalid item added to order : $stock_id", "");
       }
       $this->mb_flag = $item_row["mb_flag"];
-      $this->units = $item_row["units"];
+      $this->units   = $item_row["units"];
       if ($description == NULL) {
         $this->description = $item_row["description"];
       }
@@ -97,7 +97,7 @@
      */
     static function start_focus($field) {
       Ajax::i()->activate('items_table');
-       JS::set_focus($field);
+      JS::set_focus($field);
     }
   }
 

@@ -45,8 +45,7 @@
       return $this->status->set(TRUE, 'get', "Customers retrieved");
     }
     /**
-     * @param $customers
-     *
+     * @internal param $customers
      * @return array
      */
     function insertCustomersToDB() {
@@ -86,8 +85,8 @@
      */
     function getXML() {
       $apiuser = \Config::get('modules.webstore')['apiuser'];
-      $apikey = \Config::get('modules.webstore')['apikey'];
-      $url = \Config::get('modules.webstore')['apiurl'];
+      $apikey  = \Config::get('modules.webstore')['apikey'];
+      $url     = \Config::get('modules.webstore')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Customers';
@@ -124,27 +123,27 @@
         else {
           $c = new \Debtor();
         }
-        $c->name = $c->debtor_ref = $name;
+        $c->name                                      = $c->debtor_ref = $name;
         $c->branches[$c->defaultBranch]->post_address = $row["BillingAddress2"];
-        $c->branches[$c->defaultBranch]->br_address = $row["BillingAddress1"];
-        $c->branches[$c->defaultBranch]->city = $row["City"];
-        $c->branches[$c->defaultBranch]->state = $row["State"];
-        $c->branches[$c->defaultBranch]->postcode = $row["PostalCode"];
+        $c->branches[$c->defaultBranch]->br_address   = $row["BillingAddress1"];
+        $c->branches[$c->defaultBranch]->city         = $row["City"];
+        $c->branches[$c->defaultBranch]->state        = $row["State"];
+        $c->branches[$c->defaultBranch]->postcode     = $row["PostalCode"];
         $c->branches[$c->defaultBranch]->contact_name = $row["FirstName"];
-        $c->branches[$c->defaultBranch]->phone = $row["PhoneNumber"];
-        $c->branches[$c->defaultBranch]->fax = $row["FaxNumber"];
-        $c->branches[$c->defaultBranch]->website = $row["WebsiteAddress"];
-        $c->branches[$c->defaultBranch]->email = $row["EmailAddress"];
-        $c->address = $row["BillingAddress1"];
-        $c->post_address = $row ["BillingAddress2"];
-        $c->tax_id = $row["TaxID"];
-        $c->webid = $row["CustomerID"];
-        $c->contact_name = $row["FirstName"] . ' ' . $row["LastName"];
+        $c->branches[$c->defaultBranch]->phone        = $row["PhoneNumber"];
+        $c->branches[$c->defaultBranch]->fax          = $row["FaxNumber"];
+        $c->branches[$c->defaultBranch]->website      = $row["WebsiteAddress"];
+        $c->branches[$c->defaultBranch]->email        = $row["EmailAddress"];
+        $c->address                                   = $row["BillingAddress1"];
+        $c->post_address                              = $row ["BillingAddress2"];
+        $c->tax_id                                    = $row["TaxID"];
+        $c->webid                                     = $row["CustomerID"];
+        $c->contact_name                              = $row["FirstName"] . ' ' . $row["LastName"];
         try {
           $c->save();
         }
-        catch (\ADV\Core\DB\DBDuplicateException $e){
-            $this->status->set(TRUE, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
+        catch (\ADV\Core\DB\DBDuplicateException $e) {
+          $this->status->set(TRUE, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
           continue;
         }
         if ($c->debtor_id > 0) {

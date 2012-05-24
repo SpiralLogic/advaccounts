@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Inv_Adjustment {
+
     /**
      * @static
      *
@@ -132,8 +133,8 @@
       }
       Table::header($th);
       $total = 0;
-      $k = 0; //row colour counter
-      $id = find_submit(MODE_EDIT);
+      $k     = 0; //row colour counter
+      $id    = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         $total += ($stock_item->standard_cost * $stock_item->quantity);
         if ($id != $line_no) {
@@ -169,13 +170,13 @@
 
       Row::start();
       $dec2 = 0;
-      $id = find_submit(MODE_EDIT);
+      $id   = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
-        $_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
         //$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
         $_POST['std_cost'] = Num::price_decimal($order->line_items[$id]->standard_cost, $dec2);
-        $_POST['units'] = $order->line_items[$id]->units;
+        $_POST['units']    = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
@@ -188,12 +189,12 @@
           Ajax::i()->activate('qty');
           Ajax::i()->activate('std_cost');
         }
-        $item_info = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
-        $dec = $item_info['decimals'];
+        $item_info    = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
+        $dec          = $item_info['decimals'];
         $_POST['qty'] = Num::format(0, $dec);
         //$_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
         $_POST['std_cost'] = Num::price_decimal($item_info["standard_cost"], $dec2);
-        $_POST['units'] = $item_info["units"];
+        $_POST['units']    = $item_info["units"];
       }
       qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
       Cell::label($_POST['units'], '', 'units');

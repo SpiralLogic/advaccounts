@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Reports_UI {
+
     /**
      * @static
      *
@@ -18,8 +19,8 @@
      * @param bool $submit_on_change
      */
     static public function print_profiles_row($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = TRUE) {
-      $sql = "SELECT profile FROM print_profiles GROUP BY profile";
-      $result = DB::query($sql, 'cannot get all profile names');
+      $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
+      $result   = DB::query($sql, 'cannot get all profile names');
       $profiles = array();
       while ($myrow = DB::fetch($result)) {
         $profiles[$myrow['profile']] = $myrow['profile'];
@@ -47,8 +48,8 @@
     static public function printers($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       static $printers; // query only once for page display
       if (!$printers) {
-        $sql = "SELECT id, name, description FROM printers";
-        $result = DB::query($sql, 'cannot get all printers');
+        $sql      = "SELECT id, name, description FROM printers";
+        $result   = DB::query($sql, 'cannot get all printers');
         $printers = array();
         while ($myrow = DB::fetch($result)) {
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];

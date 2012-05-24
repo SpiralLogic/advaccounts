@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,7 +11,7 @@
   JS::open_window(900, 500);
   Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
   if (isset($_GET[ADDED_ID])) {
-    $grn = $_GET[ADDED_ID];
+    $grn        = $_GET[ADDED_ID];
     $trans_type = ST_SUPPRECEIVE;
     Event::success(_("Purchase Order Delivery has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));
@@ -28,7 +27,7 @@
     Event::error(_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
     Page::footer_exit();
   }
-  $order = Purch_Order::check_edit_conflicts($order);
+  $order             = Purch_Order::check_edit_conflicts($order);
   $_POST['order_id'] = $order->order_id;
   Orders::session_set($order);
   /*read in all the selected order into the Items order */
@@ -61,8 +60,8 @@
       Ajax::i()->activate('_page_body');
       Page::footer_exit();
     }
-    Session::i()->setGlobal('creditor',$order->supplier_id);
-    $grn = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
+    Session::i()->setGlobal('creditor', $order->supplier_id);
+    $grn                     = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
     $_SESSION['delivery_po'] = $order->order_no;
     Dates::new_doc_date($_POST['DefaultReceivedDate']);
     unset($order->line_items);
@@ -91,7 +90,7 @@
   Table::header($th);
   /*show the line items on the order with the quantity being received for modification */
   $total = 0;
-  $k = 0; //row colour counter
+  $k     = 0; //row colour counter
   if (count($order->line_items) > 0) {
     foreach ($order->line_items as $line) {
 

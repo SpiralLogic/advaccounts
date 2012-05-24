@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $file = DOCROOT . 'tmp/test.csv';
   if (!isset($_SESSION['barcodefile'])) {
@@ -18,7 +17,7 @@
   }
   if ($_SESSION['barcodefile'] != $_POST['unique']) {
     Page::start(_($help_context = "Barcode Generator"), SA_INVENTORYLOCATION);
-    $id = uniqid();
+    $id                      = uniqid();
     $_SESSION['barcodefile'] = $id;
     echo "<form method='post' enctype='multipart/form-data' target='_blank'  action='#'><div class='center'><input
 		type='hidden'  name='go' value=1 /><input
@@ -83,16 +82,16 @@
 			}
 			</style></head><body>';
     $csvitems = array();
-    $file = fopen($file, 'r');
-    $result = DB::select('s.stock_id', 's.description')->from('stock_master s');
+    $file     = fopen($file, 'r');
+    $result   = DB::select('s.stock_id', 's.description')->from('stock_master s');
     while (($item = fgetcsv($file, 1000, ',')) !== FALSE) {
       $result->or_where("s.stock_id LIKE ", $item[0]);
       $csvitems[strtolower($item[0])] = $item[1];
     }
     $result = $result->fetch()->all();
-    $i = 0;
-    $j = 0;
-    $count = 1;
+    $i      = 0;
+    $j      = 0;
+    $count  = 1;
     echo '<div class="page-break"><table ><tbody><tr>';
     while ($item = array_pop($result)) {
       if ($count < $csvitems[strtolower($item['stock_id'])]) {
@@ -102,7 +101,7 @@
       else {
         $count = 1;
       }
-      $data = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
+      $data  = Barcode::create(array('code' => $item['stock_id'] . "\n" . $item['description']));
       $image = base64_encode($data);
       echo '<td class="barcode"><IMG SRC="data:image/gif;base64,
 		' . $image . '">' . '</td><td class="desc"><span>' . $item['stock_id'] . '</span><br> ' . $item['description'] . '</td>';

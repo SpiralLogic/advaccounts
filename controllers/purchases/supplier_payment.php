@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,7 +11,7 @@
   JS::open_window(900, 500);
   JS::footerFile('/js/payalloc.js');
   Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
-  $_POST['supplier_id'] = Input::get_post_global('supplier_id',Input::NUMERIC,-1);
+  $_POST['supplier_id'] = Input::get_post_global('supplier_id', Input::NUMERIC, -1);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   if (!isset($_POST['DatePaid'])) {
@@ -42,8 +41,8 @@
   }
   if (isset($_POST['ProcessSuppPayment']) && Creditor_Payment::can_process()) {
     $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
-    $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
-    $comp_currency = Bank_Currency::for_company();
+    $bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
+    $comp_currency     = Bank_Currency::for_company();
     if ($comp_currency != $bank_currency && $bank_currency != $supplier_currency) {
       $rate = 0;
     }
@@ -68,14 +67,14 @@
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
   }
-  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
+  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   Bank_Account::row(_("From Bank Account:"), 'bank_account', NULL, TRUE);
   Table::section(2);
   ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
   date_row(_("Date Paid") . ":", 'DatePaid', '', TRUE, 0, 0, 0, NULL, TRUE);
   Table::section(3);
   $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
-  $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+  $bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
   if ($bank_currency != $supplier_currency) {
     GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], TRUE);
   }

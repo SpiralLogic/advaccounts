@@ -1,14 +1,15 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   class Sales_Allocation {
+
     /**
      * @static
      *
@@ -49,10 +50,10 @@
      */
     static public function get_balance($trans_type, $trans_no) {
       $sql
-        = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
+              = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
 		FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
       $result = DB::query($sql, "calculate the allocation");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       return $myrow[0];
     }
     /**
@@ -79,7 +80,7 @@
 
       // clear any allocations for this transaction
       $sql
-        = "SELECT * FROM debtor_allocations
+              = "SELECT * FROM debtor_allocations
 		WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
 		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
       $result = DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
@@ -155,8 +156,8 @@
       $cust_sql = "";
       if ($customer_id != NULL) {
         $cust_sql = " AND trans.debtor_id = " . DB::quote($customer_id);
-
-      }        $cust_sql.=' and  trans.debtor_id<>4721 '; //TODO: REMOVE
+      }
+      $cust_sql .= ' and  trans.debtor_id<>4721 '; //TODO: REMOVE
 
       $sql = Sales_Allocation::get_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,2) <= 0 AS settled",
         "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);

@@ -18,17 +18,17 @@
   HTML::div(array('style' => 'margin:0 auto;text-align:center'));
   Users::row(_("User:"), 'user_id');
   HTML::br(FALSE)->label(array(
-                              'content' => "Subject: ",
-                              'for'     => 'subject'
-                         ))->br->input('subject', array('size' => 50))->label;
+    'content' => "Subject: ",
+    'for'     => 'subject'
+  ))->br->input('subject', array('size' => 50))->label;
   HTML::br(FALSE)->label(array(
-                              'content' => "Message: ",
-                              'for'     => 'message'
-                         ))->br->textarea('message', array(
-                                                          'cols'  => 35,
-                                                          'rows'  => 5,
-                                                          'title' => 'Message to send:'
-                                                     ))->textarea->label->br;
+    'content' => "Message: ",
+    'for'     => 'message'
+  ))->br->textarea('message', array(
+    'cols'  => 35,
+    'rows'  => 5,
+    'title' => 'Message to send:'
+  ))->textarea->label->br;
   UI::button('btnSend', 'Send Message');
   HTML::_div();
   Page::end();

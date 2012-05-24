@@ -23,15 +23,15 @@
       Num::price_decimal($price, $dec);
       $price = Num::round($price, $dec);
       if ($currency != NULL) {
-        $ex_rate = Bank_Currency::exchange_rate_to_home($currency, $date);
+        $ex_rate                = Bank_Currency::exchange_rate_to_home($currency, $date);
         $price_in_home_currency = $price / $ex_rate;
       }
       else {
         $price_in_home_currency = $price;
       }
-      $sql = "SELECT material_cost FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
-      $result = DB::query($sql);
-      $myrow = DB::fetch($result);
+      $sql           = "SELECT material_cost FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
+      $result        = DB::query($sql);
+      $myrow         = DB::fetch($result);
       $material_cost = $myrow['material_cost'];
       if ($price > -0.0001 && $price < 0.0001) {
         return $material_cost;
@@ -43,7 +43,7 @@
         $exclude = 0;
       }
       $cost_adjust = FALSE;
-      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date, $exclude);
+      $qoh         = Item::get_qoh_on_date($stock_id, NULL, $date, $exclude);
       if ($adj_only) {
         if ($qoh > 0) {
           $material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) / $qoh;
@@ -100,7 +100,7 @@
     }
     static public function add_batch($po_number, $supplier_id, $reference, $location, $date_) {
       $date = Dates::date2sql($date_);
-      $sql = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
+      $sql  = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
 			VALUES (" . DB::escape($po_number) . ", " . DB::escape($date) . ", " . DB::escape($supplier_id) . ", " . DB::escape($reference) . ", " . DB::escape($location) . ")";
       DB::query($sql, "A grn batch record could not be inserted.");
       return DB::insert_id();
@@ -119,26 +119,26 @@
       return DB::insert_id();
     }
     static public function get_batch_for_item($item) {
-      $sql = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
+      $sql    = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
       $result = DB::query($sql, "Could not retreive GRN batch id");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     static public function get_batch($grn) {
-      $sql = "SELECT * FROM grn_batch WHERE id=" . DB::escape($grn);
+      $sql    = "SELECT * FROM grn_batch WHERE id=" . DB::escape($grn);
       $result = DB::query($sql, "Could not retreive GRN batch id");
       return DB::fetch($result);
     }
     static public function set_item_credited(&$entered_grn, $supplier, $transno, $date) {
-      $mcost = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
-      $sql = "SELECT grn_batch.*, grn_items.*
+      $mcost  = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
+      $sql    = "SELECT grn_batch.*, grn_items.*
  	FROM grn_batch, grn_items
  	WHERE grn_items.grn_batch_id=grn_batch.id
 		AND grn_items.id=" . DB::escape($entered_grn->id) . "
  	AND grn_items.item_code=" . DB::escape($entered_grn->item_code);
       $result = DB::query($sql, "Could not retreive GRNS");
-      $myrow = DB::fetch($result);
-      $sql = "UPDATE purch_order_details
+      $myrow  = DB::fetch($result);
+      $sql    = "UPDATE purch_order_details
  SET quantity_received = quantity_received + " . DB::escape($entered_grn->this_quantity_inv) . ",
  quantity_ordered = quantity_ordered + " . DB::escape($entered_grn->this_quantity_inv) . ",
  qty_invoiced = qty_invoiced + " . DB::escape($entered_grn->this_quantity_inv) . ",
@@ -185,7 +185,7 @@
     }
     // get the details for a given grn item
     static public function get_item($grn_item_no) {
-      $sql = "SELECT grn_items.*, purch_order_details.unit_price,
+      $sql    = "SELECT grn_items.*, purch_order_details.unit_price,
  	grn_items.qty_recd - grn_items.quantity_inv AS QtyOstdg,
  	purch_order_details.std_cost_unit
 		FROM grn_items, purch_order_details, stock_master
@@ -212,15 +212,15 @@
     }
     // read a grn into an order class
     static public function get($grn_batch, &$order) {
-      $sql = "SELECT *	FROM grn_batch WHERE id=" . DB::escape($grn_batch);
-      $result = DB::query($sql, "The grn sent is not valid");
-      $row = DB::fetch($result);
+      $sql       = "SELECT *	FROM grn_batch WHERE id=" . DB::escape($grn_batch);
+      $result    = DB::query($sql, "The grn sent is not valid");
+      $row       = DB::fetch($result);
       $po_number = $row["purch_order_no"];
-      $result = $order->get_header($po_number);
+      $result    = $order->get_header($po_number);
       if ($result) {
         $order->orig_order_date = Dates::sql2date($row["delivery_date"]);
-        $order->location = $row["loc_code"];
-        $order->reference = $row["reference"];
+        $order->location        = $row["loc_code"];
+        $order->reference       = $row["reference"];
         static::get_items_to_order($grn_batch, $order);
       }
     }
@@ -230,12 +230,12 @@
       return DB::query($sql, "The grns for the po $po_number could not be retreived");
     }
     static public function exists($grn_batch) {
-      $sql = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
+      $sql    = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
       $result = DB::query($sql, "Cannot retreive a grn");
       return (DB::num_rows($result) > 0);
     }
     static public function exists_on_invoices($grn_batch) {
-      $sql = "SELECT creditor_trans_details.id FROM creditor_trans_details,grn_items
+      $sql    = "SELECT creditor_trans_details.id FROM creditor_trans_details,grn_items
 		WHERE creditor_trans_details.grn_item_id=grn_items.id
 		AND quantity != 0
 		AND grn_batch_id=" . DB::escape($grn_batch);
@@ -348,9 +348,9 @@
             Cell::label($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], FALSE) . hidden('item_code' . $n, $myrow["item_code"], FALSE) . hidden('description' . $n, $myrow["description"], FALSE) . hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], FALSE) . hidden('order_price' . $n,
               $myrow['unit_price'], FALSE) . hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], FALSE) . hidden('po_detail_item' . $n, $myrow['po_detail_item'], FALSE));
             Cell::label(GL_UI::trans_view(ST_PURCHORDER, $myrow["purch_order_no"]));
-            $sql1 = "SELECT supplier_description FROM purch_data WHERE supplier_id=" . DB::quote($creditor_trans->supplier_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
-            $result1 = DB::query($sql1, 'Could not get suppliers item code');
-            $result1 = DB::fetch($result1);
+            $sql1       = "SELECT supplier_description FROM purch_data WHERE supplier_id=" . DB::quote($creditor_trans->supplier_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
+            $result1    = DB::query($sql1, 'Could not get suppliers item code');
+            $result1    = DB::fetch($result1);
             $stock_code = ($myrow["item_code"] != $result1[0]) ? $myrow["item_code"] . '<br>' . $result1[0] : $myrow["item_code"];
             Cell::label($stock_code, "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
             Cell::label($myrow["description"]);
@@ -368,7 +368,7 @@
             amount_cells(NULL, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ChgPriceCalc' . $n);
             amount_cells(NULL, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), NULL, NULL, $dec2, 'ExpPriceCalc' . $n);
             small_amount_cells(NULL, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), NULL, NULL, User::percent_dec());
-            Cell::amount(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE,' data-dec="'.$dec2.'"', 'Ea' . $n);
+            Cell::amount(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), FALSE, ' data-dec="' . $dec2 . '"', 'Ea' . $n);
             if ($creditor_trans->is_invoice) {
               amount_cells(NULL, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), NULL, NULL, $dec2, 'ChgTotalCalc' . $n);
             }
@@ -481,7 +481,7 @@
       }
       Table::header($th);
       $total_grn_value = 0;
-      $i = $k = 0;
+      $i               = $k = 0;
       if (count($creditor_trans->grn_items) > 0) {
         foreach ($creditor_trans->grn_items as $entered_grn) {
 
@@ -522,7 +522,7 @@
         }
       }
       if ($mode == 1) {
-        $ret = Purch_GRN::display_for_selection($creditor_trans, $k);
+        $ret     = Purch_GRN::display_for_selection($creditor_trans, $k);
         $colspan = 13;
       }
       else {

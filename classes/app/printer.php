@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Printer {
+
     /**
      * @static
      *
@@ -46,7 +47,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($id) {
-      $sql = "SELECT * FROM printers WHERE id=" . DB::escape($id);
+      $sql    = "SELECT * FROM printers WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get printer definition");
       return DB::fetch($result);
     }
@@ -90,7 +91,7 @@
      * @return ADV\Core\DB\Query_Result|Array|bool
      */
     static public function get_report($profile, $report) {
-      $sql = "SELECT printer FROM print_profiles WHERE profile=" . DB::quote($profile) . " AND report=" . DB::quote($report);
+      $sql    = "SELECT printer FROM print_profiles WHERE profile=" . DB::quote($profile) . " AND report=" . DB::quote($report);
       $result = DB::query($sql, 'report printer lookup failed');
       if (!$result) {
         return FALSE;

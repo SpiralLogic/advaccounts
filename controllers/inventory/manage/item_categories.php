@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -53,9 +52,9 @@
 
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-    $sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock master");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this item category because items have been created using this item category."));
     }
@@ -67,7 +66,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -130,20 +129,20 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing item category
-      $myrow = Item_Category::get($selected_id);
-      $_POST['category_id'] = $myrow["category_id"];
-      $_POST['description'] = $myrow["description"];
-      $_POST['tax_type_id'] = $myrow["dflt_tax_type"];
-      $_POST['sales_account'] = $myrow["dflt_sales_act"];
-      $_POST['cogs_account'] = $myrow["dflt_cogs_act"];
-      $_POST['inventory_account'] = $myrow["dflt_inventory_act"];
+      $myrow                       = Item_Category::get($selected_id);
+      $_POST['category_id']        = $myrow["category_id"];
+      $_POST['description']        = $myrow["description"];
+      $_POST['tax_type_id']        = $myrow["dflt_tax_type"];
+      $_POST['sales_account']      = $myrow["dflt_sales_act"];
+      $_POST['cogs_account']       = $myrow["dflt_cogs_act"];
+      $_POST['inventory_account']  = $myrow["dflt_inventory_act"];
       $_POST['adjustment_account'] = $myrow["dflt_adjustment_act"];
-      $_POST['assembly_account'] = $myrow["dflt_assembly_act"];
-      $_POST['units'] = $myrow["dflt_units"];
-      $_POST['mb_flag'] = $myrow["dflt_mb_flag"];
-      $_POST['dim1'] = $myrow["dflt_dim1"];
-      $_POST['dim2'] = $myrow["dflt_dim2"];
-      $_POST['no_sale'] = $myrow["dflt_no_sale"];
+      $_POST['assembly_account']   = $myrow["dflt_assembly_act"];
+      $_POST['units']              = $myrow["dflt_units"];
+      $_POST['mb_flag']            = $myrow["dflt_mb_flag"];
+      $_POST['dim1']               = $myrow["dflt_dim1"];
+      $_POST['dim2']               = $myrow["dflt_dim2"];
+      $_POST['no_sale']            = $myrow["dflt_no_sale"];
     }
     hidden('selected_id', $selected_id);
     hidden('category_id');
@@ -151,9 +150,9 @@
   else {
     if ($Mode != MODE_CLONE) {
       $_POST['long_description'] = '';
-      $_POST['description'] = '';
-      $_POST['no_sale'] = 0;
-      $company_record = DB_Company::get_prefs();
+      $_POST['description']      = '';
+      $_POST['no_sale']          = 0;
+      $company_record            = DB_Company::get_prefs();
       if (get_post('inventory_account') == "") {
         $_POST['inventory_account'] = $company_record["default_inventory_act"];
       }

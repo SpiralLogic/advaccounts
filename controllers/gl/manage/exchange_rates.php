@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $js = "";
   Page::start(_($help_context = "Exchange Rates"), SA_EXCHANGERATE);
@@ -31,10 +31,10 @@
     clear_data();
     $selected_id = "";
   }
-  Session::i()->setGlobal('curr_abrev',$_POST['curr_abrev']);
-  $sql = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
+  Session::i()->setGlobal('curr_abrev', $_POST['curr_abrev']);
+  $sql   = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
-  $cols = array(
+  $cols  = array(
     _("Date to Use From") => 'date', _("Exchange Rate") => 'rate', array(
       'insert' => TRUE, 'fun' => 'edit_link'
     ), array(
@@ -144,15 +144,15 @@
     Table::start('tablestyle2');
     if ($selected_id != "") {
       //editing an existing exchange rate
-      $myrow = GL_ExchangeRate::get($selected_id);
-      $_POST['date_'] = Dates::sql2date($myrow["date_"]);
+      $myrow            = GL_ExchangeRate::get($selected_id);
+      $_POST['date_']   = Dates::sql2date($myrow["date_"]);
       $_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
       hidden('selected_id', $selected_id);
       hidden('date_', $_POST['date_']);
       Row::label(_("Date to Use From:"), $_POST['date_']);
     }
     else {
-      $_POST['date_'] = Dates::today();
+      $_POST['date_']   = Dates::today();
       $_POST['BuyRate'] = '';
       date_row(_("Date to Use From:"), 'date_');
     }

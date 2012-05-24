@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
   //
@@ -40,7 +40,7 @@
       }
     }
     if ($ret) { // re-read the prefs
-      $user = Users::get_by_login(User::i()->username);
+      $user            = Users::get_by_login(User::i()->username);
       User::i()->prefs = new userPrefs($user);
       Event::success(_('All companies data has been successfully updated'));
     }
@@ -52,7 +52,7 @@
     _("Version"), _("Description"), _("Sql file"), _("Install"), _("Force upgrade")
   );
   Table::header($th);
-  $k = 0; //row colour counter
+  $k       = 0; //row colour counter
   $partial = 0;
   foreach ($installers as $i => $inst) {
 
@@ -130,7 +130,7 @@ You have to clean database manually to enable them, or try to perform forced upg
   function get_installers() {
     $patchdir = DOCROOT . "sql/";
     $upgrades = array();
-    $datadir = @opendir($patchdir);
+    $datadir  = @opendir($patchdir);
     if ($datadir) {
       while (FALSE !== ($fname = readdir($datadir))) { // check all php files but index.php
         if (!is_dir($patchdir . $fname) && ($fname != 'index.php') && stristr($fname, '.php') != FALSE
@@ -160,8 +160,8 @@ You have to clean database manually to enable them, or try to perform forced upg
    */
   function upgrade_step($index, $conn) {
     global $installers;
-    $inst = $installers[$index];
-    $ret = TRUE;
+    $inst  = $installers[$index];
+    $ret   = TRUE;
     $force = get_post('force_' . $index);
     if ($force || get_post('install_' . $index)) {
       $state = $inst->installed();
@@ -171,7 +171,7 @@ You have to clean database manually to enable them, or try to perform forced upg
         }
         $sql = $inst->sql;
         if ($sql != '') {
-          $ret &= DB_Utils::import(DOCROOT . 'upgrade'.DS.'sql'.DS . $sql, $conn, $force);
+          $ret &= DB_Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
         }
         $ret &= $inst->install($force);
       }

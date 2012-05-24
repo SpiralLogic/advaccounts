@@ -76,7 +76,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($type_id) {
-      $sql = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
+      $sql    = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax group");
       return DB::fetch($result);
     }
@@ -144,16 +144,16 @@
      * @return array
      */
     static public function get_items_as_array($id) {
-      $ret_tax_array = array();
+      $ret_tax_array   = array();
       $tax_group_items = static::get_for_item($id);
       while ($tax_group_item = DB::fetch($tax_group_items)) {
-        $index = $tax_group_item['tax_type_id'];
-        $ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
-        $ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
-        $ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
+        $index                                       = $tax_group_item['tax_type_id'];
+        $ret_tax_array[$index]['tax_type_id']        = $tax_group_item['tax_type_id'];
+        $ret_tax_array[$index]['tax_type_name']      = $tax_group_item['tax_type_name'];
+        $ret_tax_array[$index]['sales_gl_code']      = $tax_group_item['sales_gl_code'];
         $ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-        $ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-        $ret_tax_array[$index]['Value'] = 0;
+        $ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
+        $ret_tax_array[$index]['Value']              = 0;
       }
       return $ret_tax_array;
     }
@@ -176,16 +176,16 @@
      * @return array
      */
     static public function for_shipping_as_array() {
-      $ret_tax_array = array();
+      $ret_tax_array   = array();
       $tax_group_items = static::get_shipping_items();
       while ($tax_group_item = DB::fetch($tax_group_items)) {
-        $index = $tax_group_item['tax_type_id'];
-        $ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
-        $ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
-        $ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
+        $index                                       = $tax_group_item['tax_type_id'];
+        $ret_tax_array[$index]['tax_type_id']        = $tax_group_item['tax_type_id'];
+        $ret_tax_array[$index]['tax_type_name']      = $tax_group_item['tax_type_name'];
+        $ret_tax_array[$index]['sales_gl_code']      = $tax_group_item['sales_gl_code'];
         $ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-        $ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-        $ret_tax_array[$index]['Value'] = 0;
+        $ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
+        $ret_tax_array[$index]['Value']              = 0;
       }
       return $ret_tax_array;
     }
@@ -204,8 +204,8 @@
     static public function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT id, name FROM tax_groups";
       return select_box($name, $selected_id, $sql, 'id', 'name', array(
-        'order' => 'id', 'spec_option' => $none_option,
-        'spec_id' => ALL_NUMERIC,
+        'order'         => 'id', 'spec_option' => $none_option,
+        'spec_id'       => ALL_NUMERIC,
         'select_submit' => $submit_on_change, 'async' => FALSE,
       ));
     }
@@ -249,16 +249,16 @@
       if ($selected_id == -1) {
         return FALSE;
       }
-      $sql = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query customers");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
         return FALSE;
       }
-      $sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query suppliers");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
         return FALSE;

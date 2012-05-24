@@ -26,7 +26,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -57,10 +57,10 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = Tax_Types::get($selected_id);
-      $_POST['name'] = $myrow["name"];
-      $_POST['rate'] = Num::percent_format($myrow["rate"]);
-      $_POST['sales_gl_code'] = $myrow["sales_gl_code"];
+      $myrow                       = Tax_Types::get($selected_id);
+      $_POST['name']               = $myrow["name"];
+      $_POST['rate']               = Num::percent_format($myrow["rate"]);
+      $_POST['sales_gl_code']      = $myrow["sales_gl_code"];
       $_POST['purchasing_gl_code'] = $myrow["purchasing_gl_code"];
     }
     hidden('selected_id', $selected_id);

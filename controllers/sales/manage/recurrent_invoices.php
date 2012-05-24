@@ -21,7 +21,7 @@
     if ($input_error != 1) {
       if ($selected_id != -1) {
         $sql
-          = "UPDATE recurrent_invoices SET
+              = "UPDATE recurrent_invoices SET
  			description=" . DB::escape($_POST['description']) . ",
  			order_no=" . DB::escape($_POST['order_no']) . ",
  			debtor_id=" . DB::escape($_POST['debtor_id']) . ",
@@ -35,7 +35,7 @@
       }
       else {
         $sql
-          = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
+              = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
  			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_id']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days',
           0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
         $note = _('New recurrent invoice has been added');
@@ -58,7 +58,7 @@
     $selected_id = -1;
     unset($_POST);
   }
-  $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
+  $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
   start_form();
   Table::start('tablestyle grid width70');
@@ -69,8 +69,8 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    $begin = Dates::sql2date($myrow["begin"]);
-    $end = Dates::sql2date($myrow["end"]);
+    $begin     = Dates::sql2date($myrow["begin"]);
+    $end       = Dates::sql2date($myrow["end"]);
     $last_sent = Dates::sql2date($myrow["last_sent"]);
 
     Cell::label($myrow["description"]);
@@ -100,17 +100,17 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
-      $sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not get recurrent invoice");
-      $myrow = DB::fetch($result);
+      $sql                  = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
+      $result               = DB::query($sql, "could not get recurrent invoice");
+      $myrow                = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
-      $_POST['order_no'] = $myrow["order_no"];
-      $_POST['debtor_id'] = $myrow["debtor_id"];
-      $_POST['group_no'] = $myrow["group_no"];
-      $_POST['days'] = $myrow["days"];
-      $_POST['monthly'] = $myrow["monthly"];
-      $_POST['begin'] = Dates::sql2date($myrow["begin"]);
-      $_POST['end'] = Dates::sql2date($myrow["end"]);
+      $_POST['order_no']    = $myrow["order_no"];
+      $_POST['debtor_id']   = $myrow["debtor_id"];
+      $_POST['group_no']    = $myrow["group_no"];
+      $_POST['days']        = $myrow["days"];
+      $_POST['monthly']     = $myrow["monthly"];
+      $_POST['begin']       = Dates::sql2date($myrow["begin"]);
+      $_POST['end']         = Dates::sql2date($myrow["end"]);
     }
     hidden("selected_id", $selected_id);
   }

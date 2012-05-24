@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
@@ -32,7 +32,7 @@
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
-  Session::i()->setGlobal('creditor',$_POST['supplier_id']);
+  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   Display::div_start('totals_tbl');
   if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
     $supplier_record = Creditor::get_to_trans($_POST['supplier_id']);
@@ -47,7 +47,7 @@
     unset($_POST['supplier_id']);
   }
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to = Dates::date2sql($_POST['TransToDate']);
+  $date_to    = Dates::date2sql($_POST['TransToDate']);
   // Sherifoz 22.06.03 Also get the description
   $sql
     = "SELECT trans.type,
@@ -107,21 +107,21 @@
     }
   }
   $cols = array(
-    _("Type") => array('fun' => 'systype_name', 'ord' => ''),
-    _("#") => array('fun' => 'trans_view', 'ord' => ''),
+    _("Type")        => array('fun' => 'systype_name', 'ord' => ''),
+    _("#")           => array('fun' => 'trans_view', 'ord' => ''),
     _("Reference"),
-    _("Supplier") => array('type' => 'id'),
+    _("Supplier")    => array('type' => 'id'),
     _("Supplier ID") => 'skip',
     _("Supplier #"),
-    _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Due Date") => array(
+    _("Date")        => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Due Date")    => array(
       'type' => 'date', 'fun' => 'due_date'
     ),
-    _("Currency") => array('align' => 'center'),
-    _("Debit") => array(
+    _("Currency")    => array('align' => 'center'),
+    _("Debit")       => array(
       'align' => 'right', 'fun' => 'fmt_debit'
     ),
-    _("Credit") => array(
+    _("Credit")      => array(
       'align' => 'right', 'insert' => TRUE, 'fun' => 'fmt_credit'
     ),
     array(
@@ -238,9 +238,9 @@
    * @param $supplier_record
    */
   function display_supplier_summary($supplier_record) {
-    $past_due1 = DB_Company::get_pref('past_due_days');
-    $past_due2 = 2 * $past_due1;
-    $txt_now_due = "1-" . $past_due1 . " " . _('Days');
+    $past_due1     = DB_Company::get_pref('past_due_days');
+    $past_due2     = 2 * $past_due1;
+    $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
     $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     Table::start('tablestyle width90');

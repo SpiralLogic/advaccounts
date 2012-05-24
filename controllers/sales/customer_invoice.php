@@ -16,7 +16,7 @@
 
   $page_title = 'Sales Invoice Complete';
   if (isset($_GET[Orders::MODIFY_INVOICE])) {
-    $page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
+    $page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
     $help_context = "Modifying Sales Invoice";
   }
   elseif (isset($_GET['DeliveryNumber'])) {
@@ -31,11 +31,11 @@
   Page::start($page_title, SA_SALESINVOICE);
   $order = Orders::session_get() ? : NULL;
   if (isset($_GET[ADDED_ID])) {
-    $order = new Sales_Order(ST_SALESINVOICE, $_GET[ADDED_ID]);
-    $customer = new Debtor($order->customer_id);
-    $emails = $customer->getEmailAddresses();
+    $order      = new Sales_Order(ST_SALESINVOICE, $_GET[ADDED_ID]);
+    $customer   = new Debtor($order->customer_id);
+    $emails     = $customer->getEmailAddresses();
     $invoice_no = $_GET[ADDED_ID];
-    $reference = $order->reference;
+    $reference  = $order->reference;
     Event::success(_("Invoice $reference has been entered."));
     $trans_type = ST_SALESINVOICE;
     Event::success(_("Selected deliveries has been processed"), TRUE);
@@ -48,9 +48,9 @@
     Page::footer_exit();
   }
   elseif (isset($_GET[UPDATED_ID])) {
-    $order = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
-    $customer = new Debtor($order->customer_id);
-    $emails = $customer->getEmailAddresses();
+    $order      = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
+    $customer   = new Debtor($order->customer_id);
+    $emails     = $customer->getEmailAddresses();
     $invoice_no = $_GET[UPDATED_ID];
     Event::success(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
     Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
@@ -64,7 +64,7 @@
     for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {
       $line = $order->line_items[$line_no];
       if ($line->src_no == $_GET['RemoveDN']) {
-        $line->quantity = $line->qty_done;
+        $line->quantity       = $line->qty_done;
         $line->qty_dispatched = 0;
       }
     }
@@ -88,10 +88,10 @@
       die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
     }
     $order->trans_type = ST_SALESINVOICE;
-    $order->src_docs = $order->trans_no;
-    $order->trans_no = 0;
-    $order->reference = Ref::get_next(ST_SALESINVOICE);
-    $order->due_date = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
+    $order->src_docs   = $order->trans_no;
+    $order->trans_no   = 0;
+    $order->reference  = Ref::get_next(ST_SALESINVOICE);
+    $order->due_date   = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
     Sales_Invoice::copyToPost($order);
   }
   elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
@@ -147,8 +147,8 @@
     }
   }
   // find delivery spans for batch invoice display
-  $dspans = array();
-  $lastdn = '';
+  $dspans  = array();
+  $lastdn  = '';
   $spanlen = 1;
   for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {
     $line = $order->line_items[$line_no];
@@ -161,14 +161,14 @@
     else {
       if ($lastdn != '') {
         $dspans[] = $spanlen;
-        $spanlen = 1;
+        $spanlen  = 1;
       }
     }
     $lastdn = $line->src_no;
   }
-  $dspans[] = $spanlen;
+  $dspans[]         = $spanlen;
   $is_batch_invoice = count($order->src_docs) > 1;
-  $is_edition = $order->trans_type == ST_SALESINVOICE && $order->trans_no != 0;
+  $is_edition       = $order->trans_type == ST_SALESINVOICE && $order->trans_no != 0;
   start_form();
   hidden('order_id');
   Table::start('tablestyle2 width90 pad5');
@@ -243,9 +243,9 @@
     $th[4] = _("Credited");
   }
   Table::header($th);
-  $k = 0;
-  $has_marked = FALSE;
-  $show_qoh = TRUE;
+  $k           = 0;
+  $has_marked  = FALSE;
+  $show_qoh    = TRUE;
   $dn_line_cnt = 0;
   foreach ($order->line_items as $line_no => $line) {
     if (!$order->view_only && $line->quantity == $line->qty_done) {
@@ -277,7 +277,7 @@
       small_qty_cells(NULL, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), NULL, NULL, $dec);
     }
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
-    $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
+    $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
     Cell::label($line->tax_type_name);
     Cell::label($display_discount_percent, ' class="right nowrap"');
@@ -285,7 +285,7 @@
     if ($is_batch_invoice) {
       if ($dn_line_cnt == 0) {
         $dn_line_cnt = $dspans[0];
-        $dspans = array_slice($dspans, 1);
+        $dspans      = array_slice($dspans, 1);
         Cell::label($line->src_no, "rowspan=$dn_line_cnt class=oddrow");
         Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?RemoveDN=" . $line->src_no . "'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class=oddrow");
       }
@@ -325,11 +325,11 @@
     Cell::label('', 'colspan=2');
   }
   Row::end();
-  $inv_items_total = $order->get_items_total_dispatch();
+  $inv_items_total   = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
   Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
-  $taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
-  $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
+  $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
+  $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
   $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
   Row::label(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
   Table::end(1);

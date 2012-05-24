@@ -21,7 +21,7 @@
     $data['company']->save($_POST);
   }
   elseif (Input::request('id', Input::NUMERIC) > 0) {
-    $data['company'] = $supplier = new Creditor(Input::request('id', Input::NUMERIC));
+    $data['company']     = $supplier = new Creditor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($supplier->id, CT_SUPPLIER);
     Session::i()->setGlobal('creditor', $supplier->id);
   }
@@ -81,8 +81,8 @@
   email_row(_("Email:"), 'email', $supplier->email, 35, 55);
   textarea_row(_("Street:"), 'address', $supplier->address, 35, 2);
   $branch_postcode = new Contact_Postcode(array(
-      'city' => array('city', $supplier->city),
-      'state' => array('state', $supplier->state),
+      'city'     => array('city', $supplier->city),
+      'state'    => array('state', $supplier->state),
       'postcode' => array('postcode', $supplier->postcode)
     )
   );
@@ -99,8 +99,8 @@
   textarea_row(_("Address:"), 'supp_address', $supplier->address, 35, 2);
 
   $postcode = new Contact_Postcode(array(
-      'city' => array('supp_city', $supplier->city),
-      'state' => array('supp_state', $supplier->state),
+      'city'     => array('supp_city', $supplier->city),
+      'state'    => array('supp_state', $supplier->state),
       'postcode' => array('supp_postcode', $supplier->postcode)
     )
   );
@@ -144,7 +144,8 @@
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '', 'style' => 'display:inline-block'
-  ))->tr(TRUE)->td(array('content' => '${name}','class' => 'tablehead',
+  ))->tr(TRUE)->td(array(
+    'content' => '${name}', 'class' => 'tablehead',
     'colspan' => 2
   ))->td->tr;
   text_row("Name:", 'contact[name-${id}]', '${name}', 35, 40);

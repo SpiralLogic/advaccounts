@@ -1,37 +1,37 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   abstract class Orders extends DB_abstract {
 
-    const NEW_ORDER = 'NewOrder';
-    const MODIFY_ORDER = 'ModifyOrder';
-    const NEW_QUOTE = 'NewQuote';
-    const QUOTE_TO_ORDER = 'QuoteToOrder';
-    const MODIFY_QUOTE = 'ModifyQuote';
-    const NEW_DELIVERY = 'NewDelivery';
+    const NEW_ORDER       = 'NewOrder';
+    const MODIFY_ORDER    = 'ModifyOrder';
+    const NEW_QUOTE       = 'NewQuote';
+    const QUOTE_TO_ORDER  = 'QuoteToOrder';
+    const MODIFY_QUOTE    = 'ModifyQuote';
+    const NEW_DELIVERY    = 'NewDelivery';
     const MODIFY_DELIVERY = 'ModifyDelivery';
-    const NEW_INVOICE = 'NewInvoice';
-    const MODIFY_INVOICE = 'ModifyInvoice';
-    const CLONE_ORDER = 'CloneOrder';
-    const BATCH_INVOICE = 'BatchInvoice';
-    const VIEW_INVOICE = 'ViewInvoice';
-    const MODIFY_CREDIT = 'ModifyCredit';
-    const NEW_CREDIT = 'NewCredit';
-    const PROCESS_ORDER = 'ProcessOrder';
-    const CANCEL = 'CancelOrder';
-    const CANCEL_CHANGES = 'CancelChanges';
-    const DELETE_ORDER = 'DeleteOrder';
-    const ADD_ITEM = 'AddItem';
-    const UPDATE_ITEM = 'UpdateItem';
-    const ADD = 'add';
-    const UPDATE = 'update';
-    const TYPE = 'type';
+    const NEW_INVOICE     = 'NewInvoice';
+    const MODIFY_INVOICE  = 'ModifyInvoice';
+    const CLONE_ORDER     = 'CloneOrder';
+    const BATCH_INVOICE   = 'BatchInvoice';
+    const VIEW_INVOICE    = 'ViewInvoice';
+    const MODIFY_CREDIT   = 'ModifyCredit';
+    const NEW_CREDIT      = 'NewCredit';
+    const PROCESS_ORDER   = 'ProcessOrder';
+    const CANCEL          = 'CancelOrder';
+    const CANCEL_CHANGES  = 'CancelChanges';
+    const DELETE_ORDER    = 'DeleteOrder';
+    const ADD_ITEM        = 'AddItem';
+    const UPDATE_ITEM     = 'UpdateItem';
+    const ADD             = 'add';
+    const UPDATE          = 'update';
+    const TYPE            = 'type';
 
     /**
      * @var
@@ -70,6 +70,7 @@
      * @static
      *
      * @param $type
+     *
      * @return void
      */
     static protected function setup($type) {
@@ -86,7 +87,6 @@
      * @param null $id
      *
      * @internal param string $post_id
-     *
      * @internal param $id
      * @return \Purch_Order|\Sales_Order
      */
@@ -124,6 +124,7 @@
      * @static
      *
      * @param $order
+     *
      * @return void
      */
     static public function session_start($order) {

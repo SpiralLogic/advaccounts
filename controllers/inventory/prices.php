@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Input::request('frame'));
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
@@ -25,14 +24,14 @@
   }
   start_form(FALSE, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   if (!Input::request('frame')) {
     echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:") . '</span>';
     echo Sales_UI::items('stock_id', $_POST['stock_id'], FALSE, TRUE, '', array('submitonselect' => TRUE, 'size' => 40));
     echo "<br><br><hr></div>";
   }
-  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     if (!Validation::post_num('price', 0)) {
       $input_error = 1;
@@ -83,7 +82,7 @@
   }
   $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
   Table::header($th);
-  $k = 0; //row colour counter
+  $k          = 0; //row colour counter
   $calculated = FALSE;
   while ($myrow = DB::fetch($prices_list)) {
 
@@ -104,10 +103,10 @@
   Display::div_end();
   echo "<br>";
   if ($Mode == MODE_EDIT) {
-    $myrow = Item_Price::get($selected_id);
-    $_POST['curr_abrev'] = $myrow["curr_abrev"];
+    $myrow                  = Item_Price::get($selected_id);
+    $_POST['curr_abrev']    = $myrow["curr_abrev"];
     $_POST['sales_type_id'] = $myrow["sales_type_id"];
-    $_POST['price'] = Num::price_format($myrow["price"]);
+    $_POST['price']         = Num::price_format($myrow["price"]);
   }
   hidden('selected_id', $selected_id);
   Display::div_start('price_details');

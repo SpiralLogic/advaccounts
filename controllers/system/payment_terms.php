@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Payment Terms"), SA_PAYTERMS);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -63,16 +63,16 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN debtors
-    $sql = "SELECT COUNT(*) FROM debtors WHERE payment_terms = " . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM debtors WHERE payment_terms = " . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
     }
     else {
-      $sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
       $result = DB::query($sql, "check failed");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
       }
@@ -88,7 +88,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -132,12 +132,12 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing payment terms
-      $sql = "SELECT * FROM payment_terms
+      $sql                    = "SELECT * FROM payment_terms
 			WHERE terms_indicator=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not get payment term");
-      $myrow = DB::fetch($result);
-      $_POST['terms'] = $myrow["terms"];
-      $days_before_due = $myrow["days_before_due"];
+      $result                 = DB::query($sql, "could not get payment term");
+      $myrow                  = DB::fetch($result);
+      $_POST['terms']         = $myrow["terms"];
+      $days_before_due        = $myrow["days_before_due"];
       $day_in_following_month = $myrow["day_in_following_month"];
       unset($_POST['DayNumber']);
     }

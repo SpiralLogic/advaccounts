@@ -1,16 +1,17 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /*
          Write/update customer refund.
        */
   class Debtor_Refund {
+
     /**
      * @static
      *
@@ -31,8 +32,8 @@
     static public function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
       $amount = $amount * -1;
       DB::begin();
-      $company_record = DB_Company::get_prefs();
-      $refund_no = Debtor_Trans::write(ST_CUSTREFUND, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
+      $company_record  = DB_Company::get_prefs();
+      $refund_no       = Debtor_Trans::write(ST_CUSTREFUND, $trans_no, $customer_id, $branch_id, $date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
         DB_Comments::delete(ST_CUSTREFUND, $trans_no);
@@ -44,12 +45,12 @@
       /* Bank account entry first */
       $total += Debtor_TransDetail::add_gl_trans(ST_CUSTREFUND, $refund_no, $date_, $bank_gl_account, 0, 0, $amount - $charge, $customer_id, "Cannot insert a GL transaction for the bank account debit", $rate);
       if ($branch_id != ANY_NUMERIC) {
-        $branch_data = Sales_Branch::get_accounts($branch_id);
-        $debtors_account = $branch_data["receivables_account"];
+        $branch_data      = Sales_Branch::get_accounts($branch_id);
+        $debtors_account  = $branch_data["receivables_account"];
         $discount_account = $branch_data["payment_discount_account"];
       }
       else {
-        $debtors_account = $company_record["debtors_act"];
+        $debtors_account  = $company_record["debtors_act"];
         $discount_account = $company_record["default_prompt_payment_act"];
       }
       if (($discount + $amount) != 0) {

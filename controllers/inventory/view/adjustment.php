@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "View Inventory Adjustment"), SA_ITEMSTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
@@ -16,8 +15,8 @@
   Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
   Display::br(1);
   $adjustment_items = Inv_Adjustment::get($trans_no);
-  $k = 0;
-  $header_shown = FALSE;
+  $k                = 0;
+  $header_shown     = FALSE;
   while ($adjustment = DB::fetch($adjustment_items)) {
     if (!$header_shown) {
       $adjustment_type = Inv_Movement::get_type($adjustment['person_id']);

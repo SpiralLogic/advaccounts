@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   $js = "";
   Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
@@ -51,8 +51,8 @@
    */
   function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown) {
     global $levelptr, $k;
-    $code_per_balance = 0;
-    $code_acc_balance = 0;
+    $code_per_balance  = 0;
+    $code_acc_balance  = 0;
     $per_balance_total = 0;
     $acc_balance_total = 0;
     unset($totals_arr);
@@ -103,7 +103,7 @@
       }
       //START Patch#1 : Display only direct child types
       $acctype1 = GL_Type::get($type);
-      $parent1 = $acctype1["parent"];
+      $parent1  = $acctype1["parent"];
       if ($drilldown && $parent1 == $_POST["AccGrp"]
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
@@ -161,18 +161,18 @@
 
   function display_profit_and_loss() {
     global $sel;
-    $dim = DB_Company::get_pref('use_dimension');
+    $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
-    $from = $_POST['TransFromDate'];
-    $to = $_POST['TransToDate'];
-    $compare = $_POST['Compare'];
+    $from      = $_POST['TransFromDate'];
+    $to        = $_POST['TransToDate'];
+    $compare   = $_POST['Compare'];
     if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {
       $drilldown = 1;
     } // Deeper Level
     else {
       $drilldown = 0;
     } // Root level
-    $dec = 0;
+    $dec  = 0;
     $pdec = User::percent_dec();
     if ($compare == 0 || $compare == 2) {
       $end = $to;
@@ -185,7 +185,7 @@
     }
     elseif ($compare == 1) {
       $begin = Dates::add_months($from, -12);
-      $end = Dates::add_months($to, -12);
+      $end   = Dates::add_months($to, -12);
     }
     Display::div_start('pl_tbl');
     Table::start('tablestyle grid width50');
@@ -197,14 +197,14 @@
  </tr>";
     if (!$drilldown) //Root Level
     {
-      $parent = -1;
+      $parent   = -1;
       $classper = $classacc = $salesper = $salesacc = 0.0;
       //Get classes for PL
       $classresult = GL_Class::get_all(FALSE, 0);
       while ($class = DB::fetch($classresult)) {
         $class_per_total = 0;
         $class_acc_total = 0;
-        $convert = Systypes::get_class_type_convert($class["ctype"]);
+        $convert         = Systypes::get_class_type_convert($class["ctype"]);
         //Print class Name
         Table::sectionTitle($class["class_name"], 4);
         echo $tableheader;
@@ -245,11 +245,11 @@
     else {
       //Level Pointer : Global variable defined in order to control display of root
       global $levelptr;
-      $levelptr = 0;
+      $levelptr    = 0;
       $accounttype = GL_Type::get($_POST["AccGrp"]);
-      $classid = $accounttype["class_id"];
-      $class = GL_Class::get($classid);
-      $convert = Systypes::get_class_type_convert($class["ctype"]);
+      $classid     = $accounttype["class_id"];
+      $class       = GL_Class::get($classid);
+      $convert     = Systypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]), 4);
       echo $tableheader;

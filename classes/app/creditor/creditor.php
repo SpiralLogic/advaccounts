@@ -23,7 +23,7 @@
       }
       $sql .= " LIMIT 20";
       $result = DB::query($sql, 'Couldn\'t Get Supplier');
-      $data = '';
+      $data   = '';
       while ($row = DB::fetch_assoc($result)) {
         foreach ($row as &$value) {
           $value = htmlspecialchars_decode($value);
@@ -172,10 +172,10 @@
      * @param int|null $id
      */
     public function __construct($id = NULL) {
-      $this->gst_no = &$this->tax_id;
+      $this->gst_no  = &$this->tax_id;
       $this->contact = &$this->contact_name;
       $this->address = &$this->post_address;
-      $this->phone2 = &$this->phone;
+      $this->phone2  = &$this->phone;
       parent::__construct($id);
 
       $this->ref = substr($this->name, 0, 29);
@@ -219,8 +219,8 @@
           $this->contacts[$id] = new Contact(CT_SUPPLIER, $contact);
         }
       }
-      $this->discount = User::numeric($this->discount) / 100;
-      $this->ref = substr($this->name, 0, 29);
+      $this->discount     = User::numeric($this->discount) / 100;
+      $this->ref          = substr($this->name, 0, 29);
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
@@ -228,7 +228,7 @@
      */
     protected function _setDefaults() {
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-      $this->contacts[0] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
+      $this->contacts[0]    = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
     /**
      * @return bool
@@ -250,14 +250,14 @@
      * @return bool|Status
      */
     protected function _defaults() {
-      $this->credit_limit = Num::price_format(0);
-      $company_record = DB_Company::get_prefs();
-      $this->curr_code = $company_record["curr_default"];
-      $this->payable_account = $company_record["creditors_act"];
-      $this->purchase_account = $company_record["default_cogs_act"];
+      $this->credit_limit             = Num::price_format(0);
+      $company_record                 = DB_Company::get_prefs();
+      $this->curr_code                = $company_record["curr_default"];
+      $this->payable_account          = $company_record["creditors_act"];
+      $this->purchase_account         = $company_record["default_cogs_act"];
       $this->payment_discount_account = $company_record['pyt_discount_act'];
-      $this->contacts[0] = new Contact(CT_SUPPLIER);
-      $this->contacts[0]->parent_id = $this->id = 0;
+      $this->contacts[0]              = new Contact(CT_SUPPLIER);
+      $this->contacts[0]->parent_id   = $this->id = 0;
       $this->_setDefaults();
       return $this->_status(TRUE, 'Initialize', 'Now working with a new customer');
     }
@@ -292,7 +292,7 @@
         return $this->_status->get();
       }
       $this->_getContacts();
-      $this->discount = $this->discount * 100;
+      $this->discount     = $this->discount * 100;
       $this->credit_limit = Num::price_format($this->credit_limit);
     }
     /**
@@ -313,9 +313,9 @@
       $past_due1 = DB_Company::get_pref('past_due_days');
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
 
 		Sum($value) AS Balance,
 
@@ -342,21 +342,21 @@
       if (DB::num_rows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = TRUE;
-        $sql = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
+        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms
 			FROM suppliers,
 				 payment_terms
 			WHERE
 				 suppliers.payment_terms = payment_terms.terms_indicator
 				 AND suppliers.supplier_id = " . DB::escape($supplier_id);
-        $result = DB::query($sql, "The customer details could not be retrieved");
+        $result      = DB::query($sql, "The customer details could not be retrieved");
       }
       else {
         $nil_balance = FALSE;
       }
       $supp = DB::fetch($result);
       if ($nil_balance == TRUE) {
-        $supp["Balance"] = 0;
-        $supp["Due"] = 0;
+        $supp["Balance"]  = 0;
+        $supp["Due"]      = 0;
         $supp["Overdue1"] = 0;
         $supp["Overdue2"] = 0;
       }
@@ -373,9 +373,9 @@
      */
     static public function get_oweing($supplier_id, $date_from, $date_to) {
       $date_from = Dates::date2sql($date_from);
-      $date_to = Dates::date2sql($date_to);
+      $date_to   = Dates::date2sql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql = "SELECT
+      $sql     = "SELECT
 
 
  	SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -387,7 +387,7 @@
 		AND trans . tran_date <= '$date_to'
 		AND trans.supplier_id = " . DB::escape($supplier_id) . "
 		AND trans.type = " . ST_SUPPINVOICE;
-      $result = DB::query($sql);
+      $result  = DB::query($sql);
       $results = DB::fetch($result);
       return $results['Total'];
     }
@@ -399,7 +399,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($supplier_id) {
-      $sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+      $sql    = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
@@ -411,9 +411,9 @@
      * @return mixed
      */
     static public function get_name($supplier_id) {
-      $sql = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+      $sql    = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -424,7 +424,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get_accounts_name($supplier_id) {
-      $sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
@@ -441,19 +441,19 @@
      * @return string
      */
     static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
-      $sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
+      $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
 
       return select_box($name, $selected_id, $sql, 'supplier_id', 'name', array(
-        'format' => '_format_add_curr',
-        'order' => array('supp_ref'),
-        'search_box' => $mode != 0,
-        'type' => 1,
-        'spec_option' => $spec_option === TRUE ? _("All Suppliers") : $spec_option,
-        'spec_id' => ALL_TEXT,
+        'format'        => '_format_add_curr',
+        'order'         => array('supp_ref'),
+        'search_box'    => $mode != 0,
+        'type'          => 1,
+        'spec_option'   => $spec_option === TRUE ? _("All Suppliers") : $spec_option,
+        'spec_id'       => ALL_TEXT,
         'select_submit' => $submit_on_change,
-        'async' => FALSE,
-        'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
+        'async'         => FALSE,
+        'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') :
           _('Select supplier'),
         'show_inactive' => $all
       ));

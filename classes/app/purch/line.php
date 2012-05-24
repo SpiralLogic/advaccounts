@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Purch_Line {
 
     /**
@@ -79,19 +79,19 @@
      */
     public function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
       /* Constructor function to add a new LineDetail object with passed params */
-      $this->line_no = $line_no;
-      $this->stock_id = $stock_item;
-      $this->description = $item_descr;
-      $this->quantity = $qty;
-      $this->req_del_date = $req_del_date;
-      $this->price = $prc;
-      $this->units = $uom;
-      $this->qty_received = $qty_recd;
-      $this->discount = $discount;
-      $this->qty_inv = $qty_inv;
-      $this->receive_qty = 0; /*initialise these last two only */
+      $this->line_no       = $line_no;
+      $this->stock_id      = $stock_item;
+      $this->description   = $item_descr;
+      $this->quantity      = $qty;
+      $this->req_del_date  = $req_del_date;
+      $this->price         = $prc;
+      $this->units         = $uom;
+      $this->qty_received  = $qty_recd;
+      $this->discount      = $discount;
+      $this->qty_inv       = $qty_inv;
+      $this->receive_qty   = 0; /*initialise these last two only */
       $this->standard_cost = 0;
-      $this->Deleted = FALSE;
+      $this->Deleted       = FALSE;
     }
     /**
      * @static
@@ -118,7 +118,7 @@
                                     $err_msg = "", $discount = 0, $exp_price = -1) {
       $unit_price = ($discount == 100) ? 0 : $unit_price / (1 - $discount / 100);
       $sql
-        = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
+                  = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 		 	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
       $sql .= "VALUES (" . DB::escape($creditor_trans_type) . ", " . DB::escape($creditor_trans_no) . ", "
         . DB::escape($stock_id) .

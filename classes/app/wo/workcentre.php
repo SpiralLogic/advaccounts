@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_WorkCentre {
+
     /**
      * @static
      *
@@ -53,7 +54,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($type_id) {
-      $sql = "SELECT * FROM workcentres WHERE id=" . DB::escape($type_id);
+      $sql    = "SELECT * FROM workcentres WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get work centre");
       return DB::fetch($result);
     }

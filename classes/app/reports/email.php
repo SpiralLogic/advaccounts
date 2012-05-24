@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   class Reports_Email {
 
@@ -56,16 +56,16 @@
     public function __construct($defaults = TRUE) {
       $this->mail = new PHPMailer(TRUE);
       $this->mail->IsSMTP(); // telling the class to use SMTP
-      $this->mail->Host = Config::get('email.server'); // SMTP server
+      $this->mail->Host     = Config::get('email.server'); // SMTP server
       $this->mail->Username = Config::get('email.username');
       $this->mail->Password = Config::get('email.password');
-      $this->mail->From = Config::get('email.from_email');
+      $this->mail->From     = Config::get('email.from_email');
       $this->mail->SMTPAuth = TRUE;
       $this->mail->WordWrap = 50;
       if ($defaults) {
 
         $this->mail->FromName = Config::get('email.from_name');
-        $bcc = Config::get('email.bcc');
+        $bcc                  = Config::get('email.bcc');
         if ($bcc) {
           $this->mail->AddBCC($bcc);
         }
@@ -135,7 +135,7 @@
       //$this->mail->Encoding = "quoted-printable";
       $this->mail->IsHTML(TRUE);
       $this->mail->AltBody = $html . "\n";
-      $this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
+      $this->mail->Body    = "<html><body>\n" . $html . "\n</body></html>\n";
     }
     /**
      * @param $filename

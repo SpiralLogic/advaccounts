@@ -12,6 +12,9 @@
   use ADV\Core\Config;
   use ADV\Core\Module;
 
+  /**
+
+   */
   class Youtrack extends Module\Base {
 
     public function _init() {
@@ -19,8 +22,8 @@
     }
     public function _login() {
       $host = 'advanced.advancedgroup.com.au/modules/youtrack';
-      if (strpos($_SERVER['HTTP_HOST'],'dev')!==FALSE) {
-        $host = 'dev.'.$host;
+      if (strpos($_SERVER['HTTP_HOST'], 'dev') !== FALSE) {
+        $host = 'dev.' . $host;
       }
       $js = <<<JS
 $.get('http://$host');
@@ -31,7 +34,7 @@ JS;
       $ch = curl_init('http://advanced.advancedgroup.com.au:8090/rest/user/login');
       curl_setopt($ch, CURLOPT_POST, 2);
       $user = User::i()->username;
-      $key = User::i()->getHash();
+      $key  = User::i()->getHash();
       curl_setopt($ch, CURLOPT_POSTFIELDS, "login=$user&password=$key");
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_HEADER, 1);

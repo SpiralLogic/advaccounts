@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 9/05/12
- * Time: 2:42 PM
- * To change this template use File | Settings | File Templates.
- */
+  /**
+   * Created by JetBrains PhpStorm.
+   * User: advanced
+   * Date: 9/05/12
+   * Time: 2:42 PM
+   * To change this template use File | Settings | File Templates.
+   */
 
   class Row {
 

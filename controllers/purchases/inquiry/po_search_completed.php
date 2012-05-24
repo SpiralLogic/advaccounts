@@ -105,7 +105,7 @@
       $sql .= (Input::get(LOC_NOT_FAXED_YET) == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : DB::quote($_POST['StockLocation']);
     }
     else {
-      $data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+      $data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
       $date_before = Dates::date2sql($_POST['OrdersToDate']);
       $sql .= " AND porder.ord_date >= '$data_after'";
       $sql .= " AND porder.ord_date <= '$date_before'";
@@ -117,14 +117,14 @@
   $sql .= " GROUP BY porder.order_no";
   $cols = array(
     // Transaction link
-    _("#") => array('ord' => '', 'fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }), //
+    _("#")           => array('ord' => '', 'fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }), //
     _("Reference"), //
-    _("Supplier") => array('ord' => '', 'type' => 'id'), //
+    _("Supplier")    => array('ord' => '', 'type' => 'id'), //
     _("Supplier ID") => 'skip', //
-    _("Location") => '', //
-    _("Invoice #") => '', //
-    _("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
-    _("Currency") => array('align' => 'center'), //
+    _("Location")    => '', //
+    _("Invoice #")   => '', //
+    _("Order Date")  => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
+    _("Currency")    => array('align' => 'center'), //
     _("Order Total") => 'amount', //
     // Edit link
     array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }) //
@@ -156,7 +156,7 @@
     )//
     );
   }
-  $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->width = (Input::request('frame')) ? '100' : "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');

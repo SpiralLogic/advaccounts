@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Reorder Levels"), SA_REORDER, Input::request('frame'));
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
@@ -20,7 +19,7 @@
   }
   start_form(FALSE, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   if (!Input::request('frame')) {
     echo "<div class='center'>" . _("Item:") . "&nbsp;";
@@ -30,15 +29,15 @@
     Display::item_heading($_POST['stock_id']);
     Display::br();
     Display::div_end();
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   Display::div_start('reorders');
   Table::start('tablestyle grid width30');
   $th = array(_("Location"), _("Quantity On Hand"), _("Primary Shelf"), _("Secondary Shelf"), _("Re-Order Level"));
   Table::header($th);
-  $j = 1;
-  $k = 0; //row colour counter
-  $result = Inv_Location::get_details($_POST['stock_id']);
+  $j       = 1;
+  $k       = 0; //row colour counter
+  $result  = Inv_Location::get_details($_POST['stock_id']);
   $updated = FALSE;
   while ($myrow = DB::fetch($result)) {
     if (isset($_POST['UpdateData']) && Validation::post_num($myrow["loc_code"])) {

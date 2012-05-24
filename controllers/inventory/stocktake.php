@@ -1,20 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
   Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_INVADJUST;
     Event::success(_("Items adjustment has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
@@ -25,7 +24,7 @@
 
   if (isset($_POST['Process']) && can_process()) {
     foreach ($_SESSION['adj_items']->line_items as $line) {
-      $item = new Item($line->stock_id);
+      $item          = new Item($line->stock_id);
       $current_stock = $item->getStockLevels($_POST['StockLocation']);
       $line->quantity -= $current_stock['qty'];
     }
@@ -109,7 +108,7 @@
       unset ($_SESSION['adj_items']);
     }
     $_SESSION['adj_items'] = new Item_Order(ST_INVADJUST);
-    $_POST['AdjDate'] = Dates::new_doc_date();
+    $_POST['AdjDate']      = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       $_POST['AdjDate'] = Dates::end_fiscalyear();
     }

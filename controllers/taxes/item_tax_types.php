@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -20,8 +20,8 @@
     if ($input_error != 1) {
       // create an array of the exemptions
       $exempt_from = array();
-      $tax_types = Tax_Types::get_all_simple();
-      $i = 0;
+      $tax_types   = Tax_Types::get_all_simple();
+      $i           = 0;
       while ($myrow = DB::fetch($tax_types)) {
         if (check_value('ExemptTax' . $myrow["id"])) {
           $exempt_from[$i] = $myrow["id"];
@@ -40,12 +40,12 @@
     }
   }
   if ($Mode == MODE_DELETE) {
-      Tax_ItemType::delete($selected_id);
+    Tax_ItemType::delete($selected_id);
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -78,7 +78,7 @@
     if ($Mode == MODE_EDIT) {
       $myrow = Tax_ItemType::get($selected_id);
       unset($_POST); // clear exemption checkboxes
-      $_POST['name'] = $myrow["name"];
+      $_POST['name']   = $myrow["name"];
       $_POST['exempt'] = $myrow["exempt"];
       // read the exemptions and check the ones that are on
       $exemptions = Tax_ItemType::get_exemptions($selected_id);
@@ -111,11 +111,11 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-  /**
-   * @param $selected_id
-   *
-   * @return bool
-   */
+/**
+ * @param $selected_id
+ *
+ * @return bool
+ */
 
 
 

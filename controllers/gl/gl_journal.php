@@ -1,24 +1,24 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   if (isset($_GET['ModifyGL'])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
-    $help_context = "Modifying Journal Entry";
+    $help_context           = "Modifying Journal Entry";
   }
   else {
     $_SESSION['page_title'] = _($help_context = "Journal Entry");
   }
   Page::start($_SESSION['page_title'], SA_JOURNALENTRY);
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_JOURNAL;
     Event::success(_("Journal entry has been entered") . " #$trans_no");
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
@@ -27,7 +27,7 @@
     Page::footer_exit();
   }
   elseif (isset($_GET[UPDATED_ID])) {
-    $trans_no = $_GET[UPDATED_ID];
+    $trans_no   = $_GET[UPDATED_ID];
     $trans_type = ST_JOURNAL;
     Event::success(_("Journal entry has been updated") . " #$trans_no");
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
@@ -85,12 +85,12 @@
     }
   }
   if (isset($_POST['Process'])) {
-    $order = $_SESSION['journal_items'];
-    $new = $order->order_id == 0;
+    $order            = $_SESSION['journal_items'];
+    $new              = $order->order_id == 0;
     $order->reference = $_POST['ref'];
-    $order->memo_ = $_POST['memo_'];
+    $order->memo_     = $_POST['memo_'];
     $order->tran_date = $_POST['date_'];
-    $trans_no = GL_Journal::write($order, check_value('Reverse'));
+    $trans_no         = GL_Journal::write($order, check_value('Reverse'));
     $order->clear_items();
     Dates::new_doc_date($_POST['date_']);
     unset($_SESSION['journal_items']);
@@ -219,7 +219,7 @@
     if (isset($_SESSION['journal_items'])) {
       unset ($_SESSION['journal_items']);
     }
-    $order = new Item_Order($type);
+    $order           = new Item_Order($type);
     $order->order_id = $trans_no;
     if ($trans_no) {
       $result = GL_Trans::get_many($type, $trans_no);
@@ -232,9 +232,9 @@
           $order->add_gl_item($row['account'], $row['dimension_id'], $row['dimension2_id'], $row['amount'], $row['memo_']);
         }
       }
-      $order->memo_ = DB_Comments::get_string($type, $trans_no);
-      $order->tran_date = Dates::sql2date($date);
-      $order->reference = Ref::get($type, $trans_no);
+      $order->memo_          = DB_Comments::get_string($type, $trans_no);
+      $order->tran_date      = Dates::sql2date($date);
+      $order->reference      = Ref::get($type, $trans_no);
       $_POST['ref_original'] = $order->reference; // Store for comparison when updating
     }
     else {
@@ -245,8 +245,8 @@
       }
       $_POST['ref_original'] = -1;
     }
-    $_POST['memo_'] = $order->memo_;
-    $_POST['ref'] = $order->reference;
-    $_POST['date_'] = $order->tran_date;
+    $_POST['memo_']            = $order->memo_;
+    $_POST['ref']              = $order->reference;
+    $_POST['date_']            = $order->tran_date;
     $_SESSION['journal_items'] = &$order;
   }

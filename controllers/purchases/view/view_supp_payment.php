@@ -1,28 +1,27 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
-  $receipt = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
-  $company_currency = Bank_Currency::for_company();
-  $show_currencies = FALSE;
+  $receipt           = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
+  $company_currency  = Bank_Currency::for_company();
+  $show_currencies   = FALSE;
   $show_both_amounts = FALSE;
   if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency)) {
     $show_currencies = TRUE;
   }
   if ($receipt['bank_curr_code'] != $receipt['SupplierCurrCode']) {
-    $show_currencies = TRUE;
+    $show_currencies   = TRUE;
     $show_both_amounts = TRUE;
   }
   echo "<div class='center'>";

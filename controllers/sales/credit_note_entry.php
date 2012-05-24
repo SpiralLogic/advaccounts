@@ -15,12 +15,12 @@
   $order = Orders::session_get() ? : NULL;
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
-    $order = handle_new_credit(0);
+    $order                  = handle_new_credit(0);
   }
   elseif (isset($_GET[Orders::MODIFY_CREDIT])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET[Orders::MODIFY_CREDIT]);
-    $order = handle_new_credit($_GET[Orders::MODIFY_CREDIT]);
-    $help_context = "Modifying Customer Credit Note";
+    $order                  = handle_new_credit($_GET[Orders::MODIFY_CREDIT]);
+    $help_context           = "Modifying Customer Credit Note";
   }
   else {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -30,12 +30,12 @@
   Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
   if (list_updated('branch_id')) {
     // when branch is selected via external editor also customer can change
-    $br = Sales_Branch::get(get_post('branch_id'));
+    $br                   = Sales_Branch::get(get_post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }
   if (isset($_GET[ADDED_ID])) {
-    $credit_no = $_GET[ADDED_ID];
+    $credit_no  = $_GET[ADDED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
@@ -47,7 +47,7 @@
     Page::footer_exit();
   }
   if (isset($_POST[Orders::CANCEL_CHANGES])) {
-    $type = $order->trans_type;
+    $type     = $order->trans_type;
     $order_no = (is_array($order->trans_no)) ? key($order->trans_no) : $order->trans_no;
     Orders::session_delete($_POST['order_id']);
     $order = handle_new_credit($order_no);
@@ -58,12 +58,12 @@
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::ADD_ITEM]) && check_item_data()) {
-    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,$_POST['description']);
+    $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::UPDATE_ITEM])) {
     if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
-      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100,$_POST['description']);
+      $order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
     }
     Item_Line::start_focus('_stock_id_edit');
   }
@@ -79,7 +79,7 @@
     if (!isset($_POST['WriteOffGLCode'])) {
       $_POST['WriteOffGLCode'] = 0;
     }
-    $credit = copy_to_cn($order);
+    $credit    = copy_to_cn($order);
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
     Dates::new_doc_date($credit->document_date);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
@@ -109,16 +109,16 @@
    * @return Sales_Order
    */
   function copy_to_cn($order) {
-    $order->Comments = $_POST['CreditText'];
+    $order->Comments      = $_POST['CreditText'];
     $order->document_date = $_POST['OrderDate'];
-    $order->freight_cost = Validation::input_num('ChargeFreightCost');
-    $order->location = (isset($_POST['location']) ? $_POST['location'] : "");
-    $order->sales_type = $_POST['sales_type_id'];
+    $order->freight_cost  = Validation::input_num('ChargeFreightCost');
+    $order->location      = (isset($_POST['location']) ? $_POST['location'] : "");
+    $order->sales_type    = $_POST['sales_type_id'];
     if ($order->trans_no == 0) {
       $order->reference = $_POST['ref'];
     }
-    $order->ship_via = $_POST['ShipperID'];
-    $order->dimension_id = $_POST['dimension_id'];
+    $order->ship_via      = $_POST['ShipperID'];
+    $order->dimension_id  = $_POST['dimension_id'];
     $order->dimension2_id = $_POST['dimension2_id'];
     return $order;
   }
@@ -127,21 +127,21 @@
    * @param $order
    */
   function copy_from_cn($order) {
-    $order = Sales_Order::check_edit_conflicts($order);
-    $_POST['CreditText'] = $order->Comments;
-    $_POST['customer_id'] = $order->customer_id;
-    $_POST['branch_id'] = $order->Branch;
-    $_POST['OrderDate'] = $order->document_date;
+    $order                      = Sales_Order::check_edit_conflicts($order);
+    $_POST['CreditText']        = $order->Comments;
+    $_POST['customer_id']       = $order->customer_id;
+    $_POST['branch_id']         = $order->Branch;
+    $_POST['OrderDate']         = $order->document_date;
     $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
-    $_POST['location'] = $order->location;
-    $_POST['sales_type_id'] = $order->sales_type;
+    $_POST['location']          = $order->location;
+    $_POST['sales_type_id']     = $order->sales_type;
     if ($order->trans_no == 0) {
       $_POST['ref'] = $order->reference;
     }
-    $_POST['ShipperID'] = $order->ship_via;
-    $_POST['dimension_id'] = $order->dimension_id;
+    $_POST['ShipperID']     = $order->ship_via;
+    $_POST['dimension_id']  = $order->dimension_id;
     $_POST['dimension2_id'] = $order->dimension2_id;
-    $_POST['order_id'] = $order->order_id;
+    $_POST['order_id']      = $order->order_id;
     Orders::session_set($order);
   }
 

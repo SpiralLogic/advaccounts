@@ -158,10 +158,10 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                         ' ' => '',
-                                                                                         '/' => '',
-                                                                                         '&' => 'And'
-                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
+        ' ' => '',
+        '/' => '',
+        '&' => 'And'
+      ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @param $hide_back_link

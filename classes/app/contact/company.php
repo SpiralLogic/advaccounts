@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   abstract class Contact_Company extends DB_abstract {
 
     /**
@@ -79,6 +79,7 @@
      * @param $emails
      * @param $trans
      * @param $type
+     *
      * @return void
      */
     protected function addEmailGroup($name, $emails, $trans, $type) {
@@ -88,6 +89,7 @@
      *
      * @param      $selector
      * @param bool $id
+     *
      * @return void
      */
     static public function addInfoDialog($selector, $id = FALSE) {
@@ -103,11 +105,11 @@
 				 		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
 				 		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
 											</div>';
-      $type = explode('_', get_called_class());
-      $type = array_pop($type);
-      $type= ($type=='c')?'customer':'supplier';
+      $type    = explode('_', get_called_class());
+      $type    = array_pop($type);
+      $type    = ($type == 'c') ? 'customer' : 'supplier';
       $details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
-      $type = strtolower($type);
+      $type    = strtolower($type);
       $details->setTemplateData(($id) ? $company : '');
       if ($id) {
         $details->addOpenEvent($selector, 'click');
@@ -133,10 +135,10 @@ JS;
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
       $company = new $company($id);
-      $emails = $company->getEmailAddresses();
+      $emails  = $company->getEmailAddresses();
       if (count($emails) > 0) {
-        $types = $GLOBALS['systypes_array'];
-        $text = $types[$type];
+        $types   = $GLOBALS['systypes_array'];
+        $text    = $types[$type];
         $content = Reporting::email_link($trans, _("Email This $text"), TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
         if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
           $type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;

@@ -188,8 +188,8 @@
     if (check_valid_entries() == TRUE) {
       unset($_SESSION['voiding']);
       $void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
-      $error = FALSE;
-      if ($_POST['filterType']==ST_SALESINVOICE && !User::i()->can_access(SA_VOIDINVOICE)) {
+      $error      = FALSE;
+      if ($_POST['filterType'] == ST_SALESINVOICE && !User::i()->can_access(SA_VOIDINVOICE)) {
         $error = _("You don't not have permissions required to delete this transaction.");
       }
       elseif ($void_entry != NULL) {

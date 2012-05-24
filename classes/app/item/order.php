@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Item_Order {
 
     /**
@@ -114,7 +114,7 @@
      * @param $standard_cost
      */
     public function update_order_item($line_no, $qty, $standard_cost) {
-      $this->line_items[$line_no]->quantity = $qty;
+      $this->line_items[$line_no]->quantity      = $qty;
       $this->line_items[$line_no]->standard_cost = $standard_cost;
     }
     /**
@@ -176,11 +176,11 @@
      * @param null $description
      */
     public function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = NULL) {
-      $this->gl_items[$index]->code_id = $code_id;
-      $this->gl_items[$index]->dimension_id = $dimension_id;
+      $this->gl_items[$index]->code_id       = $code_id;
+      $this->gl_items[$index]->dimension_id  = $dimension_id;
       $this->gl_items[$index]->dimension2_id = $dimension2_id;
-      $this->gl_items[$index]->amount = $amount;
-      $this->gl_items[$index]->reference = $reference;
+      $this->gl_items[$index]->amount        = $amount;
+      $this->gl_items[$index]->reference     = $reference;
       if ($description == NULL) {
         $this->gl_items[$index]->description = GL_Account::get_name($code_id);
       }

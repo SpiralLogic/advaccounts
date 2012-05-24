@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, TRUE);
@@ -26,7 +25,7 @@
   );
   Table::header($th);
   $total = 0;
-  $k = 0; //row colour counter
+  $k     = 0; //row colour counter
   foreach ($purchase_order->line_items as $stock_item) {
     $line_total = $stock_item->qty_received * $stock_item->price;
 

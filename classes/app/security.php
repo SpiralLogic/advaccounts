@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Security {
+
     /**
      * @static
      *
@@ -64,7 +65,7 @@
       $ret = DB::query($sql, "could not retrieve security roles");
       $row = DB::fetch($ret);
       if ($row != FALSE) {
-        $row['areas'] = explode(';', $row['areas']);
+        $row['areas']    = explode(';', $row['areas']);
         $row['sections'] = explode(';', $row['sections']);
       }
       return $row;
@@ -131,8 +132,8 @@
     static public function  roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return select_box($name, $selected_id, $sql, 'id', 'description', array(
-        'spec_option' => $new_item ? _("New role") : FALSE,
-        'spec_id' => '',
+        'spec_option'   => $new_item ? _("New role") : FALSE,
+        'spec_id'       => '',
         'select_submit' => $submit_on_change,
         'show_inactive' => $show_inactive
       ));

@@ -64,15 +64,15 @@
     Display::heading(_("Delivery Notes"));
     $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
     Table::header($th);
-    $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
-    $result = DB::query($sql, "The related delivery notes could not be retreived");
+    $sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
+    $result         = DB::query($sql, "The related delivery notes could not be retreived");
     $delivery_total = 0;
-    $k = 0;
-    $dn_numbers = array();
+    $k              = 0;
+    $dn_numbers     = array();
     while ($del_row = DB::fetch($result)) {
 
       $dn_numbers[] = $del_row["trans_link"];
-      $this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
+      $this_total   = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
       $delivery_total += $this_total;
       Cell::label(Debtor::trans_view($del_row["type"], $del_row["trans_no"]));
       Cell::label($del_row["reference"]);
@@ -87,12 +87,12 @@
     Display::heading(_("Sales Invoices"));
     $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
     Table::header($th);
-    $inv_numbers = array();
+    $inv_numbers    = array();
     $invoices_total = 0;
     if (count($dn_numbers)) {
-      $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
+      $sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
       $result = DB::query($sql, "The related invoices could not be retreived");
-      $k = 0;
+      $k      = 0;
       while ($inv_row = DB::fetch($result)) {
 
         $this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
@@ -114,9 +114,9 @@
     Table::header($th);
     $payments_total = 0;
     if (count($inv_numbers)) {
-      $sql = "SELECT a.*, d.reference FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
+      $sql    = "SELECT a.*, d.reference FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(',', array_values($inv_numbers)) . ")";
       $result = DB::query($sql, "The related payments could not be retreived");
-      $k = 0;
+      $k      = 0;
       while ($payment_row = DB::fetch($result)) {
 
         $this_total = $payment_row["amt"];
@@ -139,9 +139,9 @@
     if (count($inv_numbers)) {
       // FIXME - credit notes retrieved here should be those linked to invoices containing
       // at least one line from this order
-      $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
+      $sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
       $result = DB::query($sql, "The related credit notes could not be retreived");
-      $k = 0;
+      $k      = 0;
       while ($credits_row = DB::fetch($result)) {
 
         $this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
@@ -188,7 +188,7 @@
   $qty_remaining = array_sum(array_map(function($line) {
     return ($line->quantity - $line->qty_done);
   }, $_SESSION['View']->line_items));
-  $items_total = $_SESSION['View']->get_items_total();
+  $items_total   = $_SESSION['View']->get_items_total();
   Row::label(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", ' class="right nowrap"', 1);
   $taxes = $view->get_taxes_for_order();
   foreach ($taxes as $tax) {

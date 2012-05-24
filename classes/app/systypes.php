@@ -1,16 +1,17 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   //	Returns next transaction number.
   //	Used only for transactions stored in tables without autoincremented key.
   //
   class SysTypes {
+
     /**
      * @static
      *
@@ -31,11 +32,11 @@
       }
       $unique = FALSE;
       $result = DB::query($sql, "The next transaction number for $trans_type could not be retrieved");
-      $myrow = DB::fetch_row($result);
-      $ref = $myrow[0];
+      $myrow  = DB::fetch_row($result);
+      $ref    = $myrow[0];
       while (!$unique) {
         $ref++;
-        $sql = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
+        $sql    = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
         $result = DB::query($sql);
         $unique = (DB::num_rows($result) > 0) ? FALSE : TRUE;
       }
@@ -108,7 +109,7 @@
      * @return null|PDOStatement
      */
     static public function get() {
-      $sql = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
+      $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::query($sql, "could not query systypes table");
       return $result;
     }
@@ -120,8 +121,8 @@
      * @return int
      */
     static public function get_class_type_convert($ctype) {
-        return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
-      }
+      return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
+    }
     /**
      * @static
      *

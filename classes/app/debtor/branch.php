@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Debtor_Branch extends DB_abstract {
 
     /**
@@ -139,8 +139,8 @@
     public function __construct($id = NULL) {
       $this->id = &$this->branch_id;
       parent::__construct($id);
-      $this->name = &$this->br_name;
-      $this->address = &$this->br_address;
+      $this->name         = &$this->br_name;
+      $this->address      = &$this->br_address;
       $this->post_address = &$this->br_post_address;
     }
     /**
@@ -185,13 +185,13 @@
      * @return void
      */
     protected function _defaults() {
-      $company_record = DB_Company::get_prefs();
-      $this->branch_id = 0;
-      $this->default_location = Config::get('default.location');
-      $this->sales_discount_account = $company_record['default_sales_discount_act'];
-      $this->receivables_account = $company_record['debtors_act'];
+      $company_record                 = DB_Company::get_prefs();
+      $this->branch_id                = 0;
+      $this->default_location         = Config::get('default.location');
+      $this->sales_discount_account   = $company_record['default_sales_discount_act'];
+      $this->receivables_account      = $company_record['debtors_act'];
       $this->payment_discount_account = $company_record['default_prompt_payment_act'];
-      $this->salesman = (User::i()) ? User::i()->salesmanid : 1;
+      $this->salesman                 = (User::i()) ? User::i()->salesmanid : 1;
     }
     /**
      * @return array|null
@@ -202,6 +202,7 @@
     }
     /**
      * @param null $changes
+     *
      * @return array|null|void
      */
     protected function setFromArray($changes = NULL) {
@@ -259,13 +260,13 @@
 
       $where = $enabled ? array("disable_trans = 0") : array();
       return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(
-        'where' => $where,
-        'order' => array('branch_ref'),
-        'spec_option' => $spec_option === TRUE ?
+        'where'         => $where,
+        'order'         => array('branch_ref'),
+        'spec_option'   => $spec_option === TRUE ?
           _('All branches') : $spec_option,
-        'spec_id' => ALL_TEXT,
+        'spec_id'       => ALL_TEXT,
         'select_submit' => $submit_on_change,
-        'sel_hint' => _('Select customer branch')
+        'sel_hint'      => _('Select customer branch')
       ));
     }
     /**
@@ -279,6 +280,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     *
      * @return void
      */
     static public function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
@@ -300,6 +302,7 @@
      * @param bool $enabled
      * @param bool $submit_on_change
      * @param bool $editkey
+     *
      * @return void
      */
     static public function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {

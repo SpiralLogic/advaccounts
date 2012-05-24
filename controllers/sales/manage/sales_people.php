@@ -63,9 +63,9 @@
   if ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql = "SELECT COUNT(*) FROM branches WHERE salesman=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM branches WHERE salesman=" . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
     }
@@ -78,7 +78,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -117,23 +117,23 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing Sales-person
-      $sql = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not get sales person");
-      $myrow = DB::fetch($result);
-      $_POST['user_id'] = $myrow["user_id"];
-      $_POST['salesman_name'] = $myrow["salesman_name"];
+      $sql                     = "SELECT * FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
+      $result                  = DB::query($sql, "could not get sales person");
+      $myrow                   = DB::fetch($result);
+      $_POST['user_id']        = $myrow["user_id"];
+      $_POST['salesman_name']  = $myrow["salesman_name"];
       $_POST['salesman_phone'] = $myrow["salesman_phone"];
-      $_POST['salesman_fax'] = $myrow["salesman_fax"];
+      $_POST['salesman_fax']   = $myrow["salesman_fax"];
       $_POST['salesman_email'] = $myrow["salesman_email"];
-      $_POST['provision'] = Num::percent_format($myrow["provision"]);
-      $_POST['break_pt'] = Num::price_format($myrow["break_pt"]);
-      $_POST['provision2'] = Num::percent_format($myrow["provision2"]);
+      $_POST['provision']      = Num::percent_format($myrow["provision"]);
+      $_POST['break_pt']       = Num::price_format($myrow["break_pt"]);
+      $_POST['provision2']     = Num::percent_format($myrow["provision2"]);
     }
     hidden('selected_id', $selected_id);
   }
   elseif ($Mode != ADD_ITEM) {
-    $_POST['provision'] = Num::percent_format(0);
-    $_POST['break_pt'] = Num::price_format(0);
+    $_POST['provision']  = Num::percent_format(0);
+    $_POST['break_pt']   = Num::price_format(0);
     $_POST['provision2'] = Num::percent_format(0);
   }
   Table::start('tablestyle2');

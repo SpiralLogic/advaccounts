@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_Requirements {
+
     /**
      * @static
      *
@@ -92,13 +93,13 @@
           _("Component"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand")
         );
         Table::header($th);
-        $k = 0; //row colour counter
+        $k          = 0; //row colour counter
         $has_marked = FALSE;
         if ($date == NULL) {
           $date = Dates::today();
         }
         while ($myrow = DB::fetch($result)) {
-          $qoh = 0;
+          $qoh      = 0;
           $show_qoh = TRUE;
           // if it's a non-stock item (eg. service) don't show qoh
           if (!WO::has_stock_holding($myrow["mb_flag"])) {
@@ -114,7 +115,6 @@
             $has_marked = TRUE;
           }
           else {
-
           }
           if (User::show_codes()) {
             Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);

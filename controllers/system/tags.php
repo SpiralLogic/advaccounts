@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   // For tag constants
   // Set up page security based on what type of tags we're working with
@@ -68,7 +68,7 @@
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
-    $selected_id = -1;
+    $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
   $result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
@@ -94,8 +94,8 @@
   {
     if ($Mode == MODE_EDIT) {
       // Editing an existing tag
-      $myrow = Tags::get($selected_id);
-      $_POST['name'] = $myrow["name"];
+      $myrow                = Tags::get($selected_id);
+      $_POST['name']        = $myrow["name"];
       $_POST['description'] = $myrow["description"];
     }
     // Note the selected tag

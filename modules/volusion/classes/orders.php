@@ -1,16 +1,16 @@
 <?php
 
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   namespace Modules\Volusion;
   /**
-   *
+
    */
   class Orders implements \Iterator, \Countable {
 
@@ -38,11 +38,11 @@
      * @var array
      */
     static public $shipping_types = array(
-      502 => "Pickup", //
-      28 => "Declined!", //
-      902 => "To be calculated", //
-      903 => "Use own courier", //
-      998 => "Installation", //
+      502  => "Pickup", //
+      28   => "Declined!", //
+      902  => "To be calculated", //
+      903  => "Use own courier", //
+      998  => "Installation", //
       1006 => "Medium Courier (VIC Metro)", //
       1009 => "Small Parcel (0.5m,5kg)", //
       1010 => "Medium Courier (1m,25kg)", //
@@ -52,10 +52,10 @@
      * @var array
      */
     static public $payment_types = array(
-      1 => "Account", //
-      2 => "Cheque/Money Order", //
-      5 => "Visa/Mastercard", //
-      7 => "American Express", //
+      1  => "Account", //
+      2  => "Cheque/Money Order", //
+      5  => "Visa/Mastercard", //
+      7  => "American Express", //
       18 => "PayPal", //
       23 => "Direct Deposit", //
       24 => "Wait for Freight Quotation", //
@@ -87,8 +87,8 @@
      */
     function getXML() {
       $apiuser = \Config::get('modules.Volusion')['apiuser'];
-      $apikey = \Config::get('modules.Volusion')['apikey'];
-      $url = \Config::get('modules.Volusion')['apiurl'];
+      $apikey  = \Config::get('modules.Volusion')['apikey'];
+      $url     = \Config::get('modules.Volusion')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
@@ -139,7 +139,7 @@
      */
     function save() {
       $current = $this->current();
-      $exists = $this->exists();
+      $exists  = $this->exists();
       if ($exists) {
         //			echo $this->_classname . ' already exists, updating changes<br>';
         try {
@@ -279,7 +279,7 @@
         return FALSE;
       }
       if (isset($this->data[$this->current]['Options']) && isset($this->data[$this->current]['OrderDetails_Options'])) {
-        $options = $this->data[$this->current]['OrderDetails_Options'];
+        $options       = $this->data[$this->current]['OrderDetails_Options'];
         $this->options = new OrderOptions($options);
         unset($this->data[$this->current]['OrderDetails_Options']);
       }

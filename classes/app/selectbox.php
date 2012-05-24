@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class SelectBox {
 
     /**
@@ -145,13 +145,13 @@
      * @param array $options
      */
     function __construct($name, $selected_id = NULL, $sql, $valfield, $namefield, $options = array()) {
-      $this->name = $name;
-      $this->order = $namefield;
+      $this->name        = $name;
+      $this->order       = $namefield;
       $this->selected_id = $selected_id;
-      $this->sql = $sql;
-      $this->valfield = $valfield;
-      $this->namefield = $namefield;
-      $options = (array) $options;
+      $this->sql         = $sql;
+      $this->valfield    = $valfield;
+      $this->namefield   = $namefield;
+      $options           = (array) $options;
       foreach ($options as $option => $value) {
         if (property_exists($this, $option)) {
           $this->$option = $value;
@@ -176,10 +176,10 @@
       // select set by select content field
       $search_button = $this->editable ? '_' . $this->name . '_button' : ($search_box ? $search_submit : FALSE);
       $select_submit = $this->select_submit;
-      $by_id = ($this->type == 0);
-      $class = $by_id ? 'combo' : 'combo2';
-      $disabled = $this->disabled ? "disabled" : '';
-      $multi = $this->multi;
+      $by_id         = ($this->type == 0);
+      $class         = $by_id ? 'combo' : 'combo2';
+      $disabled      = $this->disabled ? "disabled" : '';
+      $multi         = $this->multi;
       if (!count($this->search)) {
         $this->search = array($by_id ? $this->valfield : $this->namefield);
       }
@@ -221,22 +221,22 @@
       // ------ make selector ----------
       $selector = $first_opt = '';
       $first_id = FALSE;
-      $found = FALSE;
-      $lastcat = NULL;
-      $edit = FALSE;
+      $found    = FALSE;
+      $lastcat  = NULL;
+      $edit     = FALSE;
 
       if ($result = $this->executeSQL()) {
         while ($row = DB::fetch($result)) {
           $value = $row[0];
           $descr = $this->format == NULL ? $row[1] : call_user_func($this->format, $row);
-          $sel = '';
+          $sel   = '';
           if (get_post($search_button) && ($txt == $value)) {
             $this->selected_id[] = $value;
           }
           if (in_array((string) $value, $this->selected_id, TRUE)) {
-            $sel = 'selected';
+            $sel   = 'selected';
             $found = $value;
-            $edit = $this->editable && $row['editable'] && (Input::post($search_box) == $value) ? $row[1] :
+            $edit  = $this->editable && $row['editable'] && (Input::post($search_box) == $value) ? $row[1] :
               FALSE; // get non-formatted description
             if ($edit) {
               break; // selected field is editable - abandon list construction
@@ -266,11 +266,11 @@
       }
       // Prepend special option.
       if ($this->spec_option !== FALSE) { // if special option used - add it
-        $first_id = $this->spec_id;
+        $first_id  = $this->spec_id;
         $first_opt = $this->spec_option;
         //	}
         //	if($first_id !== false) {
-        $sel = $found === FALSE ? 'selected' : '';
+        $sel      = $found === FALSE ? 'selected' : '';
         $optclass = @$row['inactive'] ? "class='inactive'" : '';
         $selector = "<option $sel value='$first_id'>$first_opt</option>\n" . $selector;
       }
@@ -385,7 +385,7 @@
         $where .= '(' . implode($this->where, ' AND ') . ')';
         $group_pos = strpos($this->sql, 'GROUP BY');
         if ($group_pos) {
-          $group = substr($this->sql, $group_pos);
+          $group     = substr($this->sql, $group_pos);
           $this->sql = substr($this->sql, 0, $group_pos) . $where . ' ' . $group;
         }
         else {
@@ -413,6 +413,6 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     private function getNext($result) {
-        return DB::fetch($result);
+      return DB::fetch($result);
     }
   }

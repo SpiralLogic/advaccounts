@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Access setup"), SA_SECROLES);
   $new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
@@ -71,7 +71,7 @@
     }
     if ($input_error == 0) {
       $sections = array();
-      $areas = array();
+      $areas    = array();
       foreach ($_POST as $p => $val) {
         if (substr($p, 0, 4) == 'Area') {
           $a = substr($p, 4);
@@ -116,18 +116,18 @@
     Ajax::i()->activate('_page_body');
   }
   if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
-    $id = get_post('role');
+    $id    = get_post('role');
     $clone = get_post('clone');
     unset($_POST);
     if ($id) {
-      $row = Security::get_role($id);
+      $row                  = Security::get_role($id);
       $_POST['description'] = $row['description'];
-      $_POST['name'] = $row['role'];
+      $_POST['name']        = $row['role'];
       //	if ($row['inactive']
       //		$_POST['inactive'] = 1;
       $_POST['inactive'] = $row['inactive'];
-      $access = $row['areas'];
-      $sections = $row['sections'];
+      $access            = $row['areas'];
+      $sections          = $row['sections'];
     }
     else {
       $_POST['description'] = $_POST['name'] = '';
@@ -171,7 +171,7 @@
   record_status_list_row(_("Current status:"), 'inactive');
   Table::end(1);
   Table::start('tablestyle grid width40');
-  $k = $j = 0; //row colour counter
+  $k   = $j = 0; //row colour counter
   $ext = $sec = $m = -1;
   foreach (sort_areas($security_areas) as $area => $parms) {
     // system setup areas are accessable only for site admins i.e.
@@ -184,7 +184,7 @@
     if ($newsec != $sec || (($newext != $ext) && ($newsec > 99))) { // features set selection
       $ext = $newext;
       $sec = $newsec;
-      $m = $parms[0] & ~0xff;
+      $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
       Row::label($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");

@@ -14,7 +14,7 @@
   JS::open_window(900, 500);
   $page_title = _($help_context = "Deliver Items for a Sales Order");
   if (isset($_GET[Orders::MODIFY_DELIVERY])) {
-    $page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
+    $page_title   = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
     $help_context = "Modifying Delivery Note";
   }
   Page::start($page_title, SA_SALESDELIVERY);
@@ -57,11 +57,11 @@
       Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"), "OutstandingOnly=1");
       die ("<br><span class='bold'>" . _("This order has no items. There is nothing to delivery.") . "</span>");
     }
-    $order->trans_type = ST_CUSTDELIVERY;
-    $order->src_docs = $order->trans_no;
-    $order->order_no = key($order->trans_no);
-    $order->trans_no = 0;
-    $order->reference = Ref::get_next(ST_CUSTDELIVERY);
+    $order->trans_type    = ST_CUSTDELIVERY;
+    $order->src_docs      = $order->trans_no;
+    $order->order_no      = key($order->trans_no);
+    $order->trans_no      = 0;
+    $order->reference     = Ref::get_next(ST_CUSTDELIVERY);
     $order->document_date = Dates::new_doc_date();
     Sales_Delivery::copyToPost($order);
   }
@@ -181,12 +181,12 @@
   Display::div_start('Items');
   Table::start('tablestyle grid width90');
   $new = $order->trans_no == 0;
-  $th = array(
+  $th  = array(
     _("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"),
     $new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
   );
   Table::header($th);
-  $k = 0;
+  $k          = 0;
   $has_marked = FALSE;
   foreach ($order->line_items as $line_no => $line) {
     if ($line->quantity == $line->qty_done) {
@@ -207,7 +207,6 @@
       $has_marked = TRUE;
     }
     else {
-
     }
     Item_UI::status_cell($line->stock_id);
     text_cells(NULL, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
@@ -217,7 +216,7 @@
     Cell::qty($line->qty_done, FALSE, $dec);
     small_qty_cells(NULL, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), NULL, NULL, $dec);
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
-    $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
+    $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
     Cell::label($line->tax_type_name);
     Cell::label($display_discount_percent, ' class="right nowrap"');
@@ -225,16 +224,16 @@
     Row::end();
   }
   $_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format($order->freight_cost));
-  $colspan = 9;
+  $colspan                    = 9;
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right'");
   small_amount_cells(NULL, 'ChargeFreightCost', $order->freight_cost);
   Row::end();
-  $inv_items_total = $order->get_items_total_dispatch();
+  $inv_items_total   = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
   Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
-  $taxes = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
-  $tax_total = Tax::edit_items($taxes, $colspan, $order->tax_included);
+  $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
+  $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included);
   $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
   Row::label(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
   Table::end(1);

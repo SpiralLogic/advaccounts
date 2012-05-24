@@ -1,18 +1,18 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_BANKTRANSFER;
     Event::success(_("Transfer has been entered"));
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
@@ -38,7 +38,7 @@
     Bank_Account::row(_("To Account:"), 'ToBankAccount', NULL, TRUE);
     date_row(_("Transfer Date:"), 'DatePaid', '', NULL, 0, 0, 0, NULL, TRUE);
     $from_currency = Bank_Currency::for_company($_POST['FromBankAccount']);
-    $to_currency = Bank_Currency::for_company($_POST['ToBankAccount']);
+    $to_currency   = Bank_Currency::for_company($_POST['ToBankAccount']);
     if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
       amount_row(_("Amount:"), 'amount', NULL, NULL, $from_currency);
       amount_row(_("Bank Charge:"), 'charge', NULL, NULL, $from_currency);

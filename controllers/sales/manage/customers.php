@@ -74,7 +74,7 @@
     				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
       DB::query($sql, "The customer could not be added");
       $_POST['customer_id'] = DB::insert_id();
-      $new_customer = FALSE;
+      $new_customer         = FALSE;
       DB::commit();
       Event::success(_("A new customer has been added."));
       Ajax::i()->activate('_page_body');
@@ -85,25 +85,25 @@
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
     $sel_id = DB::escape($_POST['customer_id']);
-    $sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_id=$sel_id";
+    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_id=$sel_id";
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("This customer cannot be deleted because there are transactions that refer to it."));
     }
     else {
-      $sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_id=$sel_id";
+      $sql    = "SELECT COUNT(*) FROM sales_orders WHERE debtor_id=$sel_id";
       $result = DB::query($sql, "check failed");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         $cancel_delete = 1;
         Event::error(_("Cannot delete the customer record because orders have been created against it."));
       }
       else {
-        $sql = "SELECT COUNT(*) FROM branches WHERE debtor_id=$sel_id";
+        $sql    = "SELECT COUNT(*) FROM branches WHERE debtor_id=$sel_id";
         $result = DB::query($sql, "check failed");
-        $myrow = DB::fetch_row($result);
+        $myrow  = DB::fetch_row($result);
         if ($myrow[0] > 0) {
           $cancel_delete = 1;
           Event::error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -138,38 +138,38 @@
     hidden('customer_id');
   }
   if ($new_customer) {
-    $_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
-    $_POST['dimension_id'] = 0;
+    $_POST['CustName']      = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
+    $_POST['dimension_id']  = 0;
     $_POST['dimension2_id'] = 0;
-    $_POST['sales_type'] = -1;
-    $_POST['email'] = '';
-    $_POST['curr_code'] = Bank_Currency::for_company();
+    $_POST['sales_type']    = -1;
+    $_POST['email']         = '';
+    $_POST['curr_code']     = Bank_Currency::for_company();
     $_POST['credit_status'] = -1;
     $_POST['payment_terms'] = $_POST['notes'] = '';
-    $_POST['discount'] = $_POST['payment_discount'] = Num::percent_format(0);
-    $_POST['credit_limit'] = Num::price_format(DB_Company::get_pref('default_credit_limit'));
-    $_POST['inactive'] = 0;
+    $_POST['discount']      = $_POST['payment_discount'] = Num::percent_format(0);
+    $_POST['credit_limit']  = Num::price_format(DB_Company::get_pref('default_credit_limit'));
+    $_POST['inactive']      = 0;
   }
   else {
-    $sql = "SELECT * FROM debtors WHERE debtor_id = " . DB::escape($_POST['customer_id']);
-    $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch($result);
-    $_POST['CustName'] = $myrow["name"];
-    $_POST['cust_ref'] = $myrow["debtor_ref"];
-    $_POST['address'] = $myrow["address"];
-    $_POST['tax_id'] = $myrow["tax_id"];
-    $_POST['email'] = $myrow["email"];
-    $_POST['dimension_id'] = $myrow["dimension_id"];
-    $_POST['dimension2_id'] = $myrow["dimension2_id"];
-    $_POST['sales_type'] = $myrow["sales_type"];
-    $_POST['curr_code'] = $myrow["curr_code"];
-    $_POST['credit_status'] = $myrow["credit_status"];
-    $_POST['payment_terms'] = $myrow["payment_terms"];
-    $_POST['discount'] = Num::percent_format($myrow["discount"] * 100);
+    $sql                       = "SELECT * FROM debtors WHERE debtor_id = " . DB::escape($_POST['customer_id']);
+    $result                    = DB::query($sql, "check failed");
+    $myrow                     = DB::fetch($result);
+    $_POST['CustName']         = $myrow["name"];
+    $_POST['cust_ref']         = $myrow["debtor_ref"];
+    $_POST['address']          = $myrow["address"];
+    $_POST['tax_id']           = $myrow["tax_id"];
+    $_POST['email']            = $myrow["email"];
+    $_POST['dimension_id']     = $myrow["dimension_id"];
+    $_POST['dimension2_id']    = $myrow["dimension2_id"];
+    $_POST['sales_type']       = $myrow["sales_type"];
+    $_POST['curr_code']        = $myrow["curr_code"];
+    $_POST['credit_status']    = $myrow["credit_status"];
+    $_POST['payment_terms']    = $myrow["payment_terms"];
+    $_POST['discount']         = Num::percent_format($myrow["discount"] * 100);
     $_POST['payment_discount'] = Num::percent_format($myrow["payment_discount"] * 100);
-    $_POST['credit_limit'] = Num::price_format($myrow["credit_limit"]);
-    $_POST['notes'] = $myrow["notes"];
-    $_POST['inactive'] = $myrow["inactive"];
+    $_POST['credit_limit']     = Num::price_format($myrow["credit_limit"]);
+    $_POST['notes']            = $myrow["notes"];
+    $_POST['inactive']         = $myrow["inactive"];
   }
   Table::startOuter('tablestyle2');
   Table::section(1);

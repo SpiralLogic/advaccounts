@@ -35,7 +35,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -69,10 +69,10 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $myrow = Sales_Point::get($selected_id);
-      $_POST['name'] = $myrow["pos_name"];
+      $myrow             = Sales_Point::get($selected_id);
+      $_POST['name']     = $myrow["pos_name"];
       $_POST['location'] = $myrow["pos_location"];
-      $_POST['account'] = $myrow["pos_account"];
+      $_POST['account']  = $myrow["pos_account"];
       if ($myrow["credit_sale"]) {
         $_POST['credit_sale'] = 1;
       }

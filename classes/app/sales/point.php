@@ -107,12 +107,12 @@
       }
       echo "<td>";
       echo select_box($name, $selected_id, $sql, 'id', 'pos_name', array(
-                                                                        'select_submit' => $submit_on_change,
-                                                                        'async'         => TRUE,
-                                                                        'spec_option'   => $spec_option,
-                                                                        'spec_id'       => -1,
-                                                                        'order'         => array('pos_name')
-                                                                   ));
+        'select_submit' => $submit_on_change,
+        'async'         => TRUE,
+        'spec_option'   => $spec_option,
+        'spec_id'       => -1,
+        'order'         => array('pos_name')
+      ));
       echo "</td></tr>\n";
     }
     /**

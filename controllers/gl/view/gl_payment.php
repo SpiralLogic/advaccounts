@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
@@ -18,9 +17,9 @@
   if (DB::num_rows($result) != 1) {
     Errors::db_error("duplicate payment bank transaction found", "");
   }
-  $from_trans = DB::fetch($result);
+  $from_trans       = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies = FALSE;
+  $show_currencies  = FALSE;
   if ($from_trans['bank_curr_code'] != $company_currency) {
     $show_currencies = TRUE;
   }
@@ -53,7 +52,7 @@
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);
   $voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-  $items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
+  $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
   if (DB::num_rows($items) == 0) {
     Event::warning(_("There are no items for this payment."));
   }
@@ -83,7 +82,7 @@
       }
     }
     Table::header($th);
-    $k = 0; //row colour counter
+    $k            = 0; //row colour counter
     $total_amount = 0;
     while ($item = DB::fetch($items)) {
       if ($item["account"] != $from_trans["account_code"]) {

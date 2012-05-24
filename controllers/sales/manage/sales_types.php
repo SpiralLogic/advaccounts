@@ -24,16 +24,16 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-    $sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
     $result = DB::query($sql, "The number of transactions using this Sales type record could not be retrieved");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
     }
     else {
-      $sql = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
       $result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
       }
@@ -46,7 +46,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav         = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -56,14 +56,13 @@
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
   inactive_control_column($th);
   Table::header($th);
-  $k = 0;
+  $k          = 0;
   $base_sales = DB_Company::get_base_sales_type();
   while ($myrow = DB::fetch($result)) {
     if ($myrow["id"] == $base_sales) {
       Row::start("class='overduebg'");
     }
     else {
-
     }
     Cell::label($myrow["sales_type"]);
     $f = Num::format($myrow["factor"], 4);
@@ -89,10 +88,10 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $myrow = Sales_Type::get($selected_id);
-      $_POST['sales_type'] = $myrow["sales_type"];
+      $myrow                 = Sales_Type::get($selected_id);
+      $_POST['sales_type']   = $myrow["sales_type"];
       $_POST['tax_included'] = $myrow["tax_included"];
-      $_POST['factor'] = Num::format($myrow["factor"], 4);
+      $_POST['factor']       = Num::format($myrow["factor"], 4);
     }
     hidden('selected_id', $selected_id);
   }

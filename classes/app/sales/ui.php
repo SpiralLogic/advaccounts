@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Sales_UI {
+
     /**
      * @static
      *
@@ -103,7 +104,7 @@
     static public function  groups($name, $selected_id = NULL, $special_option = FALSE) {
       $sql = "SELECT id, description, inactive FROM groups";
       return select_box($name, $selected_id, $sql, 'id', 'description', array(
-        'spec_option' => $special_option === TRUE ? ' ' :
+        'spec_option'              => $special_option === TRUE ? ' ' :
           $special_option, 'order' => 'description', 'spec_id' => 0,
       ));
     }
@@ -218,7 +219,7 @@
 				FROM sales_orders as sorder, sales_order_details as line
 				WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
       return select_box($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
-        'format' => '_format_template_items', 'spec_option' => $special_option === TRUE ?
+        'format'                         => '_format_template_items', 'spec_option' => $special_option === TRUE ?
           ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,
       ));
     }
@@ -297,19 +298,19 @@
 					FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
 					WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
       return select_box($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
-          'format' => '_format_stock_items', 'spec_option' => $all_option === TRUE ?
+          'format'        => '_format_stock_items', 'spec_option' => $all_option === TRUE ?
             _("All Items") :
             $all_option,
-          'spec_id' => ALL_TEXT,
-          'search_box' => TRUE,
-          'search' => array("i.item_code", "c.description", "i.description"),
+          'spec_id'       => ALL_TEXT,
+          'search_box'    => TRUE,
+          'search'        => array("i.item_code", "c.description", "i.description"),
           'search_submit' => DB_Company::get_pref('no_item_list') != 0,
-          'size' => 15,
+          'size'          => 15,
           'select_submit' => $submit_on_change,
-          'category' => 2,
-          'order' => array('c.description', 'i.item_code'),
-          'editable' => 30,
-          'max' => 50
+          'category'      => 2,
+          'order'         => array('c.description', 'i.item_code'),
+          'editable'      => 30,
+          'max'           => 50
         ),
         $opts));
     }
@@ -328,7 +329,7 @@
         echo "<td>$label</td>\n";
       }
       echo Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array(
-          'cells' => TRUE,
+          'cells'       => TRUE,
           'description' => ''
         ),
         $opts));
@@ -346,7 +347,7 @@
     static public function kits($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       return Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, 'kits', array(
         'cells' => FALSE,
-        'sale' => FALSE, 'kits' => FALSE
+        'sale'  => FALSE, 'kits' => FALSE
       ), TRUE);
     }
     /**

@@ -15,14 +15,14 @@
   else {
     $demo_text = _("Please login here");
   }
-  $def_theme = "default";
+  $def_theme     = "default";
   $login_timeout = User::i()->last_act;
-  $title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
-  $encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
-  $rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
+  $title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
+  $encoding      = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
+  $rtl           = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
   if (!headers_sent()) {
-       header("Content-type: text/html; charset=UTF-8");
-     }
+    header("Content-type: text/html; charset=UTF-8");
+  }
   echo "<!DOCTYPE HTML>\n";
   echo "<html dir='$rtl' >\n";
   echo "<head><title>$title</title>\n";
@@ -58,7 +58,8 @@
     hidden('login_company', User::i()->company);
   }
   else {
-    $coy = User::i()->company; $companies = Config::get_all('db');
+    $coy       = User::i()->company;
+    $companies = Config::get_all('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company'>\n";
 

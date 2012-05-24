@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
@@ -15,7 +14,7 @@
     $_POST['selected_id'] = $_GET['trans_no'];
   }
   if (isset($_GET[ADDED_ID])) {
-    $id = $_GET[ADDED_ID];
+    $id    = $_GET[ADDED_ID];
     $stype = ST_WORKORDER;
     Event::success(_("The additional cost has been entered."));
     Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
@@ -77,11 +76,11 @@
   Display::br();
   yesno_list_row(_("Type:"), 'PaymentType', NULL, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
   date_row(_("Date:"), 'date_');
-  $item_accounts = Item::get_gl_code($wo_details['stock_id']);
+  $item_accounts   = Item::get_gl_code($wo_details['stock_id']);
   $_POST['db_acc'] = $item_accounts['assembly_account'];
-  $sql = "SELECT DISTINCT account_code FROM bank_accounts";
-  $rs = DB::query($sql, "could not get bank accounts");
-  $r = DB::fetch_row($rs);
+  $sql             = "SELECT DISTINCT account_code FROM bank_accounts";
+  $rs              = DB::query($sql, "could not get bank accounts");
+  $r               = DB::fetch_row($rs);
   $_POST['cr_acc'] = $r[0];
   amount_row(_("Additional Costs:"), 'costs');
   GL_UI::all_row(_("Debit Account"), 'db_acc', NULL);

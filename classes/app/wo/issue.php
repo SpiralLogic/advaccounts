@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class WO_Issue {
+
     /**
      * @static
      *
@@ -88,7 +89,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($issue_no) {
-      $sql = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
+      $sql    = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
 		stock_master.description, locations.location_name, " . "workcentres.name AS WorkCentreName
 		FROM wo_issues, workorders, stock_master, " . "locations, workcentres
 		WHERE issue_no=" . DB::escape($issue_no) . "
@@ -122,7 +123,7 @@
      * @return bool
      */
     static public function exists($issue_no) {
-      $sql = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
+      $sql    = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
       $result = DB::query($sql, "Cannot retreive a wo issue");
       return (DB::num_rows($result) > 0);
     }
@@ -205,7 +206,7 @@
       }
       Table::header($th);
       //	$total = 0;
-      $k = 0; //row colour counter
+      $k  = 0; //row colour counter
       $id = find_submit(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         //		$total += ($stock_item->standard_cost * $stock_item->quantity);
@@ -244,9 +245,9 @@
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
-        $_POST['qty'] = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
         $_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
-        $_POST['units'] = $order->line_items[$id]->units;
+        $_POST['units']    = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
@@ -260,11 +261,11 @@
           Ajax::i()->activate('qty');
           Ajax::i()->activate('std_cost');
         }
-        $item_info = Item::get_edit_info($_POST['stock_id']);
-        $dec = $item_info["decimals"];
-        $_POST['qty'] = Num::format(0, $dec);
+        $item_info         = Item::get_edit_info($_POST['stock_id']);
+        $dec               = $item_info["decimals"];
+        $_POST['qty']      = Num::format(0, $dec);
         $_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
-        $_POST['units'] = $item_info["units"];
+        $_POST['units']    = $item_info["units"];
       }
       qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
       Cell::label($_POST['units'], '', 'units');

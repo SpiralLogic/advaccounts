@@ -8,10 +8,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   if (strpos($_SERVER['HTTP_HOST'], 'dev.advaccounts') === 0) {
-    header('Location: http://dev.advanced.advancedgroup.com.au'.$_SERVER['REQUEST_URI']);
+    header('Location: http://dev.advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
   elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== FALSE) {
-    header('Location: http://advanced.advancedgroup.com.au'.$_SERVER['REQUEST_URI']);
+    header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
 
   if (extension_loaded('xhprof')) {
@@ -99,8 +99,8 @@
   }
   else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : FALSE;
-    $index = $controller == $_SERVER['SCRIPT_NAME'];
-    $show404 = FALSE;
+    $index      = $controller == $_SERVER['SCRIPT_NAME'];
+    $show404    = FALSE;
     if (!$index && $controller) {
       $controller = ltrim($controller, '/');
       // substr_compare returns 0 if true

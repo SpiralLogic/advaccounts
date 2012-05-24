@@ -1,20 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSFER);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
   Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_LOCTRANSFER;
     Event::success(_("Inventory transfer has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this transfer")));
@@ -23,7 +22,7 @@
   }
 
   if (isset($_POST['Process'])) {
-    $tr = &$_SESSION['transfer_items'];
+    $tr          = &$_SESSION['transfer_items'];
     $input_error = 0;
     if (count($tr->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
@@ -60,7 +59,7 @@
         Event::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
         echo "<br>";
         $_POST[MODE_EDIT . $failed_item] = 1; // enter edit mode
-        $input_error = 1;
+        $input_error                     = 1;
       }
     }
     if ($input_error == 1) {
@@ -147,14 +146,13 @@
     Item_Line::start_focus('_stock_id_edit');
   }
 
-
   function handle_new_order() {
     if (isset($_SESSION['transfer_items'])) {
       $_SESSION['transfer_items']->clear_items();
       unset ($_SESSION['transfer_items']);
     }
     $_SESSION['transfer_items'] = new Item_Order(ST_LOCTRANSFER);
-    $_POST['AdjDate'] = Dates::new_doc_date();
+    $_POST['AdjDate']           = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       $_POST['AdjDate'] = Dates::end_fiscalyear();
     }

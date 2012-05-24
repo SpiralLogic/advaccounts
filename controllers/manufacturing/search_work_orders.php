@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == TRUE)) {
@@ -192,13 +192,13 @@
     $Today = Dates::date2sql(Dates::today());
     $sql .= " AND workorder.required_by < '$Today' ";
   }
-  $cols = array(
-    _("#") => array('fun' => 'view_link'), _("Reference"), // viewlink 2 ?
-    _("Type") => array('fun' => 'wo_type_name'), _("Location"), _("Item") => array('fun' => 'view_stock'), _("Required") => array(
+  $cols  = array(
+    _("#")               => array('fun' => 'view_link'), _("Reference"), // viewlink 2 ?
+    _("Type")            => array('fun' => 'wo_type_name'), _("Location"), _("Item") => array('fun' => 'view_stock'), _("Required") => array(
       'fun' => 'dec_amount', 'align' => 'right'
     ), _("Manufactured") => array(
       'fun' => 'dec_amount', 'align' => 'right'
-    ), _("Date") => 'date', _("Required By") => array(
+    ), _("Date")         => 'date', _("Required By") => array(
       'type' => 'date', 'ord' => ''
     ), array(
       'insert' => TRUE, 'fun' => 'edit_link'

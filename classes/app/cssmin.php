@@ -6,8 +6,8 @@
 
     protected $minified = '';
     protected $settings = array(
-      'embed' => TRUE,
-      'embedMaxSize' => 5120,
+      'embed'           => TRUE,
+      'embedMaxSize'    => 5120,
       'embedExceptions' => array('htc')
     );
     protected $mimeTypes = array();
@@ -43,7 +43,7 @@
      */
     protected function convertUrl($url, $count) {
       $baseUrl = '/';
-      $url = trim($url);
+      $url     = trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
       }
@@ -79,13 +79,13 @@
       $contents = file_get_contents($this->filedir . $url);
 
       if ($fileType == 'css') {
-        $oldFileDir = $this->filedir;
+        $oldFileDir    = $this->filedir;
         $this->filedir = rtrim(dirname($this->filedir . $url), '\/') . '/';
-        $oldBaseUrl = $baseUrl;
-        $baseUrl = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
-        $contents = minify_css($contents);
+        $oldBaseUrl    = $baseUrl;
+        $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
+        $contents      = minify_css($contents);
         $this->filedir = $oldFileDir;
-        $baseUrl = $oldBaseUrl;
+        $baseUrl       = $oldBaseUrl;
       }
 
       $base64 = base64_encode($contents);
@@ -98,9 +98,9 @@
      * @return string
      */
     public function minify() {
-      $str = $this->source;
-      $res = '';
-      $i = 0;
+      $str          = $this->source;
+      $res          = '';
+      $i            = 0;
       $inside_block = FALSE;
       $current_char = '';
       while ($i + 1 < strlen($str)) {

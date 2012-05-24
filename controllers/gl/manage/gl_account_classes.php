@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -47,7 +47,7 @@
 
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
-      Cell::label($class_types[$myrow["ctype"]]);
+    Cell::label($class_types[$myrow["ctype"]]);
     inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
     edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
     delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
@@ -59,10 +59,10 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = GL_Class::get($selected_id);
-      $_POST['id'] = $myrow["cid"];
-      $_POST['name'] = $myrow["class_name"];
-        $_POST['ctype'] = $myrow["ctype"];
+      $myrow          = GL_Class::get($selected_id);
+      $_POST['id']    = $myrow["cid"];
+      $_POST['name']  = $myrow["class_name"];
+      $_POST['ctype'] = $myrow["ctype"];
       hidden('selected_id', $selected_id);
     }
     hidden('id');
@@ -72,7 +72,7 @@
     text_row_ex(_("Class ID:"), 'id', 3);
   }
   text_row_ex(_("Class Name:"), 'name', 50, 60);
-    GL_Class::types_row(_("Class Type:"), 'ctype', NULL);
+  GL_Class::types_row(_("Class Type:"), 'ctype', NULL);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
@@ -103,10 +103,10 @@
     if ($selected_id == -1) {
       return FALSE;
     }
-    $sql = "SELECT COUNT(*) FROM chart_types
+    $sql    = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
     $result = DB::query($sql, "could not query chart master");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account class because GL account types have been created referring to it."));
       return FALSE;

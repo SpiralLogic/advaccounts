@@ -76,7 +76,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($type_id) {
-      $sql = "SELECT tax_types.*,
+      $sql    = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
 		Chart2.account_name AS PurchasingAccountName
 		FROM tax_types, chart_master AS Chart1,
@@ -94,9 +94,9 @@
      * @return mixed
      */
     static public function get_default_rate($type_id) {
-      $sql = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
+      $sql    = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax type rate");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -133,7 +133,7 @@
      */
     static public function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
       $purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
-      $sql = "SELECT count(*) FROM "
+      $sql        = "SELECT count(*) FROM "
         . "tax_types
 		WHERE (sales_gl_code=" . DB::escape($gl_code)
         . " OR purchasing_gl_code=" . DB::escape($purch_code) . ")";
@@ -200,9 +200,9 @@
      * @return bool
      */
     static public function can_delete($selected_id) {
-      $sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
+      $sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query tax groups");
-      $myrow = DB::fetch_row($result);
+      $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this tax type because tax groups been created referring to it."));
         return FALSE;
@@ -234,8 +234,6 @@
       }
       return TRUE;
     }
-
-
   }
 
 

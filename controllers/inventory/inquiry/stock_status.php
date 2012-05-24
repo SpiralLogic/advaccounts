@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
@@ -22,13 +21,13 @@
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   start_form();
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id',$_POST['stock_id']);
+    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center bold pad10 font13'> ";
   Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
   echo "</div>";
-  Session::i()->setGlobal('stock_id',$_POST['stock_id']);
-  $mb_flag = WO::get_mb_flag($_POST['stock_id']);
+  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+  $mb_flag           = WO::get_mb_flag($_POST['stock_id']);
   $kitset_or_service = FALSE;
   Display::div_start('status_tbl');
   if (Input::post('mb_flag') == STOCK_SERVICE) {
@@ -48,8 +47,8 @@
   }
   Table::header($th);
   $dec = Item::qty_dec($_POST['stock_id']);
-  $j = 1;
-  $k = 0; //row colour counter
+  $j   = 1;
+  $k   = 0; //row colour counter
 
   while ($myrow = DB::fetch($loc_details)) {
 

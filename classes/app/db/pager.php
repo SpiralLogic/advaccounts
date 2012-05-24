@@ -37,9 +37,9 @@
         unset($_SESSION['pager'][$name]); // kill pager if sql has changed
       }
       if (!isset($_SESSION['pager'][$name])) {
-        $pager = new static($sql, $name, $table, $page_len);
+        $pager           = new static($sql, $name, $table, $page_len);
         $pager->main_tbl = $table;
-        $pager->key = $key;
+        $pager->key      = $key;
         $pager->set_sql($sql);
         $pager->set_columns($coldef);
         $pager->sort_table($sort);
@@ -63,7 +63,7 @@
         }
       }
       unset($this->marker);
-      return array_keys((array)$this);
+      return array_keys((array) $this);
     }
     /**
      * @static
@@ -75,7 +75,7 @@
      * @return int
      */
     static function countFilter($table, $feild, $where) {
-      $sql = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
+      $sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
       $result = DB::query($sql, 'Couldnt do shit');
       return DB::num_rows($result);
     }
@@ -92,7 +92,7 @@
       if (User::graphic_links() && $icon) {
         $link_text = set_icon($icon, $link_text);
       }
-      $href = '/'.ltrim($url,'/');
+      $href = '/' . ltrim($url, '/');
       $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
@@ -183,7 +183,7 @@
         }
         foreach ($pager->columns as $k => $col) {
           $coltype = isset($col['type']) ? $col['type'] : '';
-          $cell = isset($col['name']) ? $row[$col['name']] : '';
+          $cell    = isset($col['name']) ? $row[$col['name']] : '';
           if (isset($col['fun'])) { // use data input function if defined
             $fun = $col['fun'];
             if (is_callable($fun)) {
@@ -281,7 +281,7 @@
       }
       Row::start("class='navibar'");
       $colspan = count($pager->columns);
-      $inact = $pager->inactive_ctrl == TRUE
+      $inact   = $pager->inactive_ctrl == TRUE
         ? ' ' . checkbox(NULL, 'show_inactive', NULL, TRUE) . _("Show also Inactive") : '';
       if ($pager->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
@@ -298,7 +298,7 @@
         Row::end();
         echo "</table>";
         $from = ($pager->curr_page - 1) * $pager->page_len + 1;
-        $to = $from + $pager->page_len - 1;
+        $to   = $from + $pager->page_len - 1;
         if ($to > $pager->rec_count) {
           $to = $pager->rec_count;
         }
@@ -465,7 +465,7 @@
       if ($page_len == 0) {
         $page_len = User::query_size();
       }
-      $this->name = $name;
+      $this->name     = $name;
       $this->page_len = $page_len;
       $this->set_sql($sql);
     }
@@ -493,11 +493,11 @@
         //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
         // $this->inactive_ctrl['key']);
-        $key = $this->key ?
+        $key   = $this->key ?
           $this->key : $this->columns[0]['name']; // TODO - support for complex keys
-        $id = $row[$key];
+        $id    = $row[$key];
         $table = $this->main_tbl;
-        $name = "Inactive" . $id;
+        $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
         if (check_value('show_inactive')) {
           if (isset($_POST['LInact'][$id])
@@ -530,7 +530,7 @@
       if ($this->rec_count == 0) {
         return TRUE;
       }
-      $sql = $this->_sql_gen(FALSE);
+      $sql    = $this->_sql_gen(FALSE);
       $result = DB::query($sql, 'Error browsing database: ' . $sql);
       if ($result) {
         // setting field names for subsequent queries
@@ -540,7 +540,7 @@
           $this->data[] = $row;
         }
         $dbfeild_names = array_keys($this->data[0]);
-        $cnt = min(count($dbfeild_names), count($this->columns));
+        $cnt           = min(count($dbfeild_names), count($this->columns));
         for ($c = $i = 0; $c < $cnt; $c++) {
           if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
             //	if (!@($this->columns[$c]['type']=='skip'))
@@ -651,7 +651,7 @@
         switch ($c['type']) {
           case 'inactive':
             $this->inactive_ctrl = TRUE;
-            $c['head'] = $h;
+            $c['head']           = $h;
             break;
           case 'insert':
           default:
@@ -676,7 +676,7 @@
 
      */
     public function set_footer($func, $footercl = 'inquirybg') {
-      $this->footer_fun = $func;
+      $this->footer_fun   = $func;
       $this->footer_class = $footercl;
     }
     /**
@@ -711,10 +711,10 @@
       if ($page > $max) {
         $page = $max;
       }
-      $this->curr_page = $page;
-      $this->next_page = ($page < $max) ? $page + 1 : NULL;
-      $this->prev_page = ($page > 1) ? ($page - 1) : NULL;
-      $this->last_page = ($page < $max) ? $max : NULL;
+      $this->curr_page  = $page;
+      $this->next_page  = ($page < $max) ? $page + 1 : NULL;
+      $this->prev_page  = ($page > 1) ? ($page - 1) : NULL;
+      $this->last_page  = ($page < $max) ? $max : NULL;
       $this->first_page = ($page != 1) ? 1 : NULL;
     }
     /**
@@ -723,26 +723,26 @@
      */
     public function set_sql($sql) {
       if ($sql != $this->sql) {
-        $this->sql = $sql;
+        $this->sql   = $sql;
         $this->ready = FALSE;
-        $parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+        $parts       = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql = $parts[0];
+          $sql         = $parts[0];
           $this->order = $parts[1];
         }
         $parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql = $parts[0];
+          $sql         = $parts[0];
           $this->group = $parts[1];
         }
         $parts = preg_split('/\sWHERE\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql = $parts[0];
+          $sql         = $parts[0];
           $this->where = $parts[1];
         }
         $parts = preg_split('/\sFROM\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql = $parts[0];
+          $sql        = $parts[0];
           $this->from = $parts[1];
         }
         $this->select = $sql;
@@ -766,7 +766,7 @@
         }
       }
       $this->extra_where = $where;
-      $this->ready = FALSE;
+      $this->ready       = FALSE;
     }
     /**
      * @param $col
@@ -779,8 +779,8 @@
       if (is_null($col)) {
         return FALSE;
       }
-      $ord = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
-      $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
+      $ord                        = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
+      $ord                        = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
       $this->columns[$col]['ord'] = $ord;
       $this->set_page(1);
       $this->query();
@@ -794,7 +794,7 @@
 
      */
     public function set_header($func, $headercl = 'inquirybg') {
-      $this->header_fun = $func;
+      $this->header_fun   = $func;
       $this->header_class = $headercl;
     }
     /**
@@ -806,7 +806,7 @@
     public function set_inactive_ctrl($table, $key) {
       $this->inactive_ctrl = array(
         'table' => $table,
-        'key' => $key
+        'key'   => $key
       );
     }
     /***
@@ -817,8 +817,8 @@
      * Set check function to mark some rows.
      */
     public function set_marker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
-      $this->marker = $func;
-      $this->marker_txt = $notice;
+      $this->marker       = $func;
+      $this->marker_txt   = $notice;
       $this->marker_class = $markercl;
       $this->notice_class = $msgclass;
     }
@@ -828,14 +828,14 @@
      */
     protected function _init() {
       if ($this->ready == FALSE) {
-        $sql = $this->_sql_gen(TRUE);
+        $sql    = $this->_sql_gen(TRUE);
         $result = DB::query($sql, 'Error reading record set');
         if ($result == FALSE) {
           return FALSE;
         }
-        $row = DB::fetch_row($result);
+        $row             = DB::fetch_row($result);
         $this->rec_count = $row[0];
-        $this->max_page = $this->page_len ?
+        $this->max_page  = $this->page_len ?
           ceil($this->rec_count / $this->page_len) : 0;
         if (Config::get('debug.enabled')) { // FIX - need column name parsing, but for now:
           // check if field names are set explicite in col def
@@ -865,10 +865,10 @@
      */
     protected function _sql_gen($count = FALSE) {
       $select = $this->select;
-      $from = $this->from;
-      $where = $this->where;
-      $group = $this->group;
-      $order = $this->order;
+      $from   = $this->from;
+      $where  = $this->where;
+      $group  = $this->group;
+      $order  = $this->order;
       if (count($this->extra_where)) {
         $where .= ($where == '' ? '' : ' AND ')
           . implode($this->extra_where, ' AND ');
@@ -901,7 +901,7 @@
         } // original base query order
       }
       $page_len = $this->page_len;
-      $offset = ($this->curr_page - 1) * $page_len;
+      $offset   = ($this->curr_page - 1) * $page_len;
       $sql .= " LIMIT $offset, $page_len";
       return $sql;
     }

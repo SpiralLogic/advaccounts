@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "View Bank Transfer"), SA_BANKTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
@@ -21,20 +20,20 @@
   $trans2 = DB::fetch($result);
   if ($trans1["amount"] < 0) {
     $from_trans = $trans1; // from trans is the negative one
-    $to_trans = $trans2;
+    $to_trans   = $trans2;
   }
   else {
     $from_trans = $trans2;
-    $to_trans = $trans1;
+    $to_trans   = $trans1;
   }
-  $company_currency = Bank_Currency::for_company();
-  $show_currencies = FALSE;
+  $company_currency  = Bank_Currency::for_company();
+  $show_currencies   = FALSE;
   $show_both_amounts = FALSE;
   if (($from_trans['bank_curr_code'] != $company_currency) || ($to_trans['bank_curr_code'] != $company_currency)) {
     $show_currencies = TRUE;
   }
   if ($from_trans['bank_curr_code'] != $to_trans['bank_curr_code']) {
-    $show_currencies = TRUE;
+    $show_currencies   = TRUE;
     $show_both_amounts = TRUE;
   }
   Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");

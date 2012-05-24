@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Printer Locations"), SA_PRINTERS);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -33,9 +33,9 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
-    $sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
     $result = DB::query($sql, "check printers relations failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this printer definition, because print profile have been created using it."));
     }
@@ -73,13 +73,13 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $myrow = Printer::get($selected_id);
-      $_POST['name'] = $myrow['name'];
+      $myrow          = Printer::get($selected_id);
+      $_POST['name']  = $myrow['name'];
       $_POST['descr'] = $myrow['description'];
       $_POST['queue'] = $myrow['queue'];
-      $_POST['tout'] = $myrow['timeout'];
-      $_POST['host'] = $myrow['host'];
-      $_POST['port'] = $myrow['port'];
+      $_POST['tout']  = $myrow['timeout'];
+      $_POST['host']  = $myrow['host'];
+      $_POST['port']  = $myrow['port'];
     }
     hidden('selected_id', $selected_id);
   }

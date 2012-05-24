@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   /*
        Class for supplier/customer payment/credit allocations edition
        and related helpers.
@@ -53,9 +53,9 @@
      * @param $trans_no
      */
     public function __construct($type, $trans_no) {
-      $this->allocs = array();
+      $this->allocs   = array();
       $this->trans_no = $trans_no;
-      $this->type = $type;
+      $this->type     = $type;
       $this->read(); // read payment or credit
     }
     /**
@@ -127,12 +127,12 @@
      */
     public function read($type = NULL, $trans_no = 0) {
       if ($type == NULL) { // re-read
-        $type = $this->type;
+        $type     = $this->type;
         $trans_no = $this->trans_no;
       }
       if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
-        $result = Bank_Trans::get($type, $trans_no);
-        $bank_trans = DB::fetch($result);
+        $result            = Bank_Trans::get($type, $trans_no);
+        $bank_trans        = DB::fetch($result);
         $this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
       }
       else {
@@ -140,15 +140,15 @@
       }
       $this->allocs = array();
       if ($trans_no) {
-        $trans = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
-        $this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_id'];
+        $trans             = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
+        $this->person_id   = $trans[$this->person_type ? 'supplier_id' : 'debtor_id'];
         $this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
-        $this->amount = $trans["Total"];
-        $this->date_ = Dates::sql2date($trans["tran_date"]);
+        $this->amount      = $trans["Total"];
+        $this->date_       = Dates::sql2date($trans["tran_date"]);
       }
       else {
         $this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-        $this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
+        $this->date_     = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations
                                           for this customer/supplier. First get the transactions that have
@@ -243,7 +243,7 @@
           Cell::label($alloc_item->due_date, "class='right'");
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
-          $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated+Input::post('amount'.$counter,Input::NUMERIC));
+          $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
           amount_cells(NULL, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
           Cell::amount($un_allocated, FALSE, '');
@@ -326,16 +326,16 @@
       $doc = new Sales_Order($type, 0);
       $doc->start();
       $doc->trans_type = $type;
-      $doc->due_date = $doc->document_date = Dates::new_doc_date($date);
+      $doc->due_date   = $doc->document_date = Dates::new_doc_date($date);
       $doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
       $doc->set_branch($customer->branches[$branch_id]->id, $customer->branches[$branch_id]->tax_group_id);
-      $doc->pos = User::pos();
-      $doc->ship_via = Config::get('default.ship_via',1);
+      $doc->pos        = User::pos();
+      $doc->ship_via   = Config::get('default.ship_via', 1);
       $doc->sales_type = 1;
-      $doc->location = Config::get('default.location');
-      $doc->cust_ref = $ref;
-      $doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
-      $doc->salesman = User::i()->salesmanid;
+      $doc->location   = Config::get('default.location');
+      $doc->cust_ref   = $ref;
+      $doc->Comments   = "Invoice for Customer Payment: " . $doc->cust_ref;
+      $doc->salesman   = User::i()->salesmanid;
       $doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, TRUE, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
       $doc->write(1);
       $doc->finish();
@@ -365,7 +365,7 @@
         Cell::label(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
         Cell::label(Dates::sql2date($alloc_row['tran_date']));
         $alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
-        $alloc_row['amt'] = Num::round($alloc_row['amt'], User::price_dec());
+        $alloc_row['amt']   = Num::round($alloc_row['amt'], User::price_dec());
         Cell::amount($alloc_row['Total']);
         //Cell::amount($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
         Cell::amount($alloc_row['Total'] - $alloc_row['amt']);
@@ -452,12 +452,12 @@
      * @param $current_allocated
      */
     public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
-      $this->type = $type;
-      $this->type_no = $type_no;
-      $this->date_ = $date_;
-      $this->due_date = $due_date;
-      $this->amount = $amount;
-      $this->amount_allocated = $amount_allocated;
+      $this->type              = $type;
+      $this->type_no           = $type_no;
+      $this->date_             = $date_;
+      $this->due_date          = $due_date;
+      $this->amount            = $amount;
+      $this->amount_allocated  = $amount_allocated;
       $this->current_allocated = $current_allocated;
     }
   }
@@ -467,22 +467,22 @@
      * @param $order
      */
     function copy_from_order($order) {
-      $_POST['Comments'] = $order->Comments;
-      $_POST['OrderDate'] = $order->document_date;
-      $_POST['delivery_date'] = $order->due_date;
-      $_POST['cust_ref'] = $order->cust_ref;
-      $_POST['freight_cost'] = Num::price_format($order->freight_cost);
-      $_POST['deliver_to'] = $order->deliver_to;
+      $_POST['Comments']         = $order->Comments;
+      $_POST['OrderDate']        = $order->document_date;
+      $_POST['delivery_date']    = $order->due_date;
+      $_POST['cust_ref']         = $order->cust_ref;
+      $_POST['freight_cost']     = Num::price_format($order->freight_cost);
+      $_POST['deliver_to']       = $order->deliver_to;
       $_POST['delivery_address'] = $order->delivery_address;
-      $_POST['name'] = $order->name;
-      $_POST['phone'] = $order->phone;
-      $_POST['location'] = $order->location;
-      $_POST['ship_via'] = $order->ship_via;
-      $_POST['sales_type'] = $order->sales_type;
-      $_POST['salesman'] = $order->salesman;
-      $_POST['dimension_id'] = $order->dimension_id;
-      $_POST['dimension2_id'] = $order->dimension2_id;
-      $_POST['order_id'] = $order->order_id;
+      $_POST['name']             = $order->name;
+      $_POST['phone']            = $order->phone;
+      $_POST['location']         = $order->location;
+      $_POST['ship_via']         = $order->ship_via;
+      $_POST['sales_type']       = $order->sales_type;
+      $_POST['salesman']         = $order->salesman;
+      $_POST['dimension_id']     = $order->dimension_id;
+      $_POST['dimension2_id']    = $order->dimension2_id;
+      $_POST['order_id']         = $order->order_id;
     }
   }
 

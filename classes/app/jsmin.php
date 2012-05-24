@@ -15,10 +15,10 @@
       $this->source = $source;
     }
     public function minify() {
-      $str = $this->source;
-      $res = '';
-      $maybe_regex = TRUE;
-      $i = 0;
+      $str          = $this->source;
+      $res          = '';
+      $maybe_regex  = TRUE;
+      $i            = 0;
       $current_char = '';
       while ($i + 1 < strlen($str)) {
         if ($maybe_regex && $str[$i] == '/' && $str[$i + 1] != '/' && $str[$i + 1] != '*' && @$str[$i - 1] != '*') { //regex detected

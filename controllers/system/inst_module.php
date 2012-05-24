@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Install/Activate extensions"), SA_CREATEMODULES);
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
@@ -132,21 +132,21 @@
       Event::error(_('Module installation support is not implemented yet. You have to do it manually.'));
       return;
     }
-    $extensions[$id]['tab'] = $_POST['tab'];
-    $extensions[$id]['name'] = $_POST['name'];
-    $extensions[$id]['path'] = $_POST['path'];
-    $extensions[$id]['title'] = $_POST['title'];
+    $extensions[$id]['tab']    = $_POST['tab'];
+    $extensions[$id]['name']   = $_POST['name'];
+    $extensions[$id]['path']   = $_POST['path'];
+    $extensions[$id]['title']  = $_POST['title'];
     $extensions[$id]['active'] = check_value('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
-    $directory = DOCROOT . "modules/" . $_POST['path'];
+    $directory               = DOCROOT . "modules/" . $_POST['path'];
     if (!file_exists($directory)) {
       mkdir($directory);
     }
     if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
       $extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
-      $file1 = $_FILES['uploadfile']['tmp_name'];
-      $file2 = $directory . "/" . $_FILES['uploadfile']['name'];
+      $file1                       = $_FILES['uploadfile']['tmp_name'];
+      $file2                       = $directory . "/" . $_FILES['uploadfile']['name'];
       if (file_exists($file2)) {
         unlink($file2);
       }
@@ -167,8 +167,8 @@
     }
     if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
       $extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
-      $file1 = $_FILES['uploadfile3']['tmp_name'];
-      $file2 = $directory . "/" . $_FILES['uploadfile3']['name'];
+      $file1                       = $_FILES['uploadfile3']['tmp_name'];
+      $file2                       = $directory . "/" . $_FILES['uploadfile3']['name'];
       if (file_exists($file2)) {
         unlink($file2);
       }
@@ -180,7 +180,7 @@
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {
       $exttext = file_get_contents(DOCROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
-      $area = SA_OPEN;
+      $area    = SA_OPEN;
       if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
         $area = trim($match[1]);
       }
@@ -202,8 +202,8 @@
    */
   function handle_delete($selected_id) {
     $extensions = DB_Company::get_company_extensions();
-    $id = $selected_id;
-    $filename = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules".DS : DS) . $extensions[$id]['path'];
+    $id         = $selected_id;
+    $filename   = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules" . DS : DS) . $extensions[$id]['path'];
     Files::flush_dir($filename);
     rmdir($filename);
     unset($extensions[$id]);
@@ -219,7 +219,7 @@
       _("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"), _("Access extensions"), "", ""
     );
     Table::header($th);
-    $k = 0;
+    $k    = 0;
     $mods = DB_Company::get_company_extensions();
     $mods = Arr::natsort($mods, NULL, 'name');
     foreach ($mods as $i => $mod) {
@@ -288,11 +288,11 @@
     Table::start('tablestyle2');
     if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
       if ($Mode == MODE_EDIT) {
-        $mod = $extensions[$selected_id];
-        $_POST['tab'] = $mod['tab'];
-        $_POST['name'] = $mod['name'];
-        $_POST['title'] = $mod['title'];
-        $_POST['path'] = $mod['path'];
+        $mod               = $extensions[$selected_id];
+        $_POST['tab']      = $mod['tab'];
+        $_POST['name']     = $mod['name'];
+        $_POST['title']    = $mod['title'];
+        $_POST['path']     = $mod['path'];
         $_POST['filename'] = $mod['filename'];
         $_POST['acc_file'] = @$mod['acc_file'];
         hidden('filename', $_POST['filename']);

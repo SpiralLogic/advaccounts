@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class Purch_GLItem {
 
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
@@ -89,20 +89,20 @@
      */
     public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
                                 $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
-      $this->id = $id;
-      $this->po_detail_item = $po_detail_item;
-      $this->item_code = $item_code;
-      $this->description = $description;
-      $this->qty_recd = $qty_recd;
+      $this->id                = $id;
+      $this->po_detail_item    = $po_detail_item;
+      $this->item_code         = $item_code;
+      $this->description       = $description;
+      $this->qty_recd          = $qty_recd;
       $this->prev_quantity_inv = $prev_quantity_inv;
       $this->this_quantity_inv = $this_quantity_inv;
-      $this->order_price = $order_price;
-      $this->chg_price = $chg_price;
-      $this->exp_price = ($exp_price == NULL) ? $chg_price : $exp_price;
-      $this->discount = $discount;
-      $this->Complete = $Complete;
-      $this->std_cost_unit = $std_cost_unit;
-      $this->gl_code = $gl_code;
+      $this->order_price       = $order_price;
+      $this->chg_price         = $chg_price;
+      $this->exp_price         = ($exp_price == NULL) ? $chg_price : $exp_price;
+      $this->discount          = $discount;
+      $this->Complete          = $Complete;
+      $this->std_cost_unit     = $std_cost_unit;
+      $this->gl_code           = $gl_code;
     }
     /**
      * @param $freight
@@ -139,7 +139,7 @@
      * @param $k
      */
     public static function display_controls($creditor_trans, $k) {
-      $accs = Creditor::get_accounts_name($creditor_trans->supplier_id);
+      $accs             = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
 
       echo GL_UI::all('gl_code', NULL, TRUE, TRUE);
@@ -197,7 +197,7 @@
           }
           echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
-          $dec = User::price_dec();
+          $dec    = User::price_dec();
           echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
           submit('go', _("Go"), TRUE, FALSE, TRUE);
           echo "</div>";
@@ -225,7 +225,7 @@
       }
       Table::header($th);
       $total_gl_value = 0;
-      $i = $k = 0;
+      $i              = $k = 0;
       if (count($creditor_trans->gl_codes) > 0) {
         foreach ($creditor_trans->gl_codes as $entered_gl_code) {
 

@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::set_focus('account');
   JS::open_window(800, 500);
@@ -84,7 +84,7 @@
       $_POST["account"] = NULL;
     }
     $act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
-    $dim = DB_Company::get_pref('use_dimension');
+    $dim      = DB_Company::get_pref('use_dimension');
     /*Now get the transactions */
     if (!isset($_POST['Dimension'])) {
       $_POST['Dimension'] = 0;
@@ -92,7 +92,7 @@
     if (!isset($_POST['Dimension2'])) {
       $_POST['Dimension2'] = 0;
     }
-    $result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], NULL, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+    $result  = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], NULL, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
     $colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
     if ($_POST["account"] != NULL) {
       Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
@@ -147,8 +147,8 @@
       Row::end();
     }
     $running_total = $bfw;
-    $j = 1;
-    $k = 0; //row colour counter
+    $j             = 1;
+    $k             = 0; //row colour counter
     while ($myrow = DB::fetch($result)) {
 
       $running_total += $myrow["amount"];

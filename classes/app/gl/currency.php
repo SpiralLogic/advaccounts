@@ -1,14 +1,15 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   class GL_Currency {
+
     /**
      * @static
      *
@@ -69,7 +70,7 @@
      * @return ADV\Core\DB\Query_Result|Array
      */
     static public function get($curr_code) {
-      $sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
+      $sql    = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
       $result = DB::query($sql, "could not get currency $curr_code");
 
       $row = DB::fetch($result);

@@ -12,7 +12,7 @@
      * ********************************************************************* */
   if (isset($header2type)) {
     $txt_cust_no = "Cust no";
-    $txt_date = "Date";
+    $txt_date    = "Date";
     if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
       $doc_Charge_To = "Order To";
       if ($doctype == ST_PURCHORDER) {
@@ -46,12 +46,12 @@
     }
     $doc_Your_Ref = "Your Ref";
     if ($doctype == ST_WORKORDER) {
-      $doc_Our_Ref = "Type";
-      $doc_Your_TAX_no = "Manufactured Item";
+      $doc_Our_Ref       = "Type";
+      $doc_Your_TAX_no   = "Manufactured Item";
       $doc_Payment_Terms = "Required By";
       $doc_Customers_Ref = "Reference";
-      $doc_Our_Order_No = "Into Location";
-      $doc_Due_Date = "Quantity";
+      $doc_Our_Order_No  = "Into Location";
+      $doc_Due_Date      = "Quantity";
     }
     else {
       if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
@@ -63,22 +63,22 @@
         $doc_Our_Ref = "Contact";
       }
       if ($doctype == ST_PURCHORDER) {
-        $doc_Your_TAX_no = "";
+        $doc_Your_TAX_no   = "";
         $doc_Payment_Terms = "";
         $doc_Customers_Ref = "Acount Number";
-        $doc_Our_Order_No = "";
+        $doc_Our_Order_No  = "";
       }
       else {
-        $doc_Your_TAX_no = "Your ABN no.";
+        $doc_Your_TAX_no   = "Your ABN no.";
         $doc_Payment_Terms = "Payment Terms";
         $doc_Customers_Ref = "Customers Reference";
-        $doc_Our_Order_No = "Our Order No";
+        $doc_Our_Order_No  = "Our Order No";
       }
       # __ADVANCEDEDIT__ END #
     }
-    $doc_Extra = "";
+    $doc_Extra      = "";
     $doc_Our_TAX_no = "Our ABN No.";
-    $doc_Suburb = "Suburb";
+    $doc_Suburb     = "Suburb";
     if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTPREFUND
     ) {
       if ($doctype == ST_CUSTPAYMENT) {
@@ -91,10 +91,10 @@
       $doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" : "Credit") . " no. when paying. All amounts stated in";
       $doc_Bank_Account = "Bank Account";
     }
-    $doc_Address = "Address";
+    $doc_Address         = "Address";
     $doc_Phone_Fax_Email = "Phone/Fax/Email";
-    $doc_Bank = "Bank";
-    $doc_Payment_Link = "You can pay through";
+    $doc_Bank            = "Bank";
+    $doc_Payment_Link    = "You can pay through";
     if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND
     ) {
       if ($doctype == ST_SALESQUOTE) {
@@ -144,15 +144,15 @@
       }
     }
     elseif ($doctype == ST_STATEMENT) {
-      $this->title = "STATEMENT";
+      $this->title   = "STATEMENT";
       $this->headers = array('Trans Type', 'Invoice', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
     }
   }
   if (isset($emailtype)) {
-    $doc_Dear_Sirs = "Dear";
-    $doc_AttachedFile = "Attached you will find ";
+    $doc_Dear_Sirs       = "Dear";
+    $doc_AttachedFile    = "Attached you will find ";
     $doc_Kindest_regards = "Kindest regards";
-    $doc_Payment_Link = "You can pay through";
+    $doc_Payment_Link    = "You can pay through";
   }
   if (isset($header2type) || isset($linetype)) {
     if (isset($header2type) || isset($linetype)) {
@@ -192,28 +192,28 @@
       }
     }
     $doc_Delivery_no = "Delivery Note No.";
-    $doc_Order_no = "Order No.";
+    $doc_Order_no    = "Order No.";
   }
   if (isset($linetype)) {
     if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY) {
-      $doc_sub_total = "Sub-total";
-      $doc_shipping = "Shipping";
-      $doc_included = "Included";
-      $doc_amount = "amount";
-      $doc_total_invoice = $doctype == ST_SALESINVOICE ? "TOTAL INVOICE" : "TOTAL CREDIT";
-      $doc_TOTAL_ORDER = "TOTAL ORDER EX VAT";
-      $doc_TOTAL_ORDER2 = "TOTAL ORDER VAT INCL.";
-      $doc_TOTAL_PO = "TOTAL PO EX VAT";
+      $doc_sub_total      = "Sub-total";
+      $doc_shipping       = "Shipping";
+      $doc_included       = "Included";
+      $doc_amount         = "amount";
+      $doc_total_invoice  = $doctype == ST_SALESINVOICE ? "TOTAL INVOICE" : "TOTAL CREDIT";
+      $doc_TOTAL_ORDER    = "TOTAL ORDER EX VAT";
+      $doc_TOTAL_ORDER2   = "TOTAL ORDER VAT INCL.";
+      $doc_TOTAL_PO       = "TOTAL PO EX VAT";
       $doc_TOTAL_DELIVERY = "TOTAL DELIVERY INCL. VAT";
     }
     elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
-      $doc_Towards = "As advance / full / part / payment towards:";
-      $txt_by_Cheque = "By Cash / Cheque* / Draft No.";
-      $txt_dated = "Dated";
-      $doc_Drawn = "Drawn on Bank";
-      $doc_Drawn_Branch = "Branch";
-      $txt_received = "Received / Sign";
-      $txt_total_allocated = "Total Allocated";
+      $doc_Towards          = "As advance / full / part / payment towards:";
+      $txt_by_Cheque        = "By Cash / Cheque* / Draft No.";
+      $txt_dated            = "Dated";
+      $doc_Drawn            = "Drawn on Bank";
+      $doc_Drawn_Branch     = "Branch";
+      $txt_received         = "Received / Sign";
+      $txt_total_allocated  = "Total Allocated";
       $txt_left_to_allocate = "Left to Allocate";
       if ($doctype == ST_CUSTPAYMENT) {
         $txt_total_payment = "TOTAL RECEIPT";
@@ -226,13 +226,13 @@
       }
     }
     elseif ($doctype == ST_STATEMENT) {
-      $txt_outstanding = "Outstanding Transactions";
+      $txt_outstanding     = "Outstanding Transactions";
       $txt_opening_balance = "Opening Balance";
-      $txt_current = "Current";
-      $txt_total_balance = "Total Balance";
-      $txt_statement = "Statement";
-      $doc_as_of = "as of";
-      $txt_days = "Days";
-      $txt_over = "Over";
+      $txt_current         = "Current";
+      $txt_total_balance   = "Total Balance";
+      $txt_statement       = "Statement";
+      $doc_as_of           = "as of";
+      $txt_days            = "Days";
+      $txt_over            = "Over";
     }
   }

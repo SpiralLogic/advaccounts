@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Payment Methods"), SA_BANKACCOUNT);
   list($Mode, $selected_id) = Page::simple_mode();
@@ -33,19 +33,19 @@
   }
   elseif ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
-    $cancel_delete = 0;
+    $cancel_delete  = 0;
     $payment_method = DB::escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
-    $sql = "SELECT COUNT(*) FROM payment_methods WHERE id=$payment_method";
+    $sql    = "SELECT COUNT(*) FROM payment_methods WHERE id=$payment_method";
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
     }
-    $sql = "SELECT COUNT(*) FROM bank_trans WHERE payment_method=$payment_method";
+    $sql    = "SELECT COUNT(*) FROM bank_trans WHERE payment_method=$payment_method";
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
@@ -57,7 +57,7 @@
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
-    $selected_id = -1;
+    $selected_id          = -1;
     $_POST['undeposited'] = $_POST['name'] = '';
   }
   /* Always show the list of accounts */
@@ -69,7 +69,7 @@
   }
   $sql .= " ORDER BY name";
   $result = DB::query($sql, "could not get payment methods");
-  $th = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
+  $th     = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
   inactive_control_column($th);
   Table::header($th);
   $k = 0;
@@ -88,10 +88,10 @@
   Table::start('tablestyle2');
   if ($is_editing) {
     if ($Mode == MODE_EDIT) {
-      $myrow = GL_PaymentMethod::get($selected_id);
-      $_POST['name'] = $myrow["name"];
+      $myrow                = GL_PaymentMethod::get($selected_id);
+      $_POST['name']        = $myrow["name"];
       $_POST['undeposited'] = $myrow["undeposited"];
-      $_POST['inactive'] = $myrow["inactive"];
+      $_POST['inactive']    = $myrow["inactive"];
     }
     hidden('id', $selected_id);
     JS::set_focus('name');

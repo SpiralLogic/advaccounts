@@ -1,17 +1,18 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   // Base function for adding a GL transaction
   // $date_ is display date (non-sql)
   // $amount is in $currency currency
   // if $currency is not set, then defaults to no conversion
   class GL_Trans {
+
     /**
      * @static
      *
@@ -146,8 +147,8 @@
      */
     static public function get($from_date, $to_date, $trans_no = 0, $account = NULL, $dimension = 0, $dimension2 = 0, $filter_type = NULL, $amount_min = NULL, $amount_max = NULL) {
       $from = Dates::date2sql($from_date);
-      $to = Dates::date2sql($to_date);
-      $sql = "SELECT gl_trans.*, " . "chart_master.account_name FROM gl_trans, " . "chart_master
+      $to   = Dates::date2sql($to_date);
+      $sql  = "SELECT gl_trans.*, " . "chart_master.account_name FROM gl_trans, " . "chart_master
 		WHERE chart_master.account_code=gl_trans.account
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
@@ -221,8 +222,8 @@
      */
     static public function get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::date2sql($from_date);
-      $to = Dates::date2sql($to_date);
-      $sql = "SELECT SUM(amount) FROM gl_trans
+      $to   = Dates::date2sql($to_date);
+      $sql  = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
       if ($from_date != "") {
         $sql .= " AND tran_date > '$from'";
@@ -237,7 +238,7 @@
         $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
       }
       $result = DB::query($sql, "The starting balance for account $account could not be calculated");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -253,8 +254,8 @@
      */
     static public function get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::date2sql($from_date);
-      $to = Dates::date2sql($to_date);
-      $sql = "SELECT SUM(amount) FROM gl_trans
+      $to   = Dates::date2sql($to_date);
+      $sql  = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
       if ($from_date != "") {
         $sql .= " AND tran_date >= '$from'";
@@ -269,7 +270,7 @@
         $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
       }
       $result = DB::query($sql, "Transactions for account $account could not be calculated");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
     /**
@@ -330,8 +331,8 @@
      */
     static public function get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::date2sql($from_date);
-      $to = Dates::date2sql($to_date);
-      $sql = "SELECT SUM(amount) FROM budget_trans
+      $to   = Dates::date2sql($to_date);
+      $sql  = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . DB::escape($account);
       if ($from_date != "") {
         $sql .= " AND tran_date >= '$from' ";
@@ -346,7 +347,7 @@
         $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
       }
       $result = DB::query($sql, "No budget accounts were returned");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
 
@@ -452,8 +453,8 @@
      */
     static public function get_tax_summary($from, $to) {
       $fromdate = Dates::date2sql($from);
-      $todate = Dates::date2sql($to);
-      $sql = "SELECT
+      $todate   = Dates::date2sql($to);
+      $sql      = "SELECT
 				SUM(IF(trans_type=" . ST_CUSTCREDIT . " || trans_type=" . ST_SUPPINVOICE . " || trans_type=" . ST_JOURNAL . ",-1,1)*
 				IF(trans_type=" . ST_BANKDEPOSIT . " || trans_type=" . ST_SALESINVOICE . " || (trans_type=" . ST_JOURNAL . " AND amount<0)" . " || trans_type=" . ST_CUSTCREDIT . ", net_amount*ex_rate,0)) net_output,
 
@@ -487,7 +488,7 @@
      * @return bool
      */
     static public function exists($type, $trans_id) {
-      $sql = "SELECT type_no FROM gl_trans WHERE type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_id);
+      $sql    = "SELECT type_no FROM gl_trans WHERE type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_id);
       $result = DB::query($sql, "Cannot retreive a gl transaction");
       return (DB::num_rows($result) > 0);
     }
@@ -518,9 +519,9 @@
      * @return mixed
      */
     static public function get_value($account, $type, $trans_no) {
-      $sql = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::escape($account) . " AND type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_no);
+      $sql    = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::escape($account) . " AND type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_no);
       $result = DB::query($sql, "query for gl trans value");
-      $row = DB::fetch_row($result);
+      $row    = DB::fetch_row($result);
       return $row[0];
     }
   }

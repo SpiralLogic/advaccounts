@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
@@ -20,7 +19,7 @@
     $selected_id = $_POST['selected_id'];
   }
   if (isset($_GET[ADDED_ID])) {
-    $id = $_GET[ADDED_ID];
+    $id    = $_GET[ADDED_ID];
     $stype = ST_WORKORDER;
     Event::success(_("The work order been added."));
     Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
@@ -127,7 +126,7 @@
           while ($bom_item = DB::fetch($result)) {
             if (WO::has_stock_holding($bom_item["ResourceType"])) {
               $quantity = $bom_item["quantity"] * Validation::input_num('quantity');
-              $qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
+              $qoh      = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
               if (-$quantity + $qoh < 0) {
                 Event::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]);
                 JS::set_focus('quantity');
@@ -211,7 +210,7 @@
   start_form();
   Table::start('tablestyle2');
   $existing_comments = "";
-  $dec = 0;
+  $dec               = 0;
   if (isset($selected_id)) {
     $myrow = WO::get($selected_id);
     if (strlen($myrow[0]) == 0) {
@@ -224,20 +223,20 @@
       Event::error(_("This work order is closed and cannot be edited."));
       safe_exit();
     }
-    $_POST['wo_ref'] = $myrow["wo_ref"];
-    $_POST['stock_id'] = $myrow["stock_id"];
-    $_POST['quantity'] = Item::qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
+    $_POST['wo_ref']        = $myrow["wo_ref"];
+    $_POST['stock_id']      = $myrow["stock_id"];
+    $_POST['quantity']      = Item::qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
     $_POST['StockLocation'] = $myrow["loc_code"];
-    $_POST['released'] = $myrow["released"];
-    $_POST['closed'] = $myrow["closed"];
-    $_POST['type'] = $myrow["type"];
-    $_POST['date_'] = Dates::sql2date($myrow["date_"]);
-    $_POST['RequDate'] = Dates::sql2date($myrow["required_by"]);
+    $_POST['released']      = $myrow["released"];
+    $_POST['closed']        = $myrow["closed"];
+    $_POST['type']          = $myrow["type"];
+    $_POST['date_']         = Dates::sql2date($myrow["date_"]);
+    $_POST['RequDate']      = Dates::sql2date($myrow["required_by"]);
     $_POST['released_date'] = Dates::sql2date($myrow["released_date"]);
-    $_POST['memo_'] = "";
-    $_POST['units_issued'] = $myrow["units_issued"];
-    $_POST['Costs'] = Num::price_format($myrow["additional_costs"]);
-    $_POST['memo_'] = DB_Comments::get_string(ST_WORKORDER, $selected_id);
+    $_POST['memo_']         = "";
+    $_POST['units_issued']  = $myrow["units_issued"];
+    $_POST['Costs']         = Num::price_format($myrow["additional_costs"]);
+    $_POST['memo_']         = DB_Comments::get_string(ST_WORKORDER, $selected_id);
     hidden('wo_ref', $_POST['wo_ref']);
     hidden('units_issued', $_POST['units_issued']);
     hidden('released', $_POST['released']);
@@ -287,16 +286,16 @@
     date_row(_("Date") . ":", 'date_', '', TRUE);
     hidden('RequDate', '');
     $sql = "SELECT DISTINCT account_code FROM bank_accounts";
-    $rs = DB::query($sql, "could not get bank accounts");
-    $r = DB::fetch_row($rs);
+    $rs  = DB::query($sql, "could not get bank accounts");
+    $r   = DB::fetch_row($rs);
     if (!isset($_POST['Labour'])) {
-      $_POST['Labour'] = Num::price_format(0);
+      $_POST['Labour']     = Num::price_format(0);
       $_POST['cr_lab_acc'] = $r[0];
     }
     amount_row($wo_cost_types[WO_LABOUR], 'Labour');
     GL_UI::all_row(_("Credit Labour Account"), 'cr_lab_acc', NULL);
     if (!isset($_POST['Costs'])) {
-      $_POST['Costs'] = Num::price_format(0);
+      $_POST['Costs']  = Num::price_format(0);
       $_POST['cr_acc'] = $r[0];
     }
     amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');

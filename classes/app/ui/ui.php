@@ -1,13 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   class UI extends HTML {
+
     /**
      * @static
      *
@@ -75,18 +76,18 @@
 
      */
     static function search($id, $attr = array(), $options = array()) {
-      $o = array(
-        'url' => FALSE, //
-        'nodiv' => FALSE, //
-        'label' => FALSE, //
-        'size' => 30, //
-        'name' => FALSE, //
-        'set' => FALSE, //
-        'value' => FALSE, //
-        'focus' => FALSE, //
+      $o   = array(
+        'url'      => FALSE, //
+        'nodiv'    => FALSE, //
+        'label'    => FALSE, //
+        'size'     => 30, //
+        'name'     => FALSE, //
+        'set'      => FALSE, //
+        'value'    => FALSE, //
+        'focus'    => FALSE, //
         'callback' => FALSE //
       );
-      $o = array_merge($o, $attr);
+      $o   = array_merge($o, $attr);
       $url = ($o['url']) ? $o['url'] : FALSE;
       if (!$o['nodiv']) {
         HTML::div(array('class' => 'ui-widget'));
@@ -145,34 +146,34 @@
      * @return HTML|string
      */
     static function searchLine($id, $url = '#', $options = array()) {
-      $defaults = array(
-        'description' => FALSE,
-        'disabled' => FALSE,
-        'editable' => TRUE,
-        'selected' => '',
-        'label' => NULL,
-        'cells' => FALSE,
-        'inactive' => FALSE,
-        'purchase' => FALSE,
-        'sale' => FALSE,
-        'js' => '',
-        'selectjs' => '',
+      $defaults                      = array(
+        'description'    => FALSE,
+        'disabled'       => FALSE,
+        'editable'       => TRUE,
+        'selected'       => '',
+        'label'          => NULL,
+        'cells'          => FALSE,
+        'inactive'       => FALSE,
+        'purchase'       => FALSE,
+        'sale'           => FALSE,
+        'js'             => '',
+        'selectjs'       => '',
         'submitonselect' => '',
-        'sales_type' => 1,
-        'no_sale' => FALSE,
-        'select' => FALSE,
-        'type' => 'local',
-        'kitsonly' => FALSE,
-        'where' => '',
-        'size' => '15'
+        'sales_type'     => 1,
+        'no_sale'        => FALSE,
+        'select'         => FALSE,
+        'type'           => 'local',
+        'kitsonly'       => FALSE,
+        'where'          => '',
+        'size'           => '15'
       );
-      $o = array_merge($defaults, $options);
-      $UniqueID = md5(serialize($o));
+      $o                             = array_merge($defaults, $options);
+      $UniqueID                      = md5(serialize($o));
       $_SESSION['search'][$UniqueID] = $o;
-      $desc_js = $o['js'];
+      $desc_js                       = $o['js'];
       HTML::setReturn(TRUE);
       if ($o['cells']) {
-        HTML::td(null,array('class'=>'label'));
+        HTML::td(NULL, array('class'=> 'label'));
       }
       if ($o['label']) {
         HTML::label(NULL, $o['label'], array('for' => $id), FALSE);
@@ -214,7 +215,7 @@ JS;
         HTML::td();
       }
       $js
-        = <<<JS
+             = <<<JS
 	Adv.o.stock_id = \$$id = $("#$id").catcomplete({
 				delay: 0,
 				autoFocus: true,

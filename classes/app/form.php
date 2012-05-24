@@ -137,25 +137,25 @@
      */
     function array_selector($name, $selected_id, $items, $options = array()) {
       $opts = array( // default options
-        'spec_option' => FALSE, // option text or false
-        'spec_id' => 0, // option id
+        'spec_option'   => FALSE, // option text or false
+        'spec_id'       => 0, // option id
         'select_submit' => FALSE, //submit on select: true/false
-        'async' => TRUE, // select update via ajax (true) vs _page_body reload
-        'default' => '', // default value when $_POST is not set
-        'multi' => FALSE, // multiple select
+        'async'         => TRUE, // select update via ajax (true) vs _page_body reload
+        'default'       => '', // default value when $_POST is not set
+        'multi'         => FALSE, // multiple select
         // search box parameters
-        'height' => FALSE, // number of lines in select box
-        'sel_hint' => NULL, 'disabled' => FALSE
+        'height'        => FALSE, // number of lines in select box
+        'sel_hint'      => NULL, 'disabled' => FALSE
       );
       // ------ merge options with defaults ----------
       if (!$options) {
         $opts = array_merge($opts, $options);
       }
       $select_submit = $opts['select_submit'];
-      $spec_id = $opts['spec_id'];
-      $spec_option = $opts['spec_option'];
-      $disabled = $opts['disabled'] ? "disabled" : '';
-      $multi = $opts['multi'];
+      $spec_id       = $opts['spec_id'];
+      $spec_option   = $opts['spec_option'];
+      $disabled      = $opts['disabled'] ? "disabled" : '';
+      $multi         = $opts['multi'];
       if ($selected_id == NULL) {
         $selected_id = get_post($name, $opts['default']);
       }
@@ -173,32 +173,32 @@
       // ------ make selector ----------
       $selector = $first_opt = '';
       $first_id = FALSE;
-      $found = FALSE;
+      $found    = FALSE;
       //if($name=='SelectStockFromList') Event::error($sql);
       foreach ($items as $value => $descr) {
         $sel = '';
         if (in_array((string) $value, $selected_id)) {
-          $sel = 'selected';
+          $sel   = 'selected';
           $found = $value;
         }
         if ($first_id === FALSE) {
-          $first_id = $value;
+          $first_id  = $value;
           $first_opt = $descr;
         }
         $selector .= "<option $sel value=\"" . static::prep_value($value) . "\">$descr</option>\n";
       }
       // Prepend special option.
       if ($spec_option !== FALSE) { // if special option used - add it
-        $first_id = $spec_id;
+        $first_id  = $spec_id;
         $first_opt = $spec_option;
-        $sel = $found === FALSE ? 'selected' : '';
-        $selector = "<option $sel value='" . static::prep_value($spec_id) . "'>$spec_option</option>\n" . $selector;
+        $sel       = $found === FALSE ? 'selected' : '';
+        $selector  = "<option $sel value='" . static::prep_value($spec_id) . "'>$spec_option</option>\n" . $selector;
       }
       if ($found === FALSE) {
         $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' :
+      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' :
         '') . "$disabled id='$name' name='$name" . ($multi ?
         '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
       Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
@@ -245,12 +245,12 @@
       }
       elseif (!is_bool($atype)) { // necessary: switch uses '=='
         $aspect = " data-aspect='$atype' ";
-        $types = explode(' ', $atype);
+        $types  = explode(' ', $atype);
         foreach ($types as $type) {
           switch ($type) {
             case 'selector':
               $aspect = " data-aspect='selector' rel='$value'";
-              $value = _("Select");
+              $value  = _("Select");
               if ($icon === FALSE) {
                 $icon = ICON_SUBMIT;
               }
@@ -348,7 +348,7 @@
     function submit_add_or_update($add = TRUE, $title = FALSE, $async = FALSE, $clone = FALSE) {
       $cancel = $async;
       if ($async === 'both') {
-        $async = 'default';
+        $async  = 'default';
         $cancel = 'cancel';
       }
       else {
@@ -477,7 +477,7 @@
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
       if ($aspect == 'selector') {
-        $rel = " rel='$value'";
+        $rel   = " rel='$value'";
         $value = _("Select");
       }
       $name = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
@@ -839,7 +839,7 @@
       else {
         echo "<td >";
       }
-      $class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
+      $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
       $aspect = $check ? ' data-aspect="cdate"' : '';
       if ($check && (get_post($name) != Dates::today())) {
         $aspect .= ' style="color:#FF0000"';
@@ -1210,7 +1210,7 @@
      * @param $key
      */
     function inactive_control_cell($id, $value, $table, $key) {
-      $name = "Inactive" . $id;
+      $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
       if (check_value('show_inactive')) {
         if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
@@ -1254,7 +1254,7 @@
      * @return string
      */
     function yesno_list($name, $selected_id = NULL, $name_yes = "", $name_no = "", $submit_on_change = FALSE) {
-      $items = array();
+      $items      = array();
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return array_selector($name, $selected_id, $items, array(
