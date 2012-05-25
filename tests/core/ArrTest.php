@@ -97,9 +97,12 @@
      */
     public function testSearch_value() {
       // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $array=[1=>'one',2=>'two','three'=>3,'four'=>'4','five',6=>array('six'=>6,'seven'=>'seven')];
+      $actual=Arr::search_value(3,$array);
+      $this->assertSame(3,$actual);
+      $expected  = $array[6];
+      $actual=Arr::search_value(6,$array,'six');
+      $this->assertSame($expected ,$actual);
     }
 
     /**

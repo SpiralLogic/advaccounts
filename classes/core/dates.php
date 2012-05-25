@@ -113,14 +113,14 @@
      * @return mixed|null
      */
     static function new_doc_date($date = NULL) {
-      if (isset($date) && !$date) {
+      if ( !$date) {
         \Session::i()->setGlobal('date', $date);
       }
       else {
         $date = \Session::i()->getGlobal('date');
       }
       if (!$date || !\User::sticky_doc_date()) {
-        \Session::i()->setGlobal('date', Dates::today());
+        $date =  \Session::i()->setGlobal('date', Dates::today());
       }
       return $date;
     }

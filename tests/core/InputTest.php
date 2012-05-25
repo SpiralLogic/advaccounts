@@ -32,23 +32,21 @@
     public function testPost() {
 
       $_POST['test0'] = 'wawa';
-      $expected = 'wawa';
-      $actual = Input::post('test0');
+      $expected       = 'wawa';
+      $actual         = Input::post('test0');
       $this->assertSame($expected, $actual);
-
 
       $_POST['test0'] = '0';
-      $expected = '0';
-      $actual = Input::post('test0');
+      $expected       = '0';
+      $actual         = Input::post('test0');
       $this->assertSame($expected, $actual);
 
-
       $expected = '';
-      $actual = Input::post('name', Input::STRING);
+      $actual   = Input::post('name', Input::STRING);
       $this->assertSame($expected, $actual);
 
       $expected = 'phil';
-      $actual = Input::post('name', Input::STRING, 'phil');
+      $actual   = Input::post('name', Input::STRING, 'phil');
       $this->assertSame($expected, $actual);
 
       $_POST['test'] = 'ing';
@@ -60,13 +58,11 @@
       $this->assertSame(0, Input::post('test', Input::NUMERIC, 0));
       $this->assertSame(1, Input::post('test', Input::NUMERIC, 1));
 
-      $this->assertSame(null, Input::post('test2'));
+      $this->assertSame(NULL, Input::post('test2'));
       $this->assertEquals('', Input::post('test2'));
       $this->assertSame('', Input::post('test2', Input::STRING));
       $this->assertSame(0, Input::post('test2', Input::NUMERIC));
       $this->assertSame(5, Input::post('test2', Input::NUMERIC, 5));
-    }
-    function testPortType() {
       $_POST['test2'] = '0';
       $this->assertSame('0', Input::post('test2'));
       $this->assertSame('0', Input::post('test2', Input::STRING));
@@ -76,7 +72,7 @@
       $this->assertSame(0, Input::post('test2', Input::NUMERIC, 0));
       $this->assertSame(0, Input::post('test2', Input::NUMERIC, 1));
 
-      $this->assertSame(null, Input::post('test3'));
+      $this->assertSame(NULL, Input::post('test3'));
       $this->assertEquals(0, Input::post('test3'));
 
       $_POST['test3'] = 7;
@@ -93,10 +89,57 @@
      * @todo   Implement testGet().
      */
     public function testGet() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $_GET['test0'] = 'wawa';
+      $expected      = 'wawa';
+      $actual        = Input::get('test0');
+      $this->assertSame($expected, $actual);
+
+      $_GET['test0'] = '0';
+      $expected      = '0';
+      $actual        = Input::get('test0');
+      $this->assertSame($expected, $actual);
+
+      $expected = '';
+      $actual   = Input::get('name', Input::STRING);
+      $this->assertSame($expected, $actual);
+
+      $expected = 'phil';
+      $actual   = Input::get('name', Input::STRING, 'phil');
+      $this->assertSame($expected, $actual);
+
+      $_GET['test'] = 'ing';
+      $this->assertSame('ing', Input::get('test'));
+      $this->assertSame('ing', Input::get('test', Input::STRING));
+      $this->assertSame('ing', Input::get('test', Input::STRING, ''));
+
+      $this->assertSame(0, Input::get('test', Input::NUMERIC));
+      $this->assertSame(0, Input::get('test', Input::NUMERIC, 0));
+      $this->assertSame(1, Input::get('test', Input::NUMERIC, 1));
+
+      $this->assertSame(NULL, Input::get('test2'));
+      $this->assertEquals('', Input::get('test2'));
+      $this->assertSame('', Input::get('test2', Input::STRING));
+      $this->assertSame(0, Input::get('test2', Input::NUMERIC));
+      $this->assertSame(5, Input::get('test2', Input::NUMERIC, 5));
+      $_GET['test2'] = '0';
+      $this->assertSame('0', Input::get('test2'));
+      $this->assertSame('0', Input::get('test2', Input::STRING));
+      $this->assertSame('0', Input::get('test2', Input::STRING, ''));
+
+      $this->assertSame(0, Input::get('test2', Input::NUMERIC));
+      $this->assertSame(0, Input::get('test2', Input::NUMERIC, 0));
+      $this->assertSame(0, Input::get('test2', Input::NUMERIC, 1));
+
+      $this->assertSame(NULL, Input::get('test3'));
+      $this->assertEquals(0, Input::get('test3'));
+
+      $_GET['test3'] = 7;
+      $this->assertSame(7, Input::get('test3'));
+      $this->assertSame('', Input::get('test3', Input::STRING));
+      $this->assertSame('', Input::get('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 1));
     }
 
     /**
@@ -104,10 +147,21 @@
      * @todo   Implement testRequest().
      */
     public function testRequest() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $_GET['test3'] = 7;
+
+      $this->assertSame(7, Input::get('test3'));
+      $this->assertSame('', Input::get('test3', Input::STRING));
+      $this->assertSame('', Input::get('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 1));
+      $_POST['test3'] = 7;
+      $this->assertSame(7, Input::post('test3'));
+      $this->assertSame('', Input::post('test3', Input::STRING));
+      $this->assertSame('', Input::post('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
     }
 
     /**
@@ -170,14 +224,16 @@
      * @todo   Implement testHas_post().
      */
     public function testHas_post() {
-      $this->assertEquals(FALSE, Input::has_post('test'));
-      $this->assertEquals(FALSE, Input::has_post('test', 'test2'));
+      $this->assertSame(FALSE, Input::has_post('test'));
+      $this->assertSame(FALSE, Input::has_post('test', 'test2'));
       $_POST['test'] = FALSE;
-      $this->assertEquals(FALSE, Input::has_post('test', 'test2'));
-      $this->assertEquals(TRUE, Input::has_post('test'));
+      $this->assertSame(FALSE, Input::has_post('test', 'test2'), 'Should return false even if one variable is set.');
+      $this->assertSame(TRUE, Input::has_post('test'), 'Should return true if post variable is set to false because it exists');
       $_POST['test2'] = NULL;
-      $this->assertEquals(TRUE, Input::has_post('test2'));
-      $this->assertEquals(TRUE, Input::has_post('test', 'test2'));
+      $this->assertSame(FALSE, Input::has_post('test2'), 'Test2 is set but is NULL so it should return false!');
+      $this->assertSame(FALSE, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is NULL so it should return false!');
+      $_POST['test2'] = 'something';
+      $this->assertSame(TRUE, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is NULL so it should return false!');
     }
 
     /**
