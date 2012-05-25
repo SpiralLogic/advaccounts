@@ -30,7 +30,7 @@
      *
      * @return string
      */
-    static public function print_doc_link($doc_no, $link_text, $link = TRUE, $type_no, $icon = FALSE, $class = 'button printlink',
+    public static function print_doc_link($doc_no, $link_text, $link = TRUE, $type_no, $icon = FALSE, $class = 'button printlink',
                                           $id = '', $email = 0, $extra = 0) {
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
@@ -49,7 +49,7 @@
      *
      * @return array
      */
-    static public function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
+    public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
       $ar  = array();
       $rep = '';
       switch ($type_no) {
@@ -184,7 +184,7 @@
      *
      * @return bool|string
      */
-    static public function email_link($doc_no, $link_text, $link = TRUE, $type_no, $class = 'EmailLink', $id = '',
+    public static function email_link($doc_no, $link_text, $link = TRUE, $type_no, $class = 'EmailLink', $id = '',
                                       $emails = array(), $extra = 0, $return = FALSE) {
       if (empty($emails)) {
         return FALSE;
@@ -245,7 +245,7 @@ JS;
      *
      * @return string
      */
-    static public function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = FALSE, $class = 'printlink',
+    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = FALSE, $class = 'printlink',
                                       $id = '') {
       $url = $dir == '' ? BASE_URL . 'reporting/prn_redirect.php?' : $dir;
       $id  = JS::default_focus($id);

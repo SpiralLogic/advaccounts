@@ -290,7 +290,7 @@
     /***
      * @var DB_Company
      */
-    static protected $i = NULL;
+    protected static $i = NULL;
     /***
      * @static
      *
@@ -298,7 +298,7 @@
      *
      * @return DB_Company
      */
-    static public function i($id = NULL) {
+    public static function i($id = NULL) {
       if (static::$i === NULL) {
         if (isset($_POST['login_comapny'])) {
           $company = Config::get('db.' . $_POST['login_company']);
@@ -321,7 +321,7 @@
      *
      * @return void
      */
-    static public function add_fiscalyear($from_date, $to_date, $closed) {
+    public static function add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::date2sql($from_date);
       $to   = Dates::date2sql($to_date);
       $sql
@@ -338,7 +338,7 @@
      *
      * @return void
      */
-    static public function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
+    public static function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
         $sql
           = "INSERT INTO payment_terms (terms,
@@ -361,7 +361,7 @@
      *
      * @return void
      */
-    static public function delete_fiscalyear($id) {
+    public static function delete_fiscalyear($id) {
       DB::begin();
       $sql = "DELETE FROM fiscal_year WHERE id=" . DB::escape($id);
       DB::query($sql, "could not delete fiscal year");
@@ -374,14 +374,14 @@
      *
      * @return void
      */
-    static public function delete_payment_terms($selected_id) {
+    public static function delete_payment_terms($selected_id) {
       DB::query("DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id) . " could not delete a payment terms");
     }
     /**
      * @static
      * @return null|PDOStatement
      */
-    static public function get_all_fiscalyears() {
+    public static function get_all_fiscalyears() {
       $sql = "SELECT * FROM fiscal_year ORDER BY begin";
       return DB::query($sql, "could not get all fiscal years");
     }
@@ -389,7 +389,7 @@
      * @static
      * @return mixed
      */
-    static public function get_base_sales_type() {
+    public static function get_base_sales_type() {
       $sql    = "SELECT base_sales FROM company WHERE coy_code=1";
       $result = DB::query($sql, "could not get base sales type");
       $myrow  = DB::fetch($result);
@@ -402,7 +402,7 @@
      *
      * @return array
      */
-    static public function get_company_extensions($id = -1) {
+    public static function get_company_extensions($id = -1) {
       $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = array();
       if (is_file($file)) {
@@ -414,7 +414,7 @@
      * @static
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_current_fiscalyear() {
+    public static function get_current_fiscalyear() {
       $year   = DB_Company::get_pref('f_year');
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
       $result = DB::query($sql, "could not get current fiscal year");
@@ -427,7 +427,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_fiscalyear($id) {
+    public static function get_fiscalyear($id) {
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get fiscal year");
       return DB::fetch($result);
@@ -439,7 +439,7 @@
      *
      * @return mixed
      */
-    static public function get_pref($pref_name) {
+    public static function get_pref($pref_name) {
       $prefs = (static::$i === NULL) ? DB_Company::get_prefs() : (array) $_SESSION['config']['company'];
       return $prefs[$pref_name];
     }
@@ -447,7 +447,7 @@
      * @static
      * @return array
      */
-    static public function get_prefs() {
+    public static function get_prefs() {
       if (static::$i === NULL) {
         if (!isset($_SESSION['config']['company'])) {
           $_SESSION['config']['company'] = static::i();
@@ -465,7 +465,7 @@
      *
      * @return void
      */
-    static public function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
+    public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
         $sql = "UPDATE payment_terms SET terms=" . DB::escape($terms) . ",
 			day_in_following_month=0,
@@ -487,7 +487,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_payment_terms($selected_id) {
+    public static function get_payment_terms($selected_id) {
       $sql
               = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
 	 FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
@@ -501,7 +501,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_payment_terms_all($show_inactive) {
+    public static function get_payment_terms_all($show_inactive) {
       $sql = "SELECT * FROM payment_terms";
       if (!$show_inactive) {
         $sql .= " WHERE !inactive";
@@ -525,7 +525,7 @@
      *
      * @return mixed
      */
-    static public function key_in_foreign_table($id, $tables, $stdkey, $escaped = FALSE) {
+    public static function key_in_foreign_table($id, $tables, $stdkey, $escaped = FALSE) {
       if (!$escaped) {
         $id = DB::escape($id);
       }
@@ -553,7 +553,7 @@
      *
      * @return void
      */
-    static public function update_fiscalyear($id, $closed) {
+    public static function update_fiscalyear($id, $closed) {
       $sql = "UPDATE fiscal_year SET closed=" . DB::escape($closed) . "
 			WHERE id=" . DB::escape($id);
       DB::query($sql, "could not update fiscal year");
@@ -565,7 +565,7 @@
      *
      * @return void
      */
-    static public function update_gl_setup(array $data = NULL) {
+    public static function update_gl_setup(array $data = NULL) {
       static::i()->save($data);
     }
     /**
@@ -575,7 +575,7 @@
      *
      * @return void
      */
-    static public function update_setup(array $data = NULL) {
+    public static function update_setup(array $data = NULL) {
       if (static::i()->f_year == NULL) {
         static::$i->f_year = 0;
       }

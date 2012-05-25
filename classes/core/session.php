@@ -27,7 +27,7 @@
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */
-    static public $get_text;
+    public static $get_text;
     /**
      * @var array
      */
@@ -155,7 +155,7 @@
      * @static
      * @return void
      */
-    static public function kill() {
+    public static function kill() {
       static::i();
       Config::removeAll();
       session_unset();
@@ -165,7 +165,7 @@
      * @static
      * @return void
      */
-    static public function regenerate() {
+    public static function regenerate() {
       session_regenerate_id();
     }
   }

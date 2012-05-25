@@ -21,21 +21,21 @@
      */
     const DB_DUPLICATE_ERROR_CODE = 1062;
     /** @var array Container for the system messages */
-    static public $messages = array();
+    public static $messages = array();
     /** @var array Container for the system errors */
     static $errors = array();
     /** @var array */
-    static protected $debugLog = array();
+    protected static $debugLog = array();
     /** @var array Container for DB errors */
-    static public $dberrors = array();
+    public static $dberrors = array();
     /*** @var bool  Wether the json error status has been sent */
-    static protected $jsonerrorsent = FALSE;
+    protected static $jsonerrorsent = FALSE;
     /*** @var int */
-    static protected $current_severity = E_ALL;
+    protected static $current_severity = E_ALL;
     /** @var array Error constants to text */
-    static protected $session = FALSE;
+    protected static $session = FALSE;
     /** @var array */
-    static protected $levels
+    protected static $levels
       = array(
         -1                => 'Fatal!',
         0                 => 'Error',
@@ -55,19 +55,19 @@
         E_SUCCESS         => 'Success!'
       );
     /** @var string  temporary container for output html data before error box */
-    static public $before_box = '';
+    public static $before_box = '';
     /** @var array Errors which terminate execution */
-    static protected $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+    protected static $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
     /** @var array Errors which are user errors */
-    static protected $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+    protected static $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
     /** @var array Errors where execution can continue */
-    static protected $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+    protected static $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
     /** @var array Errors to ignore comeletely */
-    static protected $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+    protected static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
     /**
      * @var
      */
-    static protected $useConfigClass;
+    protected static $useConfigClass;
     /** @static Initialiser */
     static function init() {
       static::$useConfigClass = class_exists('Config', FALSE);
@@ -173,7 +173,7 @@
      * @static
 
      */
-    static public function send_debug_email() {
+    public static function send_debug_email() {
       if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))) {
         $text            = '';
         $with_back_trace = array();
@@ -250,7 +250,7 @@
      *
      * @return mixed
      */
-    static protected function prepare_backtrace($backtrace) {
+    protected static function prepare_backtrace($backtrace) {
       foreach ($backtrace as $key => $trace) {
         if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__)
           || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
@@ -292,21 +292,21 @@
      * @static
      * @return int
      */
-    static public function dbErrorCount() {
+    public static function dbErrorCount() {
       return count(static::$dberrors);
     }
     /**
      * @static
      * @return int
      */
-    static public function messageCount() {
+    public static function messageCount() {
       return count(static::$messages);
     }
     /**
      * @static
      * @internal param null $e
      */
-    static protected function fatal() {
+    protected static function fatal() {
       ob_end_clean();
       $content = static::format();
       if (!$content) {
@@ -330,13 +330,13 @@
      * @static
      * @return int
      */
-    static public function getSeverity() { return static::$current_severity; }
+    public static function getSeverity() { return static::$current_severity; }
     /**
      * @static
      * @internal param bool $json
      * @return array|bool|string
      */
-    static public function JSONError() {
+    public static function JSONError() {
       $status = FALSE;
       if (count(static::$dberrors) > 0) {
         $dberror           = end(static::$dberrors);
@@ -359,7 +359,7 @@
      * @static
      * @return string
      */
-    static protected function getJSONError() {
+    protected static function getJSONError() {
       return json_encode(array('status' => static::JSONError()));
     }
     /**
@@ -373,7 +373,7 @@
      * @internal param null $sql_statement
      * @internal param bool $exit
      */
-    static public function db_error($error, $sql = NULL, $data = array()) {
+    public static function db_error($error, $sql = NULL, $data = array()) {
       $errorCode        = DB\DB::error_no();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
@@ -394,7 +394,7 @@
      * @static
 
      */
-    static public function log() {
+    public static function log() {
       $source  = reset(debug_backtrace());
       $args    = func_get_args();
       $content = array();

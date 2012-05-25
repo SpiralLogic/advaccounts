@@ -18,16 +18,16 @@
     /**
      * @var Memcached
      */
-    static protected $i = NULL;
+    protected static $i = NULL;
     /**
      * @var bool
      */
-    static protected $connected = FALSE;
+    protected static $connected = FALSE;
     /**
      * @static
      * @return Memcached
      */
-    static protected function i() {
+    protected static function i() {
       if (static::$i === NULL) {
         if (class_exists('\\Memcached', FALSE)) {
           $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
@@ -62,7 +62,7 @@
      *
      * @return mixed
      */
-    static public function set($key, $value, $expires = 86400) {
+    public static function set($key, $value, $expires = 86400) {
       if (static::i() !== FALSE) {
         static::i()->set($key, $value, time() + $expires);
       }
@@ -76,7 +76,7 @@
      *
      * @param $key
      */
-    static public function delete($key) {
+    public static function delete($key) {
       if (static::i() !== FALSE) {
         static::i()->delete($key);
       }
@@ -92,7 +92,7 @@
      *
      * @return mixed
      */
-    static public function get($key, $default = FALSE) {
+    public static function get($key, $default = FALSE) {
       if (static::i() !== FALSE) {
         $result = static::i()->get($key);
         $result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
@@ -112,21 +112,21 @@
      * @static
      * @return mixed
      */
-    static public function getStats() {
+    public static function getStats() {
       return (static::$connected) ? static::i()->getStats() : FALSE;
     }
     /**
      * @static
      * @return mixed
      */
-    static public function getVersion() {
+    public static function getVersion() {
       return (static::$connected) ? static::i()->getVersion() : FALSE;
     }
     /**
      * @static
      * @return mixed
      */
-    static public function getServerList() {
+    public static function getServerList() {
       return (static::$connected) ? static::i()->getServerList() : FALSE;
     }
     /**
@@ -134,7 +134,7 @@
      *
      * @param int $time
      */
-    static public function flush($time = 0) {
+    public static function flush($time = 0) {
       if (static::i()) {
         static::i()->flush($time);
       }
@@ -148,7 +148,7 @@
      * @param array|closure  $constants
      * @param null           $name
      */
-    static public function define_constants($name, $constants) {
+    public static function define_constants($name, $constants) {
       if (function_exists('apc_load_constants')) {
 
         if (!apc_load_constants($name)) {

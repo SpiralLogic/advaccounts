@@ -52,11 +52,11 @@
      */
     protected $title = '';
     /** @var Page */
-    static protected $i = NULL;
+    protected static $i = NULL;
     /**
      * @var null
      */
-    static protected $security = NULL;
+    protected static $security = NULL;
     /**
      * @param      $title
      * @param bool $index
@@ -244,7 +244,7 @@
      *
      * @param bool $hide_back_link
      */
-    static public function end($hide_back_link = FALSE) {
+    public static function end($hide_back_link = FALSE) {
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
@@ -272,7 +272,7 @@
      *
      * @return null|Page
      */
-    static public function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
+    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
       static::set_security($security);
       if (static::$i === NULL) {
         static::$i = new static($title, $is_index);
@@ -287,7 +287,7 @@
      *
      * @return array
      */
-    static public function simple_mode($numeric_id = TRUE) {
+    public static function simple_mode($numeric_id = TRUE) {
       $default     = $numeric_id ? -1 : '';
       $selected_id = get_post('selected_id', $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
@@ -317,7 +317,7 @@
      *
      * @param bool $file
      */
-    static public function add_css($file = FALSE) {
+    public static function add_css($file = FALSE) {
       static::$i->css[] = $file;
     }
     /**
@@ -325,19 +325,19 @@
      *
      * @param $security
      */
-    static public function set_security($security) {
+    public static function set_security($security) {
       static::$security = $security;
     }
     /**
      * @static
      * @return null
      */
-    static public function get_security() { return static::$security; }
+    public static function get_security() { return static::$security; }
     /**
      * @static
 
      */
-    static public function footer_exit() {
+    public static function footer_exit() {
       Display::br(2);
       static::$i->end_page(TRUE);
       exit;

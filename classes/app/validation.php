@@ -52,7 +52,7 @@
      * @return int|null
      * @throws Adv_Exception
      */
-    static public function check($validate, $msg = '', $extra = NULL, $default = NULL) {
+    public static function check($validate, $msg = '', $extra = NULL, $default = NULL) {
       if ($extra === FALSE) {
         return 0;
       }
@@ -95,7 +95,7 @@
      *
      * @return bool|int
      */
-    static public function is_int($postname, $min = NULL, $max = NULL) {
+    public static function is_int($postname, $min = NULL, $max = NULL) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
       }
@@ -124,7 +124,7 @@
      *
      * @return int
      */
-    static public function post_num($postname, $min = NULL, $max = NULL, $default = 0) {
+    public static function post_num($postname, $min = NULL, $max = NULL, $default = 0) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
@@ -140,7 +140,7 @@
      *
      * @return int
      */
-    static public function is_num($value, $min = NULL, $max = NULL, $default = 0) {
+    public static function is_num($value, $min = NULL, $max = NULL, $default = 0) {
       $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== NULL && $result < $min) {
         $result = FALSE;
@@ -161,7 +161,7 @@
      * @internal param int $dflt
      * @return bool|float|int|mixed|string
      */
-    static public function input_num($postname = NULL, $default = 0, $min = NULL, $max = NULL) {
+    public static function input_num($postname = NULL, $default = 0, $min = NULL, $max = NULL) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }

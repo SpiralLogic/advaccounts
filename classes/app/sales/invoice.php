@@ -16,7 +16,7 @@
      *
      * @return int
      */
-    static public function add($invoice) {
+    public static function add($invoice) {
       $trans_no = $invoice->trans_no;
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
@@ -134,7 +134,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       DB::begin();
       Bank_Trans::void($type, $type_no, TRUE);
       GL_Trans::void($type, $type_no, TRUE);
@@ -162,7 +162,7 @@
      *
      * @return int
      */
-    static public function check_quantities($order) {
+    public static function check_quantities($order) {
       $ok = 1;
       foreach ($order->line_items as $line_no => $itm) {
         if (isset($_POST['Line' . $line_no])) {
@@ -197,7 +197,7 @@
     /**
      * @param $delivery_notes
      */
-    static public function set_delivery_shipping_sum($delivery_notes) {
+    public static function set_delivery_shipping_sum($delivery_notes) {
       $shipping = 0;
       foreach ($delivery_notes as $delivery_num) {
         $myrow = Debtor_Trans::get($delivery_num, 13);
@@ -211,7 +211,7 @@
     /**
      * @param $order
      */
-    static public function copyFromPost($order) {
+    public static function copyFromPost($order) {
       $order->ship_via      = $_POST['ship_via'];
       $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['InvoiceDate'];
@@ -227,7 +227,7 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    static public function copyToPost($order) {
+    public static function copyToPost($order) {
       $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
 
       $order = Sales_Order::check_edit_conflicts($order);
@@ -248,7 +248,7 @@
      *
      * @return bool
      */
-    static public function check_data($order) {
+    public static function check_data($order) {
       if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is invalid."));
         JS::set_focus('InvoiceDate');
@@ -302,7 +302,7 @@
      *
      * @return int|void
      */
-    static public function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
+    public static function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
       $doc = new Sales_Order(ST_SALESORDER, array($order_no));
       $doc->customer_to_order($customer_id, $branch_id);
       $doc->trans_type    = ST_SALESORDER;

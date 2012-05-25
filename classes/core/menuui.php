@@ -24,7 +24,7 @@
     /**
      * @var int
      */
-    static public $menuCount = 0;
+    public static $menuCount = 0;
     /**
      * @param array $options
      */

@@ -19,7 +19,7 @@
      *
      * @return int
      */
-    static public function get_next_trans_no($trans_type) {
+    public static function get_next_trans_no($trans_type) {
       $st = SysTypes::get_db_info($trans_type);
       if (!($st && $st[0] && $st[2])) {
         // this is in fact internal error condition.
@@ -49,7 +49,7 @@
      *
      * @return array|null
      */
-    static public function get_db_info($type) {
+    public static function get_db_info($type) {
       switch ($type) {
         case   ST_JOURNAL    :
           return array("gl_trans", "type", "type_no", NULL, "tran_date");
@@ -108,7 +108,7 @@
      * @static
      * @return null|PDOStatement
      */
-    static public function get() {
+    public static function get() {
       $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::query($sql, "could not query systypes table");
       return $result;
@@ -120,7 +120,7 @@
      *
      * @return int
      */
-    static public function get_class_type_convert($ctype) {
+    public static function get_class_type_convert($ctype) {
       return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
     }
     /**
@@ -133,7 +133,7 @@
      *
      * @return string
      */
-    static public function select($name, $value = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
+    public static function select($name, $value = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       global $systypes_array;
       return array_selector($name, $value, $systypes_array, array(
         'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => FALSE,
@@ -147,7 +147,7 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    static public function cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
+    public static function cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -163,7 +163,7 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    static public function row($label, $name, $value = NULL, $submit_on_change = FALSE) {
+    public static function row($label, $name, $value = NULL, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       SysTypes::cells(NULL, $name, $value, $submit_on_change);
       echo "</tr>\n";

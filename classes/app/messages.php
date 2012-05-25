@@ -12,11 +12,11 @@
     /**
      * @var string
      */
-    static protected $messages = '';
+    protected static $messages = '';
     /**
      * @var int
      */
-    static protected $count = 0;
+    protected static $count = 0;
     /**
 
      */
@@ -29,7 +29,7 @@
      *
      * @return bool|int
      */
-    static public function  get($userid = FALSE) {
+    public static function  get($userid = FALSE) {
       if (!$userid) {
         return FALSE;
       }
@@ -64,7 +64,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function set($userid, $subject, $message) {
+    public static function set($userid, $subject, $message) {
       $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1, " . DB::escape(User::i()->user) . ")";
       $result = DB::query($sql, "Couldn't add message for $userid");
       return $result;
@@ -74,7 +74,7 @@
      *
      * @param User $user
      */
-    static public function show($user = NULL) {
+    public static function show($user = NULL) {
       $user = $user ? : User::i();
       if (!$user || !$user->logged) {
         return;
@@ -84,7 +84,7 @@
         static::makeDialog();
       }
     }
-    static public function makeDialog() {
+    public static function makeDialog() {
       $dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
       $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
       $dialog->setOptions(array(

@@ -924,7 +924,7 @@
     /**
      * @param $order
      */
-    static public function update_version($order) {
+    public static function update_version($order) {
       foreach ($order as $so_num => $so_ver) {
         $sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
         DB::query($sql, 'Concurrent editing conflict while sales order update');
@@ -1541,7 +1541,7 @@
      * @return DB_Query_Result|void
      * @throws DBException
      */
-    static public function get_header($order_no, $trans_type) {
+    public static function get_header($order_no, $trans_type) {
       $sql
               = "SELECT DISTINCT sales_orders.*,
 		 debtors.name,
@@ -1589,7 +1589,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_details($order_no, $trans_type) {
+    public static function get_details($order_no, $trans_type) {
       $sql
         = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
@@ -1612,7 +1612,7 @@
      *
      * @param $order_no
      */
-    static public function close($order_no) {
+    public static function close($order_no) {
       $sql
         = "UPDATE sales_order_details
 			SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
@@ -1626,7 +1626,7 @@
      *
      * @return string
      */
-    static public function get_invoice_duedate($debtorno, $invdate) {
+    public static function get_invoice_duedate($debtorno, $invdate) {
       if (!Dates::is_date($invdate)) {
         return Dates::new_doc_date();
       }
@@ -1654,7 +1654,7 @@
      *
      * @return DB_Query_Result
      */
-    static public function get_customer($customer_id) {
+    public static function get_customer($customer_id) {
       // Now check to ensure this account is not on hold */
       $sql
               = "SELECT debtors.name,
@@ -1685,7 +1685,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_branch($customer_id, $branch_id) {
+    public static function get_branch($customer_id, $branch_id) {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
       $sql
         = "SELECT branches.br_name,
@@ -1706,7 +1706,7 @@
      *
      * @return false|Purch_Order|Sales_Order
      */
-    static public function check_edit_conflicts($order) {
+    public static function check_edit_conflicts($order) {
       if (!isset($_POST['order_id'])) {
         $_POST['order_id'] = $order->order_id;
       }
@@ -1731,7 +1731,7 @@
      *
      * @return bool
      */
-    static public function update_parent_line($doc_type, $line_id, $qty_dispatched) {
+    public static function update_parent_line($doc_type, $line_id, $qty_dispatched) {
       $doc_type = Debtor_Trans::get_parent_type($doc_type);
       //	echo "update line: $line_id, $doc_type, $qty_dispatched";
       if ($doc_type == 0) {
@@ -1759,7 +1759,7 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    static public function copyToPost($order) {
+    public static function copyToPost($order) {
       if (!Input::get(Orders::QUOTE_TO_ORDER)) {
         $order = Sales_Order::check_edit_conflicts($order);
       }
@@ -1790,7 +1790,7 @@
     /**
      * @param $order
      */
-    static public function copyFromPost($order) {
+    public static function copyFromPost($order) {
       $order->reference        = $_POST['ref'];
       $order->Comments         = $_POST['Comments'];
       $order->document_date    = $_POST['OrderDate'];

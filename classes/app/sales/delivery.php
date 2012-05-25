@@ -19,7 +19,7 @@
      *
      * @return int
      */
-    static public function add(Sales_Order $delivery, $bo_policy) {
+    public static function add(Sales_Order $delivery, $bo_policy) {
       $trans_no = $delivery->trans_no;
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
@@ -108,7 +108,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       DB::begin();
       GL_Trans::void($type, $type_no, TRUE);
       // reverse all the changes in the sales order
@@ -137,7 +137,7 @@
      *
      * @return bool
      */
-    static public function check_data($order) {
+    public static function check_data($order) {
       if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is invalid."));
         JS::set_focus('DispatchDate');
@@ -185,7 +185,7 @@
      *
      * @param $order
      */
-    static public function copyFromPost($order) {
+    public static function copyFromPost($order) {
       $order->ship_via      = $_POST['ship_via'];
       $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['DispatchDate'];
@@ -201,7 +201,7 @@
      *
      * @param $order
      */
-    static public function copyToPost($order) {
+    public static function copyToPost($order) {
       $order                      = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via']          = $order->ship_via;
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
@@ -220,7 +220,7 @@
      *
      * @return int
      */
-    static public function check_quantities($order) {
+    public static function check_quantities($order) {
       $ok = 1;
       // Update order delivery quantities/descriptions
       foreach ($order->line_items as $line => $itm) {
@@ -263,7 +263,7 @@
      *
      * @return bool
      */
-    static public function check_qoh($order) {
+    public static function check_qoh($order) {
       if (!DB_Company::get_pref('allow_negative_stock')) {
         foreach ($order->line_items as $itm) {
           if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {

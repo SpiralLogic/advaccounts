@@ -37,7 +37,7 @@
      *
      * @return array|bool|string
      */
-    static public function       create($datas) {
+    public static function       create($datas) {
       return self::_draw($datas);
     }
     /**
@@ -236,7 +236,7 @@
      * @param $x
      * @param $y
      */
-    static public function rotate($x1, $y1, $angle, &$x, &$y) {
+    public static function rotate($x1, $y1, $angle, &$x, &$y) {
       $angle = deg2rad(-$angle);
       $cos   = cos($angle);
       $sin   = sin($angle);
@@ -1050,7 +1050,7 @@
      *
      * @return array
      */
-    static public function getDigit($text, $rectangular) {
+    public static function getDigit($text, $rectangular) {
       $dataCodeWords     = self::encodeDataCodeWordsASCII($text); // Code the text in the ASCII mode
       $dataCWCount       = count($dataCodeWords);
       $index             = self::selectIndex($dataCWCount, $rectangular); // Select the index for the data tables

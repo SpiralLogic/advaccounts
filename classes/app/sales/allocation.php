@@ -19,7 +19,7 @@
      * @param $trans_type_to
      * @param $trans_no_to
      */
-    static public function add($amount, $trans_type_from, $trans_no_from,
+    public static function add($amount, $trans_type_from, $trans_no_from,
                                $trans_type_to, $trans_no_to) {
       $sql
         = "INSERT INTO debtor_allocations (
@@ -36,7 +36,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function delete($trans_id) {
+    public static function delete($trans_id) {
       $sql = "DELETE FROM debtor_allocations WHERE id = " . DB::escape($trans_id);
       return DB::query($sql, "The existing allocation $trans_id could not be deleted");
     }
@@ -48,7 +48,7 @@
      *
      * @return mixed
      */
-    static public function get_balance($trans_type, $trans_no) {
+    public static function get_balance($trans_type, $trans_no) {
       $sql
               = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
 		FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
@@ -63,7 +63,7 @@
      * @param $trans_no
      * @param $alloc
      */
-    static public function update($trans_type, $trans_no, $alloc) {
+    public static function update($trans_type, $trans_no, $alloc) {
       $sql
         = "UPDATE debtor_trans SET alloc = alloc + $alloc
 		WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
@@ -76,7 +76,7 @@
      * @param        $type_no
      * @param string $date
      */
-    static public function void($type, $type_no, $date = "") {
+    public static function void($type, $type_no, $date = "") {
 
       // clear any allocations for this transaction
       $sql
@@ -112,7 +112,7 @@
      *
      * @return string
      */
-    static public function get_sql($extra_fields = NULL, $extra_conditions = NULL, $extra_tables = NULL) {
+    public static function get_sql($extra_fields = NULL, $extra_conditions = NULL, $extra_tables = NULL) {
       $sql
         = "SELECT
 		trans.type,
@@ -148,7 +148,7 @@
      *
      * @return string
      */
-    static public function get_allocatable_sql($customer_id, $settled) {
+    public static function get_allocatable_sql($customer_id, $settled) {
       $settled_sql = "";
       if (!$settled) {
         $settled_sql = " AND (round(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc,2) > 0)";
@@ -172,7 +172,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_to_trans($customer_id, $trans_no = NULL, $type = NULL) {
+    public static function get_to_trans($customer_id, $trans_no = NULL, $type = NULL) {
       if ($trans_no != NULL and $type != NULL) {
         $sql = Sales_Allocation::get_sql("amt", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
@@ -192,7 +192,7 @@
       }
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }
-    static public function clear_allocations() {
+    public static function clear_allocations() {
       if (isset($_SESSION['alloc'])) {
         unset($_SESSION['alloc']->allocs, $_SESSION['alloc']);
       }
@@ -203,7 +203,7 @@
      * @param $type
      * @param $trans_no
      */
-    static public function edit_allocations_for_transaction($type, $trans_no) {
+    public static function edit_allocations_for_transaction($type, $trans_no) {
       global $systypes_array;
       Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
       Display::heading($_SESSION['alloc']->person_name);
@@ -236,7 +236,7 @@
      *
      * @return mixed
      */
-    static public function systype_name($dummy, $type) {
+    public static function systype_name($dummy, $type) {
       global $systypes_array;
       return $systypes_array[$type];
     }
@@ -247,7 +247,7 @@
      *
      * @return null|string
      */
-    static public function trans_view($trans) {
+    public static function trans_view($trans) {
       return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
     }
     /**
@@ -257,7 +257,7 @@
      *
      * @return string
      */
-    static public function alloc_link($row) {
+    public static function alloc_link($row) {
       return DB_Pager::link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
     }
     /**
@@ -267,7 +267,7 @@
      *
      * @return int|string
      */
-    static public function amount_left($row) {
+    public static function amount_left($row) {
       return Num::price_format($row["Total"] - $row["alloc"]);
     }
     /**
@@ -277,7 +277,7 @@
      *
      * @return bool
      */
-    static public function check_settled($row) {
+    public static function check_settled($row) {
       return $row['settled'] == 1;
     }
   }

@@ -390,7 +390,7 @@
      * @static
      * @return void
      */
-    static public function addEditDialog() {
+    public static function addEditDialog() {
       $customerBox = new Dialog('Customer Edit', 'customerBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#customer_id").trigger("change")');
@@ -414,7 +414,7 @@ JS;
      *
      * @return void
      */
-    static public function addSearchBox($id, $options = array()) {
+    public static function addSearchBox($id, $options = array()) {
       echo UI::searchLine($id, '/contacts/search.php', $options);
     }
     /**
@@ -424,7 +424,7 @@ JS;
      *
      * @return array
      */
-    static public function search($terms) {
+    public static function search($terms) {
       $data  = array();
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
 
@@ -449,7 +449,7 @@ JS;
      *
      * @return array|string
      */
-    static public function searchOrder($term, $options = array()) {
+    public static function searchOrder($term, $options = array()) {
       $defaults = array('inactive' => FALSE, 'selected' => '');
       $o        = array_merge($defaults, $options);
       $term     = explode(' ', $term);
@@ -481,7 +481,7 @@ JS;
      *
      * @return Array|\DB_Query_Result
      */
-    static public function get_details($customer_id, $to = NULL, $istimestamp = FALSE) {
+    public static function get_details($customer_id, $to = NULL, $istimestamp = FALSE) {
       if ($to == NULL) {
         $todate = date("Y-m-d");
       }
@@ -557,7 +557,7 @@ JS;
      *
      * @return Array|DB_Query_Result
      */
-    static public function get($customer_id) {
+    public static function get($customer_id) {
       $sql    = "SELECT * FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
       $result = DB::query($sql, "could not get customer");
       return DB::fetch($result);
@@ -569,7 +569,7 @@ JS;
      *
      * @return mixed
      */
-    static public function get_name($customer_id) {
+    public static function get_name($customer_id) {
       $sql    = "SELECT name FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
       $result = DB::query($sql, "could not get customer");
       $row    = DB::fetch_row($result);
@@ -582,7 +582,7 @@ JS;
      *
      * @return Array|DB_Query_Result
      */
-    static public function get_habit($customer_id) {
+    public static function get_habit($customer_id) {
       $sql
               = "SELECT debtors.payment_discount,
 				 credit_status.dissallow_invoices
@@ -599,7 +599,7 @@ JS;
      *
      * @return mixed
      */
-    static public function get_area($id) {
+    public static function get_area($id) {
       $sql    = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
       $row    = DB::fetch_row($result);
@@ -612,7 +612,7 @@ JS;
      *
      * @return mixed
      */
-    static public function get_salesman_name($id) {
+    public static function get_salesman_name($id) {
       $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
       $row    = DB::fetch_row($result);
@@ -625,7 +625,7 @@ JS;
      *
      * @return int
      */
-    static public function get_credit($customer_id) {
+    public static function get_credit($customer_id) {
       $custdet = Debtor::get_details($customer_id);
       return ($customer_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
     }
@@ -636,7 +636,7 @@ JS;
      *
      * @return bool
      */
-    static public function is_new($id) {
+    public static function is_new($id) {
       $tables = array('branches', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
       return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_id');
     }
@@ -647,7 +647,7 @@ JS;
      *
      * @return void
      */
-    static public function newselect($value = NULL) {
+    public static function newselect($value = NULL) {
       echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
       $focus = FALSE;
       if (!$value && Input::post('customer')) {
@@ -689,7 +689,7 @@ JS;
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
+    public static function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
       $sql  = "SELECT debtor_id, debtor_ref, curr_code, inactive FROM debtors ";
       $mode = DB_Company::get_pref('no_customer_list');
 
@@ -724,7 +724,7 @@ JS;
      *
      * @return void
      */
-    static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
+    public static function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE, $async = FALSE) {
       echo "<td class='nowrap'>";
       if ($label != NULL) {
         echo "<label for=\"$name\"> $label</label>";
@@ -745,7 +745,7 @@ JS;
      *
      * @return void
      */
-    static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE) {
+    public static function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE, $editkey = FALSE) {
       echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td class='nowrap'>";
       echo Debtor::select($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
       echo "</td>\n</tr>\n";
@@ -762,7 +762,7 @@ JS;
      *
      * @return null|string
      */
-    static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $viewer = "/sales/view/";
       switch ($type) {
         case ST_SALESINVOICE:
@@ -808,7 +808,7 @@ JS;
      *
      * @return void
      */
-    static public function display_summary($customer_record) {
+    public static function display_summary($customer_record) {
       $past_due1 = DB_Company::get_pref('past_due_days');
       $past_due2 = 2 * $past_due1;
       if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {

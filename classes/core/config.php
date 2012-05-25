@@ -35,7 +35,7 @@
      *
      * @return mixed
      */
-    static public function set($var, $value, $group = 'config') {
+    public static function set($var, $value, $group = 'config') {
       static::i()->_vars[$group][$var] = $value;
       return $value;
     }
@@ -48,7 +48,7 @@
      * @internal param null $array_key
      * @return Array|mixed
      */
-    static public function get($var, $default = FALSE) {
+    public static function get($var, $default = FALSE) {
       $i = static::i();
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
@@ -68,7 +68,7 @@
      * @param        $var
      * @param string $group
      */
-    static public function remove($var, $group = 'config') {
+    public static function remove($var, $group = 'config') {
 
       if (array_key_exists($var, static::i()->_vars[$group])) {
         unset(static::i()->_vars[$group][$var]);
@@ -83,7 +83,7 @@
      * @return mixed
      * @return array
      */
-    static public function get_all($group = 'config', $default = array()) {
+    public static function get_all($group = 'config', $default = array()) {
 
       if (!isset(static::i()->_vars[$group]) && static::i()->load($group) === FALSE) {
         return $default;
@@ -94,19 +94,19 @@
      * @static
 
      */
-    static public function removeAll() {
+    public static function removeAll() {
       Cache::delete('config');
     }
     /**
      * @static
 
      */
-    static public function reset() {
+    public static function reset() {
       static::removeAll();
       static::i()->load();
     }
 
-    static public function _shutdown() {
+    public static function _shutdown() {
       Cache::set('config', static::i()->_vars);
     }
     /**

@@ -17,7 +17,7 @@
      * @param        $credit
      * @param string $parms
      */
-    static public function credit_row($supplier, $credit, $parms = '') {
+    public static function credit_row($supplier, $credit, $parms = '') {
       Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
         '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>", $parms);
     }
@@ -33,7 +33,7 @@
      *
      * @return null|string
      */
-    static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $viewer = "/purchases/view/";
       switch ($type) {
         case ST_PURCHORDER:

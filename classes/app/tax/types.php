@@ -17,7 +17,7 @@
      * @param $purchasing_gl_code
      * @param $rate
      */
-    static public function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
+    public static function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
       $sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
 		VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
         . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
@@ -32,7 +32,7 @@
      * @param $purchasing_gl_code
      * @param $rate
      */
-    static public function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
+    public static function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
       $sql = "UPDATE tax_types SET name=" . DB::escape($name) . ",
 		sales_gl_code=" . DB::escape($sales_gl_code) . ",
 		purchasing_gl_code=" . DB::escape($purchasing_gl_code) . ",
@@ -47,7 +47,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($all = FALSE) {
+    public static function get_all($all = FALSE) {
       $sql = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
 		Chart2.account_name AS PurchasingAccountName
@@ -64,7 +64,7 @@
      * @static
      * @return null|PDOStatement
      */
-    static public function get_all_simple() {
+    public static function get_all_simple() {
       $sql = "SELECT * FROM tax_types";
       return DB::query($sql, "could not get all tax types");
     }
@@ -75,7 +75,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($type_id) {
+    public static function get($type_id) {
       $sql    = "SELECT tax_types.*,
 		Chart1.account_name AS SalesAccountName,
 		Chart2.account_name AS PurchasingAccountName
@@ -93,7 +93,7 @@
      *
      * @return mixed
      */
-    static public function get_default_rate($type_id) {
+    public static function get_default_rate($type_id) {
       $sql    = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax type rate");
       $row    = DB::fetch_row($result);
@@ -106,7 +106,7 @@
      *
      * @return bool
      */
-    static public function delete($type_id) {
+    public static function delete($type_id) {
       if (static::can_delete($type_id)) {
         return FALSE;
       }
@@ -131,7 +131,7 @@
      *
      * @return bool
      */
-    static public function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
+    public static function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1) {
       $purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
       $sql        = "SELECT count(*) FROM "
         . "tax_types
@@ -154,7 +154,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
+    public static function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
       return select_box($name, $selected_id, $sql, 'id', 'name', array(
         'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => FALSE,
@@ -169,7 +169,7 @@
      * @param bool $none_option
      * @param bool $submit_on_change
      */
-    static public function cells($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
+    public static function cells($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -186,7 +186,7 @@
      * @param bool $none_option
      * @param bool $submit_on_change
      */
-    static public function row($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Tax_Types::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
       echo "</tr>\n";
@@ -199,7 +199,7 @@
      *
      * @return bool
      */
-    static public function can_delete($selected_id) {
+    public static function can_delete($selected_id) {
       $sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query tax groups");
       $myrow  = DB::fetch_row($result);
@@ -216,7 +216,7 @@
      *
      * @return bool
      */
-    static public function can_process($selected_id) {
+    public static function can_process($selected_id) {
       if (strlen($_POST['name']) == 0) {
         Event::error(_("The tax type name cannot be empty."));
         JS::set_focus('name');

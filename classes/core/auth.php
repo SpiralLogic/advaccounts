@@ -85,7 +85,7 @@
      *
      * @return array
      */
-    static public function checkPasswordStrength($password, $username = FALSE) {
+    public static function checkPasswordStrength($password, $username = FALSE) {
       $returns = array(
         'strength' => 0, 'error' => 0, 'text' => ''
       );

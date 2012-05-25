@@ -22,7 +22,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
+    public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
       if ($id > 0) {
         $sql = "UPDATE printers SET description=" . DB::escape($descr) . ",name=" . DB::escape($name) . ",queue=" . DB::escape($queue) . ",host=" . DB::escape($host) . ",port=" . DB::escape($port) . ",timeout=" . DB::escape($timeout) . " WHERE id=" . DB::escape($id);
       }
@@ -35,7 +35,7 @@
      * @static
      * @return null|PDOStatement
      */
-    static public function get_all() {
+    public static function get_all() {
       $sql = "SELECT * FROM printers";
       return DB::query($sql, "could not get printer definitions");
     }
@@ -46,14 +46,14 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($id) {
+    public static function get($id) {
       $sql    = "SELECT * FROM printers WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get printer definition");
       return DB::fetch($result);
     }
 
     //============================================================================
-    // printer profiles static public functions
+    // printer profiles public static functions
     //
     /**
      * @static
@@ -63,7 +63,7 @@
      *
      * @return bool
      */
-    static public function update_profile($name, $dest) {
+    public static function update_profile($name, $dest) {
       foreach ($dest as $rep => $printer) {
         if ($printer != '' || $rep == '') {
           $sql = "REPLACE INTO print_profiles " . "(profile, report, printer) VALUES (" . DB::escape($name) . "," . DB::escape($rep) . "," . DB::escape($printer) . ")";
@@ -90,7 +90,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array|bool
      */
-    static public function get_report($profile, $report) {
+    public static function get_report($profile, $report) {
       $sql    = "SELECT printer FROM print_profiles WHERE profile=" . DB::quote($profile) . " AND report=" . DB::quote($report);
       $result = DB::query($sql, 'report printer lookup failed');
       if (!$result) {
@@ -116,7 +116,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function delete_profile($name) {
+    public static function delete_profile($name) {
       $sql = "DELETE FROM print_profiles WHERE profile=" . DB::escape($name);
       return DB::query($sql, "could not delete printing profile");
     }
@@ -131,7 +131,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_profile($name) {
+    public static function get_profile($name) {
       $sql = "SELECT	* FROM print_profiles WHERE profile=" . DB::escape($name);
       return DB::query($sql, "could not get printing profile");
     }

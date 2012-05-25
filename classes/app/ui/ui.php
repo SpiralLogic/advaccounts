@@ -270,7 +270,7 @@ JS;
      *
      * @return mixed
      */
-    static public function emailDialogue($contactType) {
+    public static function emailDialogue($contactType) {
       static $loaded = FALSE;
       if ($loaded == TRUE) {
         return;

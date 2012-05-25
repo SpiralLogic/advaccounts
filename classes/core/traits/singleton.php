@@ -16,12 +16,12 @@
     /**
      * @var null
      */
-    static protected $i = NULL;
+    protected static $i = NULL;
     /***
      * @static
      * @return
      */
-    static public function i() {
+    public static function i() {
       (static::$i === NULL) and  static::$i = new static;
       return static::$i;
     }

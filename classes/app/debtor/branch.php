@@ -227,13 +227,9 @@
       if (!is_array($params)) {
         $params = array('branch_id' => $params);
       }
-      $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
-        ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
-        'b.debtor_id=c.debtor_id',
-        'b.tax_group_id=t.id',
-        'b.area=a.area_code',
-        'b.salesman=s.salesman_code'
-      ));
+      $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
+                                                                                                                                                                             'b.debtor_id=c.debtor_id', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'
+                                                                                                                                                                        ));
       foreach ($params as $key => $value) {
         $sql->where("b.$key=", $value);
       }
@@ -253,21 +249,19 @@
      *
      * @return string
      */
-    static public function select($customer_id, $name, $selected_id = NULL, $spec_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
-      $sql
-        = "SELECT branch_id, branch_ref FROM branches
+    public static function select($customer_id, $name, $selected_id = NULL, $spec_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
+      $sql = "SELECT branch_id, branch_ref FROM branches
 			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
 
       $where = $enabled ? array("disable_trans = 0") : array();
       return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(
-        'where'         => $where,
-        'order'         => array('branch_ref'),
-        'spec_option'   => $spec_option === TRUE ?
-          _('All branches') : $spec_option,
-        'spec_id'       => ALL_TEXT,
-        'select_submit' => $submit_on_change,
-        'sel_hint'      => _('Select customer branch')
-      ));
+                                                                                'where'         => $where,
+                                                                                'order'         => array('branch_ref'),
+                                                                                'spec_option'   => $spec_option === TRUE ? _('All branches') : $spec_option,
+                                                                                'spec_id'       => ALL_TEXT,
+                                                                                'select_submit' => $submit_on_change,
+                                                                                'sel_hint'      => _('Select customer branch')
+                                                                           ));
     }
     /**
      * @static
@@ -283,7 +277,7 @@
      *
      * @return void
      */
-    static public function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
+    public static function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -305,7 +299,7 @@
      *
      * @return void
      */
-    static public function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
+    public static function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Debtor_Branch::cells(NULL, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
       echo "</tr>";

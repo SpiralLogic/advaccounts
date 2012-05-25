@@ -24,7 +24,7 @@
      * @internal param $contact_id
      * @return bool|string
      */
-    static public function add($parent_id, $contact_name, $type, $message) {
+    public static function add($parent_id, $contact_name, $type, $message) {
       if (!isset($contact_id, $contact_name, $type, $message)) {
         return FALSE;
       }
@@ -43,7 +43,7 @@
      * @internal param $contact_id
      * @return array|bool
      */
-    static public function read($parent_id, $type) {
+    public static function read($parent_id, $type) {
       if (!isset($parent_id, $type) || !$parent_id) {
         return FALSE;
       }

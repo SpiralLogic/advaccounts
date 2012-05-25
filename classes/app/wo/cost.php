@@ -16,7 +16,7 @@
      * @param $qty
      * @param $date_
      */
-    static public function add_material($stock_id, $qty, $date_) {
+    public static function add_material($stock_id, $qty, $date_) {
       $m_cost = 0;
       $result = WO::get_bom($stock_id);
       while ($bom_item = DB::fetch($result)) {
@@ -49,7 +49,7 @@
      * @param $date_
      * @param $costs
      */
-    static public function add_overhead($stock_id, $qty, $date_, $costs) {
+    public static function add_overhead($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
       if ($qty != 0) {
@@ -79,7 +79,7 @@
      * @param $date_
      * @param $costs
      */
-    static public function add_labour($stock_id, $qty, $date_, $costs) {
+    public static function add_labour($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
       if ($qty != 0) {
@@ -109,7 +109,7 @@
      * @param $date_
      * @param $costs
      */
-    static public function add_issue($stock_id, $qty, $date_, $costs) {
+    public static function add_issue($stock_id, $qty, $date_, $costs) {
       if ($qty != 0) {
         $costs /= $qty;
       }

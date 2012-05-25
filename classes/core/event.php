@@ -37,7 +37,7 @@
      * @static
 
      */
-    static public function init() {
+    public static function init() {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
       $shutdown_events            = Cache::get(static::$shutdown_events_id);
 
@@ -55,7 +55,7 @@
      *
      * @return bool
      */
-    static public function error($message) {
+    public static function error($message) {
       return static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
     }
     /**
@@ -65,7 +65,7 @@
      *
      * @return bool
      */
-    static public function notice($message) {
+    public static function notice($message) {
       return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
     }
     /**
@@ -75,7 +75,7 @@
      *
      * @return bool
      */
-    static public function success($message) {
+    public static function success($message) {
       return static::handle($message, reset(debug_backtrace()), E_SUCCESS);
     }
     /**
@@ -85,7 +85,7 @@
      *
      * @return bool
      */
-    static public function warning($message) {
+    public static function warning($message) {
       return static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
     }
     /**
@@ -97,7 +97,7 @@
      *
      * @return bool
      */
-    static protected function handle($message, $source, $type) {
+    protected static function handle($message, $source, $type) {
 
       if (static::$request_finsihed) {
         static::$shutdown_events[] = array($message, $source, $type);
@@ -115,7 +115,7 @@
      * @param string $function
      * @param array  $arguments
      */
-    static public function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
       Event::registerHook('shutdown', $object, $function, $arguments);
     }
     /**
@@ -125,11 +125,11 @@
      * @param string $function
      * @param array  $arguments
      */
-    static public function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
       Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
-    static public function shutdown() {
+    public static function shutdown() {
       Errors::process();
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {

@@ -24,7 +24,7 @@
      *
      * @return int
      */
-    static public function add($supplier_id, $date_, $bank_account,
+    public static function add($supplier_id, $date_, $bank_account,
                                $amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
       DB::begin();
       $supplier_currency     = Bank_Currency::for_creditor($supplier_id);
@@ -83,7 +83,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       DB::begin();
       Bank_Trans::void($type, $type_no, TRUE);
       GL_Trans::void($type, $type_no, TRUE);
@@ -95,7 +95,7 @@
      * @static
      * @return bool
      */
-    static public function    can_process() {
+    public static function    can_process() {
       if (!get_post('supplier_id')) {
         Event::error(_("There is no supplier selected."));
         JS::set_focus('supplier_id');

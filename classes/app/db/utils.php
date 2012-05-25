@@ -16,7 +16,7 @@
      *
      * @return int|resource
      */
-    static public function create($connection) {
+    public static function create($connection) {
       $db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
       if (!mysql_select_db($connection["dbname"], $db)) {
         $sql = "CREATE DATABASE " . $connection["dbname"] . "";
@@ -36,7 +36,7 @@
      *
      * @return bool
      */
-    static public function import($filename, $connection = NULL, $force = TRUE) {
+    public static function import($filename, $connection = NULL, $force = TRUE) {
       $allowed_commands     = array(
         "create"               => 'table_queries',
         "alter table"          => 'table_queries',
@@ -155,7 +155,7 @@
      * @return array|string
      * returns the content of the gziped $path backup file. use of $mode see below
      */
-    static public function ungzip($mode, $path) {
+    public static function ungzip($mode, $path) {
       $file_data = gzfile($path);
       // returns one string or an array of lines
       if ($mode != "lines") {
@@ -175,7 +175,7 @@
      * @return array|string
      * returns the content of the ziped $path backup file. use of $mode see below
      */
-    static public function unzip($mode, $path) {
+    public static function unzip($mode, $path) {
       $all = implode("", file($path));
       // convert path to name of ziped file
       $filename = preg_replace("/.*\//", "", $path);
@@ -218,7 +218,7 @@
      *
      * @return bool|string
      */
-    static public function backup($conn, $ext = 'no', $comm = '') {
+    public static function backup($conn, $ext = 'no', $comm = '') {
       $filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
       return DB_Utils::export($conn, $filename, $ext, $comm);
     }
@@ -235,7 +235,7 @@
      * generates a dump of $db database
      * $drop and $zip tell if to include the drop table statement or dry to pack
      */
-    static public function export($conn, $filename, $zip = 'no', $comment = '') {
+    public static function export($conn, $filename, $zip = 'no', $comment = '') {
       $error = FALSE;
       // set max string size before writing to file
       $max_size = 1048576 * 2; // 2 MB
@@ -396,7 +396,7 @@
      * orders the tables in $tables according to the constraints in $fks
      * $fks musst be filled like this: $fks[tablename][0]=needed_table1; $fks[tablename][1]=needed_table2; ...
      */
-    static public function order_sql_tables($tables, $fks) {
+    public static function order_sql_tables($tables, $fks) {
       // do not order if no contraints exist
       if (!count($fks)) {
         return $tables;

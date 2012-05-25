@@ -21,7 +21,7 @@
      *
      * @return array|mixed|string
      */
-    static public function access_string($label, $clean = FALSE) {
+    public static function access_string($label, $clean = FALSE) {
 
       $access = '';
       $slices = array();
@@ -40,7 +40,7 @@
      * @param bool   $cond
      * @param string $msg
      */
-    static public function backtrace($cond = TRUE, $msg = '') {
+    public static function backtrace($cond = TRUE, $msg = '') {
       if ($cond) {
         if ($msg) {
           $str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
@@ -91,7 +91,7 @@
      *
      * @param int $num
      */
-    static public function br($num = 1) {
+    public static function br($num = 1) {
       for ($i = 0; $i < $num; $i++) {
         echo "<br>";
       }
@@ -104,7 +104,7 @@
      * @param null   $trigger
      * @param bool   $non_ajax
      */
-    static public function div_start($id = '', $trigger = NULL, $non_ajax = FALSE) {
+    public static function div_start($id = '', $trigger = NULL, $non_ajax = FALSE) {
       global $ajax_divs;
       if ($non_ajax) { // div for non-ajax elements
         array_push($ajax_divs, array($id, NULL));
@@ -120,7 +120,7 @@
     /**
      * @static
      */
-    static public function div_end() {
+    public static function div_end() {
       global $ajax_divs;
       if (count($ajax_divs)) {
         $div = array_pop($ajax_divs);
@@ -136,7 +136,7 @@
      *
      * @param $msg
      */
-    static public function heading($msg) {
+    public static function heading($msg) {
       echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
     }
 
@@ -149,7 +149,7 @@
      *
      * @return bool
      */
-    static public function is_voided($type, $id, $label) {
+    public static function is_voided($type, $id, $label) {
       $void_entry = Voiding::get($type, $id);
       if ($void_entry == NULL) {
         return FALSE;
@@ -170,7 +170,7 @@
      *
      * @param $stock_id
      */
-    static public function item_heading($stock_id) {
+    public static function item_heading($stock_id) {
       if ($stock_id != "") {
         $result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
         $myrow  = DB::fetch_row($result);
@@ -189,7 +189,7 @@
      *
      * @return string
      */
-    static public function menu_link($url, $label, $id = NULL) {
+    public static function menu_link($url, $label, $id = NULL) {
       $id   = JS::default_focus($id);
       $pars = Display::access_string($label);
       return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
@@ -204,7 +204,7 @@
      *
      * @return string
      */
-    static public function menu_button($url, $label, $id = NULL) {
+    public static function menu_button($url, $label, $id = NULL) {
       $id   = JS::default_focus($id);
       $pars = Display::access_string($label);
       return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
@@ -216,7 +216,7 @@
      * @param        $forward_to
      * @param string $params
      */
-    static public function meta_forward($forward_to, $params = "") {
+    public static function meta_forward($forward_to, $params = "") {
       echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
       echo "<div class='center'><br>" . _("You should automatically be forwarded.");
       echo " " . _("If this does not happen") . " <a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></div>\n";
@@ -235,7 +235,7 @@
      * @param int    $br2
      * @param string $extra
      */
-    static public function note($msg, $br = 0, $br2 = 0, $extra = "") {
+    public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
       for ($i = 0; $i < $br; $i++) {
         echo "<br>";
       }
@@ -256,7 +256,7 @@
      * @param bool $center
      * @param bool $no_menu
      */
-    static public function link_back($center = TRUE, $no_menu = TRUE) {
+    public static function link_back($center = TRUE, $no_menu = TRUE) {
       if ($center) {
         echo "<div class='center margin20'>";
       }
@@ -275,7 +275,7 @@
      * @param bool $center
      * @param bool $button
      */
-    static public function link_no_params($target, $label, $center = TRUE, $button = FALSE) {
+    public static function link_no_params($target, $label, $center = TRUE, $button = FALSE) {
       $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
@@ -299,7 +299,7 @@
      * @param $target
      * @param $label
      */
-    static public function link_no_params_td($target, $label) {
+    public static function link_no_params_td($target, $label) {
       echo "<td>";
       Display::link_no_params($target, $label);
       echo "</td>\n";
@@ -314,7 +314,7 @@
      * @param bool   $center
      * @param string $params
      */
-    static public function link_params($target, $label, $link_params = '', $center = TRUE, $params = '') {
+    public static function link_params($target, $label, $link_params = '', $center = TRUE, $params = '') {
       $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
@@ -338,7 +338,7 @@
      * @param bool   $center
      * @param string $params
      */
-    static public function link_button($target, $label, $link_params = '', $center = TRUE, $params = '') {
+    public static function link_button($target, $label, $link_params = '', $center = TRUE, $params = '') {
       $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if ($target == '') {
@@ -361,7 +361,7 @@
      * @param        $link_params
      * @param string $params
      */
-    static public function link_params_td($target, $label, $link_params, $params = '') {
+    public static function link_params_td($target, $label, $link_params, $params = '') {
       echo "<td>";
       Display::link_params($target, $label, $link_params, FALSE, $params);
       echo "</td>\n";
@@ -376,7 +376,7 @@
      * @param bool $center
      * @param bool $nobr
      */
-    static public function link_params_separate($target, $label, $params, $center = FALSE, $nobr = FALSE) {
+    public static function link_params_separate($target, $label, $params, $center = FALSE, $nobr = FALSE) {
       $id   = JS::default_focus();
       $pars = Display::access_string($label);
       if (!$nobr) {
@@ -398,7 +398,7 @@
      * @param $label
      * @param $params
      */
-    static public function link_params_separate_td($target, $label, $params) {
+    public static function link_params_separate_td($target, $label, $params) {
       echo "<td>";
       Display::link_params_separate($target, $label, $params);
       echo "</td>\n";
@@ -411,7 +411,7 @@
      * @param      $url
      * @param null $id
      */
-    static public function submenu_option($title, $url, $id = NULL) {
+    public static function submenu_option($title, $url, $id = NULL) {
       Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 1, 0);
     }
 
@@ -421,7 +421,7 @@
      * @param      $title
      * @param      $url
      * @param null $id*/
-    static public function submenu_button($title, $url, $id = NULL) {
+    public static function submenu_button($title, $url, $id = NULL) {
       Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 0, 1);
     }
 
@@ -433,7 +433,7 @@
      * @param      $number
      * @param null $id
      */
-    static public function submenu_view($title, $type, $number, $id = NULL) {
+    public static function submenu_view($title, $type, $number, $id = NULL) {
       Display::note(GL_UI::trans_view($type, $number, $title, FALSE, 'menu_option button', $id), 0, 1, FALSE);
     }
 
@@ -447,7 +447,7 @@
      * @param int|null  $email
      * @param int       $extra
      */
-    static public function submenu_print($title, $type, $number, $id = NULL, $email = 0, $extra = 0) {
+    public static function submenu_print($title, $type, $number, $id = NULL, $email = 0, $extra = 0) {
       Display::note(Reporting::print_doc_link($number, $title, TRUE, $type, FALSE, 'button printlink', $id, $email, $extra), 1, 0);
     }
 
@@ -462,7 +462,7 @@
      *
      * @return string
      */
-    static public function viewer_link($label, $url = '', $class = '', $id = '', $icon = NULL) {
+    public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = NULL) {
       if ($url != '') {
         $class .= " openWindow";
       }

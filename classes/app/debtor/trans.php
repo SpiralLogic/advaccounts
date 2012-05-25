@@ -17,7 +17,7 @@
      *
      * @return array|int
      */
-    static public function get_parent($trans_type, $trans_no) {
+    public static function get_parent($trans_type, $trans_no) {
       $sql    = 'SELECT trans_link FROM ' . 'debtor_trans WHERE (trans_no=' . DB::escape($trans_no) . ' AND type=' . DB::escape($trans_type) . ' AND trans_link!=0)';
       $result = DB::query($sql, 'Parent document numbers cannot be retrieved');
       if (DB::num_rows($result)) {
@@ -45,7 +45,7 @@
      *
      * @return int
      */
-    static public function set_parent($order) {
+    public static function set_parent($order) {
       $inv_no = key($order->trans_no);
       if (count($order->src_docs) == 1) {
         // if this child document has only one parent - update child link
@@ -79,7 +79,7 @@
      *
      * @return int
      */
-    static public function get_parent_type($type) {
+    public static function get_parent_type($type) {
       $parent_types = array(
         ST_CUSTCREDIT => ST_SALESINVOICE, ST_SALESINVOICE => ST_CUSTDELIVERY, ST_CUSTDELIVERY => ST_SALESORDER
       );
@@ -95,7 +95,7 @@
      * Mark changes in debtor_trans_details
 
      */
-    static public function update_version($type, $versions) {
+    public static function update_version($type, $versions) {
       $sql
         = 'UPDATE debtor_trans SET version=version+1
 			WHERE type=' . DB::escape($type) . ' AND (';
@@ -114,7 +114,7 @@
      * @return array array(num1=>ver1, num2=>ver2...)
 
      */
-    static public function get_version($type, $trans_no) {
+    public static function get_version($type, $trans_no) {
       if (!is_array($trans_no)) {
         $trans_no = array($trans_no);
       }
@@ -157,7 +157,7 @@
      *
      * @return int
      */
-    static public function write($trans_type, $trans_no, $debtor_id, $branch_no, $date_, $reference, $total, $discount = 0, $tax = 0, $freight = 0, $freight_tax = 0, $sales_type = 0, $order_no = 0, $trans_link = 0, $ship_via = 0, $due_date = "", $alloc_amt = 0, $rate = 0, $dimension_id = 0,
+    public static function write($trans_type, $trans_no, $debtor_id, $branch_no, $date_, $reference, $total, $discount = 0, $tax = 0, $freight = 0, $freight_tax = 0, $sales_type = 0, $order_no = 0, $trans_link = 0, $ship_via = 0, $due_date = "", $alloc_amt = 0, $rate = 0, $dimension_id = 0,
                                  $dimension2_id = 0) {
       $new  = $trans_no == 0;
       $curr = Bank_Currency::for_debtor($debtor_id);
@@ -222,7 +222,7 @@
      *
      * @return bool
      */
-    static public function read($doc_type, $trans_no, &$order) {
+    public static function read($doc_type, $trans_no, &$order) {
       if (!is_array($trans_no) && $trans_no) {
         $trans_no = array($trans_no);
       }
@@ -277,7 +277,7 @@
      *
      * @return Array|DB_Query_Result
      */
-    static public function get($trans_id, $trans_type) {
+    public static function get($trans_id, $trans_type) {
       $sql
         = "SELECT debtor_trans.*,
 		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
@@ -342,7 +342,7 @@
      *
      * @return bool
      */
-    static public function exists($type, $type_no) {
+    public static function exists($type, $type_no) {
       $sql    = "SELECT trans_no FROM debtor_trans WHERE type=" . DB::escape($type) . "
 		AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a debtor transaction");
@@ -357,7 +357,7 @@
      * @return mixed
      * retreives the related sales order for a given trans
      */
-    static public function get_order($type, $type_no) {
+    public static function get_order($type, $type_no) {
       $sql    = "SELECT order_ FROM debtor_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "The debtor transaction could not be queried");
       $row    = DB::fetch_row($result);
@@ -371,7 +371,7 @@
      *
      * @return Array|DB_Query_Result
      */
-    static public function get_details($type, $type_no) {
+    public static function get_details($type, $type_no) {
       $sql
               = "SELECT debtors.name, debtors.curr_code, branches.br_name
 		FROM debtors,branches,debtor_trans
@@ -387,7 +387,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       // clear all values and mark as void
       $sql
         = "UPDATE debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
@@ -400,7 +400,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function post_void($type, $type_no) {
+    public static function post_void($type, $type_no) {
       switch ($type) {
         case ST_SALESINVOICE :
         case ST_CUSTCREDIT  :
@@ -422,7 +422,7 @@
      *
      * @return mixed
      */
-    static public function get_link($type, $type_no) {
+    public static function get_link($type, $type_no) {
       $row = DB::query("SELECT trans_link from debtor_trans
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no), "could not get transaction link for type=$type and trans_no=$type_no");
       return $row[0];
@@ -433,7 +433,7 @@
      * @param $tax_items
      * @param $columns
      */
-    static public function display_tax_details($tax_items, $columns) {
+    public static function display_tax_details($tax_items, $columns) {
       while ($tax_item = DB::fetch($tax_items)) {
         $tax = Num::price_format($tax_item['amount']);
         if ($tax_item['included_in_price']) {

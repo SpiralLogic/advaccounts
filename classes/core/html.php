@@ -17,11 +17,11 @@
     /**
      * @var HTML
      */
-    static protected $_instance = NULL;
+    protected static $_instance = NULL;
     /**
      * @var bool
      */
-    static protected $_return = FALSE;
+    protected static $_return = FALSE;
     /**
      * @param $func
      * @param $args

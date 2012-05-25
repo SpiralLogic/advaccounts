@@ -487,7 +487,7 @@
 		 * @static
 		 * @access public
 		 */
-		static public function ValidateAddress($address)
+		public static function ValidateAddress($address)
 		{
 			if (function_exists('filter_var')) { //Introduced in PHP 5.2
 				if (filter_var($address, FILTER_VALIDATE_EMAIL) === FALSE) {
@@ -1829,7 +1829,7 @@
 		 * @return string
 		 * @static
 		 */
-		static public function RFCDate()
+		public static function RFCDate()
 		{
 			$tz = date('Z');
 			$tzs = ($tz < 0) ? '-' : '+';

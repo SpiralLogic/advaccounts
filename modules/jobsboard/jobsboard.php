@@ -232,7 +232,7 @@
      * @static
 
      */
-    static public function tasks() {
+    public static function tasks() {
       \DB::change_connection('jobsboard');
       $result = FALSE;
       try {

@@ -22,7 +22,7 @@
      *
      * @return int
      */
-    static public function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
+    public static function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
       DB::begin();
       $adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
       foreach ($items as $line_item) {
@@ -44,7 +44,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       if ($type != ST_INVADJUST) {
         $type = ST_INVADJUST;
       }
@@ -58,7 +58,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get($trans_no) {
+    public static function get($trans_no) {
       $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
       if (DB::num_rows($result) == 0) {
         return NULL;
@@ -78,7 +78,7 @@
      * @param $standard_cost
      * @param $memo_
      */
-    static public function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
+    public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
       $mb_flag = WO::get_mb_flag($stock_id);
       if (Input::post('mb_flag') == STOCK_SERVICE) {
         Errors::db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
@@ -100,7 +100,7 @@
      *
      * @param $order
      */
-    static public function header($order) {
+    public static function header($order) {
       Table::startOuter('tablestyle2 width70'); // outer table
       Table::section(1);
       Inv_Location::row(_("Location:"), 'StockLocation', NULL);
@@ -121,7 +121,7 @@
      * @param $title
      * @param $order
      */
-    static public function display_items($title, $order) {
+    public static function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
       Table::start('tablestyle grid width90');
@@ -166,7 +166,7 @@
      * @param $order
      * @param $line_no
      */
-    static public function item_controls($order, $line_no = -1) {
+    public static function item_controls($order, $line_no = -1) {
 
       Row::start();
       $dec2 = 0;
@@ -213,7 +213,7 @@
       Row::end();
     }
 
-    static public function option_controls() {
+    public static function option_controls() {
       echo "<br>";
       Table::start('center');
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);

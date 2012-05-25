@@ -16,7 +16,7 @@
      *
      * @return array|string
      */
-    static public function search($terms) {
+    public static function search($terms) {
       $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
@@ -303,7 +303,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_to_trans($supplier_id, $to = NULL) {
+    public static function get_to_trans($supplier_id, $to = NULL) {
       if ($to == NULL) {
         $todate = date("Y-m-d");
       }
@@ -371,7 +371,7 @@
      *
      * @return mixed
      */
-    static public function get_oweing($supplier_id, $date_from, $date_to) {
+    public static function get_oweing($supplier_id, $date_from, $date_to) {
       $date_from = Dates::date2sql($date_from);
       $date_to   = Dates::date2sql($date_to);
       // Sherifoz 22.06.03 Also get the description
@@ -398,7 +398,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($supplier_id) {
+    public static function get($supplier_id) {
       $sql    = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
@@ -410,7 +410,7 @@
      *
      * @return mixed
      */
-    static public function get_name($supplier_id) {
+    public static function get_name($supplier_id) {
       $sql    = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       $row    = DB::fetch_row($result);
@@ -423,7 +423,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_accounts_name($supplier_id) {
+    public static function get_accounts_name($supplier_id) {
       $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
@@ -440,7 +440,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
+    public static function select($name, $selected_id = NULL, $spec_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
 
@@ -471,7 +471,7 @@
      *
      * @return void
      */
-    static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
+    public static function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       echo "<td class='label'>";
       if ($label != NULL) {
         echo "<label for='$name'>$label</label>";
@@ -492,7 +492,7 @@
      *
      * @return void
      */
-    static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
+    public static function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE, $editkey = FALSE) {
       echo "<tr><td class='label' name='name'><label for='$name'>$label</label></td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";

@@ -87,7 +87,7 @@
     /**
      * @var null
      */
-    static protected $_instance = NULL;
+    protected static $_instance = NULL;
     /**
      * @var
      */
@@ -307,7 +307,7 @@
      * @static
      * @return User
      */
-    static public function i() {
+    public static function i() {
       if (isset($_SESSION["current_user"])) {
         static::$_instance = $_SESSION["current_user"];
       }
@@ -320,14 +320,14 @@
      * @static
      * @return userPrefs
      */
-    static public function prefs() {
+    public static function prefs() {
       return static::i()->prefs;
     }
     /**
      * @static
 
      */
-    static public function add_js_data() {
+    public static function add_js_data() {
       $js
         = "var user = {theme: '/themes/" . static::theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datefmt: " . static::date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
         ts: '" . static::tho_sep() . "',ds: '" . static::dec_sep() . "',pdec: " . static::price_dec() . "};";
@@ -337,7 +337,7 @@
      * @static
      * @return bool
      */
-    static public function  fallback() {
+    public static function  fallback() {
       return static::i()->ui_mode == 0;
     }
     /**
@@ -347,7 +347,7 @@
      *
      * @return bool|float|int|mixed|string
      */
-    static public function  numeric($input) {
+    public static function  numeric($input) {
       $num = trim($input);
       $sep = static::tho_sep();
       if ($sep != '') {
@@ -372,154 +372,154 @@
      * @static
      * @return mixed
      */
-    static public function  pos() {
+    public static function  pos() {
       return static::i()->pos;
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  language() {
+    public static function  language() {
       return static::prefs()->language();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  qty_dec() {
+    public static function  qty_dec() {
       return static::prefs()->qty_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  price_dec() {
+    public static function  price_dec() {
       return static::prefs()->price_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  exrate_dec() {
+    public static function  exrate_dec() {
       return static::prefs()->exrate_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  percent_dec() {
+    public static function  percent_dec() {
       return static::prefs()->percent_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  show_gl() {
+    public static function  show_gl() {
       return static::prefs()->show_gl();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  show_codes() {
+    public static function  show_codes() {
       return static::prefs()->show_codes();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  date_format() {
+    public static function  date_format() {
       return static::prefs()->date_format();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  date_display() {
+    public static function  date_display() {
       return static::prefs()->date_display();
     }
     /**
      * @static
      * @return int
      */
-    static public function  date_sep() {
+    public static function  date_sep() {
       return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : Config::get('date.ui_separator');
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  tho_sep() {
+    public static function  tho_sep() {
       return static::prefs()->tho_sep();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  dec_sep() {
+    public static function  dec_sep() {
       return static::prefs()->dec_sep();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  theme() {
+    public static function  theme() {
       return static::prefs()->get_theme();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  page_size() {
+    public static function  page_size() {
       return static::prefs()->get_pagesize();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  hints() {
+    public static function  hints() {
       return static::prefs()->show_hints();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  print_profile() {
+    public static function  print_profile() {
       return static::prefs()->print_profile();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  rep_popup() {
+    public static function  rep_popup() {
       return static::prefs()->rep_popup();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  query_size() {
+    public static function  query_size() {
       return static::prefs()->query_size();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  graphic_links() {
+    public static function  graphic_links() {
       return static::prefs()->graphic_links();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  sticky_doc_date() {
+    public static function  sticky_doc_date() {
       return static::prefs()->sticky_doc_date();
     }
     /**
      * @static
      * @return mixed
      */
-    static public function  startup_tab() {
+    public static function  startup_tab() {
       return static::prefs()->start_up_tab();
     }
     /**

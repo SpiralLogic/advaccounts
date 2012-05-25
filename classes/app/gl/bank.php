@@ -23,7 +23,7 @@
      *
      * @return mixed
      */
-    static protected function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = NULL, $person_id = "") {
+    protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = NULL, $person_id = "") {
       if (Bank_Currency::is_company($currency)) {
         return;
       }
@@ -80,7 +80,7 @@
      *
      * @return int
      */
-    static public function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
+    public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
       DB::begin();
       $trans_type      = ST_BANKTRANSFER;
       $currency        = Bank_Currency::for_company($from_account);
@@ -135,7 +135,7 @@
      *
      * @return array
      */
-    static public function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = TRUE) {
+    public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = TRUE) {
       // we can only handle type 1 (payment)and type 2 (deposit)
       if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {
         Errors::db_error("Invalid type ($trans_type) sent to add_bank_transaction");

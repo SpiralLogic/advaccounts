@@ -17,7 +17,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL) {
+    public static function select($name, $selected_id = NULL) {
       $items = array();
       $langs = Config::get('languages.installed');
       foreach ($langs as $lang) {
@@ -32,7 +32,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function cells($label, $name, $selected_id = NULL) {
+    public static function cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -47,7 +47,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function row($label, $name, $selected_id = NULL) {
+    public static function row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Languages::cells(NULL, $name, $selected_id);
       echo "</tr>\n";

@@ -15,7 +15,7 @@
      * @param $description
      * @param $disallow_invoicing
      */
-    static public function add($description, $disallow_invoicing) {
+    public static function add($description, $disallow_invoicing) {
       $sql
         = "INSERT INTO credit_status (reason_description, dissallow_invoices)
 		VALUES (" . DB::escape($description) . "," . DB::escape($disallow_invoicing) . ")";
@@ -28,7 +28,7 @@
      * @param $description
      * @param $disallow_invoicing
      */
-    static public function update($status_id, $description, $disallow_invoicing) {
+    public static function update($status_id, $description, $disallow_invoicing) {
       $sql = "UPDATE credit_status SET reason_description=" . DB::escape($description) . ",
 		dissallow_invoices=" . DB::escape($disallow_invoicing) . " WHERE id=" . DB::escape($status_id);
       DB::query($sql, "could not update credit status");
@@ -40,7 +40,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($all = FALSE) {
+    public static function get_all($all = FALSE) {
       $sql = "SELECT * FROM credit_status";
       if (!$all) {
         $sql .= " WHERE !inactive";
@@ -54,7 +54,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($status_id) {
+    public static function get($status_id) {
       $sql    = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
       $result = DB::query($sql, "could not get credit status");
       return DB::fetch($result);
@@ -64,7 +64,7 @@
      *
      * @param $status_id
      */
-    static public function delete($status_id) {
+    public static function delete($status_id) {
       $sql = "DELETE FROM credit_status WHERE id=" . DB::escape($status_id);
       DB::query($sql, "could not delete credit status");
     }
@@ -77,7 +77,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL, $disabled = NULL) {
+    public static function select($name, $selected_id = NULL, $disabled = NULL) {
       if ($disabled === NULL) {
         $disabled = (!User::i()->can_access(SA_CUSTOMER_CREDIT));
       }
@@ -92,7 +92,7 @@
      * @param null $selected_id
      * @param null $disabled
      */
-    static public function cells($label, $name, $selected_id = NULL, $disabled = NULL) {
+    public static function cells($label, $name, $selected_id = NULL, $disabled = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -108,7 +108,7 @@
      * @param null $selected_id
      * @param null $disabled
      */
-    static public function row($label, $name, $selected_id = NULL, $disabled = NULL) {
+    public static function row($label, $name, $selected_id = NULL, $disabled = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Sales_CreditStatus::cells(NULL, $name, $selected_id, $disabled);
       echo "</tr>\n";
@@ -120,7 +120,7 @@
      *
      * @return bool
      */
-    static public function can_delete($selected_id) {
+    public static function can_delete($selected_id) {
       $sql    = "SELECT COUNT(*) FROM debtors
 			WHERE credit_status=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query customers");
@@ -135,7 +135,7 @@
      * @static
      * @return bool
      */
-    static public function can_process() {
+    public static function can_process() {
       if (strlen($_POST['reason_description']) == 0) {
         Event::error(_("The credit status description cannot be empty."));
         JS::set_focus('reason_description');

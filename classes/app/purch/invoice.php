@@ -15,7 +15,7 @@
      * @param $creditor_trans
      * @param $supplier_id
      */
-    static public function get_supplier_to_trans($creditor_trans, $supplier_id) {
+    public static function get_supplier_to_trans($creditor_trans, $supplier_id) {
       $sql                               = "SELECT suppliers.name, payment_terms.terms, "
         . "payment_terms.days_before_due,
 		payment_terms.day_in_following_month,
@@ -58,7 +58,7 @@
      *
      * @return array
      */
-    static public function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = NULL) {
+    public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = NULL) {
       if ($chg_price != NULL) {
         $sql
                     = "SELECT act_price, unit_price FROM purch_order_details WHERE
@@ -106,7 +106,7 @@
      *
      * @return float
      */
-    static public function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
+    public static function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
       $dec = User::price_dec();
       Num::price_decimal($amount2, $dec);
       $currency = Bank_Currency::for_creditor($supplier);
@@ -125,7 +125,7 @@
      *
      * @return int
      */
-    static public function add(Creditor_Trans $creditor_trans, $invoice_no = 0) // do not receive as ref because we change locally
+    public static function add(Creditor_Trans $creditor_trans, $invoice_no = 0) // do not receive as ref because we change locally
     {
       //$company_currency = Bank_Currency::for_company();
       /*Start an sql transaction */
@@ -370,7 +370,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_po_credits($po_number) {
+    public static function get_po_credits($po_number) {
       $sql
         = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
 		ov_amount+ov_discount+ov_gst AS Total,
@@ -392,7 +392,7 @@
      *
      * @return void
      */
-    static public function get($trans_no, $trans_type, $creditor_trans) {
+    public static function get($trans_no, $trans_type, $creditor_trans) {
       $sql
               = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
 		WHERE trans_no = " . DB::escape($trans_no) . " AND type = " . DB::escape($trans_type) . "
@@ -449,7 +449,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_for_item($stock_id, $po_item_id) {
+    public static function get_for_item($stock_id, $po_item_id) {
       $sql
               = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
 		WHERE creditor_trans_type = " . ST_SUPPINVOICE . " AND stock_id = "
@@ -464,7 +464,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       DB::begin();
       $trans = Creditor_Trans::get($type_no, $type);
       Bank_Trans::void($type, $type_no, TRUE);
@@ -558,7 +558,7 @@
      *
      * @param $creditor_trans
      */
-    static public function copy_from_trans($creditor_trans) {
+    public static function copy_from_trans($creditor_trans) {
       $_POST['Comments']           = $creditor_trans->Comments;
       $_POST['tran_date']          = $creditor_trans->tran_date;
       $_POST['due_date']           = $creditor_trans->due_date;
@@ -572,7 +572,7 @@
      *
      * @param $creditor_trans
      */
-    static public function copy_to_trans($creditor_trans) {
+    public static function copy_to_trans($creditor_trans) {
       $creditor_trans->Comments           = Input::post('Comments');
       $creditor_trans->tran_date          = $_POST['tran_date'];
       $creditor_trans->due_date           = $_POST['due_date'];
@@ -606,7 +606,7 @@
      *
      * @param $creditor_trans
      */
-    static public function header($creditor_trans) {
+    public static function header($creditor_trans) {
 
       // if vars have been lost, recopy
       if (!isset($_POST['tran_date'])) {
@@ -699,7 +699,7 @@
      *
      * @param Creditor_Trans $creditor_trans
      */
-    static public function totals($creditor_trans) {
+    public static function totals($creditor_trans) {
       Purch_Invoice::copy_to_trans($creditor_trans);
       $dim     = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));

@@ -16,7 +16,7 @@
      * @param $exempt
      * @param $exempt_from
      */
-    static public function add($name, $exempt, $exempt_from) {
+    public static function add($name, $exempt, $exempt_from) {
       DB::begin();
 
       $sql = "INSERT INTO item_tax_types (name, exempt)
@@ -39,7 +39,7 @@
      * @param $exempt
      * @param $exempt_from
      */
-    static public function update($id, $name, $exempt, $exempt_from) {
+    public static function update($id, $name, $exempt, $exempt_from) {
       DB::begin();
 
       $sql = "UPDATE item_tax_types SET name=" . DB::escape($name) .
@@ -57,7 +57,7 @@
      * @static
      * @return null|PDOStatement
      */
-    static public function get_all() {
+    public static function get_all() {
       $sql = "SELECT * FROM item_tax_types";
 
       return DB::query($sql, "could not get all item tax type");
@@ -69,7 +69,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($id) {
+    public static function get($id) {
       $sql = "SELECT * FROM item_tax_types WHERE id=" . DB::escape($id);
 
       $result = DB::query($sql, "could not get item tax type");
@@ -83,7 +83,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_for_item($stock_id) {
+    public static function get_for_item($stock_id) {
       $sql = "SELECT item_tax_types.* FROM item_tax_types,stock_master WHERE
 		stock_master.stock_id=" . DB::escape($stock_id) . "
 		AND item_tax_types.id=stock_master.tax_type_id";
@@ -99,7 +99,7 @@
      *
      * @return bool
      */
-    static public function delete($id) {
+    public static function delete($id) {
       if (!can_delete($id)) {
         return FALSE;
       }
@@ -118,7 +118,7 @@
      * @param $id
      * @param $exemptions
      */
-    static public function add_exemptions($id, $exemptions) {
+    public static function add_exemptions($id, $exemptions) {
       for ($i = 0; $i < count($exemptions); $i++) {
         $sql = "INSERT INTO item_tax_type_exemptions (item_tax_type_id, tax_type_id)
 			VALUES (" . DB::escape($id) . ", " . DB::escape($exemptions[$i]) . ")";
@@ -130,7 +130,7 @@
      *
      * @param $id
      */
-    static public function delete_exemptions($id) {
+    public static function delete_exemptions($id) {
       $sql = "DELETE FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::escape($id);
 
       DB::query($sql, "could not delete item tax type exemptions");
@@ -142,7 +142,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_exemptions($id) {
+    public static function get_exemptions($id) {
       $sql = "SELECT * FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::escape($id);
 
       return DB::query($sql, "could not get item tax type exemptions");
@@ -155,7 +155,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL) {
+    public static function select($name, $selected_id = NULL) {
       $sql = "SELECT id, name FROM item_tax_types";
       return select_box($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
     }
@@ -166,7 +166,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function cells($label, $name, $selected_id = NULL) {
+    public static function cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -181,7 +181,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function row($label, $name, $selected_id = NULL) {
+    public static function row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       Tax_ItemType::cells(NULL, $name, $selected_id);
       echo "</tr>\n";
@@ -193,7 +193,7 @@
      *
      * @return bool
      */
-    static public function can_delete($selected_id) {
+    public static function can_delete($selected_id) {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query stock master");
       $myrow  = DB::fetch_row($result);

@@ -37,7 +37,7 @@
     /**
      * @var array
      */
-    static public $shipping_types = array(
+    public static $shipping_types = array(
       502  => "Pickup", //
       28   => "Declined!", //
       902  => "To be calculated", //
@@ -51,7 +51,7 @@
     /**
      * @var array
      */
-    static public $payment_types = array(
+    public static $payment_types = array(
       1  => "Account", //
       2  => "Cheque/Money Order", //
       5  => "Visa/Mastercard", //

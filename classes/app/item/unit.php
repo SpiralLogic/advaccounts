@@ -17,7 +17,7 @@
      * @param $description
      * @param $decimals
      */
-    static public function write($selected, $abbr, $description, $decimals) {
+    public static function write($selected, $abbr, $description, $decimals) {
       if ($selected != '') {
         $sql
           = "UPDATE item_units SET
@@ -39,7 +39,7 @@
      *
      * @param $unit
      */
-    static public function delete($unit) {
+    public static function delete($unit) {
       $sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
       DB::query($sql, "an unit of measure could not be deleted");
     }
@@ -50,7 +50,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($unit) {
+    public static function get($unit) {
       $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "an unit of measure could not be retrieved");
       return DB::fetch($result);
@@ -62,7 +62,7 @@
      *
      * @return mixed
      */
-    static public function desc($unit) {
+    public static function desc($unit) {
       $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "could not unit description");
       $row    = DB::fetch_row($result);
@@ -75,7 +75,7 @@
      *
      * @return bool
      */
-    static public function used($unit) {
+    public static function used($unit) {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
       $result = DB::query($sql, "could not query stock master");
       $myrow  = DB::fetch_row($result);
@@ -88,7 +88,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($all = FALSE) {
+    public static function get_all($all = FALSE) {
       $sql = "SELECT * FROM item_units";
       if (!$all) {
         $sql .= " WHERE !inactive";
@@ -103,7 +103,7 @@
      *
      * @return mixed
      */
-    static public function get_decimal($stock_id) {
+    public static function get_decimal($stock_id) {
       $sql
               = "SELECT decimals FROM item_units,	stock_master
 		WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
@@ -119,7 +119,7 @@
      * @param null $value
      * @param bool $enabled
      */
-    static public function row($label, $name, $value = NULL, $enabled = TRUE) {
+    public static function row($label, $name, $value = NULL, $enabled = TRUE) {
       $result = Item_Unit::get_all();
       echo "<tr>";
       if ($label != NULL) {
@@ -141,7 +141,7 @@
      *
      * @return string
      */
-    static public function select($name, $value = NULL, $enabled = TRUE) {
+    public static function select($name, $value = NULL, $enabled = TRUE) {
       $result = Item_Unit::get_all();
       $units  = array();
       while ($unit = DB::fetch($result)) {

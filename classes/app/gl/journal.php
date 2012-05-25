@@ -15,7 +15,7 @@
      *
      * @param $order
      */
-    static public function header($order) {
+    public static function header($order) {
 
       $qes = GL_QuickEntry::has(QE_JOURNAL);
       $new = $order->order_id == 0;
@@ -55,7 +55,7 @@
      * @param Item_Order $order
      */
 
-    static public function items($title, &$order) {
+    public static function items($title, &$order) {
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
       Display::div_start('items_table');
@@ -132,7 +132,7 @@
      * @param      $dim
      * @param null $Index
      */
-    static public function item_controls($order, $dim, $Index = NULL) {
+    public static function item_controls($order, $dim, $Index = NULL) {
 
       Row::start();
       $id = find_submit(MODE_EDIT);
@@ -204,7 +204,7 @@
       Row::end();
     }
 
-    static public function option_controls() {
+    public static function option_controls() {
       echo "<br><table class='center'>";
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
       echo "</table>";
@@ -221,7 +221,7 @@
      *
      * @return null|string
      */
-    static public function  view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function  view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
         $viewer = "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
       }
@@ -241,7 +241,7 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    static public function  cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
+    public static function  cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
       global $systypes_array;
       echo "<td>";
       if ($label != NULL) {
@@ -269,7 +269,7 @@
      *
      * @return string
      */
-    static public function write($order, $reverse, $use_transaction = TRUE) {
+    public static function write($order, $reverse, $use_transaction = TRUE) {
       $date_      = $order->tran_date;
       $ref        = $order->reference;
       $memo_      = $order->memo_;
@@ -334,7 +334,7 @@
      * @param      $type_no
      * @param bool $use_transaction
      */
-    static public function void($type, $type_no, $use_transaction = TRUE) {
+    public static function void($type, $type_no, $use_transaction = TRUE) {
       if ($use_transaction) {
         DB::begin();
       }

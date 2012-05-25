@@ -21,7 +21,7 @@
      * @param $email
      * @param $contact
      */
-    static public function add($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
+    public static function add($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
       $sql = "INSERT INTO locations (loc_code, location_name, delivery_address, phone, phone2, fax, email, contact)
 		VALUES (" . DB::escape($loc_code) . ", " . DB::escape($location_name) . ", " . DB::escape($delivery_address) . ", " . DB::escape($phone) . ", " . DB::escape($phone2) . ", " . DB::escape($fax) . ", " . DB::escape($email) . ", " . DB::escape($contact) . ")";
       DB::query($sql, "a location could not be added");
@@ -42,7 +42,7 @@
      * @param $email
      * @param $contact
      */
-    static public function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
+    public static function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
       $sql = "UPDATE locations SET location_name="
         . DB::escape($location_name)
         . ", delivery_address=" . DB::escape($delivery_address)
@@ -59,7 +59,7 @@
      *
      * @param $item_location
      */
-    static public function delete($item_location) {
+    public static function delete($item_location) {
       $sql = "DELETE FROM locations WHERE loc_code=" . DB::escape($item_location);
       DB::query($sql, "a location could not be deleted");
       $sql = "DELETE FROM stock_location WHERE loc_code =" . DB::escape($item_location);
@@ -72,7 +72,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($item_location) {
+    public static function get($item_location) {
       $sql    = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
       $result = DB::query($sql, "a location could not be retrieved");
       return DB::fetch($result);
@@ -84,7 +84,7 @@
      * @param $loc_code
      * @param $reorder_level
      */
-    static public function set_reorder($stock_id, $loc_code, $reorder_level) {
+    public static function set_reorder($stock_id, $loc_code, $reorder_level) {
       $sql = "UPDATE stock_location SET reorder_level = $reorder_level
 		WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
       DB::query($sql, "an item reorder could not be set");
@@ -97,7 +97,7 @@
      * @param $primary_location
      * @param $secondary_location
      */
-    static public function set_shelves($stock_id, $loc_code, $primary_location, $secondary_location) {
+    public static function set_shelves($stock_id, $loc_code, $primary_location, $secondary_location) {
       $sql = "UPDATE stock_location SET shelf_primary = " . DB::escape($primary_location) . " , shelf_secondary = " . DB::escape($secondary_location) . " WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
       DB::query($sql, "an item reorder could not be set");
     }
@@ -108,7 +108,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_details($stock_id) {
+    public static function get_details($stock_id) {
       $sql = "SELECT stock_location.*, locations.location_name
 		FROM stock_location, locations
 		WHERE stock_location.loc_code=locations.loc_code
@@ -125,7 +125,7 @@
      *
      * @return mixed
      */
-    static public function get_name($loc_code) {
+    public static function get_name($loc_code) {
 
       $sql    = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
       $result = DB::query($sql, "could not retreive the location name for $loc_code");
@@ -145,7 +145,7 @@
      * find inventory location for given transaction
 
      */
-    static public function get_for_trans($order) {
+    public static function get_for_trans($order) {
       $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
       $result = DB::query($sql, 'Retreiving inventory location');
       if (DB::num_rows($result)) {
@@ -163,7 +163,7 @@
      *
      * @return string
      */
-    static public function select($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function select($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT loc_code, location_name, inactive FROM locations";
       if (!$selected_id && !isset($_POST[$name])) {
         $selected_id = $all_option === TRUE ? -1 : Config::get('default.location');
@@ -184,7 +184,7 @@
      * @param bool $all_option
      * @param bool $submit_on_change
      */
-    static public function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       echo "<td >";
       if ($label != NULL) {
         echo "<label for=\"$name\"> $label</label>";
@@ -201,7 +201,7 @@
      * @param bool $all_option
      * @param bool $submit_on_change
      */
-    static public function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Inv_Location::cells(NULL, $name, $selected_id, $all_option, $submit_on_change);
       echo "</tr>\n";

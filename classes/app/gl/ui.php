@@ -22,7 +22,7 @@
      *
      * @return string
      */
-    static public function  all($name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE) {
+    public static function  all($name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE) {
       if ($skip_bank_accounts) {
         $sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 				FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
@@ -53,7 +53,7 @@
      * @param bool $submit_on_change
      * @param bool $all
      */
-    static public function  all_cells($label, $name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE) {
+    public static function  all_cells($label, $name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE, $submit_on_change = FALSE, $all = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -71,7 +71,7 @@
      * @param bool $cells
      * @param bool $all_option
      */
-    static public function  all_row($label, $name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE) {
+    public static function  all_row($label, $name, $selected_id = NULL, $skip_bank_accounts = FALSE, $cells = FALSE, $all_option = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       GL_UI::all_cells(NULL, $name, $selected_id, $skip_bank_accounts, $cells, $all_option);
       echo "</tr>\n";
@@ -88,7 +88,7 @@
      *
      * @return string
      */
-    static public function  view($type, $trans_no, $label = "", $force = FALSE, $class = '', $id = '') {
+    public static function  view($type, $trans_no, $label = "", $force = FALSE, $class = '', $id = '') {
       if (!$force && !User::show_gl()) {
         return "";
       }
@@ -108,7 +108,7 @@
      *
      * @return string
      */
-    static public function  view_cell($type, $trans_no, $label = "") {
+    public static function  view_cell($type, $trans_no, $label = "") {
       $str = GL_UI::view($type, $trans_no, $label);
       if ($str != "") {
         return "<td>$str</td>";
@@ -127,7 +127,7 @@
      *
      * @return null|string
      */
-    static public function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
       $view_str = Debtor::trans_view($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != NULL) {
         return $view_str;
@@ -167,7 +167,7 @@
      *
      * @return string
      */
-    static public function fiscalyears($name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function fiscalyears($name, $selected_id = NULL, $submit_on_change = FALSE) {
       $sql = "SELECT * FROM fiscal_year";
       // default to the company current fiscal year
       return select_box($name, $selected_id, $sql, 'id', '', array(
@@ -181,7 +181,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function fiscalyears_cells($label, $name, $selected_id = NULL) {
+    public static function fiscalyears_cells($label, $name, $selected_id = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -196,7 +196,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    static public function fiscalyears_row($label, $name, $selected_id = NULL) {
+    public static function fiscalyears_row($label, $name, $selected_id = NULL) {
       echo "<tr><td class='label'>$label</td>";
       GL_UI::fiscalyears_cells(NULL, $name, $selected_id);
       echo "</tr>\n";
@@ -210,7 +210,7 @@
      *
      * @return string
      */
-    static public function payment_person_type($name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function payment_person_type($name, $selected_id = NULL, $submit_on_change = FALSE) {
       global $payment_person_types;
       $items = array();
       foreach ($payment_person_types as $key => $type) {
@@ -228,7 +228,7 @@
      * @param null $selected_id
      * @param null $related
      */
-    static public function payment_person_type_cells($label, $name, $selected_id = NULL, $related = NULL) {
+    public static function payment_person_type_cells($label, $name, $selected_id = NULL, $related = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -244,7 +244,7 @@
      * @param null $selected_id
      * @param null $related
      */
-    static public function payment_person_type_row($label, $name, $selected_id = NULL, $related = NULL) {
+    public static function payment_person_type_row($label, $name, $selected_id = NULL, $related = NULL) {
       echo "<tr><td class='label'>$label</td>";
       GL_UI::payment_person_type_cells(NULL, $name, $selected_id, $related);
       echo "</tr>\n";
@@ -258,7 +258,7 @@
      *
      * @return string
      */
-    static public function payment_terms($name, $selected_id = NULL, $disabled = NULL) {
+    public static function payment_terms($name, $selected_id = NULL, $disabled = NULL) {
       if ($disabled === NULL) {
         $disabled = (!User::i()->can_access(SA_CUSTOMER_CREDIT));
       }
@@ -273,7 +273,7 @@
      * @param null $selected_id
      * @param null $disabled
      */
-    static public function payment_terms_cells($label, $name, $selected_id = NULL, $disabled = NULL) {
+    public static function payment_terms_cells($label, $name, $selected_id = NULL, $disabled = NULL) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -289,7 +289,7 @@
      * @param null $selected_id
      * @param null $disabled
      */
-    static public function payment_terms_row($label, $name, $selected_id = NULL, $disabled = NULL) {
+    public static function payment_terms_row($label, $name, $selected_id = NULL, $disabled = NULL) {
       echo "<tr><td class='label'>$label</td>";
       GL_UI::payment_terms_cells(NULL, $name, $selected_id, $disabled);
       echo "</tr>\n";

@@ -521,7 +521,7 @@
      *
      * @return bool|Purch_Order|Sales_Order
      */
-    static public function check_edit_conflicts($order) {
+    public static function check_edit_conflicts($order) {
       if (!isset($_POST['order_id'])) {
         $_POST['order_id'] = $order->order_id;
       }
@@ -785,7 +785,7 @@
      *
      * @return Array|DB_Query_Result
      */
-    static public function get_data($supplier_id, $stock_id) {
+    public static function get_data($supplier_id, $stock_id) {
       $sql
               = "SELECT * FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
@@ -804,7 +804,7 @@
      *
      * @return bool
      */
-    static public function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
+    public static function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
       $data = static::get_data($supplier_id, $stock_id);
       if ($data === FALSE) {
         $supplier_code = $stock_id;
@@ -830,7 +830,7 @@
     /**
      * @param $order
      */
-    static public function copyFromPost($order) {
+    public static function copyFromPost($order) {
       $order->supplier_id      = Input::post('supplier_id', Input::NUMERIC, NULL);
       $order->orig_order_date  = $_POST['OrderDate'];
       $order->reference        = $_POST['ref'];
@@ -846,7 +846,7 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    static public function copyToPost($order) {
+    public static function copyToPost($order) {
       if (!Input::get('UseOrder')) {
         $order = Purch_Order::check_edit_conflicts($order);
       }

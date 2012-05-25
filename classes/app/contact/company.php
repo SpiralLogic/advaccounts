@@ -92,7 +92,7 @@
      *
      * @return void
      */
-    static public function addInfoDialog($selector, $id = FALSE) {
+    public static function addInfoDialog($selector, $id = FALSE) {
       if ($id) {
         $company = new static($id);
       }
@@ -131,7 +131,7 @@ JS;
      *
      * @return bool|string
      */
-    static public function getEmailDialogue($emailid) {
+    public static function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
       $company = new $company($id);

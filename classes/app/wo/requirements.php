@@ -16,7 +16,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get($woid) {
+    public static function get($woid) {
       $sql = "SELECT wo_requirements.*, stock_master.description,
 		stock_master.mb_flag,
 		locations.location_name,
@@ -34,7 +34,7 @@
      * @param $woid
      * @param $stock_id
      */
-    static public function add($woid, $stock_id) {
+    public static function add($woid, $stock_id) {
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
       while ($myrow = DB::fetch($result)) {
@@ -48,7 +48,7 @@
      *
      * @param $woid
      */
-    static public function delete($woid) {
+    public static function delete($woid) {
       $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
       DB::query($sql, "The work order requirements could not be deleted");
     }
@@ -59,7 +59,7 @@
      * @param $stock_id
      * @param $quantity
      */
-    static public function update($woid, $stock_id, $quantity) {
+    public static function update($woid, $stock_id, $quantity) {
       $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
 		WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
       DB::query($sql, "The work requirements issued quantity couldn't be updated");
@@ -70,7 +70,7 @@
      * @param null $type
      * @param      $woid
      */
-    static public function void($type = NULL, $woid) {
+    public static function void($type = NULL, $woid) {
       $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
       DB::query($sql, "The work requirements issued quantity couldn't be voided");
     }
@@ -82,7 +82,7 @@
      * @param bool $show_qoh
      * @param null $date
      */
-    static public function display($woid, $quantity, $show_qoh = FALSE, $date = NULL) {
+    public static function display($woid, $quantity, $show_qoh = FALSE, $date = NULL) {
       $result = WO_Requirements::get($woid);
       if (DB::num_rows($result) == 0) {
         Display::note(_("There are no Requirements for this Order."), 1, 0);

@@ -60,7 +60,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get_role($id) {
+    public static function get_role($id) {
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
       $ret = DB::query($sql, "could not retrieve security roles");
       $row = DB::fetch($ret);
@@ -78,7 +78,7 @@
      * @param $sections
      * @param $areas
      */
-    static public function add_role($name, $description, $sections, $areas) {
+    public static function add_role($name, $description, $sections, $areas) {
       $sql = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES (" . DB::escape($name) . "," . DB::escape($description) . "," . DB::escape(implode(';', $sections)) . "," . DB::escape(implode(';', $areas)) . ")";
       DB::query($sql, "could not add new security role");
@@ -92,7 +92,7 @@
      * @param $sections
      * @param $areas
      */
-    static public function update_role($id, $name, $description, $sections, $areas) {
+    public static function update_role($id, $name, $description, $sections, $areas) {
       $sql = "UPDATE security_roles SET role=" . DB::escape($name) . ",description=" . DB::escape($description) . ",sections=" . DB::escape(implode(';', $sections)) . ",areas=" . DB::escape(implode(';', $areas)) . " WHERE id=$id";
       DB::query($sql, "could not update role");
     }
@@ -101,7 +101,7 @@
      *
      * @param $id
      */
-    static public function get_profile($id) {
+    public static function get_profile($id) {
       $sql = "DELETE FROM security_roles WHERE id=$id";
       DB::query($sql, "could not delete role");
     }
@@ -112,7 +112,7 @@
      *
      * @return mixed
      */
-    static public function check_role_used($id) {
+    public static function check_role_used($id) {
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
       $ret = DB::query($sql, 'cannot check role usage');
       $row = DB::fetch($ret);
@@ -129,7 +129,7 @@
      *
      * @return string
      */
-    static public function  roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
+    public static function  roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return select_box($name, $selected_id, $sql, 'id', 'description', array(
         'spec_option'   => $new_item ? _("New role") : FALSE,
@@ -148,7 +148,7 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    static public function  roles_cells($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
+    public static function  roles_cells($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -166,7 +166,7 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    static public function  roles_row($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
+    public static function  roles_row($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Security::roles_cells(NULL, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</tr>\n";

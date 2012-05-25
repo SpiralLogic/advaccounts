@@ -17,7 +17,7 @@
      * @param $date_
      * @param $memo_
      */
-    static public function add($type, $type_no, $date_, $memo_) {
+    public static function add($type, $type_no, $date_, $memo_) {
       if ($memo_ != NULL && $memo_ != "") {
         $date = Dates::date2sql($date_);
         $sql  = "INSERT INTO comments (type, id, date_, memo_)
@@ -32,7 +32,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function delete($type, $type_no) {
+    public static function delete($type, $type_no) {
       $sql = "DELETE FROM comments WHERE type=" . DB::escape($type)
         . " AND id=" . DB::escape($type_no);
       DB::query($sql, "could not delete from comments transaction table");
@@ -61,7 +61,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get($type, $type_no) {
+    public static function get($type, $type_no) {
       $sql = "SELECT * FROM comments WHERE type="
         . DB::escape($type) . " AND id=" . DB::escape($type_no);
       return DB::query($sql, "could not query comments transaction table");
@@ -93,7 +93,7 @@
      * @param $date_
      * @param $memo_
      */
-    static public function update($type, $id, $date_, $memo_) {
+    public static function update($type, $id, $date_, $memo_) {
       if ($date_ == NULL) {
         DB_Comments::delete($type, $id);
         DB_Comments::add($type, $id, Dates::today(), $memo_);

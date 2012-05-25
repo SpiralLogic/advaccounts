@@ -18,7 +18,7 @@
     /**
      * @var Query
      */
-    static protected $query = NULL;
+    protected static $query = NULL;
     /**
      * @var bool
      */

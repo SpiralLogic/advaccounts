@@ -27,7 +27,7 @@
      * @param string $err_msg
      * @param int    $rate
      */
-    static public function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
+    public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
       $sqlDate = Dates::date2sql($date_);
       // convert $amount to the bank's currency
       if ($currency != "") {
@@ -63,7 +63,7 @@
      *
      * @return bool
      */
-    static public function exists($type, $type_no) {
+    public static function exists($type, $type_no) {
       $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a bank transaction");
       return (DB::num_rows($result) > 0);
@@ -78,7 +78,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get($type, $trans_no = NULL, $person_type_id = NULL, $person_id = NULL) {
+    public static function get($type, $trans_no = NULL, $person_type_id = NULL, $person_id = NULL) {
       $sql = "SELECT *, bank_account_name, account_code, bank_curr_code
 		FROM bank_trans, bank_accounts
 		WHERE bank_accounts.id=bank_trans.bank_act ";
@@ -104,7 +104,7 @@
      * @param      $type_no
      * @param bool $nested
      */
-    static public function void($type, $type_no, $nested = FALSE) {
+    public static function void($type, $type_no, $nested = FALSE) {
       if (!$nested) {
         DB::begin();
       }

@@ -131,7 +131,7 @@
      * @static
      * @return \ADVAccounting|bool
      */
-    static public function init() {
+    public static function init() {
       array_walk($_POST, function(&$v) {
         $v = is_string($v) ? trim($v) : $v;
       });
@@ -167,7 +167,7 @@
     /**
 
      */
-    static public function loginFail() {
+    public static function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
       echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
       echo _("The user and password combination is not valid for the system.") . "<br><br>";
@@ -185,7 +185,7 @@
      *
      * @return bool
      */
-    static public function write_extensions($extensions = NULL, $company = -1) {
+    public static function write_extensions($extensions = NULL, $company = -1) {
       global $installed_extensions, $next_extension_id;
       if (!isset($extensions)) {
         $extensions = $installed_extensions;
@@ -251,7 +251,7 @@
       return TRUE;
     }
 
-    static protected function checkLogin() {
+    protected static function checkLogin() {
       if (!Session::checkUserAgent()) {
         static::showLogin();
       }
@@ -271,7 +271,7 @@
       }
     }
 
-    static protected function login() {
+    protected static function login() {
       $company = Input::post('login_company', NULL, 'default');
       if ($company) {
         try {
@@ -291,7 +291,7 @@
     /**
 
      */
-    static protected function showLogin() {
+    protected static function showLogin() {
       // strip ajax marker from uri, to force synchronous page reload
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])

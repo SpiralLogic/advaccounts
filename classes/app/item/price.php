@@ -85,7 +85,7 @@
      * @param      $price
      * @param null $item_code_id
      */
-    static public function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = NULL) {
+    public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = NULL) {
       if ($item_code_id == NULL) {
         $item_code_id = Item_Code::get_id($stock_id);
       }
@@ -102,7 +102,7 @@
      * @param $curr_abrev
      * @param $price
      */
-    static public function update($price_id, $sales_type_id, $curr_abrev, $price) {
+    public static function update($price_id, $sales_type_id, $curr_abrev, $price) {
       $sql = "UPDATE prices SET sales_type_id=" . DB::escape($sales_type_id) . ",
 			curr_abrev=" . DB::escape($curr_abrev) . ",
 			price=" . DB::escape($price) . " WHERE id=" . DB::escape($price_id);
@@ -113,7 +113,7 @@
      *
      * @param $price_id
      */
-    static public function delete($price_id) {
+    public static function delete($price_id) {
       $sql = "DELETE FROM prices WHERE id= " . DB::escape($price_id);
       DB::query($sql, "an item price could not be deleted");
     }
@@ -124,7 +124,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($stock_id) {
+    public static function get_all($stock_id) {
       $sql
         = "SELECT sales_types.sales_type, prices.*
 			FROM prices, sales_types
@@ -139,7 +139,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($price_id) {
+    public static function get($price_id) {
       $sql    = "SELECT * FROM prices WHERE id=" . DB::escape($price_id);
       $result = DB::query($sql, "price could not be retreived");
       return DB::fetch($result);
@@ -151,7 +151,7 @@
      *
      * @return mixed
      */
-    static public function get_standard_cost($stock_id) {
+    public static function get_standard_cost($stock_id) {
       $sql    = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 				FROM stock_master s WHERE stock_id=" . DB::escape($stock_id);
       $result = DB::query($sql, "The standard cost cannot be retrieved");
@@ -166,7 +166,7 @@
      *
      * @return float|int
      */
-    static public function get_percent($stock_id, $add_pct) {
+    public static function get_percent($stock_id, $add_pct) {
       $avg = static::get_standard_cost($stock_id);
       if ($avg == 0) {
         return 0;
@@ -184,7 +184,7 @@
      *
      * @return float|int
      */
-    static public function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = NULL, $date = NULL) {
+    public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = NULL, $date = NULL) {
       if ($date == NULL) {
         $date = Dates::new_doc_date();
       }
@@ -268,7 +268,7 @@
      *
      * @return float|int
      */
-    static public function get_kit($item_code, $currency, $sales_type_id, $factor = NULL, $date = NULL, $std = FALSE) {
+    public static function get_kit($item_code, $currency, $sales_type_id, $factor = NULL, $date = NULL, $std = FALSE) {
       $kit_price = 0.00;
       if (!$std) {
         $kit_price = static::get_calculated_price($item_code, $currency, $sales_type_id, $factor, $date);
@@ -299,7 +299,7 @@
      *
      * @return float|int
      */
-    static public function get_purchase($supplier_id, $stock_id) {
+    public static function get_purchase($supplier_id, $stock_id) {
       $sql
               = "SELECT price, conversion_factor FROM purch_data
 				WHERE supplier_id = " . DB::escape($supplier_id) . "
@@ -324,7 +324,7 @@
      *
      * @return int
      */
-    static public function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
+    public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
       if (Input::post('mb_flag') == STOCK_SERVICE) {
         Errors::db_error("Cannot do cost update for Service item : $stock_id", "");
       }
@@ -364,7 +364,7 @@
      *
      * @return string
      */
-    static public function to_words($amount, $document = 0) {
+    public static function to_words($amount, $document = 0) {
       // Only usefor Remittance and Receipts as default
       if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CUSTREFUND || $document == ST_CHEQUE)) {
         return "";

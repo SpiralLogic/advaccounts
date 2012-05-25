@@ -91,7 +91,7 @@ JS;
      * @internal param $this $string ->cit
      * @return array
      */
-    static public function searchByCity($city = "*") {
+    public static function searchByCity($city = "*") {
       $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
       $result = DB::query($sql, "Could not find city");
       while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
@@ -106,7 +106,7 @@ JS;
      *
      * @return array
      */
-    static public function searchByPostcode($postcode = "*") {
+    public static function searchByPostcode($postcode = "*") {
       $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
       $result = DB::query($sql, "Could not find postcode");
       while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {

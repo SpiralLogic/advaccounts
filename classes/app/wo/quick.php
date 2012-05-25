@@ -26,7 +26,7 @@
      *
      * @return string
      */
-    static public function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
+    public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
                                $cr_lab_acc) {
       DB::begin();
       // if unassembling, reverse the stock movements
@@ -88,7 +88,7 @@
      * @param int    $labour
      * @param string $cr_lab_acc
      */
-    static public function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0,
+    public static function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0,
                                  $cr_lab_acc = "") {
       global $wo_cost_types;
       $result = WO::get_bom($stock_id);
@@ -160,7 +160,7 @@
      * @param      $woid
      * @param bool $suppress_view_link
      */
-    static public function display($woid, $suppress_view_link = FALSE) {
+    public static function display($woid, $suppress_view_link = FALSE) {
       global $wo_types_array;
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {

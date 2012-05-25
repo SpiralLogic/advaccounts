@@ -16,7 +16,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($rate_id) {
+    public static function get($rate_id) {
       $sql    = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       $result = DB::query($sql, "could not get exchange rate for $rate_id");
       return DB::fetch($result);
@@ -31,7 +31,7 @@
      *
      * @return int
      */
-    static public function get_date($curr_code, $date_) {
+    public static function get_date($curr_code, $date_) {
       $date   = Dates::date2sql($date_);
       $sql    = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
         . " AND date_='$date'";
@@ -50,7 +50,7 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    static public function update($curr_code, $date_, $buy_rate, $sell_rate) {
+    public static function update($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
       }
@@ -67,7 +67,7 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    static public function add($curr_code, $date_, $buy_rate, $sell_rate) {
+    public static function add($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
       }
@@ -82,7 +82,7 @@
      *
      * @param $rate_id
      */
-    static public function delete($rate_id) {
+    public static function delete($rate_id) {
       $sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       DB::query($sql, "could not delete exchange rate $rate_id");
     }
@@ -97,7 +97,7 @@
      *
      * @return float|int|mixed|string
      */
-    static public function retrieve($curr_b, $date) {
+    public static function retrieve($curr_b, $date) {
       global $Hooks;
       if (method_exists($Hooks, 'retrieve_exrate')) {
         return $Hooks->retrieve_exrate($curr_b, $date);
@@ -115,7 +115,7 @@
      *
      * @return float|int|mixed|string
      */
-    static public function get_external($curr_b, $provider = 'ECB', $date) {
+    public static function get_external($curr_b, $provider = 'ECB', $date) {
       $curr_a = DB_Company::get_pref('curr_default');
       if ($provider == 'ECB') {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";

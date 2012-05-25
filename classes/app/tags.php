@@ -18,7 +18,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function add($type, $name, $description) {
+    public static function add($type, $name, $description) {
       $sql = "INSERT INTO tags (type, name, description)
  		VALUES (" . DB::escape($type) . ", " . DB::escape($name) . ", " . DB::escape($description) . ")";
       return DB::query($sql);
@@ -33,7 +33,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function update($id, $name, $description, $type = NULL) {
+    public static function update($id, $name, $description, $type = NULL) {
       $sql = "UPDATE tags SET name=" . DB::escape($name) . ", description=" . DB::escape($description);
       if ($type != NULL) {
         $sql .= ", type=" . DB::escape($type);
@@ -49,7 +49,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($type, $all = FALSE) {
+    public static function get_all($type, $all = FALSE) {
       $sql = "SELECT * FROM tags WHERE type=" . DB::escape($type);
       if (!$all) {
         $sql .= " AND !inactive";
@@ -64,7 +64,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($id) {
+    public static function get($id) {
       $sql    = "SELECT * FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag");
       return DB::fetch($result);
@@ -76,7 +76,7 @@
      *
      * @return mixed
      */
-    static public function get_type($id) {
+    public static function get_type($id) {
       $sql    = "SELECT type FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag type");
       $row    = DB::fetch_row($result);
@@ -89,7 +89,7 @@
      *
      * @return mixed
      */
-    static public function get_name($id) {
+    public static function get_name($id) {
       $sql    = "SELECT name FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag name");
       $row    = DB::fetch_row($result);
@@ -102,7 +102,7 @@
      *
      * @return mixed
      */
-    static public function get_description($id) {
+    public static function get_description($id) {
       $sql    = "SELECT description FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag description");
       $row    = DB::fetch_row($result);
@@ -113,7 +113,7 @@
      *
      * @param $id
      */
-    static public function delete($id) {
+    public static function delete($id) {
       $sql = "DELETE FROM tags WHERE id = " . DB::escape($id);
       DB::query($sql, "could not delete tag");
     }
@@ -123,7 +123,7 @@
      * @param $recordid
      * @param $tagids
      */
-    static public function add_associations($recordid, $tagids) {
+    public static function add_associations($recordid, $tagids) {
       foreach ($tagids as $tagid) {
         if (!$tagid) {
           continue;
@@ -140,7 +140,7 @@
      * @param $recordid
      * @param $tagids
      */
-    static public function update_associations($type, $recordid, $tagids) {
+    public static function update_associations($type, $recordid, $tagids) {
       // Delete the old associations
       Tags::delete_associations($type, $recordid, FALSE);
       // Add the new associations
@@ -157,7 +157,7 @@
      * @param      $recordid
      * @param bool $all
      */
-    static public function delete_associations($type, $recordid, $all = FALSE) {
+    public static function delete_associations($type, $recordid, $all = FALSE) {
       /* multiply table DELETE syntax available since MySQL 4.0.0:
       $sql = "DELETE ta FROM ".''."tag_associations ta
             INNER JOIN ".''."tags tags ON tags.id = ta.tag_id
@@ -184,7 +184,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_associated_records($id) {
+    public static function get_associated_records($id) {
       // Which table we query is based on the tag type
       $type  = Tags::get_type($id);
       $table = $key = '';
@@ -212,7 +212,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all_associated_with_record($type, $recordid) {
+    public static function get_all_associated_with_record($type, $recordid) {
       $sql = "SELECT tags.* FROM tag_associations AS ta
  				INNER JOIN tags AS tags ON tags.id = ta.tag_id
  				WHERE tags.type = $type	AND ta.record_id = " . DB::escape($recordid);
@@ -230,7 +230,7 @@
      *
      * @return string
      */
-    static public function select($name, $height, $type, $multi = FALSE, $all = FALSE, $spec_opt = FALSE) {
+    public static function select($name, $height, $type, $multi = FALSE, $all = FALSE, $spec_opt = FALSE) {
       // Get tags
       $results = Tags::get_all($type, $all);
       while ($tag = DB::fetch($results)) {
@@ -255,7 +255,7 @@
      * @param bool $all
      * @param bool $spec_opt
      */
-    static public function cells($label, $name, $height, $type, $mult = FALSE, $all = FALSE, $spec_opt = FALSE) {
+    public static function cells($label, $name, $height, $type, $mult = FALSE, $all = FALSE, $spec_opt = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -274,7 +274,7 @@
      * @param bool $all
      * @param bool $spec_opt
      */
-    static public function row($label, $name, $height, $type, $mult = FALSE, $all = FALSE, $spec_opt = FALSE) {
+    public static function row($label, $name, $height, $type, $mult = FALSE, $all = FALSE, $spec_opt = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       Tags::cells(NULL, $name, $height, $type, $mult, $all, $spec_opt);
       echo "</tr>\n";

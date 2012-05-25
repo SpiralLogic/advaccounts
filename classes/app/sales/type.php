@@ -16,7 +16,7 @@
      * @param $tax_included
      * @param $factor
      */
-    static public function add($name, $tax_included, $factor) {
+    public static function add($name, $tax_included, $factor) {
       $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . ","
         . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
       DB::query($sql, "could not add sales type");
@@ -29,7 +29,7 @@
      * @param $tax_included
      * @param $factor
      */
-    static public function update($id, $name, $tax_included, $factor) {
+    public static function update($id, $name, $tax_included, $factor) {
       $sql = "UPDATE sales_types SET sales_type = " . DB::escape($name) . ",
 	tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
       DB::query($sql, "could not update sales type");
@@ -41,7 +41,7 @@
      *
      * @return null|PDOStatement
      */
-    static public function get_all($all = FALSE) {
+    public static function get_all($all = FALSE) {
       $sql = "SELECT * FROM sales_types";
       if (!$all) {
         $sql .= " WHERE !inactive";
@@ -55,7 +55,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($id) {
+    public static function get($id) {
       $sql    = "SELECT * FROM sales_types WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
       return DB::fetch($result);
@@ -67,7 +67,7 @@
      *
      * @return mixed
      */
-    static public function get_name($id) {
+    public static function get_name($id) {
       $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
       $row    = DB::fetch_row($result);
@@ -78,7 +78,7 @@
      *
      * @param $id
      */
-    static public function delete($id) {
+    public static function delete($id) {
       $sql = "DELETE FROM sales_types WHERE id=" . DB::escape($id);
       DB::query($sql, "The Sales type record could not be deleted");
       $sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
@@ -94,7 +94,7 @@
      *
      * @return string
      */
-    static public function  select($name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
+    public static function  select($name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       $sql = "SELECT id, sales_type, inactive FROM sales_types";
       return select_box($name, $selected_id, $sql, 'id', 'sales_type', array(
         'spec_option'                => $special_option === TRUE ? _("All Sales Types") :
@@ -110,7 +110,7 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    static public function  cells($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
+    public static function  cells($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       if ($label != NULL) {
         echo "<td>$label</td>\n";
       }
@@ -127,7 +127,7 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    static public function  row($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
+    public static function  row($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
       echo "<tr><td class='label'>$label</td>";
       static::cells(NULL, $name, $selected_id, $submit_on_change, $special_option);
       echo "</tr>\n";
@@ -136,7 +136,7 @@
      * @static
      * @return bool
      */
-    static public function can_process() {
+    public static function can_process() {
       if (strlen($_POST['sales_type']) == 0) {
         Event::error(_("The sales type description cannot be empty."));
         JS::set_focus('sales_type');

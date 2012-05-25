@@ -66,7 +66,7 @@
 		 *
 		 * @return gettext_php_support|gettextNativeSupport
 		 */
-		static public function i($managerType = self::GETTEXT_NATIVE) {
+		public static function i($managerType = self::GETTEXT_NATIVE) {
 			if ($managerType == self::GETTEXT_NATIVE) {
 				if (function_exists('gettext')) {
 					return new static();

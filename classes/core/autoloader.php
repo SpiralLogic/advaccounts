@@ -23,15 +23,15 @@
     /**
      * @var int
      */
-    static protected $time = 0;
+    protected static $time = 0;
     /**
      * @var array
      */
-    static protected $classes = array();
+    protected static $classes = array();
     /**
      * @var array
      */
-    static protected $global_classes = array();
+    protected static $global_classes = array();
     /**
      * @var array
      */
@@ -40,7 +40,7 @@
      * @static
 
      */
-    static public function i() {
+    public static function i() {
       class_alias(__CLASS__, 'Autoloader');
       spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
       $cachedClasses = \ADV\Core\Cache::get('autoload', array());
@@ -63,7 +63,7 @@
      * @param array $classes
      * @param       $type
      */
-    static protected function add_classes(array $classes, $type) {
+    protected static function add_classes(array $classes, $type) {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -77,7 +77,7 @@
      * @param $namespace
      * @param $classes
      */
-    static protected function import_namespace($namespace, $classes) {
+    protected static function import_namespace($namespace, $classes) {
       static::$global_classes = array_merge(static::$global_classes, array_fill_keys($classes, $namespace));
     }
     /**
@@ -85,7 +85,7 @@
      *
      * @param array $namespaces
      */
-    static protected function import_namespaces(array $namespaces) {
+    protected static function import_namespaces(array $namespaces) {
       foreach ($namespaces as $namespace => $classes) {
         static::import_namespace($namespace, $classes);
       }
@@ -100,7 +100,7 @@
      * @internal param $path
      * @return string
      */
-    static protected function tryPath($paths, $required_class) {
+    protected static function tryPath($paths, $required_class) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -120,7 +120,7 @@
      * @internal param $class
      * @return bool
      */
-    static protected function includeFile($filepath, $required_class) {
+    protected static function includeFile($filepath, $required_class) {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
@@ -142,7 +142,7 @@
      *
      * @return bool|string
      */
-    static public function loadFromCache($required_class) {
+    public static function loadFromCache($required_class) {
       $result = FALSE;
       if (isset(static::$loaded[$required_class])) {
         try {
@@ -167,7 +167,7 @@
      * @internal param $required_class
      * @return bool|string
      */
-    static public function load($requested_class) {
+    public static function load($requested_class) {
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
@@ -208,7 +208,7 @@
      * @static
 
      */
-    static public function _shutdown() {
+    public static function _shutdown() {
       Cache::set('autoload', array(
         'classes' => static::$classes, 'global_classes' => static::$global_classes,
         'paths'   => static::$loaded

@@ -14,7 +14,7 @@
     /**
      * @var null
      */
-    static protected $_instance = NULL;
+    protected static $_instance = NULL;
     /***
      * @static
      *
@@ -22,7 +22,7 @@
      *
      * @return Creditor_Trans
      */
-    static public function i($reset_session = FALSE) {
+    public static function i($reset_session = FALSE) {
       if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
         static::$_instance = $_SESSION["Creditor_Trans"];
       }
@@ -32,7 +32,7 @@
       return static::$_instance;
     }
 
-    static public function killInstance() {
+    public static function killInstance() {
       unset($_SESSION["Creditor_Trans"]);
     }
 
@@ -258,7 +258,7 @@
      *
      * @return int
      */
-    static public function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
+    public static function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
       $date = Dates::date2sql($date_);
       if ($due_date == "") {
         $due_date = "0000-00-00";
@@ -291,7 +291,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    static public function get($trans_no, $trans_type = -1) {
+    public static function get($trans_no, $trans_type = -1) {
 
       $sql
         = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
@@ -340,7 +340,7 @@
      *
      * @return bool
      */
-    static public function exists($type, $type_no) {
+    public static function exists($type, $type_no) {
       if ($type == ST_SUPPRECEIVE) {
         return Purch_GRN::exists($type_no);
       }
@@ -355,7 +355,7 @@
      * @param $type
      * @param $type_no
      */
-    static public function void($type, $type_no) {
+    public static function void($type, $type_no) {
       $sql
         = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
@@ -369,7 +369,7 @@
      *
      * @return bool
      */
-    static public function post_void($type, $type_no) {
+    public static function post_void($type, $type_no) {
       if ($type == ST_SUPPAYMENT) {
         Creditor_Payment::void($type, $type_no);
         return TRUE;
@@ -404,7 +404,7 @@
      *
      * @return float
      */
-    static public function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
+    public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
       if ($err_msg == "") {
         $err_msg = "The supplier GL transaction could not be inserted";
       }
@@ -418,7 +418,7 @@
      *
      * @return int
      */
-    static public function get_conversion_factor($supplier_id, $stock_id) {
+    public static function get_conversion_factor($supplier_id, $stock_id) {
       $sql
               = "SELECT conversion_factor FROM purch_data
 					WHERE supplier_id = " . DB::escape($supplier_id) . "
@@ -439,7 +439,7 @@
      * @param     $columns
      * @param int $tax_recorded
      */
-    static public function trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
+    public static function trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
       $tax_total = 0;
       while ($tax_item = DB::fetch($tax_items)) {
         $tax = Num::format(abs($tax_item['amount']), User::price_dec());
@@ -461,7 +461,7 @@
      *
      * @param $creditor_trans
      */
-    static public function get_duedate_from_terms($creditor_trans) {
+    public static function get_duedate_from_terms($creditor_trans) {
       if (!Dates::is_date($creditor_trans->tran_date)) {
         $creditor_trans->tran_date = Dates::today();
       }
