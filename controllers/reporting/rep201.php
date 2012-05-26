@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_SUPPLIERANALYTIC);
-
   print_supplier_balances();
   /**
    * @param $supplier_id
@@ -20,39 +18,41 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function get_open_balance($supplier_id, $to, $convert) {
+  function get_open_balance($supplier_id, $to, $convert)
+  {
     $to  = Dates::date2sql($to);
     $sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
- 	creditor_trans.ov_discount)";
+     creditor_trans.ov_discount)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ", 0)) AS charges,
- 	SUM(IF(creditor_trans.type <> " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
- 	creditor_trans.ov_discount)";
+     SUM(IF(creditor_trans.type <> " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
+     creditor_trans.ov_discount)";
     if ($convert) {
       $sql .= "* rate";
     }
     $sql
       .= ", 0)) AS credits,
-		SUM(creditor_trans.alloc";
+        SUM(creditor_trans.alloc";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ") AS Allocated,
-		SUM((creditor_trans.ov_amount + creditor_trans.ov_gst +
- 	creditor_trans.ov_discount - creditor_trans.alloc)";
+        SUM((creditor_trans.ov_amount + creditor_trans.ov_gst +
+     creditor_trans.ov_discount - creditor_trans.alloc)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ") AS OutStanding
-		FROM creditor_trans
- 	WHERE creditor_trans.tran_date < '$to'
-		AND creditor_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
+        FROM creditor_trans
+     WHERE creditor_trans.tran_date < '$to'
+        AND creditor_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
     $result = DB::query($sql, "No transactions were returned");
+
     return DB::fetch($result);
   }
 
@@ -63,24 +63,27 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($supplier_id, $from, $to) {
+  function get_transactions($supplier_id, $from, $to)
+  {
     $from = Dates::date2sql($from);
     $to   = Dates::date2sql($to);
     $sql
                 = "SELECT creditor_trans.*,
-				(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)
-				AS TotalAmount, creditor_trans.alloc AS Allocated,
-				((creditor_trans.type = " . ST_SUPPINVOICE . ")
-					AND creditor_trans.due_date < '$to') AS OverDue
- 			FROM creditor_trans
- 			WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
- 			AND creditor_trans.supplier_id = '$supplier_id'
- 				ORDER BY creditor_trans.tran_date";
+                (creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)
+                AS TotalAmount, creditor_trans.alloc AS Allocated,
+                ((creditor_trans.type = " . ST_SUPPINVOICE . ")
+                    AND creditor_trans.due_date < '$to') AS OverDue
+             FROM creditor_trans
+             WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
+             AND creditor_trans.supplier_id = '$supplier_id'
+                 ORDER BY creditor_trans.tran_date";
     $trans_rows = DB::query($sql, "No transactions were returned");
+
     return $trans_rows;
   }
 
-  function print_supplier_balances() {
+  function print_supplier_balances()
+  {
     global $systypes_array;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -91,34 +94,37 @@
     $destination = $_POST['PARAM_6'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($fromsupp == ALL_NUMERIC) {
       $supp = _('All');
-    }
-    else {
+    } else {
       $supp = Creditor::get_name($fromsupp);
     }
     $dec = User::price_dec();
     if ($currency == ALL_TEXT) {
-      $convert  = TRUE;
+      $convert  = true;
       $currency = _('Balances in Home currency');
-    }
-    else {
-      $convert = FALSE;
+    } else {
+      $convert = false;
     }
     if ($no_zeros) {
       $nozeros = _('Yes');
-    }
-    else {
+    } else {
       $nozeros = _('No');
     }
     $cols    = array(0, 70, 110, 170, 220, 250, 315, 385, 450, 515);
     $headers = array(
-      _('Trans Type'), _('#'), _('Invoice #'), _('Date'), _('Due Date'), _('Charges'),
-      _('Credits'), _('Allocated'), _('Outstanding')
+      _('Trans Type'),
+      _('#'),
+      _('Invoice #'),
+      _('Date'),
+      _('Due Date'),
+      _('Charges'),
+      _('Credits'),
+      _('Allocated'),
+      _('Outstanding')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
@@ -184,22 +190,20 @@
         $rep->TextCol(0, 1, $systypes_array[$trans['type']]);
         $rep->TextCol(1, 2, $trans['reference']);
         $rep->TextCol(2, 3, $trans['supplier_reference']);
-        $rep->DateCol(3, 4, $trans['tran_date'], TRUE);
+        $rep->DateCol(3, 4, $trans['tran_date'], true);
         if ($trans['type'] == ST_SUPPINVOICE) {
-          $rep->DateCol(4, 5, $trans['due_date'], TRUE);
+          $rep->DateCol(4, 5, $trans['due_date'], true);
         }
         $item[0] = $item[1] = 0.0;
         if ($convert) {
           $rate = $trans['rate'];
-        }
-        else {
+        } else {
           $rate = 1.0;
         }
         if ($trans['TotalAmount'] > 0.0) {
           $item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
           $rep->AmountCol(5, 6, $item[0], $dec);
-        }
-        else {
+        } else {
           $item[1] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
           $rep->AmountCol(6, 7, $item[1], $dec);
         }
@@ -213,8 +217,7 @@
                      */
         if ($trans['type'] == ST_SUPPINVOICE || $trans['type'] == ST_BANKDEPOSIT) {
           $item[3] = $item[0] + $item[1] - $item[2];
-        }
-        else {
+        } else {
           $item[3] = $item[0] - $item[1] + $item[2];
         }
         $rep->AmountCol(8, 9, $item[3], $dec);
@@ -243,5 +246,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

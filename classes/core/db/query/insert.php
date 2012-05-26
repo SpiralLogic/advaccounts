@@ -13,8 +13,8 @@
   /**
 
    */
-  Class Query_Insert extends Query {
-
+  Class Query_Insert extends Query
+  {
     /**
      * @var
      */
@@ -39,7 +39,8 @@
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = FALSE, $db) {
+    public function __construct($table = false, $db)
+    {
       parent::__construct($db);
       if ($table) {
         $this->into($table);
@@ -47,13 +48,14 @@
       $this->type      = DB::INSERT;
       $this->hasfields = Cache::get('INFORMATION_SCHEMA.COLUMNS.' . $table);
       if (!$this->hasfields) {
-        $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), FALSE);
+        $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), false);
         /** @noinspection PhpAssignmentInConditionInspection */
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
           $this->hasfields[] = $row['COLUMN_NAME'];
         }
         Cache::set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
       }
+
       return $this;
     }
     /**
@@ -61,8 +63,10 @@
      *
      * @return Query_Insert
      */
-    public function into($table) {
+    public function into($table)
+    {
       $this->table = $table;
+
       return $this;
     }
     /**
@@ -70,8 +74,10 @@
      *
      * @return Query_Insert|Query_Update
      */
-    public function values($values) {
+    public function values($values)
+    {
       $this->data = (array) $values + $this->data;
+
       return $this;
     }
     /**
@@ -81,22 +87,21 @@
      * @throws \ADV\Core\DB\DBException
      * @return \ADV\Core\DB\Query_Insert
      */
-    public function value($feild, $value) {
+    public function value($feild, $value)
+    {
       if (is_array($feild) && is_array($value)) {
         if (count($feild) != count($value)) {
           throw new DBException('Feild count and Value count unequal');
-        }
-        else {
+        } else {
           $this->values(array_combine($feild, $value));
         }
-      }
-      elseif (is_array($feild) && !is_array($value)) {
+      } elseif (is_array($feild) && !is_array($value)) {
         $values = array_fill(0, count($feild), $value);
         $this->values(array_combine($feild, $values));
-      }
-      else {
+      } else {
         $this->values(array($feild => $value));
       }
+
       return $this;
     }
     /**
@@ -104,22 +109,26 @@
      *
      * @return string
      */
-    protected function execute($data = NULL) {
-      if ($this->data !== NULL) {
+    protected function execute($data = null)
+    {
+      if ($this->data !== null) {
         $this->values((array) $data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
       $this->fields = array_keys($this->data);
+
       return $this->_buildQuery();
     }
     /**
      * @return string
      */
-    protected function _buildQuery() {
+    protected function _buildQuery()
+    {
       $sql = "INSERT INTO " . $this->table . " (";
       $sql .= implode(', ', $this->fields) . ") VALUES (";
       $sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));
       $sql .= ') ';
+
       return $sql;
     }
   }

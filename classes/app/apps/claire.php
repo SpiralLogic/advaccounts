@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Claire extends Application {
-
+  class Apps_Claire extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       parent::__construct("Claire", _($this->help_context = "&Claire"));
     }
   }

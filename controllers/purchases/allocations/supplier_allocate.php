@@ -7,11 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
-
   if (isset($_POST['Process'])) {
     if (Gl_Allocation::check()) {
       $_SESSION['alloc']->write();
@@ -36,7 +34,8 @@
     edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
   }
   Page::end();
-  function clear_allocations() {
+  function clear_allocations()
+  {
     if (isset($_SESSION['alloc'])) {
       unset($_SESSION['alloc']->allocs);
       unset($_SESSION['alloc']);
@@ -47,11 +46,12 @@
    * @param $type
    * @param $trans_no
    */
-  function edit_allocations_for_transaction($type, $trans_no) {
+  function edit_allocations_for_transaction($type, $trans_no)
+  {
     global $systypes_array;
     start_form();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
-      hidden('inquiry', TRUE);
+      hidden('inquiry', true);
     }
     Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
@@ -60,17 +60,15 @@
     echo "<br>";
     Display::div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0) {
-      Gl_Allocation::show_allocatable(TRUE);
-      submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
-      submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
+      Gl_Allocation::show_allocatable(true);
+      submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
+      submit('Process', _("Process"), true, _('Process allocations'), 'default');
       submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
-    }
-    else {
+    } else {
       Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-      submit_center('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     }
     Display::div_end();
     end_form();
   }
-
 

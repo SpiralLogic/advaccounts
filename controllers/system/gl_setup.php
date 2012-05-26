@@ -62,13 +62,13 @@
   GL_UI::all_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
   Table::sectionTitle(_("Customers and Sales"));
   text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
-  check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', NULL);
+  check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
   textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
   GL_UI::all_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
   Table::sectionTitle(_("Customers and Sales Defaults"));
   // default for customer branch
   GL_UI::all_row(_("Receivable Account:"), 'debtors_act');
-  GL_UI::all_row(_("Sales Account:"), 'default_sales_act', NULL, FALSE, FALSE, TRUE);
+  GL_UI::all_row(_("Sales Account:"), 'default_sales_act', null, false, false, true);
   GL_UI::all_row(_("Sales Discount Account:"), 'default_sales_discount_act');
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
   text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
@@ -82,8 +82,8 @@
   GL_UI::all_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
   GL_UI::all_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
   Table::sectionTitle(_("Inventory"));
-  check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', NULL);
-  Row::label(NULL, _("Warning: This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
+  check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
+  Row::label(null, _("Warning: This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
   Table::sectionTitle(_("Items Defaults"));
   GL_UI::all_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
   GL_UI::all_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
@@ -94,29 +94,33 @@
   Table::sectionTitle(_("Manufacturing Defaults"));
   text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
   Table::endOuter(1);
-  submit_center('submit', _("Update"), TRUE, '', 'default');
+  submit_center('submit', _("Update"), true, '', 'default');
   end_form(2);
   Page::end();
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (!Validation::post_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));
       JS::set_focus('po_over_receive');
-      return FALSE;
+
+      return false;
     }
     if (!Validation::post_num('po_over_charge', 0, 100)) {
       Event::error(_("The invoice over-charge allowance must be between 0 and 100."));
       JS::set_focus('po_over_charge');
-      return FALSE;
+
+      return false;
     }
     if (!Validation::post_num('past_due_days', 0, 100)) {
       Event::error(_("The past due days interval allowance must be between 0 and 100."));
       JS::set_focus('past_due_days');
-      return FALSE;
-    }
-    return TRUE;
-  }
 
+      return false;
+    }
+
+    return true;
+  }
 

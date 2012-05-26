@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_BOMREP);
-
   print_bill_of_material();
   /**
    * @param $from
@@ -19,34 +17,37 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to) {
-    $sql = "SELECT bom.parent,
-			bom.component,
-			stock_master.description as CompDescription,
-			bom.quantity,
-			bom.loc_code,
-			bom.workcentre_added
-		FROM
-			stock_master,
-			bom
-		WHERE stock_master.stock_id=bom.component
-		AND bom.parent >= " . DB::escape($from) . "
-		AND bom.parent <= " . DB::escape($to) . "
-		ORDER BY
-			bom.parent,
-			bom.component";
+  function get_transactions($from, $to)
+  {
+    $sql
+      = "SELECT bom.parent,
+            bom.component,
+            stock_master.description as CompDescription,
+            bom.quantity,
+            bom.loc_code,
+            bom.workcentre_added
+        FROM
+            stock_master,
+            bom
+        WHERE stock_master.stock_id=bom.component
+        AND bom.parent >= " . DB::escape($from) . "
+        AND bom.parent <= " . DB::escape($to) . "
+        ORDER BY
+            bom.parent,
+            bom.component";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_bill_of_material() {
+  function print_bill_of_material()
+  {
     $frompart    = $_POST['PARAM_0'];
     $topart      = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
     $destination = $_POST['PARAM_3'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $cols    = array(0, 50, 305, 375, 445, 515);
@@ -90,5 +91,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

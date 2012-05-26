@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Tax Groups"), SA_TAXGROUPS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
@@ -20,11 +19,9 @@
       JS::set_focus('name');
     }
     /* Editable rate has been removed 090920 Joe Hunt
-             else
-             {
+             else {
                // make sure any entered rates are valid
-               for ($i = 0; $i < 5; $i++)
-               {
+               for ($i = 0; $i < 5; $i++) {
                  if (isset($_POST['tax_type_id' . $i]) &&
                    $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
                    !Validation::post_num('rate' . $i, 0))
@@ -53,15 +50,13 @@
       if ($selected_id != -1) {
         Tax_Groups::update($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
         Event::success(_('Selected tax group has been updated'));
-      }
-      else {
+      } else {
         Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
         Event::success(_('New tax group has been added'));
       }
       $Mode = MODE_RESET;
     }
   }
-
   if ($Mode == MODE_DELETE) {
     Tax_Groups::delete($selected_id);
     $Mode = MODE_RESET;
@@ -80,12 +75,10 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["name"]);
     if ($myrow["tax_shipping"]) {
       Cell::label(_("Yes"));
-    }
-    else {
+    } else {
       Cell::label(_("No"));
     }
     /*for ($i=0; $i< 5; $i++)
@@ -120,7 +113,7 @@
     hidden('selected_id', $selected_id);
   }
   text_row_ex(_("Description:"), 'name', 40);
-  yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
+  yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
   Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
   Table::start('tablestyle2');
@@ -133,7 +126,7 @@
     if (!isset($_POST['tax_type_id' . $i])) {
       $_POST['tax_type_id' . $i] = 0;
     }
-    Tax_Types::cells(NULL, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), TRUE);
+    Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
     if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
       $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
       Cell::label(Num::percent_format($default_rate), ' class="right nowrap"');
@@ -149,5 +142,4 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-
 

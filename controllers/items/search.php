@@ -7,17 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Item::searchOrder($_GET['term'], $_GET['UniqueID']);
-    }
-    elseif (isset($_POST['id'])) {
+    } elseif (isset($_POST['id'])) {
       if (isset($_POST['name'])) {
         $item = new Item($_POST);
         $item->save($_POST);
-      }
-      else {
+      } else {
         $item = new Item($_POST['id']);
       }
       $data['item'] = $item;
@@ -27,5 +24,4 @@
     }
     JS::renderJSON($data, JSON_NUMERIC_CHECK);
   }
-
 

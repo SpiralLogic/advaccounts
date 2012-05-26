@@ -9,7 +9,7 @@
    **/
 
   //$upload_dir = DOCROOT.'sales/upload/';
-  $order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : FALSE;
+  $order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : false;
   if ($order) {
     $upload_handler = new UploadHandler($order, $o);
     switch ($_SERVER['REQUEST_METHOD']) {

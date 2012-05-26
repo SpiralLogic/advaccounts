@@ -7,17 +7,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "GL Account Classes"), SA_GLACCOUNTCLASS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     if (can_process()) {
       if ($selected_id != -1) {
         if (GL_Class::update($selected_id, $_POST['name'], $_POST['ctype'])) {
           Event::success(_('Selected account class settings has been updated'));
         }
-      }
-      else {
+      } else {
         if (GL_Class::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
           Event::success(_('New account class has been added'));
           $Mode = MODE_RESET;
@@ -44,7 +42,6 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
     Cell::label($class_types[$myrow["ctype"]]);
@@ -67,12 +64,11 @@
     }
     hidden('id');
     Row::label(_("Class ID:"), $_POST['id']);
-  }
-  else {
+  } else {
     text_row_ex(_("Class ID:"), 'id', 3);
   }
   text_row_ex(_("Class Name:"), 'name', 50, 60);
-  GL_Class::types_row(_("Class Type:"), 'ctype', NULL);
+  GL_Class::types_row(_("Class Type:"), 'ctype', null);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
@@ -80,18 +76,22 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (!is_numeric($_POST['id'])) {
       Event::error(_("The account class ID must be numeric."));
       JS::set_focus('id');
-      return FALSE;
+
+      return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account class name cannot be empty."));
       JS::set_focus('name');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
@@ -99,17 +99,21 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
+  function can_delete($selected_id)
+  {
     if ($selected_id == -1) {
-      return FALSE;
+      return false;
     }
-    $sql    = "SELECT COUNT(*) FROM chart_types
-		WHERE class_id=$selected_id";
+    $sql
+            = "SELECT COUNT(*) FROM chart_types
+        WHERE class_id=$selected_id";
     $result = DB::query($sql, "could not query chart master");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account class because GL account types have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }

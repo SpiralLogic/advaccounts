@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Unit {
-
+  class Item_Unit
+  {
     /**
      * @static
      *
@@ -17,20 +17,20 @@
      * @param $description
      * @param $decimals
      */
-    public static function write($selected, $abbr, $description, $decimals) {
+    public static function write($selected, $abbr, $description, $decimals)
+    {
       if ($selected != '') {
         $sql
           = "UPDATE item_units SET
-	 	abbr = " . DB::escape($abbr) . ",
-	 	name = " . DB::escape($description) . ",
-	 	decimals = " . DB::escape($decimals) . "
- 	WHERE abbr = " . DB::escape($selected);
-      }
-      else {
+         abbr = " . DB::escape($abbr) . ",
+         name = " . DB::escape($description) . ",
+         decimals = " . DB::escape($decimals) . "
+     WHERE abbr = " . DB::escape($selected);
+      } else {
         $sql
           = "INSERT INTO item_units
-			(abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
-	 		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
+            (abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
+             " . DB::escape($description) . ", " . DB::escape($decimals) . ")";
       }
       DB::query($sql, "an item unit could not be updated");
     }
@@ -39,7 +39,8 @@
      *
      * @param $unit
      */
-    public static function delete($unit) {
+    public static function delete($unit)
+    {
       $sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
       DB::query($sql, "an unit of measure could not be deleted");
     }
@@ -50,9 +51,11 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($unit) {
+    public static function get($unit)
+    {
       $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "an unit of measure could not be retrieved");
+
       return DB::fetch($result);
     }
     /**
@@ -62,10 +65,12 @@
      *
      * @return mixed
      */
-    public static function desc($unit) {
+    public static function desc($unit)
+    {
       $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "could not unit description");
       $row    = DB::fetch_row($result);
+
       return $row[0];
     }
     /**
@@ -75,10 +80,12 @@
      *
      * @return bool
      */
-    public static function used($unit) {
+    public static function used($unit)
+    {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
       $result = DB::query($sql, "could not query stock master");
       $myrow  = DB::fetch_row($result);
+
       return ($myrow[0] > 0);
     }
     /**
@@ -88,12 +95,14 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = FALSE) {
+    public static function get_all($all = false)
+    {
       $sql = "SELECT * FROM item_units";
       if (!$all) {
         $sql .= " WHERE !inactive";
       }
       $sql .= " ORDER BY name";
+
       return DB::query($sql, "could not get stock categories");
     }
     /**
@@ -103,12 +112,14 @@
      *
      * @return mixed
      */
-    public static function get_decimal($stock_id) {
+    public static function get_decimal($stock_id)
+    {
       $sql
               = "SELECT decimals FROM item_units,	stock_master
-		WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
+        WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
       $result = DB::query($sql, "could not get unit decimals");
       $row    = DB::fetch_row($result);
+
       return $row[0];
     }
     /**
@@ -119,10 +130,11 @@
      * @param null $value
      * @param bool $enabled
      */
-    public static function row($label, $name, $value = NULL, $enabled = TRUE) {
+    public static function row($label, $name, $value = null, $enabled = true)
+    {
       $result = Item_Unit::get_all();
       echo "<tr>";
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
@@ -141,12 +153,14 @@
      *
      * @return string
      */
-    public static function select($name, $value = NULL, $enabled = TRUE) {
+    public static function select($name, $value = null, $enabled = true)
+    {
       $result = Item_Unit::get_all();
       $units  = array();
       while ($unit = DB::fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }
+
       return array_selector($name, $value, $units, array('disabled' => !$enabled));
     }
   }

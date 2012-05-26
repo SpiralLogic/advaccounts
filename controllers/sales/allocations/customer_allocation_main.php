@@ -16,9 +16,9 @@
     $_POST['customer_id'] = Session::i()->getGlobal('debtor');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  echo Debtor::select('customer_id', $_POST['customer_id'], TRUE, TRUE);
+  echo Debtor::select('customer_id', $_POST['customer_id'], true, true);
   echo "<br>";
-  check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
+  check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
   Session::i()->setGlobal('debtor', $_POST['customer_id']);
   if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
@@ -29,11 +29,11 @@
            if (!Bank_Currency::is_company($custCurr))
              echo _("Customer Currency:") . $custCurr;
          }*/
-  $settled = FALSE;
+  $settled = false;
   if (check_value('ShowSettled')) {
-    $settled = TRUE;
+    $settled = true;
   }
-  $customer_id = NULL;
+  $customer_id = null;
   if (isset($_POST['customer_id'])) {
     $customer_id = $_POST['customer_id'];
   }
@@ -45,9 +45,9 @@
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
     ), _("Customer")      => array('ord' => ''),
     _("Currency")         => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'Sales_Allocation::amount_left'
+      'align' => 'right', 'insert' => true, 'fun' => 'Sales_Allocation::amount_left'
     ), array(
-      'insert' => TRUE, 'fun' => 'Sales_Allocation::alloc_link'
+      'insert' => true, 'fun' => 'Sales_Allocation::alloc_link'
     )
   );
   if (isset($_POST['customer_id'])) {
@@ -60,6 +60,4 @@
   DB_Pager::display($table);
   end_form();
   Page::end();
-
-
 

@@ -7,14 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT : SA_DEPOSIT;
+  $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ?
+    SA_PAYMENT : SA_DEPOSIT;
   JS::open_window(800, 500);
   if (isset($_GET['NewPayment'])) {
     $_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
     handle_new_order(ST_BANKPAYMENT);
-  }
-  else {
+  } else {
     if (isset($_GET['NewDeposit'])) {
       $_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
       handle_new_order(ST_BANKDEPOSIT);
@@ -64,16 +63,14 @@
       Event::error(_("You must enter a reference."));
       JS::set_focus('ref');
       $input_error = 1;
-    }
-    elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
+    } elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
       $_POST['ref'] = Ref::get_next($_SESSION['pay_items']->trans_type);
     }
     if (!Dates::is_date($_POST['date_'])) {
       Event::error(_("The entered date for the payment is invalid."));
       JS::set_focus('date_');
       $input_error = 1;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
       $input_error = 1;
@@ -116,20 +113,22 @@
   Table::start('tablesstyle2 width90 pad10');
   Row::start();
   echo "<td>";
-  Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") : _("Deposit Items"), $_SESSION['pay_items']);
+  Bank_UI::items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Payment Items") :
+                   _("Deposit Items"), $_SESSION['pay_items']);
   Bank_UI::option_controls();
   echo "</td>";
   Row::end();
   Table::end(1);
-  submit_center_first('Update', _("Update"), '', NULL);
-  submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") : _("Process Deposit"), '', 'default');
+  submit_center_first('Update', _("Update"), '', null);
+  submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") :
+    _("Process Deposit"), '', 'default');
   end_form();
   Page::end();
-
   /**
    * @return bool
    */
-  function check_item_data() {
+  function check_item_data()
+  {
     //if (!Validation::post_num('amount', 0))
     //{
     //	Event::error( _("The amount entered is not a valid number or is less than zero."));
@@ -139,7 +138,8 @@
     if ($_POST['code_id'] == $_POST['bank_account']) {
       Event::error(_("The source and destination accouts cannot be the same."));
       JS::set_focus('code_id');
-      return FALSE;
+
+      return false;
     }
     //if (Bank_Account::is($_POST['code_id']))
     //{
@@ -150,10 +150,11 @@
     //	JS::set_focus('code_id') ;
     //	return false;
     //}
-    return TRUE;
+    return true;
   }
 
-  function handle_update_item() {
+  function handle_update_item()
+  {
     $amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
     if ($_POST['UpdateItem'] != "" && check_item_data()) {
       $_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -164,12 +165,14 @@
   /**
    * @param $id
    */
-  function handle_delete_item($id) {
+  function handle_delete_item($id)
+  {
     $_SESSION['pay_items']->remove_gl_item($id);
     Item_Line::start_focus('_code_id_edit');
   }
 
-  function handle_new_item() {
+  function handle_new_item()
+  {
     if (!check_item_data()) {
       return;
     }
@@ -181,7 +184,8 @@
   /**
    * @param $type
    */
-  function handle_new_order($type) {
+  function handle_new_order($type)
+  {
     if (isset($_SESSION['pay_items'])) {
       unset ($_SESSION['pay_items']);
     }

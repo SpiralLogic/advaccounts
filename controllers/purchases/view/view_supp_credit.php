@@ -7,17 +7,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Supplier Credit Note"), SA_SUPPTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Supplier Credit Note"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
-  }
-  elseif (isset($_POST["trans_no"])) {
+  } elseif (isset($_POST["trans_no"])) {
     $trans_no = $_POST["trans_no"];
   }
   $creditor_trans             = new Creditor_Trans();
-  $creditor_trans->is_invoice = FALSE;
+  $creditor_trans->is_invoice = false;
   Purch_Invoice::get($trans_no, ST_SUPPCREDIT, $creditor_trans);
   Display::heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
   echo "<br>";
@@ -48,6 +46,5 @@
   if (!$voided) {
     GL_Allocation::from(PT_SUPPLIER, $creditor_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($creditor_trans->ov_amount + $creditor_trans->ov_gst));
   }
-  Page::end(TRUE);
-
+  Page::end(true);
 

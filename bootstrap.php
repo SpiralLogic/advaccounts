@@ -9,11 +9,9 @@
    **/
   if (strpos($_SERVER['HTTP_HOST'], 'dev.advaccounts') === 0) {
     header('Location: http://dev.advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
-  }
-  elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== FALSE) {
+  } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-
   if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
@@ -37,15 +35,16 @@
   define('COMPANY_PATH', WEBROOT . 'company' . DS);
   define('LANG_PATH', DOCROOT . 'lang' . DS);
   define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-  define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== FALSE));
+  define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
   set_error_handler(function ($severity, $message, $filepath, $line) {
-    class_exists('ADV\\Core\\Errors', FALSE) or include_once COREPATH . 'errors.php';
+    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
+
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
   set_exception_handler(function (\Exception $e) {
-    class_exists('ADV\\Core\\Errors', FALSE) or include_once COREPATH . 'errors.php';
+    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     ADV\Core\Errors::exception_handler($e);
   });
   require COREPATH . 'autoloader.php';
@@ -56,7 +55,8 @@
        *
        * @return array|string
        */
-      function e($string) { return Security::htmlentities($string); }
+      function e($string)
+      { return Security::htmlentities($string); }
     }
     register_shutdown_function(function () {
       ADV\Core\Event::shutdown();
@@ -68,7 +68,8 @@
        * @return string
        * @noinspection PhpUnusedFunctionInspection
        */
-      function adv_ob_flush_handler($text) {
+      function adv_ob_flush_handler($text)
+      {
         return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
       }
     }
@@ -96,21 +97,19 @@
   }
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new Assets();
-  }
-  else {
-    $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : FALSE;
+  } else {
+    $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
     $index      = $controller == $_SERVER['SCRIPT_NAME'];
-    $show404    = FALSE;
+    $show404    = false;
     if (!$index && $controller) {
       $controller = ltrim($controller, '/');
       // substr_compare returns 0 if true
-      $controller = (substr_compare($controller, '.php', -4, 4, TRUE) === 0) ? $controller : $controller . '.php';
+      $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
       $controller = DOCROOT . 'controllers' . DS . $controller;
       if (file_exists($controller)) {
         include($controller);
-      }
-      else {
-        $show404 = TRUE;
+      } else {
+        $show404 =      true;
       }
     }
     if ($show404) {
@@ -121,5 +120,4 @@
       ADVAccounting::i()->display();
     }
   }
-
 

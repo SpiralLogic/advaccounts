@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Access setup"), SA_SECROLES);
   $new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
   // Following compare function is used for sorting areas
@@ -21,8 +20,10 @@
    *
    * @return int
    */
-  function comp_areas($area1, $area2) {
+  function comp_areas($area1, $area2)
+  {
     $sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
+
     return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
   }
 
@@ -31,12 +32,14 @@
    *
    * @return array
    */
-  function sort_areas($areas) {
+  function sort_areas($areas)
+  {
     $old_order = 0;
     foreach ($areas as $key => $area) {
       $areas[$key][] = $old_order++;
     }
     uasort($areas, 'comp_areas');
+
     return $areas;
   }
 
@@ -44,7 +47,8 @@
     Ajax::i()->activate('details');
     Ajax::i()->activate('controls');
   }
-  function clear_data() {
+  function clear_data()
+  {
     unset($_POST);
   }
 
@@ -54,8 +58,7 @@
       $input_error = 1;
       Event::error(_("Role description cannot be empty."));
       JS::set_focus('description');
-    }
-    elseif ($_POST['name'] == '') {
+    } elseif ($_POST['name'] == '') {
       $input_error = 1;
       Event::error(_("Role name cannot be empty."));
       JS::set_focus('name');
@@ -89,13 +92,12 @@
       if ($new_role) {
         Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
         Event::success(_("New security role has been added."));
-      }
-      else {
+      } else {
         Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
         DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
         Event::success(_("Security role has been updated."));
       }
-      $new_role = TRUE;
+      $new_role = true;
       clear_data();
       Ajax::i()->activate('_page_body');
     }
@@ -103,8 +105,7 @@
   if (get_post('delete')) {
     if (Security::check_role_used(get_post('role'))) {
       Event::error(_("This role is currently assigned to some users and cannot be deleted"));
-    }
-    else {
+    } else {
       Security::get_profile(get_post('role'));
       Event::notice(_("Security role has been sucessfully deleted."));
       unset($_POST['role']);
@@ -128,8 +129,7 @@
       $_POST['inactive'] = $row['inactive'];
       $access            = $row['areas'];
       $sections          = $row['sections'];
-    }
-    else {
+    } else {
       $_POST['description'] = $_POST['name'] = '';
       unset($_POST['inactive']);
       $access = $sections = array();
@@ -143,17 +143,16 @@
     if ($clone) {
       JS::set_focus('name');
       Ajax::i()->activate('_page_body');
-    }
-    else {
+    } else {
       $_POST['role'] = $id;
     }
   }
   start_form();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::roles_cells(_("Role:") . "&nbsp;", 'role', NULL, TRUE, TRUE, check_value('show_inactive'));
+  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
   $new_role = get_post('role') == '';
-  check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+  check_cells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
   Table::end();
   echo "<hr>";
@@ -166,8 +165,8 @@
   }
   Display::div_start('details');
   Table::start('tablestyle2');
-  text_row(_("Role name:"), 'name', NULL, 20, 22);
-  text_row(_("Role description:"), 'description', NULL, 50, 52);
+  text_row(_("Role name:"), 'name', null, 20, 22);
+  text_row(_("Role description:"), 'description', null, 50, 52);
   record_status_list_row(_("Current status:"), 'inactive');
   Table::end(1);
   Table::start('tablestyle grid width40');
@@ -187,14 +186,12 @@
       $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      Row::label($security_sections[$m] . ':', checkbox(NULL, 'Section' . $m, NULL, TRUE, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Row::label($security_sections[$m] . ':', checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (check_value('Section' . $m)) {
-
-      check_row($parms[1], 'Area' . $parms[0], NULL, FALSE, '', "class='center'");
+      check_row($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
       Row::end();
-    }
-    else {
+    } else {
       hidden('Area' . $parms[0]);
     }
   }
@@ -202,18 +199,16 @@
   Display::div_end();
   Display::div_start('controls');
   if ($new_role) {
-    submit_center_first('Update', _("Update view"), '', NULL);
+    submit_center_first('Update', _("Update view"), '', null);
     submit_center_last('addupdate', _("Insert New Role"), '', 'default');
-  }
-  else {
+  } else {
     submit_center_first('addupdate', _("Save Role"), '', 'default');
-    submit('Update', _("Update view"), TRUE, '', NULL);
-    submit('clone', _("Clone This Role"), TRUE, '', TRUE);
-    submit('delete', _("Delete This Role"), TRUE, '', TRUE);
+    submit('Update', _("Update view"), true, '', null);
+    submit('clone', _("Clone This Role"), true, '', true);
+    submit('delete', _("Delete This Role"), true, '', true);
     submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
   Display::div_end();
   end_form();
   Page::end();
-
 

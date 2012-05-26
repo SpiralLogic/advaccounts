@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Bank Accounts"), SA_BANKACCOUNT);
   list($Mode, $selected_id) = Page::simple_mode();
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -23,15 +22,13 @@
       if ($selected_id != -1) {
         Bank_Account::update($selected_id, $_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
         Event::success(_('Bank account has been updated'));
-      }
-      else {
+      } else {
         Bank_Account::add($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
         Event::success(_('New bank account has been added'));
       }
       $Mode = MODE_RESET;
     }
-  }
-  elseif ($Mode == MODE_DELETE) {
+  } elseif ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
     $cancel_delete = 0;
     $acc           = DB::escape($selected_id);
@@ -62,9 +59,10 @@
     $_POST['bank_account_number'] = $_POST['bank_address'] = '';
   }
   /* Always show the list of accounts */
-  $sql = "SELECT account.*, gl_account.account_name
-	FROM bank_accounts account, chart_master gl_account
-	WHERE account.account_code = gl_account.account_code";
+  $sql
+    = "SELECT account.*, gl_account.account_name
+    FROM bank_accounts account, chart_master gl_account
+    WHERE account.account_code = gl_account.account_code";
   if (!check_value('show_inactive')) {
     $sql .= " AND !account.inactive";
   }
@@ -80,7 +78,6 @@
   $k = 0;
   global $bank_account_types;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["bank_account_name"], ' class="nowrap"');
     Cell::label($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
     Cell::label($myrow["bank_curr_code"], ' class="nowrap"');
@@ -90,8 +87,7 @@
     Cell::label($myrow["bank_address"]);
     if ($myrow["dflt_curr_act"]) {
       Cell::label(_("Yes"));
-    }
-    else {
+    } else {
       Cell::label(_("No"));
     }
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
@@ -121,30 +117,27 @@
     hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
     JS::set_focus('bank_account_name');
   }
-  text_row(_("Bank Account Name:"), 'bank_account_name', NULL, 50, 100);
+  text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {
     global $bank_account_types;
     Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
-  }
-  else {
-    Bank_Account::type_row(_("Account Type:"), 'account_type', NULL);
+  } else {
+    Bank_Account::type_row(_("Account Type:"), 'account_type', null);
   }
   if ($is_editing) {
     Row::label(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
-  }
-  else {
-    GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', NULL);
+  } else {
+    GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
   }
   yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
   if ($is_editing) {
     Row::label(_("Bank Account GL Code:"), $_POST['account_code']);
+  } else {
+    GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', null);
   }
-  else {
-    GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', NULL);
-  }
-  text_row(_("Bank Name:"), 'bank_name', NULL, 50, 60);
-  text_row(_("Bank Account Number:"), 'bank_account_number', NULL, 30, 60);
-  textarea_row(_("Bank Address:"), 'bank_address', NULL, 40, 5);
+  text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
+  text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
+  textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();

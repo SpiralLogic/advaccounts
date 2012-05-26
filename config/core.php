@@ -7,8 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'ADV\\Core'        => array(
+    'ADV\\Core'           => array(
       'Adv_Exception', //
       'Ajax', //
       'Arr', //
@@ -36,8 +37,7 @@
       'Status', //
       'UploadHandler', //
       'XMLParser', //
-    ),
-    'ADV\\Core\\DB'    => array(
+    ), 'ADV\\Core\\DB'    => array(
       'DB', //
       'DB_Query', //
       'DB_Query_Delete', //
@@ -52,8 +52,7 @@
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
-    ),
-    'ADV\\Core\\Module'=> array(
+    ), 'ADV\\Core\\Module'=> array(
       'Base', //
       'Loadable', //
     )

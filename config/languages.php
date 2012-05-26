@@ -15,6 +15,7 @@
    -- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew
 
    */
+
   return array(
     'installed' => array(
       0 => array(

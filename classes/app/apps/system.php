@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_System extends Application {
-
+  class Apps_System extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct("System", _($this->help_context = "S&ystem"));
       $this->add_module(_("Company Setup"));
@@ -52,5 +53,4 @@
       }
     }
   }
-
 

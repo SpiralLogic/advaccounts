@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Report {
-
+  class Report
+  {
     /**
      * @var
      */
@@ -70,17 +70,20 @@
      * @param      $name
      * @param null $ar_params
      */
-    public function __construct($id, $name, $ar_params = NULL) {
+    public function __construct($id, $name, $ar_params = null)
+    {
       $this->id   = $id;
       $this->name = $name;
       if ($ar_params) {
         $this->set_controls($ar_params);
       }
     }
-    public function get_controls() {
+    public function get_controls()
+    {
       return $this->controls;
     }
-    public function add_custom_reports() {
+    public function add_custom_reports()
+    {
       global $installed_extensions;
       // include reports installed inside extension modules
       if (count($installed_extensions) > 0) {
@@ -104,7 +107,8 @@
     /**
      * @param $ar_params
      */
-    protected function set_controls($ar_params) {
+    protected function set_controls($ar_params)
+    {
       $this->controls = $ar_params;
     }
   }

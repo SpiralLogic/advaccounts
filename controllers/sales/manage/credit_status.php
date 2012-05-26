@@ -7,10 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
-
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && Sales_CreditStatus::can_process()) {
     Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
     Event::success(_('New credit status has been added'));
@@ -21,7 +19,6 @@
     Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
     $Mode = MODE_RESET;
   }
-
   if ($Mode == MODE_DELETE) {
     if (Sales_CreditStatus::can_delete($selected_id)) {
       Sales_CreditStatus::delete($selected_id);
@@ -43,11 +40,9 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     if ($myrow["dissallow_invoices"] == 0) {
       $disallow_text = _("Invoice OK");
-    }
-    else {
+    } else {
       $disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
     }
     Cell::label($myrow["reason_description"]);
@@ -71,7 +66,7 @@
     hidden('selected_id', $selected_id);
   }
   text_row_ex(_("Description:"), 'reason_description', 50);
-  yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
+  yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();

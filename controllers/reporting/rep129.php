@@ -15,7 +15,8 @@
 
   print_sales_orders();
   $print_as_quote = 0;
-  function print_sales_orders() {
+  function print_sales_orders()
+  {
     global $print_as_quote;
     include_once(APPPATH . "reports/pdf.php");
     $from           = $_POST['PARAM_0'];
@@ -24,10 +25,10 @@
     $email          = $_POST['PARAM_3'];
     $print_as_quote = $_POST['PARAM_4'];
     $comments       = $_POST['PARAM_5'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -39,13 +40,12 @@
     if ($email == 0) {
       if ($print_as_quote == 0) {
         $rep = new ADVReport(_("PROFORMA INVOICE"), "SalesOrderBulk", User::page_size());
-      }
-      else {
+      } else {
         $rep = new ADVReport(_("QUOTE"), "QuoteBulk", User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for (
       $i = $from; $i <= $to; $i++
@@ -61,14 +61,12 @@
         if ($print_as_quote == 1) {
           $rep->title    = _('PROFORMA INVOICE');
           $rep->filename = "ProformaInvoice" . $i . ".pdf";
-        }
-        else {
+        } else {
           $rep->title    = _("PROFORMA INVOICE");
           $rep->filename = "ProformaInvoice" . $i . ".pdf";
         }
-        $rep->Info($params, $cols, NULL, $aligns);
-      }
-      else {
+        $rep->Info($params, $cols, null, $aligns);
+      } else {
         $rep->title = ($print_as_quote == 1 ? _("PROFORMA INVOICE") : _("PROFORMA INVOICE"));
       }
       $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
@@ -91,8 +89,7 @@
         $DisplayNet   = Num::format($Net, $dec);
         if ($myrow2["discount_percent"] == 0) {
           $DisplayDiscount = "";
-        }
-        else {
+        } else {
           $DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
         }
         $rep->TextCol(0, 1, $myrow2['stk_code'], -2);
@@ -127,12 +124,11 @@
       $DisplayTaxTot     = Num::format($TaxTotal, $dec);
       $display_total     = Num::format($SubTotal + $TaxTotal, $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = TRUE;
+      $linetype          = true;
       $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);

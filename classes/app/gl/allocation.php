@@ -14,8 +14,8 @@
   /**
 
    */
-  class Gl_Allocation {
-
+  class Gl_Allocation
+  {
     /**
      * @var
      */
@@ -52,7 +52,8 @@
      * @param $type
      * @param $trans_no
      */
-    public function __construct($type, $trans_no) {
+    public function __construct($type, $trans_no)
+    {
       $this->allocs   = array();
       $this->trans_no = $trans_no;
       $this->type     = $type;
@@ -69,13 +70,14 @@
      *
      * @return bool
      */
-    public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
+    public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
+    {
       if ($amount > 0) {
         $this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
-        return TRUE;
-      }
-      else {
-        return FALSE;
+
+        return true;
+      } else {
+        return false;
       }
     }
     /**
@@ -90,13 +92,14 @@
      *
      * @return bool
      */
-    public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
+    public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
+    {
       if ($amount > 0) {
         $this->allocs[$index] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
-        return TRUE;
-      }
-      else {
-        return FALSE;
+
+        return true;
+      } else {
+        return false;
       }
     }
     /**
@@ -110,13 +113,15 @@
      *
      * @return bool
      */
-    public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
+    public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
+    {
       for ($i = 0; $i < count($this->allocs); $i++) {
         $item = $this->allocs[$i];
         if (($item->type == $type) && ($item->type_no == $type_no)) {
           return $this->update_item($i, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
         }
       }
+
       return $this->add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
     }
     /**
@@ -125,8 +130,9 @@
      *
      * @return mixed
      */
-    public function read($type = NULL, $trans_no = 0) {
-      if ($type == NULL) { // re-read
+    public function read($type = null, $trans_no = 0)
+    {
+      if ($type == null) { // re-read
         $type     = $this->type;
         $trans_no = $this->trans_no;
       }
@@ -134,8 +140,7 @@
         $result            = Bank_Trans::get($type, $trans_no);
         $bank_trans        = DB::fetch($result);
         $this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
-      }
-      else {
+      } else {
         $this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
       }
       $this->allocs = array();
@@ -145,8 +150,7 @@
         $this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
         $this->amount      = $trans["Total"];
         $this->date_       = Dates::sql2date($trans["tran_date"]);
-      }
-      else {
+      } else {
         $this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
         $this->date_     = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
       }
@@ -155,15 +159,14 @@
                                           outstanding balances ie Total-alloc >0 */
       if ($this->person_type) {
         Purch_Allocation::get_allocatable_to_trans($this->person_id);
-      }
-      else {
+      } else {
         Sales_Allocation::get_to_trans($this->person_id);
       }
       $results = DB::fetch_all();
       foreach ($results as $myrow) {
         $this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
-          $myrow["alloc"], // trans total allocated
-          0); // this allocation
+                        $myrow["alloc"], // trans total allocated
+                        0); // this allocation
       }
       if ($trans_no == 0) {
         return;
@@ -173,8 +176,7 @@
                                         above logic will be overwritten with the prev alloc detail below */
       if ($this->person_type) {
         Purch_Allocation::get_allocatable_to_trans($this->person_id, $trans_no, $type);
-      }
-      else {
+      } else {
         Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
       }
       $results = DB::fetch_all();
@@ -185,12 +187,12 @@
     /**
 
      */
-    public function write() {
+    public function write()
+    {
       DB::begin();
       if ($this->person_type) {
         Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
-      }
-      else {
+      } else {
         Sales_Allocation::void($this->type, $this->trans_no, $this->date_);
       }
       // now add the new allocations
@@ -200,8 +202,7 @@
           if ($this->person_type) {
             Purch_Allocation::add($alloc_item->current_allocated, $this->type, $this->trans_no, $alloc_item->type, $alloc_item->type_no, $this->date_);
             Purch_Allocation::update($alloc_item->type, $alloc_item->type_no, $alloc_item->current_allocated);
-          }
-          else {
+          } else {
             Sales_Allocation::add($alloc_item->current_allocated, $this->type, $this->trans_no, $alloc_item->type, $alloc_item->type_no, $this->date_);
             Sales_Allocation::update($alloc_item->type, $alloc_item->type_no, $alloc_item->current_allocated);
           }
@@ -214,8 +215,7 @@
       } /*end of the loop through the array of allocations made */
       if ($this->person_type) {
         Purch_Allocation::update($this->type, $this->trans_no, $total_allocated);
-      }
-      else {
+      } else {
         Sales_Allocation::update($this->type, $this->trans_no, $total_allocated);
       }
       DB::commit();
@@ -225,18 +225,26 @@
      *
      * @param $show_totals
      */
-    public static function show_allocatable($show_totals) {
+    public static function show_allocatable($show_totals)
+    {
       global $systypes_array;
       $k = $counter = $total_allocated = 0;
       if (count($_SESSION['alloc']->allocs)) {
         Table::start('tablestyle grid width60');
         $th = array(
-          _("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), _("Other Allocations"), _("This Allocation"),
-          _("Left to Allocate"), '', ''
+          _("Transaction Type"),
+          _("#"),
+          _("Date"),
+          _("Due Date"),
+          _("Amount"),
+          _("Other Allocations"),
+          _("This Allocation"),
+          _("Left to Allocate"),
+          '',
+          ''
         );
         Table::header($th);
         foreach ($_SESSION['alloc']->allocs as $alloc_item) {
-
           Cell::label($systypes_array[$alloc_item->type]);
           Cell::label(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
           Cell::label($alloc_item->date_, "class='right'");
@@ -244,11 +252,11 @@
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
-          amount_cells(NULL, "amount" . $counter, Num::price_format('amount' . $counter));
+          amount_cells(null, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
-          Cell::amount($un_allocated, FALSE, '');
+          Cell::amount($un_allocated, false, '');
           Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
-          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), FALSE));
+          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
           Row::end();
           $total_allocated += Validation::input_num('amount' . $counter);
           $counter++;
@@ -263,8 +271,7 @@
           if ($amount - $total_allocated < 0) {
             $font1 = "<span class='red'>";
             $font2 = "</span>";
-          }
-          else {
+          } else {
             $font1 = $font2 = "";
           }
           $left_to_allocate = Num::price_format($amount - $total_allocated);
@@ -278,18 +285,21 @@
      * @static
      * @return bool
      */
-    public static function check() {
+    public static function check()
+    {
       $total_allocated = 0;
       for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
         if (!Validation::post_num('amount' . $counter, 0)) {
           Event::error(_("The entry for one or more amounts is invalid or negative."));
           JS::set_focus('amount' . $counter);
-          return FALSE;
+
+          return false;
         }
         if (Validation::input_num('amount' . $counter) > Validation::input_num('un_allocated' . $counter)) {
           Event::error(_("At least one transaction is overallocated."));
           JS::set_focus('amount' . $counter);
-          return FALSE;
+
+          return false;
         }
         $_SESSION['alloc']->allocs[$counter]->current_allocated = Validation::input_num('amount' . $counter);
         $total_allocated += Validation::input_num('amount' . $counter);
@@ -300,9 +310,11 @@
       }
       if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts.allocation_allowance')) {
         Event::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
-        return FALSE;
+
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
@@ -317,11 +329,13 @@
      *
      * @return bool
      */
-    public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
+    public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0)
+    {
       $type = ST_SALESINVOICE;
       if (!User::i()->salesmanid) {
         Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
-        return FALSE;
+
+        return false;
       }
       $doc = new Sales_Order($type, 0);
       $doc->start();
@@ -336,7 +350,7 @@
       $doc->cust_ref   = $ref;
       $doc->Comments   = "Invoice for Customer Payment: " . $doc->cust_ref;
       $doc->salesman   = User::i()->salesmanid;
-      $doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, TRUE, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
+      $doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
       $doc->write(1);
       $doc->finish();
       $_SESSION['alloc']->add_or_update_item($type, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
@@ -349,7 +363,8 @@
      *
      * @return mixed
      */
-    public static function display($alloc_result, $total) {
+    public static function display($alloc_result, $total)
+    {
       global $systypes_array;
       if (!$alloc_result || DB::num_rows() == 0) {
         return;
@@ -360,7 +375,6 @@
       Table::header($th);
       $k = $total_allocated = 0;
       while ($alloc_row = DB::fetch($alloc_result)) {
-
         Cell::label($systypes_array[$alloc_row['type']]);
         Cell::label(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
         Cell::label(Dates::sql2date($alloc_row['tran_date']));
@@ -395,15 +409,18 @@
      *
      * @return mixed
      */
-    public static function from($person_type, $person_id, $type, $type_no, $total) {
+    public static function from($person_type, $person_id, $type, $type_no, $total)
+    {
       switch ($person_type) {
         case PT_CUSTOMER :
           $alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);
           GL_Allocation::display($alloc_result, $total);
+
           return;
         case PT_SUPPLIER :
           $alloc_result = Purch_Allocation::get_allocatable_to_trans($person_id, $type_no, $type);
           GL_Allocation::display($alloc_result, $total);
+
           return;
       }
     }
@@ -412,8 +429,8 @@
   /**
 
    */
-  class allocation_item {
-
+  class allocation_item
+  {
     /**
      * @var
      */
@@ -451,7 +468,8 @@
      * @param $amount_allocated
      * @param $current_allocated
      */
-    public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
+    public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
+    {
       $this->type              = $type;
       $this->type_no           = $type_no;
       $this->date_             = $date_;
@@ -466,7 +484,9 @@
     /**
      * @param $order
      */
-    function copy_from_order($order) {
+    public
+    public function copy_from_order($order)
+    {
       $_POST['Comments']         = $order->Comments;
       $_POST['OrderDate']        = $order->document_date;
       $_POST['delivery_date']    = $order->due_date;

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(800, 500);
   Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -19,8 +18,8 @@
   start_form();
   Table::start('tablestyle_noborder');
   Row::start();
-  Bank_Account::cells(_("Account:"), 'bank_account', NULL);
-  date_cells(_("From:"), 'TransAfterDate', '', NULL, -30);
+  Bank_Account::cells(_("Account:"), 'bank_account', null);
+  date_cells(_("From:"), 'TransAfterDate', '', null, -30);
   date_cells(_("To:"), 'TransToDate');
   submit_cells('Show', _("Show"), '', '', 'default');
   Row::end();
@@ -31,11 +30,12 @@
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
-  $sql    = "SELECT bank_trans.* FROM bank_trans
-	WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
-	AND trans_date >= '$date_after'
-	AND trans_date <= '$date_to'
-	ORDER BY trans_date,bank_trans.id";
+  $sql
+          = "SELECT bank_trans.* FROM bank_trans
+    WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
+    AND trans_date >= '$date_after'
+    AND trans_date <= '$date_to'
+    ORDER BY trans_date,bank_trans.id";
   $result = DB::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
   Display::div_start('trans_tbl');
   $act = Bank_Account::get($_POST["bank_account"]);
@@ -46,7 +46,7 @@
   );
   Table::header($th);
   $sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::escape($_POST['bank_account']) . "
-	AND trans_date < '$date_after'";
+    AND trans_date < '$date_after'";
   $before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
   Row::start("class='inquirybg'");
   Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
@@ -60,7 +60,6 @@
   $j             = 1;
   $k             = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-
     $running_total += $myrow["amount"];
     $trandate = Dates::sql2date($myrow["trans_date"]);
     Cell::label($systypes_array[$myrow["type"]]);

@@ -35,11 +35,11 @@
   $this->Line($iline1, 3);
   $this->SetDrawColor(128, 128, 128);
   $this->Line($iline1);
-  $this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", NULL, array(222, 231, 236));
+  $this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", null, array(222, 231, 236));
   $this->Line($iline2);
   $this->Line($iline3);
   $this->Line($iline4);
-  $this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", NULL, array(222, 231, 236));
+  $this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", null, array(222, 231, 236));
   $this->Line($iline5);
   $this->Line($iline6);
   $this->Line($iline7);
@@ -56,8 +56,7 @@
   if ($this->company['coy_logo'] != '') {
     $logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
     $this->AddImage($logo, $ccol, $this->row, 0, 40);
-  }
-  else {
+  } else {
     $this->fontSize += 4;
     $this->Font('bold');
     $this->Text($ccol, $this->company['coy_name'], $icol);
@@ -115,8 +114,7 @@
   if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
     if (Config::get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['trans_no']);
-    }
-    else {
+    } else {
       $this->Text($mcol + 180, $myrow['reference']);
     }
   }
@@ -134,7 +132,7 @@
   $this->Text($ccol, $name, $icol);
   $this->NewLine();
   $this->TextWrapLines($ccol, $icol - $ccol, $addr);
-  if ($sales_order != NULL) {
+  if ($sales_order != null) {
     $this->row = $temp;
     if (isset($sales_order['delivery_address'])) {
       $this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
@@ -155,8 +153,7 @@
   $col       = $this->leftMargin;
   if (isset($sales_order["customer_ref"])) {
     $this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
-  }
-  elseif (isset($myrow["debtor_ref"])) {
+  } elseif (isset($myrow["debtor_ref"])) {
     $this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
   }
   $col += $width;

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(800, 500);
   Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSFER);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
@@ -20,40 +19,35 @@
     Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Inventory Transfer"));
     Page::footer_exit();
   }
-
   if (isset($_POST['Process'])) {
     $tr          = &$_SESSION['transfer_items'];
     $input_error = 0;
     if (count($tr->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::set_focus('stock_id');
-      return FALSE;
+
+      return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::set_focus('ref');
       $input_error = 1;
-    }
-    elseif (!Ref::is_new($_POST['ref'], ST_LOCTRANSFER)) {
+    } elseif (!Ref::is_new($_POST['ref'], ST_LOCTRANSFER)) {
       $_POST['ref'] = Ref::get_next(ST_LOCTRANSFER);
-    }
-    elseif (!Dates::is_date($_POST['AdjDate'])) {
+    } elseif (!Dates::is_date($_POST['AdjDate'])) {
       Event::error(_("The entered date for the adjustment is invalid."));
       JS::set_focus('AdjDate');
       $input_error = 1;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('AdjDate');
       $input_error = 1;
-    }
-    elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation']) {
+    } elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation']) {
       Event::error(_("The locations to transfer from and to must be different."));
       JS::set_focus('FromStockLocation');
       $input_error = 1;
-    }
-    else {
-      $failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], TRUE);
+    } else {
+      $failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
       if ($failed_item >= 0) {
         $line = $tr->line_items[$failed_item];
         Event::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
@@ -73,7 +67,6 @@
     unset($_SESSION['transfer_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
-
   $id = find_submit(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
@@ -100,23 +93,27 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  submit_center_first('Update', _("Update"), '', NULL);
+  submit_center_first('Update', _("Update"), '', null);
   submit_center_last('Process', _("Process Transfer"), '', 'default');
   end_form();
   Page::end();
   /**
    * @return bool
    */
-  function check_item_data() {
+  function check_item_data()
+  {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
       JS::set_focus('qty');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
-  function handle_update_item() {
+  function handle_update_item()
+  {
     if ($_POST['UpdateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       if (!isset($_POST['std_cost'])) {
@@ -130,12 +127,14 @@
   /**
    * @param $id
    */
-  function handle_delete_item($id) {
+  function handle_delete_item($id)
+  {
     $_SESSION['transfer_items']->remove_from_order($id);
     Item_Line::start_focus('_stock_id_edit');
   }
 
-  function handle_new_item() {
+  function handle_new_item()
+  {
     if (!check_item_data()) {
       return;
     }
@@ -146,7 +145,8 @@
     Item_Line::start_focus('_stock_id_edit');
   }
 
-  function handle_new_order() {
+  function handle_new_order()
+  {
     if (isset($_SESSION['transfer_items'])) {
       $_SESSION['transfer_items']->clear_items();
       unset ($_SESSION['transfer_items']);
@@ -158,5 +158,4 @@
     }
     $_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
   }
-
 

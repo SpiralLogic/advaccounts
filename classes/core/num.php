@@ -7,13 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core;
   /**
 
    */
-  class Num {
-
+  class Num
+  {
     use Traits\Singleton;
 
     /**
@@ -36,18 +35,17 @@
      * @var
      */
     public static $percent_dec;
-
     /**
 
      */
-    protected function __construct() {
+    protected function __construct()
+    {
       static::$price_dec   = \User::prefs()->price_dec();
       static::$tho_sep     = \User::tho_sep();
       static::$dec_sep     = \User::dec_sep();
       static::$exrate_dec  = \User::prefs()->exrate_dec();
       static::$percent_dec = \User::prefs()->percent_dec();
     }
-
     /**
      * @static
      *
@@ -55,8 +53,10 @@
      *
      * @return int|string
      */
-    public static function  price_format($number) {
+    public static function  price_format($number)
+    {
       static::i();
+
       return static::format(static::round($number, static::$price_dec + 2), static::$price_dec);
     }
     /**
@@ -67,17 +67,19 @@
      *
      * @return int|string
      */
-    public static function  price_decimal($number, &$dec) {
+    public static function  price_decimal($number, &$dec)
+    {
       static::i();
       $dec = static::$price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
-      if ($pos !== FALSE) {
+      if ($pos !== false) {
         $len = strlen(substr($str, $pos + 1));
         if ($len > $dec) {
           $dec = $len;
         }
       }
+
       return Num::format($number, $dec);
     }
     /**
@@ -88,7 +90,8 @@
      *
      * @return float
      */
-    public static function  round($number, $decimals = 0) {
+    public static function  round($number, $decimals = 0)
+    {
       return round($number, $decimals, PHP_ROUND_HALF_EVEN);
     }
     /**
@@ -99,13 +102,15 @@
      *
      * @return int|string
      */
-    public static function  format($number, $decimals = 0) {
+    public static function  format($number, $decimals = 0)
+    {
       static::i();
       $tsep = static::$tho_sep;
       $dsep = static::$dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
       $delta  = ($number < 0 ? -.0000000001 : .0000000001);
       $number = number_format($number + $delta, $decimals, $dsep, $tsep);
+
       return ($number == -0 ? 0 : $number);
     }
     /**
@@ -115,8 +120,10 @@
      *
      * @return int|string
      */
-    public static function  exrate_format($number) {
+    public static function  exrate_format($number)
+    {
       static::i();
+
       return static::format($number, static::$exrate_dec);
     }
     /**
@@ -126,8 +133,10 @@
      *
      * @return int|string
      */
-    public static function  percent_format($number) {
+    public static function  percent_format($number)
+    {
       static::i();
+
       return static::format($number, static::$percent_dec);
     }
     /**
@@ -138,23 +147,23 @@
      *
      * @return float|int
      */
-    public static function round_to_nearest($price, $round_to) {
+    public static function round_to_nearest($price, $round_to)
+    {
       if ($price == 0) {
         return 0;
       }
       $pow = pow(10, static::$price_dec);
       if ($pow >= $round_to) {
         $mod = ($pow % $round_to);
-      }
-      else {
+      } else {
         $mod = ($round_to % $pow);
       }
       if ($mod != 0) {
         $price = ceil($price) - ($pow - $round_to) / $pow;
-      }
-      else {
+      } else {
         $price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
       }
+
       return $price;
     }
     /**
@@ -166,7 +175,8 @@
      * Simple English version of number to words conversion.
 
      */
-    public static function to_words($number) {
+    public static function to_words($number)
+    {
       $Bn = floor($number / 1000000000); /* Billions (giga) */
       $number -= $Bn * 1000000000;
       $Gn = floor($number / 1000000); /* Millions (mega) */
@@ -191,9 +201,26 @@
         $res .= (empty($res) ? "" : " ") . Num::to_words($Hn) . " Hundred";
       }
       $ones = array(
-        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
-        "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-        "Eightteen", "Nineteen"
+        "",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eightteen",
+        "Nineteen"
       );
       $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety");
       if ($Dn || $n) {
@@ -202,8 +229,7 @@
         }
         if ($Dn < 2) {
           $res .= $ones[$Dn * 10 + $n];
-        }
-        else {
+        } else {
           $res .= $tens[$Dn];
           if ($n) {
             $res .= "-" . $ones[$n];
@@ -213,6 +239,7 @@
       if (empty($res)) {
         $res = "zero";
       }
+
       return $res;
     }
   }

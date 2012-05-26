@@ -7,8 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'valid_charged_to_delivered_qty'   => TRUE, //
+    'valid_charged_to_delivered_qty'   => true, //
     /**check price charged on invoices exceeds the purchase order price.*/
-    'valid_charged_to_delivered_price' => TRUE, //
+    'valid_charged_to_delivered_price' => true, //
   );

@@ -11,6 +11,6 @@
   /**
 
    */
-  class DBSelectException extends DBException {
-
+  class DBSelectException extends DBException
+  {
   }

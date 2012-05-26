@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_BANKREP);
-
   print_bank_transactions();
   /**
    * @param $to
@@ -19,13 +17,15 @@
    *
    * @return mixed
    */
-  function get_bank_balance_to($to, $account) {
+  function get_bank_balance_to($to, $account)
+  {
     $to = Dates::date2sql($to);
     $sql
             = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
-	AND trans_date < '$to'";
+    AND trans_date < '$to'";
     $result = DB::query($sql, "The starting balance on hand could not be calculated");
     $row    = DB::fetch_row($result);
+
     return $row[0];
   }
 
@@ -36,19 +36,22 @@
    *
    * @return null|PDOStatement
    */
-  function get_bank_transactions($from, $to, $account) {
+  function get_bank_transactions($from, $to, $account)
+  {
     $from = Dates::date2sql($from);
     $to   = Dates::date2sql($to);
     $sql
           = "SELECT bank_trans.* FROM bank_trans
-		WHERE bank_trans.bank_act = '$account'
-		AND trans_date >= '$from'
-		AND trans_date <= '$to'
-		ORDER BY trans_date,bank_trans.id";
+        WHERE bank_trans.bank_act = '$account'
+        AND trans_date >= '$from'
+        AND trans_date <= '$to'
+        ORDER BY trans_date,bank_trans.id";
+
     return DB::query($sql, "The transactions for '$account' could not be retrieved");
   }
 
-  function print_bank_transactions() {
+  function print_bank_transactions()
+  {
     global $systypes_array;
     $acc         = $_POST['PARAM_0'];
     $from        = $_POST['PARAM_1'];
@@ -57,8 +60,7 @@
     $destination = $_POST['PARAM_4'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $rep     = new ADVReport(_('Bank Statement'), "BankStatement", User::page_size());
@@ -66,22 +68,15 @@
     $cols    = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $headers = array(
-      _('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'),
-      _('Debit'), _('Credit'), _('Balance')
+      _('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'), _('Debit'), _('Credit'), _('Balance')
     );
     $account = Bank_Account::get($acc);
     $act     = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
     $params  = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('Period'),
-        'from' => $from,
-        'to'   => $to
-      ),
-      2 => array(
-        'text' => _('Bank Account'),
-        'from' => $act,
-        'to'   => ''
+      0    => $comments, 1 => array(
+        'text' => _('Period'), 'from' => $from, 'to'   => $to
+      ), 2 => array(
+        'text' => _('Bank Account'), 'from' => $act, 'to'   => ''
       )
     );
     $rep->Font();
@@ -96,8 +91,7 @@
       $rep->TextCol(3, 5, _('Opening Balance'));
       if ($prev_balance > 0.0) {
         $rep->AmountCol(5, 6, abs($prev_balance), $dec);
-      }
-      else {
+      } else {
         $rep->AmountCol(6, 7, abs($prev_balance), $dec);
       }
       $rep->Font();
@@ -112,13 +106,12 @@
           $rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
           $rep->TextCol(1, 2, $myrow['trans_no']);
           $rep->TextCol(2, 3, $myrow['ref']);
-          $rep->DateCol(3, 4, $myrow["trans_date"], TRUE);
-          $rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], FALSE));
+          $rep->DateCol(3, 4, $myrow["trans_date"], true);
+          $rep->TextCol(4, 5, Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
           if ($myrow['amount'] > 0.0) {
             $rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
             $total_debit += abs($myrow['amount']);
-          }
-          else {
+          } else {
             $rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
             $total_credit += abs($myrow['amount']);
           }
@@ -140,8 +133,7 @@
       $rep->TextCol(3, 5, _("Ending Balance"));
       if ($total > 0.0) {
         $rep->AmountCol(5, 6, abs($total), $dec);
-      }
-      else {
+      } else {
         $rep->AmountCol(6, 7, abs($total), $dec);
       }
       $rep->Font();
@@ -151,13 +143,11 @@
       $net_change = ($total - $prev_balance);
       $rep->TextCol(3, 5, _("Net Change"));
       if ($total > 0.0) {
-        $rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, NULL, 1, TRUE);
-      }
-      else {
-        $rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, NULL, 1, TRUE);
+        $rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, true);
+      } else {
+        $rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, null, 1, true);
       }
     }
     $rep->End();
   }
-
 

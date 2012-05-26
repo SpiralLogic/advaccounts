@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_GL extends Application {
-
+  class Apps_GL extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct("GL", _($this->help_context = "&Banking"));
       $this->add_module(_("Transactions"));
@@ -53,5 +54,4 @@
       }
     }
   }
-
 

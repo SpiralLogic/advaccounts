@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Contact extends DB_abstract {
-
+  class Contact extends DB_abstract
+  {
     /**
      * @var int
      */
@@ -53,44 +53,50 @@
      * @param int       $type
      * @param array|int $id
      */
-    public function __construct($type, $id = 0) {
+    public function __construct($type, $id = 0)
+    {
       $this->parent_type = $type;
       parent::__construct($id, array('parent_type' => $type));
     }
-
-    public function delete() {
+    public function delete()
+    {
       // TODO: Implement delete() method.
     }
     /**
      * @return bool
      */
-    protected function _canProcess() {
-      return TRUE;
+    protected function _canProcess()
+    {
+      return true;
     }
     /**
      * @return bool|int
      */
-    protected function _saveNew() {
+    protected function _saveNew()
+    {
       $temp = new Contact($this->parent_type);
       foreach ($this as $key => $value) {
         if ($key != 'parent_id' && $key != 'id' && $key != 'parent_type' && $key != '_status' && $temp->$key != $value) {
           return parent::_saveNew();
         }
       }
-      return FALSE;
-    }
 
-    protected function _countTransactions() {
+      return false;
+    }
+    protected function _countTransactions()
+    {
       // TODO: Implement _countTransactions() method.
     }
-
-    protected function _defaults() {
+    protected function _defaults()
+    {
     }
     /**
      * @return bool|Status
      */
-    protected function _new() {
+    protected function _new()
+    {
       $this->_defaults();
-      return $this->_status(TRUE, 'Initialize new Contact', 'Now working with a new Contact');
+
+      return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
     }
   }

@@ -7,17 +7,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Supplier Invoice"), SA_SUPPTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Supplier Invoice"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
-  }
-  elseif (isset($_POST["trans_no"])) {
+  } elseif (isset($_POST["trans_no"])) {
     $trans_no = $_POST["trans_no"];
   }
   $creditor_trans             = new Creditor_Trans();
-  $creditor_trans->is_invoice = TRUE;
+  $creditor_trans->is_invoice = true;
   Purch_Invoice::get($trans_no, ST_SUPPINVOICE, $creditor_trans);
   $supplier_curr_code = Bank_Currency::for_creditor($creditor_trans->supplier_id);
   Display::heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
@@ -51,6 +49,5 @@
   if (Input::get('frame')) {
     return;
   }
-  Page::end(TRUE);
-
+  Page::end(true);
 

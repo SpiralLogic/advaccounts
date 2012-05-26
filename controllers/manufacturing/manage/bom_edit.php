@@ -7,11 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Bill Of Materials"), SA_BOM);
   Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
   Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   $selected_component = $selected_id;
   //if (isset($_GET["NewItem"]))
   //{
@@ -22,22 +21,16 @@
     $selected_parent   = $_GET['stock_id'];
   }
   /* selected_parent could come from a post or a get */
-  /*if (isset($_GET["selected_parent"]))
-     {
+  /*if (isset($_GET["selected_parent"])) {
        $selected_parent = $_GET["selected_parent"];
-     }
-     else if (isset($_POST["selected_parent"]))
-     {
+     } elseif (isset($_POST["selected_parent"])) {
        $selected_parent = $_POST["selected_parent"];
      }
      */
   /* selected_component could also come from a post or a get */
-  /*if (isset($_GET["selected_component"]))
-     {
+  /*if (isset($_GET["selected_component"])) {
        $selected_component = $_GET["selected_component"];
-     }
-     else
-     {
+     } else {
        $selected_component = get_post("selected_component", -1);
      }
      */
@@ -47,7 +40,8 @@
    *
    * @return int
    */
-  function check_for_recursive_bom($ultimate_parent, $component_to_check) {
+  function check_for_recursive_bom($ultimate_parent, $component_to_check)
+  {
     /* returns true ie 1 if the bom contains the parent part as a component
                 ie the bom is recursive otherwise false ie 0 */
     $sql    = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
@@ -62,12 +56,14 @@
         }
       } //(while loop)
     } //end if $result is true
+
     return 0;
   } //end of function check_for_recursive_bom
   /**
    * @param $selected_parent
    */
-  function display_bom_items($selected_parent) {
+  function display_bom_items($selected_parent)
+  {
     $result = WO::get_bom($selected_parent);
     Display::div_start('bom');
     Table::start('tablestyle grid width60');
@@ -77,12 +73,11 @@
     Table::header($th);
     $k = 0;
     while ($myrow = DB::fetch($result)) {
-
       Cell::label($myrow["component"]);
       Cell::label($myrow["description"]);
       Cell::label($myrow["location_name"]);
       Cell::label($myrow["WorkCentreDescription"]);
-      Cell::qty($myrow["quantity"], FALSE, Item::qty_dec($myrow["component"]));
+      Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
       Cell::label($myrow["units"]);
       edit_button_cell("Edit" . $myrow['id'], _("Edit"));
       delete_button_cell("Delete" . $myrow['id'], _("Delete"));
@@ -98,42 +93,44 @@
    *
    * @return mixed
    */
-  function on_submit($selected_parent, $selected_component = -1) {
+  function on_submit($selected_parent, $selected_component = -1)
+  {
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
       JS::set_focus('quantity');
+
       return;
     }
     if ($selected_component != -1) {
       $sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added']) . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
-			quantity= " . Validation::input_num('quantity') . "
-			WHERE parent=" . DB::escape($selected_parent) . "
-			AND id=" . DB::escape($selected_component);
+            quantity= " . Validation::input_num('quantity') . "
+            WHERE parent=" . DB::escape($selected_parent) . "
+            AND id=" . DB::escape($selected_component);
       DB::query($sql, "could not update bom");
       Event::success(_('Selected component has been updated'));
       $Mode = MODE_RESET;
-    }
-    else {
+    } else {
       /*Selected component is null cos no item selected on first time round
                         so must be adding a record must be Submitting new entries in the new
                         component form */
       //need to check not recursive bom component of itself!
       if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
         /*Now check to see that the component is not already on the bom */
-        $sql    = "SELECT component FROM bom
-				WHERE parent=" . DB::escape($selected_parent) . "
-				AND component=" . DB::escape($_POST['component']) . "
-				AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
-				AND loc_code=" . DB::escape($_POST['loc_code']);
+        $sql
+                = "SELECT component FROM bom
+                WHERE parent=" . DB::escape($selected_parent) . "
+                AND component=" . DB::escape($_POST['component']) . "
+                AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
+                AND loc_code=" . DB::escape($_POST['loc_code']);
         $result = DB::query($sql, "check failed");
         if (DB::num_rows($result) == 0) {
-          $sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . "," . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
+          $sql
+            = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
+                    VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . "," . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
           DB::query($sql, "check failed");
           Event::notice(_("A new component part has been added to the bill of material for this item."));
           $Mode = MODE_RESET;
-        }
-        else {
+        } else {
           /*The component must already be on the bom */
           Event::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
         }
@@ -155,9 +152,9 @@
     unset($_POST['quantity']);
   }
   start_form();
-  start_form(FALSE);
+  start_form(false);
   Table::start('tablestyle_noborder');
-  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
+  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
   if (list_updated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
@@ -177,8 +174,8 @@
       if ($Mode == MODE_EDIT) {
         //editing a selected component from the link to the line item
         $sql                       = "SELECT bom.*,stock_master.description FROM " . "bom,stock_master
-				WHERE id=" . DB::escape($selected_id) . "
-				AND stock_master.stock_id=bom.component";
+                WHERE id=" . DB::escape($selected_id) . "
+                AND stock_master.stock_id=bom.component";
         $result                    = DB::query($sql, "could not get bom");
         $myrow                     = DB::fetch($result);
         $_POST['loc_code']         = $myrow["loc_code"];
@@ -188,12 +185,11 @@
         Row::label(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
       }
       hidden('selected_id', $selected_id);
-    }
-    else {
+    } else {
       Row::start();
       Cell::label(_("Component:"));
       echo "<td>";
-      echo Item_UI::component('component', $selected_parent, NULL, FALSE, TRUE);
+      echo Item_UI::component('component', $selected_parent, null, false, true);
       if (get_post('_component_update')) {
         Ajax::i()->activate('quantity');
       }
@@ -201,16 +197,15 @@
       Row::end();
     }
     hidden('stock_id', $selected_parent);
-    Inv_Location::row(_("Location to Draw From:"), 'loc_code', NULL);
-    workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', NULL);
+    Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
+    workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
     $dec               = Item::qty_dec(get_post('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
-    qty_row(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
+    qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
     Table::end(1);
     submit_add_or_update_center($selected_id == -1, '', 'both');
     end_form();
   }
   // ----------------------------------------------------------------------------------
   Page::end();
-
 

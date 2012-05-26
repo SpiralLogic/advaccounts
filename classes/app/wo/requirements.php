@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Requirements {
-
+  class WO_Requirements
+  {
     /**
      * @static
      *
@@ -16,16 +16,19 @@
      *
      * @return null|PDOStatement
      */
-    public static function get($woid) {
-      $sql = "SELECT wo_requirements.*, stock_master.description,
-		stock_master.mb_flag,
-		locations.location_name,
-		workcentres.name AS WorkCentreDescription FROM
-		(wo_requirements, locations, " . "workcentres) INNER JOIN stock_master ON
-		wo_requirements.stock_id = stock_master.stock_id
-		WHERE workorder_id=" . DB::escape($woid) . "
-		AND locations.loc_code = wo_requirements.loc_code
-		AND workcentres.id=workcentre";
+    public static function get($woid)
+    {
+      $sql
+        = "SELECT wo_requirements.*, stock_master.description,
+        stock_master.mb_flag,
+        locations.location_name,
+        workcentres.name AS WorkCentreDescription FROM
+        (wo_requirements, locations, " . "workcentres) INNER JOIN stock_master ON
+        wo_requirements.stock_id = stock_master.stock_id
+        WHERE workorder_id=" . DB::escape($woid) . "
+        AND locations.loc_code = wo_requirements.loc_code
+        AND workcentres.id=workcentre";
+
       return DB::query($sql, "The work order requirements could not be retrieved");
     }
     /**
@@ -34,12 +37,14 @@
      * @param $woid
      * @param $stock_id
      */
-    public static function add($woid, $stock_id) {
+    public static function add($woid, $stock_id)
+    {
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
       while ($myrow = DB::fetch($result)) {
-        $sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
-			VALUES (" . DB::escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
+        $sql
+          = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
+            VALUES (" . DB::escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
         DB::query($sql, "The work order requirements could not be added");
       }
     }
@@ -48,7 +53,8 @@
      *
      * @param $woid
      */
-    public static function delete($woid) {
+    public static function delete($woid)
+    {
       $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
       DB::query($sql, "The work order requirements could not be deleted");
     }
@@ -59,9 +65,10 @@
      * @param $stock_id
      * @param $quantity
      */
-    public static function update($woid, $stock_id, $quantity) {
+    public static function update($woid, $stock_id, $quantity)
+    {
       $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
-		WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
+        WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
       DB::query($sql, "The work requirements issued quantity couldn't be updated");
     }
     /**
@@ -70,7 +77,8 @@
      * @param null $type
      * @param      $woid
      */
-    public static function void($type = NULL, $woid) {
+    public static function void($type = null, $woid)
+    {
       $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
       DB::query($sql, "The work requirements issued quantity couldn't be voided");
     }
@@ -82,28 +90,34 @@
      * @param bool $show_qoh
      * @param null $date
      */
-    public static function display($woid, $quantity, $show_qoh = FALSE, $date = NULL) {
+    public static function display($woid, $quantity, $show_qoh = false, $date = null)
+    {
       $result = WO_Requirements::get($woid);
       if (DB::num_rows($result) == 0) {
         Display::note(_("There are no Requirements for this Order."), 1, 0);
-      }
-      else {
+      } else {
         Table::start('tablestyle grid width90');
         $th = array(
-          _("Component"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand")
+          _("Component"),
+          _("From Location"),
+          _("Work Centre"),
+          _("Unit Quantity"),
+          _("Total Quantity"),
+          _("Units Issued"),
+          _("On Hand")
         );
         Table::header($th);
         $k          = 0; //row colour counter
-        $has_marked = FALSE;
-        if ($date == NULL) {
+        $has_marked = false;
+        if ($date == null) {
           $date = Dates::today();
         }
         while ($myrow = DB::fetch($result)) {
           $qoh      = 0;
-          $show_qoh = TRUE;
+          $show_qoh = true;
           // if it's a non-stock item (eg. service) don't show qoh
           if (!WO::has_stock_holding($myrow["mb_flag"])) {
-            $show_qoh = FALSE;
+            $show_qoh = false;
           }
           if ($show_qoh) {
             $qoh = Item::get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
@@ -112,26 +126,23 @@
           ) {
             // oops, we don't have enough of one of the component items
             Row::start("class='stockmankobg'");
-            $has_marked = TRUE;
-          }
-          else {
+            $has_marked = true;
+          } else {
           }
           if (User::show_codes()) {
             Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
-          }
-          else {
+          } else {
             Cell::label($myrow["description"]);
           }
           Cell::label($myrow["location_name"]);
           Cell::label($myrow["WorkCentreDescription"]);
           $dec = Item::qty_dec($myrow["stock_id"]);
-          Cell::qty($myrow["units_req"], FALSE, $dec);
-          Cell::qty($myrow["units_req"] * $quantity, FALSE, $dec);
-          Cell::qty($myrow["units_issued"], FALSE, $dec);
+          Cell::qty($myrow["units_req"], false, $dec);
+          Cell::qty($myrow["units_req"] * $quantity, false, $dec);
+          Cell::qty($myrow["units_issued"], false, $dec);
           if ($show_qoh) {
-            Cell::qty($qoh, FALSE, $dec);
-          }
-          else {
+            Cell::qty($qoh, false, $dec);
+          } else {
             Cell::label("");
           }
           Row::end();
@@ -143,5 +154,4 @@
       }
     }
   }
-
 

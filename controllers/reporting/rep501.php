@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_DIMENSIONREP);
-
   print_dimension_summary();
   /**
    * @param $from
@@ -19,15 +17,17 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to) {
+  function get_transactions($from, $to)
+  {
     $sql
       = "SELECT *
-		FROM
-			dimensions
-		WHERE reference >= " . DB::escape($from) . "
-		AND reference <= " . DB::escape($to) . "
-		ORDER BY
-			reference";
+        FROM
+            dimensions
+        WHERE reference >= " . DB::escape($from) . "
+        AND reference <= " . DB::escape($to) . "
+        ORDER BY
+            reference";
+
     return DB::query($sql, "No transactions were returned");
   }
 
@@ -36,28 +36,30 @@
    *
    * @return float
    */
-  function getYTD($dim) {
+  function getYTD($dim)
+  {
     $date = Dates::today();
     $date = Dates::begin_fiscalyear($date);
     Dates::date2sql($date);
     $sql
                 = "SELECT SUM(amount) AS Balance
-		FROM
-			gl_trans
-		WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
-		AND tran_date >= '$date'";
+        FROM
+            gl_trans
+        WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
+        AND tran_date >= '$date'";
     $trans_rows = DB::query($sql, "No transactions were returned");
     if (DB::num_rows($trans_rows) == 1) {
       $DemandRow = DB::fetch_row($trans_rows);
       $balance   = $DemandRow[0];
-    }
-    else {
+    } else {
       $balance = 0.0;
     }
+
     return $balance;
   }
 
-  function print_dimension_summary() {
+  function print_dimension_summary()
+  {
     $fromdim     = $_POST['PARAM_0'];
     $todim       = $_POST['PARAM_1'];
     $showbal     = $_POST['PARAM_2'];
@@ -65,16 +67,14 @@
     $destination = $_POST['PARAM_4'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $cols    = array(0, 50, 210, 250, 320, 395, 465, 515);
     $headers = array(_('Reference'), _('Name'), _('Type'), _('Date'), _('Due Date'), _('Closed'), _('YTD'));
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'left', 'right');
     $params  = array(
-      0 => $comments,
-      1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
+      0 => $comments, 1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
     );
     $rep     = new ADVReport(_('Dimension Summary'), "DimensionSummary", User::page_size());
     $rep->Font();
@@ -85,12 +85,11 @@
       $rep->TextCol(0, 1, $trans['reference']);
       $rep->TextCol(1, 2, $trans['name']);
       $rep->TextCol(2, 3, $trans['type_']);
-      $rep->DateCol(3, 4, $trans['date_'], TRUE);
-      $rep->DateCol(4, 5, $trans['due_date'], TRUE);
+      $rep->DateCol(3, 4, $trans['date_'], true);
+      $rep->DateCol(4, 5, $trans['due_date'], true);
       if ($trans['closed']) {
         $str = _('Yes');
-      }
-      else {
+      } else {
         $str = _('No');
       }
       $rep->TextCol(5, 6, $str);
@@ -103,5 +102,4 @@
     $rep->Line($rep->row);
     $rep->End();
   }
-
 

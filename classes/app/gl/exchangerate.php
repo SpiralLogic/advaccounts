@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_ExchangeRate {
-
+  class GL_ExchangeRate
+  {
     /**
      * @static
      *
@@ -16,12 +16,13 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($rate_id) {
+    public static function get($rate_id)
+    {
       $sql    = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       $result = DB::query($sql, "could not get exchange rate for $rate_id");
+
       return DB::fetch($result);
     }
-
     // Retrieves buy exchange rate for given currency/date, zero if no result
     /**
      * @static
@@ -31,15 +32,16 @@
      *
      * @return int
      */
-    public static function get_date($curr_code, $date_) {
+    public static function get_date($curr_code, $date_)
+    {
       $date   = Dates::date2sql($date_);
-      $sql    = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
-        . " AND date_='$date'";
+      $sql    = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
       $result = DB::query($sql, "could not get exchange rate for $curr_code - $date_");
       if (DB::num_rows($result) == 0) {
         return 0;
       }
       $row = DB::fetch($result);
+
       return $row[0];
     }
     /**
@@ -50,13 +52,13 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    public static function update($curr_code, $date_, $buy_rate, $sell_rate) {
+    public static function update($curr_code, $date_, $buy_rate, $sell_rate)
+    {
       if (Bank_Currency::is_company($curr_code)) {
-        Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
+        Errors::db_error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::date2sql($date_);
-      $sql  = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate)
-        . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
+      $sql  = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate) . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
       DB::query($sql, "could not add exchange rate for $curr_code");
     }
     /**
@@ -67,14 +69,15 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    public static function add($curr_code, $date_, $buy_rate, $sell_rate) {
+    public static function add($curr_code, $date_, $buy_rate, $sell_rate)
+    {
       if (Bank_Currency::is_company($curr_code)) {
-        Errors::db_error("Exchange rates cannot be set for company currency", "", TRUE);
+        Errors::db_error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::date2sql($date_);
-      $sql  = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
-		VALUES (" . DB::escape($curr_code) . ", '$date', " . DB::escape($buy_rate)
-        . ", " . DB::escape($sell_rate) . ")";
+      $sql
+            = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
+        VALUES (" . DB::escape($curr_code) . ", '$date', " . DB::escape($buy_rate) . ", " . DB::escape($sell_rate) . ")";
       DB::query($sql, "could not add exchange rate for $curr_code");
     }
     /**
@@ -82,11 +85,11 @@
      *
      * @param $rate_id
      */
-    public static function delete($rate_id) {
+    public static function delete($rate_id)
+    {
       $sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
       DB::query($sql, "could not delete exchange rate $rate_id");
     }
-
     //	Retrieve exchange rate as of date $date from external source (usually inet)
     //
     /**
@@ -97,12 +100,12 @@
      *
      * @return float|int|mixed|string
      */
-    public static function retrieve($curr_b, $date) {
+    public static function retrieve($curr_b, $date)
+    {
       global $Hooks;
       if (method_exists($Hooks, 'retrieve_exrate')) {
         return $Hooks->retrieve_exrate($curr_b, $date);
-      }
-      else {
+      } else {
         return static::get_external($curr_b, 'ECB', $date);
       }
     }
@@ -115,17 +118,16 @@
      *
      * @return float|int|mixed|string
      */
-    public static function get_external($curr_b, $provider = 'ECB', $date) {
+    public static function get_external($curr_b, $provider = 'ECB', $date)
+    {
       $curr_a = DB_Company::get_pref('curr_default');
       if ($provider == 'ECB') {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";
         $site     = "www.ecb.int";
-      }
-      elseif ($provider == 'YAHOO') {
+      } elseif ($provider == 'YAHOO') {
         $filename = "/q?s={$curr_a}{$curr_b}=X";
         $site     = "finance.yahoo.com";
-      }
-      elseif ($provider == 'GOOGLE') {
+      } elseif ($provider == 'GOOGLE') {
         $filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
         $site     = "finance.google.com";
       }
@@ -146,8 +148,7 @@
           // try again for constant IP.
           $site = "195.128.2.97";
         } while (($contents == '') && $retry--);
-      }
-      else {
+      } else {
         $handle = @fopen("http://" . $site . $filename, 'rb');
         if ($handle) {
           do {
@@ -156,8 +157,7 @@
               break;
             }
             $contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
-          }
-          while (TRUE);
+          } while (true);
           @fclose($handle);
         } // end handle
       }
@@ -176,12 +176,10 @@
         $val_b = str_replace(',', '', $val_b);
         if ($val_b) {
           $val = $val_a / $val_b;
-        }
-        else {
+        } else {
           $val = 0;
         }
-      }
-      elseif ($provider == 'YAHOO') {
+      } elseif ($provider == 'YAHOO') {
         $val = '';
         if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
           $val = strip_tags($matches[1]);
@@ -190,8 +188,7 @@
             $val = 1 / $val;
           }
         }
-      }
-      elseif ($provider == 'GOOGLE') {
+      } elseif ($provider == 'GOOGLE') {
         $val    = '';
         $regexp = "%([\d|.]+)\s+{$curr_a}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_b}\s*</span>%s";
         if (preg_match($regexp, $contents, $matches)) {
@@ -202,9 +199,9 @@
           }
         }
       }
+
       return $val;
     } /* end function get_extern_rate */
-
     // Displays currency exchange rate for given date.
     // When there is no exrate for today,
     // gets it form ECB and stores in local database.
@@ -217,14 +214,13 @@
      * @param      $date_
      * @param bool $edit_rate
      */
-    public static function display($from_currency, $to_currency, $date_, $edit_rate = FALSE) {
-
+    public static function display($from_currency, $to_currency, $date_, $edit_rate = false)
+    {
       if ($from_currency != $to_currency) {
         $comp_currency = Bank_Currency::for_company();
         if ($from_currency == $comp_currency) {
           $currency = $to_currency;
-        }
-        else {
+        } else {
           $currency = $from_currency;
         }
         $rate = 0;
@@ -248,12 +244,9 @@
         }
         $rate = Num::format($rate, User::exrate_dec());
         if ($edit_rate) {
-          text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, NULL, "class='label'", " $from_currency = 1 $to_currency");
-        }
-        else {
-          Cell::labels(_("Exchange Rate:"),
-            "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency",
-            '');
+          text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
+        } else {
+          Cell::labels(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
         }
         Ajax::i()->addUpdate('_ex_rate', '_ex_rate', $rate);
       }

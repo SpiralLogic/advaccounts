@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class userPrefs {
-
+  class userPrefs
+  {
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -94,15 +94,15 @@
     /**
      * @param null $user
      */
-    function __construct($user = NULL) {
-      if ($user == NULL) {
+    public function __construct($user = null)
+    {
+      if ($user == null) {
         // set default values, used before login
         $this->date_sep    = Config::get('date.ui_separator');
         $this->date_format = Config::get('date.ui_format');
         $this->language    = Config::get('default.lang');
         $this->startup_tab = Config::get('apps.default');
-      }
-      else {
+      } else {
         $this->setFromArray($user);
         $_SESSION['Language']->set_language($this->language);
       }
@@ -110,109 +110,130 @@
     /**
      * @return Array|mixed
      */
-    function language() {
+    public function language()
+    {
       return $this->language;
     }
-    function qty_dec() {
+    public function qty_dec()
+    {
       return $this->qty_dec;
     }
     /**
      * @return int
      */
-    function price_dec() {
+    public function price_dec()
+    {
       return $this->price_dec;
     }
-    function exrate_dec() {
+    public function exrate_dec()
+    {
       return $this->exrate_dec;
     }
     /**
      * @return int
      */
-    function percent_dec() {
+    public function percent_dec()
+    {
       return $this->percent_dec;
     }
-    function show_gl() {
+    public function show_gl()
+    {
       return $this->show_gl;
     }
-    function show_codes() {
+    public function show_codes()
+    {
       return $this->show_codes;
     }
     /**
      * @return Array|mixed
      */
-    function date_format() {
+    public function date_format()
+    {
       return $this->date_format;
     }
     /**
      * @return Array|mixed
      */
-    function date_sep() {
+    public function date_sep()
+    {
       return $this->date_sep;
     }
     /**
      * @return string
      */
-    function date_display() {
+    public function date_display()
+    {
       $date_seps = Config::get('date.separators');
       $sep       = $date_seps[$this->date_sep];
       if ($this->date_format == 0) {
         return "m" . $sep . "d" . $sep . "Y";
-      }
-      elseif ($this->date_format == 1) {
+      } elseif ($this->date_format == 1) {
         return "d" . $sep . "m" . $sep . "Y";
-      }
-      else {
+      } else {
         return "Y" . $sep . "m" . $sep . "d";
       }
     }
     /**
      * @return mixed
      */
-    function tho_sep() {
+    public function tho_sep()
+    {
       $tho_seps = Config::get('separators_thousands');
+
       return $tho_seps [$this->tho_sep];
     }
     /**
      * @return mixed
      */
-    function dec_sep() {
+    public function dec_sep()
+    {
       $dec_seps = Config::get('separators_decimal');
+
       return $dec_seps [$this->dec_sep];
     }
     /**
      * @return string
      */
-    function get_theme() {
+    public function get_theme()
+    {
       return $this->theme;
     }
-    function get_pagesize() {
+    public function get_pagesize()
+    {
       return $this->page_size;
     }
-    function show_hints() {
+    public function show_hints()
+    {
       return $this->show_hints;
     }
-    function print_profile() {
+    public function print_profile()
+    {
       return $this->print_profile;
     }
-    function rep_popup() {
+    public function rep_popup()
+    {
       return $this->rep_popup;
     }
-    function query_size() {
+    public function query_size()
+    {
       return $this->query_size;
     }
-    function graphic_links() {
+    public function graphic_links()
+    {
       return $this->graphic_links;
     }
     /**
      * @return int
      */
-    function sticky_doc_date() {
+    public function sticky_doc_date()
+    {
       return $this->sticky_doc_date;
     }
     /**
      * @return Array|mixed
      */
-    function start_up_tab() {
+    public function start_up_tab()
+    {
       return $this->startup_tab;
     }
   }

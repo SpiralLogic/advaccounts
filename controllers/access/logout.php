@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  Page::start(_("Logout"), SA_OPEN, TRUE, FALSE, '');
+  Page::start(_("Logout"), SA_OPEN, true, false, '');
   echo "<table style='width:100%' > <tr><td class='center'><img src='/themes/default/images/logo_advaccounts.png' alt='ADVAccounts' style='width:250px; height:50px' /></td></tr>
  <tr><td>&nbsp;</td></tr>
  <tr><td><div class='center'><span class='apptitle'>";
@@ -21,5 +20,5 @@
   echo "</div></td></tr>
 </table><br>\n";
   User::logout();
-  Page::end(TRUE);
+  Page::end(true);
 

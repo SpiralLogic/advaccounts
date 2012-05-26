@@ -4,6 +4,6 @@
   /**
 
    */
-  class Statement {
-
+  class Statement
+  {
   }

@@ -7,15 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Create/Update Company"), SA_CREATECOMPANY);
   if (isset($_GET['selected_id'])) {
     $selected_id = $_GET['selected_id'];
-  }
-  elseif (isset($_POST['selected_id'])) {
+  } elseif (isset($_POST['selected_id'])) {
     $selected_id = $_POST['selected_id'];
-  }
-  else {
+  } else {
     $selected_id = -1;
   }
   if (isset($_GET['c']) && $_GET['c'] == 'df') {
@@ -36,20 +33,23 @@
    *
    * @return bool
    */
-  function check_data(&$selected_id) {
+  function check_data(&$selected_id)
+  {
     if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
-      return FALSE;
+      return false;
     }
     if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1)) {
       Event::error(_("When creating a new company, you must provide a Database script file."));
-      return FALSE;
+
+      return false;
     }
     foreach (Config::get_all('db') as $id => $con) {
       if ($id != $selected_id && $_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']
       ) {
       }
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
@@ -57,11 +57,12 @@
    *
    * @return bool
    */
-  function handle_submit(&$selected_id) {
+  function handle_submit(&$selected_id)
+  {
     $comp_subdirs = Config::get('company_subdirs');
-    $error        = FALSE;
+    $error        = false;
     if (!check_data($selected_id)) {
-      return FALSE;
+      return false;
     }
     $id                          = $_GET['id'];
     $connections                 = Config::get_all('db');
@@ -72,45 +73,41 @@
     $db_connection['dbpassword'] = $_POST['dbpassword'];
     $db_connection['dbname']     = $_POST['dbname'];
     Config::set($id, $db_connection, 'db');
-    if ((bool) $_POST['def'] == TRUE) {
+    if ((bool) $_POST['def'] == true) {
       Config::set('default.company', $id);
     }
     if (isset($_GET['ul']) && $_GET['ul'] == 1) {
       $conn = Config::get('db.' . $id);
       if (($db = DB_Utils::create($conn)) == 0) {
         Event::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
-        $error = TRUE;
-      }
-      else {
+        $error = true;
+      } else {
         $filename = $_FILES['uploadfile']['tmp_name'];
         if (is_uploaded_file($filename)) {
           if (!DB_Utils::import($filename, $conn, $id)) {
             Event::error(_('Cannot create new company due to bugs in sql file.'));
-            $error = TRUE;
-          }
-          else {
+            $error = true;
+          } else {
             if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
               DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
             }
           }
-        }
-        else {
+        } else {
           Event::error(_("Error uploading Database Script, please upload it manually"));
-          $error = TRUE;
+          $error = true;
         }
       }
       if ($error) {
         remove_connection($id);
-        return FALSE;
+
+        return false;
       }
-    }
-    else {
+    } else {
       if ($_GET['c'] = 'u') {
         $conn = Config::get('db.' . $id);
         if (($db = DB_Utils::create($conn)) == 0) {
           Event::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
-        }
-        elseif ($_POST['admpassword'] != "") {
+        } elseif ($_POST['admpassword'] != "") {
           DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
         }
       }
@@ -121,16 +118,19 @@
     $exts = DB_Company::get_company_extensions();
     advaccounting::write_extensions($exts, $id);
     Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
-    return TRUE;
+
+    return true;
   }
 
-  function handle_delete() {
+  function handle_delete()
+  {
     $id = $_GET['id'];
     // First make sure all company directories from the one under removal are writable.
     // Without this after operation we end up with changed per-company owners!
     for ($i = $id; $i < count(Config::get_all('db')); $i++) {
       if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
         Event::error(_('Broken company subdirectories system. You have to remove this company manually.'));
+
         return;
       }
     }
@@ -142,12 +142,14 @@
     $tmpname = COMPANY_PATH . 'old_' . $id;
     if (!@rename($cdir, $tmpname)) {
       Event::error(_('Cannot rename subdirectory to temporary name.'));
+
       return;
     }
     // 'shift' company directories names
     for ($i = $id + 1; $i < count(Config::get_all('db')); $i++) {
       if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
         Event::error(_("Cannot rename company subdirectory"));
+
         return;
       }
     }
@@ -159,24 +161,28 @@
       Config::set('default.company', 1);
     }
     // finally remove renamed company directory
-    @Files::flush_dir($tmpname, TRUE);
+    @Files::flush_dir($tmpname, true);
     if (!@rmdir($tmpname)) {
       Event::error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+
       return;
     }
     Event::notice(_("Selected company as been deleted"));
   }
 
-  function display_companies() {
+  function display_companies()
+  {
     $coyno = User::i()->company;
     echo "
-			<script language='javascript'>
-			function deleteCompany(id) {
-				if (!confirm('" . _("Are you sure you want to delete company no. ") . "'+id))
-					return
-				document.location.replace('create_coy.php?c=df&id='+id)
-			}
-			</script>";
+            <script language='javascript'>
+            function deleteCompany(id)
+            {
+                if (!confirm('" . _("Are you sure you want to delete company no. ") . "'+id))
+
+                    return
+                document.location.replace('create_coy.php?c=df&id='+id)
+            }
+            </script>";
     Table::start('tablestyle grid');
     $th = array(
       _("Company"), _("Database Host"), _("Database User"), _("Database Name"), _("Table Pref"), _("Default"), "", ""
@@ -188,14 +194,12 @@
     for ($i = 0; $i < $n; $i++) {
       if ($i == Config::get('default.company')) {
         $what = _("Yes");
-      }
-      else {
+      } else {
         $what = _("No");
       }
       if ($i == $coyno) {
         Row::start("class='stockmankobg'");
-      }
-      else {
+      } else {
       }
       Cell::label($conn[$i]['name']);
       Cell::label($conn[$i]['host']);
@@ -219,26 +223,26 @@
   /**
    * @param $selected_id
    */
-  function display_company_edit($selected_id) {
+  function display_company_edit($selected_id)
+  {
     if ($selected_id != -1) {
       $n = $selected_id;
-    }
-    else {
+    } else {
       $n = count(Config::get_all('db'));
     }
-    start_form(TRUE);
+    start_form(true);
     echo "
-			<script language='javascript'>
-			function updateCompany() {
-				if (document.forms[0].uploadfile.value!='' && document.forms[0].dbname.value!='') {
-					document.forms[0].action='create_coy.php?c=u&ul=1&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
-				}
-				else {
-					document.forms[0].action='create_coy.php?c=u&id=" . $n . "'
-				}
-				document.forms[0].submit()
-			}
-			</script>";
+            <script language='javascript'>
+            function updateCompany()
+            {
+                if (document.forms[0].uploadfile.value!='' && document.forms[0].dbname.value!='') {
+                    document.forms[0].action='create_coy.php?c=u&ul=1&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
+                } else {
+                    document.forms[0].action='create_coy.php?c=u&id=" . $n . "'
+                }
+                document.forms[0].submit()
+            }
+            </script>";
     Table::start('tablestyle2');
     if ($selected_id != -1) {
       $conn                = Config::get('db.' . $selected_id);
@@ -248,12 +252,11 @@
       $_POST['dbpassword'] = $conn['dbpassword'];
       $_POST['dbname']     = $conn['dbname'];
       if ($selected_id == Config::get('default.company')) {
-        $_POST['def'] = TRUE;
+        $_POST['def'] = true;
+      } else {
+        $_POST['def'] = false;
       }
-      else {
-        $_POST['def'] = FALSE;
-      }
-      $_POST['dbcreate'] = FALSE;
+      $_POST['dbcreate'] = false;
       hidden('selected_id', $selected_id);
       hidden('dbpassword', $_POST['dbpassword']);
     }
@@ -264,7 +267,7 @@
       text_row_ex(_("Database Password"), 'dbpassword', 30);
     }
     text_row_ex(_("Database Name"), 'dbname', 30);
-    yesno_list_row(_("Default"), 'def', NULL, "", "", FALSE);
+    yesno_list_row(_("Default"), 'def', null, "", "", false);
     file_row(_("Database Script"), "uploadfile");
     text_row_ex(_("New script Admin Password"), 'admpassword', 20);
     Table::end();
@@ -272,5 +275,4 @@
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
     end_form();
   }
-
 

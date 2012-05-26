@@ -11,15 +11,15 @@
   /**
 
    */
-  class Autoload_Exception extends \Exception {
-
+  class Autoload_Exception extends \Exception
+  {
   }
 
   /**
 
    */
-  class Autoloader {
-
+  class Autoloader
+  {
     /**
      * @var int
      */
@@ -35,27 +35,27 @@
     /**
      * @var array
      */
-    static $loaded = array();
+    public static $loaded = array();
     /**
      * @static
 
      */
-    public static function i() {
+    public static function i()
+    {
       class_alias(__CLASS__, 'Autoloader');
-      spl_autoload_register('\\ADV\\Core\\Autoloader::load', TRUE);
+      spl_autoload_register('\\ADV\\Core\\Autoloader::load', true);
       $cachedClasses = \ADV\Core\Cache::get('autoload', array());
       if ($cachedClasses) {
         static::$global_classes = $cachedClasses['global_classes'];
         static::$classes        = $cachedClasses['classes'];
         static::$loaded         = $cachedClasses['paths'];
-      }
-      else {
+      } else {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         static::import_namespaces((array) $core);
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         static::add_classes((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', TRUE, TRUE);
+      spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', true, true);
     }
     /**
      * @static
@@ -63,7 +63,8 @@
      * @param array $classes
      * @param       $type
      */
-    protected static function add_classes(array $classes, $type) {
+    protected static function add_classes(array $classes, $type)
+    {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -77,7 +78,8 @@
      * @param $namespace
      * @param $classes
      */
-    protected static function import_namespace($namespace, $classes) {
+    protected static function import_namespace($namespace, $classes)
+    {
       static::$global_classes = array_merge(static::$global_classes, array_fill_keys($classes, $namespace));
     }
     /**
@@ -85,7 +87,8 @@
      *
      * @param array $namespaces
      */
-    protected static function import_namespaces(array $namespaces) {
+    protected static function import_namespaces(array $namespaces)
+    {
       foreach ($namespaces as $namespace => $classes) {
         static::import_namespace($namespace, $classes);
       }
@@ -100,7 +103,8 @@
      * @internal param $path
      * @return string
      */
-    protected static function tryPath($paths, $required_class) {
+    protected static function tryPath($paths, $required_class)
+    {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -108,7 +112,8 @@
           return static::includeFile($filepath, $required_class);
         }
       }
-      return FALSE;
+
+      return false;
     }
     /**
      * @static
@@ -120,7 +125,8 @@
      * @internal param $class
      * @return bool
      */
-    protected static function includeFile($filepath, $required_class) {
+    protected static function includeFile($filepath, $required_class)
+    {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
@@ -133,7 +139,8 @@
           Event::register_shutdown(__CLASS__);
         }
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
@@ -142,8 +149,9 @@
      *
      * @return bool|string
      */
-    public static function loadFromCache($required_class) {
-      $result = FALSE;
+    public static function loadFromCache($required_class)
+    {
+      $result = false;
       if (isset(static::$loaded[$required_class])) {
         try {
           $result = static::includeFile(static::$loaded[$required_class], $required_class);
@@ -151,11 +159,11 @@
         catch (Autoload_Exception $e) {
           Event::register_shutdown(__CLASS__);
         }
-
         if ($result && isset(static::$global_classes[$required_class])) {
           class_alias(static::$global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
       }
+
       return $result;
     }
     /**
@@ -167,27 +175,26 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public static function load($requested_class) {
+    public static function load($requested_class)
+    {
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
       }
-      $alias      = FALSE;
+      $alias      = false;
       $class_file = str_replace('_', DS, $classname);
       if (isset(static::$global_classes[$classname]) && (!$namespace || static::$global_classes[$classname] == $namespace)) {
         $namespace = static::$global_classes[$classname];
-        $alias     = TRUE;
+        $alias     = true;
       }
       if ($namespace) {
         $namespacepath = str_replace(['\\', 'ADV'], [DS, 'classes'], $namespace);
         $dir           = DOCROOT . strtolower($namespacepath);
-      }
-      elseif (isset(static::$classes[$classname])) {
+      } elseif (isset(static::$classes[$classname])) {
         $dir = static::$classes[$classname] . DS . $class_file;
-      }
-      else {
+      } else {
         $dir = APPPATH . strtolower($class_file);
       }
       $class_file = strtolower($class_file);
@@ -202,17 +209,20 @@
         static::$loaded[$classname] = static::$loaded[$requested_class];
         class_alias($fullclass, $classname);
       }
+
       return $result;
     }
     /**
      * @static
 
      */
-    public static function _shutdown() {
+    public static function _shutdown()
+    {
       Cache::set('autoload', array(
-        'classes' => static::$classes, 'global_classes' => static::$global_classes,
-        'paths'   => static::$loaded
-      ));
+                                  'classes'        => static::$classes,
+                                  'global_classes' => static::$global_classes,
+                                  'paths'          => static::$loaded
+                             ));
     }
   }
 

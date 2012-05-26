@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Creditors extends Application {
-
+  class Apps_Creditors extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       $this->direct = '/contacts/suppliers';
       parent::__construct("Creditors", _($this->help_context = "&Suppliers"));
     }

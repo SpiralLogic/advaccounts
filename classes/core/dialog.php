@@ -11,8 +11,8 @@
   /**
 
    */
-  class Dialog {
-
+  class Dialog
+  {
     /**
      * @var array
      */
@@ -32,7 +32,7 @@
     /**
      * @var bool
      */
-    protected $data = FALSE;
+    protected $data = false;
     /**
      * @var array
      */
@@ -40,25 +40,26 @@
     /**
      * @var bool
      */
-    protected $_template = FALSE;
+    protected $_template = false;
     /**
      * @param       $title
      * @param bool  $name
      * @param bool  $contents
      * @param array $options
      */
-    public function __construct($title, $name = FALSE, $contents = FALSE, $options = array()) {
+    public function __construct($title, $name = false, $contents = false, $options = array())
+    {
       $this->name  = $name;
       $this->title = ($title) ? $title : "Message Box";
       if ($contents) {
         $this->setContents($contents);
       }
       $this->options = array(
-        'autoOpen'      => FALSE,
-        'modal'         => FALSE,
+        'autoOpen'      => false,
+        'modal'         => false,
         'width'         => 300,
-        'resizable'     => TRUE,
-        'closeOnEscape' => TRUE
+        'resizable'     => true,
+        'closeOnEscape' => true
       );
       $this->setOptions($options);
     }
@@ -67,7 +68,8 @@
      *
      * @return mixed
      */
-    public function setContents($contents) {
+    public function setContents($contents)
+    {
       if (empty($contents)) {
         return;
       }
@@ -76,35 +78,38 @@
           $this->contents .= $content . "<hr>";
         }
         ;
-      }
-      else {
+      } else {
         $this->contents = $contents;
       }
     }
     /**
      * @param string $data
      */
-    public function setTemplateData($data = '') {
+    public function setTemplateData($data = '')
+    {
       $this->data      = $data;
-      $this->_template = TRUE;
+      $this->_template = true;
     }
     /**
      * @param        $selector
      * @param string $type
      */
-    public function addOpenEvent($selector, $type = 'click') {
+    public function addOpenEvent($selector, $type = 'click')
+    {
       $this->events[] = array($selector, $type, "\$({$this->name}).dialog('open');");
     }
     /**
      * @param $js
      */
-    public function addBeforeClose($js) {
+    public function addBeforeClose($js)
+    {
       $this->options['beforeClose'] = "function(event,ui){'.$js.'}";
     }
     /**
      * @param array $buttons
      */
-    public function addButtons($buttons = array()) {
+    public function addButtons($buttons = array())
+    {
       foreach ($buttons as $button => $action) {
         $this->addButton($button, $action);
       }
@@ -113,13 +118,15 @@
      * @param $button
      * @param $action
      */
-    public function addButton($button, $action) {
+    public function addButton($button, $action)
+    {
       $this->buttons[$button] = $action;
     }
     /**
      * @param array $options
      */
-    public function setOptions($options = array()) {
+    public function setOptions($options = array())
+    {
       if (is_array($options) && count($options) > 0) {
         $this->options = array_merge($this->options, $options);
       }
@@ -127,7 +134,8 @@
     /**
 
      */
-    public function show() {
+    public function show()
+    {
       $buttons = '';
       if (count($this->buttons > 0)) {
         $buttons = '.dialog("option","buttons", [';
@@ -140,10 +148,8 @@
         $this->contents = '<script id="' . $this->name . '-template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';
         echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
         $js = '$' . $this->name . '=$("#' . $this->name . '").dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
-      }
-      else {
-        JS::beforeload('$' . $this->name . " = $('" . '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents
-          . '</div>)' . "');");
+      } else {
+        JS::beforeload('$' . $this->name . " = $('" . '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>)' . "');");
         $js = '$' . $this->name . '.dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
       }
       if (!empty($js)) {

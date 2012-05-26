@@ -7,13 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
     /** Allow charcters in accounts */
-    'allowcharacters'      => NULL,
-    /** email stock location if order below reorder-level */
-    'stock_emailnotify'    => FALSE,
-    /** Allocation ALlowance */
-    'allocation_allowance' => 0.005,
-    /** Audit Logging */
-    'logs_audits'          => TRUE,
+    'allowcharacters'      => null, /** email stock location if order below reorder-level */
+    'stock_emailnotify'    => false, /** Allocation ALlowance */
+    'allocation_allowance' => 0.005, /** Audit Logging */
+    'logs_audits'          => true,
   );

@@ -13,15 +13,15 @@
   /**
 
    */
-  class SessionException extends \Exception {
-
+  class SessionException extends \Exception
+  {
   }
 
   /**
    * @property \ADVAccounting App
    */
-  class Session {
-
+  class Session
+  {
     use Traits\Singleton;
 
     /***
@@ -35,7 +35,8 @@
     /**
      * @throws \ADV\Core\SessionException
      */
-    final protected function __construct() {
+    final protected function __construct()
+    {
       /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_DISABLED) {
@@ -43,7 +44,7 @@
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
-      $old_serializer = $old_handler = $old_path = NULL;
+      $old_serializer = $old_handler = $old_path = null;
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
@@ -73,28 +74,32 @@
      * @static
      * @return bool
      */
-    public static function checkUserAgent() {
+    public static function checkUserAgent()
+    {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         static::setUserAgent();
-        return FALSE;
+
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
      * @return bool
      */
-    protected static function setUserAgent() {
+    protected static function setUserAgent()
+    {
       return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
      */
-    protected function setTextSupport() {
+    protected function setTextSupport()
+    {
       if (isset($_SESSION['get_text'])) {
         static::$get_text = $_SESSION['get_text'];
-      }
-      else {
+      } else {
         static::$get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
       }
     }
@@ -103,8 +108,9 @@
      *
      * @return mixed|null
      */
-    public function __get($var) {
-      return isset($this->_session[$var]) ? $this->_session[$var] : NULL;
+    public function __get($var)
+    {
+      return isset($this->_session[$var]) ? $this->_session[$var] : null;
     }
     /**
      * @param $var
@@ -112,7 +118,8 @@
      *
      * @return void
      */
-    public function __set($var, $value) {
+    public function __set($var, $value)
+    {
       $this->_session[$var] = $value;
     }
     /**
@@ -122,13 +129,16 @@
      * @internal param $valie
      * @return float|string
      */
-    public function setGlobal($var, $value = NULL) {
-      if ($value === NULL) {
+    public function setGlobal($var, $value = null)
+    {
+      if ($value === null) {
         unset($_SESSION['globals'][$var]);
-        return NULL;
+
+        return null;
       }
       $_SESSION['globals'][$var] = $value;
       $_SESSION[$var]            = $value;
+
       return $value;
     }
     /**
@@ -137,13 +147,15 @@
      *
      * @return mixed
      */
-    public function getGlobal($var, $default = NULL) {
+    public function getGlobal($var, $default = null)
+    {
       return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**
      * @param $globals
      */
-    public function removeGlobal($globals) {
+    public function removeGlobal($globals)
+    {
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
@@ -155,7 +167,8 @@
      * @static
      * @return void
      */
-    public static function kill() {
+    public static function kill()
+    {
       static::i();
       Config::removeAll();
       session_unset();
@@ -165,7 +178,8 @@
      * @static
      * @return void
      */
-    public static function regenerate() {
+    public static function regenerate()
+    {
       session_regenerate_id();
     }
   }

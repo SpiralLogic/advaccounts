@@ -10,72 +10,76 @@
        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
        See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       * ********************************************************************* */
-
   Page::set_security(SA_SUPPLIERANALYTIC);
-
   print_outstanding_GRN();
   /**
    * @param $fromsupp
    *
    * @return null|PDOStatement
    */
-  function get_transactions($fromsupp) {
+  function get_transactions($fromsupp)
+  {
     $sql
       = "SELECT grn_batch.id,
-			order_no,
-			grn_batch.supplier_id,
-			suppliers.name,
-			grn_items.item_code,
-			grn_items.description,
-			qty_recd,
-			quantity_inv,
-			std_cost_unit,
-			act_price,
-			unit_price
-		FROM grn_items,
-			grn_batch,
-			purch_order_details,
-			suppliers
-		WHERE grn_batch.supplier_id=suppliers.supplier_id
-		AND grn_batch.id = grn_items.grn_batch_id
-		AND grn_items.po_detail_item = purch_order_details.po_detail_item
-		AND qty_recd-quantity_inv <>0 ";
+            order_no,
+            grn_batch.supplier_id,
+            suppliers.name,
+            grn_items.item_code,
+            grn_items.description,
+            qty_recd,
+            quantity_inv,
+            std_cost_unit,
+            act_price,
+            unit_price
+        FROM grn_items,
+            grn_batch,
+            purch_order_details,
+            suppliers
+        WHERE grn_batch.supplier_id=suppliers.supplier_id
+        AND grn_batch.id = grn_items.grn_batch_id
+        AND grn_items.po_detail_item = purch_order_details.po_detail_item
+        AND qty_recd-quantity_inv <>0 ";
     if ($fromsupp != ALL_NUMERIC) {
       $sql .= "AND grn_batch.supplier_id =" . DB::escape($fromsupp) . " ";
     }
     $sql
       .= "ORDER BY grn_batch.supplier_id,
-			grn_batch.id";
+            grn_batch.id";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_outstanding_GRN() {
+  function print_outstanding_GRN()
+  {
     $fromsupp    = $_POST['PARAM_0'];
     $comments    = $_POST['PARAM_1'];
     $destination = $_POST['PARAM_2'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($fromsupp == ALL_NUMERIC) {
       $from = _('All');
-    }
-    else {
+    } else {
       $from = Creditor::get_name($fromsupp);
     }
     $dec  = User::price_dec();
     $cols = array(0, 40, 80, 190, 250, 320, 385, 450, 515);
     $headers
             = array(
-      _('GRN'), _('Order'), _('Item') . '/' . _('Description'), _('Qty Recd'), _('qty Inv'), _('Balance'),
-      _('Std Cost'), _('Value')
+      _('GRN'),
+      _('Order'),
+      _('Item') . '/' . _('Description'),
+      _('Qty Recd'),
+      _('qty Inv'),
+      _('Balance'),
+      _('Std Cost'),
+      _('Value')
     );
     $aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params = array(
-      0 => $comments,
-      1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
+      0 => $comments, 1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
     );
     $rep    = new ADVReport(_('Outstanding GRNs Report'), "OutstandingGRN", User::page_size());
     $rep->Font();
@@ -129,5 +133,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

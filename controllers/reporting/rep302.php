@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_ITEMSANALYTIC);
-
   print_inventory_planning();
   /**
    * @param $category
@@ -19,33 +17,35 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location) {
+  function get_transactions($category, $location)
+  {
     $sql
       = "SELECT stock_master.category_id,
-			stock_category.description AS cat_name,
-			stock_master.stock_id,
-			stock_master.description, stock_master.inactive,
-			IF(stock_moves.stock_id IS NULL, '', stock_moves.loc_code) AS loc_code,
-			SUM(IF(stock_moves.stock_id IS NULL,0,stock_moves.qty)) AS qty_on_hand
-		FROM (stock_master,
-			stock_category)
-		LEFT JOIN stock_moves ON
-			(stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS NULL)
-		WHERE stock_master.category_id=stock_category.category_id
-		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
+            stock_category.description AS cat_name,
+            stock_master.stock_id,
+            stock_master.description, stock_master.inactive,
+            IF(stock_moves.stock_id IS null, '', stock_moves.loc_code) AS loc_code,
+            SUM(IF(stock_moves.stock_id IS null,0,stock_moves.qty)) AS qty_on_hand
+        FROM (stock_master,
+            stock_category)
+        LEFT JOIN stock_moves ON
+            (stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS null)
+        WHERE stock_master.category_id=stock_category.category_id
+        AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
     if ($category != 0) {
       $sql .= " AND stock_master.category_id = " . DB::escape($category);
     }
     if ($location != 'all') {
-      $sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
+      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
     }
     $sql
       .= " GROUP BY stock_master.category_id,
-		stock_category.description,
-		stock_master.stock_id,
-		stock_master.description
-		ORDER BY stock_master.category_id,
-		stock_master.stock_id";
+        stock_category.description,
+        stock_master.stock_id,
+        stock_master.description
+        ORDER BY stock_master.category_id,
+        stock_master.stock_id";
+
     return DB::query($sql, "No transactions were returned");
   }
 
@@ -55,7 +55,8 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function getPeriods($stockid, $location) {
+  function getPeriods($stockid, $location)
+  {
     $date5 = date('Y-m-d');
     $date4 = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
     $date3 = date('Y-m-d', mktime(0, 0, 0, date('m') - 1, 1, date('Y')));
@@ -64,28 +65,29 @@
     $date0 = date('Y-m-d', mktime(0, 0, 0, date('m') - 4, 1, date('Y')));
     $sql
                 = "SELECT SUM(CASE WHEN tran_date >= '$date0' AND tran_date < '$date1' THEN -qty ELSE 0 END) AS prd0,
-		 		SUM(CASE WHEN tran_date >= '$date1' AND tran_date < '$date2' THEN -qty ELSE 0 END) AS prd1,
-				SUM(CASE WHEN tran_date >= '$date2' AND tran_date < '$date3' THEN -qty ELSE 0 END) AS prd2,
-				SUM(CASE WHEN tran_date >= '$date3' AND tran_date < '$date4' THEN -qty ELSE 0 END) AS prd3,
-				SUM(CASE WHEN tran_date >= '$date4' AND tran_date <= '$date5' THEN -qty ELSE 0 END) AS prd4
-			FROM stock_moves
-			WHERE stock_id='$stockid'
-			AND loc_code ='$location'
-			AND (type=13 OR type=11)
-			AND visible=1";
+                 SUM(CASE WHEN tran_date >= '$date1' AND tran_date < '$date2' THEN -qty ELSE 0 END) AS prd1,
+                SUM(CASE WHEN tran_date >= '$date2' AND tran_date < '$date3' THEN -qty ELSE 0 END) AS prd2,
+                SUM(CASE WHEN tran_date >= '$date3' AND tran_date < '$date4' THEN -qty ELSE 0 END) AS prd3,
+                SUM(CASE WHEN tran_date >= '$date4' AND tran_date <= '$date5' THEN -qty ELSE 0 END) AS prd4
+            FROM stock_moves
+            WHERE stock_id='$stockid'
+            AND loc_code ='$location'
+            AND (type=13 OR type=11)
+            AND visible=1";
     $trans_rows = DB::query($sql, "No transactions were returned");
+
     return DB::fetch($trans_rows);
   }
 
-  function print_inventory_planning() {
+  function print_inventory_planning()
+  {
     $category    = $_POST['PARAM_0'];
     $location    = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
     $destination = $_POST['PARAM_3'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($category == ALL_NUMERIC) {
@@ -93,8 +95,7 @@
     }
     if ($category == 0) {
       $cat = _('All');
-    }
-    else {
+    } else {
       $cat = Item_Category::get_name($category);
     }
     if ($location == ALL_TEXT) {
@@ -102,8 +103,7 @@
     }
     if ($location == 'all') {
       $loc = _('All');
-    }
-    else {
+    } else {
       $loc = Inv_Location::get_name($location);
     }
     $cols    = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
@@ -113,24 +113,16 @@
     $per3    = strftime('%b', mktime(0, 0, 0, date('m') - 3, 1, date('Y')));
     $per4    = strftime('%b', mktime(0, 0, 0, date('m') - 4, 1, date('Y')));
     $headers = array(
-      _('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
-      _('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord')
+      _('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M', _('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord')
     );
     $aligns  = array(
-      'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
-      'right', 'right', 'right', 'right'
+      'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right'
     );
     $params  = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('Category'),
-        'from' => $cat,
-        'to'   => ''
-      ),
-      2 => array(
-        'text' => _('Location'),
-        'from' => $loc,
-        'to'   => ''
+      0    => $comments, 1 => array(
+        'text' => _('Category'), 'from' => $cat, 'to'   => ''
+      ), 2 => array(
+        'text' => _('Location'), 'from' => $loc, 'to'   => ''
       )
     );
     $rep     = new ADVReport(_('Inventory Planning Report'), "InventoryPlanning", User::page_size());
@@ -152,8 +144,7 @@
       }
       if ($location == 'all') {
         $loc_code = "";
-      }
-      else {
+      } else {
         $loc_code = $location;
       }
       $custqty = Item::get_demand($trans['stock_id'], $loc_code);
@@ -186,5 +177,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

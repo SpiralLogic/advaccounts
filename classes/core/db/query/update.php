@@ -13,26 +13,29 @@
   /**
 
    */
-  class Query_Update extends Query_Insert {
-
+  class Query_Update extends Query_Insert
+  {
     /**
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = FALSE, $db) {
+    public function __construct($table = false, $db)
+    {
       parent::__construct($table, $db);
       $this->type = DB::UPDATE;
     }
     /**
      * @return string
      */
-    protected function _buildQuery() {
+    protected function _buildQuery()
+    {
       $sql = "UPDATE " . $this->table . " SET ";
       foreach ($this->fields as &$feild) {
         $feild = " $feild = :$feild";
       }
       $sql .= implode(', ', $this->fields);
       $sql .= $this->_buildWhere();
+
       return $sql;
     }
   }

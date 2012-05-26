@@ -7,26 +7,24 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'default'   => array(
-      'id'      => 1,
-      'company' => 'Advanced Group PTY LTD',
-      'name'    => 'fa', //
+    'default'      => array(
+      'id'      => 1, 'company' => 'Advanced Group PTY LTD', 'name'    => 'fa', //
       'dbname'  => 'fa', //
       'user'    => 'fa', //
       'pass'    => '1willenberg', //
       'host'    => 'localhost', //
       'port'    => 3306, //
-      'debug'   => FALSE
-    ),
-    'jobsboard' => array(
-      'company' => FALSE,
+      'debug'   => false
+    ), 'jobsboard' => array(
+      'company' => false,
       'name'    => 'jobsboard',
       'dbname'  => 'jobsboard',
       'user'    => 'fa',
       'pass'    => '1willenberg',
       'host'    => 'localhost',
       'port'    => 3306,
-      'debug'   => FALSE,
+      'debug'   => false,
     ),
   );

@@ -33,16 +33,13 @@
       ) {
         Event::error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
         $input_error = 1;
-      }
-      elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
+      } elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
         Event::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
         $input_error = 1;
-      }
-      elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
+      } elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
         Event::error(_('Only graphics files can be uploaded'));
         $input_error = 1;
-      }
-      elseif (file_exists($filename)) {
+      } elseif (file_exists($filename)) {
         $result = unlink($filename);
         if (!$result) {
           Event::error(_('The existing image could not be removed'));
@@ -64,8 +61,7 @@
         if (!$result) {
           Event::error(_('The existing image could not be removed'));
           $input_error = 1;
-        }
-        else {
+        } else {
           $_POST['coy_logo'] = "";
         }
       }
@@ -84,7 +80,7 @@
     JS::set_focus('coy_name');
     Ajax::i()->activate('_page_body');
   } /* end of if submit */
-  start_form(TRUE);
+  start_form(true);
   $myrow                     = DB_Company::get_prefs();
   $_POST['coy_name']         = $myrow["coy_name"];
   $_POST['gst_no']           = $myrow["gst_no"];
@@ -126,27 +122,26 @@
   GL_Currency::row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
   GL_UI::fiscalyears_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
   Table::section(2);
-  text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', NULL, NULL, _('Months.'));
-  text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', NULL, NULL, _('Months back.'));
+  text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
+  text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
   Row::label(_("Company Logo:"), $_POST['coy_logo']);
   file_row(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
   check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
-  number_list_row(_("Use Dimensions:"), 'use_dimension', NULL, 0, 2);
-  Sales_Type::row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], FALSE, _('No base price list'));
-  text_row_ex(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', NULL, NULL, "%");
+  number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
+  Sales_Type::row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false, _('No base price list'));
+  text_row_ex(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', null, null, "%");
   $curr = GL_Currency::get($_POST['curr_default']);
-  text_row_ex(_("Round to nearest:"), 'round_to', 10, 10, '', NULL, NULL, $curr['hundreds_name']);
-  check_row(_("Search Item List"), 'no_item_list', NULL);
-  check_row(_("Search Customer List"), 'no_customer_list', NULL);
-  check_row(_("Search Supplier List"), 'no_supplier_list', NULL);
+  text_row_ex(_("Round to nearest:"), 'round_to', 10, 10, '', null, null, $curr['hundreds_name']);
+  check_row(_("Search Item List"), 'no_item_list', null);
+  check_row(_("Search Customer List"), 'no_customer_list', null);
+  check_row(_("Search Supplier List"), 'no_supplier_list', null);
   Row::label("", "&nbsp;");
   check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
-  text_row_ex(_("Login Timeout:"), 'login_tout', 10, 10, '', NULL, NULL, _('seconds'));
+  text_row_ex(_("Login Timeout:"), 'login_tout', 10, 10, '', null, null, _('seconds'));
   Row::label(_("Version Id"), $_POST['version_id']);
   Table::endOuter(1);
   hidden('coy_logo', $_POST['coy_logo']);
-  submit_center('update', _("Update"), TRUE, '', 'default');
+  submit_center('update', _("Update"), true, '', 'default');
   end_form(2);
   Page::end();
-
 

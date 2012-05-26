@@ -22,9 +22,9 @@
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   Table::start('tablestyle_noborder');
-  Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE);
-  Inv_Location::cells(_("From Location:"), 'StockLocation', NULL);
-  date_cells(_("From:"), 'AfterDate', '', NULL, -30);
+  Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
+  Inv_Location::cells(_("From Location:"), 'StockLocation', null);
+  date_cells(_("From:"), 'AfterDate', '', null, -30);
   date_cells(_("To:"), 'BeforeDate');
   submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   Table::end();
@@ -33,11 +33,11 @@
   $before_date = Dates::date2sql($_POST['BeforeDate']);
   $after_date  = Dates::date2sql($_POST['AfterDate']);
   $sql         = "SELECT type, trans_no, tran_date, person_id, qty, reference
-	FROM stock_moves
-	WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
-	AND tran_date >= '" . $after_date . "'
-	AND tran_date <= '" . $before_date . "'
-	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
+    FROM stock_moves
+    WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
+    AND tran_date >= '" . $after_date . "'
+    AND tran_date <= '" . $before_date . "'
+    AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
   $result      = DB::query($sql, "could not query stock moves");
   Display::div_start('doc_tbl');
   Table::start('tablestyle grid');
@@ -46,8 +46,8 @@
   );
   Table::header($th);
   $sql            = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
-	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
-	AND tran_date < '" . $after_date . "'";
+    AND loc_code=" . DB::escape($_POST['StockLocation']) . "
+    AND tran_date < '" . $after_date . "'";
   $before_qty     = DB::query($sql, "The starting quantity on hand could not be calculated");
   $before_qty_row = DB::fetch_row($before_qty);
   $after_qty      = $before_qty = $before_qty_row[0];
@@ -58,7 +58,7 @@
   Cell::label("<span class='bold'>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</span>", "class=center colspan=5");
   Cell::label("&nbsp;", "colspan=2");
   $dec = Item::qty_dec($_POST['stock_id']);
-  Cell::qty($before_qty, FALSE, $dec);
+  Cell::qty($before_qty, false, $dec);
   Row::end();
   $j         = 1;
   $k         = 0; //row colour counter
@@ -71,8 +71,7 @@
     if ($myrow["qty"] > 0) {
       $quantity_formatted = Num::format($myrow["qty"], $dec);
       $total_in += $myrow["qty"];
-    }
-    else {
+    } else {
       $quantity_formatted = Num::format(-$myrow["qty"], $dec);
       $total_out += -$myrow["qty"];
     }
@@ -88,8 +87,7 @@
       if (strlen($cust_row['name']) > 0) {
         $person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
       }
-    }
-    elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
+    } elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
       // get the supplier name
       $sql             = "SELECT name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
       $supplier_result = DB::query($sql, "check failed");
@@ -97,20 +95,18 @@
       if (strlen($supplier_row['name']) > 0) {
         $person = $supplier_row['name'];
       }
-    }
-    elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST) {
+    } elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST) {
       // get the adjustment type
       $movement_type = Inv_Movement::get_type($myrow["person_id"]);
       $person        = $movement_type["name"];
-    }
-    elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE || $myrow["type"] == ST_MANURECEIVE
+    } elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE || $myrow["type"] == ST_MANURECEIVE
     ) {
       $person = "";
     }
     Cell::label($person);
     Cell::label((($myrow["qty"] >= 0) ? $quantity_formatted : ""), ' class="right nowrap"');
     Cell::label((($myrow["qty"] < 0) ? $quantity_formatted : ""), ' class="right nowrap"');
-    Cell::qty($after_qty, FALSE, $dec);
+    Cell::qty($after_qty, false, $dec);
     Row::end();
     $j++;
     If ($j == 12) {
@@ -122,12 +118,11 @@
   //end of while loop
   Row::start("class='inquirybg'");
   Cell::label("<span class='bold'>" . _("Quantity on hand after") . " " . $_POST['BeforeDate'] . "</span>", "class=center colspan=5");
-  Cell::qty($total_in, FALSE, $dec);
-  Cell::qty($total_out, FALSE, $dec);
-  Cell::qty($after_qty, FALSE, $dec);
+  Cell::qty($total_in, false, $dec);
+  Cell::qty($total_out, false, $dec);
+  Cell::qty($after_qty, false, $dec);
   Row::end();
   Table::end(1);
   Display::div_end();
   Page::end();
-
 

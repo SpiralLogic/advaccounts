@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Invoice {
-
+  class Sales_Invoice
+  {
     /**
      * @static
      *
@@ -16,7 +16,8 @@
      *
      * @return int
      */
-    public static function add($invoice) {
+    public static function add($invoice)
+    {
       $trans_no = $invoice->trans_no;
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
@@ -43,8 +44,7 @@
       if ($invoice->tax_included == 0) {
         $items_added_tax   = $ov_gst - $freight_tax;
         $freight_added_tax = $freight_tax;
-      }
-      else {
+      } else {
         $items_added_tax   = 0;
         $freight_added_tax = 0;
       }
@@ -52,8 +52,7 @@
       // the transaction will be settled at once.
       if (Bank_Account::is($branch_data['receivables_account'])) {
         $alloc = $items_total + $items_added_tax + $invoice->freight_cost + $freight_added_tax;
-      }
-      else {
+      } else {
         $alloc = 0;
       }
       /* Insert/update the debtor_trans */
@@ -61,16 +60,14 @@
       if (is_array($sales_order)) {
         $sales_order = $sales_order[0];
       } // assume all crucial SO data are same for every delivery
-      $invoice_no = Debtor_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id, $invoice->Branch, $date_, $invoice->reference, $items_total, 0, $items_added_tax, $invoice->freight_cost, $freight_added_tax, $invoice->sales_type, $sales_order, $delivery_no, $invoice->ship_via,
-        $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
+      $invoice_no = Debtor_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id, $invoice->Branch, $date_, $invoice->reference, $items_total, 0, $items_added_tax, $invoice->freight_cost, $freight_added_tax, $invoice->sales_type, $sales_order, $delivery_no, $invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
       // 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
       if ($trans_no == 0) {
         $invoice->trans_no = array($invoice_no => 0);
         Debtor_Trans::set_parent($invoice);
-      }
-      else {
+      } else {
         DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
-        GL_Trans::void(ST_SALESINVOICE, $invoice_no, TRUE);
+        GL_Trans::void(ST_SALESINVOICE, $invoice_no, true);
         Sales_Allocation::void(ST_SALESINVOICE, $invoice_no); // ?
         GL_Trans::void_tax_details(ST_SALESINVOICE, $invoice_no);
       }
@@ -90,7 +87,8 @@
             //Post sales transaction to GL credit sales
             // 2008-06-14. If there is a Branch Sales Account, then override with this,
             // else take the Item Sales Account
-            $sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
+            $sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] :
+              $stock_gl_code['sales_account']);
             // 2008-08-01. If there is a Customer Dimension, then override with this,
             // else take the Item Dimension (if any)
             $dim  = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id :
@@ -99,8 +97,7 @@
               ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
             $total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2, (-$line_taxfree_price * $invoice_line->qty_dispatched), $invoice->customer_id, "The sales price GL posting could not be inserted");
             if ($invoice_line->discount_percent != 0) {
-              $total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, ($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent), $invoice->customer_id,
-                "The sales discount GL posting could not be inserted");
+              $total += Debtor_TransDetail::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, ($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent), $invoice->customer_id, "The sales discount GL posting could not be inserted");
             } /*end of if discount !=0 */
           }
         } /*quantity dispatched is more than 0 */
@@ -126,6 +123,7 @@
         Ref::save(ST_SALESINVOICE, $invoice->reference);
       }
       DB::commit();
+
       return $invoice_no;
     }
     /**
@@ -134,10 +132,11 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       DB::begin();
-      Bank_Trans::void($type, $type_no, TRUE);
-      GL_Trans::void($type, $type_no, TRUE);
+      Bank_Trans::void($type, $type_no, true);
+      GL_Trans::void($type, $type_no, true);
       // reverse all the changes in parent document(s)
       $items_result = Debtor_TransDetail::get($type, $type_no);
       $deliveries   = Debtor_Trans::get_parent($type, $type_no);
@@ -162,25 +161,23 @@
      *
      * @return int
      */
-    public static function check_quantities($order) {
+    public static function check_quantities($order)
+    {
       $ok = 1;
       foreach ($order->line_items as $line_no => $itm) {
         if (isset($_POST['Line' . $line_no])) {
           if ($order->trans_no) {
             $min = $itm->qty_done;
             $max = $itm->quantity;
-          }
-          else {
+          } else {
             $min = 0;
             $max = $itm->quantity - $itm->qty_done;
           }
           if ($itm->quantity > 0 && Validation::post_num('Line' . $line_no, $min, $max)) {
             $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
-          }
-          elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line_no, $max, $min)) {
+          } elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line_no, $max, $min)) {
             $order->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
-          }
-          else {
+          } else {
             $ok = 0;
           }
         }
@@ -191,13 +188,14 @@
           }
         }
       }
+
       return $ok;
     }
-
     /**
      * @param $delivery_notes
      */
-    public static function set_delivery_shipping_sum($delivery_notes) {
+    public static function set_delivery_shipping_sum($delivery_notes)
+    {
       $shipping = 0;
       foreach ($delivery_notes as $delivery_num) {
         $myrow = Debtor_Trans::get($delivery_num, 13);
@@ -207,11 +205,11 @@
       }
       $_POST['ChargeFreightCost'] = Num::price_format($shipping);
     }
-
     /**
      * @param $order
      */
-    public static function copyFromPost($order) {
+    public static function copyFromPost($order)
+    {
       $order->ship_via      = $_POST['ship_via'];
       $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['InvoiceDate'];
@@ -221,15 +219,14 @@
         $order->reference = $_POST['ref'];
       }
     }
-
     /**
      * @param $order
      *
      * @return \Purch_Order|\Sales_Order
      */
-    public static function copyToPost($order) {
+    public static function copyToPost($order)
+    {
       $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
-
       $order = Sales_Order::check_edit_conflicts($order);
       if (!$order->view_only) {
         $_POST['ship_via']          = $order->ship_via;
@@ -240,35 +237,40 @@
       }
       $_POST['order_id'] = $order->order_id;
       $_POST['Comments'] = $order->Comments;
+
       return Orders::session_set($order);
     }
-
     /**
      * @param Sales_Order $order
      *
      * @return bool
      */
-    public static function check_data($order) {
+    public static function check_data($order)
+    {
       if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is invalid."));
         JS::set_focus('InvoiceDate');
-        return FALSE;
+
+        return false;
       }
       if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is not in fiscal year."));
         JS::set_focus('InvoiceDate');
-        return FALSE;
+
+        return false;
       }
       if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
         Event::error(_("The entered invoice due date is invalid."));
         JS::set_focus('due_date');
-        return FALSE;
+
+        return false;
       }
       if ($order->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
           JS::set_focus('ref');
-          return FALSE;
+
+          return false;
         }
         if (!Ref::is_new($_POST['ref'], ST_SALESINVOICE)) {
           $_POST['ref'] = Ref::get_next(ST_SALESINVOICE);
@@ -280,17 +282,21 @@
       if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
         JS::set_focus('ChargeFreightCost');
-        return FALSE;
+
+        return false;
       }
       if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
         Event::error(_("There are no item quantities on this invoice."));
-        return FALSE;
+
+        return false;
       }
       if (!Sales_Delivery::check_quantities($order)) {
         Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
-        return FALSE;
+
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
@@ -302,7 +308,8 @@
      *
      * @return int|void
      */
-    public static function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no) {
+    public static function create_recurrent($customer_id, $branch_id, $order_no, $tmpl_no)
+    {
       $doc = new Sales_Order(ST_SALESORDER, array($order_no));
       $doc->customer_to_order($customer_id, $branch_id);
       $doc->trans_type    = ST_SALESORDER;
@@ -322,6 +329,7 @@
       $date              = Dates::date2sql($order->document_date);
       $sql               = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($tmpl_no);
       DB::query($sql, "The recurrent invoice could not be updated or added");
+
       return $invno;
     }
   }

@@ -12,8 +12,8 @@
   /**
 
    */
-  class Orders implements \Iterator, \Countable {
-
+  class Orders implements \Iterator, \Countable
+  {
     /**
      * @var
      */
@@ -37,30 +37,32 @@
     /**
      * @var array
      */
-    public static $shipping_types = array(
-      502  => "Pickup", //
-      28   => "Declined!", //
-      902  => "To be calculated", //
-      903  => "Use own courier", //
-      998  => "Installation", //
-      1006 => "Medium Courier (VIC Metro)", //
-      1009 => "Small Parcel (0.5m,5kg)", //
-      1010 => "Medium Courier (1m,25kg)", //
-      1011 => "Medium Courier Rural (1.8m,25kg)"
-    );
+    public static $shipping_types
+      = array(
+        502  => "Pickup", //
+        28   => "Declined!", //
+        902  => "To be calculated", //
+        903  => "Use own courier", //
+        998  => "Installation", //
+        1006 => "Medium Courier (VIC Metro)", //
+        1009 => "Small Parcel (0.5m,5kg)", //
+        1010 => "Medium Courier (1m,25kg)", //
+        1011 => "Medium Courier Rural (1.8m,25kg)"
+      );
     /**
      * @var array
      */
-    public static $payment_types = array(
-      1  => "Account", //
-      2  => "Cheque/Money Order", //
-      5  => "Visa/Mastercard", //
-      7  => "American Express", //
-      18 => "PayPal", //
-      23 => "Direct Deposit", //
-      24 => "Wait for Freight Quotation", //
-      26 => "Credit Card" //
-    );
+    public static $payment_types
+      = array(
+        1  => "Account", //
+        2  => "Cheque/Money Order", //
+        5  => "Visa/Mastercard", //
+        7  => "American Express", //
+        18 => "PayPal", //
+        23 => "Direct Deposit", //
+        24 => "Wait for Freight Quotation", //
+        26 => "Credit Card" //
+      );
     /**
      * @var OrderDetails
      */
@@ -76,7 +78,8 @@
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -85,7 +88,8 @@
     /**
      * @return string
      */
-    function getXML() {
+    public function getXML()
+    {
       $apiuser = \Config::get('modules.Volusion')['apiuser'];
       $apikey  = \Config::get('modules.Volusion')['apikey'];
       $url     = \Config::get('modules.Volusion')['apiurl'];
@@ -97,29 +101,34 @@
         \Event::warning('Could not retrieve web orders');
       }
       $this->XML = $result;
+
       return $result;
     }
     /**
      * @return bool
      */
-    function get() {
+    public function get()
+    {
       $XML = $this->getXML();
       if (!$XML) {
-        return FALSE;
+        return false;
       }
       $this->data = \XMLParser::XMLtoArray($XML);
       if (isset($this->data[$this->idcolumn])) {
         $this->data = array($this->data);
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @return bool
      */
-    function process() {
+    public function process()
+    {
       if (!$this->data) {
         $this->status = "No new web orders";
-        return FALSE;
+
+        return false;
       }
       $this->save();
       /** @var OrderDetails $detail */
@@ -132,54 +141,58 @@
           }
         }
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @return bool|string
      */
-    function save() {
+    public function save()
+    {
       $current = $this->current();
       $exists  = $this->exists();
       if ($exists) {
         //			echo $this->_classname . ' already exists, updating changes<br>';
         try {
           \DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
+
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (\DBUpdateException $e) {
+        } catch (\DBUpdateException $e) {
           return 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (\DBDuplicateException $e) {
+        } catch (\DBDuplicateException $e) {
           $this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
-      }
-      else {
+      } else {
         echo $this->_classname . ' doesn\'t exist, adding<br>';
         try {
           \DB::insert($this->table)->values($current)->exec();
+
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (\DBInsertException $e) {
+        } catch (\DBInsertException $e) {
           return 'Could not insert ' . $this->_classname;
-        }
-        catch (\DBDuplicateException $e) {
+        } catch (\DBDuplicateException $e) {
           return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       }
-      return FALSE;
+
+      return false;
     }
     /**
      * @return bool
      */
-    function exists() {
+    public function exists()
+    {
       $current = $this->current();
-      $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->fetch()->one();
-      return (count($results) > 0) ? $results[$this->idcolumn] : FALSE;
+      $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+        ->fetch()->one();
+
+      return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
     /**
 
      */
-    function next() {
+    public function next()
+    {
       $this->current++;
       if (isset($this->data[$this->current]['OrderDetails'])) {
         $this->details = new OrderDetails($this->data[$this->current]['OrderDetails']);
@@ -192,10 +205,12 @@
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
-    public function current() {
+    public function current()
+    {
       if (!$this->valid()) {
-        return FALSE;
+        return false;
       }
+
       return $this->data[$this->current];
     }
     /**
@@ -205,7 +220,8 @@
      * @return scalar scalar on success, integer
      * 0 on failure.
      */
-    public function key() {
+    public function key()
+    {
       return $this->data[$this->current]['OrderID'];
     }
     /**
@@ -215,7 +231,8 @@
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
      */
-    public function valid() {
+    public function valid()
+    {
       return isset($this->data[$this->current]) && $this->data[$this->current] && $this->current < count($this->data);
     }
     /**
@@ -224,7 +241,8 @@
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
-    public function rewind() {
+    public function rewind()
+    {
       $this->current = -1;
       $this->next();
     }
@@ -237,8 +255,10 @@
      * <p>
      *       The return value is cast to an integer.
      */
-    public function count() {
+    public function count()
+    {
       $this->data = $this->data ? : array();
+
       return count($this->data);
     }
   }
@@ -246,8 +266,8 @@
   /**
 
    */
-  class OrderDetails extends Orders implements \Iterator, \Countable {
-
+  class OrderDetails extends Orders implements \Iterator, \Countable
+  {
     /**
      * @var OrderOptions
      */
@@ -263,7 +283,8 @@
     /**
      * @param $data
      */
-    function __construct($data) {
+    public function __construct($data)
+    {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       if (is_array($data)) {
         $this->data = (!is_array(reset($data))) ? array($data) : $data;
@@ -273,33 +294,36 @@
     /**
      * @return bool|void
      */
-    function next() {
+    public function next()
+    {
       $this->current++;
       if (!$this->valid()) {
-        return FALSE;
+        return false;
       }
       if (isset($this->data[$this->current]['Options']) && isset($this->data[$this->current]['OrderDetails_Options'])) {
         $options       = $this->data[$this->current]['OrderDetails_Options'];
         $this->options = new OrderOptions($options);
         unset($this->data[$this->current]['OrderDetails_Options']);
-      }
-      else {
-        $this->options = NULL;
+      } else {
+        $this->options = null;
       }
     }
     /**
      * @return mixed
      */
-    function current() {
+    public function current()
+    {
       if (!$this->valid()) {
-        return FALSE;
+        return false;
       }
+
       return $this->data[$this->current];
     }
     /**
      * @return mixed
      */
-    function key() {
+    public function key()
+    {
       return $this->data[$this->current]['OrderDetailID'];
     }
   }
@@ -307,8 +331,8 @@
   /**
 
    */
-  class OrderOptions extends OrderDetails implements \Iterator, \Countable {
-
+  class OrderOptions extends OrderDetails implements \Iterator, \Countable
+  {
     /**
      * @var string
      */
@@ -320,7 +344,8 @@
     /**
      * @param $data
      */
-    function __construct($data) {
+    public function __construct($data)
+    {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       if (is_array($data)) {
         $this->data = (!is_array(reset($data))) ? array($data) : $data;
@@ -330,28 +355,33 @@
     /**
      * @return bool
      */
-    function exists() {
+    public function exists()
+    {
       $current = $this->current();
-      $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->and_where('OrderDetailID=', $current['OrderDetailID'])
-        ->fetch()->all();
+      $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+        ->and_where('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
+
       return (count($results) > 0);
     }
     /**
      * @return bool|void
      */
-    function next() {
+    public function next()
+    {
       $this->current++;
     }
     /**
      * @return mixed
      */
-    function current() {
+    public function current()
+    {
       return $this->data[$this->current];
     }
     /**
      * @return mixed
      */
-    function key() {
+    public function key()
+    {
       return $this->data[$this->current]['OrderDetailID'];
     }
   }

@@ -13,16 +13,17 @@
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP);
   print_workorders();
 
-  function print_workorders() {
+  function print_workorders()
+  {
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
     $to       = $_POST['PARAM_1'];
     $email    = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -37,11 +38,11 @@
       $rep           = new ADVReport(_('WORK ORDER'), "WorkOrderBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $fno[0]; $i <= $tno[0]; $i++) {
       $myrow = WO::get($i);
-      if ($myrow === FALSE) {
+      if ($myrow === false) {
         continue;
       }
       $date_ = Dates::sql2date($myrow["date_"]);
@@ -51,22 +52,21 @@
         $rep->Font();
         $rep->title    = _('WORK ORDER');
         $rep->filename = "WorkOrder" . $myrow['reference'] . ".pdf";
-        $rep->Info($params, $cols, NULL, $aligns);
-      }
-      else {
+        $rep->Info($params, $cols, null, $aligns);
+      } else {
         $rep->title = _('WORK ORDER');
       }
-      $rep->Header2($myrow, NULL, NULL, '', 26);
+      $rep->Header2($myrow, null, null, '', 26);
       $result = WO_Requirements::get($i);
       $rep->TextCol(0, 5, _("Work Order Requirements"), -2);
       $rep->NewLine(2);
-      $has_marked = FALSE;
+      $has_marked = false;
       while ($myrow2 = DB::fetch($result)) {
         $qoh      = 0;
-        $show_qoh = TRUE;
+        $show_qoh = true;
         // if it's a non-stock item (eg. service) don't show qoh
         if (!WO::has_stock_holding($myrow2["mb_flag"])) {
-          $show_qoh = FALSE;
+          $show_qoh = false;
         }
         if ($show_qoh) {
           $qoh = Item::get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
@@ -74,15 +74,13 @@
         if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) && !DB_Company::get_pref('allow_negative_stock')
         ) {
           // oops, we don't have enough of one of the component items
-          $has_marked = TRUE;
-        }
-        else {
-          $has_marked = FALSE;
+          $has_marked = true;
+        } else {
+          $has_marked = false;
         }
         if ($has_marked) {
           $str = $myrow2['stock_id'] . " ***";
-        }
-        else {
+        } else {
           $str = $myrow2['stock_id'];
         }
         $rep->TextCol(0, 1, $str, -2);
@@ -95,7 +93,7 @@
         $rep->AmountCol(6, 7, $myrow2['units_issued'], $dec, -2);
         $rep->NewLine(1);
         if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-          $rep->Header2($myrow, NULL, NULL, '', 26);
+          $rep->Header2($myrow, null, null, '', 26);
         }
       }
       $rep->NewLine(1);
@@ -112,5 +110,4 @@
       $rep->End();
     }
   }
-
 

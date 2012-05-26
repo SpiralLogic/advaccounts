@@ -10,40 +10,35 @@
   //
   //	Entry/Modify Credit Note for selected Sales Invoice
   //
-
   JS::open_window(900, 500);
   if (isset($_GET[Orders::MODIFY_CREDIT])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
     $help_context           = "Modifying Credit Invoice";
-  }
-  elseif (isset($_GET['InvoiceNumber'])) {
+  } elseif (isset($_GET['InvoiceNumber'])) {
     $page_title = _($help_context = "Credit all or part of an Invoice");
-  }
-  else {
+  } else {
     $page_title = "Credit Invoice";
   }
-
   Page::start($page_title, SA_SALESCREDITINV);
   if (isset($_GET[ADDED_ID])) {
     $credit_no  = $_GET[ADDED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been processed"));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-    Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), TRUE, $trans_type), 1);
+    Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
     Page::footer_exit();
-  }
-  elseif (isset($_GET[UPDATED_ID])) {
+  } elseif (isset($_GET[UPDATED_ID])) {
     $credit_no  = $_GET[UPDATED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been updated"));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-    Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), TRUE, $trans_type), 1);
+    Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
     Page::footer_exit();
   }
   if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
-    $ci                = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], TRUE);
+    $ci                = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
     $ci->trans_type    = ST_CUSTCREDIT;
     $ci->src_docs      = $ci->trans_no;
     $ci->src_date      = $ci->document_date;
@@ -54,17 +49,14 @@
       $ci->line_items[$line_no]->qty_dispatched = '0';
     }
     copy_from_credit($ci);
-  }
-  elseif (isset($_GET[Orders::MODIFY_CREDIT]) && $_GET[Orders::MODIFY_CREDIT] > 0) {
+  } elseif (isset($_GET[Orders::MODIFY_CREDIT]) && $_GET[Orders::MODIFY_CREDIT] > 0) {
     $ci = new Sales_Order(ST_CUSTCREDIT, $_GET[Orders::MODIFY_CREDIT]);
     copy_from_credit($ci);
-  }
-  elseif (!Sales_Order::active()) {
+  } elseif (!Sales_Order::active()) {
     /* This page can only be called with an invoice number for crediting*/
     Event::error(_("This page can only be opened if an invoice has been selected for crediting."));
     Page::footer_exit();
-  }
-  elseif (!check_quantities()) {
+  } elseif (!check_quantities()) {
     Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
   }
   if (isset($_POST['ProcessCredit']) && can_process()) {
@@ -81,8 +73,7 @@
     Orders::session_delete($credit);
     if ($new_credit) {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
-    }
-    else {
+    } else {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$credit_no");
     }
   }
@@ -101,14 +92,15 @@
   }
   display_credit_items();
   display_credit_options();
-  submit_center_first('Update', _("Update"), _('Update credit value for quantities entered'), FALSE, ICON_UPDATE);
+  submit_center_first('Update', _("Update"), _('Update credit value for quantities entered'), false, ICON_UPDATE);
   submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-  submit_center_last('ProcessCredit', _("Process Credit Note"), TRUE, '', 'default');
+  submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
   Page::end();
   /**
    * @return int
    */
-  function check_quantities() {
+  function check_quantities()
+  {
     $ok = 1;
     foreach (Orders::session_get($_POST['order_id'])->line_items as $line_no => $itm) {
       if ($itm->quantity == $itm->qty_done) {
@@ -118,8 +110,7 @@
         if (Validation::post_num('Line' . $line_no, 0, $itm->quantity)) {
           Orders::session_get($_POST['order_id'])->line_items[$line_no]->qty_dispatched = Validation::input_num('Line' . $line_no);
         }
-      }
-      else {
+      } else {
         $ok = 0;
       }
       if (isset($_POST['Line' . $line_no . 'Desc'])) {
@@ -129,28 +120,32 @@
         }
       }
     }
+
     return $ok;
   }
 
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (!Dates::is_date($_POST['CreditDate'])) {
       Event::error(_("The entered date is invalid."));
       JS::set_focus('CreditDate');
-      return FALSE;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
+
+      return false;
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('CreditDate');
-      return FALSE;
+
+      return false;
     }
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
         JS::set_focus('ref');
-        return FALSE;
+
+        return false;
       }
       if (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
@@ -159,16 +154,20 @@
     if (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("The entered shipping cost is invalid or less than zero."));
       JS::set_focus('ChargeFreightCost');
-      return FALSE;
+
+      return false;
     }
     if (!check_quantities()) {
       Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
-  function copy_to_credit() {
+  function copy_to_credit()
+  {
     $order                = Orders::session_get($_POST['order_id']);
     $order->ship_via      = $_POST['ShipperID'];
     $order->freight_cost  = Validation::input_num('ChargeFreightCost');
@@ -183,7 +182,8 @@
   /**
    * @param $order
    */
-  function copy_from_credit($order) {
+  function copy_from_credit($order)
+  {
     $order                      = Sales_Order::check_edit_conflicts($order);
     $_POST['ShipperID']         = $order->ship_via;
     $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
@@ -195,7 +195,8 @@
     Orders::session_set($order);
   }
 
-  function display_credit_items() {
+  function display_credit_items()
+  {
     start_form();
     hidden('order_id');
     Table::start('tablestyle2 width90 pad5');
@@ -208,9 +209,8 @@
     Row::end();
     Row::start();
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-      ref_cells(_("Reference"), 'ref', '', NULL, "class='tablerowhead'");
-    }
-    else {
+      ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+    } else {
       Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
     Cell::labels(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
@@ -218,7 +218,7 @@
       $_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
     }
     Cell::label(_("Shipping Company"), "class='tablerowhead'");
-    Sales_UI::shippers_cells(NULL, 'ShipperID', $_POST['ShipperID']);
+    Sales_UI::shippers_cells(null, 'ShipperID', $_POST['ShipperID']);
     //	if (!isset($_POST['sales_type_id']))
     //	 $_POST['sales_type_id'] = Orders::session_get($_POST['order_id'])->sales_type;
     //	Cell::label(_("Sales Type"), "class='tablerowhead'");
@@ -235,8 +235,14 @@
     Display::div_start('credit_items');
     Table::start('tablestyle grid width90');
     $th = array(
-      _("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"),
-      _("Discount %"), _("Total")
+      _("Item Code"),
+      _("Item Description"),
+      _("Invoiced Quantity"),
+      _("Units"),
+      _("Credit Quantity"),
+      _("Price"),
+      _("Discount %"),
+      _("Total")
     );
     Table::header($th);
     $k = 0; //row colour counter
@@ -244,14 +250,13 @@
       if ($line->quantity == $line->qty_done) {
         continue; // this line was fully credited/removed
       }
-
       //	Item_UI::status_cell($line->stock_id); alternative view
       Cell::label($line->stock_id);
-      text_cells(NULL, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+      text_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
       $dec = Item::qty_dec($line->stock_id);
-      Cell::qty($line->quantity, FALSE, $dec);
+      Cell::qty($line->quantity, false, $dec);
       Cell::label($line->units);
-      amount_cells(NULL, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), NULL, NULL, $dec);
+      amount_cells(null, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), null, null, $dec);
       $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
       Cell::amount($line->price);
       Cell::percent($line->discount_percent * 100);
@@ -264,7 +269,7 @@
     $colspan = 7;
     Row::start();
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
-    small_amount_cells(NULL, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
+    small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
     Row::end();
     $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
@@ -277,28 +282,27 @@
     Display::div_end();
   }
 
-  function display_credit_options() {
+  function display_credit_options()
+  {
     echo "<br>";
     if (isset($_POST['_CreditType_update'])) {
       Ajax::i()->activate('options');
     }
     Display::div_start('options');
     Table::start('tablestyle2');
-    Sales_Credit::row(_("Credit Note Type"), 'CreditType', NULL, TRUE);
+    Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
     if ($_POST['CreditType'] == "Return") {
       /*if the credit note is a return of goods then need to know which location to receive them into */
       if (!isset($_POST['location'])) {
         $_POST['location'] = Orders::session_get($_POST['order_id'])->location;
       }
       Inv_Location::row(_("Items Returned to Location"), 'location', $_POST['location']);
-    }
-    else {
+    } else {
       /* the goods are to be written off to somewhere */
-      GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', NULL);
+      GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
     }
-    textarea_row(_("Memo"), "CreditText", NULL, 51, 3);
+    textarea_row(_("Memo"), "CreditText", null, 51, 3);
     echo "</table>";
     Display::div_end();
   }
-
 

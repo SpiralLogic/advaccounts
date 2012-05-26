@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   $js = "";
   Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
   // Ajax updates
@@ -38,13 +37,14 @@
    *
    * @return int|mixed
    */
-  function display_type($type, $typename, $from, $to, $convert, $drilldown) {
+  function display_type($type, $typename, $from, $to, $convert, $drilldown)
+  {
     global $levelptr, $k;
     $dimension  = $dimension2 = 0;
     $acctstotal = 0;
     $typestotal = 0;
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(NULL, NULL, $type);
+    $result = GL_Account::get_all(null, null, $type);
     while ($account = DB::fetch($result)) {
       $prev_balance = GL_Trans::get_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
       $curr_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -62,7 +62,7 @@
     }
     $levelptr = 1;
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(FALSE, FALSE, $type);
+    $result = GL_Type::get_all(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       $typestotal += display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
     }
@@ -82,16 +82,17 @@
         //elseif ($drilldown && $type != $_POST["AccGrp"])
       {
         $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $type . "'>" . $typename . "</a>";
-
         Cell::label($url);
         Cell::amount(($acctstotal + $typestotal) * $convert);
         Row::end();
       }
     }
+
     return ($acctstotal + $typestotal);
   }
 
-  function inquiry_controls() {
+  function inquiry_controls()
+  {
     Table::start('tablestyle_noborder');
     date_cells(_("As at:"), 'TransToDate');
     submit_cells('Show', _("Show"), '', '', 'default');
@@ -100,7 +101,8 @@
     hidden('AccGrp');
   }
 
-  function display_balance_sheet() {
+  function display_balance_sheet()
+  {
     $from      = Dates::begin_fiscalyear();
     $to        = $_POST['TransToDate'];
     $dim       = DB_Company::get_pref('use_dimension');
@@ -119,7 +121,7 @@
       $equityclose = $lclose = $calculateclose = 0.0;
       $parent      = -1;
       //Get classes for BS
-      $classresult = GL_Class::get_all(FALSE, 1);
+      $classresult = GL_Class::get_all(false, 1);
       while ($class = DB::fetch($classresult)) {
         $classclose = 0.0;
         $convert    = Systypes::get_class_type_convert($class["ctype"]);
@@ -128,13 +130,12 @@
         //Print class Name
         Table::sectionTitle($class["class_name"]);
         //Get Account groups/types under this group/type
-        $typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
+        $typeresult = GL_Type::get_all(false, $class['cid'], -1);
         while ($accounttype = DB::fetch($typeresult)) {
           $TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
           //Print Summary
           if ($TypeTotal != 0) {
             $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
-
             Cell::label($url);
             Cell::amount($TypeTotal * $convert);
             Row::end();
@@ -169,8 +170,7 @@
       Cell::label(_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
       Cell::amount($lclose * $lconvert + $equityclose * $econvert + $calculateclose);
       Row::end();
-    }
-    else //Drill Down
+    } else //Drill Down
     {
       //Level Pointer : Global variable defined in order to control display of root
       global $levelptr;

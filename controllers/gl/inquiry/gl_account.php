@@ -51,26 +51,27 @@
   }
   Display::div_end();
   Page::end();
-  function gl_inquiry_controls() {
+  function gl_inquiry_controls()
+  {
     $dim = DB_Company::get_pref('use_dimension');
     start_form();
     Table::start('tablestyle_noborder');
     Row::start();
-    GL_UI::all_cells(_("Account:"), 'account', NULL, FALSE, FALSE, "All Accounts");
-    date_cells(_("from:"), 'TransFromDate', '', NULL, -30);
+    GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
+    date_cells(_("from:"), 'TransFromDate', '', null, -30);
     date_cells(_("to:"), 'TransToDate');
     Row::end();
     Table::end();
     Table::start();
     Row::start();
     if ($dim >= 1) {
-      Dimensions::cells(_("Dimension") . " 1:", 'Dimension', NULL, TRUE, " ", FALSE, 1);
+      Dimensions::cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
     }
     if ($dim > 1) {
-      Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', NULL, TRUE, " ", FALSE, 2);
+      Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
     }
-    small_amount_cells(_("Amount min:"), 'amount_min', NULL);
-    small_amount_cells(_("Amount max:"), 'amount_max', NULL);
+    small_amount_cells(_("Amount min:"), 'amount_min', null);
+    small_amount_cells(_("Amount max:"), 'amount_max', null);
     submit_cells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
@@ -78,10 +79,11 @@
     end_form();
   }
 
-  function show_results() {
+  function show_results()
+  {
     global $systypes_array;
     if (!isset($_POST["account"])) {
-      $_POST["account"] = NULL;
+      $_POST["account"] = null;
     }
     $act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
     $dim      = DB_Company::get_pref('use_dimension');
@@ -92,44 +94,39 @@
     if (!isset($_POST['Dimension2'])) {
       $_POST['Dimension2'] = 0;
     }
-    $result  = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], NULL, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+    $result  = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
     $colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
-    if ($_POST["account"] != NULL) {
+    if ($_POST["account"] != null) {
       Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
     }
     // Only show balances if an account is specified AND we're not filtering by amounts
-    $show_balances = $_POST["account"] != NULL && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
+    $show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
     Table::start('tablestyle grid');
     $first_cols = array(_("Type"), _("#"), _("Date"));
-    if ($_POST["account"] == NULL) {
+    if ($_POST["account"] == null) {
       $account_col = array(_("Account"));
-    }
-    else {
+    } else {
       $account_col = array();
     }
     if ($dim == 2) {
       $dim_cols = array(_("Dimension") . " 1", _("Dimension") . " 2");
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $dim_cols = array(_("Dimension"));
-      }
-      else {
+      } else {
         $dim_cols = array();
       }
     }
     if ($show_balances) {
       $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
-    }
-    else {
+    } else {
       $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
     }
     $th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
     Table::header($th);
-    if ($_POST["account"] != NULL && GL_Account::is_balancesheet($_POST["account"])) {
+    if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
       $begin = "";
-    }
-    else {
+    } else {
       $begin = Dates::begin_fiscalyear();
       if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
         $begin = $_POST['TransFromDate'];
@@ -154,16 +151,16 @@
       $running_total += $myrow["amount"];
       $trandate = Dates::sql2date($myrow["tran_date"]);
       Cell::label($systypes_array[$myrow["type"]]);
-      Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], TRUE));
+      Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
       Cell::label($trandate);
-      if ($_POST["account"] == NULL) {
+      if ($_POST["account"] == null) {
         Cell::label($myrow["account"] . ' ' . GL_Account::get_name($myrow["account"]));
       }
       if ($dim >= 1) {
-        Cell::label(Dimensions::get_string($myrow['dimension_id'], TRUE));
+        Cell::label(Dimensions::get_string($myrow['dimension_id'], true));
       }
       if ($dim > 1) {
-        Cell::label(Dimensions::get_string($myrow['dimension2_id'], TRUE));
+        Cell::label(Dimensions::get_string($myrow['dimension2_id'], true));
       }
       Cell::label(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
       Cell::debitOrCredit($myrow["amount"]);

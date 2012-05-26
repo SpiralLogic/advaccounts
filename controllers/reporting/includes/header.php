@@ -35,11 +35,11 @@
   $this->Line($iline1, 3);
   $this->SetDrawColor(128, 128, 128);
   $this->Line($iline1);
-  $this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", NULL, array(222, 231, 236));
+  $this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", null, array(222, 231, 236));
   $this->Line($iline2);
   $this->Line($iline3);
   $this->Line($iline4);
-  $this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", NULL, array(222, 231, 236));
+  $this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", null, array(222, 231, 236));
   $this->Line($iline5);
   $this->Line($iline6);
   $this->Line($iline7);
@@ -58,8 +58,7 @@
   if ($this->company['coy_logo'] != '') {
     $logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
     $this->AddImage($logo, $ccol, $this->row, 0, 40);
-  }
-  else {
+  } else {
     $this->fontSize += 4;
     $this->Font('bold');
     $this->Text($ccol, $this->company['coy_name'], $icol);
@@ -91,8 +90,7 @@
   if (!isset($companyto)) {
     if (isset($myrow['debtor_id'])) {
       $companyto = new Debtor($myrow['debtor_id']);
-    }
-    elseif (isset($myrow['supplier_id'])) {
+    } elseif (isset($myrow['supplier_id'])) {
       $companyto = new Creditor($myrow['supplier_id']);
     }
   }
@@ -137,11 +135,9 @@
   $this->Text($mcol + 100, $txt_date);
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
     $this->Text($mcol + 180, Dates::sql2date($myrow['ord_date']));
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->Text($mcol + 180, Dates::sql2date($myrow['date_']));
-  }
-  else {
+  } else {
     $this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
   }
   $this->NewLine();
@@ -149,28 +145,23 @@
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
     if (Config::get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['reference']);
-    }
-    else {
+    } else {
       $this->Text($mcol + 180, $myrow['order_no']);
     }
   }
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
     if (Config::get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['reference']);
-    }
-    else {
+    } else {
       $this->Text($mcol + 180, $myrow['order_no']);
     }
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->Text($mcol + 180, $myrow['id']);
-  }
-  else {
+  } else {
     if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
       if (Config::get('print_useinvoicenumber') == 1) {
         $this->Text($mcol + 180, $myrow['reference']);
-      }
-      else {
+      } else {
         $this->Text($mcol + 180, $myrow['order_no']);
       }
     }
@@ -180,8 +171,7 @@
     $this->Text($mcol + 100, _('Salesperson:'));
     if ($doctype == ST_SALESINVOICE) {
       $id = $sales_order['salesman'];
-    }
-    else {
+    } else {
       $id = isset($myrow['salesman']) ? $myrow['salesman'] : '';
     }
     $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
@@ -189,8 +179,7 @@
     $row    = DB::fetch($result);
     if (empty($row['salesman_name'])) {
       $user = User::i()->name;
-    }
-    else {
+    } else {
       $user = $row['salesman_name'];
     }
     //$sql = "SELECT salesman_name FROM sales_order WHERE salesman_code='$id'";
@@ -220,12 +209,10 @@
   }
   if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
     $name = $myrow['name'];
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $name = $myrow['location_name'];
     $addr = $myrow['delivery_address'];
-  }
-  elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
+  } elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
     $name = $myrow['name'];
 
     $addr = $myrow['address'] . "\n";
@@ -246,14 +233,12 @@
   unset($name);
   if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
     $name = $sales_order['deliver_to'];
-  }
-  elseif ($doctype != ST_PURCHORDER && isset($companyto->name)) {
+  } elseif ($doctype != ST_PURCHORDER && isset($companyto->name)) {
     $name = $companyto->name;
   }
   if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['delivery_address'])) {
     $addr = $sales_order['delivery_address'];
-  }
-  elseif (($doctype == ST_STATEMENT) && (!empty($currentBranch->br_address))) {
+  } elseif (($doctype == ST_STATEMENT) && (!empty($currentBranch->br_address))) {
     $addr = $currentBranch->getAddress();
   }
   if (isset($name)) {
@@ -276,14 +261,11 @@
   $col       = $this->leftMargin;
   if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
     $this->TextWrap($col, $this->row, $width, $myrow['account_no'], 'C');
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
-  }
-  elseif (isset($sales_order["customer_ref"])) {
+  } elseif (isset($sales_order["customer_ref"])) {
     $this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
-  }
-  elseif (isset($myrow["debtor_ref"])) {
+  } elseif (isset($myrow["debtor_ref"])) {
     $this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
   }
 
@@ -299,14 +281,11 @@
   } # __ADVANCEDEDIT__ END #
   elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
     $this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
-  }
-  elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
+  } elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
     $this->TextWrap($col, $this->row, $width, $report_contact, 'C');
-  }
-  elseif ($doctype == ST_STATEMENT) {
+  } elseif ($doctype == ST_STATEMENT) {
     $this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
   }
   $col += $width;
@@ -314,11 +293,9 @@
     ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
   if ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-  }
-  elseif ($doctype == ST_PURCHORDER) {
+  } elseif ($doctype == ST_PURCHORDER) {
     $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
-  }
-  elseif ($doctype == ST_STATEMENT) {
+  } elseif ($doctype == ST_STATEMENT) {
     $report_phone = $companyto->accounts->phone;
   }
   $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
@@ -337,8 +314,7 @@
         else $line .= ",$delivery";
       }
       $this->TextWrap($col, $this->row, $width, $line, 'C');
-    }
-    else*/
+    } else*/
   if ($doctype == ST_CUSTDELIVERY) {
     $ref = $myrow['order_'];
     if (Config::get('print_useinvoicenumber') == 0) {
@@ -348,22 +324,17 @@
       }
     }
     $this->TextWrap($col, $this->row, $width, $ref, 'C');
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
-  }
-  elseif ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
+  } elseif ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
     if (!empty($branch['fax'])) {
       $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C');
-    }
-    elseif (isset($myrow['fax'])) {
+    } elseif (isset($myrow['fax'])) {
       $this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
     }
-  }
-  elseif ($doctype == ST_STATEMENT) {
+  } elseif ($doctype == ST_STATEMENT) {
     $this->TextWrap($col, $this->row, $width, $companyto->accounts->fax, 'C');
-  }
-  elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
+  } elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
     $this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
   } # __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
   elseif ($doctype == ST_PURCHORDER) {
@@ -373,11 +344,9 @@
   $col += $width;
   if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
     $this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['delivery_date']), 'C');
-  }
-  elseif ($doctype == ST_WORKORDER) {
+  } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
-  }
-  elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
+  } elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
   ($myrow['due_date'])
   ) {
     $this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
@@ -388,8 +357,7 @@
     $this->row -= (2 * $this->lineHeight);
     if ($doctype == ST_WORKORDER) {
       $str = Dates::sql2date($myrow["required_by"]);
-    }
-    else {
+    } else {
       $id     = $myrow['payment_terms'];
       $sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
       $result = DB::query($sql, "could not get paymentterms");

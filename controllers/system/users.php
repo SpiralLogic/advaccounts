@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Users"), SA_USERS);
-  list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(true);
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
     $auth = new Auth($_POST['user_id']);
     if (can_process($auth)) {
@@ -17,14 +16,11 @@
         Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
         $auth->update_password($_POST['user_id'], $_POST['password']);
         Event::success(_("The selected user has been updated."));
-      }
-      else {
+      } else {
         Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], check_value('rep_popup'), $_POST['pos']);
         // use current user display preferences as start point for new user
         $auth->update_password($_POST['user_id'], $_POST['password']);
-        Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(),
-          User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(),
-          $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], check_value('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -51,7 +47,6 @@
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-
     $last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
     /*The security_headings array is defined in config.php */
     $not_me = strcasecmp($myrow["user_id"], User::i()->username);
@@ -63,15 +58,13 @@
     Cell::label($myrow["role"]);
     if ($not_me) {
       inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');
-    }
-    elseif (check_value('show_inactive')) {
+    } elseif (check_value('show_inactive')) {
       Cell::label('');
     }
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));
     if ($not_me) {
       delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-    }
-    else {
+    } else {
       Cell::label('');
     }
     Row::end();
@@ -99,9 +92,8 @@
     hidden('user_id');
     Row::start();
     Row::label(_("User login:"), Input::post('user_id'));
-  }
-  else { //end of if $selected_id only do the else when a new record is being entered
-    text_row(_("User Login:"), "user_id", NULL, 22, 20);
+  } else { //end of if $selected_id only do the else when a new record is being entered
+    text_row(_("User Login:"), "user_id", null, 22, 20);
     $_POST['language']  = User::language();
     $_POST['profile']   = User::print_profile();
     $_POST['rep_popup'] = User::rep_popup();
@@ -115,11 +107,11 @@
   text_row_ex(_("Full Name") . ":", 'real_name', 50);
   text_row_ex(_("Telephone No.:"), 'phone', 30);
   email_row_ex(_("Email Address:"), 'email', 50);
-  Security::roles_row(_("Access Level:"), 'Access', NULL);
-  Languages::row(_("Language:"), 'language', NULL);
-  Sales_Point::row(_("User's POS") . ':', 'pos', NULL);
-  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', NULL, _('Browser printing support'));
-  check_row(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), FALSE, _('Set this option to on if your browser directly supports pdf files'));
+  Security::roles_row(_("Access Level:"), 'Access', null);
+  Languages::row(_("Language:"), 'language', null);
+  Sales_Point::row(_("User's POS") . ':', 'pos', null);
+  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
+  check_row(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
@@ -130,24 +122,26 @@
    * @internal param $user
    * @return bool
    */
-  function can_process(Auth $auth) {
+  function can_process(Auth $auth)
+  {
     if (strlen($_POST['user_id']) < 4) {
       Event::error(_("The user login entered must be at least 4 characters long."));
       JS::set_focus('user_id');
-      return FALSE;
-    }
 
-    $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : FALSE;
+      return false;
+    }
+    $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : false;
     if (!$check && $check['error'] > 0) {
       Event::error($check['text']);
-      return FALSE;
+
+      return false;
     }
     if (!$check && $check['strength'] < 3) {
       Event::error(_("Password Too Weak!"));
-      return FALSE;
+
+      return false;
     }
 
-    return TRUE;
+    return true;
   }
-
 

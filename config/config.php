@@ -7,16 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'ui_windows_popups'      => TRUE, //
-    'ui_users_showonline'    => TRUE, //
-    'help_baseurl'           => NULL, //
-    'use_fiscalyear'         => TRUE,
-    'print_default_excel'    => FALSE, //
+    'ui_windows_popups'      => true, //
+    'ui_users_showonline'    => true, //
+    'help_baseurl'           => null, //
+    'use_fiscalyear'         => true, 'print_default_excel'    => false, //
     'print_paper_sizes'      => array("Letter", "A4"), //
     'print_useinvoicenumber' => 1, //
     'auth_salt'              => '342342134sdfgsgdf', //
-    'demo_mode'              => FALSE, //
+    'demo_mode'              => false, //
     'item_images_height'     => 50, //
     'item_images_max_size'   => 500, //
     'company_subdirs'        => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'), //

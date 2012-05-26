@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Sales Groups"), SA_SALESGROUP);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['description']) == 0) {
@@ -21,8 +20,7 @@
       if ($selected_id != -1) {
         $sql  = "UPDATE groups SET description=" . DB::escape($_POST['description']) . " WHERE id = " . DB::escape($selected_id);
         $note = _('Selected sales group has been updated');
-      }
-      else {
+      } else {
         $sql  = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
         $note = _('New sales group has been added');
       }
@@ -69,7 +67,6 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["description"]);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
     edit_button_cell("Edit" . $myrow["id"], _("Edit"));

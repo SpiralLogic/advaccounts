@@ -3,35 +3,36 @@
   /**
 
    */
-  class Products {
-
+  class Products
+  {
     /**
      * @var array
      */
     public $products = array();
-
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
     }
-
     /**
      * @return bool
      */
-    function get() {
+    public function get()
+    {
       $productsXML = $this->getXML();
       if (!$productsXML) {
-        return FALSE;
+        return false;
       }
       $this->products = \XMLParser::XMLtoArray($productsXML);
-      return TRUE;
-    }
 
+      return true;
+    }
     /**
      * @return string
      */
-    function getXML() {
+    public function getXML()
+    {
       $apiuser = \Config::get('modules.webstore')['apiuser'];
       $apikey  = \Config::get('modules.webstore')['apikey'];
       $url     = \Config::get('modules.webstore')['apiurl'];
@@ -43,6 +44,7 @@
         \Event::warning('Could not retrieve web products');
       }
       ;
+
       return $result;
     }
   }

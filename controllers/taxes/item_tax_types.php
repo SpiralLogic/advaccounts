@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['name']) == 0) {
@@ -31,8 +31,7 @@
       if ($selected_id != -1) {
         Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
         Event::success(_('Selected item tax type has been updated'));
-      }
-      else {
+      } else {
         Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
         Event::success(_('New item tax type has been added'));
       }
@@ -60,8 +59,7 @@
 
     if ($myrow["exempt"] == 0) {
       $disallow_text = _("No");
-    }
-    else {
+    } else {
       $disallow_text = _("Yes");
     }
     Cell::label($myrow["name"]);
@@ -91,7 +89,7 @@
     hidden('selected_id', $selected_id);
   }
   text_row_ex(_("Description:"), 'name', 50);
-  yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', NULL, "", "", TRUE);
+  yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
   Table::end(1);
   if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
     Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
@@ -103,7 +101,7 @@
 
       Cell::label($myrow["name"]);
       Cell::label(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
-      check_cells("", 'ExemptTax' . $myrow["id"], NULL);
+      check_cells("", 'ExemptTax' . $myrow["id"], null);
       Row::end();
     }
     Table::end(1);
@@ -116,6 +114,4 @@
  *
  * @return bool
  */
-
-
 

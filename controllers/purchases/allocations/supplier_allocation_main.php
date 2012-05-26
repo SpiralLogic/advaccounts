@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   start_form();
@@ -16,19 +15,19 @@
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-  echo Creditor::select('supplier_id', $_POST['supplier_id'], TRUE, TRUE);
+  echo Creditor::select('supplier_id', $_POST['supplier_id'], true, true);
   echo "<br>";
-  check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
+  check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
   Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
     unset($_POST['supplier_id']);
   }
-  $settled = FALSE;
+  $settled = false;
   if (check_value('ShowSettled')) {
-    $settled = TRUE;
+    $settled = true;
   }
-  $supplier_id = NULL;
+  $supplier_id = null;
   if (isset($_POST['supplier_id'])) {
     $supplier_id = $_POST['supplier_id'];
   }
@@ -38,8 +37,10 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type) {
+  function systype_name($dummy, $type)
+  {
     global $systypes_array;
+
     return $systypes_array[$type];
   }
 
@@ -48,7 +49,8 @@
    *
    * @return null|string
    */
-  function trans_view($trans) {
+  function trans_view($trans)
+  {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
@@ -57,7 +59,8 @@
    *
    * @return string
    */
-  function alloc_link($row) {
+  function alloc_link($row)
+  {
     return DB_Pager::link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
   }
 
@@ -66,7 +69,8 @@
    *
    * @return int|string
    */
-  function amount_left($row) {
+  function amount_left($row)
+  {
     return Num::price_format(-$row["Total"] - $row["alloc"]);
   }
 
@@ -75,7 +79,8 @@
    *
    * @return int|string
    */
-  function amount_total($row) {
+  function amount_total($row)
+  {
     return Num::price_format(-$row["Total"]);
   }
 
@@ -84,7 +89,8 @@
    *
    * @return bool
    */
-  function check_settled($row) {
+  function check_settled($row)
+  {
     return $row['settled'] == 1;
   }
 
@@ -97,8 +103,8 @@
     _("Supplier")         => array('ord' => ''),
     _("Currency")         => array('align' => 'center'),
     _("Total")            => array('align' => 'right', 'fun' => 'amount_total'),
-    _("Left to Allocate") => array('align' => 'right', 'insert' => TRUE, 'fun' => 'amount_left'),
-    array('insert' => TRUE, 'fun' => 'alloc_link')
+    _("Left to Allocate") => array('align' => 'right', 'insert' => true, 'fun' => 'amount_left'),
+    array('insert' => true, 'fun' => 'alloc_link')
   );
   if (isset($_POST['customer_id'])) {
     $cols[_("Supplier")] = 'skip';

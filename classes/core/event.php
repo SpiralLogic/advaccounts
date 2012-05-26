@@ -13,8 +13,8 @@
   /**
 
    */
-  class Event {
-
+  class Event
+  {
     use \ADV\Core\Traits\Hook;
 
     /**
@@ -24,7 +24,7 @@
     /**
      * @var bool Whether the request from the browser has finsihed
      */
-    protected static $request_finsihed = FALSE;
+    protected static $request_finsihed = false;
     /**
      * @var array Events which occur after browser dissconnect which will be shown on next request
      */
@@ -37,7 +37,8 @@
      * @static
 
      */
-    public static function init() {
+    public static function init()
+    {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
       $shutdown_events            = Cache::get(static::$shutdown_events_id);
 
@@ -55,7 +56,8 @@
      *
      * @return bool
      */
-    public static function error($message) {
+    public static function error($message)
+    {
       return static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
     }
     /**
@@ -65,7 +67,8 @@
      *
      * @return bool
      */
-    public static function notice($message) {
+    public static function notice($message)
+    {
       return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
     }
     /**
@@ -75,7 +78,8 @@
      *
      * @return bool
      */
-    public static function success($message) {
+    public static function success($message)
+    {
       return static::handle($message, reset(debug_backtrace()), E_SUCCESS);
     }
     /**
@@ -85,7 +89,8 @@
      *
      * @return bool
      */
-    public static function warning($message) {
+    public static function warning($message)
+    {
       return static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
     }
     /**
@@ -97,15 +102,15 @@
      *
      * @return bool
      */
-    protected static function handle($message, $source, $type) {
-
+    protected static function handle($message, $source, $type)
+    {
       if (static::$request_finsihed) {
         static::$shutdown_events[] = array($message, $source, $type);
-      }
-      else {
+      } else {
         $message = $message . '||' . $source['file'] . '||' . $source['line'];
         ($type == E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
+
       return ($type === E_SUCCESS || $type === E_USER_NOTICE);
     }
     /**
@@ -115,7 +120,8 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function register_shutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function register_shutdown($object, $function = '_shutdown', $arguments = array())
+    {
       Event::registerHook('shutdown', $object, $function, $arguments);
     }
     /**
@@ -125,11 +131,13 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function register_pre_shutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function register_pre_shutdown($object, $function = '_shutdown', $arguments = array())
+    {
       Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */
-    public static function shutdown() {
+    public static function shutdown()
+    {
       Errors::process();
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {
@@ -137,11 +145,10 @@
       }
       session_write_close();
       fastcgi_finish_request();
-      static::$request_finsihed = TRUE;
+      static::$request_finsihed = true;
       try {
         static::fireHooks('shutdown');
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);

@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_GLANALYTIC);
-
   print_annual_expense_breakdown();
   /**
    * @param $yr
@@ -22,7 +20,8 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function getPeriods($yr, $mo, $account, $dimension, $dimension2) {
+  function getPeriods($yr, $mo, $account, $dimension, $dimension2)
+  {
     $date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
     $date12 = date('Y-m-d', mktime(0, 0, 0, $mo, 1, $yr));
     $date11 = date('Y-m-d', mktime(0, 0, 0, $mo - 1, 1, $yr));
@@ -36,20 +35,21 @@
     $date03 = date('Y-m-d', mktime(0, 0, 0, $mo - 9, 1, $yr));
     $date02 = date('Y-m-d', mktime(0, 0, 0, $mo - 10, 1, $yr));
     $date01 = date('Y-m-d', mktime(0, 0, 0, $mo - 11, 1, $yr));
-    $sql    = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
-		 		SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
-		 		SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
-		 		SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
-		 		SUM(CASE WHEN tran_date >= '$date05' AND tran_date < '$date06' THEN amount / 1000 ELSE 0 END) AS per05,
-		 		SUM(CASE WHEN tran_date >= '$date06' AND tran_date < '$date07' THEN amount / 1000 ELSE 0 END) AS per06,
-		 		SUM(CASE WHEN tran_date >= '$date07' AND tran_date < '$date08' THEN amount / 1000 ELSE 0 END) AS per07,
-		 		SUM(CASE WHEN tran_date >= '$date08' AND tran_date < '$date09' THEN amount / 1000 ELSE 0 END) AS per08,
-		 		SUM(CASE WHEN tran_date >= '$date09' AND tran_date < '$date10' THEN amount / 1000 ELSE 0 END) AS per09,
-		 		SUM(CASE WHEN tran_date >= '$date10' AND tran_date < '$date11' THEN amount / 1000 ELSE 0 END) AS per10,
-		 		SUM(CASE WHEN tran_date >= '$date11' AND tran_date < '$date12' THEN amount / 1000 ELSE 0 END) AS per11,
-		 		SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN amount / 1000 ELSE 0 END) AS per12
- 			FROM gl_trans
-				WHERE account='$account'";
+    $sql
+            = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+                 SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
+                 SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
+                 SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
+                 SUM(CASE WHEN tran_date >= '$date05' AND tran_date < '$date06' THEN amount / 1000 ELSE 0 END) AS per05,
+                 SUM(CASE WHEN tran_date >= '$date06' AND tran_date < '$date07' THEN amount / 1000 ELSE 0 END) AS per06,
+                 SUM(CASE WHEN tran_date >= '$date07' AND tran_date < '$date08' THEN amount / 1000 ELSE 0 END) AS per07,
+                 SUM(CASE WHEN tran_date >= '$date08' AND tran_date < '$date09' THEN amount / 1000 ELSE 0 END) AS per08,
+                 SUM(CASE WHEN tran_date >= '$date09' AND tran_date < '$date10' THEN amount / 1000 ELSE 0 END) AS per09,
+                 SUM(CASE WHEN tran_date >= '$date10' AND tran_date < '$date11' THEN amount / 1000 ELSE 0 END) AS per10,
+                 SUM(CASE WHEN tran_date >= '$date11' AND tran_date < '$date12' THEN amount / 1000 ELSE 0 END) AS per11,
+                 SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN amount / 1000 ELSE 0 END) AS per12
+             FROM gl_trans
+                WHERE account='$account'";
     if ($dimension != 0) {
       $sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DB::escape($dimension));
     }
@@ -57,6 +57,7 @@
       $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
     }
     $result = DB::query($sql, "Transactions for account $account could not be calculated");
+
     return DB::fetch($result);
   }
 
@@ -73,13 +74,14 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2) {
+  function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
+  {
     $ctotal     = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $total      = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $totals_arr = array();
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(NULL, NULL, $type);
+    $result = GL_Account::get_all(null, null, $type);
     while ($account = DB::fetch($result)) {
       $bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
       if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12']
@@ -96,7 +98,18 @@
         $rep->NewLine();
       }
       $balance = array(
-        1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'], $bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'], $bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']
+        1 => $bal['per01'],
+        $bal['per02'],
+        $bal['per03'],
+        $bal['per04'],
+        $bal['per05'],
+        $bal['per06'],
+        $bal['per07'],
+        $bal['per08'],
+        $bal['per09'],
+        $bal['per10'],
+        $bal['per11'],
+        $bal['per12']
       );
       $rep->TextCol(0, 1, $account['account_code']);
       $rep->TextCol(1, 2, $account['account_name']);
@@ -107,7 +120,7 @@
       $rep->NewLine();
     }
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(FALSE, FALSE, $type);
+    $result = GL_Type::get_all(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       //Print Type Title if has sub types and not previously printed
       if (!$printtitle) {
@@ -137,10 +150,12 @@
     for ($i = 1; $i <= 12; $i++) {
       $totals_arr[$i] = $total[$i] + $ctotal[$i];
     }
+
     return $totals_arr;
   }
 
-  function print_annual_expense_breakdown() {
+  function print_annual_expense_breakdown()
+  {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     if ($dim == 2) {
@@ -149,15 +164,13 @@
       $dimension2  = $_POST['PARAM_2'];
       $comments    = $_POST['PARAM_3'];
       $destination = $_POST['PARAM_4'];
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $year        = $_POST['PARAM_0'];
         $dimension   = $_POST['PARAM_1'];
         $comments    = $_POST['PARAM_2'];
         $destination = $_POST['PARAM_3'];
-      }
-      else {
+      } else {
         $year        = $_POST['PARAM_0'];
         $comments    = $_POST['PARAM_1'];
         $destination = $_POST['PARAM_2'];
@@ -165,8 +178,7 @@
     }
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $dec = 1;
@@ -196,7 +208,20 @@
     $per02   = strftime('%b', mktime(0, 0, 0, $mo - 10, $da, $yr));
     $per01   = strftime('%b', mktime(0, 0, 0, $mo - 11, $da, $yr));
     $headers = array(
-      _('Account'), _('Account Name'), $per01, $per02, $per03, $per04, $per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12
+      _('Account'),
+      _('Account Name'),
+      $per01,
+      $per02,
+      $per03,
+      $per04,
+      $per05,
+      $per06,
+      $per07,
+      $per08,
+      $per09,
+      $per10,
+      $per11,
+      $per12
     );
     $aligns  = array(
       'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right'
@@ -213,8 +238,7 @@
           'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''
         )
       );
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $params = array(
           0    => $comments, 1 => array(
@@ -225,8 +249,7 @@
             'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''
           )
         );
-      }
-      else {
+      } else {
         $params = array(
           0    => $comments, 1 => array(
             'text' => _("Year"), 'from' => $year, 'to' => ''
@@ -241,7 +264,7 @@
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $sales       = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    $classresult = GL_Class::get_all(FALSE, 0);
+    $classresult = GL_Class::get_all(false, 0);
     while ($class = DB::fetch($classresult)) {
       $ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       $convert = Systypes::get_class_type_convert($class["ctype"]);
@@ -251,7 +274,7 @@
       $rep->Font();
       $rep->NewLine();
       //Get Account groups/types under this group/type with no parents
-      $typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
+      $typeresult = GL_Type::get_all(false, $class['cid'], -1);
       while ($accounttype = DB::fetch($typeresult)) {
         $classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
         for ($i = 1; $i <= 12; $i++) {
@@ -282,5 +305,4 @@
     $rep->NewLine(2);
     $rep->End();
   }
-
 

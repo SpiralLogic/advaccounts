@@ -11,7 +11,6 @@
        Print request redirector. This file is fired via print link or
        print button in reporting module.
      */
-
   Page::set_security(SA_OPEN);
   if (isset($_GET['xls'])) {
     $filename    = $_GET['filename'];
@@ -24,8 +23,7 @@
     header("Pragma: public");
     echo file_get_contents($path . $unique_name);
     exit();
-  }
-  elseif (isset($_GET['xml'])) {
+  } elseif (isset($_GET['xml'])) {
     $filename    = $_GET['filename'];
     $unique_name = $_GET['unique'];
     $path        = COMPANY_PATH . 'pdf_files/';
@@ -56,7 +54,8 @@
    *
    * @return null|string
    */
-  function find_report_file($rep) {
+  function find_report_file($rep)
+  {
     global $installed_extensions;
     // customized per company versions
     $path     = "/company/reporting";
@@ -64,6 +63,7 @@
     if (file_exists($rep_file)) {
       // add local include path for custom reports
       set_include_path($path . PATH_SEPARATOR . get_include_path());
+
       return $rep_file;
     }
     // reports added by active extension modules
@@ -75,6 +75,7 @@
           $rep_file = $path . "/rep$rep.php";
           if (file_exists($rep_file)) {
             set_include_path($path . PATH_SEPARATOR . get_include_path());
+
             return $rep_file;
           }
         }
@@ -85,5 +86,6 @@
     if (file_exists($rep_file)) {
       return $rep_file;
     }
-    return NULL;
+
+    return null;
   }

@@ -332,7 +332,8 @@
      * @static
      * @return Ajax
      */
-    public static function i() {
+    public static function i()
+    {
       return static::i();
     }
   }
@@ -355,7 +356,8 @@
      * @static
      * @return ADV\Core\Config
      */
-    public static function i() {
+    public static function i()
+    {
       return static::i();
     }
   }
@@ -427,7 +429,8 @@
      * @static
      * @return ADV\Core\Session
      */
-    public static function i() {
+    public static function i()
+    {
       return static::i();
     }
   }

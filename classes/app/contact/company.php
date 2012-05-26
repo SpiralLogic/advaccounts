@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Contact_Company extends DB_abstract {
-
+  abstract class Contact_Company extends DB_abstract
+  {
     /**
      * @var string
      */
@@ -82,7 +82,8 @@
      *
      * @return void
      */
-    protected function addEmailGroup($name, $emails, $trans, $type) {
+    protected function addEmailGroup($name, $emails, $trans, $type)
+    {
     }
     /**
      * @static
@@ -92,19 +93,20 @@
      *
      * @return void
      */
-    public static function addInfoDialog($selector, $id = FALSE) {
+    public static function addInfoDialog($selector, $id = false)
+    {
       if ($id) {
         $company = new static($id);
       }
       $content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
-				 		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
-				 		<span class="bold">Phone: </span>${phone}</br></br>
-				 		<span class="bold">Phone2: </span>${phone2}</br></br>
-				 		<span class="bold">Fax: </span>${fax}</br></br>
-				 		<span class="bold">Contact: </span>${contact}</br></br>
-				 		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
-				 		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
-											</div>';
+                         <span class="bold">Mailing Address:</span><br>${post_address}</br></br>
+                         <span class="bold">Phone: </span>${phone}</br></br>
+                         <span class="bold">Phone2: </span>${phone2}</br></br>
+                         <span class="bold">Fax: </span>${fax}</br></br>
+                         <span class="bold">Contact: </span>${contact}</br></br>
+                         <span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
+                         <span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
+                                            </div>';
       $type    = explode('_', get_called_class());
       $type    = array_pop($type);
       $type    = ($type == 'c') ? 'customer' : 'supplier';
@@ -113,13 +115,12 @@
       $details->setTemplateData(($id) ? $company : '');
       if ($id) {
         $details->addOpenEvent($selector, 'click');
-      }
-      else {
+      } else {
         $action = <<<JS
 
-				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
+                 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
 JS;
-        JS::addLiveEvent($selector, 'click', $action, 'wrapper', TRUE);
+        JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
       }
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();
@@ -131,7 +132,8 @@ JS;
      *
      * @return bool|string
      */
-    public static function getEmailDialogue($emailid) {
+    public static function getEmailDialogue($emailid)
+    {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
       $company = new $company($id);
@@ -139,14 +141,16 @@ JS;
       if (count($emails) > 0) {
         $types   = $GLOBALS['systypes_array'];
         $text    = $types[$type];
-        $content = Reporting::email_link($trans, _("Email This $text"), TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
+        $content = Reporting::email_link($trans, _("Email This $text"), true, $type, 'EmailLink', null, $emails, 0, true);
         if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
           $type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
           $text = $types[$type];
-          $content .= Reporting::email_link($trans, _("Email This ") . $text, TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
+          $content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
         }
+
         return $content;
       }
-      return FALSE;
+
+      return false;
     }
   }

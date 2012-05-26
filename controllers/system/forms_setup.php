@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Forms Setup"), SA_FORMSETUP);
   if (isset($_POST['setprefs'])) {
     $systypes = SysTypes::get();
@@ -33,8 +32,7 @@
     ref_row($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
   }
   Table::endOuter(1);
-  submit_center('setprefs', _("Update"), TRUE, '', 'default');
+  submit_center('setprefs', _("Update"), true, '', 'default');
   end_form(2);
   Page::end();
-
 

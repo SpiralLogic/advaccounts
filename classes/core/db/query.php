@@ -13,16 +13,16 @@
   /**
 
    */
-  abstract class Query extends Query_Where {
-
+  abstract class Query extends Query_Where
+  {
     /**
      * @var Query
      */
-    protected static $query = NULL;
+    protected static $query = null;
     /**
      * @var bool
      */
-    protected $compiled_query = FALSE;
+    protected $compiled_query = false;
     /**
      * @var
      */
@@ -35,11 +35,12 @@
      * @abstract
      * @return
      */
-    protected abstract function execute();
+    abstract protected function execute();
     /**
      * @param $conn
      */
-    protected function __construct($conn) {
+    protected function __construct($conn)
+    {
       $this->conn    = $conn;
       static::$query = $this;
     }
@@ -48,10 +49,12 @@
      *
      * @return bool
      */
-    protected function getQuery($data) {
+    protected function getQuery($data)
+    {
       if (!$this->compiled_query) {
         $this->compiled_query = $this->execute($data);
       }
+
       return $this->compiled_query;
     }
     /***
@@ -59,14 +62,17 @@
      *
      * @return Query_Result|int|bool
      */
-    public function exec($data = NULL) {
+    public function exec($data = null)
+    {
       $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
+
       return $result;
     }
     /***
      * @return Query_Result
      */
-    public function fetch() {
-      return $this->exec(NULL);
+    public function fetch()
+    {
+      return $this->exec(null);
     }
   }

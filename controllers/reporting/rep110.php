@@ -13,7 +13,8 @@
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
   $packing_slip = 0;
   print_deliveries();
-  function print_deliveries() {
+  function print_deliveries()
+  {
     global $packing_slip;
     require_once(APPPATH . "reports/pdf.php");
     $from         = $_POST['PARAM_0'];
@@ -21,10 +22,10 @@
     $email        = $_POST['PARAM_2'];
     $packing_slip = $_POST['PARAM_3'];
     $comments     = $_POST['PARAM_4'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -38,13 +39,12 @@
     if ($email == 0) {
       if ($packing_slip == 0) {
         $rep = new ADVReport(_('DELIVERY'), "DeliveryNoteBulk", User::page_size());
-      }
-      else {
+      } else {
         $rep = new ADVReport(_('PACKING SLIP'), "PackingSlipBulk", User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $fno[0]; $i <= $tno[0]; $i++) {
       if (!Debtor_Trans::exists(ST_CUSTDELIVERY, $i)) {
@@ -60,14 +60,12 @@
         if ($packing_slip == 0) {
           $rep->title    = _('DELIVERY NOTE');
           $rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
-        }
-        else {
+        } else {
           $rep->title    = _('PACKING SLIP');
           $rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
         }
-        $rep->Info($params, $cols, NULL, $aligns);
-      }
-      else {
+        $rep->Info($params, $cols, null, $aligns);
+      } else {
         $rep->title = _('DELIVERY NOTE');
       }
       $rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
@@ -101,12 +99,11 @@
       $display_sub_total = Num::format($SubTotal, $dec);
       $display_freight   = Num::format($myrow["ov_freight"], $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = TRUE;
+      $linetype          = true;
       $doctype           = ST_CUSTDELIVERY;
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       if ($email == 1) {
@@ -121,5 +118,4 @@
       $rep->End();
     }
   }
-
 

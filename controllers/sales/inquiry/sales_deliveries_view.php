@@ -9,12 +9,11 @@
    **/
 
   JS::open_window(900, 600);
-  if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == TRUE)) {
-    $_POST['OutstandingOnly'] = TRUE;
+  if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
+    $_POST['OutstandingOnly'] = true;
     Page::start(_($help_context = "Search Not Invoiced Deliveries"), SA_SALESINVOICE);
-  }
-  else {
-    $_POST['OutstandingOnly'] = FALSE;
+  } else {
+    $_POST['OutstandingOnly'] = false;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
   $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
@@ -26,8 +25,7 @@
       if (check_value($checkbox)) {
         if (!$del_count) {
           $del_branch = $branch;
-        }
-        else {
+        } else {
           if ($del_branch != $branch) {
             $del_count = 0;
             break;
@@ -39,37 +37,35 @@
     }
     if (!$del_count) {
       Event::error(_('For batch invoicing you should select at least one delivery. All items must be dispatched to the same customer branch.'));
-    }
-    else {
+    } else {
       $_SESSION['DeliveryBatch'] = $selected;
       Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
     }
   }
   if (get_post('_DeliveryNumber_changed')) {
     $disable = get_post('DeliveryNumber') !== '';
-    Ajax::i()->addDisable(TRUE, 'DeliveryAfterDate', $disable);
-    Ajax::i()->addDisable(TRUE, 'DeliveryToDate', $disable);
-    Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
-    Ajax::i()->addDisable(TRUE, '_SelectStockFromList_edit', $disable);
-    Ajax::i()->addDisable(TRUE, 'SelectStockFromList', $disable);
+    Ajax::i()->addDisable(true, 'DeliveryAfterDate', $disable);
+    Ajax::i()->addDisable(true, 'DeliveryToDate', $disable);
+    Ajax::i()->addDisable(true, 'StockLocation', $disable);
+    Ajax::i()->addDisable(true, '_SelectStockFromList_edit', $disable);
+    Ajax::i()->addDisable(true, 'SelectStockFromList', $disable);
     // if search is not empty rewrite table
     if ($disable) {
-      Ajax::i()->addFocus(TRUE, 'DeliveryNumber');
-    }
-    else {
-      Ajax::i()->addFocus(TRUE, 'DeliveryAfterDate');
+      Ajax::i()->addFocus(true, 'DeliveryNumber');
+    } else {
+      Ajax::i()->addFocus(true, 'DeliveryAfterDate');
     }
     Ajax::i()->activate('deliveries_tbl');
   }
-  start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+  start_form(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
-  ref_cells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
-  date_cells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
-  date_cells(_("to:"), 'DeliveryToDate', '', NULL, 1);
-  Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
-  Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE, FALSE, FALSE, FALSE, FALSE);
+  Debtor::cells(_('Customer:'), 'customer_id', null, true);
+  ref_cells(_("#:"), 'DeliveryNumber', '', null, '', true);
+  date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
+  date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
+  Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+  Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
   submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   hidden('OutstandingOnly', $_POST['OutstandingOnly']);
   Row::end();
@@ -77,33 +73,32 @@
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];
-  }
-  else {
+  } else {
     unset($selected_stock_item);
   }
   $sql
     = "SELECT trans.trans_no,
-		debtor.name,
-		branch.branch_id,
-		sorder.contact_name,
-		sorder.deliver_to,
-		trans.reference,
-		sorder.customer_ref,
-		trans.tran_date,
-		trans.due_date,
-		(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
-		debtor.curr_code,
-		Sum(line.quantity-line.qty_done) AS Outstanding,
-		Sum(line.qty_done) AS Done
-	FROM sales_orders as sorder, debtor_trans as trans, debtor_trans_details as line, debtors as debtor, branches as branch
-		WHERE
-		sorder.order_no = trans.order_ AND
-		trans.debtor_id = debtor.debtor_id
-			AND trans.type = " . ST_CUSTDELIVERY . "
-			AND line.debtor_trans_no = trans.trans_no
-			AND line.debtor_trans_type = trans.type
-			AND trans.branch_id = branch.branch_id
-			AND trans.debtor_id = branch.debtor_id ";
+        debtor.name,
+        branch.branch_id,
+        sorder.contact_name,
+        sorder.deliver_to,
+        trans.reference,
+        sorder.customer_ref,
+        trans.tran_date,
+        trans.due_date,
+        (ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
+        debtor.curr_code,
+        Sum(line.quantity-line.qty_done) AS Outstanding,
+        Sum(line.qty_done) AS Done
+    FROM sales_orders as sorder, debtor_trans as trans, debtor_trans_details as line, debtors as debtor, branches as branch
+        WHERE
+        sorder.order_no = trans.order_ AND
+        trans.debtor_id = debtor.debtor_id
+            AND trans.type = " . ST_CUSTDELIVERY . "
+            AND line.debtor_trans_no = trans.trans_no
+            AND line.debtor_trans_type = trans.type
+            AND trans.branch_id = branch.branch_id
+            AND trans.debtor_id = branch.debtor_id ";
   if ($_POST['OutstandingOnly']) {
     $sql .= " AND line.qty_done < line.quantity ";
   }
@@ -112,8 +107,7 @@
     $delivery = "%" . $_POST['DeliveryNumber'];
     $sql .= " AND trans.trans_no LIKE " . DB::quote($delivery);
     $sql .= " GROUP BY trans.trans_no";
-  }
-  else {
+  } else {
     $sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
     $sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
     if ($selected_customer != -1) {
@@ -138,29 +132,30 @@
     ), _("Due By")                                                         => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
     ), _("Currency")                                                       => array('align' => 'center'),
-    submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
-      'insert' => TRUE, 'fun' => function ($row) {
+    submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing")) => array(
+      'insert' => true, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
+
         return $row['Done'] ? '' :
           "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
             . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
       }
     , 'align'  => 'center'
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
+      'insert' => true, 'fun' => function ($row) {
         return $row["Outstanding"] == 0 ? '' :
           DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
       }
 
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
+      'insert' => true, 'fun' => function ($row) {
         return $row["Outstanding"] == 0 ? '' :
           DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
       }
 
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
-        return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
+      'insert' => true, 'fun' => function ($row) {
+        return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
       }
 
     )

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
   if (isset($_GET['supplier_id']) || isset($_GET['id'])) {
@@ -27,32 +26,29 @@
       $_POST[$k] = $v;
     }
   }
-  start_form(FALSE, '', 'invoiceForm');
+  start_form(false, '', 'invoiceForm');
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
     $_POST['TransAfterDate'] = Session::i()->getGlobal('TransAfterDate');
-  }
-  elseif (isset($_POST['TransAfterDate'])) {
+  } elseif (isset($_POST['TransAfterDate'])) {
     Session::i()->setGlobal('TransAfterDate', $_POST['TransAfterDate']);
   }
   if (!isset($_POST['TransToDate']) && Session::i()->getGlobal('TransToDate')) {
     $_POST['TransToDate'] = Session::i()->getGlobal('TransToDate');
-  }
-  elseif (isset($_POST['TransToDate'])) {
+  } elseif (isset($_POST['TransToDate'])) {
     Session::i()->setGlobal('TransToDate', $_POST['TransToDate']);
   }
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
-
-    Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
+    Creditor::cells(_("Supplier: "), 'supplier_id', null, true);
   }
-  date_cells(_("From:"), 'TransAfterDate', '', NULL, -90);
-  date_cells(_("To:"), 'TransToDate', '', NULL, 1);
-  Purch_Allocation::row("filterType", NULL);
-  check_cells(_("Show settled:"), 'showSettled', NULL);
+  date_cells(_("From:"), 'TransAfterDate', '', null, -90);
+  date_cells(_("To:"), 'TransToDate', '', null, 1);
+  Purch_Allocation::row("filterType", null);
+  check_cells(_("Show settled:"), 'showSettled', null);
   submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   Row::end();
@@ -62,7 +58,8 @@
    *
    * @return bool
    */
-  function check_overdue($row) {
+  function check_overdue($row)
+  {
     return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
   }
 
@@ -72,8 +69,10 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type) {
+  function systype_name($dummy, $type)
+  {
     global $systypes_array;
+
     return $systypes_array[$type];
   }
 
@@ -82,7 +81,8 @@
    *
    * @return null|string
    */
-  function view_link($trans) {
+  function view_link($trans)
+  {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
@@ -91,7 +91,8 @@
    *
    * @return string
    */
-  function due_date($row) {
+  function due_date($row)
+  {
     return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
   }
 
@@ -100,10 +101,11 @@
    *
    * @return mixed
    */
-  function fmt_balance($row) {
+  function fmt_balance($row)
+  {
     $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
-      -$row["TotalAmount"] - $row["Allocated"] :
-      $row["TotalAmount"] - $row["Allocated"];
+      -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+
     return $value;
   }
 
@@ -112,8 +114,10 @@
    *
    * @return string
    */
-  function alloc_link($row) {
+  function alloc_link($row)
+  {
     $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+
     return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
       $link : '';
   }
@@ -123,8 +127,10 @@
    *
    * @return int|string
    */
-  function fmt_debit($row) {
+  function fmt_debit($row)
+  {
     $value = -$row["TotalAmount"];
+
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
@@ -133,8 +139,10 @@
    *
    * @return int|string
    */
-  function fmt_credit($row) {
+  function fmt_credit($row)
+  {
     $value = $row["TotalAmount"];
+
     return $value > 0 ? Num::price_format($value) : '';
   }
 
@@ -143,33 +151,31 @@
   // Sherifoz 22.06.03 Also get the description
   $sql
     = "SELECT
-		trans.type, 
-		trans.trans_no,
-		trans.reference, 
-		supplier.name,
-		supplier.supplier_id as id,
-		trans.supplier_reference,
- 		trans.tran_date,
-		trans.due_date,
-		supplier.curr_code, 
- 		(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
-		trans.alloc AS Allocated,
-		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue
- 	FROM creditor_trans as trans, suppliers as supplier
- 	WHERE supplier.supplier_id = trans.supplier_id
- 	AND trans.tran_date >= '$date_after'
- 	AND trans.tran_date <= '$date_to'";
+        trans.type,
+        trans.trans_no,
+        trans.reference,
+        supplier.name,
+        supplier.supplier_id as id,
+        trans.supplier_reference,
+         trans.tran_date,
+        trans.due_date,
+        supplier.curr_code,
+         (trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
+        trans.alloc AS Allocated,
+        ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue
+     FROM creditor_trans as trans, suppliers as supplier
+     WHERE supplier.supplier_id = trans.supplier_id
+     AND trans.tran_date >= '$date_after'
+     AND trans.tran_date <= '$date_to'";
   if ($_POST['supplier_id'] != ALL_TEXT) {
     $sql .= " AND trans.supplier_id = " . DB::quote($_POST['supplier_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
       $sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
-    }
-    elseif ($_POST['filterType'] == '3') {
+    } elseif ($_POST['filterType'] == '3') {
       $sql .= " AND trans.type = " . ST_SUPPAYMENT . " ";
-    }
-    elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
+    } elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
       $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
     }
     if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
@@ -192,14 +198,14 @@
     _("Currency")    => array('align' => 'center'),
     _("Debit")       => array('align' => 'right', 'fun' => 'fmt_debit'),
     _("Credit")      => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'fmt_credit'
+      'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
     ),
     _("Allocated")   => 'amount',
     _("Balance")     => array(
-      'type' => 'amount', 'insert' => TRUE, 'fun' => 'fmt_balance'
+      'type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'
     ),
     array(
-      'insert' => TRUE, 'fun' => 'alloc_link'
+      'insert' => true, 'fun' => 'alloc_link'
     )
   );
   if ($_POST['supplier_id'] != ALL_TEXT) {

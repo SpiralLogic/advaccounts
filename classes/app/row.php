@@ -7,8 +7,8 @@
    * To change this template use File | Settings | File Templates.
    */
 
-  class Row {
-
+  class Row
+  {
     /**
      * @param        $label
      * @param        $value
@@ -17,15 +17,15 @@
      * @param int    $leftfill
      * @param null   $id
      */
-    static function label($label, $value, $params = "", $params2 = "", $leftfill = 0, $id = NULL) {
+    public static function label($label, $value, $params = "", $params2 = "", $leftfill = 0, $id = null)
+    {
       echo "<tr>";
       if ($params == "") {
         echo "<td class='label'>$label</td>";
-        $label = NULL;
-      }
-      elseif (stristr($params, 'class')) {
+        $label = null;
+      } elseif (stristr($params, 'class')) {
         echo "<td $params>$label</td>";
-        $label = NULL;
+        $label = null;
       }
       Cell::labels($label, $value, $params, $params2, $id);
       if ($leftfill != 0) {
@@ -37,12 +37,12 @@
     /**
      * @param $k
      */
-    static function alt_table_row_color(&$k) {
+    public static function alt_table_row_color(&$k)
+    {
       if ($k == 1) {
         echo "<tr class='oddrow grid'>\n";
         $k = 0;
-      }
-      else {
+      } else {
         echo "<tr class='evenrow grid'>\n";
         $k++;
       }
@@ -50,16 +50,17 @@
     /**
      * @param string $param
      */
-    static function start($param = "") {
+    public static function start($param = "")
+    {
       if ($param != "") {
         echo "<tr $param>\n";
-      }
-      else {
+      } else {
         echo "<tr>\n";
       }
     }
 
-    static function end() {
+    public static function end()
+    {
       echo "</tr>\n";
     }
   }

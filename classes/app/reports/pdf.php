@@ -8,8 +8,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class ADVReport extends Cpdf {
-
+  class ADVReport extends Cpdf
+  {
     /**
      * @var array
      */
@@ -147,8 +147,8 @@
      * @param null         $margins
      * @param null         $excelColWidthFactor
      */
-    public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
-
+    public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = null)
+    {
       if (!User::i()->can_access_page(Page::get_security())) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
         Page::end();
@@ -269,7 +269,7 @@
       $this->oldFontSize    = 0;
       $this->row            = $this->pageHeight - $this->topMargin;
       $this->currency       = '';
-      $this->scaleLogoWidth = FALSE; // if Logo, scale on width (else height).
+      $this->scaleLogoWidth = false; // if Logo, scale on width (else height).
       $this->headerFunc     = 'Header'; // default to the original header template
       $rtl                  = ($_SESSION['Language']->dir === 'rtl' ? 'rtl' : 'ltr');
       $code                 = $_SESSION['Language']->code;
@@ -310,7 +310,8 @@
      *
      * @return void
      */
-    public function Font($style = '', $fontname = '') {
+    public function Font($style = '', $fontname = '')
+    {
       $this->selectFont($fontname, $style);
     }
     /**
@@ -341,7 +342,8 @@
      *
      * @return void
      */
-    public function Info($params, $cols, $headers, $aligns, $cols2 = NULL, $headers2 = NULL, $aligns2 = NULL, $companylogoenable = FALSE, $footerenable = FALSE, $footertext = '') {
+    public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null, $companylogoenable = false, $footerenable = false, $footertext = '')
+    {
       $this->addinfo('Title', $this->title);
       $this->addinfo('Subject', $this->title);
       $this->addinfo('Author', APP_TITLE . ' ' . VERSION);
@@ -349,8 +351,7 @@
       $year = DB_Company::get_current_fiscalyear();
       if ($year['closed'] == 0) {
         $how = _("Active");
-      }
-      else {
+      } else {
         $how = _("Closed");
       }
       $this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
@@ -365,7 +366,7 @@
       $this->headers = $headers;
       $this->aligns  = $aligns;
       $this->cols2   = $cols2;
-      if ($this->cols2 != NULL) {
+      if ($this->cols2 != null) {
         for ($i = 0; $i < count($this->cols2); $i++) {
           $this->cols2[$i] += $this->leftMargin;
         }
@@ -378,7 +379,8 @@
       $this->footerEnable = $footerenable;
       $this->footerText   = $footertext;
     }
-    public function Header() {
+    public function Header()
+    {
       $companyCol = $this->endLine - 150;
       $titleCol   = $this->leftMargin + 100;
       $this->pageNumber++;
@@ -435,7 +437,7 @@
       $this->Line($this->row - 5, 1);
       $this->row -= ($this->lineHeight + 6);
       $this->Font('italic');
-      if ($this->headers2 != NULL) {
+      if ($this->headers2 != null) {
         $count = count($this->headers2);
         for ($i = 0; $i < $count; $i++) {
           $this->TextCol2($i, $i + 1, $this->headers2[$i]);
@@ -459,15 +461,16 @@
      *
      * @return void
      */
-    public function Header2($myrow, $branch = NULL, $sales_order = NULL, $bankaccount = NULL, $doctype = NULL) {
+    public function Header2($myrow, $branch = null, $sales_order = null, $bankaccount = null, $doctype = null)
+    {
       global $print_as_quote, $packing_slip;
       $this->pageNumber++;
       if ($this->pageNumber > 1) {
         $this->newPage();
       }
-      $header2type = TRUE;
+      $header2type = true;
       if ($doctype == ST_PROFORMA || $doctype == ST_PROFORMAQ) {
-        $isproforma = TRUE;
+        $isproforma = true;
         $doctype    = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
       }
       if ($doctype == ST_STATEMENT) {
@@ -478,8 +481,7 @@
       }
       if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       include(REPORTS_PATH . 'includes' . DS . 'header.php');
@@ -487,7 +489,8 @@
       $this->row = $temp;
     }
     // Alternate header style which also supports a simple footer
-    public function Header3() {
+    public function Header3()
+    {
       // Make this header the default for the current report ( used by NewLine() )
       $this->headerFunc = 'Header3';
       // Turn off cell padding for the main report header, restoring the current setting later
@@ -534,8 +537,8 @@
         $this->Line($footerRow, 1);
         $prevFontSize   = $this->fontSize;
         $this->fontSize = FOOTER_FONT_SIZE;
-        $this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
-        $this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
+        $this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = null, $stretch = 1);
+        $this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0, $fill = 0, $link = null, $stretch = 1);
         $this->fontSize = $prevFontSize;
       }
       //
@@ -558,12 +561,10 @@
         // keeping its aspect ratio intact.
         if ($this->scaleLogoWidth) {
           $this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0);
-        }
-        else {
+        } else {
           $this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
         }
-      }
-      else {
+      } else {
         $this->Text($companyCol, $this->company['coy_name']);
       }
       // Dimension 1 - optional
@@ -642,13 +643,13 @@
         $str = _("Comments") . ':';
         $this->Text($this->leftMargin, $str, $headerFieldCol);
         $this->Font('B');
-        $this->Text($headerFieldCol, $this->params[0], $companyCol, 0, 0, 'left', 0, 0, $link = NULL, 1);
+        $this->Text($headerFieldCol, $this->params[0], $companyCol, 0, 0, 'left', 0, 0, $link = null, 1);
         $this->Font();
       }
       // Add page numbering to header if footer is turned off
       if (!$this->footerEnable) {
         $str = _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages();
-        $this->Text($pageNumCol, $str, 0, 0, 0, 'right', 0, 0, NULL, 1);
+        $this->Text($pageNumCol, $str, 0, 0, 0, 'right', 0, 0, null, 1);
       }
       // Print gray line across the page
       $this->Line($this->row - 5, 1);
@@ -663,16 +664,16 @@
       $this->lineHeight = $oldLineHeight;
       // Print the column headers!
       $this->Font('I');
-      if ($this->headers2 != NULL) {
+      if ($this->headers2 != null) {
         $count = count($this->headers2);
         for ($i = 0; $i < $count; $i++) {
-          $this->TextCol2($i, $i + 1, $this->headers2[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1);
+          $this->TextCol2($i, $i + 1, $this->headers2[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1);
         }
         $this->NewLine();
       }
       $count = count($this->headers);
       for ($i = 0; $i < $count; $i++) {
-        $this->TextCol($i, $i + 1, $this->headers[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1);
+        $this->TextCol($i, $i + 1, $this->headers[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1);
       }
       $this->Font();
       $this->NewLine(2);
@@ -682,14 +683,15 @@
     /**
      * Format a numeric string date into something nicer looking.
      *
-     * @param string     $date                    Date string to be formatted.
-     * @param int        $input_format            Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
-     * @param int        $output_format           Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+     * @param string $date          Date string to be formatted.
+     * @param int    $input_format  Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
+     * @param int    $output_format Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
      *
      * @return int|string
      * @access public
      */
-    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
+    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0)
+    {
       if ($date != '') {
         $date  = Dates::date2sql($date);
         $year  = (int) (substr($date, 0, 4));
@@ -697,15 +699,12 @@
         $day   = (int) (substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
-        }
-        elseif ($output_format == 1) {
+        } elseif ($output_format == 1) {
           return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
-        }
-        elseif ($output_format == 2) {
+        } elseif ($output_format == 2) {
           return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
         }
-      }
-      else {
+      } else {
         return $date;
       }
     }
@@ -718,11 +717,11 @@
      *
      * @return void
      */
-    public function AddImage($logo, $x, $y, $w, $h) {
+    public function AddImage($logo, $x, $y, $w, $h)
+    {
       if (strpos($logo, ".png") || strpos($logo, ".PNG")) {
         $this->addPngFromFile($logo, $x, $y, $w, $h);
-      }
-      else {
+      } else {
         $this->addJpegFromFile($logo, $x, $y, $w, $h);
       }
     }
@@ -730,18 +729,19 @@
     /**
      * @return array
      */
-    public function GetDrawColor() {
+    public function GetDrawColor()
+    {
       // Convert the TCPDF stored DrawColor string into an array of strings
       $colorFields = explode(' ', $this->DrawColor);
       // Test last value: G == grayscale, single number; RG == RGB, 3 numbers
       if ($colorFields[count($colorFields) - 1] == 'G') // Convert a grayscale string value to the equivalent RGB value
       {
         $drawColor = array((float) $colorFields[0], (float) $colorFields[0], (float) $colorFields[0]);
-      }
-      else // Convert RGB string values to the a numeric array
+      } else // Convert RGB string values to the a numeric array
       {
         $drawColor = array((float) $colorFields[0], (float) $colorFields[1], (float) $colorFields[2]);
       }
+
       return $drawColor;
     }
     /**
@@ -751,7 +751,8 @@
      *
      * @return void
      */
-    public function SetDrawColor($r, $g, $b) {
+    public function SetDrawColor($r, $g, $b)
+    {
       parent::SetDrawColor($r, $g, $b);
     }
     /**
@@ -761,7 +762,8 @@
      *
      * @return void
      */
-    public function SetTextColor($r, $g, $b) {
+    public function SetTextColor($r, $g, $b)
+    {
       parent::SetTextColor($r, $g, $b);
     }
     /**
@@ -774,14 +776,16 @@
      *
      * @return void
      */
-    public function SetFillColor($r, $g, $b) {
+    public function SetFillColor($r, $g, $b)
+    {
       parent::SetFillColor($r, $g, $b);
     }
     // Get current cell padding setting from TCPDF object
     /**
      * @return cell|float
      */
-    public function GetCellPadding() {
+    public function GetCellPadding()
+    {
       return $this->cMargin;
     }
     // Set desired cell padding (aka "cell margin")
@@ -791,7 +795,8 @@
      *
      * @return void
      */
-    public function SetCellPadding($pad) {
+    public function SetCellPadding($pad)
+    {
       parent::SetCellPadding($pad);
     }
     /**
@@ -808,10 +813,12 @@
      *
      * @return string|void
      */
-    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
+    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 1)
+    {
       if ($n == 0) {
         $n = $this->pageWidth - $this->rightMargin;
       }
+
       return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, $align, $border, $fill, $link, $stretch);
     }
     /**
@@ -828,11 +835,13 @@
      *
      * @return string
      */
-    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1, $spacebreak = FALSE) {
+    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 1, $spacebreak = false)
+    {
       if ($this->fontSize != $this->oldFontSize) {
         $this->SetFontSize($this->fontSize);
         $this->oldFontSize = $this->fontSize;
       }
+
       return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align, $border, $fill, $link, $stretch, $spacebreak);
     }
     /**
@@ -848,7 +857,8 @@
      *
      * @return string
      */
-    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
+    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1)
+    {
       return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
     }
     /**
@@ -866,7 +876,8 @@
      *
      * @return string
      */
-    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1, $color_red = FALSE) {
+    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1, $color_red = false)
+    {
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
       }
@@ -874,6 +885,7 @@
       if ($color_red && $txt < 0) {
         $this->SetTextColor(0, 0, 0);
       }
+
       return $ret;
     }
     /**
@@ -893,7 +905,8 @@
      *
      * @return string
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1, $color_red = FALSE, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n') {
+    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1, $color_red = false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n')
+    {
       setlocale(LC_MONETARY, $amount_locale);
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
@@ -902,6 +915,7 @@
       if ($color_red && $txt < 0) {
         $this->SetTextColor(0, 0, 0);
       }
+
       return $ret;
     }
     /**
@@ -918,10 +932,12 @@
      *
      * @return string
      */
-    public function DateCol($c, $n, $txt, $conv = FALSE, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
+    public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1)
+    {
       if ($conv) {
         $txt = Dates::sql2date($txt);
       }
+
       return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
     }
     /**
@@ -937,7 +953,8 @@
      *
      * @return string
      */
-    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
+    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1)
+    {
       return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c], $border, $fill, $link, $stretch);
     }
     /**
@@ -953,9 +970,10 @@
      *
      * @return void
      */
-    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       $this->row -= $r;
-      $this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch, TRUE);
+      $this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch, true);
     }
     /**
      * @param        $c
@@ -970,7 +988,8 @@
      *
      * @return void
      */
-    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0, $spacebreak = TRUE) {
+    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0, $spacebreak = true)
+    {
       $str = Explode("\n", $txt);
       for ($i = 0; $i < count($str); $i++) {
         $l = $str[$i];
@@ -989,7 +1008,8 @@
      *
      * @return array
      */
-    public function TextWrapCalc($txt, $width, $spacebreak = FALSE) {
+    public function TextWrapCalc($txt, $width, $spacebreak = false)
+    {
       return $this->calcTextWrap($txt, $width, $spacebreak);
     }
     /**
@@ -1011,7 +1031,8 @@
      *
      * @return void
      */
-    public function SetLineStyle($style) {
+    public function SetLineStyle($style)
+    {
       parent::SetLineStyle($style);
     }
     /**
@@ -1021,7 +1042,8 @@
      *
      * @return void
      */
-    public function SetLineWidth($width) {
+    public function SetLineWidth($width)
+    {
       parent::SetLineWidth($width);
     }
     /**
@@ -1032,7 +1054,8 @@
      *
      * @return void
      */
-    public function LineTo($from, $row, $to, $row2) {
+    public function LineTo($from, $row, $to, $row2)
+    {
       parent::line($from, $row, $to, $row2);
     }
     /**
@@ -1041,7 +1064,8 @@
      *
      * @return void
      */
-    public function Line($row, $height = 0) {
+    public function Line($row, $height = 0)
+    {
       $oldLineWidth = $this->GetLineWidth();
       $this->SetLineWidth($height + 1);
       parent::line($this->pageWidth - $this->rightMargin, $row, $this->leftMargin, $row);
@@ -1051,17 +1075,18 @@
      * Underlines the contents of a cell, but not the cell padding area.
      * Primarily useful for the last line before a "totals" line.
      *
-     * @param int     $c                 Column number to underline.
-     * @param int     $r                 Print the underline(s) this number of rows below the current position.  Can be negative in order to go up.
-     * @param int     $type              Type of underlining to draw.  Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
-     * @param int     $linewidth         Thickness of the line to draw.  Default value of zero will use the current line width defined for this document.
-     * @param array   $style             Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
+     * @param int   $c         Column number to underline.
+     * @param int   $r         Print the underline(s) this number of rows below the current position.  Can be negative in order to go up.
+     * @param int   $type      Type of underlining to draw.  Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
+     * @param int   $linewidth Thickness of the line to draw.  Default value of zero will use the current line width defined for this document.
+     * @param array $style     Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
      *
      * @return void
      * @access     public
      * @see        SetLineWidth(), SetDrawColor(), SetLineStyle()
      */
-    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
+    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array())
+    {
       // If line width was specified, save current setting so we can reset it
       if ($linewidth != 0) {
         $oldLineWidth = $this->GetLineWidth();
@@ -1073,8 +1098,7 @@
       // lowercase letter 'g', etc.
       if ($this->fontSize < 10) {
         $y_adj = 2;
-      }
-      else {
+      } else {
         $y_adj = 3;
       }
       parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj, $this->cols[$c + 1] - $this->cMargin, $this->row - $r - $y_adj, $style);
@@ -1095,9 +1119,10 @@
      *
      * @return void
      */
-    public function NewLine($l = 1, $np = 0, $h = NULL) {
+    public function NewLine($l = 1, $np = 0, $h = null)
+    {
       // If the line height wasn't specified, use the current setting
-      if ($h == NULL) {
+      if ($h == null) {
         $h = $this->lineHeight;
       }
       // Move one line down the page
@@ -1117,7 +1142,8 @@
      *
      * @return void
      */
-    public function  End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
+    public function  End($email = 0, $subject = null, $myrow = null, $doctype = 0)
+    {
       if (Config::get('debug.pdf') == 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -1131,8 +1157,7 @@
         //header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         //header('Pragma: public');
         //$this->pdf->stream();
-      }
-      else {
+      } else {
         $dir = COMPANY_PATH . 'pdf_files';
         //save the file
         if (!file_exists($dir)) {
@@ -1142,17 +1167,15 @@
         // are world readable
         if ($email == 1) {
           $fname = $dir . '/' . $this->filename;
-        }
-        else {
+        } else {
           $fname = $dir . '/' . uniqid('') . '.pdf';
         }
         $this->Output($fname, 'F');
         if ($email == 1) {
-          $emailtype = TRUE;
+          $emailtype = true;
           if ($this->currency != $myrow['curr_code']) {
             include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-          }
-          else {
+          } else {
             include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
           }
           $mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
@@ -1182,7 +1205,6 @@
           if (isset($_GET['Email'])) {
             $emailAddress = $_GET['Email'];
           }
-
           $mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
           $mail->subject($subject);
           $mail->text($msg . $sender);
@@ -1190,16 +1212,14 @@
           $ret = $mail->send();
           if (!$ret) {
             Event::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
-          }
-          else {
+          } else {
             $myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
             Event::success($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
           }
           unlink($fname);
-        }
-        else {
+        } else {
           $printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
-          if ($printer == FALSE) {
+          if ($printer == false) {
             if (Ajax::in_ajax()) {
               if (User::rep_popup()) {
                 Ajax::i()->popup($fname);
@@ -1207,8 +1227,7 @@
               else {
                 Ajax::i()->redirect($fname);
               } // otherwise use faster method
-            }
-            else {
+            } else {
               //echo '<html>
               //		<head>
               //	 	 <SCRIPT LANGUAGE="JavaScript"><!--
@@ -1227,14 +1246,12 @@
               header('Pragma: public');
               $this->Stream();
             }
-          }
-          else { // send report to network printer
+          } else { // send report to network printer
             $prn   = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
             $error = $prn->print_file($fname);
             if ($error) {
               Event::error($error);
-            }
-            else {
+            } else {
               Event::success(_('Report has been sent to network printer ') . $printer['name']);
             }
           }
@@ -1242,7 +1259,7 @@
         // first have a look through the directory,
         // and remove old temporary pdfs
         if ($d = @opendir($dir)) {
-          while (($file = readdir($d)) !== FALSE) {
+          while (($file = readdir($d)) !== false) {
             if (!is_file($dir . '/' . $file) || $file == 'index.php') {
               continue;
             }

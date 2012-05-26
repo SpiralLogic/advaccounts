@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_Company extends DB_abstract {
-
+  class DB_Company extends DB_abstract
+  {
     /**
      * @var int
      */
@@ -232,7 +232,8 @@
     /**
      * @param int $id
      */
-    public function __construct($id = 0) {
+    public function __construct($id = 0)
+    {
       parent::__construct($id);
       $this->id = &$this->coy_code;
     }
@@ -241,12 +242,13 @@
      *
      * @return array|bool|int|null|Status
      */
-    public function save($changes = NULL) {
+    public function save($changes = null)
+    {
       if (is_array($changes)) {
         $this->setFromArray($changes);
       }
       if (!$this->_canProcess()) {
-        return FALSE;
+        return false;
       }
       if ($this->id == 0) {
         $this->_saveNew();
@@ -255,22 +257,27 @@
       $result = DB::update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
       DB::commit();
       $_SESSION['config']['company'] = $this;
-      return $this->_status(TRUE, 'Processing', "Company has been updated.");
+
+      return $this->_status(true, 'Processing', "Company has been updated.");
     }
-    public function delete() {
+    public function delete()
+    {
       // TODO: Implement delete() method.
     }
     /**
      * @return bool
      */
-    protected function _canProcess() {
-      return TRUE;
+    protected function _canProcess()
+    {
+      return true;
       // TODO: Implement _canProcess() method.
     }
-    protected function _defaults() {
+    protected function _defaults()
+    {
       // TODO: Implement _defaults() method.
     }
-    protected function _new() {
+    protected function _new()
+    {
       // TODO: Implement _new() method.
     }
     /**
@@ -278,19 +285,21 @@
      *
      * @return bool|void
      */
-    protected function _read($id = 0) {
+    protected function _read($id = 0)
+    {
       $result = DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
     }
     /**
      * @return bool|int|void
      */
-    protected function _saveNew() {
+    protected function _saveNew()
+    {
       // TODO: Implement _saveNew() method.
     }
     /***
      * @var DB_Company
      */
-    protected static $i = NULL;
+    protected static $i = null;
     /***
      * @static
      *
@@ -298,8 +307,9 @@
      *
      * @return DB_Company
      */
-    public static function i($id = NULL) {
-      if (static::$i === NULL) {
+    public static function i($id = null)
+    {
+      if (static::$i === null) {
         if (isset($_POST['login_comapny'])) {
           $company = Config::get('db.' . $_POST['login_company']);
         }
@@ -310,6 +320,7 @@
         $id        = $company['id'];
         static::$i = isset($_SESSION['config']['company']) ? $_SESSION['config']['company'] : new static($id);
       }
+
       return static::$i;
     }
     /**
@@ -321,12 +332,13 @@
      *
      * @return void
      */
-    public static function add_fiscalyear($from_date, $to_date, $closed) {
+    public static function add_fiscalyear($from_date, $to_date, $closed)
+    {
       $from = Dates::date2sql($from_date);
       $to   = Dates::date2sql($to_date);
       $sql
             = "INSERT INTO fiscal_year (begin, end, closed)
-		VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
+        VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
       DB::query($sql, "could not add fiscal year");
     }
     /**
@@ -338,19 +350,19 @@
      *
      * @return void
      */
-    public static function add_payment_terms($daysOrFoll, $terms, $dayNumber) {
+    public static function add_payment_terms($daysOrFoll, $terms, $dayNumber)
+    {
       if ($daysOrFoll) {
         $sql
           = "INSERT INTO payment_terms (terms,
-					days_before_due, day_in_following_month)
-					VALUES (" . DB::escape($terms) . ", " . DB::escape($dayNumber) . ", 0)";
-      }
-      else {
+                    days_before_due, day_in_following_month)
+                    VALUES (" . DB::escape($terms) . ", " . DB::escape($dayNumber) . ", 0)";
+      } else {
         $sql
           = "INSERT INTO payment_terms (terms,
-					days_before_due, day_in_following_month)
-					VALUES (" . DB::escape($terms) . ",
-					0, " . DB::escape($dayNumber) . ")";
+                    days_before_due, day_in_following_month)
+                    VALUES (" . DB::escape($terms) . ",
+                    0, " . DB::escape($dayNumber) . ")";
       }
       DB::query($sql, "The payment term could not be added");
     }
@@ -361,7 +373,8 @@
      *
      * @return void
      */
-    public static function delete_fiscalyear($id) {
+    public static function delete_fiscalyear($id)
+    {
       DB::begin();
       $sql = "DELETE FROM fiscal_year WHERE id=" . DB::escape($id);
       DB::query($sql, "could not delete fiscal year");
@@ -374,25 +387,30 @@
      *
      * @return void
      */
-    public static function delete_payment_terms($selected_id) {
+    public static function delete_payment_terms($selected_id)
+    {
       DB::query("DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id) . " could not delete a payment terms");
     }
     /**
      * @static
      * @return null|PDOStatement
      */
-    public static function get_all_fiscalyears() {
+    public static function get_all_fiscalyears()
+    {
       $sql = "SELECT * FROM fiscal_year ORDER BY begin";
+
       return DB::query($sql, "could not get all fiscal years");
     }
     /**
      * @static
      * @return mixed
      */
-    public static function get_base_sales_type() {
+    public static function get_base_sales_type()
+    {
       $sql    = "SELECT base_sales FROM company WHERE coy_code=1";
       $result = DB::query($sql, "could not get base sales type");
       $myrow  = DB::fetch($result);
+
       return $myrow[0];
     }
     /**
@@ -402,22 +420,26 @@
      *
      * @return array
      */
-    public static function get_company_extensions($id = -1) {
+    public static function get_company_extensions($id = -1)
+    {
       $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = array();
       if (is_file($file)) {
         include($file);
       }
+
       return $installed_extensions;
     }
     /**
      * @static
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get_current_fiscalyear() {
+    public static function get_current_fiscalyear()
+    {
       $year   = DB_Company::get_pref('f_year');
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
       $result = DB::query($sql, "could not get current fiscal year");
+
       return DB::fetch($result);
     }
     /**
@@ -427,9 +449,11 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get_fiscalyear($id) {
+    public static function get_fiscalyear($id)
+    {
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get fiscal year");
+
       return DB::fetch($result);
     }
     /**
@@ -439,20 +463,24 @@
      *
      * @return mixed
      */
-    public static function get_pref($pref_name) {
-      $prefs = (static::$i === NULL) ? DB_Company::get_prefs() : (array) $_SESSION['config']['company'];
+    public static function get_pref($pref_name)
+    {
+      $prefs = (static::$i === null) ? DB_Company::get_prefs() : (array) $_SESSION['config']['company'];
+
       return $prefs[$pref_name];
     }
     /**
      * @static
      * @return array
      */
-    public static function get_prefs() {
-      if (static::$i === NULL) {
+    public static function get_prefs()
+    {
+      if (static::$i === null) {
         if (!isset($_SESSION['config']['company'])) {
           $_SESSION['config']['company'] = static::i();
         }
       }
+
       return (array) $_SESSION['config']['company'];
     }
     /**
@@ -465,18 +493,18 @@
      *
      * @return void
      */
-    public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
+    public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
+    {
       if ($daysOrFoll) {
         $sql = "UPDATE payment_terms SET terms=" . DB::escape($terms) . ",
-			day_in_following_month=0,
-			days_before_due=" . DB::escape($dayNumber) . "
-			WHERE terms_indicator = " . DB::escape($selected_id);
-      }
-      else {
+            day_in_following_month=0,
+            days_before_due=" . DB::escape($dayNumber) . "
+            WHERE terms_indicator = " . DB::escape($selected_id);
+      } else {
         $sql = "UPDATE payment_terms SET terms=" . DB::escape($terms) . ",
-			day_in_following_month=" . DB::escape($dayNumber) . ",
-			days_before_due=0
-			WHERE terms_indicator = " . DB::escape($selected_id);
+            day_in_following_month=" . DB::escape($dayNumber) . ",
+            days_before_due=0
+            WHERE terms_indicator = " . DB::escape($selected_id);
       }
       DB::query($sql, "The payment term could not be updated");
     }
@@ -487,11 +515,13 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get_payment_terms($selected_id) {
+    public static function get_payment_terms($selected_id)
+    {
       $sql
               = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
-	 FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
+     FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not get payment term");
+
       return DB::fetch($result);
     }
     /**
@@ -501,11 +531,13 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_payment_terms_all($show_inactive) {
+    public static function get_payment_terms_all($show_inactive)
+    {
       $sql = "SELECT * FROM payment_terms";
       if (!$show_inactive) {
         $sql .= " WHERE !inactive";
       }
+
       return DB::query($sql, "could not get payment terms");
     }
     /*
@@ -525,7 +557,8 @@
      *
      * @return mixed
      */
-    public static function key_in_foreign_table($id, $tables, $stdkey, $escaped = FALSE) {
+    public static function key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
+    {
       if (!$escaped) {
         $id = DB::escape($id);
       }
@@ -543,6 +576,7 @@
       $sql    = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
       $result = DB::query($sql, "check relations for " . implode(',', $tables) . " failed");
       $count  = DB::fetch($result);
+
       return $count[0];
     }
     /**
@@ -553,9 +587,10 @@
      *
      * @return void
      */
-    public static function update_fiscalyear($id, $closed) {
+    public static function update_fiscalyear($id, $closed)
+    {
       $sql = "UPDATE fiscal_year SET closed=" . DB::escape($closed) . "
-			WHERE id=" . DB::escape($id);
+            WHERE id=" . DB::escape($id);
       DB::query($sql, "could not update fiscal year");
     }
     /**
@@ -565,7 +600,8 @@
      *
      * @return void
      */
-    public static function update_gl_setup(array $data = NULL) {
+    public static function update_gl_setup(array $data = null)
+    {
       static::i()->save($data);
     }
     /**
@@ -575,8 +611,9 @@
      *
      * @return void
      */
-    public static function update_setup(array $data = NULL) {
-      if (static::i()->f_year == NULL) {
+    public static function update_setup(array $data = null)
+    {
+      if (static::i()->f_year == null) {
         static::$i->f_year = 0;
       }
       static::$i->save($data);

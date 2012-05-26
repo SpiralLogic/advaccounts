@@ -7,13 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  class Apps_Items extends Application {
-
+  class Apps_Items extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       $this->direct = '/items/items';
       parent::__construct("Items", _($this->help_context = "Items"));
     }

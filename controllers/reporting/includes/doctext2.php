@@ -17,19 +17,15 @@
       $doc_Charge_To = "Order To";
       if ($doctype == ST_PURCHORDER) {
         $doc_Delivered_To = "Deliver To";
-      }
-      else {
+      } else {
         $doc_Delivered_To = "Charge To";
       }
-    }
-    else {
+    } else {
       if ($doctype == ST_CUSTPAYMENT) {
         $doc_Charge_To = "With thanks from";
-      }
-      elseif ($doctype == ST_CUSTREFUND) {
+      } elseif ($doctype == ST_CUSTREFUND) {
         $doc_Charge_To = "Refund To";
-      }
-      else {
+      } else {
         $doc_Charge_To = "Charge To";
       }
       $doc_Delivered_To = "Delivered To";
@@ -37,11 +33,9 @@
     $doc_shipping_company = "Shipping Company";
     if ($doctype == ST_SALESQUOTE) {
       $doc_Due_Date = "Valid until";
-    }
-    elseif ($doctype == ST_SALESORDER) {
+    } elseif ($doctype == ST_SALESORDER) {
       $doc_Due_Date = "Delivery Date";
-    }
-    else {
+    } else {
       $doc_Due_Date = "Due Date";
     }
     $doc_Your_Ref = "Your Ref";
@@ -52,12 +46,10 @@
       $doc_Customers_Ref = "Reference";
       $doc_Our_Order_No  = "Into Location";
       $doc_Due_Date      = "Quantity";
-    }
-    else {
+    } else {
       if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
         $doc_Our_Ref = "Type";
-      }
-      else # __ADVANCEDEDIT__ BEGIN #
+      } else # __ADVANCEDEDIT__ BEGIN #
         // $doc_Our_Ref = "Sales Person";
       {
         $doc_Our_Ref = "Contact";
@@ -67,8 +59,7 @@
         $doc_Payment_Terms = "";
         $doc_Customers_Ref = "Acount Number";
         $doc_Our_Order_No  = "";
-      }
-      else {
+      } else {
         $doc_Your_TAX_no   = "Your ABN no.";
         $doc_Payment_Terms = "Payment Terms";
         $doc_Customers_Ref = "Customers Reference";
@@ -86,9 +77,9 @@
       }
       $doc_Bank_Account = '';
       $doc_Please_Quote = "All amounts stated in";
-    }
-    else {
-      $doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" : "Credit") . " no. when paying. All amounts stated in";
+    } else {
+      $doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" :
+        "Credit") . " no. when paying. All amounts stated in";
       $doc_Bank_Account = "Bank Account";
     }
     $doc_Address         = "Address";
@@ -99,51 +90,45 @@
     ) {
       if ($doctype == ST_SALESQUOTE) {
         $this->title = "SALES QUOTATION";
-      }
-      elseif ($doctype == ST_PURCHORDER) {
+      } elseif ($doctype == ST_PURCHORDER) {
         $this->title = "PURCHASE ORDER";
-      }
-      elseif ($doctype == ST_SALESORDER) {
+      } elseif ($doctype == ST_SALESORDER) {
         $this->title = ($print_as_quote == 1 ? "QUOTE" : "SALES ORDER");
-      }
-      elseif ($doctype == ST_SALESINVOICE) {
+      } elseif ($doctype == ST_SALESINVOICE) {
         $this->title = "TAX INVOICE";
-      }
-      elseif ($doctype == ST_CUSTDELIVERY) {
+      } elseif ($doctype == ST_CUSTDELIVERY) {
         $this->title = ($packing_slip == 1 ? "PACKING SLIP" : "DELIVERY NOTE");
-      }
-      elseif ($doctype == ST_WORKORDER) {
+      } elseif ($doctype == ST_WORKORDER) {
         $this->title = "WORK ORDER";
-      }
-      elseif ($doctype == ST_SUPPAYMENT) {
+      } elseif ($doctype == ST_SUPPAYMENT) {
         $this->title = "REMITTANCE";
-      }
-      elseif ($doctype == ST_CUSTPAYMENT) {
+      } elseif ($doctype == ST_CUSTPAYMENT) {
         $this->title = "RECEIPT";
-      }
-      elseif ($doctype == ST_CUSTREFUND) {
+      } elseif ($doctype == ST_CUSTREFUND) {
         $this->title = "REFUND";
-      }
-      else {
+      } else {
         $this->title = "CREDIT NOTE";
       }
       if ($doctype == ST_PURCHORDER) {
         $this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Quantity', 'Unit', 'Price', 'Total');
-      }
-      elseif ($doctype == ST_WORKORDER) {
-        $this->headers = array("Item Code", "Item Description", "From Location", "Work Centre", "Unit Quantity", "Total Quantity", "Units Issued");
-      }
-      elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
+      } elseif ($doctype == ST_WORKORDER) {
+        $this->headers = array(
+          "Item Code",
+          "Item Description",
+          "From Location",
+          "Work Centre",
+          "Unit Quantity",
+          "Total Quantity",
+          "Units Issued"
+        );
+      } elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
         $this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Total Amount', 'Left to Allocate', 'This Allocation');
-      }
-      elseif ($doctype == ST_CUSTREFUND) {
+      } elseif ($doctype == ST_CUSTREFUND) {
         $this->headers = array('Trans Type', '#', 'Date', '', 'Total Amount', '', '');
-      }
-      else {
+      } else {
         $this->headers = array('Item Code', 'Item Description', 'Quantity', 'Unit', 'Price', 'Discount %', 'Total');
       }
-    }
-    elseif ($doctype == ST_STATEMENT) {
+    } elseif ($doctype == ST_STATEMENT) {
       $this->title   = "STATEMENT";
       $this->headers = array('Trans Type', 'Invoice', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
     }
@@ -205,8 +190,7 @@
       $doc_TOTAL_ORDER2   = "TOTAL ORDER VAT INCL.";
       $doc_TOTAL_PO       = "TOTAL PO EX VAT";
       $doc_TOTAL_DELIVERY = "TOTAL DELIVERY INCL. VAT";
-    }
-    elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+    } elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
       $doc_Towards          = "As advance / full / part / payment towards:";
       $txt_by_Cheque        = "By Cash / Cheque* / Draft No.";
       $txt_dated            = "Dated";
@@ -220,12 +204,10 @@
       }
       if ($doctype == ST_CUSTREFUND) {
         $doc_Total_Refund = "TOTAL REFUND";
-      }
-      else {
+      } else {
         $txt_total_payment = "TOTAL REMITTANCE";
       }
-    }
-    elseif ($doctype == ST_STATEMENT) {
+    } elseif ($doctype == ST_STATEMENT) {
       $txt_outstanding     = "Outstanding Transactions";
       $txt_opening_balance = "Opening Balance";
       $txt_current         = "Current";

@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_SUPPLIERANALYTIC);
-
   print_grn_valuation();
   /**
    * @param $from
@@ -19,7 +17,8 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to) {
+  function get_transactions($from, $to)
+  {
     $from = Dates::date2sql($from);
     $to   = Dates::date2sql($to);
     $sql
@@ -35,33 +34,30 @@
  AND grn_batch.delivery_date>='$from'
  AND grn_batch.delivery_date<='$to'
  ORDER BY stock_master.stock_id, grn_batch.delivery_date";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_grn_valuation() {
+  function print_grn_valuation()
+  {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
     $destination = $_POST['PARAM_3'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $dec     = User::price_dec();
     $cols    = array(0, 75, 225, 275, 345, 390, 445, 515);
     $headers = array(
-      _('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'),
-      _('Total')
+      _('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'), _('Total')
     );
     $aligns  = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('Period'),
-        'from' => $from,
-        'to'   => $to
+      0 => $comments, 1 => array(
+        'text' => _('Period'), 'from' => $from, 'to'   => $to
       )
     );
     $rep     = new ADVReport(_('GRN Valuation Report'), "GRNValuationReport", User::page_size());
@@ -117,5 +113,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

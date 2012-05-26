@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Languages {
-
+  class Languages
+  {
     /**
      * @static
      *
@@ -17,12 +17,14 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL) {
+    public static function select($name, $selected_id = null)
+    {
       $items = array();
       $langs = Config::get('languages.installed');
       foreach ($langs as $lang) {
         $items[$lang['code']] = $lang['name'];
       }
+
       return array_selector($name, $selected_id, $items);
     }
     /**
@@ -32,8 +34,9 @@
      * @param      $name
      * @param null $selected_id
      */
-    public static function cells($label, $name, $selected_id = NULL) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -47,9 +50,10 @@
      * @param      $name
      * @param null $selected_id
      */
-    public static function row($label, $name, $selected_id = NULL) {
+    public static function row($label, $name, $selected_id = null)
+    {
       echo "<tr><td class='label'>$label</td>";
-      Languages::cells(NULL, $name, $selected_id);
+      Languages::cells(null, $name, $selected_id);
       echo "</tr>\n";
     }
   }

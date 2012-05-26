@@ -30,7 +30,8 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
+  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+  {
     $code_per_balance  = 0;
     $code_acc_balance  = 0;
     $per_balance_total = 0;
@@ -39,13 +40,12 @@
     $totals_arr = array();
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(NULL, NULL, $type);
+    $result = GL_Account::get_all(null, null, $type);
     while ($account = DB::fetch($result)) {
       $per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
       if ($compare == 2) {
         $acc_balance = GL_Trans::get_budget_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-      }
-      else {
+      } else {
         $acc_balance = GL_Trans::get_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
       }
       if (!$per_balance && !$acc_balance) {
@@ -74,7 +74,7 @@
       $code_acc_balance += $acc_balance;
     }
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(FALSE, FALSE, $type);
+    $result = GL_Type::get_all(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       //Print Type Title if has sub types and not previously printed
       if (!$printtitle) {
@@ -107,6 +107,7 @@
     }
     $totals_arr[0] = $code_per_balance + $per_balance_total;
     $totals_arr[1] = $code_acc_balance + $acc_balance_total;
+
     return $totals_arr;
   }
 
@@ -117,21 +118,23 @@
    *
    * @return float|int
    */
-  function Achieve($d1, $d2) {
+  function Achieve($d1, $d2)
+  {
     if ($d1 == 0 && $d2 == 0) {
       return 0;
-    }
-    elseif ($d2 == 0) {
+    } elseif ($d2 == 0) {
       return 999;
     }
     $ret = ($d1 / $d2 * 100.0);
     if ($ret > 999) {
       $ret = 999;
     }
+
     return $ret;
   }
 
-  function print_profit_and_loss_statement() {
+  function print_profit_and_loss_statement()
+  {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -144,16 +147,14 @@
       $graphics    = $_POST['PARAM_6'];
       $comments    = $_POST['PARAM_7'];
       $destination = $_POST['PARAM_8'];
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $dimension   = $_POST['PARAM_3'];
         $decimals    = $_POST['PARAM_4'];
         $graphics    = $_POST['PARAM_5'];
         $comments    = $_POST['PARAM_6'];
         $destination = $_POST['PARAM_7'];
-      }
-      else {
+      } else {
         $decimals    = $_POST['PARAM_3'];
         $graphics    = $_POST['PARAM_4'];
         $comments    = $_POST['PARAM_5'];
@@ -162,8 +163,7 @@
     }
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($graphics) {
@@ -171,8 +171,7 @@
     }
     if (!$decimals) {
       $dec = 0;
-    }
-    else {
+    } else {
       $dec = User::price_dec();
     }
     $pdec = User::percent_dec();
@@ -190,8 +189,7 @@
           'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
         )
       );
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $params = array(
           0    => $comments, 1 => array(
@@ -200,8 +198,7 @@
             'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
           )
         );
-      }
-      else {
+      } else {
         $params = array(
           0 => $comments, 1 => array(
             'text' => _('Period'), 'from' => $from, 'to' => $to
@@ -214,12 +211,10 @@
       if ($compare == 2) {
         $begin      = $from;
         $headers[3] = _('Budget');
-      }
-      else {
+      } else {
         $begin = Dates::begin_fiscalyear();
       }
-    }
-    elseif ($compare == 1) {
+    } elseif ($compare == 1) {
       $begin      = Dates::add_months($from, -12);
       $end        = Dates::add_months($to, -12);
       $headers[3] = _('Period Y-1');
@@ -232,7 +227,7 @@
     $classacc    = 0.0;
     $salesper    = 0.0;
     $salesacc    = 0.0;
-    $classresult = GL_Class::get_all(FALSE, 0);
+    $classresult = GL_Class::get_all(false, 0);
     while ($class = DB::fetch($classresult)) {
       $class_per_total = 0;
       $class_acc_total = 0;
@@ -243,7 +238,7 @@
       $rep->Font();
       $rep->NewLine();
       //Get Account groups/types under this group/type with no parents
-      $typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
+      $typeresult = GL_Type::get_all(false, $class['cid'], -1);
       while ($accounttype = DB::fetch($typeresult)) {
         $classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
         $class_per_total += $classtotal[0];
@@ -284,11 +279,11 @@
       $pg->graphic_2      = $headers[3];
       $pg->type           = $graphics;
       $pg->skin           = Config::get('graphs_skin');
-      $pg->built_in       = FALSE;
+      $pg->built_in       = false;
       $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::dec_sep() != ".");
       $filename           = COMPANY_PATH . "pdf_files/test.png";
-      $pg->display($filename, TRUE);
+      $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;
       $x = ($rep->pageWidth - $w) / 2;
@@ -300,5 +295,4 @@
     }
     $rep->End();
   }
-
 

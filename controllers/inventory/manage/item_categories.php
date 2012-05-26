@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -23,8 +23,7 @@
         Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
           check_value('no_sale'));
         Event::success(_('Selected item category has been updated'));
-      }
-      else {
+      } else {
         Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
           check_value('no_sale'));
         Event::success(_('New item category has been added'));
@@ -37,7 +36,8 @@
    *
    * @return string
    */
-  function edit_link($row) {
+  function edit_link($row)
+  {
     return button("Edit" . $row["category_id"], _("Edit"));
   }
 
@@ -46,7 +46,8 @@
    *
    * @return string
    */
-  function delete_link($row) {
+  function delete_link($row)
+  {
     return button("Delete" . $row["category_id"], _("Delete"));
   }
 
@@ -57,8 +58,7 @@
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this item category because items have been created using this item category."));
-    }
-    else {
+    } else {
       Item_Category::delete($selected_id);
       Event::notice(_('Selected item category has been deleted'));
     }
@@ -96,14 +96,13 @@
       'fun' => 'edit_link'
     ),
     array(
-      'insert' => TRUE, 'fun' => 'delete_link'
+      'insert' => true, 'fun' => 'delete_link'
     )
   );
   /*	inactive_control_column($th);
  Table::header($th);
  $k = 0; //row colour counter
- while ($myrow = DB::fetch($result))
- {
+ while ($myrow = DB::fetch($result)) {
 
    Cell::label($myrow["description"]);
    Cell::label($myrow["tax_name"]);
@@ -146,8 +145,7 @@
     }
     hidden('selected_id', $selected_id);
     hidden('category_id');
-  }
-  else {
+  } else {
     if ($Mode != MODE_CLONE) {
       $_POST['long_description'] = '';
       $_POST['description']      = '';
@@ -170,34 +168,32 @@
       }
     }
   }
-  text_row(_("Category Name:"), 'description', NULL, 30, 30);
+  text_row(_("Category Name:"), 'description', null, 30, 30);
   Table::sectionTitle(_("Default values for new items"));
-  Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', NULL);
-  Item_UI::type_row(_("Item Type:"), 'mb_flag', NULL, TRUE);
-  Item_Unit::row(_("Units of Measure:"), 'units', NULL);
+  Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
+  Item_UI::type_row(_("Item Type:"), 'mb_flag', null, true);
+  Item_Unit::row(_("Units of Measure:"), 'units', null);
   check_row(_("Exclude from sales:"), 'no_sale');
   GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
   if (Input::post('mb_flag') == STOCK_SERVICE) {
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
     hidden('inventory_account', $_POST['inventory_account']);
     hidden('adjustment_account', $_POST['adjustment_account']);
-  }
-  else {
+  } else {
     GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
     GL_UI::all_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
   }
   if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
     GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
-  }
-  else {
+  } else {
     hidden('assembly_account', $_POST['assembly_account']);
   }
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
-    Dimensions::select_row(_("Dimension") . " 1", 'dim1', NULL, TRUE, " ", FALSE, 1);
+    Dimensions::select_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
     if ($dim > 1) {
-      Dimensions::select_row(_("Dimension") . " 2", 'dim2', NULL, TRUE, " ", FALSE, 2);
+      Dimensions::select_row(_("Dimension") . " 2", 'dim2', null, true, " ", false, 2);
     }
   }
   if ($dim < 1) {
@@ -208,8 +204,7 @@
   }
   Table::end(1);
   Display::div_end();
-  submit_add_or_update_center($selected_id == -1, '', 'both', TRUE);
+  submit_add_or_update_center($selected_id == -1, '', 'both', true);
   end_form();
   Page::end();
-
 

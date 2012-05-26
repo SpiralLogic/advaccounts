@@ -17,16 +17,15 @@
   if (isset($_POST['UpdateData'])) {
     $old_cost      = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldOverheadCost'];
     $new_cost      = Validation::input_num('material_cost') + Validation::input_num('labour_cost') + Validation::input_num('overhead_cost');
-    $should_update = TRUE;
+    $should_update = true;
     if (!Validation::post_num('material_cost') || !Validation::post_num('labour_cost') || !Validation::post_num('overhead_cost')
     ) {
       Event::error(_("The entered cost is not numeric."));
       JS::set_focus('material_cost');
-      $should_update = FALSE;
-    }
-    elseif ($old_cost == $new_cost) {
+      $should_update = false;
+    } elseif ($old_cost == $new_cost) {
       Event::error(_("The new cost is the same as the old cost. Cost was not updated."));
-      $should_update = FALSE;
+      $should_update = false;
     }
     if ($should_update) {
       $update_no = Item_Price::update_cost($_POST['stock_id'], Validation::input_num('material_cost'), Validation::input_num('labour_cost'), Validation::input_num('overhead_cost'), $old_cost);
@@ -44,14 +43,14 @@
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
-  echo Item_UI::costable('stock_id', $_POST['stock_id'], FALSE, TRUE);
+  echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
   echo "</div><hr>";
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $sql    = "SELECT description, units, material_cost, labour_cost,
-	overhead_cost, mb_flag
-	FROM stock_master
-	WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
-	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
+    overhead_cost, mb_flag
+    FROM stock_master
+    WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
+    GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
   $result = DB::query($sql, "The cost details for the item could not be retrieved");
   $myrow  = DB::fetch($result);
   Display::div_start('cost_table');
@@ -63,19 +62,17 @@
   $_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
   $_POST['labour_cost']   = Num::price_decimal($myrow["labour_cost"], $dec2);
   $_POST['overhead_cost'] = Num::price_decimal($myrow["overhead_cost"], $dec3);
-  amount_row(_("Standard Material Cost Per Unit"), "material_cost", NULL, "class='tablerowhead'", NULL, $dec1);
+  amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tablerowhead'", null, $dec1);
   if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
-    amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", NULL, "class='tablerowhead'", NULL, $dec2);
-    amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", NULL, "class='tablerowhead'", NULL, $dec3);
-  }
-  else {
+    amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tablerowhead'", null, $dec2);
+    amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tablerowhead'", null, $dec3);
+  } else {
     hidden("labour_cost", 0);
     hidden("overhead_cost", 0);
   }
   Table::end(1);
   Display::div_end();
-  submit_center('UpdateData', _("Update"), TRUE, FALSE, 'default');
+  submit_center('UpdateData', _("Update"), true, false, 'default');
   end_form();
   Page::end();
-
 

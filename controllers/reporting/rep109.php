@@ -10,12 +10,11 @@
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
-
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
-
   print_sales_orders();
   $print_as_quote = 0;
-  function print_sales_orders() {
+  function print_sales_orders()
+  {
     global $print_as_quote;
     include_once(APPPATH . "reports/pdf.php");
     $from           = $_POST['PARAM_0'];
@@ -24,10 +23,10 @@
     $email          = $_POST['PARAM_3'];
     $print_as_quote = $_POST['PARAM_4'];
     $comments       = $_POST['PARAM_5'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -39,27 +38,21 @@
     if ($email == 0) {
       if ($print_as_quote == 0) {
         $rep = new ADVReport(_("ORDER"), "SalesOrderBulk", User::page_size());
-      }
-      elseif ($print_as_quote == 2) {
+      } elseif ($print_as_quote == 2) {
         $rep = new ADVReport(_("PROFORMA INVOICE"), "QuoteBulk", User::page_size());
-      }
-      elseif ($print_as_quote == 3) {
+      } elseif ($print_as_quote == 3) {
         $rep = new ADVReport(_("PROFORMA INVOICE"), "QuoteBulk", User::page_size());
-      }
-      else {
+      } else {
         $rep = new ADVReport(_("QUOTE"), "QuoteBulk", User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
-    for (
-      $i = $from; $i <= $to; $i++
-    ) {
+    for ($i = $from; $i <= $to; $i++) {
       if ($print_as_quote < 3) {
         $myrow = Sales_Order::get_header($i, ST_SALESORDER);
-      }
-      else {
+      } else {
         $myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
       }
       $baccount              = Bank_Account::get_default($myrow['curr_code']);
@@ -72,18 +65,15 @@
         if ($print_as_quote == 1) {
           $rep->title    = _('QUOTE');
           $rep->filename = "Quote" . $i . ".pdf";
-        }
-        elseif ($print_as_quote == 2 || $print_as_quote == 3) {
+        } elseif ($print_as_quote == 2 || $print_as_quote == 3) {
           $rep->title    = _('PROFORMA INVOICE');
           $rep->filename = "Proforna" . $i . ".pdf";
-        }
-        else {
+        } else {
           $rep->title    = _("ORDER");
           $rep->filename = "SalesOrder" . $i . ".pdf";
         }
-        $rep->Info($params, $cols, NULL, $aligns);
-      }
-      else {
+        $rep->Info($params, $cols, null, $aligns);
+      } else {
         $rep->title = ($print_as_quote == 1) ? _("QUOTE") : _("ORDER");
         if ($print_as_quote == 2 || $print_as_quote == 3) {
           $rep->title = _("PROFORMA INVOICE");
@@ -92,22 +82,17 @@
       if ($print_as_quote == 3) {
         $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
         $result = Sales_Order::get_details($i, ST_SALESQUOTE);
-      }
-      elseif ($print_as_quote == 2) {
+      } elseif ($print_as_quote == 2) {
         $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
         $result = Sales_Order::get_details($i, ST_SALESORDER);
-      }
-      else {
+      } else {
         $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
         $result = Sales_Order::get_details($i, ST_SALESORDER);
       }
       $SubTotal = 0;
       $TaxTotal = 0;
       while ($myrow2 = DB::fetch($result)) {
-        $Net = Num::round(
-          ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] *
-            $myrow2["quantity"]), User::price_dec()
-        );
+        $Net = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
         $SubTotal += $Net;
         # __ADVANCEDEDIT__ BEGIN #
         $TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
@@ -118,8 +103,7 @@
         $DisplayNet   = Num::format($Net, $dec);
         if ($myrow2["discount_percent"] == 0) {
           $DisplayDiscount = "";
-        }
-        else {
+        } else {
           $DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
         }
         $rep->TextCol(0, 1, $myrow2['stk_code'], -2);
@@ -139,8 +123,7 @@
         if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
           if ($print_as_quote < 3) {
             $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
-          }
-          else {
+          } else {
             $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
           }
         }
@@ -152,8 +135,7 @@
       if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
         if ($print_as_quote < 3) {
           $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
-        }
-        else {
+        } else {
           $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
         }
       }
@@ -164,12 +146,11 @@
       $DisplayTaxTot     = Num::format($TaxTotal, $dec);
       $display_total     = Num::format($SubTotal + $TaxTotal, $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = TRUE;
+      $linetype          = true;
       $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
@@ -192,8 +173,7 @@
       $rep->TextCol(7, 8, $display_total, -2);
       if ($print_as_quote < 3) {
         $words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
-      }
-      else {
+      } else {
         $words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
       }
       if ($words != "") {

@@ -10,7 +10,6 @@
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
            * ********************************************************************* */
-
   Page::set_security(SA_CUSTSTATREP);
   print_statements();
   /**
@@ -20,19 +19,20 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($debtorno, $month, $inc_all) {
+  function get_transactions($debtorno, $month, $inc_all)
+  {
     $dateend   = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
     $sql
                = "SELECT debtor_trans.*,
-				SUM((debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-				debtor_trans.ov_freight_tax + debtor_trans.ov_discount))
-				AS TotalAmount, SUM(debtor_trans.alloc) AS Allocated,
-				( debtor_trans.due_date < '$datestart') AS OverDue
- 			FROM debtor_trans
- 			WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_id = " . DB::escape($debtorno) . "
- 				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-						 GROUP BY debtor_id, ";
+                SUM((debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+                debtor_trans.ov_freight_tax + debtor_trans.ov_discount))
+                AS TotalAmount, SUM(debtor_trans.alloc) AS Allocated,
+                ( debtor_trans.due_date < '$datestart') AS OverDue
+             FROM debtor_trans
+             WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_id = " . DB::escape($debtorno) . "
+                 AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
+                         GROUP BY debtor_id, ";
     $sql .= ($inc_all) ? " debtor_trans.trans_no " : " if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no) ";
     $sql .= " ORDER BY  debtor_trans.tran_date,	debtor_trans.type,	debtor_trans.branch_id";
 
@@ -44,14 +44,17 @@
    *
    * @return mixed
    */
-  function getTransactionPO($no) {
+  function getTransactionPO($no)
+  {
     $sql    = "SELECT customer_ref FROM sales_orders WHERE order_no=" . DB::escape($no);
     $result = DB::query($sql, "Could not retrieve any branches");
     $myrow  = DB::fetch_assoc($result);
+
     return $myrow['customer_ref'];
   }
 
-  function print_statements() {
+  function print_statements()
+  {
     global $systypes_array;
     include_once(APPPATH . "reports/pdf.php");
     $txt_statement       = "Statement";
@@ -64,7 +67,7 @@
     $inc_negatives       = Input::post_get('PARAM_5', Input::NUMERIC, 0);
     $inc_all             = Input::post_get('PARAM_6', Input::NUMERIC, 0);
     $doctype             = ST_STATEMENT;
-    $txt_outstanding     = $txt_over = $txt_days = $txt_current = $txt_total_balance = NULL;
+    $txt_outstanding     = $txt_over = $txt_days = $txt_current = $txt_total_balance = null;
     $dec                 = User::price_dec();
     $cols                = array(5, 60, 100, 170, 225, 295, 345, 390, 460, 460);
     $aligns              = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'left');
@@ -76,23 +79,22 @@
       $rep           = new ADVReport(_('STATEMENT'), "StatementBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     $sql
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
-		debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" AND Balance>0  ';
+        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" AND Balance>0  ';
     if ($customer > 0) {
       $sql .= " AND c.debtor_id = " . DB::escape($customer);
-    }
-    else {
+    } else {
       $sql .= " ORDER by name";
     }
     $result = DB::query($sql, "The customers could not be retrieved");
     while ($myrow = DB::fetch($result)) {
       $date            = $myrow['tran_date'] = date('Y-m-1', strtotime("now - $month months"));
       $myrow['order_'] = "";
-      $customer_record = Debtor::get_details($myrow['debtor_id'], mktime(0, 0, 0, date('n') - $month, 0), TRUE);
+      $customer_record = Debtor::get_details($myrow['debtor_id'], mktime(0, 0, 0, date('n') - $month, 0), true);
       if (round($customer_record["Balance"], 2) == 0) {
         continue;
       }
@@ -120,20 +122,19 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         $rep->Font();
         $rep->title    = _('STATEMENT');
         $rep->filename = "Statement" . $myrow['debtor_id'] . ".pdf";
-        $rep->Info($params, $cols, NULL, $aligns);
+        $rep->Info($params, $cols, null, $aligns);
       }
-      $rep->Header2($myrow, Sales_Branch::get($transactions[0]['branch_id']), NULL, $baccount, ST_STATEMENT);
+      $rep->Header2($myrow, Sales_Branch::get($transactions[0]['branch_id']), null, $baccount, ST_STATEMENT);
       $rep->NewLine();
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       $openingbalance = $outstanding = $balance = 0;
       $rep->currency  = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
       foreach ($transactions as $i => $trans) {
         $display_outstanding = $display_total = 0;
         if ($trans['OverDue'] && !$inc_all) {
@@ -142,20 +143,17 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
             continue;
           }
           $balance += $openingbalance;
-        }
-        else {
+        } else {
           $display_total       = Num::format(abs($trans["TotalAmount"]), $dec);
           $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
           $display_outstanding = Num::format($outstanding, $dec);
           if ($inc_all) {
             $balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : -$outstanding;
-          }
-          else {
+          } else {
             $balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
           }
         }
         $display_balance = Num::format($balance, $dec);
-
         if ($inc_all && $outstanding == 0) {
           continue;
         }
@@ -166,7 +164,6 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $openingbalance = 0;
           continue;
         }
-
         $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
         if ($trans['type'] == ST_SALESINVOICE) {
           $rep->Font('bold');
@@ -182,19 +179,16 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         }
         if ($trans['type'] == ST_SALESINVOICE && isset($display_total)) {
           $rep->TextCol(5, 6, $display_total, -2);
-        }
-
-        elseif (isset($display_total)) {
+        } elseif (isset($display_total)) {
           $rep->TextCol(6, 7, $display_total, -2);
         }
-
         if (isset($display_outstanding)) {
           $rep->TextCol(7, 8, $display_outstanding, -2);
         }
         $rep->TextCol(8, 9, $display_balance, -2);
         $rep->NewLine();
         if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight)) {
-          $rep->Header2($myrow, NULL, NULL, $baccount, ST_STATEMENT);
+          $rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
         }
       }
       $rep->Font('bold');

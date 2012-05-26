@@ -30,7 +30,6 @@
     Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
     Page::footer_exit();
   }
-
   // validate inputs
   if (isset($_POST['AddRefundItem'])) {
     if (!Debtor_Payment::can_process(ST_CUSTREFUND)) {
@@ -50,8 +49,7 @@
     $comp_currency = Bank_Currency::for_company();
     if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
       $rate = 0;
-    }
-    else {
+    } else {
       $rate = Validation::input_num('_ex_rate');
     }
     Dates::new_doc_date($_POST['DateBanked']);
@@ -70,21 +68,19 @@
   }
   if (count($customer->branches) == 0) {
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
-  }
-  elseif (!isset($_POST['branch_id'])) {
-    Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
-  }
-  else {
+  } elseif (!isset($_POST['branch_id'])) {
+    Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
+  } else {
     hidden('branch_id', ANY_NUMERIC);
   }
-  Debtor_Payment::read_customer_data($customer->id, TRUE);
+  Debtor_Payment::read_customer_data($customer->id, true);
   Session::i()->setGlobal('debtor', $customer->id);
   $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
   Table::section(2);
-  Bank_Account::row(_("Into Bank Account:"), 'bank_account', NULL, TRUE);
-  text_row(_("Reference:"), 'ref', NULL, 20, 40);
+  Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
+  text_row(_("Reference:"), 'ref', null, 20, 40);
   Table::section(3);
-  date_row(_("Date of Deposit:"), 'DateBanked', '', TRUE, 0, 0, 0, NULL, TRUE);
+  date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
   $comp_currency = Bank_Currency::for_company();
   $cust_currency = Bank_Currency::for_debtor($customer->id);
   $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
@@ -95,18 +91,18 @@
   Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
     Display::div_start('alloc_tbl');
-    Gl_Allocation::show_allocatable(TRUE);
+    Gl_Allocation::show_allocatable(true);
     Display::div_end();
   }
   Table::start('tablestyle width60');
   amount_row(_("Amount:"), 'amount');
-  textarea_row(_("Memo:"), 'memo_', NULL, 22, 4);
+  textarea_row(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);
   if ($cust_currency != $bank_currency) {
     Event::warning(_("Amount and discount are in customer's currency."));
   }
   Display::br();
-  submit_center('AddRefundItem', _("Add Refund"), TRUE, '', 'default');
+  submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
   Display::br();
   end_form();
   Page::end(!Input::request('frame'));

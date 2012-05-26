@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Validation {
-
+  class Validation
+  {
     const CUSTOMERS         = "debtors";
     const CURRENCIES        = "currencies";
     const SALES_TYPES       = "sales_types";
@@ -52,23 +52,23 @@
      * @return int|null
      * @throws Adv_Exception
      */
-    public static function check($validate, $msg = '', $extra = NULL, $default = NULL) {
-      if ($extra === FALSE) {
+    public static function check($validate, $msg = '', $extra = null, $default = null)
+    {
+      if ($extra === false) {
         return 0;
       }
       $cachekey = 'validation.' . md5($validate . $extra);
       if (Cache::get($cachekey)) {
         return 1;
       }
-      if ($extra !== NULL) {
+      if ($extra !== null) {
         if (empty($extra)) {
           return $default;
         }
         if (is_string($extra)) {
           $extra = DB::escape($extra);
         }
-      }
-      else {
+      } else {
         $extra = '';
       }
 
@@ -76,9 +76,9 @@
       $myrow  = DB::fetch_row($result);
       if (!($myrow[0] > 0)) {
         throw new Adv_Exception($msg);
-      }
-      else {
-        Cache::set($cachekey, TRUE);
+      } else {
+        Cache::set($cachekey, true);
+
         return $myrow[0];
       }
     }
@@ -95,19 +95,21 @@
      *
      * @return bool|int
      */
-    public static function is_int($postname, $min = NULL, $max = NULL) {
+    public static function is_int($postname, $min = null, $max = null)
+    {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
       }
       $options = array();
-      if ($min !== NULL) {
+      if ($min !== null) {
         $options['min_range'] = $min;
       }
-      if ($max !== NULL) {
+      if ($max !== null) {
         $options['max_range'] = $max;
       }
       $result = filter_var($_POST[$postname], FILTER_VALIDATE_INT, $options);
-      return ($result === FALSE || $result === NULL) ? FALSE : 1;
+
+      return ($result === false || $result === null) ? false : 1;
     }
     //
     //	Numeric input check.
@@ -124,10 +126,12 @@
      *
      * @return int
      */
-    public static function post_num($postname, $min = NULL, $max = NULL, $default = 0) {
+    public static function post_num($postname, $min = null, $max = null, $default = 0)
+    {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
+
       return Validation::is_num($_POST[$postname], $min, $max, $default);
     }
     /**
@@ -140,15 +144,17 @@
      *
      * @return int
      */
-    public static function is_num($value, $min = NULL, $max = NULL, $default = 0) {
+    public static function is_num($value, $min = null, $max = null, $default = 0)
+    {
       $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
-      if ($min !== NULL && $result < $min) {
-        $result = FALSE;
+      if ($min !== null && $result < $min) {
+        $result = false;
       }
-      if ($max !== NULL && $result > $max) {
-        $result = FALSE;
+      if ($max !== null && $result > $max) {
+        $result = false;
       }
-      return ($result === FALSE || $result === NULL) ? $default : 1;
+
+      return ($result === false || $result === null) ? $default : 1;
     }
     /**
      *   Read numeric value from user formatted input
@@ -161,17 +167,19 @@
      * @internal param int $dflt
      * @return bool|float|int|mixed|string
      */
-    public static function input_num($postname = NULL, $default = 0, $min = NULL, $max = NULL) {
+    public static function input_num($postname = null, $default = 0, $min = null, $max = null)
+    {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
       $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
-      if ($min !== NULL && $result < $min) {
-        $result = FALSE;
+      if ($min !== null && $result < $min) {
+        $result = false;
       }
-      if ($max !== NULL && $result > $max) {
-        $result = FALSE;
+      if ($max !== null && $result > $max) {
+        $result = false;
       }
-      return ($result === FALSE || $result === NULL) ? 0 : User::numeric($result);
+
+      return ($result === false || $result === null) ? 0 : User::numeric($result);
     }
   }

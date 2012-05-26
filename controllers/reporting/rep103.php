@@ -19,49 +19,49 @@
    *
    * @return null|PDOStatement
    */
-  function get_customer_details_for_report($area = 0, $salesid = 0) {
+  function get_customer_details_for_report($area = 0, $salesid = 0)
+  {
     $sql
       = "SELECT debtors.debtor_id,
-			debtors.name,
-			debtors.address,
-			sales_types.sales_type,
-			branches.branch_id,
-			branches.br_name,
-			branches.br_address,
-			branches.contact_name,
-			branches.phone,
-			branches.fax,
-			branches.email,
-			branches.area,
-			branches.salesman,
-			areas.description,
-			salesman.salesman_name
-		FROM debtors
-		INNER JOIN branches
-			ON debtors.debtor_id=branches.debtor_id
-		INNER JOIN sales_types
-			ON debtors.sales_type=sales_types.id
-		INNER JOIN areas
-			ON branches.area = areas.area_code
-		INNER JOIN salesman
-			ON branches.salesman=salesman.salesman_code";
+            debtors.name,
+            debtors.address,
+            sales_types.sales_type,
+            branches.branch_id,
+            branches.br_name,
+            branches.br_address,
+            branches.contact_name,
+            branches.phone,
+            branches.fax,
+            branches.email,
+            branches.area,
+            branches.salesman,
+            areas.description,
+            salesman.salesman_name
+        FROM debtors
+        INNER JOIN branches
+            ON debtors.debtor_id=branches.debtor_id
+        INNER JOIN sales_types
+            ON debtors.sales_type=sales_types.id
+        INNER JOIN areas
+            ON branches.area = areas.area_code
+        INNER JOIN salesman
+            ON branches.salesman=salesman.salesman_code";
     if ($area != 0) {
       if ($salesid != 0) {
         $sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid) . "
-				AND areas.area_code=" . DB::escape($area);
-      }
-      else {
+                AND areas.area_code=" . DB::escape($area);
+      } else {
         $sql .= " WHERE areas.area_code=" . DB::escape($area);
       }
-    }
-    elseif ($salesid != 0) {
+    } elseif ($salesid != 0) {
       $sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid);
     }
     $sql
       .= " ORDER BY description,
-			salesman.salesman_name,
-			debtors.debtor_id,
-			branches.branch_id";
+            salesman.salesman_name,
+            debtors.debtor_id,
+            branches.branch_id";
+
     return DB::query($sql, "No transactions were returned");
   }
 
@@ -72,21 +72,24 @@
    *
    * @return mixed
    */
-  function get_transactions($debtorno, $branchcode, $date) {
+  function get_transactions($debtorno, $branchcode, $date)
+  {
     $date = Dates::date2sql($date);
     $sql
             = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
-		FROM debtor_trans
-		WHERE debtor_id=" . DB::escape($debtorno) . "
-		AND branch_id=" . DB::escape($branchcode) . "
-		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
-		AND trandate >='$date'";
+        FROM debtor_trans
+        WHERE debtor_id=" . DB::escape($debtorno) . "
+        AND branch_id=" . DB::escape($branchcode) . "
+        AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
+        AND trandate >='$date'";
     $result = DB::query($sql, "No transactions were returned");
     $row    = DB::fetch_row($result);
+
     return $row[0];
   }
 
-  function print_customer_details_listing() {
+  function print_customer_details_listing()
+  {
     $from        = $_POST['PARAM_0'];
     $area        = $_POST['PARAM_1'];
     $folk        = $_POST['PARAM_2'];
@@ -96,8 +99,7 @@
     $destination = $_POST['PARAM_6'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $dec = 0;
@@ -109,26 +111,22 @@
     }
     if ($area == 0) {
       $sarea = _('All Areas');
-    }
-    else {
+    } else {
       $sarea = get_area($area);
     }
     if ($folk == 0) {
       $salesfolk = _('All Sales Folk');
-    }
-    else {
+    } else {
       $salesfolk = Debtor::get_salesman($folk);
     }
     if ($more != '') {
       $morestr = _('Greater than ') . Num::format($more, $dec);
-    }
-    else {
+    } else {
       $morestr = '';
     }
     if ($less != '') {
       $lessstr = _('Less than ') . Num::format($less, $dec);
-    }
-    else {
+    } else {
       $lessstr = '';
     }
     $more    = (double) $more;
@@ -154,14 +152,14 @@
     $carea  = '';
     $sman   = '';
     while ($myrow = DB::fetch($result)) {
-      $printcustomer = TRUE;
+      $printcustomer = true;
       if ($more != '' || $less != '') {
         $turnover = get_transactions($myrow['debtor_id'], $myrow['branch_id'], $from);
         if ($more != 0.0 && $turnover <= (double) $more) {
-          $printcustomer = FALSE;
+          $printcustomer = false;
         }
         if ($less != 0.0 && $turnover >= (double) $less) {
-          $printcustomer = FALSE;
+          $printcustomer = false;
         }
       }
       if ($printcustomer) {
@@ -217,5 +215,4 @@
     }
     $rep->End();
   }
-
 

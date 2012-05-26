@@ -11,8 +11,8 @@
   /**
 
    */
-  class XMLParser {
-
+  class XMLParser
+  {
     /**
      * @public null
      */
@@ -52,7 +52,7 @@
     /**
      * @public bool
      */
-    public $isError = FALSE;
+    public $isError = false;
     /**
      * @public string
      */
@@ -64,7 +64,8 @@
     /**
      * @param null $xml
      */
-    function __construct($xml = NULL) {
+    public function __construct($xml = null)
+    {
       $this->rawXML = $xml;
     }
     /**
@@ -72,23 +73,26 @@
      *
      * @return array|bool
      */
-    function parse($xml = NULL) {
+    public function parse($xml = null)
+    {
       if (!is_null($xml)) {
         $this->rawXML = $xml;
       }
-      $this->isError = FALSE;
+      $this->isError = false;
       if (!$this->parse_init()) {
-        return FALSE;
+        return false;
       }
       $this->index  = 0;
       $this->parsed = $this->parse_recurse();
       $this->status = 'parsing complete';
+
       return $this->parsed;
     }
     /**
      * @return array
      */
-    function parse_recurse() {
+    public function parse_recurse()
+    {
       $found    = array();
       $tagCount = array();
       while (isset($this->valueArray[$this->index])) {
@@ -108,8 +112,7 @@
           }
           $tagRef = & $found[$tagName][$tagCount[$tagName]];
           $tagCount[$tagName]++;
-        }
-        else {
+        } else {
           $tagCount[$tagName] = 1;
           $tagRef             = & $found[$tagName];
         }
@@ -123,8 +126,7 @@
               if (isset($tagRef[$this->cdataKey])) {
                 $tagRef[$this->cdataKey] = (array) $tagRef[$this->cdataKey];
                 array_unshift($tagRef[$this->cdataKey], $tag['value']);
-              }
-              else {
+              } else {
                 $tagRef[$this->cdataKey] = $tag['value'];
               }
             }
@@ -140,21 +142,24 @@
             break;
         }
       }
+
       return $found;
     }
     /**
      * @return bool
      */
-    function parse_init() {
+    public function parse_init()
+    {
       $this->parser = xml_parser_create();
       $parser       = $this->parser;
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
       xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
       if (!$res = (bool) xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray)) {
-        $this->isError = TRUE;
+        $this->isError = true;
         $this->error   = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
       }
       xml_parser_free($parser);
+
       return $res;
     }
     /**
@@ -164,7 +169,8 @@
      *
      * @return array|mixed
      */
-    static function XMLtoArray($data) {
+    public static function XMLtoArray($data)
+    {
       $XML    = new XMLParser($data);
       $array  = $XML->parse();
       $result = '';
@@ -174,13 +180,11 @@
         }
         if (count($result) == 1) {
           return current($result);
-        }
-        else {
+        } else {
           return $result;
         }
-      }
-      else {
-        return FALSE;
+      } else {
+        return false;
       }
     }
   }

@@ -22,18 +22,18 @@
   /**
 
    */
-  class Volusion extends Module\Base {
-
-    public function _init() {
+  class Volusion extends Module\Base
+  {
+    public function _init()
+    {
       User::register_login('ADV\\Core\\Event', 'register_shutdown', [$this, 'doWebsales']);
     }
-
-    public function doWebsales() {
+    public function doWebsales()
+    {
       $orders = $this->getNewWebsales();
       if (!$orders) {
         Event::notice("No new websales from website");
-      }
-      else {
+      } else {
         $success = 0;
         foreach ($orders as $order) {
           $this->insertJob($order['OrderID']);
@@ -49,10 +49,11 @@
     /**
      * @return bool|Volusion\Orders
      */
-    protected function getNewWebsales() {
+    protected function getNewWebsales()
+    {
       $orders = new Orders();
       if (!count($orders)) {
-        return FALSE;
+        return false;
       }
       $success = 0;
       foreach ($orders as $order) {
@@ -63,24 +64,28 @@
       if ($success) {
         \Event::success('Added/Update ' . $success . ' websales');
       }
+
       return $orders;
     }
     /**
      * @return array
      */
-    protected function getNotOnJobsboard() {
+    protected function getNotOnJobsboard()
+    {
       DB::change_connection();
-      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS NULL')->fetch()->all();
+      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+
       return $results;
     }
     /**
      * @return bool
      */
-    protected function notOnJobsboard() {
+    protected function notOnJobsboard()
+    {
       $neworders = $this->getNotOnJobsboard();
       if (!$neworders) {
         //		\Event::notice('No jobs in database from website but not on jobsboard');
-        return FALSE;
+        return false;
       }
       $success = 0;
       foreach ($neworders as $neworder) {
@@ -90,19 +95,22 @@
         }
         $success++;
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @param $id
      *
      * @return \ADV\Core\DB\Query_Result|bool|int|mixed
      */
-    protected function insertJob($id) {
+    protected function insertJob($id)
+    {
       DB::change_connection();
       $order = DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         \Event::error('Could not find job ' . $id . ' in database');
-        return FALSE;
+
+        return false;
       }
       $orderdetails = DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
       DB::change_connection('jobsboard');
@@ -129,12 +137,11 @@
         $comments       = (strlen($order['Order_Comments']) > 0) ? $order['Order_Comments'] . "\r\n" : '';
         $detail         = $comments . "Payment Method: " . $payment_method . "\r\nShipping Method: " . $freight_method . "\r\nFreight Paid: " . $order['TotalShippingCost'];
         $newJob         = array(
-          'Advanced_Job_No' => $jobsboard_no,
-          'websaleid'       => $id,
-          'Detail'          => $detail,
+          'Advanced_Job_No' => $jobsboard_no, 'websaleid'       => $id, 'Detail'          => $detail,
         );
         DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
+
         return $jobsboard_no;
       }
       $newJob = array(
@@ -142,16 +149,14 @@
         'Customer'              => "Websale: $id " . $order['BillingCompanyName'],
         'Date_Ordered'          => date('Y-m-d', strtotime("now")),
         'Promised_Due_Date'     => date('Y-m-d', strtotime("+1 week")),
-        'Brief_Job_Description' => var_export($lines, TRUE)
+        'Brief_Job_Description' => var_export($lines, true)
       );
       if ($order['PaymentDeclined'] == "Y") {
         $newJob['Priority_Level']       = 3;
         $newJob['Next_Action_Required'] = '<div><br/></div><div><font face="Tekton Pro Cond" size=3 color="red"><strong>PAYMENT WAS DECLINED FOR THIS ORDER</strong></font></div><div>Job has been added automatically from websales</div>';
-      }
-      else {
+      } else {
         $newJob['Priority_Level']       = 0;
-        $newJob['Next_Action_Required'] = '<div><br/></div><div><font face="Tekton Pro Cond" size=3 color="red"><strong>' .
-          $order['OrderStatus'] . '</strong></font></div><div>Job has been added automatically from websales</div>';
+        $newJob['Next_Action_Required'] = '<div><br/></div><div><font face="Tekton Pro Cond" size=3 color="red"><strong>' . $order['OrderStatus'] . '</strong></font></div><div>Job has been added automatically from websales</div>';
       }
       $newJob['Main_Employee_Responsible'] = 'Automatic Websale';
       $newJob['Can_work_be_done_today']    = -1;
@@ -197,7 +202,8 @@
      * @param $lines
      * @param $jobid
      */
-    protected function insertJobsboardlines($lines, $jobid) {
+    protected function insertJobsboardlines($lines, $jobid)
+    {
       $existing_lines = $this->getJobsboardLines($jobid);
       $deleted        = array_diff_key($lines, $existing_lines);
       foreach ($deleted as $line) {
@@ -209,8 +215,7 @@
         $line['job_id'] = $jobid;
         try {
           $line['line_id'] = DB::insert('JobListItems')->values($line)->exec();
-        }
-        catch (DBDuplicateException $e) {
+        } catch (DBDuplicateException $e) {
           DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
         }
       }
@@ -220,8 +225,10 @@
      *
      * @return array
      */
-    protected function getJobsboardLines($jobid) {
+    protected function getJobsboardLines($jobid)
+    {
       $result = DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
+
       return $result;
     }
   }

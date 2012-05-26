@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Dimensions extends Application {
-
+  class Apps_Dimensions extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       $dim = DB_Company::get_pref('use_dimension');
       parent::__construct("Dimensions", _($this->help_context = "&Dimensions"), $dim);
@@ -47,5 +48,4 @@
       }
     }
   }
-
 
