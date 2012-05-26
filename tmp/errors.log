@@ -1,0 +1,21 @@
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+1: ErrorException Call to undefined method ADV\Core\Event::registerHook() in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/event.php on line:125
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+4: ErrorException syntax error, unexpected 'public' (T_PUBLIC) in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/language.php on line:118
+1: ErrorException Nesting level too deep - recursive dependency? in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/errors.php on line:219
+1: ErrorException Nesting level too deep - recursive dependency? in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/errors.php on line:219
+1: ErrorException Nesting level too deep - recursive dependency? in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/errors.php on line:219
+1: ErrorException Nesting level too deep - recursive dependency? in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/errors.php on line:219
+1: ErrorException Nesting level too deep - recursive dependency? in file: /Users/Maidenii/Desktop/dev/accounts/classes/core/errors.php on line:219

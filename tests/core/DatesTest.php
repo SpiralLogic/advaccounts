@@ -30,7 +30,8 @@
      */
     public function test__date()
     {
-      $sep      = Config::get('date.ui_separator');
+      $seps     = Config::get('date.separators');
+      $sep      = $seps[Config::get('date.ui_separator')];
       $expected = '01' . $sep . '13' . $sep . '2011';
       $actual   = Dates::__date(2011, 1, 13, 0);
       $this->assertEquals($expected, $actual);
@@ -96,7 +97,7 @@
     public function testNew_doc_date()
     {
       $date = Dates::new_doc_date();
-      $this->assertEquals(Dates::today(), $date);
+      $this->assertEquals(Dates::today(), $date, $date);
       // Remove the following lines when you implement this test.
     }
     /**
@@ -218,8 +219,8 @@
      */
     public function testExplode_date_to_dmy()
     {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete('This test has not been implemented yet.');
+      $actual = \Dates::explode_date_to_dmy('03/04/2012');
+      $this->assertEquals(['03', '04', '2012'], $actual);
     }
     /**
      * @covers ADV\Core\Dates::div

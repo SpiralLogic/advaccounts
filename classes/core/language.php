@@ -115,8 +115,7 @@
      *
      * @return mixed
      */
-    public
-    public function _($text)
+    function _($text)
     {
       $retVal = $_SESSION['get_text']->gettext($text);
       if ($retVal == "") {

@@ -42,7 +42,7 @@
     {
       static::$formats = static::$formats ? : Config::get('date.formats');
       $how             = static::$formats [($format !== null) ? $format : \User::date_format()];
-      static::$sep     = static::$sep ? : Config::get('date.ui_separator');
+      static::$sep     = static::$sep ? : Config::get('date.separators')[Config::get('date.ui_separator')];
       $date            = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how             = str_replace('/', static::$sep, $how);
 

@@ -234,7 +234,6 @@
     Table::header($th);
     $k    = 0;
     $mods = DB_Company::get_company_extensions();
-    $mods = Arr::natsort($mods, null, 'name');
     foreach ($mods as $i => $mod) {
       $is_mod = $mod['type'] == 'module';
 
@@ -276,13 +275,13 @@
         }
       }
     }
-    $mods = Arr::natsort($mods, null, 'name');
     Table::header($th);
     $k = 0;
     foreach ($mods as $i => $mod) {
 
       Cell::label($mod['name']);
-      Cell::label($mod['type'] == 'module' ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
+      Cell::label($mod['type'] == 'module' ? $mod['title'] :
+                    Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
       $ttl = Display::access_string($mod['title']);
       Cell::label($ttl[0]);
       check_cells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");

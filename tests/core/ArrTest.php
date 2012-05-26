@@ -109,16 +109,10 @@
      */
     public function testSearch_key()
     {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete('This test has not been implemented yet.');
-    }
-    /**
-     * @covers ADV\Core\Arr::natsort
-     * @todo   Implement testNatsort().
-     */
-    public function testNatsort()
-    {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete('This test has not been implemented yet.');
+      $array  = [1=> 'one', 2=> 'two', 'three'=> 3, 'four'=> '4', 'five', 6=> array('six'=> 6, 'seven'=> 'seven')];
+      $actual = Arr::search_key('five', $array);
+      $this->assertSame(3, $actual);
+      $actual = Arr::search_key('4', $array);
+      $this->assertSame('four', $actual);
     }
   }
